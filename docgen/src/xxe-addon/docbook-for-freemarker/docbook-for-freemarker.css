@@ -1,0 +1,247 @@
+@import url(xxe-config:docbook/css/docbook.css);
+
+/*
+-------------------------------------------------------------------------------
+Restricting the usage of "literal" elements:
+-------------------------------------------------------------------------------
+*/
+
+/* Disallowed literal element types */ 
+uri,
+code,
+constant,
+envar,
+markup,
+prompt,
+property,
+sgmltag,
+token,
+type,
+function,
+parameter,
+varname,
+returnvalue,
+errorcode,
+errorname,
+errortext,
+errortype,
+exceptionname,
+interfacename,
+structfield,
+structname,
+symbol {
+    color: #ff0000;
+}
+
+/*
+  Allowed literal element types
+  that are possibly transformed to Java API documentation links.
+*/ 
+classname,
+methodname,
+package {
+    color: #8519f1;
+}
+
+/* The "default" literal element type. */ 
+literal {
+    color: #9f0000;
+}
+
+literal replaceable {
+	color: #DD4400;
+}
+
+/*
+-------------------------------------------------------------------------------
+Demand role attributes for programlistings
+-------------------------------------------------------------------------------
+*/
+
+programlisting {
+    border: 1px; 
+	border-color: #000000;
+	background-color: #FF0000;  /* Red, should be overriden by using a valid role */
+}
+
+programlisting[role=template] {
+    background-color: #D8D8D8; 
+}
+
+programlisting[role=dataModel] {
+    background-color: #99CCFF; 
+}
+
+programlisting[role=output] {
+    background-color: #CCFFCC; 
+}
+
+programlisting[role=metaTemplate] {
+    background-color: #FFFFFF; 
+	border: 0px;
+}
+
+programlisting[role=unspecified] {
+    background-color: #F8F8F8; 
+}
+
+/*
+-------------------------------------------------------------------------------
+Fixing listing rendering bugs
+-------------------------------------------------------------------------------
+
+Listitems should be spaced similarly to para-s. Also, spacing="compact" wasn't
+supported by the bundled CSS.
+
+Unfortuntelly the XXE CSS implementation doesn't handle vertical marhing
+collapsing correctly, so it is practically impossible to implement proper
+vertical spacing for listing. Above is a lot of involved tricks, so that
+it will look OK in (almost?) all cases that occur in the FreeMarker Manual.
+*/
+
+itemizedlist,
+orderedlist {
+    margin-top: 0ex; 
+    margin-bottom: 0ex; 
+}
+
+listitem {
+    margin-top: 1.33ex; 
+    margin-bottom: 0ex; 
+}
+
+/*
+ * If a listitem has multipe children and the last is a para, and then it
+ * is followed by another listitem, the total vertical marging would add
+ * up to 2.66ex.
+ */
+listitem > para {
+    margin-bottom: 0ex; 
+}
+
+listitem:first-child,
+itemizedlist[spacing="compact"] > listitem,
+orderedlist[spacing="compact"] > listitem {
+    margin-top: 0ex; 
+}
+
+/*
+ * All vertical margin of the first child is ereased by the extended CSS,
+ * also the first listitem has no top-marging, so we must re-add that
+ * missing para margin somewhere...
+ */
+listitem > para:first-child + itemizedlist,
+listitem > para:first-child + orderedlist {
+    margin-top: 1.33ex; 
+}
+
+/*
+ * ... except if it is a packed listing inside another packed listing.
+ */
+*[spacing="compact"] > listitem > para:first-child + *[spacing="compact"] {
+    margin-top: 0ex; 
+}
+
+/*
+ * Out of convention we don't like listings inside "para"-s.
+ */
+para itemizedlist,
+para orderedlist {
+	background-color: #FF4040
+}
+
+/*
+-------------------------------------------------------------------------------
+"emphasis" special cases
+-------------------------------------------------------------------------------
+*/
+
+programlisting emphasis {
+	font-style: normal;
+	font-weight: bold;
+}
+
+emphasis[role=term] {
+	font-style: normal;
+	font-weight: bold;
+}
+
+/*
+-------------------------------------------------------------------------------
+Further special roles
+-------------------------------------------------------------------------------
+*/
+
+*[role=forProgrammers] {
+	color: #333399;
+	font-style: italic;
+}
+
+*[role=markedText] {
+	background-color: #00FFFF;
+}
+
+*[role=markedInterpolation] {
+	background-color: #FF0000;
+}
+
+*[role=markedFTLTag] {
+	background-color: #FFFF00;
+}
+
+*[role=markedComment] {
+	background-color: #00FF00;
+}
+
+*[role=markedInvisibleText] {
+	color: #999999;
+}
+
+*[role=markedTemplate] {
+    background-color: #D8D8D8; 
+}
+
+*[role=markedDataModel] {
+	background-color: #99CCFF;
+}
+
+*[role=markedOutput] {
+    background-color: #CCFFCC;
+}
+
+/*
+-------------------------------------------------------------------------------
+Some attempts to mach the style of the final output better
+-------------------------------------------------------------------------------
+*/
+
+remark {
+	color: #808080;
+	background-color: #FFFFA0;
+}
+
+title,
+titleabbrev,
+caption,
+abstract:before {
+    color: #0050B2;
+}
+
+note:before,
+caution:before,
+warning:before,
+important:before,
+footnote:before,
+revision:before,
+subtitle {
+    color: #000000;
+}
+
+itemizedlist > listitem:before,
+orderedlist > listitem:before {
+	color: #000000;
+}
+
+link, olink, ulink, xref {
+	color: #0000CC;
+}

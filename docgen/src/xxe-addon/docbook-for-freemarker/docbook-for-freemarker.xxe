@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<configuration name="DocBook for FreeMarker"
+  xmlns="http://www.xmlmind.com/xmleditor/schema/configuration"
+  xmlns:cfg="http://www.xmlmind.com/xmleditor/schema/configuration">
+
+  <include location="xxe-config:docbook/docbook.xxe"/>
+
+  <detect>
+    <dtdPublicId>-//OASIS//DTD DocBook XML V4.5//EN</dtdPublicId>
+  </detect>
+
+  <css name="DocBook for FreeMarker" location="docbook-for-freemarker.css" />
+
+  <windowLayout>
+    <center css="DocBook for FreeMarker" />
+    <bottom css="Document structure" size="0.001" />
+  </windowLayout>
+
+</configuration>

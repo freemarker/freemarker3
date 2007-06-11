@@ -1,0 +1,38 @@
+BODY {background-color: #FFFFFF; color: #000000; font-family: Arial, sans-serif}
+#mainContent {width: 43em; margin-left: 2em; margin-top: 1.2em}
+
+pre {font-size: 83%; font-family: "Courier New", monospace}
+pre.metaTemplate {font-size: 100%}
+/* Some browsers chose smaller font than for normal text otherwise: */
+tt {font-size: 100%; font-family: "Courier New", monospace}
+
+/* ToC */
+div.toc {border: 1px #000000 solid; padding: 4px; background-color: #F0F0F0; width: 90%}
+.toc P {margin-top: 0px}
+.toc DL {margin: 0px}
+
+/* FAQ */
+.question {color:#0050B2}
+
+/* title-s */
+H1 {font-size: 233%; font-family: Arial, sans-serif; font-weight: bold; color:#0050B2}
+H2 {font-size: 200%; font-family: Arial, sans-serif; font-weight: bold; color:#0050B2} /* chapter and sect1 */
+.sect1 H2 {font-size: 150%;}
+H3 {font-size: 108%; font-family: Arial, sans-serif; font-weight: bold; color:#0050B2}
+.simplesect H3 {font-size: 100%}
+.note H3 {font-size: 100%; color: black}
+.caution H3 {font-size: 100%; color: black}
+.warning H3 {font-size: 100%; color: black}
+.important H3 {font-size: 100%; color: black}
+H4 {font-size: 83%; font-family: Arial, sans-serif; font-weight: bold; color:#0050B2}
+
+/* hyperlinks */
+A {color: #0000CC; text-decoration:none}
+A:hover {text-decoration: underline}
+A:visited {color: #800080}
+
+/* Fixes problem of Opera with DocBook generated TOC-s */
+DD DL {margin: 0px;}
+
+/* Misc. */
+.footnote {font-size: 83%; color: #A0A0A0; font-style: italic}

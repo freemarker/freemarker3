@@ -1,0 +1,5 @@
+[#import "htmloutput.ftl" as htmloutput]
+[#import "docbook-html.ftl" as default]
+[@htmloutput.Html .node.title]
+[#recurse  using [htmloutput, default]]
+[/@]
