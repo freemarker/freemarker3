@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+
+<!-- :wrap=soft:maxLineLen=80: -->
+
+
+<page title="Powered By FreeMarker">
+  <headsection>
+    <p>
+      Below is a non-comprehensive list of sites and products that use
+      FreeMarker. If you know of another site or product that should appear
+      here, <a href="mailto:freemarker-devel@lists.sourceforge.net">drop us a
+      note</a>.
+    </p>
+    <p>
+      We'll also be glad if you display one of the following Powered by FreeMarker logos
+      on your website in recognition of our work:
+    </p>
+    <table border="0" cellpadding="0" cellspacing="6">
+      <tr>
+        <td align="left">
+          <a href="http://freemarker.org/"><img src="images/poweredby_big_ffffff.png" alt="Powered by FreeMarker" border="0"/></a><br/>
+        </td>
+      </tr>
+      <tr>
+        <td align="left">
+          <a href="http://freemarker.org/"><img src="images/poweredby_ffffff.png" alt="Powered by FreeMarker" width="88" height="31" border="0"/></a>
+        </td>
+      </tr>
+      <tr>
+        <td align="left">
+          <a href="http://freemarker.org/"><img src="images/poweredby_sq_simple.png" alt="Powered by FreeMarker" width="88" height="31" border="0"/></a>
+          <a href="http://freemarker.org/"><img src="images/poweredby_sq_bluespot.png" alt="Powered by FreeMarker" width="88" height="31" border="0"/></a>
+          <a href="http://freemarker.org/"><img src="images/poweredby_sq_sunset.png" alt="Powered by FreeMarker" width="88" height="31" border="0"/></a>
+        </td>
+      </tr>
+    </table>
+    <p>
+      The logo should be a link to freemarker.org. Please use a copy of the image file on your server.<br />
+    </p>
+    <p>
+      <code>&lt;a href="http://freemarker.org/">&lt;img src="..."<br />
+      alt="Powered by FreeMarker" border="0">&lt;/a></code>
+    </p>
+  </headsection>
+  
+  <sections>
+  
+    <section title="Software that incorporates FreeMarker">
+    <resources>
+      <resource>
+         <name>Alfresco</name>
+         <url>http://alfresco.org/</url>
+         <description>
+            Alfresco offers open source enterprise content management (ECM) - Document
+            Management, Collaboration, Records Management, Knowledge Management,
+            Web Content Management and Imaging.  Alfresco was founded in 
+            June 2005 by John Newton, co-founder of Documentum, and 
+            John Powell, former COO of Business Objects. Alfresco's templating system
+            is based on exposing their custom object model to FreeMarker templates.
+            See <a href="http://www.alfresco.org/mediawiki/index.php/Template_Guide">here</a> for more information.
+         </description>
+      </resource>
+      <resource>
+         <name>AppComposer</name>
+         <url>http://www.appcomposer.org/</url>
+         <description>
+            AppComposer is a free integrated assembly environment for building applications
+            from reusable Java components. It allows FreeMarker templates to be used in a
+            "wire the components together" manner.
+         </description>
+      </resource>
+      <resource>
+         <name>APT-Jelly</name>
+         <url>http://apt-jelly.sourceforge.net/</url>
+         <description>
+            APT-Jelly is an engine for generating artifacts (e.g. source code, config files)
+            from Java source code. APT-Jelly provides a template-oriented approach to artifact generation
+            by providing an interface for Sun's Annotation Processing Tool (APT) to your
+            favorite templating engine.
+         </description>
+      </resource>
+      <resource>
+         <name>Curn</name>
+         <url>http://www.clapper.org/software/java/curn/</url>
+         <description>
+            Curn is an RSS reader. It scans a configured set of RSS feeds, and summarizes the
+            results in files generated with FreeMarker templates. It is a command-line utility,
+            intended to be run periodically in the background.
+         </description>
+      </resource>
+      <resource>
+         <name>EnvGen</name>
+         <url>http://www.basilv.com/psd/software</url>
+         <description>
+            EnvGen is an <a href="http://ant.apache.org/">Ant</a> task for 
+            generating different versions of the same file parameterized for 
+            different environments (i.e. development, test, and production) using 
+            FreeMarker.
+         </description>
+      </resource>
+      <resource>
+         <name>FMPP</name>
+         <url>http://fmpp.sourceforge.net/</url>
+         <description>
+            FMPP is a general purpose text file preprocessor tool (command-line, Ant task).
+            It can generate complete homepages (full directory structure with HTML-s, images, etc.).
+            It is extendable to display data from any data sources (as database).
+         </description>
+      </resource>
+      <resource>
+         <name>Hierarchical Inherited Rule-Interpreted XML</name>
+         <url>http://www.alphaworks.ibm.com/tech/hirixml</url>
+         <description>
+            Hierarchical Inherited Rule-Interpreted XML is A dynamic XML Engine that creates
+            dynamic DOMs built on dynamic rules and expressions where the expression may use
+            FreeMarker as the expression interpreter.
+         </description>
+      </resource>
+      <resource>
+         <name>JForum</name>
+         <url>http://www.jforum.net/</url>
+         <description>
+            JForum is an open source discussion board system. The lead developer is Rafael Steil.
+         </description>
+      </resource>
+      <resource>
+         <name>JooReports</name>
+         <url>http://jooreports.sourceforge.net/</url>
+         <description>
+            JooReports is an open source solution for creating office documents and reports in Java,
+            using OpenOffice.org.
+         </description>
+      </resource>
+      <resource>
+         <name>JMetra</name>
+         <url>http://www.jmetra.com</url>
+         <description>
+            JMetra is a source code analysis tool. It leverages FreeMarker to display the
+            source code metrics that it gathers.
+         </description>
+      </resource>
+      <resource>
+         <name>Kinetic Fusion</name>
+         <url>http://www.kinesissoftware.com</url>
+         <description>
+            KineticFusion is an application for the creation and manipulation of SWF files,
+            the native format for movies that run within the Flash<sup>TM</sup> platform.
+            It leverages FreeMarker to provide templating capabilities.
+         </description>
+      </resource>
+      <resource>
+         <name>Lutece (2.0+)</name>
+         <url>http://www.lutece.paris.fr</url>
+         <description>
+            Lutece is a portal engine which allows you to easily create your websites or
+            intranets based upon HTML, XML, etc content. It provides a user friendly interface for
+            portal management so no specific technical skills are required. BSD-like license.
+         </description>
+      </resource>
+      <resource>
+         <name>Mango</name>
+         <url>http://mango.serotoninsoftware.com/</url>
+         <description>
+            Mango is browser-based, Ajax-enabled software that enables users to access and control
+            electronic sensors, devices, and machines. It provides an interface with which diverse data
+            sources can be created and configured along with an intuitive rules engine for setting up
+            access, monitoring, alerts, data logging, control, transformation, and communication. It
+            uses Freemarker to dynamically generate content for notification emails.
+         </description>
+      </resource>
+      <resource>
+         <name>RapidJ</name>
+         <url>http://www.codecanvas.com.au/rapidj/</url>
+         <description>
+            RapidJ is a Java code generator that creates fully functional and 
+            customisable J2EE web applications. It generates tiered J2EE web 
+            applications that utilise popular technologies such as Struts, Java Server 
+            Pages (JSP) and Java Database Connectivity (JDBC).
+         </description>
+      </resource>
+      <resource>
+         <name>SuperX</name>
+         <url>http://www.superx-projekt.de</url>
+         <description>
+           A German dataware house for university administrations.
+           Uses FreeMarker to dynamically create SQL queries.
+         </description>
+      </resource>
+      <resource>
+         <name>TrackStudio</name>
+         <url>http://www.trackstudio.com/</url>
+         <description>
+            TrackStudio is a hierarchical issue tracking and bug tracking system, created specifically
+            for software development companies. It uses FreeMarker to format the e-mail notification messages.
+         </description>
+      </resource>
+      <resource>
+         <name>ZeroCode</name>
+         <url>http://www.zerocode.com</url>
+         <description>
+            ZeroCode allows you to build large, scalable, database-backed web 
+            applications with no programming effort, in minutes, from your browser.
+         </description>
+       </resource>
+    </resources>  
+    </section>
+    
+    <section title="Web application frameworks that support FreeMarker">
+      <p>Note that this list is not complete, since we only list products where the
+      framework authors explicitly state that their product supports FreeMarker.
+      For some frameworks not listed here, it is easy to plug any view component,
+      and thus FreeMarker.</p>
+      <p>Also, for most "Model 2" frameworks (like Maverick or Struts)
+      it is easy to use FreeMarker templates instead of the MVC-oriented JSP pages.
+      For more information <a href="docs/pgui_misc_servlet.html">click here...</a></p>
+      <resources>
+        <resource>
+          <name>Cáñamo</name>
+          <url>http://canyamo.sourceforge.net</url>
+          <description>
+            Canyamo is a framework for creating portals. The main 
+            developer is Alberto Molpeceres and it is the framework underlying the
+            Spanish-language java portal <a href="http://javahispano.org">JavaHispano.</a>
+          </description>
+        </resource>
+        <resource>
+          <name>Guara</name>
+          <url>http://guara-framework.sourceforge.net</url>
+          <description>
+            Guara is a web application framework broadly similar to Turbine in its
+			architectural design. However, it is designed to be a very simple and 
+			small framework with a minimum set of dependencies. It may serve as a 
+			good basis to build other frameworks. The main author is Leandro Saad Cruz.
+          </description>
+        </resource>
+        <resource>
+          <name>JET</name>
+          <url>http://jet.sourceforge.net/</url>
+          <description>
+            JET (Java Enterprise Turbine) is a web framework which offers an easy to use web
+            development environment. The focus is on building and reusing forms instead of hole
+            pages like JSP. It uses FreeMarker templates to generate HTML pages.
+          </description>
+        </resource>
+        <resource>
+          <name>JPublish</name>
+          <url>http://www.jpublish.org/</url>
+          <description>
+          Starting from version 2.0b1, JPublish supports FreeMarker as a
+          view layer. JPublish is a powerful web publishing system designed to 
+          ensure a clean separation of developer roles.
+          </description>
+        </resource>
+        <resource>
+          <name>Macaw</name>
+          <url>http://www.1729.com/macaw/</url>
+          <description>
+            MACAW stands for Methods And Classes All Webified. It is a 
+            Java application framework layered over Freemarker. It also includes 
+            a basic integration with Hibernate which is contained within the 
+            macaw.database package, but this is merely to wrap method invocations 
+            within transactions: a similar wrapping can be defined for any other 
+            persistence framework.
+          </description>
+        </resource>
+        <resource>
+          <name>Open for Business</name>
+          <url>http://ofbiz.org</url>
+          <description>
+            <em>Open for Business</em> is an ongoing project to create a suite 
+          of open-source enterprise/e-commerce applications and modules built 
+          on a common framework. In 2003 the project decided to switch from JSP
+          to FreeMarker for their view component.
+          </description>
+        </resource>
+        <resource>
+          <name>Restlet</name>
+          <url>http://www.restlet.org</url>
+          <description>
+            A framework that brings the simplicity and efficiency of the REST
+            architectural style to Java developers. As an alternative to Servlet and JSP
+            technologies, it uses FreeMarker to generate dynamic representations.
+          </description>
+        </resource>
+        <resource>
+          <name>Spring</name>
+          <url>http://www.springframework.org/</url>
+          <description>
+          Spring is a complete Java/J2EE application framework based around a
+          lightweight Inversion of Control container.  Spring includes, among many
+          other things, a full AOP interception framework, JDBC and ORM support, 
+          declarative transaction management (even without an application server) and 
+          a rich, flexible MVC framework with various view technologies integrated.
+          </description>
+        </resource>
+        <resource>
+           <name>Tammi</name>
+           <url>http://tammi.sourceforge.net</url>
+           <description>
+           Tammi is a development framework and run-time container for 
+          JMX based web applications. Tammi MBeans can implement business 
+          logic themselves or act as proxies to native libraries, remote programs 
+          and other manageable systems. Tammi applications can be executed 
+          either as a servlet or filter chain under a J2EE compatible servlet container.
+          In addition, it contains an internal HTTP(S) 1.1 capable connector with competent performance.           
+           </description>
+        </resource>
+        <resource>
+          <name>WebWork</name>
+          <url>http://www.opensymphony.com/webwork/</url>
+          <description>
+WebWork is a Java web-application development framework. It is built specifically with developer productivity and code simplicity in mind. WebWork is built on top of XWork, which provides a generic command pattern framework as well as an Inversion of Control container. In addition to these features, WebWork provides robust support for building reusable UI templates, such as form controls, UI themes, internationalization, dynamic form parameter mapping to JavaBeans, robust client and server side validation, and much more.
+<p>As of WebWork 2.2, FreeMarker is the default view component in the framework and the developers recommend it over JSP and Velocity for new WebWork projects.</p>
+          </description>
+        </resource>
+      </resources>
+    </section>
+    
+    <section title="Websites generated by FreeMarker">
+      <table border="0" cellpadding="4">
+        <tr valign="top">
+          <td><a href="http://www.abclinuxu.cz">www.abclinuxu.cz</a></td>
+          <td>Linux portal for czech and slovak users. Articles,
+              tutorials, hardware advices, discussion forum
+              and much more...</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://www.atina.cl">www.atina.cl</a></td>
+          <td>A website oriented to young, in Spanish.</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://www.chemistaustralia.com.au">www.chemistaustralia.com.au</a></td>
+          <td>Chemist Australia - an online pharmacy in Australia. Uses the WebWork2 framework.</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://www.chile.com">www.chile.com</a></td>
+          <td>This portal for everything Chilean serves way many hits every day.</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://www.drivenow.com.au">www.drivenow.com.au</a></td>
+          <td>DriveNow - A car rental website that allows customers to book rental
+          cars from major suppliers at discounted last minute rates. Datacodex have 
+          developed a site DriveNow that utilises FreeMarker for it's view layer 
+          inside it's framework, WebWork2.</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://freemarker.org">freemarker.org</a></td>
+          <td>Not surprisingly, the pages you view right now are generated using
+          FreeMarker. We do eat our own dog food!</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://www.hesteinfo.dk">www.hesteinfo.dk</a></td>
+          <td>Denmark's largest equestrian site, where you will find 
+          everything related to horses: latest world news, sales, jobs,
+          forums, studs, results, and breeding.</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://dvd.indianajones.com">dvd.indianajones.com</a></td>
+          <td>The official site for the online content accompanying the 
+          "Complete Indiana Jones DVD Set".</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://www.javahispano.org">www.javahispano.org</a></td>
+          <td>This is a popular Spanish-language portal for java developers. It is built
+          on top of the <a href="http://canyamo.sourceforge.net">Canyamo</a> framework
+          which uses FreeMarker templates for its presentation functionality.</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://www.kikeres.hu">www.kikeres.hu</a></td>
+          <td>The Hungarian Governmental Information Locator System website.
+          Features both static pages that are offline generated from XML using
+          the FreeMarker XML support and a true servlet-served dynamic content.</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://lastwords.com/">lastwords.com</a></td>
+          <td>A writer's workshop.
+          The vision: create an environment where authors of all ages and skills could read, submit, and critique the works of their peers.</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://www.nadir.org">www.nadir.org</a></td>
+          <td>Nadir is a German political news portal that uses the 
+          above-listed, FreeMarker based Mir CMS.</td>
+        </tr>
+        <tr valign="top">
+          <td><a href="http://www.tinysoftware.com">www.tinysoftware.com</a></td>
+          <td>Website of the makers of the Tiny Personal Firewall.</td>
+        </tr>
+      </table>
+    </section>
+  </sections>
+</page>

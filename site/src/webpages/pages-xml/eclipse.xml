@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<page title="Installing the Eclipse Plugin">
+  <headsection>
+    <p>
+      Note that new Eclipse releases can have compatibility problems. The most recent version we have tried this plugin with is: Eclipse 3.0.
+      If you find that the plugin doesn't work on a later release, <a href="http://sourceforge.net/tracker/?func=add&amp;group_id=794&amp;atid=100794">inform us</a>.
+    </p>
+    <p>
+      You can install the eclipse plug-in either manually, or with the installer/updater system of Eclipse.
+    </p>
+  </headsection>
+
+  <section title="Installing manually">
+    <p>
+      Visit <a href="http://sourceforge.net/projects/freemarker">http://sourceforge.net/projects/freemarker</a>,
+      and <b>download</b> the latest release of package <b>eclipse-plugin</b>.
+      Extract the downloaded <code>tar.gz</code> into the <code>plugins</code> directory of Eclipse (so there will be 2 <code>org.visigoths.freemarker*</code> subdirectories), and then restart Eclipse.
+    </p>
+    <p>
+      To update the already installed version, just stop Eclipse, delete the two directories that were made when you have extracted the earlier <code>tar.gz</code>, and install the latest version as was explained above.
+    </p>
+    
+    <p>
+      Once after the installation or after the update it's maybe good idea to start Eclipse from the command-line with the "clean" option: <tt>eclipse&#160;-clean</tt>
+    </p>
+  </section>
+  
+  <section title="Installing with Eclipse installer/updater system">
+    <p>
+      Eclipse has its own on-line plug-in installer/updater system. To install the FreeMarker plug-in,
+      be connected to the Internet, start Eclipse and:
+    </p>
+    <ul>
+      <li>If you use Eclipse 2.x:
+        <ol>
+          <li>
+            Open the <b>Window</b> menu, then <b>Open Perspective</b> -> <b>Install/Update</b>
+          </li>
+          <li>
+            Click with the right mouse button on the <b>Feature Updates</b> view,
+            then select <b>New</b> -> <b>Site Bookmark</b>
+          </li>
+          <li>
+            In the displayed dialog box, type <b>"FreeMarker"</b> for Name and
+            <b>"http://www.freemarker.org/eclipse/update"</b> for URL.
+            Leave the "Bookmark type" radio buttons on "Eclipse update site".
+          </li>
+          <li>
+            Click <b>Finish</b>
+          </li>
+          <li>
+            Open the tree node under the newly created update site named
+            "FreeMarker", select the <b>"FreeMarker <i>X.Y.Z</i>"</b> feature, and install it using
+            the <b>Install now</b> button in the preview pane.
+          </li>
+        </ol>
+      </li>
+      <li>If you use Eclipse 3.x:
+        <ol>
+          <li><b>Help</b> -> <b>Software updates</b> -> <b>Find and install...</b>.</li>
+          <li>Choose "Search for new features to install".</li>
+          <li>Click <b>Add Update Site...</b>, and type <b>"FreeMarker"</b> for Name and
+              <b>"http://www.freemarker.org/eclipse/update"</b> for URL.</li>
+          <li>Check the box of the "FreeMarker" feature.</li>
+          <li>"Next"-s until it is installed...</li>
+        </ol>
+      </li>
+    </ul>
+    <p>
+       From now on, you have syntax highlight, syntax error reporting, and outline
+       view for <b>.ftl</b> files. (If for some reason Eclipse doesn't open *.ftl files
+       with FreeMarker plugin, you have to associate *.ftl with the Freemarker Editor
+       manually. For this use <b>Window</b> -> <b>Preferences</b> -> <b>General</b> -> <b>Editors</b>
+       -> <b>File Associations</b> in Eclipse. Also in the tree views like the Resource Navigator or
+       Package Explorer you can right-click on a file and choose "Open with..." and then
+       "Freemarker Editor", however this decision will apply to that single file only.)
+    </p>
+    <p>If you already have a previous version installed, do the following:</p>
+    <ul>
+      <li>If you use Eclipse 2.x:
+        <ol>
+          <li>
+            Open the <b>Window</b> menu, then <b>Open Perspective</b> -> <b>Install/Update</b>
+          </li>
+          <li>
+            In the <b>Feature Updates</b> view, open the tree node under the already existing update site named
+            <b>"FreeMarker"</b>, select the <b>"FreeMarker X.Y.Z"</b> feature,
+            and install it using the <b>Update Now</b> button in the preview pane.
+          </li>
+        </ol>
+      </li>
+      <li>If you use Eclipse 3.x:
+        <ol>
+          <li><b>Help</b> -> <b>Software updates</b> -> <b>Manage Configuration...</b>.</li>
+          <li>Find the FreeMarker feature in the tree, and click <b>Scan for Updates...</b></li>
+        </ol>
+      </li>
+    </ul>
+  </section>
+</page>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- 
+     :wrap=soft:maxLineLen=80: 
+-->
+
+<page title="FreeMarker vs. XSLT">
+  <headsection>
+    <p>
+     FreeMarker 2.3 introduced some powerful new facilities for XML processing. You can drop XML documents into the data model, and templates can pull data from them in a variety of ways, such as with XPath expressions. See the <a href="docs/xgui.html">appropriate manual section</a> for a detailed introduction. Here, we contrast FreeMarker, as an XML transformation tool with the much better-known XSLT stylesheet approach promulgated by the Worldwide Web Consortium (W3C).
+    </p>
+    <p>
+      XSLT is a W3C recommendation for transforming XML. Its basic programming paradigm is a functional declarative programming model. Though this theoretical model is elegant and powerful -- at least for those who master it -- the fact remains that, put simply, it is not everybody's cup of tea. XSL syntax, mostly because it is an XML application, is really quite verbose and awkward to edit. It is our opinion that using FreeMarker instead of XSLT will be a very welcome relief to many people out there.
+    </p>
+  </headsection>
+  <sections>
+    <section title="Availability">
+      <p>
+       Since XSLT is a W3C standard, it is more widely known, there are various books in print on the topic, and various third-party implementations available in various programming languages and for various computing platforms.
+      </p>
+      <p>
+      By contrast, FreeMarker has exactly one implementation (our own freely available open-source implementation) that runs on one platform, albeit a <em>virtual</em> platform -- the Java Virtual Machine (JVM). Virtually the only documentation on FreeMarker is what we provide.
+      </p>
+      <p>
+      That said, the wider availability of literature on XSLT is, in a sense, good news and bad news. The good news is that many books on XSLT are available; the bad news is that this plethora of tutorial materials surely came into existence in large part due to the difficulty of learning and mastering XSLT. Also, we should note that the FreeMarker manual is chock full of examples and tutorials. As a practical matter, it is likely that people will be up and running, writing useful templates in FreeMarker very quickly -- a matter of days or even hours. It is unlikely that this will be the case with XSLT.
+      </p>
+      <p>
+      That FreeMarker is (currently) tied to the JVM is not a severe constraint, since, as of this writing, there is a JVM implementation for every significant computing environment. As to the availability of competing implementations, we leave it to your judgment to consider how important this really is. FreeMarker has a highly active open-source community, and we react to bug reports very quickly and we are also highly responsive to requests for feature enhancements. 
+      </p>
+    </section>
+    <section title="Different Programming Models">
+       <p>
+       XSLT and FreeMarker can both be used to generate output from XML input, but they are really very different tools. FreeMarker is a <em>text template engine</em>. As such, it is not based on any preconceived notion of the structure of the output. You provide a page template with certain embedded instructions and what is not an embedded instruction is passed through as-is to the output. By contrast, XSLT is really a tree-transformation tool; it takes an input <em>tree</em> and manipulates it into an output <em>tree</em>.
+       </p>
+       <p>
+       The FreeMarker Template Language (FTL) is based on a much more conventional programming model -- the procedural or imperative model. You can define variables and functions. You control the flow of execution via conventional imperative constructs such as loops, and if-else statements. XSLT is based on a <em>functional programming model</em> that will be quite strange and alien to most users.
+       </p>
+    </section>
+    
+    <section title="Computing Resource Usage">
+      <p>
+        As of this writing, we do not have a wide range of comparative tests on runtime performance. However, initial indications are that FreeMarker is faster and less memory hungry than XSLT (Saxon implementation) for equivalent transformation tasks.
+      </p>
+      <p>
+        <i>Note: With FreeMarker 2.3pre3, we switched over from using XSLT stylesheets to generate the Manual using FreeMarker itself. The FTL-based transformation, producing almost identical output from the same input (a big XDocBook XML document) is 15 times faster than the legacy XSLT transformation using Saxon. Moreover, the FTL-based transformation requires about 4 megabytes of heap space, vs. 14 megabytes for Saxon. But unfortunately, these results can't be fairly compared, because the FreeMarker version uses a dedicated Java program that takes over some of the XDocBook processing work, and it is not clear what the result would be without that.</i>
+      </p>
+    </section>
+  </sections>
+</page>

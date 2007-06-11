@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<page title="Who We Are">
+  <headsection>
+    <p>
+      FreeMarker 1 (Classic) was originally written by
+      <a href="mailto:beroul@users.sourceforge.net">Benjamin Geer</a> and 
+      <a href="classic@zzzcomputing.com">Mike Bayer</a>. They defined the basic 
+      syntax -- and more importantly, the philosophy -- of the tool that is 
+      carried on in FreeMarker 2. Significant contributions to FreeMarker 
+      Classic were made by Nicholas Cull, Holger Arendt and others.
+    </p>
+    <p>
+      In early 2002, <a href="mailto:jon@revusky.com">Jonathan Revusky</a> rewrote the core
+      (parser/compiler) code using a popular parser generator tool,
+      JavaCC. This was really the basis of FreeMarker 2 (Lazarus),
+      which, though largely backward compatible with FreeMarker 1 (Classic)
+      is virtually a complete rewrite. Jonathan is also the main
+      author and maintainer of the <a href="http://niggle.org">Niggle
+      Web Application Framework</a>, a web application framework that
+      uses FreeMarker as its view component. He is an independent
+      software developer and consultant, available in particular for
+      work on java and open-source technologies. He can be reached by email via 
+      <a href="mailto:jon@revusky.com">jon at revusky.com</a>
+    </p>
+    <p>
+      <a href="http://www.szegedi.org">Attila Szegedi</a> has made
+      significant contributions to the Lazarus release. Besides refactoring and
+      optimizing some of the core API's for the Lazarus release,
+      Attila is the main author of the date/time support, 
+      <tt>freemarker.ext.*</tt> packages responsible for JavaBeans, Jython, and 
+      XML mappings, as well as for HTTP servlet, JSP and Ant integration.
+    </p>
+    <p>
+      Dániel Dékány is a rather disputatious, horrid, ever-discontent man. Also he is
+      seriously senile and absent-minded. But, he has good insights, and sharp
+      eyes to spot the mistakes in the work of <em>other</em> people, and also he is
+      technically relatively bright. Many features of FreeMarker are basically his idea,
+      or at least was substantially improved based on his feedback. And last
+      not least, he is the author of the documentation and the Web page (in
+      90%). His English is really bad, but nobody wants to undertake
+      these tedious tasks, and anyway, he does it conscientiously. Also,
+      despite that he is so thorny, he is helpful if users have problems. So
+      finally he is an important contributor to FreeMarker.
+    </p>
+    <p>
+      <a href="http://sixlegs.com/">Chris Nokleberg</a> is a FreeMarker
+      "power user" who makes life difficult for the other developers by
+      requesting new features and using the BeansWrapper in horrifying
+      ways. He attempts to redeem himself by occasionally fixing bugs
+      and implementing such features himself.
+    </p>
+    <p>
+       <a href="mailto:stephan@chaquotay.net">Stephan Mueller</a> is
+       the author of the new FreeMarker plugin for the Eclipse
+       IDE. Stephan studies computer science at the University of Technology
+       in Aachen, Germany.
+    </p>
+    <p>
+      Many other ideas and feedback 
+      were provided by the various participants on the 
+      freemarker-devel and freemarker-user mailing lists. People who are interested 
+      in influencing (and even participating in) further  FreeMarker development are strongly 
+      encouraged to <a href="http://sourceforge.net/mail/?group_id=794">subscribe</a>...
+    </p>
+    <p>
+      By community consensus, FreeMarker 2 release is under the more 
+      liberal BSD-style license. (FreeMarker Classic was released under the 
+      LGPL.) Benjamin Geer, the main author of FreeMarker 1, remained the 
+      copyright holder of FreeMarker versions 2.0.x and 2.1.x. It was decided that, 
+      since we did not at that point have a juridical entity (such as the Apache Foundation) 
+      to play this role, that Benjamin Geer would continue to be the sole copyright 
+      holder. Though various people have contributed to FreeMarker development, to have one 
+      individual be copyright holder would make future license changes or 
+      clarifications simpler.
+    </p>
+    <p>
+      As of FreeMarker 2.2, the copyright holder of the FreeMarker codebase
+      is the <a href="http://www.visigoths.org">Visigoth Software Society</a>, 
+      a non-profit association based in Spain, and co-founded by Jonathan Revusky 
+      in December of 2002. Benjamin Geer graciously agreed to cede the copyright
+      to VSS on the understanding that it would remain available under a liberal
+      open-source license. The terms of the license remain the same.
+    </p>
+  </headsection>
+</page>

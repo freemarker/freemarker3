@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<page title="FTL Libraries">
+  <headsection>
+    <downloadWarnings />
+    <p>
+      The aim of this page is to collect useful FTL libraries on a centralized, well known place.
+      We encourage everybody to send his/her useful libraries, so other FreeMarker users
+      can benefit from them.
+    </p>
+  </headsection>
+  <sections>
+    <section title="The libraries">
+      <p>
+        If you want your product appear here,
+        <a href="mailto:freemarker-devel@lists.sourceforge.net"> contact us</a>.
+        Also, anybody wants to improve the above libraries is welcome!
+      </p>
+      <table border="0" cellspacing="2" cellpadding="4">
+        <tr valign="top" align="center">
+          <th align="left" class="cell">Description</th>
+          <th class="cell">Version</th>
+          <th class="cell">File</th>
+        </tr>
+        <tr valign="top" align="center">
+          <td align="left" class="cell">
+            RTF-generator. Macros and <tt>TemplateMethodModel</tt> for generating simple
+            Unicode RTF documents purely with macro calls and an escape directive
+            (i.e. no raw RTF in the template). Contributed by Assaf Urieli at
+            <a href="http://www.joli-ciel.com">Joliciel Informatique</a>.</td>
+          <td class="cell">0.4</td>
+          <td class="cell"><a href="http://freemarker.sourceforge.net/download/library/rtf.zip">rtf.zip</a></td>
+        </tr>
+      </table>
+    </section>
+  </sections>
+</page>
