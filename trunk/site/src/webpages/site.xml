@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<site 
+  logoUrl="images/fm_large.gif"
+  deployUrl="http://freemarker.org"
+  >
+  <navigation>
+    <group name="About">
+      <item name="Overview" url="index.html"/>
+      <item name="Features" url="features.html"/>
+    </group>
+    <group name="Download">
+      <item name="FreeMarker" url="freemarkerdownload.html"/>
+      <item name="Editor/IDE plugins" url="editors.html"/>
+      <item name="File generator tool (FMPP)" url="fmpp.html"/>
+      <item name="Migrating from Velocity" url="usCavalry.html"/>
+      <item name="FTL Libraries" url="libraries.html"/>
+    </group>
+    <group name="Online Documentation" offlineName="Documentation">
+      <item name="Table of Contents" url="docs/index.html"/>
+      <item name="Short-cut to: Java API" url="docs/api/index.html"/>
+      <item name="Short-cut to: FAQ" url="docs/app_faq.html"/>
+      <item name="Short-cut to: Index" url="docs/alphaidx.html"/>
+      <item name="Short-cut to: Versions" url="docs/app_versions.html"/>
+    </group>
+    <group name="Community, help">
+      <item name="REPORT BUGS HERE!" url="http://sourceforge.net/tracker/?func=add&amp;group_id=794&amp;atid=100794"/>
+      <item name="Mailing list subscription" url="http://sourceforge.net/mail/?group_id=794"/>
+      <item name="Browse/search the mailing list archives" url="gmane.html"/>
+      <item name="News (nntp) interface" url="gmane.html"/>
+      <item name="Web forums" url="https://sourceforge.net/forum/?group_id=794"/>
+      <item name="Development builds (automatic)" url="http://freemarker.org/builds/start.action"/>
+      <item name="Wiki" url="http://freemarker.org/wiki"/>
+      <item name="Blog" url="http://freemarker.blogspot.com/"/>
+    </group>
+    <group name="Miscellaneous">
+      <item name="Powered by FreeMarker" url="poweredBy.html"/>
+      <item name="SourceForge project page" url="http://sourceforge.net/projects/freemarker"/>
+      <item name="Who we are" url="whoWeAre.html"/>
+    </group>
+  </navigation>
+</site>

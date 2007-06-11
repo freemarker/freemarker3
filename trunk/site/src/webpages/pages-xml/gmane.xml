@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<page title="Gmane">
+  <headsection>
+    <p>
+      Thanks to <a href="http://gmane.org/">Gmane</a>, our mailing lists are accessible with news interface as well.
+      Gmane not only provides a two way mail to news interface, but let you read (browse and search) the mail
+      archives with Web interface.
+    </p>
+  </headsection>
+
+  <sections>
+    <section title="Browse/search the mailing list archives">
+      <p>Choose mailing list:</p>
+      <ul>
+        <li><a href="http://news.gmane.org/gmane.comp.web.freemarker.user">freemarker-user@lists.sourceforge.net</a></li>
+        <li><a href="http://news.gmane.org/gmane.comp.web.freemarker.devel">freemarker-devel@lists.sourceforge.net</a></li>
+      </ul>
+    </section>
+
+    <section title="News interfaces">
+      <p>All interfaces are two-way (you can both write and read).</p>
+      <ul>
+        <li>For freemarker-user@lists.sourceforge.net:<br/>
+            <a href="nntp://news.gmane.org/gmane.comp.web.freemarker.user">nntp://news.gmane.org/gmane.comp.web.freemarker.user</a></li>
+        <li>For freemarker-devel@lists.sourceforge.net:<br/>
+            <a href="nntp://news.gmane.org/gmane.comp.web.freemarker.devel">nntp://news.gmane.org/gmane.comp.web.freemarker.devel</a></li>
+      </ul>
+    </section>
+  </sections>
+
+</page>
