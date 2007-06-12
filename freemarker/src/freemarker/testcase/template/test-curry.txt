@@ -1,0 +1,47 @@
+<!--
+  ===============
+  1. Curry macros
+  ===============
+-->
+<#assign foo="baz">
+
+<#macro x a b c>
+${foo} ${a} ${b} ${c}
+</#macro>
+
+<!-- Plain uncuried macro invocation -->
+<@x a=1 b=2 c=3/>
+
+<!-- Curry macro using named arg list -->
+<@x?use_defaults(a=4) b=5 c=6/>
+<@x?use_defaults(a=7 c=9) b=8/>
+<@x?use_defaults(a=10 b=11 c=12)/>
+
+<!-- Curry macro using positional arg list -->
+<@x?use_defaults(13) b=14 c=15/>
+<@x?use_defaults(16,17) c=18/>
+<@x?use_defaults(16,17,18)/>
+
+<!-- Override currying default value with explicit later argument -->
+<@x?use_defaults(a=19) a=20 b=21 c=22/>
+
+<!-- Curry a curried macro -->
+<@x?use_defaults(a=23)?use_defaults(b=24)?use_defaults(c=25)/>
+
+<!-- Mix positional and named curries -->
+<@x?use_defaults(26)?use_defaults(c=28) b=27/>
+<@x?use_defaults(c=31)?use_defaults(29,30)/>
+
+<!--
+  ==================
+  2. Curry functions
+  ==================
+-->
+
+<#function y a b>
+  <#return a?string + " " + b?string/>
+</#function>
+
+${y(1,2)}
+${y?use_defaults(3, 4)()}
+${y?use_defaults(a=5)(b=6)}

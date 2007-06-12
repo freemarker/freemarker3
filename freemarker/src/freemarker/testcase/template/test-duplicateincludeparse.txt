@@ -1,0 +1,1 @@
+<#include 'foobar.ftl' encoding='UTF-8' parse=true parse=false />

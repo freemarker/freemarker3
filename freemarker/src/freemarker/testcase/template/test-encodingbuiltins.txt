@@ -1,0 +1,28 @@
+FreeMarker: Encoding built-in tests
+
+<#assign x = "&<>\"'{}\\a/">
+html: [${x?html}]
+xml:  [${x?xml}]
+rtf:  [${x?rtf}]
+<#assign x = "a&a<a>a\"a'a{a}a\\">
+html: [${x?html}]
+xml:  [${x?xml}]
+rtf:  [${x?rtf}]
+<#assign x = "<<<<<">
+html: [${x?html}]
+xml:  [${x?xml}]
+<#assign x = "{{{{{">
+rtf:  [${x?rtf}]
+<#assign x = "">
+html: [${x?html}]
+xml:  [${x?xml}]
+rtf:  [${x?rtf}]
+<#assign x = "a">
+html: [${x?html}]
+xml:  [${x?xml}]
+rtf:  [${x?rtf}]
+<#assign x = "&">
+html: [${x?html}]
+xml:  [${x?xml}]
+<#assign x = "{">
+rtf:  [${x?rtf}]
