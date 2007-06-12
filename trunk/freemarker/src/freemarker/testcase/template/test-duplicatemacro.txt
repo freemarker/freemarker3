@@ -1,0 +1,5 @@
+<#macro foo>
+</#macro>
+
+<#macro foo>
+</#macro>

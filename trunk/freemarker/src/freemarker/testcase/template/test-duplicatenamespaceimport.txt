@@ -1,0 +1,2 @@
+<#import 'foo.ftl' as foo>
+<#import 'foobar.ftl' as foo>

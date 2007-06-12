@@ -1,0 +1,2 @@
+<#macro foobar x y z z>
+</#macro>
