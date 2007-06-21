@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
 "../transform/dtd/docbookx.dtd">
-<book lang="en">
+<book conformance="freemarker-documentation-conventions" lang="en">
   <title>FreeMarker Manual</title>
 
   <subtitle>For FreeMarker 2.4pre1</subtitle>
@@ -61,7 +61,7 @@
     <simplesect>
       <title>What should I read?</title>
 
-      <para>If you are a ... </para>
+      <para>If you are a ...</para>
 
       <itemizedlist>
         <listitem>
@@ -1462,7 +1462,7 @@ The average of the price of python and elephant is: 4999.5</programlisting>
 
           <listitem>
             <para><link linkend="dgui_template_exp_missing">Missing value
-            handler operators</link>: </para>
+            handler operators</link>:</para>
 
             <itemizedlist spacing="compact">
               <listitem>
@@ -2575,7 +2575,7 @@ ${-1.999?int}</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>Built-ins to use with strings: </para>
+              <para>Built-ins to use with strings:</para>
 
               <itemizedlist>
                 <listitem>
@@ -2609,7 +2609,7 @@ ${-1.999?int}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Built-ins to use with sequences: </para>
+              <para>Built-ins to use with sequences:</para>
 
               <itemizedlist>
                 <listitem>
@@ -2620,7 +2620,7 @@ ${-1.999?int}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Built-ins to use with numbers: </para>
+              <para>Built-ins to use with numbers:</para>
 
               <itemizedlist>
                 <listitem>
@@ -13966,8 +13966,7 @@ or
               <para><literal><replaceable>options</replaceable></literal>: One
               or more of these:
               <literal>encoding=<replaceable>encoding</replaceable></literal>,
-              <literal>parse=<replaceable>parse</replaceable></literal>
-              </para>
+              <literal>parse=<replaceable>parse</replaceable></literal></para>
 
               <itemizedlist spacing="compact">
                 <listitem>
@@ -17452,7 +17451,7 @@ some test
             <para>Since all
             <literal>&lt;#<replaceable>...</replaceable>&gt;</literal> and
             <literal>&lt;/#<replaceable>...</replaceable>&gt;</literal> are
-            reserved for FTL: </para>
+            reserved for FTL:</para>
 
             <itemizedlist>
               <listitem>
@@ -19173,7 +19172,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>exists</literal> and <literal>if_exists</literal>
               built-ins deprecated. (The parser doesn't issue any warning
               messages when you use deprecated built-ins, and they are still
-              working.): </para>
+              working.):</para>
 
               <itemizedlist>
                 <listitem>
@@ -22340,8 +22339,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             </listitem>
 
             <listitem>
-              <para>Various improvements for <literal>BeansWrapper</literal>:
-              </para>
+              <para>Various improvements for
+              <literal>BeansWrapper</literal>:</para>
 
               <itemizedlist>
                 <listitem>
@@ -22443,7 +22442,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
             <listitem>
               <para>Various improvements for
-              <literal>FreemarkerServlet</literal>: </para>
+              <literal>FreemarkerServlet</literal>:</para>
 
               <itemizedlist>
                 <listitem>
@@ -22510,7 +22509,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
             <listitem>
               <para>Various bug-fixes for
-              <literal>FreemarkerServlet</literal>: </para>
+              <literal>FreemarkerServlet</literal>:</para>
 
               <itemizedlist>
                 <listitem>
@@ -23252,7 +23251,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             <listitem>
               <para>More strict, reveals accidental mistakes in the templates,
               prevents showing incorrect information when something went
-              wrong: </para>
+              wrong:</para>
 
               <itemizedlist>
                 <listitem>
@@ -23289,7 +23288,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
             <listitem>
               <para>Local and global variables. More info: <xref
-              linkend="dgui_misc_var" /> </para>
+              linkend="dgui_misc_var" /></para>
 
               <itemizedlist>
                 <listitem>
@@ -23480,7 +23479,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             </listitem>
 
             <listitem>
-              <para>Changes to transformations </para>
+              <para>Changes to transformations</para>
 
               <itemizedlist>
                 <listitem>
@@ -24175,16 +24174,14 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <para>Numerical ranges are supported. <programlisting
               role="template">   &lt;#list 1990..2001 as year&gt;
   blah blah in the year ${year} blah
-   &lt;/#list&gt;
-  </programlisting> The left hand and right hand sides of the
+   &lt;/#list&gt;  </programlisting> The left hand and right hand sides of the
               <literal>..</literal> operator must be numerical, or an
               exception is thrown. They also need not be literal numbers, but
               can be more complex expressions that evaluate to a numerical
               scalar value. Note that it is also possible to write a range
               that descends in value: <programlisting role="template">  &lt;#list 2001..1990 as year&gt;
   blah blah in the year ${year} blah blah
-  &lt;/#list&gt;
-  </programlisting></para>
+  &lt;/#list&gt;  </programlisting></para>
             </listitem>
           </itemizedlist>
         </sect2>

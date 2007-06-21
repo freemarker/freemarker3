@@ -4,7 +4,7 @@ XMLmind XML Editor addon for FreeMarker Manual editing
 This addon customizes the bundled DocBook configuration so that
 it will be better for FreeMarker Manual editing.
 
-Tested with XXE 3.6.0 (the addon version at 2007-05-22).
+THIS ADDON REQUIRES AT LEAST XXE 3.6.1.
 
 
 How to install this addon?
@@ -18,33 +18,20 @@ On UNIX:
   $HOME/.xxe/addon
   
 On Windows XP:
-  C:\Documents and Settings\YOURNAME\Application Data\XMLmind\XMLeditor\addon
+  C:\Documents and Settings\%USERNAME%\Application Data\XMLmind\XMLeditor\addon
+  (replace %USERNAME% with your user name that you see in the Windows start menu)
 
-And then restart XXE if it were running. From then all DocBook XML-s
-with "-//OASIS//DTD DocBook XML V4.5//EN" public DTD ID will be opened
-with this addon.
+Then restart XXE if it were running. From now all DocBook XML-s whose root element
+has a conformance="freemarker-documentation-conventions" attribute will be opened
+with this addon. Other docbooks are not affected.
 
 
 Using the ToC-like navigation
 -----------------------------
 
 Near the bottom of the XXE window you find a very thin (almost invisible)
-second view frame. Just grab its separator and drag iy upwards with
+second view frame. Just grab its separator and drag it upwards with
 a quick big uncontrolled tug. Now you will see the ToC instead of the main
-view. Double click the chapter/section you want to jomp too. Then grab the
+view. Double click the chapter/section you want to jump too. Then grab the
 separator bar again, and drag it downwards, with a quick big uncontrolled
 tug again. Now you see the normal view again, at the correct position.
-
-
-Known issues
-------------
-
-- Only the FreeMarker documentation should be opened with this addon,
-  not all "-//OASIS//DTD DocBook XML V4.5//EN" XML-s. (In principle
-  XXE could be started with this commandline switch to fix this:
-    -putpref addonDir "/path/to/the/freemarker/specific/addons/"
-  but for some reason it has no effect... I will look after this.)
-  For now, you can manually chose the "DocBook" CSS from the View
-  menu, instead of the default "DocBook for FreeMarker". Sorry...
-
-- itemizedlist/listitem vertical spacing has problems.
