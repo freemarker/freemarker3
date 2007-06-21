@@ -28,7 +28,7 @@ Technical:
   default XML *source* formatting settings (identation, max line
   length and like). You should install the "DocBook for Freemarker"
   addon, which you can find somwhere in the same SVN module as this
-  file. (Tested with XXE 3.6.0.)
+  file. (Tested with XXE 3.6.1.)
 
 - Please understand all document conventions in the Preface chapter.
   Read its XML source. Note that all "programlisting"-s should have
@@ -42,7 +42,7 @@ Technical:
     HTML fragments, and all other verbatim content is inside "literal"
     element.
     
-  * Use replaceable element inside markup element for replaceable
+  * Use replaceable element inside literal element for replaceable
     parts and meta-variables like:
     <literal&lt;if <replaceable>condition</replaceable>></literal>
     <literal><replaceable>templateDir</replaceable>/copyright.fm</literal>
@@ -82,3 +82,6 @@ Technical:
   * When you refer to a part, chapter or section, often you should use
     xref, not link. The xreflabel attribute of the link-end must be
     set.
+
+- The root element ("book" usually) must have this attribute:
+  conformance="freemarker-documentation-conventions"

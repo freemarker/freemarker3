@@ -89,57 +89,21 @@ programlisting[role=unspecified] {
 -------------------------------------------------------------------------------
 Fixing listing rendering bugs
 -------------------------------------------------------------------------------
-
-Listitems should be spaced similarly to para-s. Also, spacing="compact" wasn't
-supported by the bundled CSS.
-
-Unfortuntelly the XXE CSS implementation doesn't handle vertical marhing
-collapsing correctly, so it is practically impossible to implement proper
-vertical spacing for listing. Above is a lot of involved tricks, so that
-it will look OK in (almost?) all cases that occur in the FreeMarker Manual.
 */
-
-itemizedlist,
-orderedlist {
-    margin-top: 0ex; 
-    margin-bottom: 0ex; 
-}
 
 listitem {
     margin-top: 1.33ex; 
-    margin-bottom: 0ex; 
+    margin-bottom: 1.33ex; 
 }
 
-/*
- * If a listitem has multipe children and the last is a para, and then it
- * is followed by another listitem, the total vertical marging would add
- * up to 2.66ex.
- */
-listitem > para {
-    margin-bottom: 0ex; 
-}
-
-listitem:first-child,
+itemizedlist[spacing="compact"],
+orderedlist[spacing="compact"],
 itemizedlist[spacing="compact"] > listitem,
-orderedlist[spacing="compact"] > listitem {
+orderedlist[spacing="compact"] > listitem,
+itemizedlist[spacing="compact"] > listitem > *:first-child,
+orderedlist[spacing="compact"] > listitem > *:first-child {
     margin-top: 0ex; 
-}
-
-/*
- * All vertical margin of the first child is ereased by the extended CSS,
- * also the first listitem has no top-marging, so we must re-add that
- * missing para margin somewhere...
- */
-listitem > para:first-child + itemizedlist,
-listitem > para:first-child + orderedlist {
-    margin-top: 1.33ex; 
-}
-
-/*
- * ... except if it is a packed listing inside another packed listing.
- */
-*[spacing="compact"] > listitem > para:first-child + *[spacing="compact"] {
-    margin-top: 0ex; 
+    margin-bottom: 0ex; 
 }
 
 /*

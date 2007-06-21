@@ -6,7 +6,32 @@
   <include location="xxe-config:docbook/docbook.xxe"/>
 
   <detect>
-    <dtdPublicId>-//OASIS//DTD DocBook XML V4.5//EN</dtdPublicId>
+    <and>
+      <rootElementNamespace xsi:nil="true" />
+      <not>
+        <dtdPublicId substring="true">Simplified</dtdPublicId>
+      </not>
+      <or>
+	<dtdPublicId substring="true">DTD DocBook</dtdPublicId>
+        <and>
+           <schemaType xsi:nil="true" />
+           <or>
+	      <rootElementLocalName>part</rootElementLocalName>
+	      <rootElementLocalName>chapter</rootElementLocalName>
+	      <rootElementLocalName>refentry</rootElementLocalName>
+	      <rootElementLocalName>appendix</rootElementLocalName>
+	      <rootElementLocalName>glossary</rootElementLocalName>
+	      <rootElementLocalName>section</rootElementLocalName>
+	      <rootElementLocalName>sect1</rootElementLocalName>
+	      <rootElementLocalName>sect2</rootElementLocalName>
+	      <rootElementLocalName>sect3</rootElementLocalName>
+	      <rootElementLocalName>book</rootElementLocalName>
+	      <rootElementLocalName>article</rootElementLocalName>
+           </or>
+        </and>
+      </or>
+      <rootElementAttribute localName="conformance" value="freemarker-documentation-conventions" substring="true" />
+    </and>
   </detect>
 
   <css name="DocBook for FreeMarker" location="docbook-for-freemarker.css" />
