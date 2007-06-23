@@ -132,6 +132,14 @@ public class FMParser {
             + "\non line " + t.beginLine + ", column " + t.beginColumn;
   }
   
+  public boolean isSyntaxSet() {
+  	  return token_source.directiveSyntaxEstablished;
+  }
+  
+  public boolean isAltDirectiveSyntax() {
+  	  return token_source.altDirectiveSyntax;
+  }
+  
   /**
    * Throw an exception if the expression passed in is a String
    * Literal
@@ -2466,15 +2474,15 @@ NamedArgsList NamedArgsList() :
 }
 {
 	firstParam=<ID>
-	<EQUALS>
-	arg=Expression()
+	<EQUALS> 
+	arg=Expression()  
 	{
 		result.addNamedArg(firstParam.image, arg);
 	}
 	(
 	   [<COMMA>]
 	   id=<ID>
-	   <EQUALS>
+	   <EQUALS> 
 	   arg=Expression()
 	   {result.addNamedArg(id.image, arg);}
 	)*
