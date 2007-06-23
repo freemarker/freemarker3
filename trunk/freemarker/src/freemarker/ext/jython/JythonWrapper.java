@@ -209,7 +209,7 @@ public class JythonWrapper implements ObjectWrapper
             return modelCache.getInstance(obj, JythonNumberModel.FACTORY);
         }
         if(obj instanceof PyNone) {
-            return null;
+            return TemplateModel.JAVA_NULL;
         }
         return modelCache.getInstance(obj, JythonModel.FACTORY);
     }

@@ -127,6 +127,9 @@ public class Template extends TemplateCore {
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
     private final CodeSource codeSource;
+    private boolean syntaxKnown, altSyntax;
+    
+    
     
     /**
      * A prime constructor to which all other constructors should
@@ -181,6 +184,8 @@ public class Template extends TemplateCore {
                     getConfiguration().getStrictSyntaxMode(),
                     getConfiguration().getWhitespaceStripping(), B);
             setRootElement(parser.Root());
+            this.syntaxKnown = parser.isSyntaxSet();
+            this.altSyntax = parser.isAltDirectiveSyntax();
         }
         catch (TokenMgrError exc) {
             throw new ParseException("Token manager error: " + exc, 0, 0);
