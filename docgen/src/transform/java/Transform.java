@@ -245,7 +245,10 @@ public class Transform {
         Template template = fmConfig.getTemplate(outputNode.getNodeName() + ".ftl");
         File outputFile = new File(outputDir, currentFilename);
 //        System.out.println("outputting: " + outputFile);
-        Writer writer = new BufferedWriter(new FileWriter(outputFile), 2048);
+	FileOutputStream fos = new FileOutputStream(outputFile);
+	OutputStreamWriter osw = new OutputStreamWriter(fos, "ISO-8859-1");
+//        Writer writer = new BufferedWriter(new FileWriter(outputFile), 2048);
+        Writer writer = new BufferedWriter(osw, 2048);
         try {
             template.process(dataModel, writer, null, NodeModel.wrap(outputNode));
         }
