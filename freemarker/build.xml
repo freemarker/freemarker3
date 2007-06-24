@@ -5,6 +5,7 @@
    <property name="libs.location" value="http://freemarker.sourceforge.net/jarsforbuild"/>
    <property name="build.dir" location="build"/>
    <property name="classes.dir" location="${build.dir}/classes"/>
+
    <path id="build.class.path">
      <pathelement path="src"/>
      <fileset dir="lib">
@@ -26,6 +27,7 @@
       <get src="${libs.location}/javacc.jar" dest="lib/javacc.jar" usetimestamp="true"/>
       <get src="${libs.location}/jaxen.jar" dest="lib/jaxen.jar" usetimestamp="true"/>
       <!-- get src="${libs.location}/jdom.jar" dest="lib/jdom.jar" usetimestamp="true"/ -->
+      <get src="${libs.location}/jruby.jar" dest="lib/jruby.jar" usetimestamp="true"/>
       <get src="${libs.location}/js.jar" dest="lib/js.jar" usetimestamp="true"/>
       <get src="${libs.location}/junit.jar" dest="lib/junit.jar" usetimestamp="true"/>
       <get src="${libs.location}/jython.jar" dest="lib/jython.jar" usetimestamp="true"/>

@@ -76,17 +76,18 @@ public class IfBlock extends TemplateElement {
         nestedElements.add(block);
     }
     
-    public List getSubBlocks() {
+    public List<TemplateElement> getSubBlocks() {
     	return Collections.unmodifiableList(nestedElements);
     }
     
     public void execute(Environment env) throws TemplateException, IOException {
-        for (int i = 0; i<nestedElements.size(); i++) {
-            ConditionalBlock cblock = (ConditionalBlock) nestedElements.get(i);
+    	
+        for (TemplateElement te : nestedElements) {
+            ConditionalBlock cblock = (ConditionalBlock) te;
             Expression condition = cblock.condition;
             if (condition == null || condition.isTrue(env)) {
                 if (cblock.getNestedBlock() != null) {
-                    env.render(cblock.getNestedBlock());
+                    env.render(cblock);
                 }
                 return;
             }
