@@ -1,12 +1,12 @@
 [#import "htmloutput.ftl" as htmloutput]
 
-[#macro part][#scoped chapters appendices titleText]
-   [#set titleText = .node.title?string]
+[#macro part]
+   [#scoped titleText = .node.title?string]
    <dt>${htmloutput.romanNumerals[romanNumeralsIndex]}.
    [#set romanNumeralsIndex = romanNumeralsIndex+1]
    <a href="${CreateLinkFromID(.node.@id)}">${titleText}</a>
-   [#set chapters = .node.chapter]
-   [#set appendices = .node.appendix]
+   [#scoped chapters = .node.chapter]
+   [#scoped appendices = .node.appendix]
    [#if chapters?has_content]
    <dd><dl>
      [#list chapters as chapter]
@@ -23,13 +23,13 @@
    [/#if]
 [/#macro]
 
-[#macro chapterOrAppendix][#scoped title sections]
-   [#set title = .node.title!]
+[#macro chapterOrAppendix]
+   [#scoped title = .node.title!]
    [#if !title?has_content]
       [#set title = .node?node_name?cap_first]
    [/#if]
    <a href="${CreateLinkFromID(.node.@id)}">${title}</a></dt>
-   [#set sections = .node.sect1]
+   [#scoped sections = .node.sect1]
    [#if sections?has_content]
     <dd><dl>
     [#list sections as sect]
@@ -39,8 +39,8 @@
    [/#if]
 [/#macro]
 
-[#macro specialPart][#scoped title]
-   [#set title = .node.title!]
+[#macro specialPart]
+   [#scoped title = .node.title!]
    [#if !title?has_content]
       [#set title = .node?node_name?cap_first]
    [/#if]
@@ -48,8 +48,8 @@
    <dd>
 [/#macro]
 
-[#macro sect1][#scoped titleElement]
-   [#set titleElement = .node.title]
+[#macro sect1]
+   [#scoped titleElement = .node.title]
    <a href="${CreateLinkFromID(.node.@id)}">[#visit titleElement]</a>[#t]
 [/#macro]
 
@@ -58,11 +58,11 @@
 [#set partIndex = 0]
 [#set chapterIndex = 0]
 
-[#macro title][#scoped parentTag]
-   [#set parentTag = .node?parent?node_name]
+[#macro title]
+   [#scoped parentTag = .node?parent?node_name]
    [#if parentTag = "book" || parentTag = "part" || parentTag = "chapter" || parentTag = "appendix"]
        [#fallback]
    [#else]
-       [#recurse ]
+       [#recurse]
    [/#if]
 [/#macro]

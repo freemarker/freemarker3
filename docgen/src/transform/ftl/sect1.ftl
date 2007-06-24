@@ -9,5 +9,5 @@
 [/@]
 
 [#macro sect1]
-   [#recurse ]
+   [#recurse]
 [/#macro]

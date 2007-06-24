@@ -57,13 +57,13 @@
 [#macro answer]
 <tr class="answer">
    <td align="left" valign="top"><b></b></td>
-   <td align="left" valign="top">[#recurse ]</td></tr>
+   <td align="left" valign="top">[#recurse]</td></tr>
 [/#macro]
 
 [#macro emphasis]
     [#scoped role = .node.@role[0]!"none"]
     [#if role = "term" || role = "bold" || .node?ancestors("programlisting")?has_content]
-      <b>[#recurse ]</b>[#t]
+      <b>[#recurse]</b>[#t]
     [#else]
       [#fallback] 
     [/#if]
@@ -73,17 +73,17 @@
     [#if .node?parent?parent?node_name = "thead"]
 [#-- TODO: align should be parametrized, of course. --]    
        <th align="left">[#t]
-          [#recurse ][#t]
+          [#recurse][#t]
        </th>[#lt]
     [#else]
        <td align="left">[#t]
-          [#recurse ][#t]
+          [#recurse][#t]
        </td>[#lt]
     [/#if]
 [/#macro]
 
 [#macro glossentry]
-   [#recurse ]
+   [#recurse]
 [/#macro]
 
 [#macro glossdef]
@@ -116,7 +116,7 @@
 [/#macro]
 
 [#macro glossterm]
-   <dt>[@Anchor .node?parent/][#recurse ]</dt>
+   <dt>[@Anchor .node?parent/][#recurse]</dt>
 [/#macro]
 
 [#macro graphic]
@@ -136,7 +136,7 @@
 [#macro informaltable]
    <div class="informaltable">
       <table border="1" cellpadding="4">
-         [#recurse ]
+         [#recurse]
       </table>
    </div>
 [/#macro]
@@ -161,7 +161,7 @@
         [#else]
             <ul type="${mark?html}">[#t]
         [/#if]
-        [#recurse ]
+        [#recurse]
         </ul>[#t]
     </div>
     [/@CantNestedIntoP]
@@ -169,7 +169,7 @@
 [/#macro]
 
 [#macro link]
-   <a href="${CreateLinkFromID(.node.@linkend)?html}">[#recurse ]</a>[#t]
+   <a href="${CreateLinkFromID(.node.@linkend)?html}">[#recurse]</a>[#t]
 [/#macro]
 
 [#macro listitem]
@@ -179,7 +179,7 @@
    [#else]
        <li>[#t]
    [/#if]
-   [#recurse ]
+   [#recurse]
    </li>[#t]
 [/#macro]
 
@@ -187,12 +187,12 @@
     [#scoped moreStyle="", color = "#A03D10"]
     [#if .node?ancestors("link")?has_content]
         [#-- If we are within a link, we don't change color, just use the regular link color --]   
-        <tt>[#recurse ]</tt>[#t]
+        <tt>[#recurse]</tt>[#t]
     [#else]
         [#if fontBgColor! != ""]
             [#set moreStyle = "; background-color:${fontBgColor}"]
         [/#if]
-        <tt style="color: #A03D10${moreStyle}">[#recurse ]</tt>[#t]
+        <tt style="color: #A03D10${moreStyle}">[#recurse]</tt>[#t]
     [/#if]
 [/#macro]
 
@@ -227,19 +227,19 @@
 [#macro note]
 <div style="margin-left: 0.5in; margin-right: 0.5in;">
    <h3>Note</h3>
-   [#recurse ]
+   [#recurse]
 </div>
 [/#macro]  
 
 [#macro caution]
 <div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;">
    <h3>Caution</h3>
-   [#recurse ]
+   [#recurse]
 </div>
 [/#macro]  
 
 [#macro olink]
-    <a href="${olinks[.node.@targetdoc]}">[#recurse ]</a>[#t]
+    <a href="${olinks[.node.@targetdoc]}">[#recurse]</a>[#t]
 [/#macro]
 
 [#macro orderedlist]
@@ -249,7 +249,7 @@
        [#set compactPara = true]
     [/#if]
     [@CantNestedIntoP]
-    <div class="orderedlist"><ol type="1">[#recurse ]</ol></div>[#t]
+    <div class="orderedlist"><ol type="1">[#recurse]</ol></div>[#t]
     [/@CantNestedIntoP]
     [#set compactPara = prevCompactPara]
 [/#macro]
@@ -309,14 +309,16 @@
   [/#if]
 [/#macro]
 
-[#macro programlisting][#scoped content bgcolor role dotidx]
+[#macro programlisting]
   [@Anchor/]
-  [#set role = .node.@role[0]!?string]
-  [#set dotidx = role?index_of(".")]
+  [#scoped content bgcolor]
+  [#scoped role = .node.@role[0]!?string]
+  [#scoped dotidx = role?index_of(".")]
   [#if dotidx != -1]
     [#set role = role[0..dotidx-1]]
   [/#if]
-  [#switch role][#case "output"]
+  [#switch role]
+      [#case "output"]
          [#set bgcolor = "#CCFFCC"]
          [#break]
       [#case "dataModel"]
@@ -330,7 +332,7 @@
          [#break]
       [#case "metaTemplate"]
          <pre class="metaTemplate">[#t]
-             [#recurse ]
+             [#recurse]
          </pre>[#lt]
          [#return]
       [#default]
@@ -349,7 +351,7 @@
         <td>[#t]
           <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="4" border="0" width="100%" style="margin: 0px">[#t]
             <tr><td><pre style="margin: 0px">[#t]
-            [#local content][#recurse ][/#local]
+            [#local content][#recurse][/#local]
             ${content?chop_linebreak}&nbsp;<span style="font-size: 1pt"> </span></pre></td></tr>[#t]
           </table>[#t]
         </td>[#t]
@@ -365,17 +367,16 @@
   [/@CantNestedIntoP]
 [/#macro]
 
-[#macro qandaset][#scoped prevDisableA prevCompactPara]
+[#macro qandaset]
 <div class="qandaset">
-
-[#set prevCompactPara = compactPara!]
+[#scoped prevCompactPara = compactPara!]
 [#set compactPara = true]
 [#set qaIndex = 1]
 <table border=0 cellpadding=0 cellspacing=4>
 [#list .node.qandaentry as qandaentry]
   <tr align="left" valign="top">
     <td>${qaIndex}.&nbsp;&nbsp;
-    [#set prevDisableA = disableA!]
+    [#scoped prevDisableA = disableA!]
     [#set disableA = true]
     <td>
     <a href="#${qandaentry.@id[0]!"faq_question_"+qaIndex}">
@@ -390,20 +391,20 @@
 [#set qaIndex = 1]
 <table border="0">
 <col align="left" width="1%">
-<tbody>[#recurse ]</tbody>
+<tbody>[#recurse]</tbody>
 </table>
   
 </div>
 [/#macro]
 
-[#macro question][#scoped prevCompactPara]
-[#set prevCompactPara = compactPara!]
+[#macro question]
+[#scoped prevCompactPara = compactPara!]
 [#set compactPara = true]
 <tr class="question">
   <td align="left" valign="bottom" colspan="2">
     [@Anchor .node?parent/]<a name="faq_question_${qaIndex}"></a><br>
     &nbsp;<br>
-    ${qaIndex}.&nbsp;&nbsp;[#recurse ]<br>
+    ${qaIndex}.&nbsp;&nbsp;[#recurse]<br>
     &nbsp;
   </td>
 </tr>
@@ -413,20 +414,19 @@
 
 [#macro remark]
   [#if showEditorNotes]
-    <p style="background-color:#FFFF00">[[#recurse ]]</p>[#t]
+    <p style="background-color:#FFFF00">[[#recurse]]</p>[#t]
   [/#if]
 [/#macro] 
 
-[#macro replaceable][#scoped moreStyle]
+[#macro replaceable]
+  [#scoped moreStyle=""]
   [#if .node?ancestors("markup")?has_content]
     [#if fontBgColor! != ""]
       [#set moreStyle = ";background-color:${fontBgColor}"]
-    [#else]
-      [#set moreStyle = ""]
     [/#if]
-    <i style="color: #DD4400 ${moreStyle}">[#recurse ]</i>[#t]
+    <i style="color: #DD4400 ${moreStyle}">[#recurse]</i>[#t]
   [#else]
-    <i>[#recurse ]</i>[#t]
+    <i>[#recurse]</i>[#t]
   [/#if]
 [/#macro]
 
@@ -435,13 +435,14 @@
 [/#macro]
 
 [#macro simplesect]
-  <div class="simplesect">[#recurse ]</div>[#t]
+  <div class="simplesect">[#recurse]</div>[#t]
 [/#macro]
 
-[#macro title][#scoped headingSizeMap type titleInitial headingSize subtitle]
-    [#set type = .node?parent?node_name]
-    [#set headingSizeMap = {"@document" : 1, "appendix" : 2, "book" : 1, "chapter" : 2, "part" : 1, "preface" : 2, "sect1" : 2, "sect2" : 3, "sect3" : 4, "simplesect" : 3}]
-    [#set titleInitial = ""]
+[#macro title]
+    [#scoped headingSize]
+    [#scoped type = .node?parent?node_name]
+    [#scoped headingSizeMap = {"@document" : 1, "appendix" : 2, "book" : 1, "chapter" : 2, "part" : 1, "preface" : 2, "sect1" : 2, "sect2" : 3, "sect3" : 4, "simplesect" : 3}]
+    [#scoped titleInitial = ""]
     [#if .node?parent?node_name = "chapter"]
        [#set titleInitial = "Chapter "+chapterNumber+". "]
     [#elseif .node?parent?node_name = "appendix"]
@@ -455,9 +456,9 @@
        [#set headingSize = headingSizeMap[type]]
 <div class="titlepage">
    <div>
-     <h${headingSize}>[@Anchor .node?parent/]${titleInitial}[#recurse ]</h${headingSize}>
+     <h${headingSize}>[@Anchor .node?parent/]${titleInitial}[#recurse]</h${headingSize}>
    </div>
-        [#set subtitle = .node?parent.subtitle]
+        [#scoped subtitle = .node?parent.subtitle]
         [#if subtitle?has_content]
            [#set headingSize = headingSize+1]
            <div>
@@ -469,19 +470,19 @@
 [/#macro]
 
 [#macro ulink]
-    <a href="${.node.@url?html}">[#recurse ]</a>[#t]
+    <a href="${.node.@url?html}">[#recurse]</a>[#t]
 [/#macro]
 
 [#macro warning]
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3>Warning!</h3>
-[#recurse ]
+[#recurse]
 </div>            
 [/#macro]
 
-[#macro xref][#scoped xrefLabel xrefID]
-   [#set xrefID = .node.@linkend]
-   [#set xrefLabel = xrefLabelLookup[xrefID]]
+[#macro xref]
+   [#scoped xrefID = .node.@linkend]
+   [#scoped xrefLabel = xrefLabelLookup[xrefID]]
    <a href="${CreateLinkFromID(.node.@linkend)}">${xrefLabel}</a>[#t]
 [/#macro]
 
