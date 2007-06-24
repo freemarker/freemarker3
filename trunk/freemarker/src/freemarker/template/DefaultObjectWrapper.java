@@ -71,9 +71,9 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
     
     static private Class W3C_DOM_NODE_CLASS, 
                          JYTHON_OBJ_CLASS,
-                         GROOVY_OBJ_CLASS;
+                         JRUBY_OBJ_CLASS;
     
-    static private ObjectWrapper JYTHON_WRAPPER, GROOVY_WRAPPER;
+    static private ObjectWrapper JYTHON_WRAPPER, JRUBY_WRAPPER;
     
     static {
         try {
@@ -85,9 +85,9 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
             JYTHON_WRAPPER = (ObjectWrapper) clazz.newInstance();
         } catch (Exception e) {}
         try {
-            GROOVY_OBJ_CLASS = Class.forName("groovy.lang.GroovyObject");
+            JRUBY_OBJ_CLASS = Class.forName("org.jruby.RubyObject");
             Class clazz = Class.forName("freemarker.ext.jruby.JRubyWrapper");
-            GROOVY_WRAPPER = (ObjectWrapper) clazz.newInstance();
+            JRUBY_WRAPPER = (ObjectWrapper) clazz.newInstance();
         } catch (Exception e) {}
     }
     
@@ -148,8 +148,8 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
         if (JYTHON_WRAPPER != null  && JYTHON_OBJ_CLASS.isInstance(obj)) {
             return JYTHON_WRAPPER.wrap(obj);
         }
-        if (GROOVY_WRAPPER != null  && GROOVY_OBJ_CLASS.isInstance(obj)) {
-            return GROOVY_WRAPPER.wrap(obj);
+        if (JRUBY_WRAPPER != null  && JRUBY_OBJ_CLASS.isInstance(obj)) {
+            return JRUBY_WRAPPER.wrap(obj);
         }
         return super.wrap(obj); 
     }

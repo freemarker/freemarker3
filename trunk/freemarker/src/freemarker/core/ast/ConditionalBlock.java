@@ -76,11 +76,10 @@ public class ConditionalBlock extends TemplateElement {
     }
 
     public void execute(Environment env) throws TemplateException, IOException {
-        if (condition == null || condition.isTrue(env)) {
-            if (nestedBlock != null) {
-                env.render(nestedBlock);
-            }
+        if (isSimple && condition != null && !condition.isTrue(env)) {
+        	return;
         }
+        env.render(nestedBlock);
     }
     
     public boolean isLoneIfBlock() {

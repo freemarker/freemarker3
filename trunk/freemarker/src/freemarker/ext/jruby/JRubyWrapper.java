@@ -12,6 +12,8 @@ import org.jruby.javasupport.JavaObject;
 
 public class JRubyWrapper implements ObjectWrapper {
 	
+	private ObjectWrapper fallbackWrapper = new DefaultObjectWrapper();
+	
 	public TemplateModel wrap(Object obj) throws TemplateModelException {
 		if (obj == null) {
 			return TemplateModel.JAVA_NULL;
@@ -22,7 +24,7 @@ public class JRubyWrapper implements ObjectWrapper {
 		if (obj instanceof TemplateModel) {
 			return (TemplateModel) obj;
 		}
-		throw new UnsupportedOperationException("Do not know how to wrap object of type: " + obj);
+		return fallbackWrapper.wrap(obj);
 	}
 	
 	public TemplateModel wrap(RubyObject robj) throws TemplateModelException {
