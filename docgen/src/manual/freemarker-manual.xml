@@ -537,12 +537,12 @@
             linkend="example.qStart.dataModelWithHashes">the data model used
             to demonstrate hashes</link>):</para>
 
-<programlisting role="template">[#if <emphasis>animals.python.price &lt; animals.elephant.price</emphasis>]
+            <programlisting role="template">[#if <emphasis>animals.python.price &lt; animals.elephant.price</emphasis>]
   Pythons are cheaper than elephants today.
 [/#if]</programlisting>
 
-            <para>With the <literal>[#else]</literal> tag you can
-            specify what to do if the condition is false. For example:</para>
+            <para>With the <literal>[#else]</literal> tag you can specify what
+            to do if the condition is false. For example:</para>
 
             <programlisting role="template">[#if animals.python.price &lt; animals.elephant.price]
   Pythons are cheaper than elephants today.
@@ -1145,8 +1145,8 @@ The average of the price of python and elephant is: 4999.5</programlisting>
 
         <para>An <phrase role="markedFTLTag">FTL tag</phrase> can't be placed
         inside another <phrase role="markedFTLTag">FTL tag</phrase>. For
-        example it is <emphasis>WRONG</emphasis>: <literal>[#if
-        [#include 'foo']='bar']...[/#if]</literal></para>
+        example it is <emphasis>WRONG</emphasis>: <literal>[#if [#include
+        'foo']='bar']...[/#if]</literal></para>
 
         <para><phrase role="markedComment">Comments</phrase> can be placed
         inside <phrase role="markedFTLTag">FTL tags</phrase> and <phrase
@@ -2078,13 +2078,13 @@ ${user + user + user + user}</programlisting>
               <literal>&lt;h1&gt;Hello ${name}!&lt;/h1&gt;</literal>) and in
               string literals (e.g. <literal>[#include
               "/footer/${company}.html"]</literal>). A typical bad usage is
-              <literal>[#if ${isBig}]Wow![/#if]</literal>, which
-              is syntactically <emphasis>WRONG</emphasis>. You should simply
-              write <literal>[#if isBig]Wow![/#if]</literal>.
-              Also, <literal>[#if "${isBig}"]Wow![/#if]</literal>
-              is <emphasis>WRONG</emphasis> too, since the parameter value
-              will be a string, and the <literal>if</literal> directive wants
-              a boolean value, so it will cause a runtime error.</para>
+              <literal>[#if ${isBig}]Wow![/#if]</literal>, which is
+              syntactically <emphasis>WRONG</emphasis>. You should simply
+              write <literal>[#if isBig]Wow![/#if]</literal>. Also,
+              <literal>[#if "${isBig}"]Wow![/#if]</literal> is
+              <emphasis>WRONG</emphasis> too, since the parameter value will
+              be a string, and the <literal>if</literal> directive wants a
+              boolean value, so it will cause a runtime error.</para>
             </warning>
           </sect3>
 
@@ -2189,9 +2189,9 @@ J</programlisting>
 
             <para>Note that sequence concatenation is not to be used for many
             repeated concatenations, like for appending items to a sequence
-            inside a loop. It's just for things like <literal>[#list users
-            + admins as person]</literal>. Although concatenating sequences
-            is fast and its speed is independently of the size of the
+            inside a loop. It's just for things like <literal>[#list users +
+            admins as person]</literal>. Although concatenating sequences is
+            fast and its speed is independently of the size of the
             concatenated sequences, the resulting sequence will be always a
             little bit slower to read than the original two sequences were.
             This way the result of many repeated concatenations is a sequence
@@ -2431,12 +2431,11 @@ ${-1.999?int}</programlisting>
           <para>To show concrete examples I will use the <literal>if</literal>
           directive here. The usage of <literal>if</literal> directive is:
           <literal>[#if
-          <replaceable>expression</replaceable>]...[/#if]</literal>,
-          where expression must evaluate to a boolean value or else an error
-          will abort the processing of the template. If the value of
-          expression is <literal>true</literal> then the things between the
-          begin and end-tag will be processed, otherwise they will be
-          skipped.</para>
+          <replaceable>expression</replaceable>]...[/#if]</literal>, where
+          expression must evaluate to a boolean value or else an error will
+          abort the processing of the template. If the value of expression is
+          <literal>true</literal> then the things between the begin and
+          end-tag will be processed, otherwise they will be skipped.</para>
 
           <para>To test two values for equality you use <literal>=</literal>
           (or <literal>==</literal> as in Java or C; the two are absolutely
@@ -2461,9 +2460,9 @@ ${-1.999?int}</programlisting>
           two scalars must have the same type (i.e. strings can only be
           compared to strings and numbers can only be compared to numbers,
           etc.) or else an error will abort template processing. For example
-          <literal>[#if 1 = "1"]</literal> will cause an error. Note
-          that FreeMarker does exact comparison, so string comparisons are
-          case and white-space sensitive: <literal>"x"</literal> and
+          <literal>[#if 1 = "1"]</literal> will cause an error. Note that
+          FreeMarker does exact comparison, so string comparisons are case and
+          white-space sensitive: <literal>"x"</literal> and
           <literal>"x&nbsp;"</literal> and <literal>"X"</literal> are not
           equal values.</para>
 
@@ -3092,13 +3091,13 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           linkend="dgui_template_exp_stringop_interpolation">in string
           literals</link> (e.g. <literal>[#include
           "/footer/${company}.html"]</literal>). A typical bad usage is
-          <literal>[#if ${isBig}]Wow![/#if]</literal>, which is
-          syntactically <emphasis>WRONG</emphasis>. You should simply write
-          <literal>[#if isBig]Wow![/#if]</literal>. Also,
-          <literal>[#if "${isBig}"]Wow![/#if]</literal> is
-          <emphasis>WRONG</emphasis> too, since the parameter value will be a
-          string, and the <literal>if</literal> directive wants a boolean
-          value, so it will cause a runtime error.</para>
+          <literal>[#if ${isBig}]Wow![/#if]</literal>, which is syntactically
+          <emphasis>WRONG</emphasis>. You should simply write <literal>[#if
+          isBig]Wow![/#if]</literal>. Also, <literal>[#if
+          "${isBig}"]Wow![/#if]</literal> is <emphasis>WRONG</emphasis> too,
+          since the parameter value will be a string, and the
+          <literal>if</literal> directive wants a boolean value, so it will
+          cause a runtime error.</para>
         </warning>
 
         <sect2 id="dgui_template_valueinserion_universal">
@@ -3363,11 +3362,10 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <para>The <literal>macro</literal> directive itself does not print
           anything; it just creates the macro variable, so there will be a
           variable called <literal>greet</literal>. Things between the
-          <literal>[#macro greet]</literal> and
-          <literal>[/#macro]</literal> (called <emphasis
-          role="term">macro definition body</emphasis>) will be executed only
-          when you use the variable as directive. You use user-defined
-          directives by writing <literal>@</literal> instead of
+          <literal>[#macro greet]</literal> and <literal>[/#macro]</literal>
+          (called <emphasis role="term">macro definition body</emphasis>) will
+          be executed only when you use the variable as directive. You use
+          user-defined directives by writing <literal>@</literal> instead of
           <literal>#</literal> in the FTL tag. Use the variable name as the
           directive name. Also, the <link
           linkend="gloss.endTag">end-tag</link> for user-defined directives is
@@ -3392,16 +3390,16 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
 
           <para>But macros can do much more, since the thing between
           <literal>[#macro <replaceable>...</replaceable>]</literal> and
-          <literal>[/#macro]</literal> is a template fragment, thus it
-          can contain interpolations
+          <literal>[/#macro]</literal> is a template fragment, thus it can
+          contain interpolations
           (<literal>${<replaceable>...</replaceable>}</literal>) and FTL tags
           (e.g. <literal>[#if
           <replaceable>...</replaceable>]<replaceable>...</replaceable>[/#if]</literal>).</para>
 
           <note>
             <para>Programmers will say on
-            <literal>[@<replaceable>...</replaceable>]</literal> that
-            you <emphasis role="term">call</emphasis> the macro or
+            <literal>[@<replaceable>...</replaceable>]</literal> that you
+            <emphasis role="term">call</emphasis> the macro or
             transform.</para>
           </note>
         </sect2>
@@ -3439,8 +3437,8 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           an <link linkend="dgui_template_exp">FTL expression</link>. Thus,
           unlike with HTML, the quotation marks around
           <literal>"Fred"</literal> and <literal>"Batman"</literal> are not
-          optional. <literal>[@greet person=Fred/]</literal> would mean
-          that you use the value of variable <literal>Fred</literal> for the
+          optional. <literal>[@greet person=Fred/]</literal> would mean that
+          you use the value of variable <literal>Fred</literal> for the
           <literal>person</literal> parameter, rather than the string
           <literal>"Fred"</literal>. Of course parameter value need not be a
           string, it can be number, boolean, hash, sequence, ...etc., also you
@@ -3467,10 +3465,9 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           have defined in the <literal>macro</literal> directive (in this
           case: <literal>person</literal> and <literal>color</literal>). So if
           you try <literal>/]greet person="Fred" color="black"
-          background="green"</literal> then you will get an error, since
-          you haven't mentioned parameter <literal>background</literal> in the
-          <literal>[#macro
-          <replaceable>...</replaceable>]</literal>.</para>
+          background="green"</literal> then you will get an error, since you
+          haven't mentioned parameter <literal>background</literal> in the
+          <literal>[#macro <replaceable>...</replaceable>]</literal>.</para>
 
           <para>Also, you must give value for all parameters that you have
           defined for the macro. So if you try <literal>[@greet
@@ -3490,13 +3487,13 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
   &lt;font size="+2" color="${color}"&gt;Hello ${person}!&lt;/font&gt;
 [/#macro]</programlisting>
 
-          <para>Now <literal>[@greet person="Fred"/]</literal> is OK,
-          since it is equivalent with <literal>[@greet person="Fred"
+          <para>Now <literal>[@greet person="Fred"/]</literal> is OK, since it
+          is equivalent with <literal>[@greet person="Fred"
           color="black"/]</literal>, thus the value of
           <literal>color</literal> parameter is known. If you want
           <literal>"red"</literal> for <literal>color</literal>, then you
-          write <literal>[@greet person="Fred" color="red"/]</literal>,
-          and this value will override the usual value specified with the
+          write <literal>[@greet person="Fred" color="red"/]</literal>, and
+          this value will override the usual value specified with the
           <literal>macro</literal> directive, so the value of
           <literal>color</literal> parameter will be
           <literal>"red"</literal>.</para>
@@ -3518,7 +3515,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           it will not like the second variation. Do not exchange these.</para>
 
           <para>A very important aspect of macro parameters is that they are
-          local variables. For more information about local variables please
+          scoped variables. For more information about scoped variables please
           read: <xref linkend="dgui_misc_var" /></para>
 
           <para>If you have an existing macro, you can define a new macro that
@@ -3533,9 +3530,8 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <para>Custom directive can have nested content, similarly as
           predefined directives like <literal>[#if
           <replaceable>...</replaceable>]<replaceable>nested
-          content</replaceable>[/#if]</literal> can have. For example,
-          this creates a macro that draws borders around its nested
-          content:</para>
+          content</replaceable>[/#if]</literal> can have. For example, this
+          creates a macro that draws borders around its nested content:</para>
 
           <programlisting role="template">[#macro border]
   &lt;table border=4 cellspacing=0 cellpadding=4&gt;&lt;tr&gt;&lt;td&gt;
@@ -3666,9 +3662,9 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <literal>list</literal>) the <emphasis>name</emphasis> of loop
           variables is given when you call the directive (as
           <literal>foo</literal> in <literal>[#list foos as
-          foo]<replaceable>...</replaceable>[/#list]</literal>),
-          while the <emphasis>value</emphasis> of the variables is set by the
-          directive itself.</para>
+          foo]<replaceable>...</replaceable>[/#list]</literal>), while the
+          <emphasis>value</emphasis> of the variables is set by the directive
+          itself.</para>
 
           <programlisting role="template">[#macro do_thrice]
   [#nested <emphasis>1</emphasis>]
@@ -3818,7 +3814,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
             are accessible from everywhere in the template, or from the
             templates inserted with <literal>include</literal> directive. You
             can create and replace these variables with the <link
-            linkend="ref.directive.assign"><literal>assign</literal></link> or
+            linkend="ref.directive.assign"><literal>set</literal></link> or
             <link linkend="ref.directive.macro"><literal>macro</literal>
             directives</link>.</para>
           </listitem>
@@ -3845,7 +3841,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         </itemizedlist>
 
         <para>Example: Create and replace variables with
-        <literal>assign</literal>:</para>
+        <literal>set</literal>:</para>
 
         <programlisting role="template">[#set x = 1]  [#-- create variable x --]
 ${x}
@@ -3857,9 +3853,8 @@ ${x}</programlisting>
         <programlisting role="output">1
 4</programlisting>
 
-        <para>Local variables hide (not overwrite) ''plain'' variables of the
-        same name. Loop variables hide (not overwrite) local and ''plain''
-        variables of the same name. For example:</para>
+        <para>Scoped variables hide (but do not overwrite) ''plain'' variables
+        of the same name in an enclosing scope. For example:</para>
 
         <programlisting role="template">[#set x = "plain"]
 1. ${x}  [#-- we see the plain var. here --]
@@ -3867,19 +3862,19 @@ ${x}</programlisting>
 6. ${x}  [#-- the value of plain var. was not changed --]
 [#list ["loop"] as x]
     7. ${x}  [#-- now the loop var. hides the plain var. --]
-    [#set x = "plain2"] [#-- replace the plain var, hiding does not mater here --]
+    [#set x = "plain2" in .namespace] [#-- replace the variable at the namespace level --]
     8. ${x}  [#-- it still hides the plain var. --]
 [/#list]
 9. ${x}  [#-- the new value of plain var. --]
 
 [#macro test]
   2. ${x}  [#-- we still see the plain var. here --]
-  [#local x = "local"]
-  3. ${x}  [#-- now the local var. hides it --]
+  [#scoped x = "local"]
+  3. ${x}  [#-- now the scoped var. hides it --]
   [#list ["loop"] as x&gt;
-    4. ${x}  [#-- now the loop var. hides the local var. --]
+    4. ${x}  [#-- now the loop var. hides variable in the enclosing scope. --]
   [/#list]
-  5. ${x}  [#-- now we see the local var. again --]
+  5. ${x}  [#-- now we see the first scoped var. again --]
 [/#macro]</programlisting>
 
         <para>the output:</para>
@@ -3956,7 +3951,7 @@ ${.globals.user} [#-- prints: Big Joe --]</programlisting>
         </indexterm>
 
         <para>When you run FTL templates, you have a (possibly empty) set of
-        variables that you have created with <literal>assign</literal> and
+        variables that you have created with <literal>set</literal> and
         <literal>macro</literal> directives, as can be seen from the <link
         linkend="dgui_misc_var">previous chapter</link>. A set of variables
         like this is called a <emphasis role="term">namespace</emphasis>. In
@@ -4069,7 +4064,7 @@ fred@acme.com</programlisting>
 
           <para>Occasionally you may want to create or replace a variable in
           an imported namespace. You can do this with the
-          <literal>assign</literal> directive, if you use its
+          <literal>set</literal> directive, if you use its
           <literal>namespace</literal> parameter. For example, this:</para>
 
           <programlisting role="template">[#import "/lib/my_test.ftl" as my]
@@ -4112,7 +4107,7 @@ Fred@acme.com
 </programlisting>
 
           <para>Don't forget that the variables in the namespace (the
-          variables you create with <literal>assign</literal> or
+          variables you create with <literal>set</literal> or
           <literal>macro</literal> directives) have precedence over the
           variables of the data model when you are in that namespace. Thus,
           the contents of data model does not interfere with the variables
@@ -4362,9 +4357,9 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
               lines that contains only FTL tags (e.g.
               <literal>[@myMacro/]</literal>, <literal>[#if
               <replaceable>...</replaceable>&gt;</literal>) and/or FTL
-              comments (e.g. <literal>[#-- blah --]</literal>), apart
-              from the the ignored white-space itself. For example, if a line
-              contains only an <literal>[#if
+              comments (e.g. <literal>[#-- blah --]</literal>), apart from the
+              the ignored white-space itself. For example, if a line contains
+              only an <literal>[#if
               <replaceable>...</replaceable>&gt;</literal>, then the
               indentation before the tag and the line break after the tag will
               be ignored. However, if the line contains <literal>[#if
@@ -4374,8 +4369,7 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
               according these rules, a line that contains <literal>[#if
               <replaceable>...</replaceable>&gt;[#list
               <replaceable>...</replaceable>&gt;</literal> is subject to
-              white-space ignoring, while a line that contains
-              <literal>[#if
+              white-space ignoring, while a line that contains <literal>[#if
               <replaceable>...</replaceable>&gt;&nbsp;[#list
               <replaceable>...</replaceable>&gt;</literal> is not, because the
               white-space between the two FTL tags is embedded white-space,
@@ -4385,14 +4379,13 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
             <listitem>
               <para>White-space sandwiched between the following directives is
               ignored: <literal>macro</literal>, <literal>function</literal>,
-              <literal>assign</literal>, <literal>global</literal>,
-              <literal>local</literal>, <literal>ftl</literal>,
-              <literal>import</literal>, but only if there is
-              <emphasis>only</emphasis> white-space and/or FTL comments
-              between the directives. In practice it means that you can put
-              empty lines between macro definitions and assignments as spacing
-              for better readability, without printing needless empty lines
-              (line breaks) to the output.</para>
+              <literal>set</literal>, <literal>scoped</literal>,
+              <literal>ftl</literal>, <literal>import</literal>, but only if
+              there is <emphasis>only</emphasis> white-space and/or FTL
+              comments between the directives. In practice it means that you
+              can put empty lines between macro definitions and assignments as
+              spacing for better readability, without printing needless empty
+              lines (line breaks) to the output.</para>
             </listitem>
           </itemizedlist>
 
@@ -4572,13 +4565,13 @@ That's all.</programlisting>
   <emphasis>[/#list]</emphasis>
 &lt;/table&gt;</programlisting>
 
-        <para>The default (square bracket) and older (angle bracket)
-        syntax are mutually exclusive within a template. That is, either the
-        whole template uses square bracket syntax, or the whole template uses the
-        angle bracket syntax. If the template uses the older syntax, things like
-        <literal>[#if <replaceable>...</replaceable>]</literal> 
-        count as static text, not as FTL tags. Similarly, if the template uses
-        the older angle bracket syntax, things like <literal>&lt;#if
+        <para>The default (square bracket) and older (angle bracket) syntax
+        are mutually exclusive within a template. That is, either the whole
+        template uses square bracket syntax, or the whole template uses the
+        angle bracket syntax. If the template uses the older syntax, things
+        like <literal>[#if <replaceable>...</replaceable>]</literal> count as
+        static text, not as FTL tags. Similarly, if the template uses the
+        older angle bracket syntax, things like <literal>&lt;#if
         <replaceable>...</replaceable>]</literal> count as static text, not as
         FTL tags.</para>
 
@@ -5411,8 +5404,7 @@ blah4</programlisting>
           the template engine and that give the writer a chance to better
           control the evaluation of the nested content (the template fragment
           between the
-          <literal>[@<replaceable>myTransform</replaceable>]</literal>
-          and
+          <literal>[@<replaceable>myTransform</replaceable>]</literal> and
           <literal>[/@<replaceable>myTransform</replaceable>&gt;</literal>).
           The writer can instruct the engine to skip or to repeat the
           evaluation of the nested content, and gets notified about exceptions
@@ -6429,10 +6421,9 @@ cfg.setTemplateExceptionHandler(new MyTemplateExceptionHandler());</programlisti
           <para>If an error occurs in an interpolation which is not inside an
           FTL tag (that is, not enclosed into
           <literal>[#<replaceable>...</replaceable>]</literal> or
-          <literal>[@<replaceable>...</replaceable>]</literal>), then
-          the whole interpolation will be skipped. So this template (assuming
-          that <literal>badVar</literal> is missing from the data
-          model):</para>
+          <literal>[@<replaceable>...</replaceable>]</literal>), then the
+          whole interpolation will be skipped. So this template (assuming that
+          <literal>badVar</literal> is missing from the data model):</para>
 
           <programlisting role="template">a${badVar}b</programlisting>
 
@@ -6466,8 +6457,8 @@ cfg.setTemplateExceptionHandler(new MyTemplateExceptionHandler());</programlisti
           <programlisting role="output">a[ERROR: Expression badVar is undefined on line 1, column 7 in test.ftl.]b</programlisting>
 
           <para>Note that the error occurred in the <literal>if</literal>
-          start-tag (<literal>[#if badVar]</literal>), but the whole
-          directive call was skipped. Logically, the nested content
+          start-tag (<literal>[#if badVar]</literal>), but the whole directive
+          call was skipped. Logically, the nested content
           (<literal>Foo</literal>) was skipped with this, since the nested
           content is handled (printed) by the enclosing directive
           (<literal>if</literal>).</para>
@@ -6599,11 +6590,11 @@ c</programlisting>
         be in use until <literal>process</literal> returns. This object stores
         the runtime state of template processing. Among other things, it
         stores the variables created by the template with directives like
-        <literal>assign</literal>, <literal>macro</literal>,
-        <literal>local</literal> or <literal>global</literal>. It never tries
-        to modify the data model object that you pass to the
-        <literal>process</literal> call, nor does it create or replace shared
-        variables stored in the configuration.</para>
+        <literal>set</literal>, <literal>macro</literal>, or
+        <literal>scoped</literal>. It never tries to modify the data model
+        object that you pass to the <literal>process</literal> call, nor does
+        it create or replace shared variables stored in the
+        configuration.</para>
 
         <para>When you try to read a variable, FreeMarker will seek the
         variable in this order, and stops when it finds a variable with the
@@ -6630,7 +6621,7 @@ c</programlisting>
               <listitem>
                 <para>In the current <link
                 linkend="dgui_misc_namespace">namespace</link>. You can put
-                variables into a namespace with the <literal>assign</literal>
+                variables into a namespace with the <literal>set</literal>
                 directive.</para>
               </listitem>
 
@@ -7832,14 +7823,14 @@ TemplateHashModel roundingModeEnums =
             <literal>=</literal> there is an <link
             linkend="dgui_template_exp">FTL expression</link>. Thus,
             <emphasis>you must not quote boolean and numerical parameter
-            values</emphasis> (e.g. <literal>[@tiles.insert
-            page="/layout.ftl" flush=true/]</literal>), or they are
-            interpreted as string values, and this will cause a type mismatch
-            error when FreeMarker tries to pass the value to the custom tag
-            that expects non-string value. Also note, that naturally, you can
-            use any FTL expression as attribute value, such as variables,
-            calculated values, etc. (e.g. <literal>[@tiles.insert
-            page=layoutName flush=foo &amp;&amp; bar/]</literal>).</para>
+            values</emphasis> (e.g. <literal>[@tiles.insert page="/layout.ftl"
+            flush=true/]</literal>), or they are interpreted as string values,
+            and this will cause a type mismatch error when FreeMarker tries to
+            pass the value to the custom tag that expects non-string value.
+            Also note, that naturally, you can use any FTL expression as
+            attribute value, such as variables, calculated values, etc. (e.g.
+            <literal>[@tiles.insert page=layoutName flush=foo &amp;&amp;
+            bar/]</literal>).</para>
 
             <para>FreeMarker does not rely on the JSP support of the servlet
             container in which it is run when it uses JSP taglibs since it
@@ -9158,8 +9149,7 @@ root.put(
           this form. If the element <literal>book</literal> has no
           <literal>chapter</literal> child, then
           <literal>doc.book.chapter</literal> will be a 0 length sequence, so
-          the FTL with <literal>[#list ...]</literal> will still
-          work.</para>
+          the FTL with <literal>[#list ...]</literal> will still work.</para>
 
           <para>It is important to realize the consequence that, for example,
           if <literal>book</literal> has no <literal>chapter</literal>-s then
@@ -9534,13 +9524,12 @@ Test Book</programlisting>
           <para>The <literal>ns_prefixes</literal> parameter affects the whole
           <link linkend="dgui_misc_namespace">FTL namespace</link>. This means
           in practice that the prefixes you have registered in the main page
-          template will be visible in all <literal>[#include
-          ...]</literal>-d templates, but not in <literal>[#imported
-          ...]</literal>-d templates (often referred as FTL libraries). Or
-          from another point of view, an FTL library can register XML
-          namespace prefixes for it's own use, without interfering with the
-          prefix registrations of the main template and other
-          libraries.</para>
+          template will be visible in all <literal>[#include ...]</literal>-d
+          templates, but not in <literal>[#imported ...]</literal>-d templates
+          (often referred as FTL libraries). Or from another point of view, an
+          FTL library can register XML namespace prefixes for it's own use,
+          without interfering with the prefix registrations of the main
+          template and other libraries.</para>
 
           <para>Note that, if an input document is dominated by a given XML
           namespace, you can set that as the default namespace for
@@ -13742,8 +13731,8 @@ Sorted by name.last:
 [/#switch]</programlisting>
 
           <para>Inside the <literal>switch</literal> must be one or more
-          <literal>[#case <replaceable>value</replaceable>]</literal>,
-          and after all such <literal>case</literal> tags optionally one
+          <literal>[#case <replaceable>value</replaceable>]</literal>, and
+          after all such <literal>case</literal> tags optionally one
           <literal>[#default]</literal>. When FM reaches the
           <literal>switch</literal> directive, it chooses a
           <literal>case</literal> directive where
@@ -14293,8 +14282,8 @@ All rights reserved.</emphasis></programlisting>
           namespace available to the caller with a hash variable. The hash
           variable will be created as a plain variable in the namespace used
           by the caller of <literal>import</literal> (as if you would create
-          it with <literal>assign</literal> directive), with the name given
-          with the <literal><replaceable>hash</replaceable></literal>
+          it with <literal>set</literal> directive), with the name given with
+          the <literal><replaceable>hash</replaceable></literal>
           parameter.</para>
 
           <para>If you call <literal>import</literal> with the same
@@ -14492,9 +14481,9 @@ I said, test only)</programlisting>
           <replaceable>...</replaceable>]</literal> and
           <literal>[/#escape]</literal> <emphasis>in the template
           text</emphasis>. That is, it will not escape anything that is before
-          <literal>[#escape <replaceable>...</replaceable>]</literal> in
-          the text, or after the <literal>[/#escape]</literal> in the
-          text, not even if that part is called from inside the
+          <literal>[#escape <replaceable>...</replaceable>]</literal> in the
+          text, or after the <literal>[/#escape]</literal> in the text, not
+          even if that part is called from inside the
           <literal>escape</literal>-d section.</para>
 
           <programlisting role="template">[#set x = "&lt;test&gt;"]
@@ -14585,12 +14574,12 @@ m2: &amp;lt;test&amp;gt;</programlisting>
       </sect1>
 
       <sect1 id="ref_directive_assign">
-        <title>assign</title>
+        <title>set</title>
 
         <anchor id="ref.directive.assign" />
 
         <indexterm>
-          <primary>assign directive</primary>
+          <primary>set directive</primary>
         </indexterm>
 
         <sect2>
@@ -14617,10 +14606,9 @@ or
               <para><literal><replaceable>name</replaceable></literal>: name
               of the variable. It is not expression. However, it can be
               written as a string literal, which is useful if the variable
-              name contains reserved characters, for example
-              <literal>[#set "foo-bar" = 1]</literal>. Note that this
-              string literal does not expand interpolations (as
-              <literal>"${foo}"</literal>).</para>
+              name contains reserved characters, for example <literal>[#set
+              "foo-bar" = 1]</literal>. Note that this string literal does not
+              expand interpolations (as <literal>"${foo}"</literal>).</para>
             </listitem>
 
             <listitem>
@@ -14660,18 +14648,17 @@ or
           <programlisting role="template">[#set test = test + 1]</programlisting>
 
           <para>As a convenience feature, you can do more assignments with one
-          <literal>assign</literal> tag. For example this will do the same as
-          the two previous examples:</para>
+          <literal>set</literal> tag. For example this will do the same as the
+          two previous examples:</para>
 
           <programlisting role="template">[#set
   seasons = ["winter", "spring", "summer", "autumn"]
   test = test + 1
 ]</programlisting>
 
-          <para>If you know what namespaces are: <literal>assign</literal>
-          directive creates variables in namespaces. Normally it creates the
-          variable in the current namespace (i.e. in the namespace associated
-          with the template where the tag is). However, if you use <literal>in
+          <para>If you know what namespaces are: unless the variable has been
+          declared as "scoped", the <literal>set</literal> directive creates
+          variables in the current namespace. However, if you use <literal>in
           <replaceable>namespacehash</replaceable></literal> then you can
           create/replace a variable of another <link
           linkend="dgui_misc_namespace">namespace</link> than the current
@@ -14682,10 +14669,10 @@ or
           <programlisting role="template">[#import "/mylib.ftl" as my]
 [#set bgColor="red" in my]</programlisting>
 
-          <para>An extreme usage of <literal>assign</literal> is when it
-          captures the output generated between its start-tag and end-tag.
-          That is, things that are printed between the tags will not be shown
-          on the page, but will be stored in the variable. For example:</para>
+          <para>An extreme usage of <literal>set</literal> is when it captures
+          the output generated between its start-tag and end-tag. That is,
+          things that are printed between the tags will not be shown on the
+          page, but will be stored in the variable. For example:</para>
 
           <programlisting role="template">[#macro myMacro]foo[/#macro]
 [#set x]
@@ -14743,10 +14730,9 @@ or
               <para><literal><replaceable>name</replaceable></literal>: name
               of the variable. It is not expression. However, it can be
               written as a string literal, which is useful if the variable
-              name contains reserved characters, for example
-              <literal>[#global "foo-bar" = 1]</literal>. Note that this
-              string literal does not expand interpolations (as
-              <literal>"${foo}"</literal>).</para>
+              name contains reserved characters, for example <literal>[#global
+              "foo-bar" = 1]</literal>. Note that this string literal does not
+              expand interpolations (as <literal>"${foo}"</literal>).</para>
             </listitem>
 
             <listitem>
@@ -14775,12 +14761,11 @@ or
           create a variable that is visible as <literal>x</literal> in all
           namespaces, unless another variable called <literal>x</literal>
           hides it (for example a variable what you have created as
-          <literal>[#set x = 2]</literal>). In this case, you can use
-          <link linkend="dgui_template_exp_var_special">special
-          variable</link> <literal>globals</literal>, like
-          <literal>${.globals.x}</literal>. Note that with
-          <literal>globals</literal> you see all globally accessible
-          variables; not only the variables that were created with
+          <literal>[#set x = 2]</literal>). In this case, you can use <link
+          linkend="dgui_template_exp_var_special">special variable</link>
+          <literal>globals</literal>, like <literal>${.globals.x}</literal>.
+          Note that with <literal>globals</literal> you see all globally
+          accessible variables; not only the variables that were created with
           <literal>global</literal> directive, but also the variables of the
           data-model.</para>
 
@@ -14821,8 +14806,8 @@ or
               name of the local object in the root. It is not an expression.
               However, it can be written as a string literal, which is useful
               if the variable name contains reserved characters, for example
-              <literal>[#local "foo-bar" = 1]</literal>. Note that this
-              string literal does not expand interpolations (as
+              <literal>[#local "foo-bar" = 1]</literal>. Note that this string
+              literal does not expand interpolations (as
               <literal>"${foo}"</literal>).</para>
             </listitem>
 
@@ -15177,10 +15162,9 @@ Or all above but with positional parameter passing (<link
             (similarly to <literal>list</literal> directive). As with the
             predefined directives (as <literal>list</literal>) the
             <emphasis>name</emphasis> of loop variables is given when you call
-            the directive (as <literal>foo</literal> in <literal>[#list
-            foos as
-            foo]<replaceable>...</replaceable>[/#list]</literal>),
-            while the <emphasis>value</emphasis> of the variable is set by the
+            the directive (as <literal>foo</literal> in <literal>[#list foos
+            as foo]<replaceable>...</replaceable>[/#list]</literal>), while
+            the <emphasis>value</emphasis> of the variable is set by the
             directive itself. In the case of user-defined directives the
             syntax is that the name of loop variables is given after a
             semicolon. For example:</para>
@@ -15235,12 +15219,12 @@ Or all above but with positional parameter passing (<link
             parameter). Say, if <literal>heading</literal> was created as
             <literal>[#macro heading title
             level]<replaceable>...</replaceable></literal>, then
-            <literal>[@heading "Preface", 1/]</literal> is equivalent
-            with <literal>[@heading title="Preface" level=1/]</literal>
-            (or <literal>[@heading level=1 title="Preface"/]</literal>;
-            if you use parameter names, the order is not important). Note that
-            positional parameter passing is currently not supported for
-            transforms, only for macros.</para>
+            <literal>[@heading "Preface", 1/]</literal> is equivalent with
+            <literal>[@heading title="Preface" level=1/]</literal> (or
+            <literal>[@heading level=1 title="Preface"/]</literal>; if you use
+            parameter names, the order is not important). Note that positional
+            parameter passing is currently not supported for transforms, only
+            for macros.</para>
           </sect3>
         </sect2>
       </sect1>
@@ -15634,8 +15618,8 @@ Or all above but with positional parameter passing (<link
           directive</link>, except that <literal>return</literal> directive
           <emphasis>must</emphasis> have a parameter that specifies the return
           value of the method, and that attempts to write to the output will
-          be ignored. If the <literal>[/#function]</literal> is reached
-          (i.e. there was no <literal>return
+          be ignored. If the <literal>[/#function]</literal> is reached (i.e.
+          there was no <literal>return
           <replaceable>returnValue</replaceable></literal>), then the return
           value of the method is an undefined variable.</para>
 
@@ -15919,13 +15903,12 @@ or
               otherwise the <literal>ns_prefixes</literal> parameter has no
               effect. An FTL namespace is made for a template when: (a) the
               template is the ''main'' template, that is, it is not invoked as
-              a result of an <literal>[#include ...]</literal>, but it
-              is directly invoked (<phrase role="forProgrammers">with the
+              a result of an <literal>[#include ...]</literal>, but it is
+              directly invoked (<phrase role="forProgrammers">with the
               <literal>process</literal> Java method of class
               <literal>Template</literal> or
               <literal>Environment</literal></phrase>); (b) the template is
-              invoked directly with <literal>[#import
-              ...]</literal>.</para>
+              invoked directly with <literal>[#import ...]</literal>.</para>
             </listitem>
 
             <listitem>
@@ -16530,15 +16513,15 @@ There was no specific handler for node y
             <para>However, target node is optional in the
             <literal>recurse</literal> directive. If the target node is
             unspecified, it simply uses the <literal>.node</literal>. Thus,
-            the terse instruction <literal>[#recurse]</literal> is
-            equivalent to:</para>
+            the terse instruction <literal>[#recurse]</literal> is equivalent
+            to:</para>
 
             <programlisting role="template">[#list .node?children as child][#visit child][/#list]</programlisting>
 
             <para>As a side comment for those who are familiar with XSLT,
-            <literal>[#recurse]</literal> is pretty much exactly
-            analogous to the <literal>&lt;xsl:apply-templates/&gt;</literal>
-            instruction in XSLT.</para>
+            <literal>[#recurse]</literal> is pretty much exactly analogous to
+            the <literal>&lt;xsl:apply-templates/&gt;</literal> instruction in
+            XSLT.</para>
           </sect3>
 
           <sect3>
@@ -17018,8 +17001,8 @@ or
 
           <listitem>
             <para><literal>comment</literal>: This is the old format of
-            <literal>[#--<replaceable>...</replaceable>--]</literal>.
-            Anything between the <literal>[#comment]</literal> and
+            <literal>[#--<replaceable>...</replaceable>--]</literal>. Anything
+            between the <literal>[#comment]</literal> and
             <literal>&lt;/#comment&gt;</literal> will be ignored.</para>
           </listitem>
 
@@ -17028,9 +17011,8 @@ or
             <literal>list</literal> directive with slightly different
             parameter syntax. The syntax is <literal>[#foreach
             <replaceable>item</replaceable> in
-            <replaceable>sequence</replaceable>]</literal> that is
-            equivalent with <literal>[#list
-            <replaceable>sequence</replaceable> as
+            <replaceable>sequence</replaceable>]</literal> that is equivalent
+            with <literal>[#list <replaceable>sequence</replaceable> as
             <replaceable>item</replaceable>]</literal>.</para>
           </listitem>
 
@@ -17255,8 +17237,8 @@ or
           <literal>include</literal> directive.</para>
 
           <para>You can leave a macro definition body before the
-          <literal>[/#macro]</literal> tag with the
-          <literal>return</literal> directive.</para>
+          <literal>[/#macro]</literal> tag with the <literal>return</literal>
+          directive.</para>
         </sect2>
       </sect1>
 
@@ -17428,8 +17410,8 @@ some test
           <listitem>
             <para>Since all
             <literal>[#<replaceable>...</replaceable>]</literal> and
-            <literal>[/#<replaceable>...</replaceable>]</literal> are
-            reserved for FTL:</para>
+            <literal>[/#<replaceable>...</replaceable>]</literal> are reserved
+            for FTL:</para>
 
             <itemizedlist>
               <listitem>
@@ -17439,10 +17421,9 @@ some test
 
               <listitem>
                 <para>We can detect if you made a typo, i.e.
-                <literal>[#inculde
-                <replaceable>...</replaceable>]</literal> is treated as
-                parse-time error, rather than silently treated as simple
-                text.</para>
+                <literal>[#inculde <replaceable>...</replaceable>]</literal>
+                is treated as parse-time error, rather than silently treated
+                as simple text.</para>
               </listitem>
 
               <listitem>
@@ -17454,8 +17435,8 @@ some test
 
               <listitem>
                 <para>Templates are more readable, since it is easier to spot
-                <literal>[#...]</literal> tags embedded into HTML or
-                other markup.</para>
+                <literal>[#...]</literal> tags embedded into HTML or other
+                markup.</para>
               </listitem>
             </itemizedlist>
           </listitem>
@@ -17894,10 +17875,9 @@ some test
             <literal>global</literal>, <literal>macro</literal>,
             <literal>function</literal>, etc.) allows the quotation of the
             destination variable name. For example, <literal>[#set foo =
-            1]</literal> is the same as <literal>[#set "foo" =
-            1]</literal>. So you can write things like <literal>[#set
-            "foo-bar" = 1]</literal> and <literal>[#macro
-            "foo-bar"]</literal>.</para>
+            1]</literal> is the same as <literal>[#set "foo" = 1]</literal>.
+            So you can write things like <literal>[#set "foo-bar" =
+            1]</literal> and <literal>[#macro "foo-bar"]</literal>.</para>
           </answer>
         </qandaentry>
 
@@ -18252,9 +18232,8 @@ some test
             either be sure you will not modify the objects that were used as
             input, or create a copy of the result with a method provided by
             the solution described in above two points (e.g. in FMPP you could
-            do <literal>[#set b =
-            pp.newWritableSequence(a[5..10])]</literal> and
-            <literal>[#set c = pp.newWritableHash(hashA +
+            do <literal>[#set b = pp.newWritableSequence(a[5..10])]</literal>
+            and <literal>[#set c = pp.newWritableHash(hashA +
             hashB)]</literal>). Of course this is easy to miss... so again,
             rather try to build the data model so you will not need to modify
             collections, or use a presentation task helper class as was shown
@@ -18281,8 +18260,7 @@ some test
             at all, <literal>${x!'missing'}</literal> will print ''missing'',
             you can't tell the difference. Also, if for example you want to
             test if a Java method has returned <literal>null</literal>, just
-            write something like <literal>[#if
-            foo.bar()??]</literal>.</para>
+            write something like <literal>[#if foo.bar()??]</literal>.</para>
 
             <para>You may interested in the rationale behind this. From the
             viewpoint of the presentation layer a <literal>null</literal> and
@@ -18326,8 +18304,7 @@ some test
 
           <answer>
             <para>Capture the output into a variable with the
-            <literal>assign</literal> or <literal>local</literal> directive.
-            For example:</para>
+            <literal>set</literal> directive. For example:</para>
 
             <programlisting role="template">[#set capturedOutput][@outputSomething /][/#set]
 [@otherDirective someParam=capturedOutput /]</programlisting>
@@ -18389,10 +18366,10 @@ t.process(root, out);
             templates should display data, and almost never calculate data. If
             you are still sure you want to do it, read on...</para>
 
-            <para>When you use <literal>[#set x = "foo"]</literal>,
-            then you do not actually modify the data model (since that is
-            read-only, see: <xref linkend="pgui_misc_multithreading" />), but
-            create the <literal>x</literal> variable in the runtime <link
+            <para>When you use <literal>[#set x = "foo"]</literal>, then you
+            do not actually modify the data model (since that is read-only,
+            see: <xref linkend="pgui_misc_multithreading" />), but create the
+            <literal>x</literal> variable in the runtime <link
             linkend="gloss.environment">environment</link> of the processing
             (see <xref linkend="pgui_misc_var" />). The problem is that this
             runtime environment will be discarded when
@@ -18423,16 +18400,15 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             possible if you write a class that implements
             <literal>freemarker.template.TemplateMethodModelEx</literal> or
             <literal>freemarker.template.TemplateTransformModel</literal>
-            respectively, and then where you were write <literal>[#function
-            my
+            respectively, and then where you were write <literal>[#function my
             <replaceable>...</replaceable>]<replaceable>...</replaceable>[/#function]</literal>
             or <literal>[#macro my
             <replaceable>...</replaceable>]<replaceable>...</replaceable>[/#macro]</literal>
             you write <literal>[#set my = "your.package.YourClass
             "?</literal><link
             linkend="ref_builtin_new"><literal>new</literal></link><literal>()]</literal>
-            instead. Note that using the <literal>assign</literal> directive
-            for this works because functions (and methods) and macros are just
+            instead. Note that using the <literal>set</literal> directive for
+            this works because functions (and methods) and macros are just
             plain variables in FreeMarker. (For the same reason you could also
             put <literal>TemplateMethodModelEx</literal> or
             <literal>TemplateTransformModel</literal> instances into the data
@@ -20058,10 +20034,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>#{</literal> in string literals are reserved for that.
               So if you have something like <literal>[#set x =
               "${foo}"]</literal>, then you have to replace it with
-              <literal>[#set x = "$\{foo}"]</literal> (this uses the
-              new escape sequence, <literal>\{</literal>). (Also, you may
-              intrested in the new raw string feature: <literal>[#set x
-              = r"${foo}"]</literal> -- beware, escapes such as
+              <literal>[#set x = "$\{foo}"]</literal> (this uses the new
+              escape sequence, <literal>\{</literal>). (Also, you may
+              intrested in the new raw string feature: <literal>[#set x =
+              r"${foo}"]</literal> -- beware, escapes such as
               <literal>\n</literal> will not work in raw strings)</para>
             </listitem>
 
@@ -20076,10 +20052,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               tags. Such tags have to be rewritten to <literal>[#include
               "foo.ftl"]</literal>, since only parts that starts with
               <literal>[#</literal>, <literal>[/#</literal>,
-              <literal>[@</literal>, or <literal>[/@</literal> count as
-              FTL tags. Or, to recover the old transitional behavior, where
-              both legacy and new tag syntax was recognized, you have to
-              explicitly set <literal>strict_syntax</literal> to
+              <literal>[@</literal>, or <literal>[/@</literal> count as FTL
+              tags. Or, to recover the old transitional behavior, where both
+              legacy and new tag syntax was recognized, you have to explicitly
+              set <literal>strict_syntax</literal> to
               <literal>false</literal>:
               <literal>cfg.setStrictSyntaxMode(false)</literal>. Also, for
               individual templates you can force the old behavior by starting
@@ -20138,9 +20114,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               directive tag with empty directive syntax as
               <literal>[@myMacro/]</literal> (or its equivalents:
               <literal>[@myMacro][/@myMacro]</literal> and
-              <literal>[@myMacro][/@]</literal>). Now white-space
-              is removed in these cases as well.) Also, white-space sandwiched
-              between two non-outputting elements, such as macro definitions,
+              <literal>[@myMacro][/@]</literal>). Now white-space is removed
+              in these cases as well.) Also, white-space sandwiched between
+              two non-outputting elements, such as macro definitions,
               assignments, imports, or property settings, is now ignored. More
               information: <xref
               linkend="dgui_misc_whitespace_stripping" /></para>
@@ -20286,9 +20262,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <para><literal>macro</literal> and assignment directives now
               accept arbitrary destination variable name with quoted syntax.
               For example: <literal>[#macro
-              "name-with-hyphens"]<replaceable>...</replaceable></literal>
-              or <literal>[#set "foo&nbsp;bar" =
-              123]</literal>.</para>
+              "name-with-hyphens"]<replaceable>...</replaceable></literal> or
+              <literal>[#set "foo&nbsp;bar" = 123]</literal>.</para>
             </listitem>
 
             <listitem>
@@ -20318,10 +20293,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               directive tag with empty directive syntax as
               <literal>[@myMacro/]</literal> (or its equivalents:
               <literal>[@myMacro][/@myMacro]</literal> and
-              <literal>[@myMacro][/@]</literal>). Now white-space
-              is removed in these cases as well.) Also, top-level white-space
-              that separates macro definitions and/or assignments is now
-              ignored. More information: <xref
+              <literal>[@myMacro][/@]</literal>). Now white-space is removed
+              in these cases as well.) Also, top-level white-space that
+              separates macro definitions and/or assignments is now ignored.
+              More information: <xref
               linkend="dgui_misc_whitespace_stripping" /></para>
             </listitem>
 
@@ -20481,10 +20456,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               tags. Such tags have to be rewritten to <literal>[#include
               "foo.ftl"]</literal>, since only parts that starts with
               <literal>&lt;#</literal>, <literal>&lt;/#</literal>,
-              <literal>[@</literal>, or <literal>[/@</literal> count as
-              FTL tags. Or, to recover the old transitional behavior, where
-              both legacy and new tag syntax was recognized, you have to
-              explicitly set <literal>strict_syntax</literal> to
+              <literal>[@</literal>, or <literal>[/@</literal> count as FTL
+              tags. Or, to recover the old transitional behavior, where both
+              legacy and new tag syntax was recognized, you have to explicitly
+              set <literal>strict_syntax</literal> to
               <literal>false</literal>:
               <literal>cfg.setStrictSyntaxMode(false)</literal>. Also, for
               individual templates you can force the old behavior by starting
@@ -20538,8 +20513,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <para>New package: <literal>freemarker.ext.dom</literal>. This
               contains the new XML wrapper, that supports the processing of
               XML documents using the visitor pattern (i.e. with
-              <literal>[#visit <replaceable>...</replaceable>]</literal>
-              and similar directives), and to provide more convenient XML
+              <literal>[#visit <replaceable>...</replaceable>]</literal> and
+              similar directives), and to provide more convenient XML
               traversing as the legacy wrapper. See the <link
               linkend="xgui">XML processing guide</link> for more
               details.</para>
@@ -20679,9 +20654,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
                 occuring in interpolations outside FTL tags. Thus, the
                 directive call was not skipped, and the problematic
                 interpolation was replaced with an empty string. (This was
-                inconsistent with the behavior of <literal>[#if
-                "foo"+badVar != "foobar"]</literal>, which should be 100%
-                equivalent with the previous example.)</para>
+                inconsistent with the behavior of <literal>[#if "foo"+badVar
+                != "foobar"]</literal>, which should be 100% equivalent with
+                the previous example.)</para>
               </listitem>
 
               <listitem>
@@ -20748,14 +20723,14 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
                 tags with old syntax as <literal>&lt;include
                 "foo.ftl"&gt;</literal> will be considered as static text (so
                 they go to the output as-is, like HTML tags do), and not as
-                FTL tags. Such tags have to be rewritten to
-                <literal>[#include "foo.ftl"]</literal>, since only
-                parts that starts with <literal>&lt;#</literal>,
-                <literal>&lt;/#</literal>, <literal>[@</literal>, or
-                <literal>[/@</literal> count as FTL tags. Or, to recover
-                the old transitional behavior, where both legacy and new tag
-                syntax was recognized, you have to explicitly set
-                <literal>strict_syntax</literal> to <literal>false</literal>:
+                FTL tags. Such tags have to be rewritten to <literal>[#include
+                "foo.ftl"]</literal>, since only parts that starts with
+                <literal>&lt;#</literal>, <literal>&lt;/#</literal>,
+                <literal>[@</literal>, or <literal>[/@</literal> count as FTL
+                tags. Or, to recover the old transitional behavior, where both
+                legacy and new tag syntax was recognized, you have to
+                explicitly set <literal>strict_syntax</literal> to
+                <literal>false</literal>:
                 <literal>cfg.setStrictSyntaxMode(false)</literal>. Also, for
                 individual templates you can force the old behavior by
                 starting the template with <literal>&lt;#ftl
@@ -20984,9 +20959,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <listitem>
                 <para>Bugfix: Methods called twice on an object using the
                 <literal>list</literal> directive, as
-                <literal>parent.getChildren()</literal> with
-                <literal>[#list parent.children as child]
-                ...[/#list]</literal></para>
+                <literal>parent.getChildren()</literal> with <literal>[#list
+                parent.children as child] ...[/#list]</literal></para>
               </listitem>
             </itemizedlist>
           </sect3>
@@ -21005,10 +20979,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
                 directive tag with empty directive syntax as
                 <literal>[@myMacro/]</literal> (or its equivalents:
                 <literal>[@myMacro][/@myMacro]</literal> and
-                <literal>[@myMacro][/@]</literal>). Now
-                white-space is removed in these cases as well.) Also,
-                top-level white-space that separates macro definitions and/or
-                assignments is now ignored. More information: <xref
+                <literal>[@myMacro][/@]</literal>). Now white-space is removed
+                in these cases as well.) Also, top-level white-space that
+                separates macro definitions and/or assignments is now ignored.
+                More information: <xref
                 linkend="dgui_misc_whitespace_stripping" /></para>
               </listitem>
 
@@ -21498,9 +21472,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               </listitem>
 
               <listitem>
-                <para>The <literal>[#recurse]</literal> directive was
-                broken. It did not work with a <literal>using</literal>
-                clause. This is now fixed.</para>
+                <para>The <literal>[#recurse]</literal> directive was broken.
+                It did not work with a <literal>using</literal> clause. This
+                is now fixed.</para>
               </listitem>
             </itemizedlist>
           </sect3>
@@ -21875,8 +21849,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               level settings, you can include and import commonly used
               templates (usually collection of macro definitions) at the top
               of all templates, without actually typing <literal>[#include
-              <replaceable>...</replaceable>]</literal> or
-              <literal>[#import
+              <replaceable>...</replaceable>]</literal> or <literal>[#import
               <replaceable>...</replaceable>]</literal> into the templates
               again and again. For more information please read the Java API
               documentation of <literal>Configuration</literal></para>
@@ -22079,8 +22052,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               -- <literal>transform</literal> directive did). For example, if
               you have a macro called <literal>sect</literal>, you may call it
               via <literal>[@sect title="Blah" style="modern"]Blah
-              blah...[/@sect]</literal>. For more information read:
-              <xref linkend="dgui_misc_userdefdir" /></para>
+              blah...[/@sect]</literal>. For more information read: <xref
+              linkend="dgui_misc_userdefdir" /></para>
             </listitem>
 
             <listitem>
@@ -22135,8 +22108,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <para>White-space stripping: FreeMarker now automatically
               removes some of the typical superfluous white-spaces around
               FreeMarker tags and comments, like the indentation spaces
-              before- and line-break after <literal>[#if ...]</literal>
-              tags. For more information read: <xref
+              before- and line-break after <literal>[#if ...]</literal> tags.
+              For more information read: <xref
               linkend="dgui_misc_whitespace_stripping" /></para>
             </listitem>
 
@@ -22251,10 +22224,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
             <listitem>
               <para>Bulk assignments (as <literal>[#set x=1, y=2,
-              z=3]</literal>) no longer need colon to separate the
-              assignments (as <literal>[#set x=1 y=2 z=3]</literal>),
-              although it is still allowed to preserve backward
-              compatibility.</para>
+              z=3]</literal>) no longer need colon to separate the assignments
+              (as <literal>[#set x=1 y=2 z=3]</literal>), although it is still
+              allowed to preserve backward compatibility.</para>
             </listitem>
 
             <listitem>
@@ -22875,17 +22847,17 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <listitem>
                 <para>The syntax of assignment-with-namespace has changed from
                 <literal>[#set foo=123 namespace=myLib]</literal>) to
-                <literal>[#set foo=123 in myLib]</literal>, since the
-                previous syntax was confusing because its similarity to a
+                <literal>[#set foo=123 in myLib]</literal>, since the previous
+                syntax was confusing because its similarity to a
                 bulk-assignment.</para>
               </listitem>
 
               <listitem>
                 <para>Bulk assignments (as <literal>[#set x=1, y=2,
                 z=3]</literal>) no longer need the comma to separate the
-                assignments (as <literal>[#set x=1 y=2
-                z=3]</literal>), although it is still allowed to preserve
-                backward compatibility.</para>
+                assignments (as <literal>[#set x=1 y=2 z=3]</literal>),
+                although it is still allowed to preserve backward
+                compatibility.</para>
               </listitem>
 
               <listitem>
@@ -23164,9 +23136,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
             <listitem>
               <para>Bugfix: Less-than sign inside comments confused the FTL
-              parser (e.g. <literal>[#-- blah &lt; blah --]</literal>);
-              it commented out everything after the problematic
-              comment.</para>
+              parser (e.g. <literal>[#-- blah &lt; blah --]</literal>); it
+              commented out everything after the problematic comment.</para>
             </listitem>
 
             <listitem>
@@ -23580,9 +23551,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             <listitem>
               <para>Better error reporting: If the processing of a template is
               aborted by a <literal>TemplateException</literal> being thrown,
-              or using a <literal>[#stop]</literal> directive,
-              FreeMarker will now output an execution trace with line and
-              column numbers relative to the template source.</para>
+              or using a <literal>[#stop]</literal> directive, FreeMarker will
+              now output an execution trace with line and column numbers
+              relative to the template source.</para>
             </listitem>
 
             <listitem>
@@ -23936,11 +23907,11 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             </listitem>
 
             <listitem>
-              <para>The <literal>[#break]</literal> directive can now be
-              used to break out of a <literal>&lt;#foreach...&gt;</literal> or
-              a <literal>&lt;list...&gt;</literal> loop. (Prior to this
-              version, it only worked within a switch-case block.) There is a
-              new directive called <literal>[#stop]</literal> that, when
+              <para>The <literal>[#break]</literal> directive can now be used
+              to break out of a <literal>&lt;#foreach...&gt;</literal> or a
+              <literal>&lt;list...&gt;</literal> loop. (Prior to this version,
+              it only worked within a switch-case block.) There is a new
+              directive called <literal>[#stop]</literal> that, when
               encountered, simply halts processing of the template. This can
               be useful for debugging purposes.</para>
             </listitem>
@@ -24038,15 +24009,15 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               this does is that it allows scalars to be treated as a
               single-item list in a list directive. Also, it allows somewhat
               more looseness about types. In FreeMarker 1.x, <literal>[#if
-              x=="1"]</literal> and <literal>[#if x==1]</literal>
-              were in fact equivalent. This meant that legacy templates might
-              tend to be slack about this. If classic compatibility is not
-              set, an attempt to compare the string "1" with the number 1 will
-              result in an exception being thrown. (Note that it is preferable
-              to get your templates working without the backward compatibility
-              flag, since it usually will require only minor changes. However,
-              for people with a lot of templates and no time to check over
-              them, this flag may be of use.)</para>
+              x=="1"]</literal> and <literal>[#if x==1]</literal> were in fact
+              equivalent. This meant that legacy templates might tend to be
+              slack about this. If classic compatibility is not set, an
+              attempt to compare the string "1" with the number 1 will result
+              in an exception being thrown. (Note that it is preferable to get
+              your templates working without the backward compatibility flag,
+              since it usually will require only minor changes. However, for
+              people with a lot of templates and no time to check over them,
+              this flag may be of use.)</para>
             </listitem>
           </itemizedlist>
         </sect2>
@@ -24349,9 +24320,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
         in or not. There are only two possible boolean values:
         <literal>true</literal> and <literal>false</literal>. Typically, you
         will use booleans with an <literal>[#if
-        <replaceable>...</replaceable>]</literal> directive when you want
-        to display text based on some condition, say, you show a certain part
-        of the page only for visitors who has logged in.</para>
+        <replaceable>...</replaceable>]</literal> directive when you want to
+        display text based on some condition, say, you show a certain part of
+        the page only for visitors who has logged in.</para>
       </glossdef>
     </glossentry>
 
@@ -24535,9 +24506,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
         <literal>@</literal>. Another important difference is that FTL tags do
         not use <link linkend="gloss.attribute">attributes</link>, but a
         substantially different syntax to specify parameters. Examples of FTL
-        tags: <literal>[#if newUser]</literal>,
-        <literal>[/#if]</literal>, <literal>[@menuitem
-        title="Projects" link="projects.html"/]</literal></para>
+        tags: <literal>[#if newUser]</literal>, <literal>[/#if]</literal>,
+        <literal>[@menuitem title="Projects"
+        link="projects.html"/]</literal></para>
       </glossdef>
     </glossentry>
 
@@ -24577,8 +24548,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       <glossdef>
         <para>The template fragment between the <literal>[#macro
         <replaceable>...</replaceable>]</literal> and
-        <literal>[/#macro]</literal>. This template fragment will be
-        executed when you call the macro (for example as
+        <literal>[/#macro]</literal>. This template fragment will be executed
+        when you call the macro (for example as
         <literal>[@myMacro/]</literal>).</para>
       </glossdef>
     </glossentry>
