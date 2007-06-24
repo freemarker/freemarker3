@@ -19,14 +19,14 @@
   [/#if]  
 [/#macro]
 
-[#macro Html title][#scoped bookTitle]
+[#macro Html title]
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <link rel="stylesheet" href="fmdoc.css" type="text/css">
   <meta name="generator" content="FreeMarker-based XDocBook Stylesheet">
-  [#set bookTitle = .node?root.book.title]
+  [#scoped bookTitle = .node?root.book.title]
   <title>[#if bookTitle != title]${bookTitle?html} - [/#if]${title?html}</title>
 </head>
 <body>
@@ -60,8 +60,8 @@
    <td align="left" valign="top">[#recurse ]</td></tr>
 [/#macro]
 
-[#macro emphasis][#scoped role]
-    [#set role = .node.@role[0]!"none"]
+[#macro emphasis]
+    [#scoped role = .node.@role[0]!"none"]
     [#if role = "term" || role = "bold" || .node?ancestors("programlisting")?has_content]
       <b>[#recurse ]</b>[#t]
     [#else]
@@ -86,15 +86,15 @@
    [#recurse ]
 [/#macro]
 
-[#macro glossdef][#scoped seealsos term otherTermID otherNode]
-   <dd>[#recurse ]
-   [#set seealsos = .node.glossseealso]
+[#macro glossdef]
+   <dd>[#recurse]
+   [#scoped seealsos = .node.glossseealso]
    [#if seealsos?has_content]
     <p>See Also
      [#list seealsos as also]
-       [#set otherTermID = also.@otherterm]
-       [#set otherNode = NodeFromID(otherTermID)]
-       [#set term = otherNode.glossterm]
+       [#scoped otherTermID = also.@otherterm]
+       [#scoped otherNode = NodeFromID(otherTermID)]
+       [#scoped term = otherNode.glossterm]
        <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a>[#if also_has_next],[/#if] 
      [/#list]
     </p>
@@ -102,11 +102,11 @@
    </dd>
 [/#macro]
 
-[#macro glosssee][#scoped term otherTermID otherNode]
+[#macro glosssee]
     <dd><p>See
-       [#set otherTermID = .node.@otherterm]
-       [#set otherNode = NodeFromID(otherTermID)]
-       [#set term = otherNode.glossterm]
+       [#scoped otherTermID = .node.@otherterm]
+       [#scoped otherNode = NodeFromID(otherTermID)]
+       [#scoped term = otherNode.glossterm]
        <a href="${CreateLinkFromID(otherTermID)}">${term}</a>
     </p></dd>
 [/#macro]
@@ -119,8 +119,8 @@
    <dt>[@Anchor .node?parent/][#recurse ]</dt>
 [/#macro]
 
-[#macro graphic][#scoped role alt]
-  [#set role = .node.@role[0]!?string]
+[#macro graphic]
+  [#scoped alt, role = .node.@role[0]!?string]
   [#if role?starts_with("alt:")]
     [#set alt = role[4.. .node.@role?length-1]?trim]
   [#else]  
@@ -141,15 +141,15 @@
    </div>
 [/#macro]
 
-[#macro itemizedlist][#scoped mark prevCompactPara packed]
-    [#set packed = .node.@spacing[0]! = "compact"] 
-    [#set prevCompactPara = compactPara]
+[#macro itemizedlist]
+    [#scoped packed = .node.@spacing[0]! = "compact"] 
+    [#scoped prevCompactPara = compactPara]
     [#if packed]
        [#set compactPara = true]
     [/#if]
     [@CantNestedIntoP]
     <div class="itemizedlist">
-        [#set mark = .node.@mark[0]!]
+        [#scoped mark = .node.@mark[0]!]
         [#if mark = "bullet"]
             <ul type="disc">[#t]
         [#elseif mark = "box"]
@@ -172,8 +172,8 @@
    <a href="${CreateLinkFromID(.node.@linkend)?html}">[#recurse ]</a>[#t]
 [/#macro]
 
-[#macro listitem][#scoped mark]
-   [#set mark = .node?parent.@mark[0]!]
+[#macro listitem]
+   [#scoped mark = .node?parent.@mark[0]!]
    [#if mark != ""]
        <li style="list-style-type: ${mark?html}">[#t]
    [#else]
@@ -183,16 +183,14 @@
    </li>[#t]
 [/#macro]
 
-[#macro _inline_monospaced][#scoped color moreStyle]
-    [#set color = "#A03D10"]
+[#macro _inline_monospaced]
+    [#scoped moreStyle="", color = "#A03D10"]
     [#if .node?ancestors("link")?has_content]
         [#-- If we are within a link, we don't change color, just use the regular link color --]   
         <tt>[#recurse ]</tt>[#t]
     [#else]
         [#if fontBgColor! != ""]
             [#set moreStyle = "; background-color:${fontBgColor}"]
-        [#else]
-            [#set moreStyle = ""]
         [/#if]
         <tt style="color: #A03D10${moreStyle}">[#recurse ]</tt>[#t]
     [/#if]
@@ -244,9 +242,9 @@
     <a href="${olinks[.node.@targetdoc]}">[#recurse ]</a>[#t]
 [/#macro]
 
-[#macro orderedlist][#scoped prevCompactPara packed]
-    [#set packed = (.node.@spacing[0]! = "compact")] 
-    [#set prevCompactPara = compactPara]
+[#macro orderedlist]
+    [#scoped packed = (.node.@spacing[0]! = "compact")] 
+    [#scoped prevCompactPara = compactPara]
     [#if packed]
        [#set compactPara = true]
     [/#if]
@@ -256,13 +254,14 @@
     [#set compactPara = prevCompactPara]
 [/#macro]
 
-[#macro para][#scoped content]
+[#macro para]
   [#if compactPara!]
-     [#recurse ]
+     [#recurse]
   [#else]
+    [#scoped content]
     [#set inHtmlP = true]
     <p>[#t]
-    [#local content][#recurse ][/#local][#t]
+    [#set content][#recurse][/#set][#t]
     [#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. --]
     [#if !content?matches(r".*<p>\s*$", "s")]
         ${content}</p>[#t]
@@ -285,29 +284,27 @@
 [/#if]
 [/#macro]
 
-[#macro phrase][#scoped lastFontBgColor moreStyle role bgcolors]
-  [#set role = .node.@role[0]!]
-  [#set bgcolors = {"markedComment" : "#00FF00", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#00FFFF", "markedInterpolation" : "#FF0000", "markedFTLTag" : "#FFFF00"}]
+[#macro phrase]
+  [#scoped lastFontBgColor = fontBgColor]
+  [#scoped moreStyle=""]
+  [#scoped role = .node.@role[0]!]
+  [#scoped bgcolors = {"markedComment" : "#00FF00", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#00FFFF", "markedInterpolation" : "#FF0000", "markedFTLTag" : "#FFFF00"}]
   [#if role = "homepage"]
     http://freemarker.org[#t]
   [#elseif role = "markedInvisibleText"]
     [#if fontBgColor! != ""]
       [#set moreStyle = ";background-color:${fontBgColor}"]
-    [#else]
-      [#set moreStyle = ""]
     [/#if]
-    <i><span style="color: #999999 ${moreStyle}">[#recurse ]</span></i>[#t]
+    <i><span style="color: #999999 ${moreStyle}">[#recurse]</span></i>[#t]
   [#elseif role = "forProgrammers"]
     [#if fontBgColor! != ""]
       [#set moreStyle = ";background-color:${fontBgColor}"]
-    [#else]
-      [#set moreStyle = ""]
     [/#if]
-    <span style="color: #333399 ${moreStyle}"><i>[#recurse ]</i></span>[#t]
+    <span style="color: #333399 ${moreStyle}"><i>[#recurse]</i></span>[#t]
   [#else]
     [#set lastFontBgColor = fontBgColor!]
     [#set fontBgColor = bgcolors[role]]
-    <span style="background-color:${bgcolors[role]}">[#recurse ]</span>[#t]
+    <span style="background-color:${bgcolors[role]}">[#recurse]</span>[#t]
     [#set fontBgColor = lastFontBgColor]
   [/#if]
 [/#macro]
