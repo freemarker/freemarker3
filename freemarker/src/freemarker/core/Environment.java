@@ -1300,19 +1300,44 @@ public final class Environment extends Configurable implements Scope {
      * the shared variables in the <code>Configuration</code>.
      */
     public TemplateHashModel getDataModel() {
-        return new TemplateHashModel() {
+    	final TemplateHashModel result = new TemplateHashModel() {
             public boolean isEmpty() {
                 return false;
             }
 
             public TemplateModel get(String key) throws TemplateModelException {
-                TemplateModel result = rootDataModel.get(key);
-                if (result == null) {
-                    result = getConfiguration().getSharedVariable(key);
+                TemplateModel value = rootDataModel.get(key);
+                if (value == null) {
+                    value = getConfiguration().getSharedVariable(key);
                 }
-                return result;
+                return value;
             }
         };
+        
+        if (rootDataModel instanceof TemplateHashModelEx) {
+        	return new TemplateHashModelEx() {
+        		public boolean isEmpty() throws TemplateModelException {
+        			return result.isEmpty();
+        		}
+        		public TemplateModel get(String key) throws TemplateModelException {
+        			return result.get(key);
+        		}
+        		
+        		//NB: The methods below do not take into account
+        		// configuration shared variables even though
+        		// the hash will return them, if only for BWC reasons
+        		public TemplateCollectionModel values() throws TemplateModelException {
+        			return ((TemplateHashModelEx) rootDataModel).values();
+        		}
+        		public TemplateCollectionModel keys() throws TemplateModelException {
+        			return ((TemplateHashModelEx) rootDataModel).keys();
+        		}
+        		public int size() throws TemplateModelException {
+        			return ((TemplateHashModelEx) rootDataModel).size();
+        		}
+        	};
+        }
+        return result;
     }
 
     private void pushElement(TemplateElement element) {
