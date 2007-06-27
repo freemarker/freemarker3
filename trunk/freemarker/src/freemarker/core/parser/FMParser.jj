@@ -649,7 +649,7 @@ TOKEN:
     <NUMERICAL_ESCAPE : "#{" > : FM_EXPRESSION
 }
 
-<FM_EXPRESSION, IN_PAREN> SKIP :
+<FM_EXPRESSION, IN_PAREN, NAMED_PARAMETER_EXPRESSION> SKIP :
 {
     < ( " " | "\t" | "\n" | "\r" )+ >
     |
@@ -669,7 +669,7 @@ TOKEN:
     < "-->"  | "--]" > {if (parenthesisNesting >0) SwitchTo(IN_PAREN); else SwitchTo(FM_EXPRESSION);}
 }
 
-<FM_EXPRESSION, IN_PAREN, NO_SPACE_EXPRESSION> TOKEN :
+<FM_EXPRESSION, IN_PAREN, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
 {
   <#ESCAPED_CHAR :  "\\"
            (
@@ -825,7 +825,7 @@ TOKEN:
   >
 }
 
-<FM_EXPRESSION, NO_SPACE_EXPRESSION> TOKEN :
+<FM_EXPRESSION, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
 {
   <DIRECTIVE_END : ">">
   {
@@ -851,6 +851,11 @@ TOKEN:
 <NO_SPACE_EXPRESSION> TOKEN :
 {
     <TERMINATING_WHITESPACE :  (["\n", "\r", "\t", " "])+> : FM_EXPRESSION
+}
+
+<NAMED_PARAMETER_EXPRESSION> TOKEN :
+{
+	<TERMINATING_EXCLAM : "!" (["\n", "\r", "\t", " "])+> : FM_EXPRESSION
 }
 
 <NO_PARSE> TOKEN :
@@ -942,6 +947,7 @@ Expression PrimaryExpression() :
                 |<OPEN_PAREN>
                 |<BUILT_IN>
                 |<EXCLAM>
+                |<TERMINATING_EXCLAM>
                 |<EXISTS>)
       exp=AddSubExpression(exp)
   )*
@@ -1384,11 +1390,18 @@ Expression DefaultTo(Expression exp) :
    Token t;
 }
 {
-   t=<EXCLAM>
-   [
-     LOOKAHEAD(Expression())
-      rhs=Expression()
-   ]
+   
+   (
+      t=<TERMINATING_EXCLAM>
+      |
+      (
+       t=<EXCLAM>
+       [
+         LOOKAHEAD(Expression())
+          rhs=Expression()
+       ]
+      )
+   )
    {
       DefaultToExpression result = new DefaultToExpression(exp, rhs);
       if (rhs ==null) {
@@ -2475,6 +2488,7 @@ NamedArgsList NamedArgsList() :
 {
 	firstParam=<ID>
 	<EQUALS> 
+    {token_source.SwitchTo(token_source.NAMED_PARAMETER_EXPRESSION);}
 	arg=Expression()  
 	{
 		result.addNamedArg(firstParam.image, arg);
@@ -2482,7 +2496,8 @@ NamedArgsList NamedArgsList() :
 	(
 	   [<COMMA>]
 	   id=<ID>
-	   <EQUALS> 
+	   <EQUALS>
+	   {token_source.SwitchTo(token_source.NAMED_PARAMETER_EXPRESSION);}
 	   arg=Expression()
 	   {result.addNamedArg(id.image, arg);}
 	)*
