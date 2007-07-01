@@ -117,9 +117,6 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
             }
             return new SimpleDate((java.util.Date) obj, getDefaultDateType());
         }
-        if (obj.getClass().isArray()) {
-            obj = convertArray(obj);
-        }
         if (obj instanceof Collection) {
             return new SimpleSequence((Collection) obj, this);
         }
@@ -131,6 +128,9 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
         }
         if (obj instanceof Iterator) {
             return new SimpleCollection((Iterator) obj, this);
+        }
+        if (obj.getClass().isArray()) {
+            obj = convertArray(obj);
         }
         return handleUnknownType(obj);
     }
