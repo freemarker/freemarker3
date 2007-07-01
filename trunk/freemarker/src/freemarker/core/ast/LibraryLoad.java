@@ -70,7 +70,7 @@ public final class LibraryLoad extends TemplateElement {
 
     public final Expression templateName;
     public final String namespace;
-    private final String templatePath;
+    private String templatePath="";
 
     /**
      * @param template the template that this <tt>Include</tt> is a part of.
@@ -82,9 +82,11 @@ public final class LibraryLoad extends TemplateElement {
             String namespace)
     {
         this.namespace = namespace;
-        String templatePath1 = template.getName();
-        int lastSlash = templatePath1.lastIndexOf('/');
-        templatePath = lastSlash == -1 ? "" : templatePath1.substring(0, lastSlash + 1);
+        if (template != null) {
+        	String templatePath1 = template.getName();
+        	int lastSlash = templatePath1.lastIndexOf('/');
+        	templatePath = lastSlash == -1 ? "" : templatePath1.substring(0, lastSlash + 1);
+        }
         this.templateName = templateName;
     }
 

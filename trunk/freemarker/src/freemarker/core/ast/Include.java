@@ -72,7 +72,7 @@ public class Include extends TemplateElement {
     private Expression includedTemplateName, encodingExp, parseExp;
     private String encoding;
     private boolean parse;
-    private final String templatePath;
+    private String templatePath="";
 
     /**
      * @param template the template that this <tt>Include</tt> is a part of.
@@ -85,9 +85,11 @@ public class Include extends TemplateElement {
             Expression encodingExp,
             Expression parseExp)
     {
-        String templatePath1 = template.getName();
-        int lastSlash = templatePath1.lastIndexOf('/');
-        templatePath = lastSlash == -1 ? "" : templatePath1.substring(0, lastSlash + 1);
+    	if (template != null) {
+    		String templatePath1 = template.getName();
+    		int lastSlash = templatePath1.lastIndexOf('/');
+    		templatePath = lastSlash == -1 ? "" : templatePath1.substring(0, lastSlash + 1);
+    	}
         this.includedTemplateName = includedTemplateName;
         if (encodingExp instanceof StringLiteral) {
             encoding = encodingExp.toString();

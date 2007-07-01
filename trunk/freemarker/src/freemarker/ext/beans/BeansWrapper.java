@@ -434,8 +434,6 @@ public class BeansWrapper implements ObjectWrapper
             return modelCache.getInstance(object, simpleMapWrapper ? SimpleMapModel.FACTORY : MapModel.FACTORY);
         if(object instanceof Collection)
             return modelCache.getInstance(object, CollectionModel.FACTORY);
-        if(object.getClass().isArray())
-            return modelCache.getInstance(object, ArrayModel.FACTORY);
         if(object instanceof Number)
             return modelCache.getInstance(object, NumberModel.FACTORY);
         if(object instanceof Date)
@@ -448,6 +446,8 @@ public class BeansWrapper implements ObjectWrapper
             return new IteratorModel((Iterator)object, this);
         if(object instanceof Enumeration)
             return new EnumerationModel((Enumeration)object, this);
+        if(object.getClass().isArray())
+            return modelCache.getInstance(object, ArrayModel.FACTORY);
         return modelCache.getInstance(object, StringModel.FACTORY);
     }
 

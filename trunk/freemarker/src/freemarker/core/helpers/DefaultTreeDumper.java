@@ -729,8 +729,10 @@ public class DefaultTreeDumper {
 	
 	
 	public String render(TextBlock node) {
-//		String text = node.getText();
-		String text = node.getSource();
+		String text = node.getText();
+		try {
+			text = node.getSource();
+		} catch (Exception e) {} 
 		if (!node.unparsed
 			&& text.indexOf(OPEN_BRACKET + "#") <0
 		    && text.indexOf(OPEN_BRACKET + "@") <0
