@@ -132,7 +132,7 @@ public class AssignmentInstruction extends TemplateElement {
     }
     
     public String getDescription() {
-    	return "REVISIT";
+    	return "assignment to variable: " + varname;
     }
 
     public TemplateElement postParseCleanup(boolean stripWhitespace) throws ParseException {
