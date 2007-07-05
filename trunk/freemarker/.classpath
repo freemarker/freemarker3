@@ -19,5 +19,5 @@
 	<classpathentry kind="lib" path="lib/ant.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/jruby.jar" sourcepath="/Users/revusky/experimental/jruby/src"/>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry kind="output" path=".bin/"/>
 </classpath>

@@ -106,10 +106,7 @@ $Id: build.xml,v 1.51 2004/03/13 21:08:19 ddekany Exp $
     <ant dir="../freemarker" target="javadoc"/>
     <delete dir="${docgen.output.dir}/api" />
     <copy todir="${docgen.output.dir}/api">
-        <fileset dir="../freemarker/build/api">
-            <exclude name="CVS/**"/>
-            <exclude name="manual/**"/>
-        </fileset>
+        <fileset dir="../freemarker/build/api" />
     </copy>
 </target>
 
