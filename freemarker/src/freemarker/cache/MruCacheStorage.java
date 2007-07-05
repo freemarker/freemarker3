@@ -148,7 +148,7 @@ public class MruCacheStorage implements CacheStorage
         map.clear();
         strongSize = softSize = 0;
         // Quick refQueue processing
-        while(refQueue.poll() != null);
+        while(refQueue.poll() != null) { /* Do nothing */ }
     }
 
     private void relinkEntryAfterStrongHead(MruEntry entry, Object newValue) {

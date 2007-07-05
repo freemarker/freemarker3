@@ -73,28 +73,34 @@ import freemarker.template.*;
 
 
 /**
- * <p>This is an <a href="http://jakarta.apache.org/ant/" target="_top">Ant</a> task for transforming
- * XML documents using FreeMarker templates. It uses the adapter class
- * {@link NodeListModel}. It will read a set of XML documents, and pass them to
- * the template for processing, building the corresponding output files in the
- * destination directory.</p>
- * <p>It makes the following variables available to the template in the data model:</p>
+ * <p>This is a simple <a href="http://jakarta.apache.org/ant/" target="_top">Ant</a>
+ * task for transforming XML documents using FreeMarker templates. It wraps the XML
+ * document using {@link freemarker.ext.dom.NodeModel}, which means that the templat
+ * will see the XML document as descrtibed in <b>the XML Processing Guide in
+ * the FreeMarker Manual</b>. It will read a set of XML documents, and pass them
+ * to the template for processing, building the corresponding output files in
+ * the destination directory (one file per XML).</p>
+ * <p>It makes the following variables available to the template
+ * (in the data-model):</p>
  * <ul>
- * <li><tt>document</tt>: <em>Deprecated!</em> The DOM tree of the currently processed XML file wrapped
-      with the legacy {@link freemarker.ext.xml.NodeListModel}.
-      For new projects you should use the <tt>.node</tt> instead, which initially
-      contains the DOM Document wrapped with {@link freemarker.ext.dom.NodeModel}.</li>
+ * <li>The special FreeMarker varaible <tt>.node</tt>: Initially it's the root
+ *    of the DOM tree (the "document") of the currently processed XML file. But
+ *    as it is described in the FreeMarker Manual, <tt>.node</tt> variable may
+ *    stores another node when executing <tt>#visit</tt>/<tt>#recurse</tt></li>
  * <li><tt>properties</tt>: a {@link freemarker.template.SimpleHash} containing
- * properties of the project that executes the task</li>
- * <li><tt>userProperties</tt>: a {@link freemarker.template.SimpleHash} containing
- * user properties of the project that executes the task</li>
+ * properties of the project that executes the task. That is, you can read
+ * the properties in the template like <tt>properties.myProperty</tt>
+ * or <tt>properties["myProperty"]<tt>.</li>
+ * <li><tt>userProperties</tt>: again, a {@link freemarker.template.SimpleHash}
+ * containing user properties of the project that executes the task</li>
  * <li><tt>project</tt>: the DOM tree of the XML file specified by the
  * <tt>projectfile</tt>. It will not be available if you didn't specify the
  * <tt>projectfile</tt> attribute.</li>
  * <li>further custom models can be instantiated and made available to the 
  * templates using the <tt>models</tt> attribute.</li>
  * </ul>
- * <p>It supports the following attributes:</p>
+ * 
+ * <p>This Ant task supports the following attributes:</p>
  * <table border="1" cellpadding="2" cellspacing="0">
  *   <tr>
  *     <th valign="top" align="left">Attribute</th>
@@ -200,7 +206,7 @@ import freemarker.template.*;
  *   </tr>
  * </table>
  * 
- * <p>It supports the following nesed elements:</p>
+ * <p>This Ant task supports the following nesed elements:</p>
  * <table border="1" cellpadding="2" cellspacing="0">
  *   <tr>
  *     <th valign="top" align="left">Element</th>
@@ -244,6 +250,9 @@ import freemarker.template.*;
  *    <td valign="top" align="center">No</td>
  *   </tr>
  * </table>
+ * 
+ * <p><b>Note:</b> If you need a more feature-rich XML transformer task, you may
+ * use <a href="http://fmpp.sourceforge.net">FMPP</a>.</p>
  * 
  * @author Attila Szegedi
  * @author Jonathan Revusky, jon@revusky.com

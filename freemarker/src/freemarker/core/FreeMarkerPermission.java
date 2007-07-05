@@ -64,7 +64,7 @@ public class FreeMarkerPermission extends BasicPermission
     /**
      * Checks a permission if there is a SecurityManager installed in the JVM
      * and the Configuration's isSecure() returns true.
-     * @param the configuration that is checked for being secured.
+     * @param config the configuration that is checked for being secured.
      * @param permission the permission to check
      * @throws SecurityException if the permission check fails.
      */
