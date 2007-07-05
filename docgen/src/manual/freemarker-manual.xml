@@ -411,10 +411,10 @@
 
         <itemizedlist>
           <listitem>
-            <para>String: It's text, that is, an arbitrary sequence of
-            characters such as ''m'', ''o'', ''u'', ''s'', ''e'' above. For
-            example the <literal>name</literal>-s and
-            <literal>size</literal>-s are strings above.</para>
+            <para>String: Text, that is, an arbitrary sequence of characters
+            such as ''m'', ''o'', ''u'', ''s'', ''e'' above. For example the
+            <literal>name</literal>-s and <literal>size</literal>-s are
+            strings above.</para>
           </listitem>
 
           <listitem>
@@ -488,10 +488,9 @@
             they are instructions to FreeMarker and will not be printed to the
             output. The name of these tags start with <literal>#</literal>,
             and hey use <literal>[</literal> and <literal>]</literal> instead
-            of <literal>&lt;</literal> and <literal>&gt;</literal>. (Just so I
-            don't state false things: the name of certain FTL tags start with
-            <literal>@</literal> instead of <literal>#</literal>... this will
-            be explained in later chapters.)</para>
+            of <literal>&lt;</literal> and <literal>&gt;</literal>.
+            (User-defined FTL tags use <literal>@</literal> instead of
+            <literal>#</literal>, but they are an advanced topic.)</para>
           </listitem>
 
           <listitem>
