@@ -165,8 +165,9 @@
   <part id="dgui" xreflabel="Designer's Guide">
     <title>Designer's Guide</title>
 
-    <chapter id="dgui_quickstart" xreflabel="Designer's Guide/Quick Start">
-      <title>Quick Start</title>
+    <chapter id="dgui_quickstart"
+             xreflabel="Designer's Guide/Quick Start and Overview">
+      <title>Quick Start and Overview</title>
 
       <para>This chapter is a very rough introduction to FreeMarker. The
       chapters after this will go over things in much greater detail.
@@ -334,8 +335,9 @@
         <literal>elephant</literal>, <literal>python</literal>,
         <literal>whatnot</literal>) are called <emphasis
         role="term">hashes</emphasis>. Hashes store other variables (the so
-        called subvariables) by a lookup name (e.g. "animlas", "mouse" or
-        "price").</para>
+        called <anchor
+        id="topic.dataModel.subVar" /><emphasis>subvariables</emphasis>) by a
+        lookup name (e.g. "animlas", "mouse" or "price").</para>
 
         <para>The variables that store a single value
         (<literal>size</literal>, <literal>price</literal>,
@@ -813,136 +815,85 @@ All Rights Reserved.
     </chapter>
 
     <chapter id="dgui_datamodel" xreflabel="Designer's Guide/The Data Model">
-      <title>The Data Model</title>
-
-      <remark>Here I will repeat things from Quick Start somewhat... Yes, I
-      know, this can be annoying for the reader. OTOH I want the documentation
-      be complete without the Quick Start. The aim of the Quick Start is just
-      to give a comprehensive understanding of FreeMarker when the user sees
-      FreeMarker for the first time in his life. In the further chapters he
-      would get lost in the details otherwise.</remark>
+      <title>Values</title>
 
       <sect1 id="dgui_datamodel_basics"
              xreflabel="Designer's Guide/The Data Model/Basics">
         <title>Basics</title>
 
-        <anchor id="topic.dataModel.subVar" />
+        <note>
+          <para>It is assumed to you have already read the <xref
+          linkend="dgui_quickstart" /> chapter.</para>
+        </note>
 
-        <anchor id="topic.dataModel.parent" />
-
-        <anchor id="topic.dataModel.tree" />
-
-        <indexterm>
-          <primary>root</primary>
-
-          <secondary>definition</secondary>
-        </indexterm>
-
-        <indexterm>
-          <primary>subvariable</primary>
-
-          <secondary>definition</secondary>
-        </indexterm>
-
-        <indexterm>
-          <primary>data model</primary>
-        </indexterm>
-
-        <informalfigure>
-          <graphic fileref="images/figures/tree.png" role="alt:tree" />
-        </informalfigure>
-
-        <para>As represented visually in the picture, the <emphasis
-        role="term">data model</emphasis> is organized hierarchically, as a
-        tree. The blue balls represent the variables that are available to the
-        template. Except for the topmost object, the <emphasis
-        role="term">root</emphasis>, each object has exactly one
-        <emphasis>parent</emphasis> (that's the ball that you reach first when
-        you go upward along the black line.) Variables have zero or more
-        <emphasis role="term">subvariables</emphasis>. You can access any
-        variable (blue ball) by starting at the root and going down along the
-        edges (black lines).</para>
-
-        <para>The following examples are based on the data model represented
-        below:</para>
+        <para>First I would like to introduce the <emphasis
+        role="term">value</emphasis> term as it is used in the computer world.
+        Examples of values as you know them from the everyday life are 16,
+        0.5, and so on. In the case of computer languages this term has a
+        wider meaning, as a value need not be a number. Take this
+        data-model:</para>
 
         <programlisting id="example.stdDataModel" role="dataModel">(root)
  |
  +- user = "Big Joe"
  |
- +- animals
+ +- today = Jul 6, 2007
+ |
+ +- todayHoliday = false
+ |
+ +- lotteryNumbers
+ |   |
+ |   +- (1st) = 20
+ |   |
+ |   +- (2st) = 14
+ |   |
+ |   +- (3rd) = 42
+ |   |
+ |   +- (4th) = 8
+ |   |
+ |   +- (5th) = 15
+ |
+ +- cargo
      |
-     +- (1st)
-     |   |
-     |   +- name = "white mouse"
-     |   |
-     |   +- price = 30
+     +- name = "coal"
      |
-     +- (2nd)
-     |   |
-     |   +- name = "black mouse"
-     |   |
-     |   +- price = 25
-     |
-     +- (3rd)
-         |
-         +- name = "green mouse"
-         |
-         +- price = 150</programlisting>
+     +- weight = 35</programlisting>
 
-        <para>In the Quick Start we introduced three basic types of objects
-        that you can use from a template: scalars, hashes and sequences. That
-        was a simplification. In fact a variable may have more than one of
-        these abilities:</para>
+        <para>Here we say that the value of the the <literal>user</literal>
+        variable is "Big Joe" (a string), the value of
+        <literal>today</literal> is Jul 6, 2007 (a date), the value of
+        <literal>todayHoliday</literal> is false (a boolean), the value of
+        <literal>lotteryNumbers</literal> is 20, 14, 42, 8, 15 (a sequence),
+        and the valoe of cargo is that hash above. So, a value can be anything
+        that can be stored in a variable. Of course a value need not be stored
+        in a variable to be a value, for example we have the value 0
+        here:</para>
 
-        <remark>I do not think the reader needs to know this at this point.
-        (JR)</remark>
+        <para><programlisting role="template">[#if cargo.weight &gt; <emphasis>100</emphasis>]Warning! Heavy cargo![/#if]</programlisting></para>
 
-        <remark>At this point? The first iteration (Quick Start) is over. In
-        this second iteration where I want to show everything... (DD)</remark>
+        <para>or it can be the temporaly result of a calculation, such as 2
+        and then 3 when this template is executed (it will print 3):</para>
 
-        <itemizedlist>
-          <listitem>
-            <para>Storing a single value. In the example: the
-            <literal>user</literal>, <literal>name</literal> and
-            <literal>price</literal> objects do this. Objects like that are
-            called <emphasis role="term">scalars </emphasis>.</para>
-          </listitem>
+        <programlisting role="template">${5 - (1 + 1)}</programlisting>
 
-          <listitem>
-            <para>Acting as a holder or container for other objects and
-            associating a unique lookup name with each one. In the example:
-            the root and the items in the <literal>animals</literal> list do
-            this. They are called <emphasis
-            role="term">hashes</emphasis></para>
-          </listitem>
+        <para>or in fact the result of the earlier cargo weight comparison
+        (which was the value: false). So now you may feel what the term
+        <emphasis>value</emphasis> means.</para>
 
-          <listitem>
-            <para>Acting as a holder or container for objects in a sequence.
-            The <literal>animals</literal> object above is an example of this.
-            Object like this are called <emphasis
-            role="term">sequences</emphasis>.</para>
-          </listitem>
+        <para>Values have an important property, their <emphasis
+        role="term">type</emphasis>. For example thet type of the value of the
+        <literal>user</literal> variable is string, and the type of the value
+        of the <literal>lotterNumbers</literal> variable is a sequence. The
+        type of a value is important because it determines to a large extent
+        what you can do with the value. Like <literal>${user/2}</literal> is
+        an error, but <literal>${cargo.weight/2}</literal> works and prints
+        17.5, since division only does make sense for a number. Or, you can
+        list with <literal>[#list <replaceable>...</replaceable>]</literal>
+        only a seqence.</para>
 
-          <listitem>
-            <para>Calculating something based on parameters you give, and then
-            returning the result as a new object. We have not yet seen an
-            example of this. Objects like this are called <emphasis
-            role="term">methods</emphasis>.</para>
-          </listitem>
-
-          <listitem>
-            <para>Acting as a user-defined directive (user-defined FTL tag).
-            Such variables are called macros and transforms.</para>
-          </listitem>
-        </itemizedlist>
-
-        <para>The abilities of an object determine the ways you can use it in
-        your template. Typically the programmer will create a data model for
-        you where each variable has only one of these abilities, but
-        technically it is possible that a variable has more than one (even
-        all) of the above abilities. For example in the data model below,
-        <literal>mouse</literal> is both a scalar and a hash:</para>
+        <para>A value can have to multiple types, although it's rarely used.
+        For example in the data model below <literal>mouse</literal> is both a
+        string and a hash:</para>
 
         <programlisting role="dataModel">(root)
  |
@@ -950,7 +901,7 @@ All Rights Reserved.
      |
      +- age = 12
      |
-     +- color = "brown"&gt;</programlisting>
+     +- color = "brown"</programlisting>
 
         <para>If you merge this template with the above data model:</para>
 
@@ -967,27 +918,41 @@ brown</programlisting>
 
       <sect1 id="dgui_datamodel_scalar"
              xreflabel="Designer's Guide/The Data Model/Scalar variables">
-        <title>Scalar variables</title>
+        <title>Strings, numbers and other scalars</title>
 
         <anchor id="topic.designer.scalarVariable" />
 
-        <para>A scalar stores a single value. The value can be a:</para>
+        <para>These are the basic, simple kind of values. They can be:</para>
 
         <itemizedlist>
           <listitem>
-            <para>String: It is simple text, e.g. the name of a product. If
-            you want to give a string value directly in the template (rather
-            than use a variable that comes from the data model), you write the
+            <para>String: It is simple text, e.g. the name of a product. (If
+            you want to give a string value directly in the template, rather
+            than use a variable that comes from the data model, you write the
             text between quotation marks, e.g. <literal>"green
-            mouse"</literal></para>
+            mouse"</literal> or <literal>'green mouse'</literal>.)</para>
           </listitem>
 
           <listitem>
-            <para>Number: For example the price of a product. If you want to
-            give a numerical value directly in the template (rather than use a
-            variable that comes from the data model), then you write for
-            example: <literal>150</literal> or <literal>-90.05</literal> or
-            <literal>0.001</literal></para>
+            <para>Number: For example the price of a product. (If you want to
+            give a numerical value directly in the template, then you write
+            for example: <literal>150</literal> or <literal>-90.05</literal>
+            or <literal>0.001</literal>.)</para>
+          </listitem>
+
+          <listitem>
+            <para><indexterm>
+                <primary>boolean</primary>
+              </indexterm>Boolean: A boolean value represents a logical true
+            or false (yes or no). For example, if a the visitor has been
+            logged in or not. Typically you use booleans as the condition of
+            the <literal>if</literal> directive, like <literal>[#if loggedIn
+            ]<replaceable>...</replaceable>[/#if]</literal> or <literal>[#if
+            price == 0]<replaceable>...</replaceable>[/#if]</literal>; in the
+            last case the result of the <literal>price == 0</literal> part is
+            a boolean value. (In the templates you can directly specify a
+            boolean with the reserved words <literal>true</literal> and
+            <literal>false</literal>. )</para>
           </listitem>
 
           <listitem>
@@ -1024,64 +989,54 @@ brown</programlisting>
             problem is also an advanced topic that will be discussed <link
             linkend="ref_builtin_date_datetype">later</link>.</para>
           </listitem>
-
-          <listitem>
-            <para><indexterm>
-                <primary>boolean</primary>
-              </indexterm>Boolean: A boolean value represents a logical true
-            or false (yes or no). For example, if a the visitor has been
-            logged in or not. There are only two possible boolean values:
-            <literal>true</literal> and <literal>false</literal>. Typically,
-            you will use booleans with an <literal>[#if
-            <replaceable>...</replaceable>]</literal> instruction when you
-            want to display text based on some condition, say, you show a
-            certain part of the page only for visitors who have logged in:
-            <literal>[#if loggedIn
-            ]<replaceable>...</replaceable>[/#if]</literal></para>
-          </listitem>
         </itemizedlist>
 
         <para>Bear in mind that FreeMarker distinguishes strings from numbers
         and booleans, so the string <literal>"150"</literal> and the number
         <literal>150</literal> are totally different. A number holds a
         numerical value. A boolean holds a logical true or false. A string
-        holds a sequence of characters.</para>
+        holds an arbitrary sequence of characters.</para>
       </sect1>
 
       <sect1 id="dgui_datamodel_hashandseq">
         <title>Hashes, sequences and collections</title>
 
-        <remark>Re-explanation of hash and sequence from a more
-        ''professional'' viewpoint, and some meditation about them.</remark>
+        <remark>Re-explanation of hashes and sequences from a more
+        ''professional'' viewpoint as earlier, and some meditation about
+        them.</remark>
 
-        <para>Some variables do not contain any displayable content
-        themselves, but rather, are containers; they contain other variables.
-        There are two basic types of container: hashes and sequences.</para>
+        <para>These are the values whose purpose is to contain variables; they
+        are just containers. The contained variables are often referred as
+        <emphasis>subvariables</emphasis>. The two basic container types
+        are:</para>
 
         <itemizedlist>
           <listitem>
             <para><indexterm>
                 <primary>hash</primary>
-              </indexterm>A hash associates a unique lookup name with each
-            variable it contains.</para>
+              </indexterm>A hash associates a unique lookup name with each of
+            its subvariables. The name is an unrestricted string. A hash
+            <emphasis>doesn't define an ordering</emphasis> for the
+            subvariables in it. That is, there is no such thing as the first
+            subvariable, and the second subvariable, etc; the variables are
+            just accessed by name.</para>
           </listitem>
 
           <listitem>
             <para><indexterm>
                 <primary>sequence</primary>
-              </indexterm>A sequence associates a number with each variable it
-            contains. Note that the counting starts at zero. Thus, the index
-            for the first item is 0, the number for the second item is 1, and
-            so on.</para>
+              </indexterm>A sequence associates an integer number with each of
+            its subvariables. The first subvariable is associted with 0, the
+            second with 1, the third to 2, and so on; the subvariables are
+            ordered. These number are often called the
+            <emphasis>indexes</emphasis> of the subvarables. Sequences are
+            usually dense, i.e. all indexes up to the index of the last
+            subvariable have an associated subvariable, but it's not strictly
+            necessary.</para>
           </listitem>
         </itemizedlist>
 
-        <para>One very basic difference between hashes and sequences is that
-        the latter defines an ordering (or sequence) for the items it contains
-        (i.e. which subvariable is the first, the second, the third, etc.)
-        while the former has no intrinsic ordering.</para>
-
-        <para>Note that it is possible for a variable to be both a hash and a
+        <para>Note that it is possible for a value to be both a hash and a
         sequence, in which case, it would support index-based access as well
         as access by lookup name. However, typically a container will be
         either a hash or a sequence, not both.</para>
@@ -1090,12 +1045,11 @@ brown</programlisting>
           <primary>collection</primary>
         </indexterm>
 
-        <para>A variable that is a collection is used like a sequence except
-        that you cannot access its size or retrieve its subvariables by index
-        (but they can be still listed with the <link
+        <para>A collection, from the viewpoint of the template author, is a
+        restricted sequence. You cannot access its size or retrieve its
+        subvariables by index, but they can be still listed with the <link
         linkend="ref.directive.list"><literal>list</literal>
-        directive</link>). From your viewpoint a collection is just a
-        restricted sequence.</para>
+        directive</link>.</para>
       </sect1>
 
       <sect1 id="dgui_datamodel_method">
@@ -1107,8 +1061,9 @@ brown</programlisting>
           <primary>method</primary>
         </indexterm>
 
-        <para>A variable that is a method is used to calculate a value based
-        on parameters you give.</para>
+        <para>A value that is a method (a.k.a. a function) is used to
+        calculate another value, influenced by the parameters you give to
+        it.</para>
 
         <para>Suppose that programmers have put the method variable
         <literal>avg</literal> in the data model that can be used to calculate
@@ -1121,13 +1076,15 @@ brown</programlisting>
 
         <programlisting role="template">The average of 3 and 5 is: ${avg(3, 5)}
 The average of 6 and 10 and 20 is: ${avg(6, 10, 20)}
-The average of the price of python and elephant is: ${avg(animals.python.price, animals.elephant.price)}</programlisting>
+The average of the price of a python and an elephant is:
+${avg(animals.python.price, animals.elephant.price)}</programlisting>
 
         <para>this will output:</para>
 
         <programlisting role="output">The average of 3 and 5 is: 4
 The average of 6 and 10 and 20 is: 12
-The average of the price of python and elephant is: 4999.5</programlisting>
+The average of the price of a python and an elephant is:
+4999.5</programlisting>
       </sect1>
 
       <sect1 id="dgui_datamodel_transform">
@@ -1141,10 +1098,10 @@ The average of the price of python and elephant is: 4999.5</programlisting>
           <primary>macro</primary>
         </indexterm>
 
-        <para>Macro and transform variables can be used as user-defined
-        directives (with other words, as FTL tags). This is an advanced
-        feature that will be explained <link
-        linkend="dgui_misc_userdefdir">later</link>.</para>
+        <para>Macro and transform values can be used as user-defined
+        directives (with other words, as FTL tags). This is an advanced topic
+        that will be explained <link
+        linkend="dgui_misc_userdefdir">later</link> in its own chapter.</para>
       </sect1>
 
       <sect1 id="dgui_datamodel_node">
@@ -1152,8 +1109,7 @@ The average of the price of python and elephant is: 4999.5</programlisting>
 
         <para>Node variables represent a node in a tree structure, and are
         used mostly with <link linkend="xgui">XML processing</link>, which is
-        an advanced, and specialized topic. I just mention them here for the
-        sake of completeness.</para>
+        an advanced, and specialized topic.</para>
       </sect1>
     </chapter>
 
@@ -4714,7 +4670,7 @@ That's all.</programlisting>
     <title>Programmer's Guide</title>
 
     <chapter id="pgui_quickstart" xreflabel="Programmer's Guide/Quick Start">
-      <title>Quick Start</title>
+      <title>Getting Started</title>
 
       <para>Note that, if you are new to FreeMarker, you should read at least
       the <xref linkend="dgui_quickstart" /> before this chapter.</para>
