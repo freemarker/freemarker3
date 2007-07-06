@@ -295,7 +295,7 @@
       </sect1>
 
       <sect1 id="dgui_quickstart_datamodel">
-        <title>The data model</title>
+        <title>The data model at a glance</title>
 
         <para>As you have seen, the data model is basically a tree. This tree
         can be arbitrarily complicated and deep, for example:</para>
@@ -465,7 +465,7 @@
       </sect1>
 
       <sect1 id="dgui_quickstart_template">
-        <title>The template</title>
+        <title>The template at a glance</title>
 
         <para>The simplest template is a plain HTML file (or whatever text
         file -- FreeMarker is not confined to HTML). When the client visits
@@ -764,43 +764,56 @@ All Rights Reserved.
         </sect2>
 
         <sect2>
-          <title>Dealing with missing (null) variables</title>
+          <title>Dealing with missing variables</title>
 
           <para>In practice the data model often has variables that are
-          optional. But FreeMarker doesn't tolerate the accessing of missing
-          variables unless you handle the situation explictly. Here we will
-          show the two most tyical ways of doing that.</para>
+          optional (i.e. sometimes missing). To spot some typical human
+          mistakes, FreeMarker doesn't tolerate the referring to missing
+          variables unless you tell them explicity what to do if the variable
+          is missing. Here we will show the two most tyical ways of doing
+          that.</para>
 
-          <para>Whenever you refer to a variable (in whatever context), you
-          can specify a default value for it for the case it's missing (or
-          Java <literal>null</literal>). For example, if you want
-          <literal>user</literal> to default to "Anonymous":</para>
+          <para role="forProgrammers">Note for programmers: A non-existent
+          variable and a variable with <literal>null</literal> value is mostly
+          the same for FreeMarker, so here I just use the term "missing" to
+          cover both cases.</para>
+
+          <para>Wherever you refer to a variable, you can specify a default
+          value for the case the variable is missing, by followin the variable
+          name with a <literal>!</literal> and the default value. Like in the
+          following example, when <literal>user</literal> is missing from data
+          model, the template will behave like if <literal>user</literal>'s
+          value were the string <literal>"Anonymous"</literal>. (When
+          <literal>user</literal> isn't missing, this template behaves exactly
+          like if <literal>!"Anonymous"</literal> were not there):</para>
 
           <programlisting role="template">&lt;h1&gt;Welcome ${user<emphasis>!"Anonymous"</emphasis>}!&lt;/h1&gt;</programlisting>
 
-          <para>You can test if a variable is present (and not Java
-          <literal>null</literal>) using the <literal>??</literal> operator.
-          Combining it with the <literal>if</literal> directive you can skip
-          the whole greeting if the <literal>user</literal> is
-          undefined:</para>
+          <para>You can ask whether a variable isn't missing by putting
+          <literal>??</literal> after its name. Combining this with the
+          already introduced <literal>if</literal> directive you can skip the
+          whole greeting if the <literal>user</literal> variable is
+          missing:</para>
 
           <programlisting role="template">[#if <emphasis>user??</emphasis>]&lt;h1&gt;Welcome ${user}!&lt;/h1&gt;[/#if]</programlisting>
 
-          <para>Note that if you have a variable accessing with multipe steps,
-          like <literal>animals.python.price</literal>, and you want to apply
-          the above tricks to the whole path, not only to its last step
-          (<literal>price</literal> in this case), then you have to use
-          parenthesses like <literal>(animals.python.price)!0</literal> and
-          <literal>(animals.python.price)??</literal>. Writing merely
-          <literal>animals.python.price!0</literal> would protect only if
-          <literal>animals.python</literal> exists and only
-          <literal>price</literal> is possibly missing.</para>
+          <para>Regarding variable accessing with multipe steps, like
+          <literal>animals.python.price</literal>; writing
+          <literal>animals.python.price!0</literal> is correct only if
+          <literal>animals.python</literal> always exists and only the last
+          subvariable, <literal>price</literal>, is possibly missing (in which
+          case here we assume it's <literal>0</literal>). If
+          <literal>animals</literal> or the <literal>python</literal> within
+          it is possibly missing as well, then you have to write
+          <literal>(animals.python.price)!0</literal>. Same logic goes for
+          <literal>??</literal>; <literal>animals.python.price??</literal>
+          versus <literal>(animals.python.price)??</literal>.</para>
         </sect2>
       </sect1>
     </chapter>
 
     <chapter id="dgui_datamodel" xreflabel="Designer's Guide/The Data Model">
-      <title>The Data Model, Detailed</title>
+      <title>The Data Model</title>
 
       <remark>Here I will repeat things from Quick Start somewhat... Yes, I
       know, this can be annoying for the reader. OTOH I want the documentation
@@ -1145,7 +1158,7 @@ The average of the price of python and elephant is: 4999.5</programlisting>
     </chapter>
 
     <chapter id="dgui_template" xreflabel="Designer's Guide/The Template">
-      <title>The Template, Detailed</title>
+      <title>The Template</title>
 
       <indexterm>
         <primary>template</primary>
