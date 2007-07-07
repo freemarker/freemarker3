@@ -828,7 +828,7 @@ All Rights Reserved.
 
         <para>Understading the concept of values and types is crucial for the
         understanding of data models. However, the concept of values and types
-        is not confined to data models, as you will see. </para>
+        is not confined to data models, as you will see.</para>
 
         <sect2>
           <title>What is a value?</title>
@@ -960,11 +960,81 @@ brown</programlisting>
       <sect1>
         <title>The types</title>
 
-        <para>Here you find the list of all supported types.</para>
+        <para>The suppored types are:</para>
+
+        <itemizedlist spacing="compact">
+          <listitem>
+            <para><link linkend="dgui_datamodel_scalar"
+            os="">Scalars:</link></para>
+
+            <itemizedlist spacing="compact">
+              <listitem>
+                <para>String</para>
+              </listitem>
+
+              <listitem>
+                <para>Number</para>
+              </listitem>
+
+              <listitem>
+                <para>Boolean</para>
+              </listitem>
+
+              <listitem>
+                <para>Date</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para><link
+            linkend="dgui_datamodel_container">Containers:</link></para>
+
+            <itemizedlist spacing="compact">
+              <listitem>
+                <para>Hash</para>
+              </listitem>
+
+              <listitem>
+                <para>Sequence</para>
+              </listitem>
+
+              <listitem>
+                <para>Collection</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>Subroutines:</para>
+
+            <itemizedlist spacing="compact">
+              <listitem>
+                <para><link linkend="dgui_datamodel_method">Method or
+                function</link></para>
+              </listitem>
+
+              <listitem>
+                <para><link linkend="dgui_datamodel_transform">Macro or
+                transform</link></para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>Miscellaneous/seldom used:</para>
+
+            <itemizedlist spacing="compact">
+              <listitem>
+                <para><link linkend="dgui_datamodel_node">Node</link></para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+        </itemizedlist>
 
         <sect2 id="dgui_datamodel_scalar"
                xreflabel="Designer's Guide/The Data Model/Scalar variables">
-          <title>Strings, numbers and other scalars</title>
+          <title>Scalars</title>
 
           <anchor id="topic.designer.scalarVariable" />
 
@@ -1058,17 +1128,17 @@ brown</programlisting>
           holds an arbitrary sequence of characters.</para>
         </sect2>
 
-        <sect2 id="dgui_datamodel_hashandseq">
-          <title>Hashes, sequences and collections</title>
+        <sect2 id="dgui_datamodel_container">
+          <title>Containers</title>
 
           <remark>Re-explanation of hashes and sequences from a more
           ''professional'' viewpoint as earlier, and some meditation about
           them.</remark>
 
-          <para>These are the values whose purpose is to contain variables;
-          they are just containers. The contained variables are often referred
-          as <emphasis>subvariables</emphasis>. The two basic container types
-          are:</para>
+          <para>These are the values whose purpose is to contain other
+          variables; they are just containers. The contained variables are
+          often referred as <emphasis>subvariables</emphasis>. The two basic
+          container types are:</para>
 
           <itemizedlist>
             <listitem>
@@ -1121,100 +1191,130 @@ brown</programlisting>
           hash.</para>
         </sect2>
 
-        <sect2 id="dgui_datamodel_method">
-          <title>Methods and functions</title>
+        <sect2>
+          <title>Subroutines</title>
 
-          <anchor id="topic.designer.methodVariable" />
+          <sect3 id="dgui_datamodel_method">
+            <title>Methods and functions</title>
 
-          <indexterm>
-            <primary>method</primary>
-          </indexterm>
+            <anchor id="topic.designer.methodVariable" />
 
-          <para>A value that is a method or a function is used to calculate
-          another value, influenced by the parameters you give to it.</para>
+            <indexterm>
+              <primary>method</primary>
+            </indexterm>
 
-          <para role="forProgrammers">For programmer types: Methods/functions
-          are first-class values, just like in functional programming
-          languages. This means that functions/methods can be the parameters
-          or return values of other functions/methods, assign them to
-          variables, and so on.</para>
+            <para>A value that is a method or a function is used to calculate
+            another value, influenced by the parameters you give to it.</para>
 
-          <para>Suppose that programmers have put the method variable
-          <literal>avg</literal> in the data model that can be used to
-          calculate the average of numbers. If you give the 3 and 5 as
-          parameters when you access <literal>avg</literal>, then you get the
-          value 4.</para>
+            <para role="forProgrammers">For programmer types:
+            Methods/functions are first-class values, just like in functional
+            programming languages. This means that functions/methods can be
+            the parameters or return values of other functions/methods, assign
+            them to variables, and so on.</para>
 
-          <para>The usage of methods will be explained <link
-          linkend="dgui_template_exp_methodcall">later</link>, but perhaps
-          this example helps to understand what methods are:</para>
+            <para>Suppose that programmers have put the method variable
+            <literal>avg</literal> in the data model that can be used to
+            calculate the average of numbers. If you give the 3 and 5 as
+            parameters when you access <literal>avg</literal>, then you get
+            the value 4.</para>
 
-          <programlisting role="template">The average of 3 and 5 is: ${avg(3, 5)}
+            <para>The usage of methods will be explained <link
+            linkend="dgui_template_exp_methodcall">later</link>, but perhaps
+            this example helps to understand what methods are:</para>
+
+            <programlisting role="template">The average of 3 and 5 is: ${avg(3, 5)}
 The average of 6 and 10 and 20 is: ${avg(6, 10, 20)}
 The average of the price of a python and an elephant is:
 ${avg(animals.python.price, animals.elephant.price)}</programlisting>
 
-          <para>this will output:</para>
+            <para>this will output:</para>
 
-          <programlisting role="output">The average of 3 and 5 is: 4
+            <programlisting role="output">The average of 3 and 5 is: 4
 The average of 6 and 10 and 20 is: 12
 The average of the price of a python and an elephant is:
 4999.5</programlisting>
 
-          <para>What is the difference between a method and a function? As far
-          as the template author is concerned not much. Methods typically
-          originate from the data model (<phrase role="forProgrammers">as they
-          reflect the methods of Java objects</phrase>), functions are
-          typically defined in templates (with the <link
-          linkend="ref.directive.function"><literal>function</literal>
-          directive</link> -- an advanced topic), but both can be used on the
-          same way.</para>
-        </sect2>
+            <para>What is the difference between a method and a function? As
+            far as the template author is concerned not much. Methods
+            typically originate from the data model (<phrase
+            role="forProgrammers">as they reflect the methods of Java
+            objects</phrase>), functions are typically defined in templates
+            (with the <link
+            linkend="ref.directive.function"><literal>function</literal>
+            directive</link> -- an advanced topic), but both can be used on
+            the same way.</para>
+          </sect3>
 
-        <sect2 id="dgui_datamodel_transform">
-          <title>Macros and transforms</title>
+          <sect3 id="dgui_datamodel_transform">
+            <title>Macros and transforms</title>
 
-          <indexterm>
-            <primary>transform</primary>
-          </indexterm>
+            <indexterm>
+              <primary>transform</primary>
+            </indexterm>
 
-          <indexterm>
-            <primary>macro</primary>
-          </indexterm>
+            <indexterm>
+              <primary>macro</primary>
+            </indexterm>
 
-          <para>Macro and transform values can be used as user-defined
-          directives (with other words, as FTL tags). Macros and transforms
-          are subroutines, little template fragments. But this is an advanced
-          topic that will be explained <link
-          linkend="dgui_misc_userdefdir">later</link> in its own chapter. As
-          far as the template author is concerend, there is no difference
-          between macros and transforms.</para>
+            <para>Macro and transform values can be used as user-defined
+            directives (with other words, as FTL tags). Macros and transforms
+            are subroutines, little template fragments. But this is an
+            advanced topic that will be explained <link
+            linkend="dgui_misc_userdefdir">later</link> in its own chapter. As
+            far as the template author is concerend, there is no difference
+            between macros and transforms.</para>
 
-          <para>Just to get an idea about macros/tranforms (so just ignore
-          this if you won't understnad), assume we have a variable,
-          <literal>box</literal>, whose value is a macro that prints some kind
-          of fancy HTML message box with a title bar and a message in it. The
-          <literal>box</literal> variable could be used in the template like
-          this:</para>
+            <para>Just to get an idea about macros/tranforms (so just ignore
+            this if you won't understnad), assume we have a variable,
+            <literal>box</literal>, whose value is a macro that prints some
+            kind of fancy HTML message box with a title bar and a message in
+            it. The <literal>box</literal> variable could be used in the
+            template like this:</para>
 
-          <programlisting role="template">[@<emphasis>box</emphasis> title="Attention!"]
+            <programlisting role="template">[@<emphasis>box</emphasis> title="Attention!"]
   Too much copy-pasting may leads to
   maintenance headaches.
 [/@<emphasis>box</emphasis>]</programlisting>
 
-          <para role="forProgrammers">For programmer types: Macros/transforms
-          are first-class values too, just like functions/methods are. That
-          is, you can pass them as parameters to other
-          macros/tranforms/function/methods, return them as the result of
-          function/methods, assign them to variables, and so on.</para>
+            <para role="forProgrammers">For programmer types:
+            Macros/transforms are first-class values too, just like
+            functions/methods are. That is, you can pass them as parameters to
+            other macros/tranforms/function/methods, return them as the result
+            of function/methods, assign them to variables, and so on.</para>
+          </sect3>
         </sect2>
 
-        <sect2 id="dgui_datamodel_node">
-          <title>Nodes</title>
+        <sect2>
+          <title>Miscellaneous</title>
 
-          <para>Node variables represent a node in a tree structure, and are
-          used mostly with <link linkend="xgui">XML processing</link>, which
-          is an advanced, and specialized topic.</para>
+          <sect3 id="dgui_datamodel_node">
+            <title>Nodes</title>
+
+            <para>Node variables represent a node in a tree structure, and are
+            used mostly with <link linkend="xgui">XML processing</link>, which
+            is an advanced, and specialized topic.</para>
+
+            <para>Still, a quick overview nodes <emphasis>for advanced
+            users</emphasis>: A node is similar to a sequence that store other
+            nodes, which are often referred as the children nodes. Also, node
+            stores a reference to its container node, which is often referred
+            as the parent node. The main point of being a node is the
+            topological information; other data must be stored by utilizing
+            that a value can have multiple types. Like, a value may be both a
+            node and a number, in which case it can store a number as the
+            "playload". Apart from the topological information, a node can
+            store some metainformation as well: a node name, a node type
+            (string), and a node namespace (string). For example, if the node
+            symbolizes a <literal>h1</literal> element in an XHTML document,
+            then its name could be <literal>"h1"</literal>, it's node type
+            could be <literal>"element"</literal>, and it's namespace could be
+            <literal>"http://www.w3.org/1999/xhtml"</literal>. But it's up to
+            the designer of the data model if what meaning these
+            metainformations have, and if they are used at all. The way of
+            retrieving the topological and metainformations is described <link
+            linkend="ref_builtins_node">in a later chapter</link> (that you
+            doesn't have to understand at this point).</para>
+          </sect3>
         </sect2>
       </sect1>
     </chapter>
@@ -1239,8 +1339,8 @@ The average of the price of a python and an elephant is:
         <indexterm>
             <primary>FTL</primary>
           </indexterm><emphasis role="term">FTL</emphasis> (for FreeMarker
-        Template Language). This is a very simple language designed for
-        writing templates.</para>
+        Template Language). This is a quite simple programming language
+        designed for writing templates and nothing else.</para>
 
         <para>A template (= FTL program) is a mix of the following
         sections:</para>
@@ -1258,15 +1358,14 @@ The average of the price of a python and an elephant is:
                 <primary>interpolation</primary>
               </indexterm>: These sections will be replaced with a calculated
             value in the output. Interpolations are delimited by
-            <literal>${</literal> and <literal>}</literal> or by
-            <literal>#{</literal> and <literal>}</literal>.</para>
+            <literal>${</literal> and <literal>}</literal>.</para>
           </listitem>
 
           <listitem>
             <para><emphasis role="term">FTL tags</emphasis><indexterm>
                 <primary>FTL tag</primary>
-              </indexterm>: FTL tags are similar to HTML tags, but they are
-            instructions to FreeMarker and will not be printed to the
+              </indexterm>: FTL tags are a bit similar to HTML tags, but they
+            are instructions to FreeMarker and will not be printed to the
             output.</para>
           </listitem>
 
@@ -1369,10 +1468,10 @@ The average of the price of a python and an elephant is:
 
         <para><indexterm>
             <primary>directive</primary>
-          </indexterm>You use FTL tags to refer to <emphasis
-        role="term">directives</emphasis>. In the example you use the
-        <literal>list</literal> directive. Syntactically you do it with two
-        tags: <literal>[#list animals as being]</literal> and
+          </indexterm>You use FTL tags to call <emphasis
+        role="term">directives</emphasis>. In the example you have called the
+        <literal>list</literal> directive. Syntactically you have done it with
+        two tags: <literal>[#list animals as being]</literal> and
         <literal>[/#list]</literal>.</para>
 
         <para><indexterm>
@@ -1398,14 +1497,22 @@ The average of the price of a python and an elephant is:
           </listitem>
         </itemizedlist>
 
-        <para>I assume you understand this without further explanation, since
-        it is similar to HTML syntax. The format of the
+        <para>This is similar to HTML or XML syntax, except that
+        <literal>[</literal> and <literal>]</literal> is used instead of
+        <literal>&lt;</literal> and <literal>&gt;</literal>, and the tag name
+        starts with <literal>#</literal>. The empty directive tag is
+        equivalent to a start-tag plus an end-tag where there is nothing
+        between them. If the directive doesn't support nested content (content
+        between the start-tag and the end-tag), you must use an empty
+        directive tag, or the start-tag with no end-tag. For example instead
+        of <literal>[#include "something"/]</literal> you can just write
+        <literal>[#include "something"]</literal> as FreeMarker knows it can't
+        have nested content anyway.</para>
+
+        <para>The format of the
         <literal><replaceable>parameters</replaceable></literal> depends on
-        the <literal><replaceable>directivename</replaceable></literal>. The
-        empty directive tag is equivalent to a start-tag plus an end-tag where
-        there is nothing between them. If the directive doesn't support nested
-        content (content between the start-tag and the end-tag), you must use
-        the start-tag with no end-tag or an empty directive tag.</para>
+        the
+        <literal><replaceable>directivename</replaceable></literal>.</para>
 
         <para>In fact there are two types of directives: <link
         linkend="gloss.predefinedDirective">predefined directives</link> and
@@ -1413,6 +1520,8 @@ The average of the price of a python and an elephant is:
         directives</link>. For user-defined directives you use
         <literal>@</literal> instead of <literal>#</literal>, for example
         <literal>[@mydirective]<replaceable>...</replaceable>[/@mydirective]</literal>.
+        Further difference is that if the directive has no nested content, you
+        must use the empty directive tag; you can't use a star-tag instead.
         But user-defined directives is an advanced topic that will be
         discussed <link linkend="dgui_misc_userdefdir">later</link>.</para>
 
@@ -1430,7 +1539,11 @@ The average of the price of a python and an elephant is:
 <emphasis>[/#if]</emphasis> [#-- WRONG! --]
 &lt;/ul&gt;</programlisting>
 
-        <para>If you try to use non-existing directive (e.g. you mistype the
+        <para>Note that FreeMarker doesn't care about the nesting of HTML
+        tags, only about the nesting of FTL tags. It just sees HTML as flat
+        text.</para>
+
+        <para>If you try to use a non-existing directive (e.g. you mistype the
         directive name), FreeMarker will decline to use the template and
         produce an error message.</para>
 
@@ -1450,27 +1563,23 @@ The average of the price of a python and an elephant is:
 <phrase role="markedFTLTag">[/#list&nbsp;&nbsp;&nbsp;&nbsp;]</phrase></phrase></programlisting>
 
         <para>You may not, however, insert white-space between the
-        <literal>&lt;</literal> or <literal>&lt;/</literal> and the directive
+        <literal>[</literal> or <literal>[/</literal> and the directive
         name.</para>
 
         <para>The complete list and description of all directives can be found
-        in the <xref linkend="ref_directives" />; however I recommend that you
-        read the chapter about expressions first.</para>
+        in the <xref linkend="ref_directives" /> (but I recommend that you
+        look at the chapter about expressions first).</para>
 
         <note>
-          <para>FreeMarker can be configured to use <literal>[</literal> and
-          <literal>]</literal> instead of <literal>&lt;</literal> and
-          <literal>&gt;</literal> in the FTL tags and FTL comments, like
-          <literal>[#if use = "Big
-          Joe"]<replaceable>...</replaceable>[/#if]</literal>. For more
-          information read: <xref
-          linkend="dgui_misc_alternativesyntax" /></para>
-        </note>
-
-        <note>
-          <para>FreeMarker can be configured so that it also understands
-          predefined directives without <literal>#</literal> (like
-          <literal>&lt;if user = "Big
+          <para>FreeMarker can be configured to use <literal>&lt;</literal>
+          and <literal>&gt;</literal> instead of <literal>[</literal> and
+          <literal>]</literal> in the FTL tags and FTL comments, like
+          <literal>&lt;#if use = "Big
+          Joe"&gt;<replaceable>...</replaceable>&lt;/#if&gt;</literal>. For
+          more information read: <xref
+          linkend="dgui_misc_alternativesyntax" />. FreeMarker can be further
+          configured so that it also understands predefined directives without
+          <literal>#</literal> (like <literal>&lt;if user = "Big
           Joe"&gt;<replaceable>...</replaceable>&lt;/if&gt;</literal>).
           However we don't recommend the usage of this mode. For more
           information read: <xref linkend="ref_depr_oldsyntax" /></para>
@@ -1480,9 +1589,7 @@ The average of the price of a python and an elephant is:
       <sect1 id="dgui_template_exp" xreflabel="Designer's Guide/Expressions">
         <title>Expressions</title>
 
-        <para>Table of Contents and quick reminder for those of you who have
-        already read this chapter and are checking back for specific
-        information:</para>
+        <para>Table of Contents and quick reminder:</para>
 
         <itemizedlist spacing="compact">
           <listitem>
@@ -9759,7 +9866,7 @@ Test Book</programlisting>
     &lt;p&gt;${p}
   [/#list]
 [/#list]
-<emphasis>[/#escape];</emphasis></programlisting>
+<emphasis>[/#escape]</emphasis></programlisting>
 
           <para>So if the book title is "Romeo &amp; Julia", the resulting
           HTML output will be correctly:</para>
