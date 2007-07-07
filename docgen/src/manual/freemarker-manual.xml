@@ -162,12 +162,12 @@
     </simplesect>
   </preface>
 
-  <part id="dgui" xreflabel="Designer's Guide">
-    <title>Designer's Guide</title>
+  <part id="dgui" xreflabel="Template Author's Guide">
+    <title>Template Author's Guide</title>
 
-    <chapter id="dgui_quickstart"
-             xreflabel="Designer's Guide/Quick Start and Overview">
-      <title>Quick Start and Overview</title>
+    <chapter id="dgui_quickstart" xreflabel="Designer's Guide/Getting Started"
+             xml:base="">
+      <title>Getting Started</title>
 
       <para>This chapter is a very rough introduction to FreeMarker. The
       chapters after this will go over things in much greater detail.
@@ -814,26 +814,31 @@ All Rights Reserved.
       </sect1>
     </chapter>
 
-    <chapter id="dgui_datamodel" xreflabel="Designer's Guide/The Data Model">
-      <title>Values</title>
+    <chapter id="dgui_datamodel" xreflabel="Designer's Guide/Values, Types">
+      <title>Values, Types</title>
 
       <sect1 id="dgui_datamodel_basics"
              xreflabel="Designer's Guide/The Data Model/Basics">
         <title>Basics</title>
 
         <note>
-          <para>It is assumed to you have already read the <xref
+          <para>It is assumed that you have already read the <xref
           linkend="dgui_quickstart" /> chapter.</para>
         </note>
 
-        <para>First I would like to introduce the <emphasis
-        role="term">value</emphasis> term as it is used in the computer world.
-        Examples of values as you know them from the everyday life are 16,
-        0.5, and so on. In the case of computer languages this term has a
-        wider meaning, as a value need not be a number. Take this
-        data-model:</para>
+        <para>Understading the concept of values and types is crucial for the
+        understanding of data models. However, the concept of values and types
+        is not confined to data models, as you will see. </para>
 
-        <programlisting id="example.stdDataModel" role="dataModel">(root)
+        <sect2>
+          <title>What is a value?</title>
+
+          <para>Examples of <emphasis>values</emphasis> as you know them from
+          the everyday life are 16, 0.5, and so on. In the case of computer
+          languages the value term has a wider meaning, as a value needn't be
+          a number. For example, take this data-model:</para>
+
+          <programlisting id="example.stdDataModel" role="dataModel">(root)
  |
  +- user = "Big Joe"
  |
@@ -857,45 +862,60 @@ All Rights Reserved.
      |
      +- name = "coal"
      |
-     +- weight = 35</programlisting>
+     +- weight = 35
+</programlisting>
 
-        <para>Here we say that the value of the the <literal>user</literal>
-        variable is "Big Joe" (a string), the value of
-        <literal>today</literal> is Jul 6, 2007 (a date), the value of
-        <literal>todayHoliday</literal> is false (a boolean), the value of
-        <literal>lotteryNumbers</literal> is 20, 14, 42, 8, 15 (a sequence),
-        and the valoe of cargo is that hash above. So, a value can be anything
-        that can be stored in a variable. Of course a value need not be stored
-        in a variable to be a value, for example we have the value 0
-        here:</para>
+          <para>Here we say that the value of the the <literal>user</literal>
+          variable is "Big Joe" (a string), the value of
+          <literal>today</literal> is Jul 6, 2007 (a date), the value of
+          <literal>todayHoliday</literal> is false (a boolean), the value of
+          <literal>lotteryNumbers</literal> is 20, 14, 42, 8, 15 (a sequence),
+          and the value of <literal>cargo</literal> is a hash of tree other
+          variables. As a further example, the value of 2nd item inside the
+          value of <literal>lotteryNumbers</literal> is 14 (a number). So, a
+          value is something that can be stored in a variable. But a value
+          need not be stored in a variable to be a value, for example we have
+          the value 100 here:</para>
 
-        <para><programlisting role="template">[#if cargo.weight &gt; <emphasis>100</emphasis>]Warning! Heavy cargo![/#if]</programlisting></para>
+          <para><programlisting role="template">[#if cargo.weight &gt; <emphasis>100</emphasis>]Warning! Heavy cargo![/#if]</programlisting></para>
 
-        <para>or it can be the temporaly result of a calculation, such as 2
-        and then 3 when this template is executed (it will print 3):</para>
+          <para>Or the temporaly result of a calculations, such as 2 and then
+          3 when this template is executed (it will print 3), are also called
+          values:</para>
 
-        <programlisting role="template">${5 - (1 + 1)}</programlisting>
+          <programlisting role="template">${5 - (1 + 1)}</programlisting>
 
-        <para>or in fact the result of the earlier cargo weight comparison
-        (which was the value: false). So now you may feel what the term
-        <emphasis>value</emphasis> means.</para>
+          <para>So now you may feel what the term <emphasis>value</emphasis>
+          means.</para>
+        </sect2>
 
-        <para>Values have an important property, their <emphasis
-        role="term">type</emphasis>. For example thet type of the value of the
-        <literal>user</literal> variable is string, and the type of the value
-        of the <literal>lotterNumbers</literal> variable is a sequence. The
-        type of a value is important because it determines to a large extent
-        what you can do with the value. Like <literal>${user/2}</literal> is
-        an error, but <literal>${cargo.weight/2}</literal> works and prints
-        17.5, since division only does make sense for a number. Or, you can
-        list with <literal>[#list <replaceable>...</replaceable>]</literal>
-        only a seqence.</para>
+        <sect2>
+          <title>What is type?</title>
 
-        <para>A value can have to multiple types, although it's rarely used.
-        For example in the data model below <literal>mouse</literal> is both a
-        string and a hash:</para>
+          <para>Values have an important property, their type. For example the
+          type of the value of the <literal>user</literal> variable is string,
+          and the type of the value of the <literal>lotterNumbers</literal>
+          variable is a sequence. The type of a value is important because it
+          determines to a large extent how and where you can use the value.
+          Like <literal>${user/2}</literal> is an error, but
+          <literal>${cargo.weight/2}</literal> works and prints 17.5, since
+          division only does make sense for a number, but not for a string.
+          Or, using dot like in <literal>cargo.name</literal> does make sense
+          only if <literal>cargo</literal> is a hash. Or, you can list with
+          <literal>[#list <replaceable>...</replaceable>]</literal> seqences
+          only. Or, the condition of <literal>[#if ...]</literal> must be a
+          boolean. And so on.</para>
 
-        <programlisting role="dataModel">(root)
+          <note>
+            <para>A little terminology... Saying "a boolean" or "a boolean
+            value" or "a value of type boolean" are all the same.</para>
+          </note>
+
+          <para>A value can have multiple types at the same time, although
+          it's rarely utilized. For example in the data model below
+          <literal>mouse</literal> is both a string and a hash:</para>
+
+          <programlisting role="dataModel">(root)
  |
  +- mouse = "Yerri"
      |
@@ -903,213 +923,299 @@ All Rights Reserved.
      |
      +- color = "brown"</programlisting>
 
-        <para>If you merge this template with the above data model:</para>
+          <para>If you merge this template with the above data model:</para>
 
-        <programlisting role="template">${mouse}       [#-- use mouse as scalar --]
+          <programlisting role="template">${mouse}       [#-- use mouse as string --]
 ${mouse.age}   [#-- use mouse as hash --]
 ${mouse.color} [#-- use mouse as hash --]</programlisting>
 
-        <para>the output will be:</para>
+          <para>the output will be:</para>
 
-        <programlisting role="output">Yerri
+          <programlisting role="output">Yerri
 12
 brown</programlisting>
+        </sect2>
+
+        <sect2>
+          <title>The data model itself is a value</title>
+
+          <para>Looking at the various data-model examples you may already
+          realized: the thing marked as "(root)" is just a value of type hash.
+          When you write something like <literal>user</literal>, that means
+          that you want the "user" variable stored in the root hash. Like if
+          you were writing <literal>root.user</literal>, except that there is
+          no variable called "root", so it won't work. So we can say that
+          <emphasis>the data model is nothing but a hash</emphasis>.</para>
+
+          <para>Some may get confused by the fact that our example data model,
+          that is, the root hash, contains further hashes and sequences. There
+          is nothing special in that. A hash value contains other variables.
+          And those values have a value, which can be a string, a number, etc,
+          and of course it can be a hash or sequence as well, because a
+          sequence or a hash is just a value, like a string or a number
+          is.</para>
+        </sect2>
       </sect1>
 
-      <sect1 id="dgui_datamodel_scalar"
-             xreflabel="Designer's Guide/The Data Model/Scalar variables">
-        <title>Strings, numbers and other scalars</title>
+      <sect1>
+        <title>The types</title>
 
-        <anchor id="topic.designer.scalarVariable" />
+        <para>Here you find the list of all supported types.</para>
 
-        <para>These are the basic, simple kind of values. They can be:</para>
+        <sect2 id="dgui_datamodel_scalar"
+               xreflabel="Designer's Guide/The Data Model/Scalar variables">
+          <title>Strings, numbers and other scalars</title>
 
-        <itemizedlist>
-          <listitem>
-            <para>String: It is simple text, e.g. the name of a product. (If
-            you want to give a string value directly in the template, rather
-            than use a variable that comes from the data model, you write the
-            text between quotation marks, e.g. <literal>"green
-            mouse"</literal> or <literal>'green mouse'</literal>.)</para>
-          </listitem>
+          <anchor id="topic.designer.scalarVariable" />
 
-          <listitem>
-            <para>Number: For example the price of a product. (If you want to
-            give a numerical value directly in the template, then you write
-            for example: <literal>150</literal> or <literal>-90.05</literal>
-            or <literal>0.001</literal>.)</para>
-          </listitem>
+          <para>These are the basic, simple kind of values. They can
+          be:</para>
 
-          <listitem>
-            <para><indexterm>
-                <primary>boolean</primary>
-              </indexterm>Boolean: A boolean value represents a logical true
-            or false (yes or no). For example, if a the visitor has been
-            logged in or not. Typically you use booleans as the condition of
-            the <literal>if</literal> directive, like <literal>[#if loggedIn
-            ]<replaceable>...</replaceable>[/#if]</literal> or <literal>[#if
-            price == 0]<replaceable>...</replaceable>[/#if]</literal>; in the
-            last case the result of the <literal>price == 0</literal> part is
-            a boolean value. (In the templates you can directly specify a
-            boolean with the reserved words <literal>true</literal> and
-            <literal>false</literal>. )</para>
-          </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>String: It is simple text, e.g. the name of a
+              product.</para>
 
-          <listitem>
-            <para>Date: A date variable stores date/time related data. For
-            example:</para>
+              <para>If you want to give a string value directly in the
+              template, rather than use a variable that comes from the data
+              model, you write the text between quotation marks, e.g.
+              <literal>"green mouse"</literal> or <literal>'green
+              mouse'</literal>. (More details regarding the syntax can be
+              found <link lang=""
+              linkend="dgui_template_exp_direct_string">later</link>.)</para>
+            </listitem>
 
-            <itemizedlist>
-              <listitem>
-                <para>A date with day precision (often referred simply as
-                "date") as April 4, 2003</para>
-              </listitem>
+            <listitem>
+              <para>Number: For example the price of a product. <phrase
+              role="forProgrammers">Whole number and non-whole numbers are not
+              distinguished; there is only a single number type. So for
+              example 3/2 will be always 1.5, and never 1. Just like if you
+              are using a calculator.</phrase></para>
 
-              <listitem>
-                <para>Time of day (without the date part), as 10:19:18 PM.
-                Time is stored with millisecond precision.</para>
-              </listitem>
+              <para>If you want to give a numerical value directly in the
+              template, then you write for example: <literal>150</literal> or
+              <literal>-90.05</literal> or <literal>0.001</literal>. (More
+              details regarding the syntax can be found <link lang=""
+              linkend="dgui_template_exp_direct_number">later</link>.)</para>
+            </listitem>
 
-              <listitem>
-                <para>Date-time (sometimes called "timestamp") as April 4,
-                2003 10:19:18 PM. The time part is stored with millisecond
-                precision.</para>
-              </listitem>
-            </itemizedlist>
+            <listitem>
+              <para><indexterm>
+                  <primary>boolean</primary>
+                </indexterm>Boolean: A boolean value represents a logical true
+              or false (yes or no). For example, if a the visitor has been
+              logged in or not. Typically you use booleans as the condition of
+              the <literal>if</literal> directive, like <literal>[#if loggedIn
+              ]<replaceable>...</replaceable>[/#if]</literal> or <literal>[#if
+              price == 0]<replaceable>...</replaceable>[/#if]</literal>; in
+              the last case the result of the <literal>price == 0</literal>
+              part is a boolean value.</para>
 
-            <para>Typically, date and time related values are put into the
-            data model by the programmer, and you just display them, for
-            example: <literal>Opening time: ${openingTime}</literal>. It is
-            possible, however, to define date values directly in templates,
-            but this is an advanced topic that will be explained <link
-            linkend="ref_builtin_string_date">later</link>. Unfortunately,
-            because of the limitations of the Java platform, FreeMarker
-            sometimes can't decide which parts of the date are in use (i.e. if
-            it is date-time, or a time of day, etc.). The solution for this
-            problem is also an advanced topic that will be discussed <link
-            linkend="ref_builtin_date_datetype">later</link>.</para>
-          </listitem>
-        </itemizedlist>
+              <para>In the templates you can directly specify a boolean with
+              the reserved words <literal>true</literal> and
+              <literal>false</literal>.</para>
+            </listitem>
 
-        <para>Bear in mind that FreeMarker distinguishes strings from numbers
-        and booleans, so the string <literal>"150"</literal> and the number
-        <literal>150</literal> are totally different. A number holds a
-        numerical value. A boolean holds a logical true or false. A string
-        holds an arbitrary sequence of characters.</para>
-      </sect1>
+            <listitem>
+              <para>Date: A date variable stores date/time related data. It
+              has three variations:</para>
 
-      <sect1 id="dgui_datamodel_hashandseq">
-        <title>Hashes, sequences and collections</title>
+              <itemizedlist>
+                <listitem>
+                  <para>A date with day precision (often referred simply as
+                  "date") as April 4, 2003</para>
+                </listitem>
 
-        <remark>Re-explanation of hashes and sequences from a more
-        ''professional'' viewpoint as earlier, and some meditation about
-        them.</remark>
+                <listitem>
+                  <para>Time of day (without the date part), as 10:19:18 PM.
+                  Time is stored with millisecond precision.</para>
+                </listitem>
 
-        <para>These are the values whose purpose is to contain variables; they
-        are just containers. The contained variables are often referred as
-        <emphasis>subvariables</emphasis>. The two basic container types
-        are:</para>
+                <listitem>
+                  <para>Date-time (sometimes called "timestamp") as April 4,
+                  2003 10:19:18 PM. The time part is stored with millisecond
+                  precision.</para>
+                </listitem>
+              </itemizedlist>
 
-        <itemizedlist>
-          <listitem>
-            <para><indexterm>
-                <primary>hash</primary>
-              </indexterm>A hash associates a unique lookup name with each of
-            its subvariables. The name is an unrestricted string. A hash
-            <emphasis>doesn't define an ordering</emphasis> for the
-            subvariables in it. That is, there is no such thing as the first
-            subvariable, and the second subvariable, etc; the variables are
-            just accessed by name.</para>
-          </listitem>
+              <para>Unfortunately, because of the limitations of the Java
+              platform, FreeMarker sometimes can't decide which parts of the
+              date are in use (i.e. if it is date-time, or a time of day,
+              etc.). The solution for this problem is an advanced topic that
+              will be discussed <link
+              linkend="ref_builtin_date_datetype">later</link>.</para>
 
-          <listitem>
-            <para><indexterm>
-                <primary>sequence</primary>
-              </indexterm>A sequence associates an integer number with each of
-            its subvariables. The first subvariable is associted with 0, the
-            second with 1, the third to 2, and so on; the subvariables are
-            ordered. These number are often called the
-            <emphasis>indexes</emphasis> of the subvarables. Sequences are
-            usually dense, i.e. all indexes up to the index of the last
-            subvariable have an associated subvariable, but it's not strictly
-            necessary.</para>
-          </listitem>
-        </itemizedlist>
+              <para>It is possible to define date values directly in
+              templates, but this is an advanced topic that will be explained
+              <link linkend="ref_builtin_string_date">later</link>.</para>
+            </listitem>
+          </itemizedlist>
 
-        <para>Note that it is possible for a value to be both a hash and a
-        sequence, in which case, it would support index-based access as well
-        as access by lookup name. However, typically a container will be
-        either a hash or a sequence, not both.</para>
+          <para>Bear in mind that FreeMarker distinguishes strings from
+          numbers and booleans, so the string <literal>"150"</literal> and the
+          number <literal>150</literal> are totally different. A number holds
+          a numerical value. A boolean holds a logical true or false. A string
+          holds an arbitrary sequence of characters.</para>
+        </sect2>
 
-        <indexterm>
-          <primary>collection</primary>
-        </indexterm>
+        <sect2 id="dgui_datamodel_hashandseq">
+          <title>Hashes, sequences and collections</title>
 
-        <para>A collection, from the viewpoint of the template author, is a
-        restricted sequence. You cannot access its size or retrieve its
-        subvariables by index, but they can be still listed with the <link
-        linkend="ref.directive.list"><literal>list</literal>
-        directive</link>.</para>
-      </sect1>
+          <remark>Re-explanation of hashes and sequences from a more
+          ''professional'' viewpoint as earlier, and some meditation about
+          them.</remark>
 
-      <sect1 id="dgui_datamodel_method">
-        <title>Methods</title>
+          <para>These are the values whose purpose is to contain variables;
+          they are just containers. The contained variables are often referred
+          as <emphasis>subvariables</emphasis>. The two basic container types
+          are:</para>
 
-        <anchor id="topic.designer.methodVariable" />
+          <itemizedlist>
+            <listitem>
+              <para><indexterm>
+                  <primary>hash</primary>
+                </indexterm>A hash associates a unique lookup name with each
+              of its subvariables. The name is an unrestricted string. A hash
+              <emphasis>doesn't define an ordering</emphasis> for the
+              subvariables in it. That is, there is no such thing as the first
+              subvariable, and the second subvariable, etc; the variables are
+              just accessed by name.</para>
+            </listitem>
 
-        <indexterm>
-          <primary>method</primary>
-        </indexterm>
+            <listitem>
+              <para><indexterm>
+                  <primary>sequence</primary>
+                </indexterm>A sequence associates an integer number with each
+              of its subvariables. The first subvariable is associted with 0,
+              the second with 1, the third to 2, and so on; the subvariables
+              are ordered. These number are often called the
+              <emphasis>indexes</emphasis> of the subvarables. The type of the
+              subvariable values need not be the same. Sequences are usually
+              dense, i.e. all indexes up to the index of the last subvariable
+              have an associated subvariable, but it's not strictly
+              necessary.</para>
+            </listitem>
+          </itemizedlist>
 
-        <para>A value that is a method (a.k.a. a function) is used to
-        calculate another value, influenced by the parameters you give to
-        it.</para>
+          <para>Note that it is possible for a value to be both a hash and a
+          sequence, in which case, it would support index-based access as well
+          as access by lookup name. However, typically a container will be
+          either a hash or a sequence, not both.</para>
 
-        <para>Suppose that programmers have put the method variable
-        <literal>avg</literal> in the data model that can be used to calculate
-        the average of numbers. If you give the 3 and 5 as parameters when you
-        access <literal>avg</literal>, then you get the value 4.</para>
+          <indexterm>
+            <primary>collection</primary>
+          </indexterm>
 
-        <para>The usage of methods will be explained <link
-        linkend="dgui_template_exp_methodcall">later</link>, but perhaps this
-        example helps to understand what methods are:</para>
+          <para>A collection, from the viewpoint of the template author, is a
+          restricted sequence. You cannot access its size or retrieve its
+          subvariables by index, but they can be still listed with the <link
+          linkend="ref.directive.list"><literal>list</literal>
+          directive</link>.</para>
 
-        <programlisting role="template">The average of 3 and 5 is: ${avg(3, 5)}
+          <para>As the value of the variables stored in hashes and sequences
+          (and collections) can be anything, it can be a hash or sequence (or
+          collection) as well. This way you can build arbitrarily deep
+          structures.</para>
+
+          <para>The data model itself (or better said the root if it) is a
+          hash.</para>
+        </sect2>
+
+        <sect2 id="dgui_datamodel_method">
+          <title>Methods and functions</title>
+
+          <anchor id="topic.designer.methodVariable" />
+
+          <indexterm>
+            <primary>method</primary>
+          </indexterm>
+
+          <para>A value that is a method or a function is used to calculate
+          another value, influenced by the parameters you give to it.</para>
+
+          <para role="forProgrammers">For programmer types: Methods/functions
+          are first-class values, just like in functional programming
+          languages. This means that functions/methods can be the parameters
+          or return values of other functions/methods, assign them to
+          variables, and so on.</para>
+
+          <para>Suppose that programmers have put the method variable
+          <literal>avg</literal> in the data model that can be used to
+          calculate the average of numbers. If you give the 3 and 5 as
+          parameters when you access <literal>avg</literal>, then you get the
+          value 4.</para>
+
+          <para>The usage of methods will be explained <link
+          linkend="dgui_template_exp_methodcall">later</link>, but perhaps
+          this example helps to understand what methods are:</para>
+
+          <programlisting role="template">The average of 3 and 5 is: ${avg(3, 5)}
 The average of 6 and 10 and 20 is: ${avg(6, 10, 20)}
 The average of the price of a python and an elephant is:
 ${avg(animals.python.price, animals.elephant.price)}</programlisting>
 
-        <para>this will output:</para>
+          <para>this will output:</para>
 
-        <programlisting role="output">The average of 3 and 5 is: 4
+          <programlisting role="output">The average of 3 and 5 is: 4
 The average of 6 and 10 and 20 is: 12
 The average of the price of a python and an elephant is:
 4999.5</programlisting>
-      </sect1>
 
-      <sect1 id="dgui_datamodel_transform">
-        <title>Macros and transforms</title>
+          <para>What is the difference between a method and a function? As far
+          as the template author is concerned not much. Methods typically
+          originate from the data model (<phrase role="forProgrammers">as they
+          reflect the methods of Java objects</phrase>), functions are
+          typically defined in templates (with the <link
+          linkend="ref.directive.function"><literal>function</literal>
+          directive</link> -- an advanced topic), but both can be used on the
+          same way.</para>
+        </sect2>
 
-        <indexterm>
-          <primary>transform</primary>
-        </indexterm>
+        <sect2 id="dgui_datamodel_transform">
+          <title>Macros and transforms</title>
 
-        <indexterm>
-          <primary>macro</primary>
-        </indexterm>
+          <indexterm>
+            <primary>transform</primary>
+          </indexterm>
 
-        <para>Macro and transform values can be used as user-defined
-        directives (with other words, as FTL tags). This is an advanced topic
-        that will be explained <link
-        linkend="dgui_misc_userdefdir">later</link> in its own chapter.</para>
-      </sect1>
+          <indexterm>
+            <primary>macro</primary>
+          </indexterm>
 
-      <sect1 id="dgui_datamodel_node">
-        <title>Nodes</title>
+          <para>Macro and transform values can be used as user-defined
+          directives (with other words, as FTL tags). Macros and transforms
+          are subroutines, little template fragments. But this is an advanced
+          topic that will be explained <link
+          linkend="dgui_misc_userdefdir">later</link> in its own chapter. As
+          far as the template author is concerend, there is no difference
+          between macros and transforms.</para>
 
-        <para>Node variables represent a node in a tree structure, and are
-        used mostly with <link linkend="xgui">XML processing</link>, which is
-        an advanced, and specialized topic.</para>
+          <para>Just to get an idea about macros/tranforms (so just ignore
+          this if you won't understnad), assume we have a variable,
+          <literal>box</literal>, whose value is a macro that prints some kind
+          of fancy HTML message box with a title bar and a message in it. The
+          <literal>box</literal> variable could be used in the template like
+          this:</para>
+
+          <programlisting role="template">[@<emphasis>box</emphasis> title="Attention!"]
+  Too much copy-pasting may leads to
+  maintenance headaches.
+[/@<emphasis>box</emphasis>]</programlisting>
+
+          <para role="forProgrammers">For programmer types: Macros/transforms
+          are first-class values too, just like functions/methods are. That
+          is, you can pass them as parameters to other
+          macros/tranforms/function/methods, return them as the result of
+          function/methods, assign them to variables, and so on.</para>
+        </sect2>
+
+        <sect2 id="dgui_datamodel_node">
+          <title>Nodes</title>
+
+          <para>Node variables represent a node in a tree structure, and are
+          used mostly with <link linkend="xgui">XML processing</link>, which
+          is an advanced, and specialized topic.</para>
+        </sect2>
       </sect1>
     </chapter>
 
@@ -1119,6 +1225,12 @@ The average of the price of a python and an elephant is:
       <indexterm>
         <primary>template</primary>
       </indexterm>
+
+      <note>
+        <para>It is assumed that you have already read the <xref
+        linkend="dgui_quickstart" /> and the <xref linkend="dgui_datamodel" />
+        chapter.</para>
+      </note>
 
       <sect1 id="dgui_template_overallstructure">
         <title>Overall structure</title>
@@ -1591,8 +1703,9 @@ The average of the price of a python and an elephant is:
 
           <listitem>
             <para>When you supply a value for the directive parameter: You
-            have already seen the <literal>if</literal> directive in the quick
-            start section. The syntax of this directive is: <literal>[#if
+            have already seen the <literal>if</literal> directive in the
+            Getting Started section. The syntax of this directive is:
+            <literal>[#if
             <replaceable>expression</replaceable>]<replaceable>...</replaceable>[/#if]</literal>.
             The expression here must evaluate to a boolean value. For example
             in <literal>[#if 2 &lt; 3]</literal> the <literal>2 &lt;
@@ -4617,8 +4730,8 @@ That's all.</programlisting>
         first thing in the file (except that <link
         linkend="gloss.whiteSpace">white-space</link> can precede it). For
         example, this is how the last example of the <link
-        linkend="dgui_quickstart_template">Quick Start</link> looks with the
-        alternative syntax (assuming it's a complete template, not just a
+        linkend="dgui_quickstart_template">Getting Started</link> looks with
+        the alternative syntax (assuming it's a complete template, not just a
         fragment):</para>
 
         <programlisting role="template"><emphasis>[#ftl]</emphasis>
