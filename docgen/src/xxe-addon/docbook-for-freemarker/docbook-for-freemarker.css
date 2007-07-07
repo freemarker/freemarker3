@@ -142,19 +142,19 @@ Further special roles
 }
 
 *[role=markedText] {
-	background-color: #00FFFF;
+	background-color: #8acbfa;
 }
 
 *[role=markedInterpolation] {
-	background-color: #FF0000;
+	background-color: #ffb85d;
 }
 
 *[role=markedFTLTag] {
-	background-color: #FFFF00;
+	background-color: #dbfe5e;
 }
 
 *[role=markedComment] {
-	background-color: #00FF00;
+	background-color: #6af666;
 }
 
 *[role=markedInvisibleText] {

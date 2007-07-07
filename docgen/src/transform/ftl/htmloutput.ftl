@@ -288,7 +288,7 @@
   [#scoped lastFontBgColor = fontBgColor]
   [#scoped moreStyle=""]
   [#scoped role = .node.@role[0]!]
-  [#scoped bgcolors = {"markedComment" : "#00FF00", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#00FFFF", "markedInterpolation" : "#FF0000", "markedFTLTag" : "#FFFF00"}]
+  [#scoped bgcolors = {"markedComment" : "#6af666", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#8acbfa", "markedInterpolation" : "#ffb85d", "markedFTLTag" : "#dbfe5e"}]
   [#if role = "homepage"]
     http://freemarker.org[#t]
   [#elseif role = "markedInvisibleText"]
