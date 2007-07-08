@@ -121,8 +121,8 @@ public final class TextBlock extends TemplateElement {
     	}
     }
     
-    public TemplateElement postParseCleanup(boolean stripWhitespace) {
-        if (text.length == 0) return this;
+    public void postParseCleanup(boolean stripWhitespace) {
+        if (text.length == 0) return;
     	this.originalBeginColumn = this.beginColumn;
     	this.originalBeginLine = this.beginLine;
     	this.originalEndColumn = this.endColumn;
@@ -131,9 +131,9 @@ public final class TextBlock extends TemplateElement {
         boolean deliberateLeftTrim = deliberateLeftTrim();
         boolean deliberateRightTrim = deliberateRightTrim();
         if (!stripWhitespace || text.length == 0 ) {
-            return this;
+            return;
         }
-        if (parent.getParent() == null && previousSibling() == null) return this;
+        if (parent.getParent() == null && previousSibling() == null) return;
         if (!deliberateLeftTrim) {
             trailingCharsToStrip = trailingCharsToStrip();
         }
@@ -141,7 +141,7 @@ public final class TextBlock extends TemplateElement {
             openingCharsToStrip = openingCharsToStrip();
         }
         if (openingCharsToStrip == 0 && trailingCharsToStrip == 0) {
-            return this;
+            return;
         }
         this.text = substring(text, openingCharsToStrip, text.length - trailingCharsToStrip);
         if (openingCharsToStrip > 0) {
@@ -151,7 +151,6 @@ public final class TextBlock extends TemplateElement {
         if (trailingCharsToStrip >0) {
             this.endColumn = 0;
         }
-        return this;
     }
     
     /**

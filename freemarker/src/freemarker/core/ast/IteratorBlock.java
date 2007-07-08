@@ -97,14 +97,6 @@ public class IteratorBlock extends TemplateElement {
         env.process(new LoopContext(this, env.getCurrentScope(), baseModel)); // REVISIT
     }
 
-	public TemplateElement postParseCleanup(boolean stripWhitespace) throws ParseException {
-        declareScopedVariable(indexName);
-        declareScopedVariable(indexName + "_has_next");
-        declareScopedVariable(indexName + "_index");
-		super.postParseCleanup(stripWhitespace);
-		return this;
-	}
-    
     public String getDescription() {
         if (isForEach) {
             return "foreach " + indexName + " in " + listExpression; 

@@ -83,16 +83,6 @@ public class MixedContent extends TemplateElement {
         this.nestedElements = newList;
     }
 
-    public TemplateElement postParseCleanup(boolean stripWhitespace)
-        throws ParseException 
-    {
-        super.postParseCleanup(stripWhitespace);
-        if (nestedElements.size() == 1) {
-            return nestedElements.get(0);
-        }
-        return this;
-    }
-    
     public List<TemplateElement> getNestedElements() {
     	return nestedElements;
     }

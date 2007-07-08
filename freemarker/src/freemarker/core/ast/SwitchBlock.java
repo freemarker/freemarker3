@@ -85,7 +85,7 @@ public class SwitchBlock extends TemplateElement {
         nestedElements.add(cas);
     }
     
-    public List getCases() {
+    public List<TemplateElement> getCases() {
     	return nestedElements;
     }
     

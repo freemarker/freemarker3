@@ -158,43 +158,27 @@ abstract public class TemplateElement extends TemplateNode {
         }
     }
 
-    /**
-     * We walk the tree and do some cleanup 
-     * @param stripWhitespace whether to clean up superfluous whitespace
-     */
-    public TemplateElement postParseCleanup(boolean stripWhitespace) throws ParseException {
-        if (nestedElements != null) {
-            for (int i = 0; i < nestedElements.size(); i++) {
-                TemplateElement te = nestedElements.get(i);
-                te = te.postParseCleanup(stripWhitespace);
-                nestedElements.set(i, te);
-                te.parent = this;
-            }
-            if (stripWhitespace) {
-                for (Iterator it = nestedElements.iterator(); it.hasNext();) {
-                    TemplateElement te = (TemplateElement) it.next();
-                    if (te.isIgnorable()) {
-                        it.remove();
-                    }
-                }
-            }
-            if (nestedElements instanceof ArrayList) {
-                ((ArrayList) nestedElements).trimToSize();
-            }
-        }
-        if (nestedBlock != null) {
-            nestedBlock = nestedBlock.postParseCleanup(stripWhitespace);
-            if (nestedBlock.isIgnorable()) {
-                nestedBlock = null;
-            } else {
-                nestedBlock.parent = this;
-            }
-        }
-        return this;
-    }
 
     boolean isIgnorable() {
         return false;
+    }
+    
+    public void removeIgnorableChildren() {
+    	if (nestedElements != null) {
+    		Iterator<TemplateElement> it = nestedElements.iterator();
+    		while (it.hasNext()) {
+    			TemplateElement child = it.next();
+    			if (child.isIgnorable()) it.remove();
+    		}
+    		if (nestedElements instanceof ArrayList) {
+    			((ArrayList) nestedElements).trimToSize();
+    		}
+    	}
+    	else if (nestedBlock != null) {
+    		if (nestedBlock.isIgnorable()) {
+    			nestedBlock = null;
+    		}
+    	}
     }
 
 // The following methods exist to support some fancier tree-walking 
@@ -420,5 +404,29 @@ abstract public class TemplateElement extends TemplateNode {
             }
         }
         return null;
+    }
+    
+    /**
+     * Replace the child element prev with the current
+     * @param prev
+     * @param current
+     */
+    
+    public void replace(TemplateElement prev, TemplateElement current) {
+    	if (nestedBlock != null) {
+    		if (prev == nestedBlock) {
+    			nestedBlock = current;
+    		}
+    		current.parent = this;
+    	} 
+    	else if (nestedElements != null) {
+    		for (int i=0; i<nestedElements.size(); i++) {
+    			TemplateElement nestedElement = nestedElements.get(i);
+    			if (nestedElement == prev) {
+    				nestedElements.set(i, current);
+    				current.parent = this;
+    			}
+    		}
+    	}
     }
 }

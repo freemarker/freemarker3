@@ -86,6 +86,7 @@ public class FMParser {
   private int contentNesting; // for stripText
   private UnifiedCall currentCall;
   private Macro currentMacro;
+  private boolean recoverFromErrors;
 
   
   /**
@@ -246,6 +247,15 @@ public class FMParser {
           return ((EscapeBlock)escapes.getFirst()).doEscape(exp);
       }
       return exp;
+  }
+  
+  private void recoverToToken(int kind) {
+  	  Token t = this.token, prevToken;
+  	  do {
+  	  	prevToken = t;
+  	  	t = getNextToken();
+  	  } while (t.kind != kind && t.kind != EOF);
+  	  this.token = prevToken;
   }
   
   private boolean getBoolean(Expression exp) throws ParseException {
@@ -859,6 +869,11 @@ TOKEN:
 	<TERMINATING_EXCLAM : "!" (["\n", "\r", "\t", " "])+> : FM_EXPRESSION
 }
 
+<FM_EXPRESSION, IN_PAREN, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
+{
+	<UNEXPECTED : ~[]>
+}
+
 <NO_PARSE> TOKEN :
 {
     <TERSE_COMMENT_END : "-->" | "--]">
@@ -904,14 +919,31 @@ TOKEN:
 
 Expression Expression() :
 {
-   Expression exp;
+   Expression exp = null;
 }
 {
-   exp=OrExpression()
+   try {
+	   exp=OrExpression()
+   } catch (ParseException pe) {
+	   throw pe;   	
+   }
    {
       return exp;
    }
 }
+
+JAVACODE
+Token KeepGoingUntil(int type) {
+	Token t = null;
+	do {
+		t = getNextToken();
+	} while (t.kind != type && t.kind != EOF);
+	if (t.kind == type) {
+		this.token = t;
+	}
+	return t;
+}
+
 
 /**
  * Lowest level expression, a literal, a variable,
@@ -1650,7 +1682,14 @@ DollarVariable StringOutput() :
 }
 {
    begin=<OUTPUT_ESCAPE>
-   exp=Expression()
+   try {
+	   exp=Expression()
+   } catch (ParseException pe) {
+   	   if (!recoverFromErrors) throw pe;
+   	   recoverToToken(CLOSE_BRACE);
+       exp = new InvalidExpression(pe.getMessage());
+       exp.setLocation(template, begin.next, token);
+   }
    {
       notHashLiteral(exp, "scalar");
       notListLiteral(exp, "scalar");
@@ -3273,6 +3312,8 @@ TemplateElement Root() :
    <EOF>
    {
        doc.setParentRecursively(null);
-       return doc.postParseCleanup(stripWhitespace);
+       PostParseVisitor ppv = new PostParseVisitor(stripWhitespace);
+       ppv.visit(doc);
+       return doc;
    }
 }
