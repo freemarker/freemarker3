@@ -833,10 +833,13 @@ All Rights Reserved.
         <sect2>
           <title>What is a value?</title>
 
-          <para>Examples of <emphasis>values</emphasis> as you know them from
-          the everyday life are 16, 0.5, and so on. In the case of computer
-          languages the value term has a wider meaning, as a value needn't be
-          a number. For example, take this data-model:</para>
+          <para role="forProgrammers">Real programmers can safely skip this
+          section.</para>
+
+          <para>Examples of <emphasis>values</emphasis> as you know the term
+          from the everyday life are 16, 0.5, and so on. In the case of
+          computer languages the value term has a wider meaning, as a value
+          needn't be a number. For example, take this data model:</para>
 
           <programlisting id="example.stdDataModel" role="dataModel">(root)
  |
@@ -862,43 +865,58 @@ All Rights Reserved.
      |
      +- name = "coal"
      |
-     +- weight = 35
+     +- weight = 40
 </programlisting>
 
-          <para>Here we say that the value of the the <literal>user</literal>
-          variable is "Big Joe" (a string), the value of
-          <literal>today</literal> is Jul 6, 2007 (a date), the value of
-          <literal>todayHoliday</literal> is false (a boolean), the value of
-          <literal>lotteryNumbers</literal> is 20, 14, 42, 8, 15 (a sequence),
-          and the value of <literal>cargo</literal> is a hash of tree other
-          variables. As a further example, the value of 2nd item inside the
-          value of <literal>lotteryNumbers</literal> is 14 (a number). So, a
-          value is something that can be stored in a variable. But a value
-          need not be stored in a variable to be a value, for example we have
-          the value 100 here:</para>
+          <para>We say that the <emphasis>value</emphasis> of the the
+          <literal>user</literal> variable is "Big Joe" (a string), the
+          <emphasis>value</emphasis> of <literal>today</literal> is Jul 6,
+          2007 (a date), the <emphasis>value</emphasis> of
+          <literal>todayHoliday</literal> is false (a boolean, ie. a yes/no
+          thing). The <emphasis>value</emphasis> of
+          <literal>lotteryNumbers</literal> is the sequence that contains 20,
+          14, 42, 8, 15. Surely <literal>lotteryNumbers</literal> is multiple
+          values in the sense that it <emphasis>contains</emphasis> multiple
+          values (for example, the 2nd item in it is a the
+          <emphasis>value</emphasis> 14), but still,
+          <literal>lotteryNumbers</literal> itself is a single value. It's
+          like a box that stores many other items; the box itself is still
+          just a single item. Last not least we also have the
+          <emphasis>value</emphasis> of <literal>cargo</literal>, which is a
+          hash (a box-like thing again).So, a value is something that can be
+          stored in a variable (e.g. in <literal>user</literal> or
+          <literal>cargo</literal> or <literal>cargo.name</literal>). But a
+          value need not be stored in a variable to be called a value, for
+          example we have the value 100 here:</para>
 
-          <para><programlisting role="template">[#if cargo.weight &gt; <emphasis>100</emphasis>]Warning! Heavy cargo![/#if]</programlisting></para>
+          <para><programlisting role="template">[#if cargo.weight &gt; <emphasis>100</emphasis>]Warning, heavy cargo![/#if]</programlisting></para>
 
-          <para>Or the temporaly result of a calculations, such as 2 and then
-          3 when this template is executed (it will print 3), are also called
-          values:</para>
+          <para>Or the temporaly result of a calculations are also called
+          values, like 20 and 120 when this template is executed (it will
+          print 120):</para>
 
-          <programlisting role="template">${5 - (1 + 1)}</programlisting>
+          <programlisting role="template">${cargo.weight / 2 + 100}</programlisting>
 
-          <para>So now you may feel what the term <emphasis>value</emphasis>
-          means.</para>
+          <para>Explanation for this last: As the result of dividing the two
+          values, 40 (the weight of the cargo) and 2, a new value 20 is
+          created. Then 100 is addted to it, so the value 120 is created. Then
+          120 is printed
+          (<literal>${<replaceable>...</replaceable>}</literal>), and the
+          template execution goes on and all these values gone.</para>
+
+          <para>Certainly now you feel what the value term means.</para>
         </sect2>
 
         <sect2>
           <title>What is type?</title>
 
-          <para>Values have an important property, their type. For example the
+          <para>Values have an important aspect, their type. For example the
           type of the value of the <literal>user</literal> variable is string,
           and the type of the value of the <literal>lotterNumbers</literal>
-          variable is a sequence. The type of a value is important because it
+          variable is sequence. The type of a value is important because it
           determines to a large extent how and where you can use the value.
-          Like <literal>${user/2}</literal> is an error, but
-          <literal>${cargo.weight/2}</literal> works and prints 17.5, since
+          Like <literal>${user / 2}</literal> is an error, but
+          <literal>${cargo.weight / 2}</literal> works and prints 20, since
           division only does make sense for a number, but not for a string.
           Or, using dot like in <literal>cargo.name</literal> does make sense
           only if <literal>cargo</literal> is a hash. Or, you can list with
@@ -937,23 +955,23 @@ brown</programlisting>
         </sect2>
 
         <sect2>
-          <title>The data model itself is a value</title>
+          <title>The data model is a hash</title>
 
           <para>Looking at the various data-model examples you may already
           realized: the thing marked as "(root)" is just a value of type hash.
           When you write something like <literal>user</literal>, that means
           that you want the "user" variable stored in the root hash. Like if
           you were writing <literal>root.user</literal>, except that there is
-          no variable called "root", so it won't work. So we can say that
-          <emphasis>the data model is nothing but a hash</emphasis>.</para>
+          no variable called "root", so it won't work.</para>
 
           <para>Some may get confused by the fact that our example data model,
-          that is, the root hash, contains further hashes and sequences. There
-          is nothing special in that. A hash value contains other variables.
-          And those values have a value, which can be a string, a number, etc,
-          and of course it can be a hash or sequence as well, because a
-          sequence or a hash is just a value, like a string or a number
-          is.</para>
+          that is, the root hash, contains further hashes and sequences
+          (<literal>lotteryNumbers</literal> and <literal>cargo</literal>).
+          There is nothing special in that. A hash contains other variables,
+          and those variables have a value, which can be a string, a number
+          etc, and of course it can be a hash or sequence as well. Because, as
+          it was exaplained earlier, a sequence or a hash is just a value,
+          like a string or a number is.</para>
         </sect2>
       </sect1>
 
@@ -1235,14 +1253,15 @@ The average of the price of a python and an elephant is:
 4999.5</programlisting>
 
             <para>What is the difference between a method and a function? As
-            far as the template author is concerned not much. Methods
-            typically originate from the data model (<phrase
+            far as the template author is concerned, nothing. Well not really
+            nothing, as methods typically come from the data model (<phrase
             role="forProgrammers">as they reflect the methods of Java
-            objects</phrase>), functions are typically defined in templates
-            (with the <link
+            objects</phrase>), and functions are typically defined in
+            templates (with the <link
             linkend="ref.directive.function"><literal>function</literal>
             directive</link> -- an advanced topic), but both can be used on
-            the same way.</para>
+            the same way. Also, methods are sometimes used to implement
+            "functions" in Java, rather than in the template language.</para>
           </sect3>
 
           <sect3 id="dgui_datamodel_transform">
@@ -1257,30 +1276,70 @@ The average of the price of a python and an elephant is:
             </indexterm>
 
             <para>Macro and transform values can be used as user-defined
-            directives (with other words, as FTL tags). Macros and transforms
-            are subroutines, little template fragments. But this is an
-            advanced topic that will be explained <link
-            linkend="dgui_misc_userdefdir">later</link> in its own chapter. As
-            far as the template author is concerend, there is no difference
-            between macros and transforms.</para>
+            directives (with other words, as FreeMarker tags). Macros and
+            transforms are subroutines, little template fragments. But this is
+            an advanced topic that will be explained <link
+            linkend="dgui_misc_userdefdir">later</link> in its own
+            chapter.</para>
+
+            <para>What is the difference between a transform and a macro? As
+            far as the template author is concerend, nothing. Transforms are
+            used to implement "macros" in Java, rather than in the template
+            language. (However, macros can have some features that transforms
+            can't mimic, and also the other way around.)</para>
+
+            <para role="forProgrammers">For programmer types:
+            Macros/transforms are first-class values too, just like
+            functions/methods are.</para>
 
             <para>Just to get an idea about macros/tranforms (so just ignore
             this if you won't understnad), assume we have a variable,
             <literal>box</literal>, whose value is a macro that prints some
             kind of fancy HTML message box with a title bar and a message in
             it. The <literal>box</literal> variable could be used in the
-            template like this:</para>
+            template like this (for example):</para>
 
             <programlisting role="template">[@<emphasis>box</emphasis> title="Attention!"]
   Too much copy-pasting may leads to
   maintenance headaches.
 [/@<emphasis>box</emphasis>]</programlisting>
+          </sect3>
 
-            <para role="forProgrammers">For programmer types:
-            Macros/transforms are first-class values too, just like
-            functions/methods are. That is, you can pass them as parameters to
-            other macros/tranforms/function/methods, return them as the result
-            of function/methods, assign them to variables, and so on.</para>
+          <sect3>
+            <title>Function/method versus macro/transform</title>
+
+            <para>This is for advanced users again (so ignore if you don't
+            understand). It's a frequent dilemma if you should use a
+            function/method or a macro/transform to implement something. The
+            rule of thumb is: Implement the facility as macro/transform
+            instead of as function/method if:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>... the output (the return value) is markup (HTML, XML,
+                etc). The main reason is that the result of functions are
+                subject to atomatic XML-escaping (due to the nature of
+                <literal>${<replaceable>...</replaceable>}</literal>), while
+                the output of macros/transforms are not (due to the nature of
+                <literal>[@<replaceable>...</replaceable>]</literal>).</para>
+              </listitem>
+
+              <listitem>
+                <para>... it's the side-effect that is important and not the
+                return value. (In fact you can't have a return value for a
+                macro or transform, but some kind of feedback is still
+                possible by setting non-local variables.)</para>
+              </listitem>
+
+              <listitem>
+                <para>... it will do flow control. You just can't do that with
+                a function/method anyway.</para>
+              </listitem>
+            </itemizedlist>
+
+            <para>Of course, as methods usually come from the data model as
+            the methods of FreeMarker-unaware Java objects, in that case
+            there's no choice.</para>
           </sect3>
         </sect2>
 
