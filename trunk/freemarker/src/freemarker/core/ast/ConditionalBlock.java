@@ -85,6 +85,10 @@ public class ConditionalBlock extends TemplateElement {
     public boolean isLoneIfBlock() {
     	return isSimple;
     }
+    
+    public void setIsSimple(boolean isSimple) {
+    	this.isSimple = isSimple;
+    }
 
     public String getDescription() {
         String s = "if ";

@@ -94,20 +94,6 @@ public class IfBlock extends TemplateElement {
         }
     }
 
-    public TemplateElement postParseCleanup(boolean stripWhitespace)
-        throws ParseException 
-    {
-        if (nestedElements.size() == 1) {
-            ConditionalBlock cblock = (ConditionalBlock) nestedElements.get(0);
-            cblock.isSimple = true;
-            cblock.setLocation(getTemplate(), cblock, this);
-            return cblock.postParseCleanup(stripWhitespace);
-        }
-        else {
-            return super.postParseCleanup(stripWhitespace);
-        }
-    }
-
     public String getDescription() {
         return "if-else ";
     }

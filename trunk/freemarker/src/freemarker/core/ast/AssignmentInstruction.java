@@ -134,21 +134,4 @@ public class AssignmentInstruction extends TemplateElement {
     public String getDescription() {
     	return "assignment instruction";
     }
-
-    public TemplateElement postParseCleanup(boolean stripWhitespace) throws ParseException {
-        super.postParseCleanup(stripWhitespace);
-        if (type == LOCAL) {
-        	TemplateElement parent = this;
-        	while(!(parent instanceof Macro)) {
-        		parent = parent.getParent();
-        	}
-        	for (int i=0; i<varNames.size(); i++) {
-        		String varname = varNames.get(i);
-        		if (!parent.declaresScopedVariable(varname)) {
-            		parent.declareScopedVariable(varname);
-        		}
-        	}
-        }
-        return this;
-    }
 }

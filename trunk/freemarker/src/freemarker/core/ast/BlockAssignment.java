@@ -113,18 +113,6 @@ public class BlockAssignment extends TemplateElement {
     	}
     }
     
-    public TemplateElement postParseCleanup(boolean stripWhitespace) throws ParseException {
-    	super.postParseCleanup(stripWhitespace);
-        if (type == AssignmentInstruction.LOCAL) {
-        	TemplateElement parent = this;
-        	while(!(parent instanceof Macro)) {
-        		parent = parent.getParent();
-        	}
-        	parent.declareScopedVariable(varName);
-        }
-        return this;
-    }
-    
     private static class CaptureOutput implements TemplateTransformModel {
         String capturedText = ""; 
         
@@ -145,8 +133,5 @@ public class BlockAssignment extends TemplateElement {
         return "block assignment to variable: " + varName;
     }
 
-    boolean isIgnorable() {
-        return false;
-    }
 }
 

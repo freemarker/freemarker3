@@ -99,17 +99,4 @@ public class ScopedDirective extends TemplateElement {
     public String getDescription() {
         return "declare scoped variables";
     }
-
-    public TemplateElement postParseCleanup(boolean stripWhitespace) throws ParseException {
-        TemplateElement parent = this.parent;
-        if (parent instanceof MixedContent) {
-            parent = parent.getParent();
-        }
-        if (parent != null) {
-        	for (String key : vars.keySet()) {
-        		parent.declareScopedVariable(key);
-        	}
-        }
-        return this;
-    }
 }
