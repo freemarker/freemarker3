@@ -2,6 +2,7 @@
 [#set capitalLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]]
 [#set inHtmlP = false, compactPara = false, disableA = false]
 
+[#set forProgrammersStyle = "color:#333399; font-style:italic"]
 
 [#-- 
    A set of routines used for outputting docbook elements as html
@@ -255,12 +256,22 @@
 [/#macro]
 
 [#macro para]
+  [#scoped style]
+  [#if .node.@role[0]! == 'forProgrammers']
+    [#set style=forProgrammersStyle]
+  [/#if]
   [#if compactPara!]
-     [#recurse]
+    [#if style??]
+      <span style="${style}">[#t]
+    [/#if]
+    [#recurse]
+    [#if style??]
+      </span>[#t]
+    [/#if]
   [#else]
     [#scoped content]
     [#set inHtmlP = true]
-    <p>[#t]
+    <p[#if style??] style="${style}"[/#if]>[#t]
     [#set content][#recurse][/#set][#t]
     [#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. --]
     [#if !content?matches(r".*<p>\s*$", "s")]
@@ -300,7 +311,7 @@
     [#if fontBgColor! != ""]
       [#set moreStyle = ";background-color:${fontBgColor}"]
     [/#if]
-    <span style="color: #333399 ${moreStyle}"><i>[#recurse]</i></span>[#t]
+    <span style="${forProgrammersStyle}${moreStyle}">[#recurse]</span>[#t]
   [#else]
     [#set lastFontBgColor = fontBgColor!]
     [#set fontBgColor = bgcolors[role]]
