@@ -110,7 +110,7 @@ implements
     // Cached template models that implement member properties and methods for this
     // instance. Keys are FeatureDescriptor instances (from classCache values),
     // values are either ReflectionMethodModels/ReflectionScalarModels
-    private final HashMap<Object,TemplateModel> memberMap = new HashMap<Object,TemplateModel>();
+    private HashMap<Object,TemplateModel> memberMap;
 
     /**
      * Creates a new model that wraps the specified object. Note that there are
@@ -236,10 +236,14 @@ implements
     {
         // See if this particular instance has a cached implementation
         // for the requested feature descriptor
-        TemplateModel member = null;
-        synchronized(memberMap)
-        {
-            member = memberMap.get(desc);
+        TemplateModel member;
+        synchronized(this){
+            if(memberMap != null) {
+                member = memberMap.get(desc);
+            }
+            else {
+                member = null;
+            }
         }
 
         if(member != null)
@@ -278,10 +282,11 @@ implements
         }
         
         // If new cacheable member was created, cache it
-        if(member != null)
-        {
-            synchronized(memberMap)
-            {
+        if(member != null) {
+            synchronized(this) {
+                if(memberMap == null) {
+                    memberMap = new HashMap<Object,TemplateModel>();
+                }
                 memberMap.put(desc, member);
             }
         }
