@@ -1,8 +1,10 @@
 package freemarker.ext.rhino;
 
+import org.mozilla.javascript.Context;
 import org.mozilla.javascript.EvaluatorException;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeJavaObject;
+import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
@@ -10,10 +12,13 @@ import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.util.ModelFactory;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.ObjectWrapper;
+import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateNumberModel;
+import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 
 /**
@@ -24,7 +29,8 @@ import freemarker.template.TemplateSequenceModel;
  * @version $Id: RhinoScriptableModel.java,v 1.4 2005/06/22 10:52:52 ddekany Exp $
  */
 public class RhinoScriptableModel implements TemplateHashModelEx, 
-TemplateSequenceModel, AdapterTemplateModel
+TemplateSequenceModel, AdapterTemplateModel, TemplateScalarModel, 
+TemplateBooleanModel, TemplateNumberModel
 {
     static final ModelFactory FACTORY = new ModelFactory() {
         public TemplateModel create(Object object, ObjectWrapper wrapper) {
@@ -96,6 +102,18 @@ TemplateSequenceModel, AdapterTemplateModel
 
     BeansWrapper getWrapper() {
         return wrapper;
+    }
+    
+    public String getAsString() {
+        return Context.toString(scriptable);
+    }
+
+    public boolean getAsBoolean() {
+        return Context.toBoolean(scriptable);
+    }
+
+    public Number getAsNumber() {
+        return new Double(Context.toNumber(scriptable));
     }
 
     public Object getAdaptedObject(Class hint) {
