@@ -58,6 +58,7 @@ import java.util.Map;
 
 import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelAdapter;
 
 /**
  * Internally used by various wrapper implementations to implement model
@@ -65,21 +66,19 @@ import freemarker.template.TemplateModel;
  * @version $Id: ModelCache.java,v 1.9 2003/01/12 23:40:15 revusky Exp $
  * @author Attila Szegedi
  */
-public class ModelCache
+public abstract class ModelCache
 {
     private boolean useCache = false;
     private Map modelCache = null;
     private ReferenceQueue refQueue = null;
-    private final ObjectWrapper wrapper;
     
-    public ModelCache(ObjectWrapper wrapper)
+    protected ModelCache()
     {
-        this.wrapper = wrapper;
     }
     
     /**
      * Sets whether this wrapper caches model instances. Default is false.
-     * When set to true, calling {@link #getInstance(Object, ModelFactory)} 
+     * When set to true, calling {@link #getInstance(Object)} 
      * multiple times for the same object will return the same model.
      */
     public synchronized void setUseCache(boolean useCache)
@@ -97,21 +96,32 @@ public class ModelCache
         }
     }
     
-    public TemplateModel getInstance(Object object, ModelFactory factory)
+    public TemplateModel getInstance(Object object)
     {
-        if(useCache)
-        {
+        if(object == null) {
+            return TemplateModel.JAVA_NULL;
+        }
+        if(object instanceof TemplateModel) {
+            return (TemplateModel)object;
+        }
+        if(object instanceof TemplateModelAdapter) {
+            return ((TemplateModelAdapter)object).getTemplateModel();
+        }
+        if(useCache && isCacheable(object)) {
             TemplateModel model = lookup(object);
-            if(model == null)
-            {
-                model = factory.create(object, wrapper);
+            if(model == null) {
+                model = create(object);
                 register(model, object);
             }
             return model;
         }
-        
-        return factory.create(object, wrapper);
+        else {
+            return create(object);
+        }
     }
+    
+    protected abstract TemplateModel create(Object object);
+    protected abstract boolean isCacheable(Object object);
     
     public void clearCache()
     {
@@ -143,11 +153,9 @@ public class ModelCache
 
     private final void register(TemplateModel model, Object object)
     {
-        synchronized (modelCache)
-        {
+        synchronized (modelCache) {
             // Remove cleared references
-            for (;;)
-            {
+            for (;;) {
                 ModelReference queuedRef = (ModelReference) refQueue.poll();
                 if (queuedRef == null)
                     break;

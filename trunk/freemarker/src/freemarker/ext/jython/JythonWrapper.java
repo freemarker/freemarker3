@@ -102,7 +102,7 @@ public class JythonWrapper implements ObjectWrapper
     private static final Class PYOBJECT_CLASS = PyObject.class;
     public static final JythonWrapper INSTANCE = new JythonWrapper();
 
-    private final ModelCache modelCache = new ModelCache(this);
+    private final ModelCache modelCache = new JythonModelCache(this);
 
     private boolean attributesShadowItems = true;
 
@@ -158,60 +158,7 @@ public class JythonWrapper implements ObjectWrapper
         if(obj == null) {
             return null;
         }
-        if (obj instanceof TemplateModel) {
-            return (TemplateModel)obj;
-
-        }
-        if(obj instanceof TemplateModelAdapter) {
-            return ((TemplateModelAdapter)obj).getTemplateModel();
-        }
-        boolean asHash = false;
-        boolean asSequence = false;
-        if(obj instanceof PyJavaInstance) {
-            Object jobj = ((PyJavaInstance)obj).__tojava__(java.lang.Object.class);
-            // FreeMarker-aware, Jython-wrapped Java objects are left intact 
-            if(jobj instanceof TemplateModel) {
-                return (TemplateModel)jobj; 
-            }
-            if(jobj instanceof Map) {
-                asHash = true;
-            }
-            if (jobj instanceof Date) {
-                return new DateModel((Date) jobj, BeansWrapper.getDefaultInstance());
-            }
-            else if(jobj instanceof Collection) {
-                asSequence = true;
-                // FIXME: This is an ugly hack, but AFAIK, there's no better
-                // solution if we want to have Sets and other non-List
-                // collections managed by this layer, as Jython quite clearly
-                // doesn't support sets.  
-                if(!(jobj instanceof List)) {
-                    obj = new ArrayList((Collection)jobj); 
-                }
-            }
-        }
-        
-        // If it's not a PyObject, first make a PyObject out of it.
-        if(!(obj instanceof PyObject))
-        {
-            obj = Py.java2py(obj);
-        }
-        if(asHash || obj instanceof PyDictionary || obj instanceof PyStringMap)
-        {
-            return modelCache.getInstance(obj, JythonHashModel.FACTORY);
-        }
-        if(asSequence || obj instanceof PySequence)
-        {
-            return modelCache.getInstance(obj, JythonSequenceModel.FACTORY);
-        }
-        if(obj instanceof PyInteger || obj instanceof PyLong || obj instanceof PyFloat)
-        {
-            return modelCache.getInstance(obj, JythonNumberModel.FACTORY);
-        }
-        if(obj instanceof PyNone) {
-            return TemplateModel.JAVA_NULL;
-        }
-        return modelCache.getInstance(obj, JythonModel.FACTORY);
+        return modelCache.getInstance(obj);
     }
     
     /**

@@ -85,6 +85,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import freemarker.ext.util.ModelCache;
 import freemarker.ext.util.ModelFactory;
@@ -160,7 +161,7 @@ public class BeansWrapper implements ObjectWrapper
     private final ClassBasedModelFactory staticModels = new StaticModels(this);
     private final ClassBasedModelFactory enumModels = createEnumModels(this);
 
-    private final ModelCache modelCache = new ModelCache(this);
+    private final ModelCache modelCache = new BeansModelCache(this);
     
     private final BooleanModel FALSE = new BooleanModel(Boolean.FALSE, this);
     private final BooleanModel TRUE = new BooleanModel(Boolean.TRUE, this);
@@ -424,38 +425,61 @@ public class BeansWrapper implements ObjectWrapper
      */
     public TemplateModel wrap(Object object) throws TemplateModelException
     {
-        if(object == null)
-        	return TemplateModel.JAVA_NULL;
-        if(object instanceof TemplateModel)
-            return (TemplateModel)object;
-        if(object instanceof TemplateModelAdapter)
-            return ((TemplateModelAdapter)object).getTemplateModel();
-        if(object instanceof Map)
-            return modelCache.getInstance(object, simpleMapWrapper ? SimpleMapModel.FACTORY : MapModel.FACTORY);
-        if(object instanceof Collection)
-            return modelCache.getInstance(object, CollectionModel.FACTORY);
-        if(object instanceof Number)
-            return modelCache.getInstance(object, NumberModel.FACTORY);
-        if(object instanceof Date)
-            return modelCache.getInstance(object, DateModel.FACTORY);
-        if(object instanceof Boolean) 
-            return ((Boolean)object).booleanValue() ? TRUE : FALSE;
-        if(object instanceof ResourceBundle)
-            return modelCache.getInstance(object, ResourceBundleModel.FACTORY);
-        if(object instanceof Iterator)
-            return new IteratorModel((Iterator)object, this);
-        if(object instanceof Enumeration)
-            return new EnumerationModel((Enumeration)object, this);
-        if(object.getClass().isArray())
-            return modelCache.getInstance(object, ArrayModel.FACTORY);
-        return modelCache.getInstance(object, StringModel.FACTORY);
-    }
-
-    protected TemplateModel getInstance(Object object, ModelFactory factory)
-    {
-        return modelCache.getInstance(object, factory);
+        if(object == null) {
+            return TemplateModel.JAVA_NULL;
+        }
+        return modelCache.getInstance(object);
     }
     
+    private final ModelFactory BOOLEAN_FACTORY = new ModelFactory() {
+        public TemplateModel create(Object object, ObjectWrapper wrapper) {
+            return ((Boolean)object).booleanValue() ? TRUE : FALSE; 
+        }
+    };
+
+    private static final ModelFactory ITERATOR_FACTORY = new ModelFactory() {
+        public TemplateModel create(Object object, ObjectWrapper wrapper) {
+            return new IteratorModel((Iterator)object, (BeansWrapper)wrapper); 
+        }
+    };
+
+    private static final ModelFactory ENUMERATION_FACTORY = new ModelFactory() {
+        public TemplateModel create(Object object, ObjectWrapper wrapper) {
+            return new EnumerationModel((Enumeration)object, (BeansWrapper)wrapper); 
+        }
+    };
+
+    protected ModelFactory getModelFactory(Class clazz) {
+        if(Map.class.isAssignableFrom(clazz)) {
+            return simpleMapWrapper ? SimpleMapModel.FACTORY : MapModel.FACTORY;
+        }
+        if(Collection.class.isAssignableFrom(clazz)) {
+            return CollectionModel.FACTORY;
+        }
+        if(Number.class.isAssignableFrom(clazz)) {
+            return NumberModel.FACTORY;
+        }
+        if(Date.class.isAssignableFrom(clazz)) {
+            return DateModel.FACTORY;
+        }
+        if(Boolean.class == clazz) { // Boolean is final 
+            return BOOLEAN_FACTORY;
+        }
+        if(ResourceBundle.class.isAssignableFrom(clazz)) {
+            return ResourceBundleModel.FACTORY;
+        }
+        if(Iterator.class.isAssignableFrom(clazz)) {
+            return ITERATOR_FACTORY;
+        }
+        if(Enumeration.class.isAssignableFrom(clazz)) {
+            return ENUMERATION_FACTORY;
+        }
+        if(clazz.isArray()) {
+            return ArrayModel.FACTORY;
+        }
+        return StringModel.FACTORY;
+    }
+
     protected TemplateModel create(Object object, Object factory)
     {
         return ((ModelFactory)factory).create(object, this);
