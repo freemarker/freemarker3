@@ -1,10 +1,12 @@
 package freemarker.ext.rhino;
 
+import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.Undefined;
 import org.mozilla.javascript.UniqueTag;
 
 import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.util.ModelFactory;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
@@ -18,9 +20,6 @@ import freemarker.template.TemplateModelException;
 public class RhinoWrapper extends BeansWrapper {
 
     public TemplateModel wrap(Object obj) throws TemplateModelException {
-        if(obj instanceof Scriptable) {
-            return getInstance(obj, RhinoScriptableModel.FACTORY);
-        }
         // So our existence builtins work as expected.
         if(obj == Undefined.instance || obj == UniqueTag.NOT_FOUND) {
             return null;
@@ -36,5 +35,13 @@ public class RhinoWrapper extends BeansWrapper {
             return TemplateModel.JAVA_NULL;
         }
         return super.wrap(obj);
+    }
+    
+    @Override
+    protected ModelFactory getModelFactory(Class clazz) {
+        if(Scriptable.class.isAssignableFrom(clazz)) {
+            return RhinoScriptableModel.FACTORY;
+        }
+        return super.getModelFactory(clazz);
     }
 }
