@@ -177,7 +177,7 @@ public abstract class ModelCache
 
         ModelReference(TemplateModel ref, Object object, ReferenceQueue refQueue)
         {
-            super(ref);
+            super(ref, refQueue);
             this.object = object;
         }
 
