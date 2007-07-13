@@ -28,7 +28,7 @@
       recompile code, because the application logic (Java programs) and page
       design (FreeMarker templates) are separated. Templates do not become
       polluted with complex program fragments. This separation is useful even
-      for projects where the programmer and the HMTL page author is the same
+      for projects where the programmer and the HTML page author is the same
       person, since it helps to keep the application clear and easily
       maintainable.</para>
 
@@ -83,7 +83,7 @@
     <simplesect>
       <title>Document conventions</title>
 
-      <para>Variable names, template fragments, Java class names, etc. are
+      <para>Variable names, template fragments, Java class names, etc., are
       written like this: <literal>foo</literal>.</para>
 
       <para>If something should be replaced with a concrete value then it is
@@ -214,21 +214,21 @@
 &lt;/html&gt;</programlisting>
 
         <para>The template is stored on the Web server, usually just like the
-        static HTML page would be. But whenever somone visits this page,
+        static HTML page would be. But whenever someone visits this page,
         FreeMarker will step in and transform the template on-the-fly to plain
         HTML by replacing the
         <literal>${<replaceable>...</replaceable>}</literal>-s with up-to-date
-        content (e.g. replacing <literal>${user}</literal> with Big Joe or
+        content (e.g., replacing <literal>${user}</literal> with Big Joe or
         whoever the visitor is) and send the result to the visitor's Web
         browser. So the visitor's Web browser will receive something like the
-        first example HTML (i.e. plain HTML without FreeMarker instructions),
+        first example HTML (i.e., plain HTML without FreeMarker instructions),
         and it will not perceive that FreeMarker is used on the server. The
         template file itself (which is, again, stored on the Web server) is
         not changed during this, so the transformation will happen again and
         again for each visiting. This ensures that the displayed information
         is always up-to-date.</para>
 
-        <para>Now, you may already noticed that the tempalte contains no
+        <para>Now, you may already noticed that the template contains no
         instructions regarding how to find out who the current visitor is, or
         how to query the database to find out what the latest product is. It
         seems it just already know these values. And indeed that's the case.
@@ -237,12 +237,12 @@
         template you only deal with presentation issues, that is, visual
         design issues, formatting issues. The data that will be displayed
         (such as the user name and so on) is prepared outside FreeMarker,
-        usually by routines written in Java langauge or other general purpose
+        usually by routines written in Java language or other general purpose
         language. So the template author doesn't have to know how these values
         are calculated. In fact, the way these values are calculated can be
-        completelly changed while the templates can remain the same, and also,
-        the look of the page can be completelly changed without touching
-        anything but the template. This separation can be especailly useful
+        completely changed while the templates can remain the same, and also,
+        the look of the page can be completely changed without touching
+        anything but the template. This separation can be especially useful
         when the template authors (designers) and the programmers are
         different individuals.</para>
 
@@ -253,7 +253,7 @@
         FreeMarker still have to know <emphasis>what</emphasis> the actual
         data is. All the data that the template can use is packed into the so
         called <emphasis role="term">data model</emphasis>. It's created by
-        the already mentioned routines that calucalte the data. As far as the
+        the already mentioned routines that calculate the data. As far as the
         template author is concerned, the data-model is a tree-like structure
         (like a files and folders on your hard disk), that in this case could
         be visualized as:</para>
@@ -337,7 +337,7 @@
         role="term">hashes</emphasis>. Hashes store other variables (the so
         called <anchor
         id="topic.dataModel.subVar" /><emphasis>subvariables</emphasis>) by a
-        lookup name (e.g. "animlas", "mouse" or "price").</para>
+        lookup name (e.g., "animals", "mouse" or "price").</para>
 
         <para>The variables that store a single value
         (<literal>size</literal>, <literal>price</literal>,
@@ -431,11 +431,11 @@
 
           <listitem>
             <para>Date/time: A date or time. Like the date an animal were
-            caputerd, or the time the shop opens.</para>
+            captured, or the time the shop opens.</para>
           </listitem>
 
           <listitem>
-            <para>Boolean: A true/false (yes/no, on/off, etc) thing. Like
+            <para>Boolean: A true/false (yes/no, on/off, etc.) thing. Like
             animals could have a <literal>protected</literal> subvariable,
             which store if the animal is protected or not.</para>
           </listitem>
@@ -513,8 +513,8 @@
         <para>With FTL tags you refer to so-called <emphasis
         role="term">directives</emphasis>. This is the same as with HTML tags
         (e.g.: <literal>&lt;table&gt;</literal> and
-        <literal>&lt;/table&gt;</literal>) you refer to HTML elements (e.g. to
-        the <literal>table</literal> element). If you don't feel the
+        <literal>&lt;/table&gt;</literal>) you refer to HTML elements (e.g.,
+        to the <literal>table</literal> element). If you don't feel the
         difference then just consider that ''FTL tag'' and ''directive'' are
         synonyms.</para>
 
@@ -566,7 +566,7 @@
             variable</link> with the syntax that should be already familiar;
             this will be replaced with the value of the variable. In general,
             unquoted words inside directive or interpolations are treated as
-            references to varibles. On the right side I have specified a
+            references to variables. On the right side I have specified a
             literal string. Literal strings in templates must
             <emphasis>always</emphasis> be put inside quotation marks.</para>
 
@@ -614,7 +614,7 @@
             the price of python is less than the price of elephant, or else it
             prints ''Pythons are not cheaper than elephants today.''</para>
 
-            <para>If you have a varaible with boolean value (a true/false
+            <para>If you have a variable with boolean value (a true/false
             thing) then you can use it directly as the
             <literal><replaceable>condition</replaceable></literal> of
             <literal>if</literal>:</para>
@@ -769,10 +769,10 @@ All Rights Reserved.
           <title>Dealing with missing variables</title>
 
           <para>In practice the data model often has variables that are
-          optional (i.e. sometimes missing). To spot some typical human
+          optional (i.e., sometimes missing). To spot some typical human
           mistakes, FreeMarker doesn't tolerate the referring to missing
-          variables unless you tell them explicity what to do if the variable
-          is missing. Here we will show the two most tyical ways of doing
+          variables unless you tell them explicitly what to do if the variable
+          is missing. Here we will show the two most typical ways of doing
           that.</para>
 
           <para role="forProgrammers">Note for programmers: A non-existent
@@ -799,7 +799,7 @@ All Rights Reserved.
 
           <programlisting role="template">[#if <emphasis>user??</emphasis>]&lt;h1&gt;Welcome ${user}!&lt;/h1&gt;[/#if]</programlisting>
 
-          <para>Regarding variable accessing with multipe steps, like
+          <para>Regarding variable accessing with multiple steps, like
           <literal>animals.python.price</literal>; writing
           <literal>animals.python.price!0</literal> is correct only if
           <literal>animals.python</literal> always exists and only the last
@@ -826,7 +826,7 @@ All Rights Reserved.
           linkend="dgui_quickstart" /> chapter.</para>
         </note>
 
-        <para>Understading the concept of values and types is crucial for the
+        <para>Understanding the concept of values and types is crucial for the
         understanding of data models. However, the concept of values and types
         is not confined to data models, as you will see.</para>
 
@@ -884,7 +884,7 @@ All Rights Reserved.
           just a single item. Last not least we also have the
           <emphasis>value</emphasis> of <literal>cargo</literal>, which is a
           hash (a box-like thing again).So, a value is something that can be
-          stored in a variable (e.g. in <literal>user</literal> or
+          stored in a variable (e.g., in <literal>user</literal> or
           <literal>cargo</literal> or <literal>cargo.name</literal>). But a
           value need not be stored in a variable to be called a value, for
           example we have the value 100 here:</para>
@@ -920,7 +920,7 @@ All Rights Reserved.
           division only does make sense for a number, but not for a string.
           Or, using dot like in <literal>cargo.name</literal> does make sense
           only if <literal>cargo</literal> is a hash. Or, you can list with
-          <literal>[#list <replaceable>...</replaceable>]</literal> seqences
+          <literal>[#list <replaceable>...</replaceable>]</literal> sequences
           only. Or, the condition of <literal>[#if ...]</literal> must be a
           boolean. And so on.</para>
 
@@ -968,9 +968,9 @@ brown</programlisting>
           that is, the root hash, contains further hashes and sequences
           (<literal>lotteryNumbers</literal> and <literal>cargo</literal>).
           There is nothing special in that. A hash contains other variables,
-          and those variables have a value, which can be a string, a number
-          etc, and of course it can be a hash or sequence as well. Because, as
-          it was exaplained earlier, a sequence or a hash is just a value,
+          and those variables have a value, which can be a string, a number,
+          etc., and of course it can be a hash or sequence as well. Because,
+          as it was explained earlier, a sequence or a hash is just a value,
           like a string or a number is.</para>
         </sect2>
       </sect1>
@@ -1061,12 +1061,12 @@ brown</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>String: It is simple text, e.g. the name of a
+              <para>String: It is simple text, e.g., the name of a
               product.</para>
 
               <para>If you want to give a string value directly in the
               template, rather than use a variable that comes from the data
-              model, you write the text between quotation marks, e.g.
+              model, you write the text between quotation marks, e.g.,
               <literal>"green mouse"</literal> or <literal>'green
               mouse'</literal>. (More details regarding the syntax can be
               found <link lang=""
@@ -1120,7 +1120,7 @@ brown</programlisting>
                 </listitem>
 
                 <listitem>
-                  <para>Date-time (sometimes called "timestamp") as April 4,
+                  <para>Date-time (sometimes called "time stamp") as April 4,
                   2003 10:19:18 PM. The time part is stored with millisecond
                   precision.</para>
                 </listitem>
@@ -1128,7 +1128,7 @@ brown</programlisting>
 
               <para>Unfortunately, because of the limitations of the Java
               platform, FreeMarker sometimes can't decide which parts of the
-              date are in use (i.e. if it is date-time, or a time of day,
+              date are in use (i.e., if it is date-time, or a time of day,
               etc.). The solution for this problem is an advanced topic that
               will be discussed <link
               linkend="ref_builtin_date_datetype">later</link>.</para>
@@ -1166,7 +1166,7 @@ brown</programlisting>
               of its subvariables. The name is an unrestricted string. A hash
               <emphasis>doesn't define an ordering</emphasis> for the
               subvariables in it. That is, there is no such thing as the first
-              subvariable, and the second subvariable, etc; the variables are
+              subvariable, and the second subvariable, etc.; the variables are
               just accessed by name.</para>
             </listitem>
 
@@ -1174,14 +1174,14 @@ brown</programlisting>
               <para><indexterm>
                   <primary>sequence</primary>
                 </indexterm>A sequence associates an integer number with each
-              of its subvariables. The first subvariable is associted with 0,
+              of its subvariables. The first subvariable is associated with 0,
               the second with 1, the third to 2, and so on; the subvariables
               are ordered. These number are often called the
-              <emphasis>indexes</emphasis> of the subvarables. The type of the
-              subvariable values need not be the same. Sequences are usually
-              dense, i.e. all indexes up to the index of the last subvariable
-              have an associated subvariable, but it's not strictly
-              necessary.</para>
+              <emphasis>indexes</emphasis> of the subvariables. The type of
+              the subvariable values need not be the same. Sequences are
+              usually dense, i.e., all indexes up to the index of the last
+              subvariable have an associated subvariable, but it's not
+              strictly necessary.</para>
             </listitem>
           </itemizedlist>
 
@@ -1283,7 +1283,7 @@ The average of the price of a python and an elephant is:
             chapter.</para>
 
             <para>What is the difference between a transform and a macro? As
-            far as the template author is concerend, nothing. Transforms are
+            far as the template author is concerned, nothing. Transforms are
             used to implement "macros" in Java, rather than in the template
             language. (However, macros can have some features that transforms
             can't mimic, and also the other way around.)</para>
@@ -1293,7 +1293,7 @@ The average of the price of a python and an elephant is:
             functions/methods are.</para>
 
             <para>Just to get an idea about macros/tranforms (so just ignore
-            this if you won't understnad), assume we have a variable,
+            this if you won't understand), assume we have a variable,
             <literal>box</literal>, whose value is a macro that prints some
             kind of fancy HTML message box with a title bar and a message in
             it. The <literal>box</literal> variable could be used in the
@@ -1317,8 +1317,8 @@ The average of the price of a python and an elephant is:
             <itemizedlist>
               <listitem>
                 <para>... the output (the return value) is markup (HTML, XML,
-                etc). The main reason is that the result of functions are
-                subject to atomatic XML-escaping (due to the nature of
+                etc.). The main reason is that the result of functions are
+                subject to automatic XML-escaping (due to the nature of
                 <literal>${<replaceable>...</replaceable>}</literal>), while
                 the output of macros/transforms are not (due to the nature of
                 <literal>[@<replaceable>...</replaceable>]</literal>).</para>
@@ -1353,7 +1353,7 @@ The average of the price of a python and an elephant is:
             used mostly with <link linkend="xgui">XML processing</link>, which
             is an advanced, and specialized topic.</para>
 
-            <para>Still, a quick overview nodes <emphasis>for advanced
+            <para>Still, a quick overview <emphasis>for advanced
             users</emphasis>: A node is similar to a sequence that store other
             nodes, which are often referred as the children nodes. Also, node
             stores a reference to its container node, which is often referred
@@ -1602,8 +1602,8 @@ The average of the price of a python and an elephant is:
         tags, only about the nesting of FTL tags. It just sees HTML as flat
         text.</para>
 
-        <para>If you try to use a non-existing directive (e.g. you mistype the
-        directive name), FreeMarker will decline to use the template and
+        <para>If you try to use a non-existing directive (e.g., you mistype
+        the directive name), FreeMarker will decline to use the template and
         produce an error message.</para>
 
         <para>FreeMarker ignores superfluous <link
@@ -1789,7 +1789,7 @@ The average of the price of a python and an elephant is:
             <literal>x&nbsp;&gt;&nbsp;y</literal>,
             <literal>x&nbsp;&gt;=&nbsp;y</literal>,
             <literal>x&nbsp;&lt;=&nbsp;y</literal>,
-            <literal>x&nbsp;&amp;lt;&nbsp;y</literal>, ...etc.</para>
+            <literal>x&nbsp;&amp;lt;&nbsp;y</literal>, etc.</para>
           </listitem>
 
           <listitem>
@@ -1905,7 +1905,7 @@ The average of the price of a python and an elephant is:
 
             <para>To specify a string value directly you give the text in
             quotation marks, e.g.: <literal>"some text"</literal> or in
-            apostrophe-quote, e.g. <literal>'some text'</literal>. The two
+            apostrophe-quote, e.g., <literal>'some text'</literal>. The two
             forms are equivalent. If the text itself contains the character
             used for the quoting (either <literal>"</literal> or
             <literal>'</literal>) or backslashes, you have to precede them
@@ -2188,7 +2188,7 @@ autumn
             <literal>5..2</literal>. (Furthermore, you can omit the
             <literal><replaceable>end</replaceable></literal>, for example
             <literal>5..</literal>, in which case the sequence will contain 5,
-            6, 7, 8, ...etc up to the infinity.)</para>
+            6, 7, 8, etc., up to the infinity.)</para>
           </sect3>
 
           <sect3 id="dgui_template_exp_direct_hash">
@@ -2423,9 +2423,9 @@ ${user + user + user + user}</programlisting>
               in places where it shouldn't/can't be used. Interpolations work
               <emphasis>only</emphasis> in <link
               linkend="dgui_template_overallstructure"><phrase
-              role="markedText">text</phrase> sections</link> (e.g.
+              role="markedText">text</phrase> sections</link> (e.g.,
               <literal>&lt;h1&gt;Hello ${name}!&lt;/h1&gt;</literal>) and in
-              string literals (e.g. <literal>[#include
+              string literals (e.g., <literal>[#include
               "/footer/${company}.html"]</literal>). A typical bad usage is
               <literal>[#if ${isBig}]Wow![/#if]</literal>, which is
               syntactically <emphasis>WRONG</emphasis>. You should simply
@@ -2451,7 +2451,7 @@ ${user + user + user + user}</programlisting>
             <para>You can get a single character of a string at a given index
             similarly as you can <link
             linkend="dgui_template_exp_var_sequence">read the subvariable of a
-            sequence</link>, e.g. <literal>user[0]</literal>. The result will
+            sequence</link>, e.g., <literal>user[0]</literal>. The result will
             be a string whose length is 1; FTL doesn't have a separate
             character type. As with sequence subvariables, the index must be a
             number that is at least 0 and less than the length of the string,
@@ -2463,7 +2463,7 @@ ${user + user + user + user}</programlisting>
             because FTL supports multi-typed values), since in that case the
             sequence behavior prevails. (To work this around, you can use
             <link linkend="ref_builtin_string_for_string">the
-            <literal>string</literal> built-in</link>, e.g.
+            <literal>string</literal> built-in</link>, e.g.,
             <literal>user?string[0]</literal>. Don't worry if you don't
             understand this yet; built-ins will be discussed later.)</para>
 
@@ -2806,7 +2806,7 @@ ${-1.999?int}</programlisting>
 
           <para>The expressions on both sides of the <literal>=</literal> or
           <literal>!=</literal> must evaluate to a scalar. Furthermore, the
-          two scalars must have the same type (i.e. strings can only be
+          two scalars must have the same type (i.e., strings can only be
           compared to strings and numbers can only be compared to numbers,
           etc.) or else an error will abort template processing. For example
           <literal>[#if 1 = "1"]</literal> will cause an error. Note that
@@ -2906,7 +2906,7 @@ ${-1.999?int}</programlisting>
               <itemizedlist>
                 <listitem>
                   <para><literal>html</literal>: The string with all special
-                  HTML characters replaced with entity references (E.g.
+                  HTML characters replaced with entity references (E.g.,
                   <literal>&lt;</literal> with
                   <literal>&amp;lt;</literal>)</para>
                 </listitem>
@@ -2951,7 +2951,7 @@ ${-1.999?int}</programlisting>
               <itemizedlist>
                 <listitem>
                   <para><literal>int</literal>: The integer part of a number
-                  (e.g. <literal>-1.9?int</literal> is
+                  (e.g., <literal>-1.9?int</literal> is
                   <literal>-1</literal>)</para>
                 </listitem>
               </itemizedlist>
@@ -3435,10 +3435,10 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           places where it shouldn't/can't be used. Interpolations work
           <emphasis>only</emphasis> in <link
           linkend="dgui_template_overallstructure"><phrase
-          role="markedText">text</phrase> sections</link> (e.g.
+          role="markedText">text</phrase> sections</link> (e.g.,
           <literal>&lt;h1&gt;Hello ${name}!&lt;/h1&gt;</literal>) and <link
           linkend="dgui_template_exp_stringop_interpolation">in string
-          literals</link> (e.g. <literal>[#include
+          literals</link> (e.g., <literal>[#include
           "/footer/${company}.html"]</literal>). A typical bad usage is
           <literal>[#if ${isBig}]Wow![/#if]</literal>, which is syntactically
           <emphasis>WRONG</emphasis>. You should simply write <literal>[#if
@@ -3742,7 +3742,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <literal>[/#macro]</literal> is a template fragment, thus it can
           contain interpolations
           (<literal>${<replaceable>...</replaceable>}</literal>) and FTL tags
-          (e.g. <literal>[#if
+          (e.g., <literal>[#if
           <replaceable>...</replaceable>]<replaceable>...</replaceable>[/#if]</literal>).</para>
 
           <note>
@@ -3790,9 +3790,9 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           you use the value of variable <literal>Fred</literal> for the
           <literal>person</literal> parameter, rather than the string
           <literal>"Fred"</literal>. Of course parameter value need not be a
-          string, it can be number, boolean, hash, sequence, ...etc., also you
+          string, it can be number, boolean, hash, sequence, etc., also you
           can use complex expression on the left side of <literal>=</literal>
-          (e.g. <literal>someParam=(price + 50)*1.25</literal>).</para>
+          (e.g., <literal>someParam=(price + 50)*1.25</literal>).</para>
 
           <para>User-defined directives can have multiple parameters. For
           example, add a new parameter <literal>color</literal>:</para>
@@ -4033,7 +4033,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
 </programlisting>
 
           <para>The syntactical rule is that you pass the actual value of the
-          loop variable for a certain "loop" (i.e. repetition of the nested
+          loop variable for a certain "loop" (i.e., repetition of the nested
           content) as the parameter of <literal>nested</literal> directive (of
           course the parameter can by arbitrary expression). The name of the
           loop variable is specified in the user-defined directive open tag
@@ -4081,7 +4081,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
 
           <para>If you specify more variables after the semicolon than with
           the <literal>nested</literal> directive, then the last few loop
-          variables will not be created (i.e. will be undefined in the nested
+          variables will not be created (i.e., will be undefined in the nested
           content).</para>
         </sect2>
 
@@ -4562,6 +4562,30 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
         </sect2>
       </sect1>
 
+      <sect1>
+        <title>Null and missing</title>
+
+        <para>Let's say we have this data model:</para>
+
+        <programlisting role="dataModel">(root)
+ |
+ +- n = null</programlisting>
+
+        <para>Here <literal>n</literal> is <literal>null</literal>, and
+        <literal>m</literal> is missing (i.e., it's just not there at
+        all).</para>
+
+        <para>For those who don't know <literal>null</literal>, it's a special
+        value extensively used in the Java world for indicating that something
+        is missing or on some other way undefined or not applicable. This is
+        something that FTL doesn't need, and actually just causes trouble for
+        it, but since FreeMarker works together with Java programs (mostly),
+        it just couldn't avoid <literal>null</literal>-s. So FTL knows
+        <literal>null</literal> (since FreeMarker 2.4).</para>
+
+        <para>[!!UC]</para>
+      </sect1>
+
       <sect1 id="dgui_misc_whitespace"
              xreflabel="Designer's Guide/Miscellaneous/White-space handling">
         <title>White-space handling</title>
@@ -4696,19 +4720,19 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
           </indexterm>
 
           <para>If this feature is enabled for a template, then it
-          automatically ignores (i.e. does not print to the output) two kind
+          automatically ignores (i.e., does not print to the output) two kind
           of typical superfluous white-space:</para>
 
           <itemizedlist>
             <listitem>
               <para>Indentation white-space, and trailing white-space at the
               end of the line (includes the line break) will be ignored in
-              lines that contains only FTL tags (e.g.
+              lines that contains only FTL tags (e.g.,
               <literal>[@myMacro/]</literal>, <literal>[#if
               <replaceable>...</replaceable>&gt;</literal>) and/or FTL
-              comments (e.g. <literal>[#-- blah --]</literal>), apart from the
-              the ignored white-space itself. For example, if a line contains
-              only an <literal>[#if
+              comments (e.g., <literal>[#-- blah --]</literal>), apart from
+              the the ignored white-space itself. For example, if a line
+              contains only an <literal>[#if
               <replaceable>...</replaceable>&gt;</literal>, then the
               indentation before the tag and the line break after the tag will
               be ignored. However, if the line contains <literal>[#if
@@ -5402,7 +5426,7 @@ public class Test {
           the <literal>java.util.Date</literal> stores meaningful information,
           and what parts are unused. Unfortunately, the only place where the
           Java API cleanly tells this, is with database handling (SQL),
-          because databases typically has separated date, time and timestamp
+          because databases typically has separated date, time and time stamp
           (aka date-time) types, and <literal>java.sql</literal> has 3
           corresponding <literal>java.util.Date</literal> subclasses for
           them.</para>
@@ -5831,7 +5855,7 @@ blah4</programlisting>
               <listitem>
                 <para><literal>String getNodeType()</literal>: In the case of
                 XML: <literal>"element"</literal>, <literal>"text"</literal>,
-                <literal>"comment"</literal>, ...etc. This information, if
+                <literal>"comment"</literal>, etc. This information, if
                 available, is used by the <literal>recurse</literal> and
                 <literal>visit</literal> directives to find the default
                 handler macro for a node. Also it can be useful for other
@@ -5886,7 +5910,7 @@ blah4</programlisting>
         text.</para>
 
         <para>As for when the replacement occurs, it's the business of the
-        container in question (i.e. the business of the class that implements
+        container in question (i.e., the business of the class that implements
         the container interface), but it must happen at the latest when you
         get the subvariable, as the getter methods (according to the
         interfaces) return <literal>TemplateModel</literal>, not
@@ -6171,7 +6195,7 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
           This is the typical situation for Servlet based Web sites.</para>
         </warning>
 
-        <para>The set of shared variables is initially (i.e. for a new
+        <para>The set of shared variables is initially (i.e., for a new
         <literal>Configuration</literal> instance) not empty. It contains the
         following transforms:</para>
 
@@ -7081,7 +7105,7 @@ c</programlisting>
           environment.</para>
 
           <para>Note that the charset of the template is independent from the
-          charset of the output that the tempalte generates (unless the
+          charset of the output that the template generates (unless the
           enclosing software deliberately sets the output charset to the same
           as the template charset).</para>
         </sect2>
@@ -7161,7 +7185,7 @@ env.process();</programlisting>
         should be handled as immutable (read-only) objects. That is, you
         create and initialize them (for example with
         <literal>set<replaceable>...</replaceable></literal> methods), and
-        then you don't modify them later (e.g. you don't call
+        then you don't modify them later (e.g., you don't call
         <literal>set<replaceable>...</replaceable></literal>). This allows us
         to avoid expensive synchronized blocks in a multithreaded environment.
         Beware with <literal>Template</literal> instances; when you get a
@@ -7253,13 +7277,13 @@ env.process();</programlisting>
           <listitem>
             <para>If the Java API of the earlier listed classes
             (<literal>String</literal>, <literal>Map</literal>,
-            <literal>List</literal> ...etc) should be visible for the
+            <literal>List</literal>, etc.) should be visible for the
             templates. Even with <literal>BeansWrapper</literal>, they are not
             visible by default, but it can be achieved by setting the exposure
             level (see later). Note that this is usually a bad practice; try
             to use <link linkend="ref_builtins">the built-ins</link> (like
             <literal>foo?size</literal>, <literal>foo?upper</literal>,
-            <literal>foo?replace('_', '-')</literal> ...etc) instead of the
+            <literal>foo?replace('_', '-')</literal>, etc.) instead of the
             Java API.</para>
           </listitem>
         </itemizedlist>
@@ -7303,7 +7327,7 @@ env.process();</programlisting>
 
           <para>If you call <literal>setExposeFields(true)</literal> on a
           <literal>BeansWrapper</literal> instance, it will also expose
-          public, non-static fields of classes as hash keys and values. I.e.
+          public, non-static fields of classes as hash keys and values. I.e.,
           if <literal>foo</literal> is a public, non-static field of the class
           <literal>Bar</literal>, and <literal>bar</literal> is a template
           variable wrapping an instance of <literal>Bar</literal>, then
@@ -7328,7 +7352,7 @@ env.process();</programlisting>
           <literal>Method.invoke</literal>,
           <literal>Constructor.newInstance</literal>,
           <literal>Class.newInstance</literal>,
-          <literal>Class.getClassLoader</literal> etc.) and various dangerous
+          <literal>Class.getClassLoader</literal>, etc.) and various dangerous
           methods in <literal>System</literal> and <literal>Runtime</literal>
           classes (<literal>exec</literal>, <literal>exit</literal>,
           <literal>halt</literal>, <literal>load</literal>, etc.). The
@@ -8172,14 +8196,14 @@ TemplateHashModel roundingModeEnums =
             <literal>=</literal> there is an <link
             linkend="dgui_template_exp">FTL expression</link>. Thus,
             <emphasis>you must not quote boolean and numerical parameter
-            values</emphasis> (e.g. <literal>[@tiles.insert page="/layout.ftl"
-            flush=true/]</literal>), or they are interpreted as string values,
-            and this will cause a type mismatch error when FreeMarker tries to
-            pass the value to the custom tag that expects non-string value.
-            Also note, that naturally, you can use any FTL expression as
-            attribute value, such as variables, calculated values, etc. (e.g.
-            <literal>[@tiles.insert page=layoutName flush=foo &amp;&amp;
-            bar/]</literal>).</para>
+            values</emphasis> (e.g., <literal>[@tiles.insert
+            page="/layout.ftl" flush=true/]</literal>), or they are
+            interpreted as string values, and this will cause a type mismatch
+            error when FreeMarker tries to pass the value to the custom tag
+            that expects non-string value. Also note, that naturally, you can
+            use any FTL expression as attribute value, such as variables,
+            calculated values, etc. (e.g., <literal>[@tiles.insert
+            page=layoutName flush=foo &amp;&amp; bar/]</literal>).</para>
 
             <para>FreeMarker does not rely on the JSP support of the servlet
             container in which it is run when it uses JSP taglibs since it
@@ -8289,7 +8313,7 @@ TemplateHashModel roundingModeEnums =
   permission java.io.FilePermission "/path/to/templates/-", "read";
 };</programlisting>
 
-          <para>I.e. if you're just using the default template loading
+          <para>I.e., if you're just using the default template loading
           mechanism which loads templates from the current directory, then
           specify these permissions additionally: (note that the expression
           <literal>${user.dir}</literal> will be evaluated at run time by the
@@ -8332,7 +8356,7 @@ TemplateHashModel roundingModeEnums =
           well as security certificates of its signers, in case it is
           digitally signed (typically if it comes from a signed JAR file).
           With this feature turned on, you can specify grant statements in
-          your policy file that also apply to templates, i.e. if your
+          your policy file that also apply to templates, i.e., if your
           templates reside in <literal>/home/johndoe/templates</literal> then
           your policy file can contain a grant entry</para>
 
@@ -8441,7 +8465,7 @@ TemplateHashModel roundingModeEnums =
             </listitem>
           </itemizedlist>
 
-          <para>I.e. to grant your own code the ability to modify secured
+          <para>I.e., to grant your own code the ability to modify secured
           templates, you'd add the following grant statement to your
           policy:</para>
 
@@ -8678,7 +8702,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
           <title>TemplateSequenceModel</title>
 
           <para>When used as a sequence, it will return the i-th node as a new
-          node list consisting of the single requested node. I.e. to return
+          node list consisting of the single requested node. I.e., to return
           the 3rd <literal>&lt;chapter&gt;</literal> element of the
           <literal>&lt;book&gt;</literal> element, you'd use the following
           (note indexes are zero-based):</para>
@@ -8929,7 +8953,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
                   can occur in the node list by applying uptree-traversals
                   <literal>_parent</literal>, <literal>_ancestor</literal>,
                   <literal>_ancestorOrSelf</literal>, and
-                  <literal>_document</literal>. I.e.
+                  <literal>_document</literal>. I.e.,
                   <literal>foo._children._parent</literal> will return a node
                   list that has duplicates of nodes in foo - each node will
                   have the number of occurrences equal to the number of its
@@ -9177,7 +9201,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
 
       <para>Although FreeMarker was originally designed as a web page template
       engine, as of version 2.3 it also targets another application domain:
-      transforming XML into arbitrary textual output (e.g. HTML files). Thus,
+      transforming XML into arbitrary textual output (e.g., HTML files). Thus,
       in many cases, FreeMarker is an XSLT alternative.</para>
 
       <para>Technically, there is nothing special in transforming XML
@@ -9512,7 +9536,7 @@ root.put(
           <literal>doc.book.chapter?size == 0</literal>). Of course you can
           use similarly all the <link
           linkend="dgui_template_exp_missing">missing value handler
-          operators</link> (e.g.
+          operators</link> (e.g.,
           <literal>doc.book.author[0]!"Anonymous"</literal>), just don't
           forget that <literal>[0]</literal>.</para>
 
@@ -9667,7 +9691,7 @@ root.put(
           without explanation. There are several node types that can occur in
           a DOM tree, such as <literal>"element"</literal>,
           <literal>"text"</literal>, <literal>"comment"</literal>,
-          <literal>"pi"</literal>, ...etc.</para>
+          <literal>"pi"</literal>, etc.</para>
 
           <para>The <literal>?node_name</literal> returns the name of element
           for element nodes. For other node types, it also returns something,
@@ -9961,7 +9985,7 @@ Test Book</programlisting>
                 <entry>Node name (<literal>?node_name</literal>)</entry>
 
                 <entry>String value
-                (e.g.&nbsp;<literal>&lt;p&gt;${node}</literal>)</entry>
+                (e.g.,&nbsp;<literal>&lt;p&gt;${node}</literal>)</entry>
 
                 <entry>Special hash keys</entry>
               </row>
@@ -9988,7 +10012,7 @@ Test Book</programlisting>
                 <entry><literal>"element"</literal></entry>
 
                 <entry><literal>"<replaceable>name</replaceable>"</literal>:
-                the name of the element. This is the local name (i.e. name
+                the name of the element. This is the local name (i.e., name
                 without namespace prefix).</entry>
 
                 <entry>If it has no element children, the text of all text
@@ -10053,7 +10077,7 @@ Test Book</programlisting>
                 <entry><literal>"attribute"</literal></entry>
 
                 <entry><literal>"<replaceable>name</replaceable>"</literal>:
-                the name of the attribute. This is the local name (i.e. name
+                the name of the attribute. This is the local name (i.e., name
                 without namespace prefix).</entry>
 
                 <entry>The value of the attribute.</entry>
@@ -10119,7 +10143,7 @@ Test Book</programlisting>
           <listitem>
             <para>If Jaxen is used for the XPath support (not Xalan), then
             FreeMarker variables are visible with XPath variable references
-            (e.g.
+            (e.g.,
             <literal>doc["book/chapter[title=$currentTitle]"]</literal>).</para>
           </listitem>
         </itemizedlist>
@@ -10351,8 +10375,8 @@ Test Book</programlisting>
 
           <para>When you apply one of the above special keys on a node
           sequence that contains more than 1 or 0 nodes, then for each node in
-          the sequence (where the special key does make sense, e.g. text nodes
-          will be skipped for key <literal>*</literal> or
+          the sequence (where the special key does make sense, e.g., text
+          nodes will be skipped for key <literal>*</literal> or
           <literal>@foo</literal>), the special key will be applied as it was
           explained for single nodes, and the results will be concatenated to
           form the final result. The results will be concatenated in the order
@@ -10577,7 +10601,7 @@ End book</programlisting>
 
           <para>For some XML node types, there is a default handler, which
           will handle the node if you haven't defined a handler for the node
-          (i.e. if there is no user defined directive available with name
+          (i.e., if there is no user defined directive available with name
           identical to the node name). Here are these node types, and what the
           default handler does:</para>
 
@@ -10587,7 +10611,7 @@ End book</programlisting>
               applications, this will not be good for you, because you should
               escape the text before you send it to the output (with
               <literal>?html</literal> or <literal>?xml</literal> or
-              <literal>?rtf</literal>, ...etc. depends on the output
+              <literal>?rtf</literal>, etc., depending on the output
               format).</para>
             </listitem>
 
@@ -11387,7 +11411,7 @@ String BEAN_NAME = "${beanName?j_string}";</programlisting>
           (<literal>\x<replaceable>XX</replaceable></literal>). (Of course,
           according the JavaScript language string literal syntax, backslash
           (<literal>\</literal>) will be escaped too, line-feed will be
-          escaped as <literal>\n</literal>, ...etc.)</para>
+          escaped as <literal>\n</literal>, etc.)</para>
 
           <para>Example:</para>
 
@@ -11714,7 +11738,7 @@ Matching sub-strings:
           the same format as you specify numerical values directly in FTL.
           That is, it must be in the locale independent form, where the
           decimal separator is dot. In additional the built-in recognizes
-          scientific notation (e.g. <literal>"1.23E6"</literal>,
+          scientific notation (e.g., <literal>"1.23E6"</literal>,
           <literal>"1.5e-8"</literal>).</para>
 
           <para>If the string is not in the appropriate format, an error will
@@ -11847,7 +11871,7 @@ ${x?url}</programlisting>
 
           <para>Note that it escapes <emphasis>all</emphasis> reserved URL
           characters (<literal>/</literal>, <literal>=</literal>,
-          <literal>&amp;</literal>, ...etc), so this encoding can be used for
+          <literal>&amp;</literal>, etc.), so this encoding can be used for
           encoding query parameter values, for example:</para>
 
           <programlisting role="template">&lt;a href="foo.cgi?x=${x?url}&amp;y=${y?url}"&gt;Click here...&lt;/a&gt;</programlisting>
@@ -11899,7 +11923,7 @@ ${x?url}</programlisting>
             </indexterm>If the <literal>url</literal> built-in has no
           parameter, then it will use the charset specified as the value of
           the <literal>url_escaping_charset</literal> setting. This setting
-          should be set by the software that encloses FreeMarker (e.g. a Web
+          should be set by the software that encloses FreeMarker (e.g., a Web
           application framework), because it is not set
           (<literal>null</literal>) by default. If it is not set, then
           FreeMarker falls back using the value of the
@@ -11978,7 +12002,7 @@ ${x?url}</programlisting>
           <title>string (when used with a string value)</title>
 
           <para>Does nothing, just returns the string as-is. The exception is
-          that if the value is a multi-type value (e.g. it is both string and
+          that if the value is a multi-type value (e.g., it is both string and
           sequence at the same time), then the resulting value will be only a
           simple string, not a multi-type value. This can be utilized to
           prevent the artifacts of multi-typing.</para>
@@ -12097,8 +12121,8 @@ ${x?url}</programlisting>
             </listitem>
 
             <listitem>
-              <para><literal>f</literal>: First only. That is,
-              replace/find/etc. only the first occurrence of something.</para>
+              <para><literal>f</literal>: First only. That is, replace/find
+              (and like) only the first occurrence of something.</para>
             </listitem>
 
             <listitem>
@@ -12278,10 +12302,10 @@ rif: foo XYr baar</programlisting>
           interpolation as <literal>${x}</literal>) with the locale (language,
           country) specific number formatting, which is for human readers
           (like 300000 is printed as 3,000,000). This way when the number is
-          printed not for human audience (e.g. for a database record ID used
+          printed not for human audience (e.g., for a database record ID used
           as the part of an URL or as invisible field value in a HTML form, or
           for printing CSS/JavaScript numerical literals) this built-in must
-          be used to print the number (i.e. use <literal>${x?c}</literal>
+          be used to print the number (i.e., use <literal>${x?c}</literal>
           instead of <literal>${x}</literal>), or else the output will be
           broken depending on the current number formatting settings and
           locale (like the decimal point is not dot, but comma in many
@@ -12550,9 +12574,8 @@ Tuesday, April 08, 2003, 09:24:44 PM (PDT)</programlisting>
 
           <para>The pattern string also can be <literal>"short"</literal>,
           <literal>"medium"</literal>, ..., <literal>"short_medium"</literal>,
-          ...etc. These are the same as if you would use the predefined
-          formats with the dot syntax:
-          <literal>someDate?string("short")</literal> and
+          etc. These are the same as if you would use the predefined formats
+          with the dot syntax: <literal>someDate?string("short")</literal> and
           <literal>someDate?string.short</literal> are equivalent.</para>
 
           <para>See also: <link
@@ -12606,7 +12629,7 @@ Tuesday, April 08, 2003, 09:24:44 PM (PDT)</programlisting>
           <para>In optimal case, you do not need to use these built-ins.
           Unfortunately, because of the technical limitations of the Java
           platform, FreeMarker sometimes can't find out which parts of the
-          date are in use (i.e. only the year+month+day, or only
+          date are in use (i.e., only the year+month+day, or only
           hour+minute+second+millisecond, or both); ask the programmers which
           variables has this problem. If FreeMarker has to execute an
           operation where this information is needed -- such as displaying the
@@ -12783,7 +12806,7 @@ Last updated time: 08:00:54 PM</programlisting>
           operator</link>), except that comparing two values of different
           types or of types for which FreeMarker doesn't support comparison
           will not cause error, just will be evaluated as the two values are
-          not equal. Thus, you can use it only to find scalar values (i.e.
+          not equal. Thus, you can use it only to find scalar values (i.e.,
           string, number, boolean or date/time values). For other types the
           result will be always <literal>false</literal>.</para>
 
@@ -12833,7 +12856,7 @@ ${colors?seq_index_of("purple")}</programlisting>
           operator</link>), except that comparing two values of different
           types or of types for which FreeMarker doesn't support comparison
           will not cause error, just will be evaluated as the two values are
-          not equal. Thus, you can use it only to find scalar values (i.e.
+          not equal. Thus, you can use it only to find scalar values (i.e.,
           string, number, boolean or date/time values). For other types the
           result will be always <literal>-1</literal>.</para>
 
@@ -13100,7 +13123,7 @@ Sorted by name.last:
 
           <para>The 1st parameter must be a number that is at least 1. If the
           number is not integer, it will be silently rounded down to integer
-          (i.e. both 3.1 and 3.9 will be rounded to 3). The 2nd parameter can
+          (i.e., both 3.1 and 3.9 will be rounded to 3). The 2nd parameter can
           be of any type and value.</para>
         </simplesect>
       </sect1>
@@ -13184,13 +13207,13 @@ Sorted by name.last:
             <primary>children built-in</primary>
           </indexterm>
 
-          <para>A sequence that contains all of this node's child nodes (i.e.
+          <para>A sequence that contains all of this node's child nodes (i.e.,
           immediate descendant nodes).</para>
 
           <para>XML: This is almost the same as special hash key
           <literal>*</literal>, except that it returns all nodes, not only
           elements. So the possible children are element nodes, text nodes,
-          comment nodes, processing instruction nodes, etc. but
+          comment nodes, processing instruction nodes, etc., but
           <emphasis>not</emphasis> attribute nodes. Attribute nodes are
           excluded from the sequence.</para>
         </simplesect>
@@ -13313,7 +13336,7 @@ Sorted by name.last:
           define the exact meaning of node namespace; it depends on what your
           node variables are modeling. It's possible that a node doesn't have
           any node namespace defined. In this case, the built-in should
-          evaluate to undefined variable (i.e.
+          evaluate to undefined variable (i.e.,
           <literal>node?<replaceable>node_namespace</replaceable>??</literal>
           is <literal>false</literal>), so you can't use the returned
           value.</para>
@@ -13411,7 +13434,7 @@ Sorted by name.last:
           following are empty: a string with 0 length, sequence or hash with
           no subvariables, a collection which has passed the last element. If
           the value is not a string or sequence or hash or collection, then it
-          counts as non-empty if it's a number or a date or a boolean (e.g.
+          counts as non-empty if it's a number or a date or a boolean (e.g.,
           <literal>0</literal> and <literal>false</literal> are not empty),
           otherwise it counts as empty. Note that when your data model
           implements multiple template model interfaces you may get unexpected
@@ -13551,8 +13574,9 @@ Sorted by name.last:
                 <row>
                   <entry><literal>is_hash_ex</literal></entry>
 
-                  <entry>extended hash (i.e. supports <literal>?keys</literal>
-                  and <literal>?values</literal>)</entry>
+                  <entry>extended hash (i.e., supports
+                  <literal>?keys</literal> and
+                  <literal>?values</literal>)</entry>
                 </row>
 
                 <row>
@@ -13602,9 +13626,9 @@ Sorted by name.last:
             <primary>namespace built-in</primary>
           </indexterm>
 
-          <para>This built-in returns the namespace (i.e. the ''gate'' hash to
-          the namespace) associated with a macro variable. You can use it with
-          macros only.</para>
+          <para>This built-in returns the namespace (i.e., the ''gate'' hash
+          to the namespace) associated with a macro variable. You can use it
+          with macros only.</para>
         </simplesect>
 
         <simplesect id="ref_builtin_new">
@@ -13660,7 +13684,7 @@ Sorted by name.last:
 
           <para>There is however a more elegant approach, using the
           <literal>?use_defaults</literal> built-in for this purpose,
-          i.e.:</para>
+          i.e.,:</para>
 
           <programlisting role="template">[#macro greet person color]
   &lt;font size="+2" color="${color}"&gt;Hello ${person}!&lt;/font&gt;
@@ -13696,8 +13720,8 @@ Sorted by name.last:
           input element. The input element is rendered by another macro passed
           in as the parameter named "renderer". The "renderInputElement" macro
           will pass the input element name to the renderer, but it doesn't
-          know about any other, renderer specific parameters (i.e. the list of
-          options in the dropdown list). This macro couldn't invoke the
+          know about any other, renderer specific parameters (i.e., the list
+          of options in the dropdown list). This macro couldn't invoke the
           "renderSelect" directly, as it can't pass it the required parameter
           "options". Fortunately, using the <literal>use_defaults</literal>,
           you can pass it a tailored version of the "renderSelect" macro with
@@ -13912,8 +13936,8 @@ Sorted by name.last:
           <itemizedlist spacing="compact">
             <listitem>
               <para><literal><replaceable>condition</replaceable></literal>,
-              <literal><replaceable>condition2</replaceable></literal>,
-              ...etc.: Expression evaluates to a boolean value.</para>
+              <literal><replaceable>condition2</replaceable></literal>, etc.:
+              Expression evaluates to a boolean value.</para>
             </listitem>
           </itemizedlist>
         </sect2>
@@ -14166,7 +14190,7 @@ Sorted by name.last:
           section of template for each variable contained within a sequence.
           The code between the start-tag and end-tag will be processed for the
           1st subvariable, then for the 2nd subvariable, then for the 3rd
-          subvariable, etc until it passes the last one. For each such
+          subvariable, etc., until it passes the last one. For each such
           iteration the loop variable will contain the current
           subvariable.</para>
 
@@ -14334,7 +14358,7 @@ or
 
           <para>Also, always use slashes to separate path components. If you
           are loading templates from your local file system and it uses
-          backslashes (i.e. Windows), FreeMarker will convert them
+          backslashes (like under. Windows), FreeMarker will convert them
           automatically.</para>
 
           <para>Example:</para>
@@ -14431,7 +14455,7 @@ All rights reserved.</emphasis></programlisting>
             including template acquires the template to include from the first
             parent directory that has it. Note that you can specify not only a
             template name to the right of the asterisk, but a subpath as well.
-            I.e. if the previous template instead read:</para>
+            I.e., if the previous template instead read:</para>
 
             <programlisting role="template">[#include "*/commons/footer.ftl"]</programlisting>
 
@@ -14627,7 +14651,7 @@ All rights reserved.</emphasis></programlisting>
           and then executes the template given with
           <literal><replaceable>path</replaceable></literal> parameter in that
           namespace so the template populates the namespace with variables
-          (macros, transforms, ...etc.). Then it makes the newly created
+          (macros, transforms, etc.). Then it makes the newly created
           namespace available to the caller with a hash variable. The hash
           variable will be created as a plain variable in the namespace used
           by the caller of <literal>import</literal> (as if you would create
@@ -14739,8 +14763,8 @@ All rights reserved.</emphasis></programlisting>
 
           <para>The compress directive is useful for removing superfluous
           <link linkend="gloss.whiteSpace">white-space</link> when you use a
-          white-space insensitive format (e.g. HTML or XML). It captures the
-          output generated inside its body (i.e. between its start-tag and
+          white-space insensitive format (e.g., HTML or XML). It captures the
+          output generated inside its body (i.e., between its start-tag and
           end-tag), and reduces all unbroken white-space sequences to a single
           white-space character. The inserted character will be a <link
           linkend="gloss.lineBreak">line break</link> if the replaced sequence
@@ -14979,7 +15003,7 @@ or
 
           <para>With this you can create a new variable, or replace an
           existing variable. Note that only top-level variables can be
-          created/replaced (i.e. you can't create/replace
+          created/replaced (i.e., you can't create/replace
           <literal>some_hash.subvar</literal>, but
           <literal>some_hash</literal>).</para>
 
@@ -15323,7 +15347,7 @@ or
               <para><indexterm>
                   <primary>url_escaping_charset</primary>
                 </indexterm><literal>url_escaping_charset</literal>: The
-              charset used for URL escaping (e.g. for
+              charset used for URL escaping (e.g., for
               <literal>${foo?url}</literal>) to calculate the escaped
               (<literal>%<replaceable>XX</replaceable></literal>) parts.
               Usually the framework that encloses FreeMarker should set it, so
@@ -15393,7 +15417,7 @@ Or all above but with positional parameter passing (<link
               linkend="ref_directive_userDefined_positionalParam">more details...</link>):
 
 <literal>[@<replaceable>macro_or_transf</replaceable> <replaceable>val1</replaceable>, <replaceable>val2</replaceable>, <replaceable>...</replaceable>, <replaceable>valN</replaceable>/]</literal>
-...etc.</programlisting>
+etc.</programlisting>
 
           <para>Where:</para>
 
@@ -15406,32 +15430,33 @@ Or all above but with positional parameter passing (<link
 
             <listitem>
               <para><literal><replaceable>param1</replaceable></literal>,
-              <literal><replaceable>param2</replaceable></literal>, ...etc.:
-              The name of parameters. They are <emphasis>not</emphasis>
+              <literal><replaceable>param2</replaceable></literal>, etc.: The
+              name of parameters. They are <emphasis>not</emphasis>
               expressions.</para>
             </listitem>
 
             <listitem>
               <para><literal><replaceable>val1</replaceable></literal>,
-              <literal><replaceable>val2</replaceable></literal>, ...etc.: The
+              <literal><replaceable>val2</replaceable></literal>, etc.: The
               value of parameters. They <emphasis>are</emphasis>
               expressions.</para>
             </listitem>
 
             <listitem>
               <para><literal><replaceable>lv1</replaceable></literal>,
-              <literal><replaceable>lv2</replaceable></literal>, ...etc.: The
+              <literal><replaceable>lv2</replaceable></literal>, etc.: The
               name of <link linkend="dgui_misc_var">loop variables</link>.
               They are <emphasis>not</emphasis> expressions.</para>
             </listitem>
           </itemizedlist>
 
-          <para>The number of parameters can be 0 (i.e. no parameters).</para>
+          <para>The number of parameters can be 0 (i.e., no
+          parameters).</para>
 
           <para>The order of parameters is not significant (unless you use
           positional parameter passing). The name of parameters must be
           unique. Lower- and uppercase letters are considered as different
-          letters in parameter names (i.e. <literal>Color</literal> and
+          letters in parameter names (i.e., <literal>Color</literal> and
           <literal>color</literal> is not the same).</para>
         </sect2>
 
@@ -15540,7 +15565,7 @@ Or all above but with positional parameter passing (<link
             <para>Furthermore, it does not cause error if you specify more
             loop variables after the semicolon than the user-defined directive
             creates, just the last few loop variables will not be created
-            (i.e. those will be undefined in the nested content). Trying to
+            (i.e., those will be undefined in the nested content). Trying to
             use the undefined loop variables, however, will cause error
             (unless you use built-ins like <literal>?default</literal>), since
             you try to access a non-existing variable.</para>
@@ -15621,11 +15646,11 @@ Or all above but with positional parameter passing (<link
 
             <listitem>
               <para><literal><replaceable>param1</replaceable></literal>,
-              <literal><replaceable>param2</replaceable></literal>, ...etc.:
-              the name of the <link linkend="dgui_misc_var">local
-              variables</link> store the parameter values (not expression),
-              optionally followed by <literal>=</literal> and the default
-              value (that's an expression).</para>
+              <literal><replaceable>param2</replaceable></literal>, etc.: the
+              name of the <link linkend="dgui_misc_var">local variables</link>
+              store the parameter values (not expression), optionally followed
+              by <literal>=</literal> and the default value (that's an
+              expression).</para>
             </listitem>
 
             <listitem>
@@ -15642,7 +15667,7 @@ Or all above but with positional parameter passing (<link
 
             <listitem>
               <para><literal><replaceable>loopvar1</replaceable></literal>,
-              <literal><replaceable>loopvar2</replaceable></literal>, ...etc.:
+              <literal><replaceable>loopvar2</replaceable></literal>, etc.:
               Optional. The values of <link linkend="dgui_misc_var">loop
               variables</link> that the <literal>nested</literal> directive
               wants to create for the nested content. These are
@@ -15797,7 +15822,7 @@ Or all above but with positional parameter passing (<link
             <para>The <literal>nested</literal> directive executes the
             template fragment between the start-tag and end-tags of the
             user-defined directive. The nested part can contain anything what
-            is valid in templates; interpolations, directives, ...etc. It is
+            is valid in templates; interpolations, directives, etc. It is
             executed in the context where the macro was called from, rather
             than in the context of the macro definition body. Thus, for
             example, you don't see the local variables of the macro in the
@@ -15925,11 +15950,11 @@ Or all above but with positional parameter passing (<link
 
             <listitem>
               <para><literal><replaceable>param1</replaceable></literal>,
-              <literal><replaceable>param2</replaceable></literal>, ...etc.:
-              the name of the <link linkend="dgui_misc_var">local
-              variables</link> store the parameter values (not expression),
-              optionally followed by <literal>=</literal> and the default
-              value (that's an expression).</para>
+              <literal><replaceable>param2</replaceable></literal>, etc.: the
+              name of the <link linkend="dgui_misc_var">local variables</link>
+              store the parameter values (not expression), optionally followed
+              by <literal>=</literal> and the default value (that's an
+              expression).</para>
             </listitem>
 
             <listitem>
@@ -15967,7 +15992,7 @@ Or all above but with positional parameter passing (<link
           directive</link>, except that <literal>return</literal> directive
           <emphasis>must</emphasis> have a parameter that specifies the return
           value of the method, and that attempts to write to the output will
-          be ignored. If the <literal>[/#function]</literal> is reached (i.e.
+          be ignored. If the <literal>[/#function]</literal> is reached (i.e.,
           there was no <literal>return
           <replaceable>returnValue</replaceable></literal>), then the return
           value of the method is an undefined variable.</para>
@@ -16122,17 +16147,17 @@ or
           <itemizedlist spacing="compact">
             <listitem>
               <para><literal><replaceable>param1</replaceable></literal>,
-              <literal><replaceable>param2</replaceable></literal>, ...etc.:
-              Name of the parameter. Not an expression. Allowed parameters
-              are: <literal>encoding</literal>,
+              <literal><replaceable>param2</replaceable></literal>, etc.: Name
+              of the parameter. Not an expression. Allowed parameters are:
+              <literal>encoding</literal>,
               <literal>strip_whitespace</literal>,
-              <literal>strip_text</literal>, ...etc. See below.</para>
+              <literal>strip_text</literal>, etc. See below.</para>
             </listitem>
 
             <listitem>
               <para><literal><replaceable>value1</replaceable></literal>,
-              <literal><replaceable>value2</replaceable></literal>, ...etc.:
-              The value of parameter. This must be a constant expression (as
+              <literal><replaceable>value2</replaceable></literal>, etc.: The
+              value of parameter. This must be a constant expression (as
               <literal>true</literal>, or <literal>"ISO-8859-5"</literal>, or
               <literal>{x:1, y:2}</literal>). It can't use variables.</para>
             </listitem>
@@ -16185,7 +16210,7 @@ or
               <literal>true</literal> and <literal>false</literal>. (And for
               backward compatibility, strings <literal>"yes"</literal>,
               <literal>"no"</literal>, <literal>"true"</literal>,
-              <literal>"false"</literal>). The default value (i.e. when you
+              <literal>"false"</literal>). The default value (i.e., when you
               don't use this parameter) depends on the FreeMarker
               configuration set by the programmers, but it should be
               <literal>true</literal> for new projects.</para>
@@ -16199,7 +16224,7 @@ or
               <literal>true</literal> and <literal>false</literal>. (And for
               backward compatibility, strings <literal>"yes"</literal>,
               <literal>"no"</literal>, <literal>"true"</literal>,
-              <literal>"false"</literal>). The default value (i.e. when you
+              <literal>"false"</literal>). The default value (i.e., when you
               don't use this parameter) is <literal>false</literal>.</para>
             </listitem>
 
@@ -16209,7 +16234,7 @@ or
               <literal>true</literal> and <literal>false</literal>. (And for
               backward compatibility, strings <literal>"yes"</literal>,
               <literal>"no"</literal>, <literal>"true"</literal>,
-              <literal>"false"</literal>). The default value (i.e. when you
+              <literal>"false"</literal>). The default value (i.e., when you
               don't use this parameter) depends on the FreeMarker
               configuration set by the programmers, but it should be
               <literal>true</literal> for new projects. <phrase
@@ -16264,7 +16289,7 @@ or
               <para><literal>attributes</literal>: This is a hash that
               associates arbitrary attributes (name-value pairs) to the
               template. The values of the attributes can be of any type
-              (string, number, sequence... etc.). FreeMarker doesn't try to
+              (string, number, sequence, etc.). FreeMarker doesn't try to
               understand the meaning of the attributes. It's up to the
               application that encapsulates FreeMarker (as a Web application
               framework). Thus, the set of allowed attributes and their
@@ -16284,9 +16309,9 @@ or
           </itemizedlist>
 
           <para>This directive also determines if the template uses angle
-          bracket syntax (e.g. <literal>&lt;#include 'foo.ftl'&gt;</literal>)
+          bracket syntax (e.g., <literal>&lt;#include 'foo.ftl'&gt;</literal>)
           or <link linkend="dgui_misc_alternativesyntax">square bracket
-          syntax</link> (e.g. <literal>[#include 'foo.ftl']</literal>).
+          syntax</link> (e.g., <literal>[#include 'foo.ftl']</literal>).
           Simply, the syntax used for this directive will be the syntax used
           for the whole template, regardless of the FreeMarker configuration
           settings.</para>
@@ -16577,7 +16602,7 @@ Primary content continued</programlisting>
           for handling undefined variables (for that use <link
           linkend="dgui_template_exp_missing">missing value handler
           operators</link>). It can handle all kind of errors that occurs when
-          the block is executed (i.e. not syntactical errors, which are
+          the block is executed (i.e., not syntactical errors, which are
           detected earlier). And it's meant to enclose bigger template
           fragments, where error can occur at various points. For example, you
           have a part in your template that deals with printing
@@ -16706,8 +16731,8 @@ or
                 <para>If the node does support node namespaces (as element
                 nodes in XML), then a prefix deduced from the node namespace
                 maybe appended before the node name with a colon used as
-                separator (e.g. <literal>e:book</literal>). The prefix, and if
-                there is a prefix used at all, depends on what prefixes has
+                separator (e.g., <literal>e:book</literal>). The prefix, and
+                if there is a prefix used at all, depends on what prefixes has
                 been registered with the <literal>ns_prefixes</literal>
                 parameter of the <literal>ftl</literal> directive in the <link
                 linkend="dgui_misc_namespace">FTL namespace</link> where
@@ -16810,7 +16835,7 @@ Done.</programlisting>
             name deduced with the rules described earlier, then it tries to
             find an user defined directive with name
             <literal>@<replaceable>node_type</replaceable></literal>, or if
-            the node does not support node type property (i.e.
+            the node does not support node type property (i.e.,
             <literal><replaceable>node</replaceable>?node_type</literal>
             returns undefined variable), then with name
             <literal>@default</literal>. For the lookup, it uses the same
@@ -17189,10 +17214,10 @@ or
         <listitem>
           <para><literal>node</literal> (alias <literal>current_node</literal>
           for historical reasons): The node you are currently processing with
-          the visitor pattern (i.e. with the <link
-          linkend="ref_directive_visit"><literal>visit</literal>,
-          <literal>recurse</literal>, ...etc. directives</link>). Also, it
-          initially stores the root node when you use the <link
+          the visitor pattern (i.e., with the <link
+          linkend="ref_directive_visit"><literal>visit</literal> or
+          <literal>recurse</literal> directives</link>). Also, it initially
+          stores the root node when you use the <link
           linkend="pgui_misc_ant">FreeMarker XML Ant task</link>.</para>
         </listitem>
 
@@ -17265,7 +17290,7 @@ or
           can be used to check which FreeMarker version does your application
           use, but note that this special variable does not exist prior to the
           2.3-final or 2.2.8 versions. The version number of non-final
-          releases contain abbreviation ''pre'' for ''preview'' (e.g.
+          releases contain abbreviation ''pre'' for ''preview'' (e.g.,
           <literal>2.3pre6</literal>), or abbrevation ''rc'' for ''release
           candidate''.</para>
         </listitem>
@@ -17485,7 +17510,7 @@ or
 
             <listitem>
               <para><literal><replaceable>argName1</replaceable></literal>,
-              <literal><replaceable>argName2</replaceable></literal>, ...etc.:
+              <literal><replaceable>argName2</replaceable></literal>, etc.:
               the name of the <link linkend="dgui_misc_var">local
               variables</link> store the parameter values (not
               expression)</para>
@@ -17493,8 +17518,8 @@ or
 
             <listitem>
               <para><literal><replaceable>argValue1</replaceable></literal>,
-              <literal><replaceable>argValue2</replaceable></literal>,
-              ...etc.: expressions, the value of the parameters</para>
+              <literal><replaceable>argValue2</replaceable></literal>, etc.:
+              expressions, the value of the parameters</para>
             </listitem>
           </itemizedlist>
         </sect2>
@@ -17645,7 +17670,7 @@ or
             calls</link> to see the replacement.</para>
           </note>
 
-          <para>Captures the output generated inside its body (i.e. between
+          <para>Captures the output generated inside its body (i.e., between
           its start-tag and end-tag), and let the given transform modify it
           before it is written to the final output.</para>
 
@@ -17769,7 +17794,7 @@ some test
               </listitem>
 
               <listitem>
-                <para>We can detect if you made a typo, i.e.
+                <para>We can detect if you made a typo, i.e.,
                 <literal>[#inculde <replaceable>...</replaceable>]</literal>
                 is treated as parse-time error, rather than silently treated
                 as simple text.</para>
@@ -17777,7 +17802,7 @@ some test
 
               <listitem>
                 <para>It is easier for third-party tools to handle templates
-                (e.g. do syntax highlighting), especially since they don't
+                (e.g., do syntax highlighting), especially since they don't
                 have to know about the new directives introduced with new
                 releases.</para>
               </listitem>
@@ -17794,7 +17819,7 @@ some test
             <para><literal>[&lt;#</literal> and <literal>&lt;/#</literal> is
             illegal XML (except in CDATA sections), and illegal in almost all
             other SGML applications, so they can't interfere with the tags
-            used in the static text parts (e.g. if you have
+            used in the static text parts (e.g., if you have
             <literal>include</literal> element in the generated XML).</para>
           </listitem>
         </itemizedlist>
@@ -17875,7 +17900,7 @@ some test
 
               <listitem>
                 <para>''Object wrapping''. This lets you show the objects to
-                templates in a customized, presentation oriented way (e.g.
+                templates in a customized, presentation oriented way (e.g.,
                 <link linkend="xgui_imperative_learn">see here</link> how a
                 W3C DOM nodes can be seen by templates using this
                 technology.)</para>
@@ -17884,8 +17909,8 @@ some test
               <listitem>
                 <para>Macros and functions are just variables (compare it to
                 how JSP custom tags work), so they can be easily passed around
-                as parameter values, put into the data-model, ...etc, just
-                like any other value.</para>
+                as parameter values, put into the data-model, etc., just like
+                any other value.</para>
               </listitem>
 
               <listitem>
@@ -18416,7 +18441,7 @@ some test
             <literal>Map</literal> object uses <literal>Integer</literal>
             keys, which assumes application specific knowledge.) Note that the
             casting is not needed when the key value comes directly from the
-            data model (i.e. you didn't modified its value with arithmetical
+            data model (i.e., you didn't modified its value with arithmetical
             caluclations in the template), including the case when it's the
             return value of a method, and it was of the proper class before
             wrapping, because then the result of the unwrapping will be of the
@@ -18482,7 +18507,7 @@ some test
             operator</link> instead of removing sequence items. However, be
             aware of the performance implications: these operations are fast,
             but the hashes/sequences that are the result of many subseqent
-            applications of these operations (i.e. when you use the result of
+            applications of these operations (i.e., when you use the result of
             the operation as the input of yet another operation, and so on)
             will be slow to read.</para>
 
@@ -18580,13 +18605,13 @@ some test
             work-around, after you did the above problematic operations,
             either be sure you will not modify the objects that were used as
             input, or create a copy of the result with a method provided by
-            the solution described in above two points (e.g. in FMPP you could
-            do <literal>[#set b = pp.newWritableSequence(a[5..10])]</literal>
-            and <literal>[#set c = pp.newWritableHash(hashA +
-            hashB)]</literal>). Of course this is easy to miss... so again,
-            rather try to build the data model so you will not need to modify
-            collections, or use a presentation task helper class as was shown
-            earlier.</para>
+            the solution described in above two points (e.g., in FMPP you
+            could do <literal>[#set b =
+            pp.newWritableSequence(a[5..10])]</literal> and <literal>[#set c =
+            pp.newWritableHash(hashA + hashB)]</literal>). Of course this is
+            easy to miss... so again, rather try to build the data model so
+            you will not need to modify collections, or use a presentation
+            task helper class as was shown earlier.</para>
           </answer>
         </qandaentry>
 
@@ -18641,7 +18666,7 @@ some test
             to the method instead. Like <literal>foo.bar(nullArg)</literal>
             will call the <literal>bar</literal> method with
             <literal>null</literal> as argument, assuming that there is no
-            varaible exists with ''nullArg'' name.</para>
+            variable exists with ''nullArg'' name.</para>
           </answer>
         </qandaentry>
 
@@ -18914,7 +18939,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
         <qandaentry>
           <question>
             <para>How can my Java classes ask a template for information about
-            its structure (e.g. a list of all the variables)?</para>
+            its structure (e.g., a list of all the variables)?</para>
           </question>
 
           <answer>
@@ -19213,7 +19238,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>SimpleObjectWrapper</literal>. By calling the
               <literal>getEnumModels()</literal> method, you can retrieve a
               hash model that is keyed by class names and allows access to
-              enumerated values. I.e. if you bind this hash model under name
+              enumerated values. I.e., if you bind this hash model under name
               <literal>enums</literal> in the data model, you can write
               expressions like
               <literal>enums["java.math.RoundingMode"].UP</literal> in the
@@ -19364,7 +19389,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>DefaultObjectWrapper</literal>. By calling the
               <literal>getEnumModels()</literal> method, you can retrieve a
               hash model that is keyed by class names and allows access to
-              enumerated values. I.e. if you bind this hash model under name
+              enumerated values. I.e., if you bind this hash model under name
               <literal>enums</literal> in the data model, you can write
               expressions like
               <literal>enums["java.math.RoundingMode"].UP</literal> in the
@@ -20144,7 +20169,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <para>The <literal>sort</literal> and <literal>sort_by</literal>
               built-ins now can sort by date values. Also,
               <literal>sort_by</literal> built-in now can sort by the
-              subvarible of a subvariable of a subvariable... etc. for any
+              subvariable of a subvariable of a subvariable etc., for any
               level depth. (<link
               linkend="ref_builtin_sort_by">Details...</link>)</para>
             </listitem>
@@ -20201,7 +20226,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               was added that contains various static final fields that store
               frequently used constant <literal>TemplateModel</literal>
               values, as <literal>EMPTY_SEQUENCE</literal>,
-              <literal>ZERO</literal>, ...etc.</para>
+              <literal>ZERO</literal>, etc.</para>
             </listitem>
 
             <listitem>
@@ -20755,12 +20780,12 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               directive</link>: <literal>attributes</literal>. The value of
               this attribute is a hash that associates arbitrary attributes
               (name-value pairs) to the template. The values of the attributes
-              can be of any type (string, number, sequence... etc.).
-              FreeMarker doesn't try to understand the meaning of the
-              attributes. It's up to the application that encapsulates
-              FreeMarker (as a Web application framework). Thus, the set of
-              allowed attributes and their semantic is application (Web
-              application framework) dependent.</para>
+              can be of any type (string, number, sequence, etc.). FreeMarker
+              doesn't try to understand the meaning of the attributes. It's up
+              to the application that encapsulates FreeMarker (as a Web
+              application framework). Thus, the set of allowed attributes and
+              their semantic is application (Web application framework)
+              dependent.</para>
             </listitem>
 
             <listitem>
@@ -20861,7 +20886,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             <listitem>
               <para>New package: <literal>freemarker.ext.dom</literal>. This
               contains the new XML wrapper, that supports the processing of
-              XML documents using the visitor pattern (i.e. with
+              XML documents using the visitor pattern (i.e., with
               <literal>[#visit <replaceable>...</replaceable>]</literal> and
               similar directives), and to provide more convenient XML
               traversing as the legacy wrapper. See the <link
@@ -20998,7 +21023,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <listitem>
                 <para>Bugfix: If the template exception handler has ignored
                 the exception, errors occurring in interpolations inside FTL
-                tags (e.g. <literal>[#if "foo${badVar}" !=
+                tags (e.g., <literal>[#if "foo${badVar}" !=
                 "foobar"]</literal>) were handled in the same way as errors
                 occuring in interpolations outside FTL tags. Thus, the
                 directive call was not skipped, and the problematic
@@ -21094,7 +21119,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
                 directive</link>: <literal>attributes</literal>. The value of
                 this attribute is a hash that associates arbitrary attributes
                 (name-value pairs) to the template. The values of the
-                attributes can be of any type (string, number, sequence...
+                attributes can be of any type (string, number, sequence,
                 etc.). FreeMarker doesn't try to understand the meaning of the
                 attributes. It's up to the application that encapsulates
                 FreeMarker (as a Web application framework). Thus, the set of
@@ -21251,7 +21276,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
                 <para>Fixes and improvements for XPath with Jaxen (not Xalan).
                 Non-node-set XPath expressions are now working. FreeMarker
                 variables are accessible in XPath expressions with XPath
-                variable references (e.g.
+                variable references (e.g.,
                 <literal>doc["book/chapter[title=$currentTitle]"]</literal>).</para>
               </listitem>
 
@@ -23174,7 +23199,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
                 <para>All 16-bit Unicode letters and numbers are allowed in
                 identifiers, as well as the <literal>$</literal> character (as
                 in Java programming language). Thus you can use accented
-                letters, Arabic letters, Chinese letters, etc. as identifiers
+                letters, Arabic letters, Chinese letters, etc., as identifiers
                 in templates</para>
               </listitem>
 
@@ -23395,7 +23420,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               the <literal>Content-Type</literal> header of the response,
               defaulting to <literal>text/html</literal>. Previously it set no
               content type, which made it not play nicely when integrated with
-              software that expected it (i.e. OpenSymphony SiteMesh).</para>
+              software that expected it (i.e., OpenSymphony SiteMesh).</para>
             </listitem>
 
             <listitem>
@@ -23477,7 +23502,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
             <listitem>
               <para>Bugfix: operator ''or'' (<literal>||</literal>) worked
-              wrongly when its left operand was a composite expression (e.g.
+              wrongly when its left operand was a composite expression (e.g.,
               the second <literal>||</literal> in <literal>false || true ||
               false</literal>; this was evaluated to <literal>false</literal>,
               but it should be <literal>true</literal>)</para>
@@ -23485,14 +23510,14 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
             <listitem>
               <para>Bugfix: Less-than sign inside comments confused the FTL
-              parser (e.g. <literal>[#-- blah &lt; blah --]</literal>); it
+              parser (e.g., <literal>[#-- blah &lt; blah --]</literal>); it
               commented out everything after the problematic comment.</para>
             </listitem>
 
             <listitem>
-              <para>Bugfix: Comparing two numerical constants (e.g. <literal>3
-              == 3</literal>) caused internal error in the FTL parser, and
-              aborted template processing with error.</para>
+              <para>Bugfix: Comparing two numerical constants (e.g.,
+              <literal>3 == 3</literal>) caused internal error in the FTL
+              parser, and aborted template processing with error.</para>
             </listitem>
 
             <listitem>
@@ -23743,7 +23768,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
             <listitem>
               <para><literal>TemplateNumberModel</literal>-s do not control
-              their formatting anymore. They just store the data (i.e. a
+              their formatting anymore. They just store the data (i.e., a
               number). Number formatting is done by the FreeMarker core based
               on the <literal>locale</literal> and
               <literal>number_format</literal> settings. This logic applies to
@@ -23802,7 +23827,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
                 <listitem>
                   <para>The transforms that ship with the FreeMarker core are
-                  now available by default to all templates - i.e.
+                  now available by default to all templates - i.e.,
                   <literal>&lt;transform html_escape&gt;</literal> will invoke
                   the
                   <literal>freemarker.template.utility.HtmlEscape</literal>
@@ -23826,7 +23851,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             <listitem>
               <para><literal>TemplateExceptionHandler</literal>-s make it
               possible to define your own rules on what to do when a runtime
-              error occurs (e.g. accessing a non existing variable) during
+              error occurs (e.g., accessing a non existing variable) during
               template processing. For example, you can abort template
               processing (recommended for most sites), or skip the problematic
               statement and continue template processing (similar to old
@@ -24236,13 +24261,13 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               confuse HTML editors and parsers. Note that these changed
               between rc1 and rc2, they now start with a backslash. A little
               asymmetry is the fact that if you use the natural greater-than
-              or greater-than-or-equals operators (i.e. &gt; or &gt;=) the
+              or greater-than-or-equals operators (i.e., &gt; or &gt;=) the
               expression must be in parentheses. With any other operator, the
               parentheses are optional.</para>
             </listitem>
 
             <listitem>
-              <para>Within an iteration loop -- i.e. a
+              <para>Within an iteration loop -- i.e., a
               <literal>foreach</literal> or a <literal>list</literal> block --
               the current count in the loop is available as the special
               variable
@@ -24335,7 +24360,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <para>The <literal>freemarker.utility.ExtendedList</literal> and
               <literal>freemarker.utility.ExtendedHash</literal> classes were
               removed, since all of the extra keys that it defined are now
-              available using the appropriate '?' built-in operation, i.e.
+              available using the appropriate '?' built-in operation, i.e.,
               <literal>myHash?keys</literal> or <literal>myList?size</literal>
               or <literal>myList?last</literal>.</para>
             </listitem>
@@ -24749,7 +24774,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       <glossdef>
         <para>Something that holds the information the template has to show
         (or use in some other ways) when the template processor assembles the
-        output (e.g. a Web page). In FreeMarker this is best visualized as a
+        output (e.g., a Web page). In FreeMarker this is best visualized as a
         tree.</para>
       </glossdef>
     </glossentry>
@@ -25062,7 +25087,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
       <glossdef>
         <para>A template is a text file with some special character sequences
-        embedded into it. A template processor (e.g. FreeMarker) will
+        embedded into it. A template processor (e.g., FreeMarker) will
         interpret special character sequences and it outputs a more or less
         different text from the original text file, where the differences are
         often based on a <link linkend="gloss.dataModel">data model</link>.
@@ -25104,14 +25129,14 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
       <glossdef>
         <para>An object is thread-safe if it is safe to call its methods from
-        multiple threads, even in parallel (i.e. multiple threads execute the
+        multiple threads, even in parallel (i.e., multiple threads execute the
         methods of the object at the same time). Non-thread-safe objects may
         behave unpredictably in this situation, and generate wrong results,
         corrupt internal data structures, etc. Thread-safety is typically
         achieved in two ways with Java: with the usage
         <literal>synchronized</literal> statement (or
         <literal>synchronized</literal> methods), and with the immutability of
-        encapsulated data (i.e. you can't modify the field after you have
+        encapsulated data (i.e., you can't modify the field after you have
         created the object).</para>
       </glossdef>
     </glossentry>
@@ -25136,7 +25161,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
         <para>This is international standard (ISO-10646) that defines a huge
         set of <link linkend="gloss.character">characters</link> and assigns a
         unique number for each character (''!'' is 33, ..., ''A'' is 61, ''B''
-        is 62, ..., Arabic letter hamza is 1569... etc.). This character set
+        is 62, ..., Arabic letter hamza is 1569, etc.). This character set
         (not charset) contains almost all characters used today (Latin
         alphabet, Cyrillic alphabet, Chinese letters, etc.). The idea behind
         UCS is that we can specify any character with a unique number, not
@@ -25154,7 +25179,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
         with the classification of the characters in <link
         linkend="gloss.UCS">UCS</link> (which is letter, which is digit, which
         is uppercase, which is lowercase, etc.), and with other problems of
-        processing text made from the characters of UCS (e.g.
+        processing text made from the characters of UCS (e.g.,
         normalization).</para>
       </glossdef>
     </glossentry>
