@@ -579,7 +579,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
      * @param cl the class, or <code>null</code> to disable XPath support.
      */
     static public void setXPathSupportClass(Class cl) {
-        if (cl != null && !cl.isAssignableFrom(XPathSupport.class)) {
+        if (cl != null && !XPathSupport.class.isAssignableFrom(cl)) {
             throw new RuntimeException("Class " + cl.getName()
                     + " does not implement freemarker.ext.dom.XPathSupport");
         }
