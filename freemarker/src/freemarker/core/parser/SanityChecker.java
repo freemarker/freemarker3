@@ -127,7 +127,7 @@ public class SanityChecker extends BaseASTVisitor {
 		super.visit(node);
 		if (node.target.isLiteral()) {
 			TemplateModel target = literalExpToTemplateModel(node.target);
-			if (!(node.target instanceof HashLiteral)) {
+			if (!(target instanceof TemplateHashModel)) {
 				String msg = node.getStartLocation();
 				msg += ": Expression: " + node.target.getSource() + " is not a hash type.\n";
 				errors.append(msg);
@@ -139,13 +139,15 @@ public class SanityChecker extends BaseASTVisitor {
 		super.visit(node);
 		if (node.target.isLiteral()) {
 			TemplateModel target = literalExpToTemplateModel(node.target);
-			if (!(target instanceof HashLiteral)) {
+			if (!(target instanceof TemplateHashModel) && !(target instanceof TemplateSequenceModel)) {
 				String msg = node.getStartLocation();
-				msg += ": Expression: " + node.target.getSource() + " is not a hash type.\n";
+				msg += ": Expression: " + node.target.getSource() + " is not a hash or sequence type.\n";
 				errors.append(msg);
 			}
 		}
-		checkLiteralInScalarContext(node.nameExpression);
+		if (!(node.nameExpression instanceof Range)) {
+			checkLiteralInScalarContext(node.nameExpression);
+		}
 	}
 	
 	public void visit(HashLiteral node) {

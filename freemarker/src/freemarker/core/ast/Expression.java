@@ -96,6 +96,12 @@ abstract public class Expression extends TemplateNode {
         return getStringValue(getAsTemplateModel(env), this, env);
     }
     
+    static boolean isDisplayableAsString(TemplateModel tm) {
+    	return tm instanceof TemplateScalarModel
+    	     ||tm instanceof TemplateNumberModel
+    	     || tm instanceof TemplateDateModel;
+    }
+    
     static String getStringValue(TemplateModel referentModel, Expression exp, Environment env)
     throws
         TemplateException

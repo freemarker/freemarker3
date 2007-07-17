@@ -85,7 +85,7 @@ public class NumberLiteral extends Expression implements TemplateNumberModel {
     }
 
     public boolean isLiteral() {
-        return true;
+        return true; 
     }
 
     Expression _deepClone(String name, Expression subst) {
