@@ -91,38 +91,41 @@ public class AddConcatExpression extends Expression {
         {
             return new ConcatenatedSequence((TemplateSequenceModel)leftModel, (TemplateSequenceModel)rightModel);
         }
-        else
-        {
-            try {
-                String s1 = getStringValue(leftModel, left, env);
-                if(s1 == null) s1 = "null";
-                String s2 = getStringValue(rightModel, right, env);
-                if(s2 == null) s2 = "null";
-                return new SimpleScalar(s1.concat(s2));
-            } catch (NonStringException e) {
-                if (leftModel instanceof TemplateHashModel && rightModel instanceof TemplateHashModel) {
-                    if (leftModel instanceof TemplateHashModelEx && rightModel instanceof TemplateHashModelEx) {
-                        TemplateHashModelEx leftModelEx = (TemplateHashModelEx)leftModel;
-                        TemplateHashModelEx rightModelEx = (TemplateHashModelEx)rightModel;
-                        if (leftModelEx.size() == 0) {
-                            return rightModelEx;
-                        } else if (rightModelEx.size() == 0) {
-                            return leftModelEx;
-                        } else {
-                            return new ConcatenatedHashEx(leftModelEx, rightModelEx);
-                        }
-                    } else {
-                        return new ConcatenatedHash((TemplateHashModel)leftModel,
-                                                    (TemplateHashModel)rightModel);
-                    }
+        else if (isDisplayableAsString(leftModel) && isDisplayableAsString(rightModel)) {
+            String s1 = getStringValue(leftModel, left, env);
+            if(s1 == null) s1 = "null";
+            String s2 = getStringValue(rightModel, right, env);
+            if(s2 == null) s2 = "null";
+            return new SimpleScalar(s1.concat(s2));
+        }
+        else if (leftModel instanceof TemplateHashModel && rightModel instanceof TemplateHashModel) {
+            if (leftModel instanceof TemplateHashModelEx && rightModel instanceof TemplateHashModelEx) {
+                TemplateHashModelEx leftModelEx = (TemplateHashModelEx)leftModel;
+                TemplateHashModelEx rightModelEx = (TemplateHashModelEx)rightModel;
+                if (leftModelEx.size() == 0) {
+                    return rightModelEx;
+                } else if (rightModelEx.size() == 0) {
+                    return leftModelEx;
                 } else {
-                    throw e;
+                    return new ConcatenatedHashEx(leftModelEx, rightModelEx);
                 }
+            } else {
+                return new ConcatenatedHash((TemplateHashModel)leftModel,
+                                            (TemplateHashModel)rightModel);
             }
         }
+        String msg = this.getStartLocation() + ": Cannot add or concatenate";
+        throw new TemplateException(msg, env);
     }
 
     public boolean isLiteral() {
+    	if ((right instanceof StringLiteral && left instanceof NumberLiteral)
+    		|| (right instanceof NumberLiteral && left instanceof StringLiteral))
+    		return false; // REVISIT (This is hacky, but the problem is that
+    	                  // we can't do a parse-time optimization of, say,
+    	                  // ${"The answer is: " + 1.1}
+    	                  // since the display of the decimal number depends i18n
+    	                  // considerations only known at render-time. (JR))
         return constantValue != null || (left.isLiteral() && right.isLiteral());
     }
 
