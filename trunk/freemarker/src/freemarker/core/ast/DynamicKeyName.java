@@ -227,7 +227,7 @@ public class DynamicKeyName extends Expression {
         }
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return constantValue != null || (target.isLiteral() && nameExpression.isLiteral());
     }
 

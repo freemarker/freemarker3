@@ -338,7 +338,7 @@ public class Curry extends BuiltIn
         }
 
         @Override
-        boolean isLiteral() {
+        public boolean isLiteral() {
             return true;
         }
         

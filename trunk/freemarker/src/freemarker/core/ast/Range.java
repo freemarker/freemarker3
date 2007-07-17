@@ -91,7 +91,7 @@ public class Range extends Expression {
         throw new NonBooleanException(msg, env);
     }
     
-    boolean isLiteral() {
+    public boolean isLiteral() {
         boolean rightIsLiteral = right == null || right.isLiteral();
         return constantValue != null || (left.isLiteral() && rightIsLiteral);
     }

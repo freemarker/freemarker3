@@ -81,7 +81,7 @@ public class HashLiteral extends Expression {
     	return Collections.unmodifiableList(values);
     }
     
-    boolean isLiteral() {
+    public boolean isLiteral() {
         if (constantValue != null) {
             return true;
         }

@@ -81,7 +81,7 @@ public class ExistsExpression extends Expression {
 		       : TemplateBooleanModel.TRUE;
 	}
 
-	boolean isLiteral() {
+	public boolean isLiteral() {
 		return exp.isLiteral();
 	}
 

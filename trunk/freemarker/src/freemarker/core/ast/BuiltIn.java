@@ -224,7 +224,7 @@ abstract public class BuiltIn extends Expression implements Cloneable {
         return bi;
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return false; // be on the safe side.
     }
 

@@ -155,93 +155,6 @@ public class FMParser {
       }
   }
 
-  /**
-   * Throw an exception if the expression passed in is a Number
-   * Literal
-   */
-  private void notNumberLiteral(Expression exp, String expected) throws ParseException {
-      if (exp instanceof NumberLiteral) {
-         String msg = "Error " + exp.getStartLocation()
-                     + "\nFound number literal: " + exp.getCanonicalForm()
-                     + "\nExpecting " + expected;
-         throw new ParseException(msg, exp);
-      }
-  }
-
-  /**
-   * Throw an exception if the expression passed in is a boolean
-   * Literal
-   */
-  private void notBooleanLiteral(Expression exp, String expected) throws ParseException {
-      if (exp instanceof BooleanLiteral) {
-         String msg = "Error " + exp.getStartLocation()
-                     + "\nFound: " + exp.getCanonicalForm()
-                     + "\nExpecting " + expected;
-         throw new ParseException(msg, exp);
-      }
-  }
-
-  /**
-   * Throw an exception if the expression passed in is a Hash
-   * Literal
-   */
-  private void notHashLiteral(Expression exp, String expected) throws ParseException {
-        if (exp instanceof HashLiteral) {
-         String msg = "Error " + exp.getStartLocation()
-                     + "\nFound hash literal: " + exp.getCanonicalForm()
-                     + "\nExpecting " + expected;
-         throw new ParseException(msg, exp);
-      }
-  }
-
-  /**
-   * Throw an exception if the expression passed in is a List
-   * Literal
-   */
-
-  private void notListLiteral(Expression exp, String expected)
-      throws ParseException
-  {
-        if (exp instanceof ListLiteral) {
-         String msg = "Error " + exp.getStartLocation()
-                     + "\nFound list literal: " + exp.getCanonicalForm()
-                     + "\nExpecting " + expected;
-         throw new ParseException(msg, exp);
-      }
-  }
-  /**
-   * Throw an exception if the expression passed in is a literal
-   * other than of the numerical type
-   */
-  private void numberLiteralOnly(Expression exp) throws ParseException {
-      notStringLiteral(exp, "number");
-      notListLiteral(exp, "number");
-      notHashLiteral(exp, "number");
-      notBooleanLiteral(exp, "number");
-  }
-
-  /**
-   * Throw an exception if the expression passed in is
-   * not a string.
-   */
-  private void stringLiteralOnly(Expression exp) throws ParseException {
-      notNumberLiteral(exp, "number");
-      notListLiteral(exp, "number");
-      notHashLiteral(exp, "number");
-      notBooleanLiteral(exp, "number");
-  }
-
-  /**
-   * Throw an exception if the expression passed in is a literal
-   * other than of the boolean type
-   */
-  private void booleanLiteralOnly(Expression exp) throws ParseException {
-      notStringLiteral(exp, "boolean (true/false)");
-      notListLiteral(exp, "boolean (true/false)");
-      notHashLiteral(exp, "boolean (true/false)");
-      notNumberLiteral(exp, "boolean (true/false)");
-  }
-
   private Expression escapedExpression(Expression exp) {
       if(!escapes.isEmpty()) {
           return ((EscapeBlock)escapes.getFirst()).doEscape(exp);
@@ -351,7 +264,8 @@ TOKEN_MGR_DECLS :
  boolean strictEscapeSyntax, 
          onlyTextOutput, 
          directiveSyntaxEstablished, 
-         altDirectiveSyntax;
+         altDirectiveSyntax,
+         inInvocation;
  String templateName;
  
  public void setOnlyTextOutput(boolean b) {
@@ -677,7 +591,7 @@ TOKEN:
     |
     < "-">
     |
-    < "-->"  | "--]" > {if (parenthesisNesting >0) SwitchTo(IN_PAREN); else SwitchTo(FM_EXPRESSION);}
+    < "-->"  | "--]" > {if (parenthesisNesting >0) SwitchTo(IN_PAREN); else if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION); else SwitchTo(FM_EXPRESSION);}
 }
 
 <FM_EXPRESSION, IN_PAREN, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
@@ -775,8 +689,10 @@ TOKEN:
   <CLOSE_PAREN : ")">
   {
      --parenthesisNesting;
-     if (parenthesisNesting == 0)
-        SwitchTo(FM_EXPRESSION);
+     if (parenthesisNesting == 0) {
+		if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION);     	
+		else SwitchTo(FM_EXPRESSION);
+     }
   }
   |
   <OPEN_BRACE : "{" > {++hashLiteralNesting;}
@@ -1093,8 +1009,6 @@ Expression AdditiveExpression() :
              result = new AddConcatExpression(lhs, rhs);
          }
          else {
-             numberLiteralOnly(lhs);
-             numberLiteralOnly(rhs);
              result = new ArithmeticExpression(lhs,
                                             rhs,
                                             ArithmeticExpression.SUBSTRACTION);
@@ -1132,8 +1046,6 @@ Expression MultiplicativeExpression() :
       )
       rhs=UnaryExpression()
       {
-         numberLiteralOnly(lhs);
-         numberLiteralOnly(rhs);
          result = new ArithmeticExpression(lhs, rhs, operation);
          result.setLocation(template, lhs, rhs);
          lhs = result;
@@ -1163,10 +1075,6 @@ Expression EqualityExpression() :
      )
      rhs=RelationalExpression()
      {
-        notHashLiteral(lhs, "scalar");
-        notHashLiteral(rhs, "scalar");
-        notListLiteral(lhs, "scalar");
-        notListLiteral(rhs, "scalar");
         result = new ComparisonExpression(lhs, rhs, t.image);
         result.setLocation(template, lhs, rhs);
      }
@@ -1200,12 +1108,6 @@ Expression RelationalExpression() :
      )
      rhs=RangeExpression()
      {
-        notHashLiteral(lhs, "scalar");
-        notHashLiteral(rhs, "scalar");
-        notListLiteral(lhs, "scalar");
-        notListLiteral(rhs, "scalar");
-        notStringLiteral(lhs, "number");
-        notStringLiteral(rhs, "number");
         result = new ComparisonExpression(lhs, rhs, t.image);
         result.setLocation(template, lhs, rhs);
      }
@@ -1229,10 +1131,6 @@ Expression RangeExpression() :
         rhs=AdditiveExpression()
        ]
        {
-           numberLiteralOnly(lhs);
-           if (rhs != null) {
-               numberLiteralOnly(rhs);
-           }
            Range range = new Range(lhs, rhs);
            if (rhs != null) {
                range.setLocation(template, lhs, rhs);
@@ -1261,8 +1159,8 @@ Expression AndExpression() :
       <AND>
       rhs=EqualityExpression()
       {
-         booleanLiteralOnly(lhs);
-         booleanLiteralOnly(rhs);
+//         booleanLiteralOnly(lhs);
+//         booleanLiteralOnly(rhs);
          result = new AndExpression(lhs, rhs);
          result.setLocation(template, lhs, rhs);
          lhs = result;
@@ -1284,8 +1182,8 @@ Expression OrExpression() :
       <OR>
       rhs=AndExpression()
       {
-         booleanLiteralOnly(lhs);
-         booleanLiteralOnly(rhs);
+//         booleanLiteralOnly(lhs);
+//         booleanLiteralOnly(rhs);
          result = new OrExpression(lhs, rhs);
          result.setLocation(template, lhs, rhs);
          lhs = result;
@@ -1502,7 +1400,7 @@ Expression DotVariable(Expression exp) :
           | t=<ESCAPED_GTE>
           | t=<FALSE>
           | t=<TRUE>
-	  | t=<NULL>
+     	  | t=<NULL>
           | t=<IN>
           | t=<AS>
           | t=<USING>
@@ -1516,9 +1414,6 @@ Expression DotVariable(Expression exp) :
         }
      )
      {
-         notListLiteral(exp, "hash");
-         notStringLiteral(exp, "hash");
-         notBooleanLiteral(exp, "hash");
          Dot dot = new Dot(exp, t.image);
          dot.setLocation(template, exp, t);
          return dot;
@@ -1539,8 +1434,6 @@ Expression DynamicKey(Expression exp) :
    arg=Expression()
    t=<CLOSE_BRACKET>
    {
-       notBooleanLiteral(exp, "list or hash");
-       notNumberLiteral(exp, "list or hash");
        DynamicKeyName dkn = new DynamicKeyName(exp, arg);
        dkn.setLocation(template, exp, t);
        return dkn;
@@ -1552,7 +1445,6 @@ Expression DynamicKey(Expression exp) :
  */
 MethodCall MethodArgs(Expression exp) :
 {
-//     ArrayList<Expression> args = new ArrayList<Expression>();
      ArgsList args = new PositionalArgsList();
      Token end;
 }
@@ -1647,7 +1539,6 @@ HashLiteral HashLiteral() :
        (<COMMA>|<COLON>)
        value=Expression()
        {
-          stringLiteralOnly(key);
           keys.add(key);
           values.add(value);
        }
@@ -1657,7 +1548,6 @@ HashLiteral HashLiteral() :
            (<COMMA>|<COLON>)
            value=Expression()
            {
-               stringLiteralOnly(key);
                keys.add(key);
                values.add(value);
            }
@@ -1690,11 +1580,6 @@ DollarVariable StringOutput() :
        exp = new InvalidExpression(pe.getMessage());
        exp.setLocation(template, begin.next, token);
    }
-   {
-      notHashLiteral(exp, "scalar");
-      notListLiteral(exp, "scalar");
-      notBooleanLiteral(exp, "scalar");
-   }
    end=<CLOSE_BRACE>
    {
       DollarVariable result = new DollarVariable(exp, escapedExpression(exp));
@@ -1710,7 +1595,7 @@ NumericalOutput NumericalOutput() :
 }
 {
    begin=<NUMERICAL_ESCAPE>
-   exp=Expression() {numberLiteralOnly(exp);}
+   exp=Expression()
    [
       <SEMICOLON>
       fmt=<ID>
@@ -2531,7 +2416,10 @@ NamedArgsList NamedArgsList() :
 {
 	firstParam=<ID>
 	<EQUALS> 
-    {token_source.SwitchTo(token_source.NAMED_PARAMETER_EXPRESSION);}
+    {
+    	token_source.SwitchTo(token_source.NAMED_PARAMETER_EXPRESSION);
+    	token_source.inInvocation = true;
+    }
 	arg=Expression()  
 	{
 		result.addNamedArg(firstParam.image, arg);
@@ -2545,6 +2433,7 @@ NamedArgsList NamedArgsList() :
 	   {result.addNamedArg(id.image, arg);}
 	)*
 	{
+		token_source.inInvocation = false;
 		result.setLocation(template, firstParam, arg);
 		return result;
 	}
@@ -3314,6 +3203,9 @@ TemplateElement Root() :
        doc.setParentRecursively(null);
        PostParseVisitor ppv = new PostParseVisitor(stripWhitespace);
        ppv.visit(doc);
+       SanityChecker sanityChecker = new SanityChecker();
+       sanityChecker.visit(doc);
+       sanityChecker.reportErrors();
        return doc;
    }
 }

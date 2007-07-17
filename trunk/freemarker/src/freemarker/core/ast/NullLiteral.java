@@ -65,7 +65,7 @@ public class NullLiteral extends Expression {
         return TemplateModel.JAVA_NULL;
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
     	return true;
     }
 

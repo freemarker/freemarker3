@@ -114,7 +114,7 @@ public class ArithmeticExpression extends Expression {
         }
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return constantValue != null || (left.isLiteral() && right.isLiteral());
     }
 
