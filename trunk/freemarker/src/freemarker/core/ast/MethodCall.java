@@ -122,7 +122,7 @@ public class MethodCall extends Expression {
         return null;
     }
 
-    public boolean isLiteral() {
+    boolean _isLiteral() {
         return false;
     }
 

@@ -161,7 +161,7 @@ public class BuiltinVariable extends Expression {
         return "." + name;
     }
 
-    public boolean isLiteral() {
+    boolean _isLiteral() {
         return false;
     }
 

@@ -81,8 +81,8 @@ public class ExistsExpression extends Expression {
 		       : TemplateBooleanModel.TRUE;
 	}
 
-	public boolean isLiteral() {
-		return exp.isLiteral();
+	boolean _isLiteral() {
+		return exp._isLiteral();
 	}
 
 	Expression _deepClone(String name, Expression subst) {

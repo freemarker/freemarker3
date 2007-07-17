@@ -13,75 +13,58 @@ public class SanityChecker extends BaseASTVisitor {
 		}
 	}
 	
-	
-	private TemplateModel literalExpToTemplateModel(Expression exp) {
-		try {
-			return exp.getAsTemplateModel(null);
-		} catch (Exception te) {
-			return TemplateModel.INVALID_EXPRESSION;
-		}
-	}
-	
 	private void checkLiteralInBooleanContext(Expression exp) {
-		if (exp.isLiteral()) {
-			TemplateModel value = literalExpToTemplateModel(exp);
-			if (!(value instanceof TemplateBooleanModel)) {
-				String msg = exp.getStartLocation();
-				if (value == TemplateModel.INVALID_EXPRESSION) {
-					msg += ": Expression " + exp.getSource() + " is invalid.\n";
-				} else {
-					msg += ": Expression: " + exp.getSource() + " is not a boolean (true/false) value.\n";
-				}
-				errors.append(msg);
+		TemplateModel value = exp.literalValue();
+		if (value != null && !(value instanceof TemplateBooleanModel)) {
+			String msg = exp.getStartLocation();
+			if (value == TemplateModel.INVALID_EXPRESSION) {
+				msg += ": Expression " + exp.getSource() + " is invalid.\n";
+			} else {
+				msg += ": Expression: " + exp.getSource() + " is not a boolean (true/false) value.\n";
 			}
+			errors.append(msg);
 		}
 	}
 	
 	private void checkLiteralInStringContext(Expression exp) {
-		if (exp.isLiteral()) {
-			TemplateModel value = literalExpToTemplateModel(exp);
-			if (!(value instanceof TemplateScalarModel)) {
-				String msg = exp.getStartLocation();
-				if (value == TemplateModel.INVALID_EXPRESSION) {
-					msg += ": Expression " + exp.getSource() + " is invalid.\n";
-				} else {
-					msg += ": Expression: " + exp.getSource() + " is not a string.\n";
-				}
-				errors.append(msg);
+		TemplateModel value = exp.literalValue();
+		if (value != null && !(value instanceof TemplateScalarModel)) {
+			String msg = exp.getStartLocation();
+			if (value == TemplateModel.INVALID_EXPRESSION) {
+				msg += ": Expression " + exp.getSource() + " is invalid.\n";
+			} else {
+				msg += ": Expression: " + exp.getSource() + " is not a string.\n";
 			}
+			errors.append(msg);
 		}
 	}
 	
 	private void checkLiteralInNumericalContext(Expression exp) {
-		if (exp.isLiteral()) {
-			TemplateModel value = literalExpToTemplateModel(exp);
-			if (!(value instanceof TemplateNumberModel)) {
-				String msg = exp.getStartLocation();
-				if (value == TemplateModel.INVALID_EXPRESSION) {
-					msg += ": Expression " + exp.getSource() + " is invalid.\n";
-				} else {
-					msg += ": Expression: " + exp.getSource() + " is not a numerical value.\n";
-				}
-				errors.append(msg);
+		TemplateModel value = exp.literalValue();
+		if (value != null && !(value instanceof TemplateNumberModel)) {
+			String msg = exp.getStartLocation();
+			if (value == TemplateModel.INVALID_EXPRESSION) {
+				msg += ": Expression " + exp.getSource() + " is invalid.\n";
+			} else {
+				msg += ": Expression: " + exp.getSource() + " is not a numerical value.\n";
 			}
+			errors.append(msg);
 		}
 	}
 	
 	private void checkLiteralInScalarContext(Expression exp) {
-		if (exp.isLiteral()) {
-			TemplateModel value = literalExpToTemplateModel(exp);
-			if (!(value instanceof TemplateScalarModel)
-				&& !(value instanceof TemplateNumberModel)
-				&& !(value instanceof TemplateDateModel)) 
-			{
-				String msg = exp.getStartLocation();
-				if (value == TemplateModel.INVALID_EXPRESSION) {
-					msg += ": Expression " + exp.getSource() + " is invalid.\n";
-				} else {
-					msg += ": Expression: " + exp.getSource() + " is not a string, date, or number.\n";
-				}
-				errors.append(msg);
+		TemplateModel value = exp.literalValue();
+		if (value != null && !(value instanceof TemplateScalarModel)
+			&& !(value instanceof TemplateNumberModel)
+			&& !(value instanceof TemplateDateModel)) 
+		{
+			String msg = exp.getStartLocation();
+			if (value == TemplateModel.INVALID_EXPRESSION) {
+				msg += ": Expression " + exp.getSource() + " is invalid.\n";
+			} else {
+				msg += ": Expression: " + exp.getSource() + " is not a string, date, or number.\n";
 			}
+			errors.append(msg);
 		}
 	}
 	
@@ -125,25 +108,21 @@ public class SanityChecker extends BaseASTVisitor {
 	
 	public void visit(Dot node) {
 		super.visit(node);
-		if (node.target.isLiteral()) {
-			TemplateModel target = literalExpToTemplateModel(node.target);
-			if (!(target instanceof TemplateHashModel)) {
-				String msg = node.getStartLocation();
-				msg += ": Expression: " + node.target.getSource() + " is not a hash type.\n";
-				errors.append(msg);
-			}
+		TemplateModel target = node.target.literalValue();
+		if (target != null && !(target instanceof TemplateHashModel)) {
+			String msg = node.getStartLocation();
+			msg += ": Expression: " + node.target.getSource() + " is not a hash type.\n";
+			errors.append(msg);
 		}
 	}
 	
 	public void visit(DynamicKeyName node) {
 		super.visit(node);
-		if (node.target.isLiteral()) {
-			TemplateModel target = literalExpToTemplateModel(node.target);
-			if (!(target instanceof TemplateHashModel) && !(target instanceof TemplateSequenceModel)) {
-				String msg = node.getStartLocation();
-				msg += ": Expression: " + node.target.getSource() + " is not a hash or sequence type.\n";
-				errors.append(msg);
-			}
+		TemplateModel target = node.target.literalValue();
+			if (target != null && !(target instanceof TemplateHashModel) && !(target instanceof TemplateSequenceModel)) {
+			String msg = node.getStartLocation();
+			msg += ": Expression: " + node.target.getSource() + " is not a hash or sequence type.\n";
+			errors.append(msg);
 		}
 		if (!(node.nameExpression instanceof Range)) {
 			checkLiteralInScalarContext(node.nameExpression);

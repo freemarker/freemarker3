@@ -80,15 +80,15 @@ public class HashLiteral extends Expression {
     public List<Expression> getValues() {
     	return Collections.unmodifiableList(values);
     }
-    
-    public boolean isLiteral() {
+
+    boolean _isLiteral() {
         if (constantValue != null) {
             return true;
         }
         for (int i = 0; i < size; i++) {
             Expression key = keys.get(i);
             Expression value = values.get(i);
-            if (!key.isLiteral() || !value.isLiteral()) {
+            if (!key._isLiteral() || !value._isLiteral()) {
                 return false;
             }
         }

@@ -223,8 +223,8 @@ public class ComparisonExpression extends BooleanExpression {
         }
     }
 
-    public boolean isLiteral() {
-        return constantValue != null || (left.isLiteral() && right.isLiteral());
+    boolean _isLiteral() {
+        return constantValue != null || (left._isLiteral() && right._isLiteral());
     }
 
     Expression _deepClone(String name, Expression subst) {

@@ -78,8 +78,8 @@ public class BooleanLiteral extends Expression {
     TemplateModel _getAsTemplateModel(Environment env) {
         return value ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
     }
-    
-    public boolean isLiteral() {
+
+    boolean _isLiteral() {
         return true;
     }
 

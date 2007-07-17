@@ -337,8 +337,7 @@ public class Curry extends BuiltIn
             throw new UnsupportedOperationException();
         }
 
-        @Override
-        public boolean isLiteral() {
+        @Override boolean _isLiteral() {
             return true;
         }
         
