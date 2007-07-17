@@ -84,7 +84,7 @@ public class NumberLiteral extends Expression implements TemplateNumberModel {
         return "the number: '" + value + "'";
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return true;
     }
 

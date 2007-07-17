@@ -67,8 +67,6 @@ import freemarker.core.parser.ParseException;
  */
 abstract public class TemplateElement extends TemplateNode {
 	
-	static final boolean LIMIT_NESTING = false;
-
     protected TemplateElement parent;
 
 // Only one of nestedBlock and nestedElements can be non-null.
@@ -99,21 +97,8 @@ abstract public class TemplateElement extends TemplateNode {
     	return scopedVariables != null && scopedVariables.contains(name);
     }
     
-    public void declareScopedVariable(String varName) throws ParseException {
+    public void declareScopedVariable(String varName) {
     	if (scopedVariables == null) scopedVariables = new HashSet<String>();
-    	if (LIMIT_NESTING) {
-    		TemplateElement parent = this.parent;
-    		while (parent != null) {
-    			if (parent.declaresScopedVariable(varName)) {
-    				String message = "In block starting "
-    					             + this.getStartLocation()
-    					             + "\nScoped variable " + varName 
-    					             + " is already defined at this point.";
-    				throw new ParseException(message);
-    			}
-    			parent = parent.parent;
-    		}
-    	}
     	scopedVariables.add(varName);
     }
     

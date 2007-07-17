@@ -25,14 +25,11 @@ public class InvalidExpression extends Expression {
 
 	@Override
 	TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
-		// TODO Auto-generated method stub
-//		return null;
-//		return new SimpleScalar(message);
-		return new SimpleScalar("Invalid Expression: " + getSource()); 
+		return TemplateModel.INVALID_EXPRESSION;
 	}
 
 	@Override
-	boolean isLiteral() {
+	public boolean isLiteral() {
 		// TODO Auto-generated method stub
 		return false;
 	}

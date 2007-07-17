@@ -97,7 +97,7 @@ public class ListLiteral extends Expression {
         return list;
     }
     
-    boolean isLiteral() {
+    public boolean isLiteral() {
         if (constantValue != null) {
             return true;
         }

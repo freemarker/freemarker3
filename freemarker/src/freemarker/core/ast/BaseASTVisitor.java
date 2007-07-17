@@ -70,7 +70,7 @@ import freemarker.core.parser.ParseException;
 
 public abstract class BaseASTVisitor {
 	
-	public void visit(TemplateNode node) throws ParseException {
+	public void visit(TemplateNode node) {
 		if (node == null) return;
     	try {
     		Class clazz = node.getClass();
@@ -83,123 +83,120 @@ public abstract class BaseASTVisitor {
     		if (cause instanceof RuntimeException) {
     			throw (RuntimeException) cause;
     		}
-    		if (cause instanceof ParseException) {
-    			throw (ParseException) cause;
-    		}
+    		throw new RuntimeException(ite.getMessage());
     	}
     	catch (NoSuchMethodException nsme) {
     		if (node instanceof TemplateElement) {
     			recurse((TemplateElement) node);
     		}
     	}
-    	
     	catch (IllegalAccessException e) {
     		throw new RuntimeException(e.getMessage());
     	}
 	}
 	
 	
-	public void visit(AddConcatExpression node) throws ParseException {
+	public void visit(AddConcatExpression node) {
 		visit(node.left);
 		visit(node.right);
 	}
 	
-	public void visit(AndExpression node) throws ParseException {
+	public void visit(AndExpression node) {
 		visit(node.left);
 		visit(node.right);
 	}
 	
-	public void visit(ArithmeticExpression node) throws ParseException {
+	public void visit(ArithmeticExpression node) {
 		visit(node.left);
 		visit(node.right);
 	}
 	
-	public void visit(AssignmentInstruction node) throws ParseException {
+	public void visit(AssignmentInstruction node) {
 		for (Expression e : node.getValues()) {
 			visit(e);
 		}
 	}
 	
-	public void visit(AttemptBlock node) throws ParseException {
+	public void visit(AttemptBlock node) {
 		recurse(node);
 	}
 	
-	public void visit(BlockAssignment node) throws ParseException {
+	public void visit(BlockAssignment node) {
 		recurse(node);
 	}
 	
-	public void visit(BodyInstruction node) throws ParseException {
+	public void visit(BodyInstruction node) {
 		visit(node.getArgs());
 	}
 	
 	
-	public void visit(BooleanExpression node) throws ParseException {}
+	public void visit(BooleanExpression node) {}
 	
 	
-	public void visit(BreakInstruction node) throws ParseException {}
+	public void visit(BreakInstruction node) {}
 	
-	public void visit(BuiltIn node) throws ParseException {
+	public void visit(BuiltIn node) {
 		visit(node.target);
 	}
 	
-	public void visit(BuiltinVariable node) throws ParseException {}
+	public void visit(BuiltinVariable node) {}
 	
-	public void visit(Case node) throws ParseException {
+	public void visit(Case node) {
 		visit(node.expression);
 		recurse(node);
 	}
 	
-	public void visit(Comment node) throws ParseException {}
+	public void visit(Comment node) {}
 	
-	public void visit(ComparisonExpression node) throws ParseException {
+	public void visit(ComparisonExpression node) {
 		visit(node.left);
 		visit(node.right);
 	}
 	
-	public void visit(CompressedBlock node) throws ParseException {
+	public void visit(CompressedBlock node) {
 		recurse(node);
 	}
 	
-	public void visit(ConditionalBlock node) throws ParseException {
+	public void visit(ConditionalBlock node) {
 		visit(node.condition);
 		recurse(node);
 	}
 	
-	public void visit(DefaultToExpression node) throws ParseException {
+	public void visit(DefaultToExpression node) {
 		visit(node.lhs);
 		if (node.rhs != null) {
 			visit(node.rhs);
 		}
 	}
 	
-	public void visit(DollarVariable node) throws ParseException {
+	public void visit(DollarVariable node) {
 		visit(node.expression); // Or do we visit escapedExpression ???
 	}
 	
-	public void visit(Dot node) throws ParseException {
+	public void visit(Dot node) {
 		visit(node.target);
 	}
 	
-	public void visit(DynamicKeyName node) throws ParseException {
+	public void visit(DynamicKeyName node) {
 		visit(node.target);
 		visit(node.nameExpression);
 	}
 	
-	public void visit(EscapeBlock node) throws ParseException {
+	public void visit(EscapeBlock node) {
 		visit(node.expr);
 		visit(node.escapedExpr);
 		recurse(node);
 	}
 	
-	public void visit(ExistsExpression node) throws ParseException {
+	public void visit(ExistsExpression node) {
 		visit(node.exp);
 	}
 	
-	public void visit(FallbackInstruction node) throws ParseException {}
+	public void visit(FallbackInstruction node) {}
 	
-	public void visit(FlushInstruction node) throws ParseException {}
+	public void visit(FlushInstruction node) {}
 	
-	public void visit(HashLiteral node) throws ParseException {
+	public void visit(HashLiteral node) {
 		List<Expression> keys = node.getKeys();
 		List<Expression> values = node.getValues();
 		for (int i=0; i< keys.size(); i++) {
@@ -208,80 +205,80 @@ public abstract class BaseASTVisitor {
 		}
 	}
 	
-	public void visit(Identifier node) throws ParseException {}
+	public void visit(Identifier node) {}
 	
-	public void visit(IfBlock node) throws ParseException {
+	public void visit(IfBlock node) {
 		recurse(node);
 	}
 	
-	public void visit(Include node) throws ParseException {
+	public void visit(Include node) {
 		visit(node.getIncludedTemplateExpression());
 		if (node.getParseExp() != null) {
 			visit(node.getParseExp());
 		}
 	}
 
-	public void visit(InvalidExpression node) throws ParseException {		
+	public void visit(InvalidExpression node) {		
 	}
 	
-	public void visit(IteratorBlock node) throws ParseException {
+	public void visit(IteratorBlock node) {
 		visit(node.listExpression);
 		recurse(node);
 	}
 	
-	public void visit(LibraryLoad node) throws ParseException {
+	public void visit(LibraryLoad node) {
 		visit(node.templateName);
 	}
 	
-	public void visit(ListLiteral node) throws ParseException {
+	public void visit(ListLiteral node) {
 		for (Expression exp : node.getElements()) {
 			visit(exp);
 		}
 	}
 	
 	
-	public void visit(Macro node) throws ParseException {
+	public void visit(Macro node) {
 		visit(node.getParams());
 		recurse(node);
 	}
 	
-	public void visit(MethodCall node) throws ParseException {
+	public void visit(MethodCall node) {
 		visit(node.target);
 		visit(node.getArgs());
 	}
 	
-	public void visit(MixedContent node) throws ParseException {
+	public void visit(MixedContent node) {
 		recurse(node);
 	}
 	
-	public void visit(NamedArgsList node) throws ParseException {
+	public void visit(NamedArgsList node) {
 		for (Expression exp : node.getArgs().values()) {
 			visit(exp);
 		}
 	}
 	
-	public void visit(NoEscapeBlock node) throws ParseException {
+	public void visit(NoEscapeBlock node) {
 		recurse(node);
 	}
 	
-	public void visit(NotExpression node) throws ParseException {
+	public void visit(NotExpression node) {
 		visit(node.target);
 	}
 	
-	public void visit(NullLiteral node) throws ParseException {	}
+	public void visit(NullLiteral node) {	}
 	
-	public void visit(NumberLiteral node) throws ParseException {}
+	public void visit(NumberLiteral node) {}
 	
-	public void visit(NumericalOutput node) throws ParseException {
+	public void visit(NumericalOutput node) {
 		visit(node.expression);
 	}
 	
-	public void visit(OrExpression node) throws ParseException {
+	public void visit(OrExpression node) {
 		visit(node.left);
 		visit(node.right);
 	}
 	
-	public void visit(ParameterList node) throws ParseException {
+	public void visit(ParameterList node) {
 		for (String paramName : node.getParamNames()) {
 			Expression defaultExp = node.getDefaultExpression(paramName);
 			if (defaultExp != null) {
@@ -290,57 +287,57 @@ public abstract class BaseASTVisitor {
 		}
 	}
 	
-	public void visit(ParentheticalExpression node) throws ParseException {
+	public void visit(ParentheticalExpression node) {
 		visit(node.nested);
 	}
 	
 	
-	public void visit(PositionalArgsList node) throws ParseException {
+	public void visit(PositionalArgsList node) {
 		for (Expression exp : node.args) {
 			visit(exp);
 		}
 	}
 	
-	public void visit(PropertySetting node) throws ParseException {
+	public void visit(PropertySetting node) {
 		visit(node.value);
 	}
 	
-	public void visit(Range node) throws ParseException {
+	public void visit(Range node) {
 		visit(node.left);
 		if (node.right != null) visit(node.right);
 	}
 	
-	public void visit(RecoveryBlock node) throws ParseException {
+	public void visit(RecoveryBlock node) {
 		recurse(node);
 	}
 	
-	public void visit(RecurseNode node) throws ParseException {
+	public void visit(RecurseNode node) {
 		if (node.targetNode != null) visit(node.targetNode);
 		if (node.namespaces != null) visit(node.namespaces);
 	}
 	
-	public void visit(ReturnInstruction node) throws ParseException {
+	public void visit(ReturnInstruction node) {
 		if (node.returnExp != null) visit(node.returnExp);
 	}
 	
-	public void visit(ScopedDirective node) throws ParseException {
+	public void visit(ScopedDirective node) {
 		for (Expression value : node.getVariables().values()) {
 			visit(value);
 		}
 	}
 	
-	public void visit(StopInstruction node) throws ParseException {}
+	public void visit(StopInstruction node) {}
 	
-	public void visit(StringLiteral node) throws ParseException {}
+	public void visit(StringLiteral node) {}
 	
-	public void visit(SwitchBlock node) throws ParseException {
+	public void visit(SwitchBlock node) {
 		visit(node.testExpression);
 		recurse(node);
 	}
 	
-	public void visit(TextBlock node) throws ParseException {}
+	public void visit(TextBlock node) {}
 	
-	public void visit(TransformBlock node) throws ParseException {
+	public void visit(TransformBlock node) {
 		visit(node.transformExpression);
 		if (node.namedArgs != null) {
 			for (Expression exp : node.namedArgs.values()) {
@@ -350,13 +347,13 @@ public abstract class BaseASTVisitor {
 		recurse(node);
 	}
 	
-	public void visit(TrimInstruction node) throws ParseException {}
+	public void visit(TrimInstruction node) {}
 	
-	public void visit(UnaryPlusMinusExpression node) throws ParseException {
+	public void visit(UnaryPlusMinusExpression node) {
 		visit(node.target);
 	}
 	
-	public void visit(UnifiedCall node) throws ParseException {
+	public void visit(UnifiedCall node) {
 		visit(node.getNameExp());
 		if (node.getArgs() != null) {
 			visit(node.getArgs());
@@ -367,12 +364,12 @@ public abstract class BaseASTVisitor {
 		recurse(node);
 	}
 	
-	public void visit(VisitNode node) throws ParseException {
+	public void visit(VisitNode node) {
 		visit(node.targetNode);
 		if (node.namespaces != null) visit(node.namespaces);
 	}
 	
-	protected void recurse(TemplateElement node) throws ParseException {
+	protected void recurse(TemplateElement node) {
         if (node.nestedElements != null) {
         	for (TemplateElement te : node.nestedElements) {
         		visit(te);

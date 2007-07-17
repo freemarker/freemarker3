@@ -6,7 +6,8 @@ import java.util.*;
 
 public class PostParseVisitor extends BaseASTVisitor {
 	
-	protected boolean stripWhitespace; 
+	protected boolean stripWhitespace, limitNesting;
+	private StringBuffer errors = new StringBuffer(); 
 	
 	
 	public PostParseVisitor(boolean stripWhitespace) {
@@ -14,7 +15,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		
 	}
 	
-	public void visit(AssignmentInstruction node) throws ParseException {
+	public void visit(AssignmentInstruction node) {
 		super.visit(node);
         if (node.type == AssignmentInstruction.LOCAL) {
         	TemplateElement parent = node;
@@ -23,28 +24,32 @@ public class PostParseVisitor extends BaseASTVisitor {
         	}
         	for (String varname : node.getVarNames()) {
         		if (!parent.declaresScopedVariable(varname)) {
-            		parent.declareScopedVariable(varname);
+       				parent.declareScopedVariable(varname);
         		}
         	}
         }
 	}
 	
-	public void visit(BlockAssignment node) throws ParseException {
+	public void visit(BlockAssignment node) {
 		super.visit(node);
         if (node.type == AssignmentInstruction.LOCAL) {
         	TemplateElement parent = node;
         	while(!(parent instanceof Macro)) {
         		parent = parent.getParent();
         	}
-        	parent.declareScopedVariable(node.varName);
+       		parent.declareScopedVariable(node.varName);
         }
 	}
 	
-	public void visit(IfBlock node) throws ParseException {
+	public void visit(IfBlock node) {
         if (node.getChildCount() == 1) {
             ConditionalBlock cblock = (ConditionalBlock) node.getChildAt(0);
             cblock.setIsSimple(true);
-            cblock.setLocation(node.getTemplate(), cblock, node);
+            try {
+            	cblock.setLocation(node.getTemplate(), cblock, node);
+            } catch (ParseException pe) {
+            	appendToErrors(pe.getMessage());
+            }
             node.getParent().replace(node, cblock);
             visit(cblock);
         } else {
@@ -52,40 +57,44 @@ public class PostParseVisitor extends BaseASTVisitor {
         }
 	}
 	
-	public void visit(IteratorBlock node) throws ParseException {
-        node.declareScopedVariable(node.indexName);
-        node.declareScopedVariable(node.indexName + "_has_next");
-        node.declareScopedVariable(node.indexName + "_index");
+	public void visit(IteratorBlock node) {
+		node.declareScopedVariable(node.indexName);
+		node.declareScopedVariable(node.indexName + "_has_next");
+		node.declareScopedVariable(node.indexName + "_index");
 		super.visit(node);
 	}
 	
-	public void visit(MixedContent node) throws ParseException {
+	public void visit(MixedContent node) {
 		if (node.getChildCount() == 1 && node.getParent() != null) {
 			node.getParent().replace(node, node.getChildAt(0));
 		}
 		super.visit(node);
 	}
 	
-	public void visit(ScopedDirective node) throws ParseException {
+	public void visit(ScopedDirective node) {
         TemplateElement parent = node.getParent();
         if (parent instanceof MixedContent) {
             parent = parent.getParent();
         }
         if (parent != null) {
         	for (String key : node.getVariables().keySet()) {
-        		parent.declareScopedVariable(key);
+       			parent.declareScopedVariable(key);
         	}
         }
 	}
 	
-	public void visit(TextBlock node) throws ParseException {
+	public void visit(TextBlock node) {
 		node.postParseCleanup(stripWhitespace);
 	}
 	
-	protected void recurse(TemplateElement node) throws ParseException {
+	protected void recurse(TemplateElement node){
 		super.recurse(node);
 		if (stripWhitespace) {
 			node.removeIgnorableChildren();
 		}
+	}
+	
+	protected void appendToErrors(String message) {
+		errors.append(message);
 	}
 }

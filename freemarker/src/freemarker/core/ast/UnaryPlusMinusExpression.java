@@ -83,7 +83,7 @@ public class UnaryPlusMinusExpression extends Expression {
         return new SimpleNumber(n);
     }
     
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return target.isLiteral();
     }
 

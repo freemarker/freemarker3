@@ -223,7 +223,7 @@ public class ComparisonExpression extends BooleanExpression {
         }
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return constantValue != null || (left.isLiteral() && right.isLiteral());
     }
 

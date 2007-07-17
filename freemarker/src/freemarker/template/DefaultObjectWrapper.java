@@ -71,9 +71,10 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
     
     static private Class W3C_DOM_NODE_CLASS, 
                          JYTHON_OBJ_CLASS,
-                         JRUBY_OBJ_CLASS;
+                         RHINO_SCRIPTABLE_CLASS,
+                         JRUBY_OBJ_CLASS; 
     
-    static private ObjectWrapper JYTHON_WRAPPER, JRUBY_WRAPPER;
+    static private ObjectWrapper JYTHON_WRAPPER, JRUBY_WRAPPER, RHINO_WRAPPER;
     
     static {
         try {
@@ -88,6 +89,11 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
             JRUBY_OBJ_CLASS = Class.forName("org.jruby.RubyObject");
             Class clazz = Class.forName("freemarker.ext.jruby.JRubyWrapper");
             JRUBY_WRAPPER = (ObjectWrapper) clazz.newInstance();
+        } catch (Exception e) {}
+        try {
+        	RHINO_SCRIPTABLE_CLASS = Class.forName("org.mozilla.javascript.Scriptable");
+            Class clazz = Class.forName("freemarker.ext.rhino.RhinoWrapper");
+            RHINO_WRAPPER = (ObjectWrapper) clazz.newInstance();
         } catch (Exception e) {}
     }
     
@@ -117,6 +123,9 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
             }
             return new SimpleDate((java.util.Date) obj, getDefaultDateType());
         }
+        if (obj.getClass().isArray()) {
+            obj = convertArray(obj);
+        }
         if (obj instanceof Collection) {
             return new SimpleSequence((Collection) obj, this);
         }
@@ -128,9 +137,6 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
         }
         if (obj instanceof Iterator) {
             return new SimpleCollection((Iterator) obj, this);
-        }
-        if (obj.getClass().isArray()) {
-            obj = convertArray(obj);
         }
         return handleUnknownType(obj);
     }
@@ -150,6 +156,9 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
         }
         if (JRUBY_WRAPPER != null  && JRUBY_OBJ_CLASS.isInstance(obj)) {
             return JRUBY_WRAPPER.wrap(obj);
+        }
+        if (RHINO_SCRIPTABLE_CLASS != null && RHINO_SCRIPTABLE_CLASS.isInstance(obj)) {
+        	return RHINO_WRAPPER.wrap(obj);
         }
         return super.wrap(obj); 
     }

@@ -122,7 +122,7 @@ public class AddConcatExpression extends Expression {
         }
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return constantValue != null || (left.isLiteral() && right.isLiteral());
     }
 

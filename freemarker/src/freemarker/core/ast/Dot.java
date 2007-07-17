@@ -79,7 +79,7 @@ public class Dot extends Expression {
         throw invalidTypeException(leftModel, target, env, "hash");
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return target.isLiteral();
     }
 
