@@ -118,15 +118,15 @@ public class AddConcatExpression extends Expression {
         throw new TemplateException(msg, env);
     }
 
-    public boolean isLiteral() {
-    	if ((right instanceof StringLiteral && left instanceof NumberLiteral)
-    		|| (right instanceof NumberLiteral && left instanceof StringLiteral))
+    boolean _isLiteral() {
+    	if ((right instanceof StringLiteral && !(left instanceof StringLiteral))
+    		|| (!(right instanceof StringLiteral) && left instanceof StringLiteral))
     		return false; // REVISIT (This is hacky, but the problem is that
     	                  // we can't do a parse-time optimization of, say,
     	                  // ${"The answer is: " + 1.1}
     	                  // since the display of the decimal number depends i18n
     	                  // considerations only known at render-time. (JR))
-        return constantValue != null || (left.isLiteral() && right.isLiteral());
+        return constantValue != null || (left._isLiteral() && right._isLiteral());
     }
 
     Expression _deepClone(String name, Expression subst) {

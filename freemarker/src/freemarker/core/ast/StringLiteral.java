@@ -107,7 +107,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
         }
     }
 
-    public boolean isLiteral() {
+    boolean _isLiteral() {
         return interpolatedOutput == null;
     }
 

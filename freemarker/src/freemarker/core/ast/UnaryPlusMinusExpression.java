@@ -82,9 +82,9 @@ public class UnaryPlusMinusExpression extends Expression {
         n = ArithmeticEngine.CONSERVATIVE_ENGINE.multiply(MINUS_ONE, n);
         return new SimpleNumber(n);
     }
-    
-    public boolean isLiteral() {
-        return target.isLiteral();
+
+    boolean _isLiteral() {
+        return target._isLiteral();
     }
 
     Expression _deepClone(String name, Expression subst) {

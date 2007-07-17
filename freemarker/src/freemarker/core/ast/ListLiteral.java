@@ -96,14 +96,14 @@ public class ListLiteral extends Expression {
         }
         return list;
     }
-    
-    public boolean isLiteral() {
+
+    boolean _isLiteral() {
         if (constantValue != null) {
             return true;
         }
         for (int i = 0; i<values.size(); i++) {
             Expression exp = values.get(i);
-            if (!exp.isLiteral()) {
+            if (!exp._isLiteral()) {
                 return false;
             }
         }

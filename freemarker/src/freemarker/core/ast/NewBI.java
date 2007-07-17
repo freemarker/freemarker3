@@ -123,7 +123,8 @@ class NewBI extends BuiltIn
         }
 
         public Object exec(List arguments) throws TemplateModelException {
-            ObjectWrapper ow = env.getObjectWrapper();
+            ObjectWrapper ow = null;
+            if (env != null) ow = env.getObjectWrapper();
             BeansWrapper bw = 
                 ow instanceof BeansWrapper 
                 ? (BeansWrapper)ow

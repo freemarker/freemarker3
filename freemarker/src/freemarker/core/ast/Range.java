@@ -90,10 +90,10 @@ public class Range extends Expression {
                     + " Expression " + this + " is a range.";
         throw new NonBooleanException(msg, env);
     }
-    
-    public boolean isLiteral() {
-        boolean rightIsLiteral = right == null || right.isLiteral();
-        return constantValue != null || (left.isLiteral() && rightIsLiteral);
+
+    boolean _isLiteral() {
+        boolean rightIsLiteral = right == null || right._isLiteral();
+        return constantValue != null || (left._isLiteral() && rightIsLiteral);
     }
     
     Expression _deepClone(String name, Expression subst) {
