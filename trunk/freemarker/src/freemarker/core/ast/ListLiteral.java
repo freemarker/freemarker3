@@ -97,13 +97,13 @@ public class ListLiteral extends Expression {
         return list;
     }
 
-    boolean _isLiteral() {
+    boolean isLiteral() {
         if (constantValue != null) {
             return true;
         }
         for (int i = 0; i<values.size(); i++) {
             Expression exp = values.get(i);
-            if (!exp._isLiteral()) {
+            if (!exp.isLiteral()) {
                 return false;
             }
         }

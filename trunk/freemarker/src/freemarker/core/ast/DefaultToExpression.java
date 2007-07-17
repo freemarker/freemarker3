@@ -110,7 +110,7 @@ public class DefaultToExpression extends Expression {
 		return rhs.getAsTemplateModel(env);
 	}
 
-	boolean _isLiteral() {
+	boolean isLiteral() {
 		return false;
 	}
 

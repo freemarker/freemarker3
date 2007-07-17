@@ -121,7 +121,7 @@ public final class TextBlock extends TemplateElement {
     	}
     }
     
-    public void postParseCleanup(boolean stripWhitespace) {
+    public void whitespaceAdjust(boolean onlyExplicitTrimming) {
         if (text.length == 0) return;
     	this.originalBeginColumn = this.beginColumn;
     	this.originalBeginLine = this.beginLine;
@@ -130,7 +130,7 @@ public final class TextBlock extends TemplateElement {
         int openingCharsToStrip = 0, trailingCharsToStrip=0;
         boolean deliberateLeftTrim = deliberateLeftTrim();
         boolean deliberateRightTrim = deliberateRightTrim();
-        if (!stripWhitespace || text.length == 0 ) {
+        if (onlyExplicitTrimming || text.length == 0 ) {
             return;
         }
         if (parent.getParent() == null && previousSibling() == null) return;

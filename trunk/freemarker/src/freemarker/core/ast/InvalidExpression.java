@@ -28,7 +28,7 @@ public class InvalidExpression extends Expression {
 		return TemplateModel.INVALID_EXPRESSION;
 	}
 
-	@Override boolean _isLiteral() {
+	@Override boolean isLiteral() {
 		// TODO Auto-generated method stub
 		return false;
 	}

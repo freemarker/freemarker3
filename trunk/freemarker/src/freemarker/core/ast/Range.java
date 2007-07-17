@@ -91,9 +91,9 @@ public class Range extends Expression {
         throw new NonBooleanException(msg, env);
     }
 
-    boolean _isLiteral() {
-        boolean rightIsLiteral = right == null || right._isLiteral();
-        return constantValue != null || (left._isLiteral() && rightIsLiteral);
+    boolean isLiteral() {
+        boolean rightIsLiteral = right == null || right.isLiteral();
+        return constantValue != null || (left.isLiteral() && rightIsLiteral);
     }
     
     Expression _deepClone(String name, Expression subst) {

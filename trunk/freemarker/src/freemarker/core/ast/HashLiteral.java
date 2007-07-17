@@ -81,14 +81,14 @@ public class HashLiteral extends Expression {
     	return Collections.unmodifiableList(values);
     }
 
-    boolean _isLiteral() {
+    boolean isLiteral() {
         if (constantValue != null) {
             return true;
         }
         for (int i = 0; i < size; i++) {
             Expression key = keys.get(i);
             Expression value = values.get(i);
-            if (!key._isLiteral() || !value._isLiteral()) {
+            if (!key.isLiteral() || !value.isLiteral()) {
                 return false;
             }
         }

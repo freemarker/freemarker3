@@ -80,7 +80,6 @@ public class FMParser {
   private String templateName;
 
 // variables that keep track of whether we are in a loop or a switch.
-  private int loopNesting, switchNesting;
   private boolean stripWhitespace, stripText;
   private LinkedList escapes = new LinkedList();
   private int contentNesting; // for stripText
@@ -142,19 +141,6 @@ public class FMParser {
   	  return token_source.altDirectiveSyntax;
   }
   
-  /**
-   * Throw an exception if the expression passed in is a String
-   * Literal
-   */
-  private void notStringLiteral(Expression exp, String expected) throws ParseException {
-      if (exp instanceof StringLiteral) {
-         String msg = "Error " + exp.getStartLocation()
-                     + "\nFound string literal: " + exp
-                     + "\nExpecting: " + expected;
-         throw new ParseException(msg, exp);
-      }
-  }
-
   private Expression escapedExpression(Expression exp) {
       if(!escapes.isEmpty()) {
           return ((EscapeBlock)escapes.getFirst()).doEscape(exp);
@@ -1765,7 +1751,7 @@ IteratorBlock List() :
     TemplateElement block;
 }
 {
-   start=<LIST> {++loopNesting;}
+   start=<LIST> 
    exp=Expression()
    <AS>
    index=<ID>
@@ -1773,7 +1759,6 @@ IteratorBlock List() :
    block=OptionalBlock()
    end=<END_LIST>
    {
-     --loopNesting;
      IteratorBlock result = new IteratorBlock(exp,
                                               index.image,
                                               block,
@@ -1790,7 +1775,7 @@ IteratorBlock ForEach() :
      TemplateElement block;
 }
 {
-   start=<FOREACH> {++loopNesting;}
+   start=<FOREACH> 
    index=<ID>
    <IN>
    exp=Expression()
@@ -1798,7 +1783,6 @@ IteratorBlock ForEach() :
    block=OptionalBlock()
    end=<END_FOREACH>
    {
-     --loopNesting;
      IteratorBlock result = new IteratorBlock(exp,
                                               index.image,
                                               block,
@@ -1864,13 +1848,6 @@ FallbackInstruction FallBack() :
 {
    tok=<FALLBACK>
    {
-      if (currentMacro == null) {
-          throw new ParseException(getErrorStart(tok)
-	                           + "\nCannot fall back "
-				   + " outside a macro.",
-                                   tok.beginLine, tok.beginColumn);
-      
-      }
       FallbackInstruction result = new FallbackInstruction();
       result.setLocation(template, tok, tok);
       return result;
@@ -1887,13 +1864,6 @@ BreakInstruction Break() :
 {
     start=<BREAK>
     {
-       if (loopNesting < 1 && switchNesting <1)
-       {
-          String msg = getErrorStart(start) + "\n"
-                       + start.image
-                       + " occurred outside a loop or a switch block.";
-          throw new ParseException(msg, start.beginLine, start.beginColumn);
-       }
        BreakInstruction result = new BreakInstruction();
        result.setLocation(template, start, start);
        return result;
@@ -1916,27 +1886,6 @@ ReturnInstruction Return() :
       start=<RETURN> exp=Expression() end=LooseDirectiveEnd()
    )
    {
-      if (currentMacro != null && !currentMacro.isFunction()) {
-         if (exp != null) {
-            String msg = getErrorStart(start) 
-                         + "\nA macro cannot return a value";
-            throw new ParseException(msg, start.beginLine, start.beginColumn);
-         }
-      }
-      else if (currentMacro != null && currentMacro.isFunction()) {
-         if (exp == null) {
-            String msg = getErrorStart(start) 
-                         + "\nA function must return a value";
-            throw new ParseException(msg, start.beginLine, start.beginColumn);
-         }
-      }
-      else {
-         if (exp == null) {
-            String msg = getErrorStart(start) 
-                         + "\nA return instruction can only occur inside a macro or function";
-            throw new ParseException(msg, start.beginLine, start.beginColumn);
-         }
-      }
       ReturnInstruction result = new ReturnInstruction(exp);
       result.setLocation(template, start, end);
       return result;
@@ -2065,15 +2014,7 @@ TemplateElement Assign() :
       |
       start=<GLOBALASSIGN>{type = AssignmentInstruction.GLOBAL;}
       |
-      start=<LOCALASSIGN> 
-      {
-          type = AssignmentInstruction.LOCAL;
-          if (currentMacro == null) {
-             String msg = getErrorStart(start)
-                          + "\nLocal variable assigned outside a macro.";
-             throw new ParseException(msg, start.beginLine, start.beginColumn);
-          }
-      }
+      start=<LOCALASSIGN> {type = AssignmentInstruction.LOCAL;}
       |
       start=<SET> {type = AssignmentInstruction.SET;}
     )
@@ -2665,11 +2606,7 @@ SwitchBlock Switch() :
 {
    start=<SWITCH>
    switchExp=Expression()
-   <DIRECTIVE_END>
-   {
-      ++switchNesting;
-      switchBlock = new SwitchBlock(switchExp);
-   }
+   <DIRECTIVE_END> {switchBlock = new SwitchBlock(switchExp);}
    (
      LOOKAHEAD(2)
      caseIns=Case()
@@ -2688,7 +2625,6 @@ SwitchBlock Switch() :
    [<WHITESPACE>]
    end=<END_SWITCH>
    {
-      --switchNesting;
       switchBlock.setLocation(template, start, end);
       return switchBlock;
    }
@@ -3203,9 +3139,7 @@ TemplateElement Root() :
        doc.setParentRecursively(null);
        PostParseVisitor ppv = new PostParseVisitor(stripWhitespace);
        ppv.visit(doc);
-       SanityChecker sanityChecker = new SanityChecker();
-       sanityChecker.visit(doc);
-       sanityChecker.reportErrors();
+       ppv.reportErrors();
        return doc;
    }
 }

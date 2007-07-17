@@ -84,7 +84,7 @@ public class Identifier extends Expression {
         return name;
     }
 
-    boolean _isLiteral() {
+    boolean isLiteral() {
         return false;
     }
 

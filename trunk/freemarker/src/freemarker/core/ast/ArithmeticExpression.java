@@ -114,8 +114,8 @@ public class ArithmeticExpression extends Expression {
         }
     }
 
-    boolean _isLiteral() {
-        return constantValue != null || (left._isLiteral() && right._isLiteral());
+    boolean isLiteral() {
+        return constantValue != null || (left.isLiteral() && right.isLiteral());
     }
 
     Expression _deepClone(String name, Expression subst) {

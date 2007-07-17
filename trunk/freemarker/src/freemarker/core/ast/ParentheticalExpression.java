@@ -72,8 +72,8 @@ public class ParentheticalExpression extends Expression {
         return nested.getAsTemplateModel(env);
     }
 
-    boolean _isLiteral() {
-        return nested._isLiteral();
+    boolean isLiteral() {
+        return nested.isLiteral();
     }
 
     Expression _deepClone(String name, Expression subst) {

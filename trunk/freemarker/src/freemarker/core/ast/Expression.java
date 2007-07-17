@@ -65,12 +65,16 @@ import freemarker.core.parser.ParseException;
 abstract public class Expression extends TemplateNode {
 
     abstract TemplateModel _getAsTemplateModel(Environment env) throws TemplateException;
-    abstract boolean _isLiteral();
+    abstract boolean isLiteral();
 
     // Used to store a constant return value for this expression. Only if it
     // is possible, of course.
     
     TemplateModel constantValue;
+    
+    /**
+     * @return the value of the expression if it is a literal, null otherwise.
+     */
     
     public final TemplateModel literalValue() {
     	return constantValue;
@@ -83,7 +87,7 @@ abstract public class Expression extends TemplateNode {
         ParseException
     {
         super.setLocation(template, beginColumn, beginLine, endColumn, endLine);
-        if (_isLiteral()) {
+        if (isLiteral()) {
         	try {
         		constantValue = _getAsTemplateModel(null);
         	} catch (Exception e) {
