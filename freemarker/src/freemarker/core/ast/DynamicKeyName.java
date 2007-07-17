@@ -227,8 +227,8 @@ public class DynamicKeyName extends Expression {
         }
     }
 
-    boolean _isLiteral() {
-        return constantValue != null || (target._isLiteral() && nameExpression._isLiteral());
+    boolean isLiteral() {
+        return constantValue != null || (target.isLiteral() && nameExpression.isLiteral());
     }
 
     Expression _deepClone(String name, Expression subst) {

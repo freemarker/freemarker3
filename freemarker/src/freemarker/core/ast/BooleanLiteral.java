@@ -79,7 +79,7 @@ public class BooleanLiteral extends Expression {
         return value ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
     }
 
-    boolean _isLiteral() {
+    boolean isLiteral() {
         return true;
     }
 

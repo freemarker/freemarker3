@@ -118,7 +118,7 @@ public class AddConcatExpression extends Expression {
         throw new TemplateException(msg, env);
     }
 
-    boolean _isLiteral() {
+    boolean isLiteral() {
     	if ((right instanceof StringLiteral && !(left instanceof StringLiteral))
     		|| (!(right instanceof StringLiteral) && left instanceof StringLiteral))
     		return false; // REVISIT (This is hacky, but the problem is that
@@ -126,7 +126,7 @@ public class AddConcatExpression extends Expression {
     	                  // ${"The answer is: " + 1.1}
     	                  // since the display of the decimal number depends i18n
     	                  // considerations only known at render-time. (JR))
-        return constantValue != null || (left._isLiteral() && right._isLiteral());
+        return constantValue != null || (left.isLiteral() && right.isLiteral());
     }
 
     Expression _deepClone(String name, Expression subst) {

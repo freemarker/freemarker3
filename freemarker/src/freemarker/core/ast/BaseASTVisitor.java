@@ -55,6 +55,8 @@ package freemarker.core.ast;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import freemarker.log.Logger;
+
 
 import freemarker.core.parser.ParseException;
 
@@ -69,6 +71,21 @@ import freemarker.core.parser.ParseException;
  */
 
 public abstract class BaseASTVisitor {
+	
+	private static final Logger logger = Logger.getLogger("freemarker.core");
+	
+	protected StringBuffer errors = new StringBuffer(), warnings = new StringBuffer();
+	
+	public void reportErrors() throws ParseException {
+		if (errors.length() > 0) {
+			throw new ParseException(errors.toString());
+		}
+	}
+	
+	protected void warn(String message) {
+		warnings.append(message);
+		logger.warn(message);
+	}
 	
 	public void visit(TemplateNode node) {
 		if (node == null) return;
@@ -313,12 +330,12 @@ public abstract class BaseASTVisitor {
 	}
 	
 	public void visit(RecurseNode node) {
-		if (node.targetNode != null) visit(node.targetNode);
-		if (node.namespaces != null) visit(node.namespaces);
+		visit(node.targetNode);
+		visit(node.namespaces);
 	}
 	
 	public void visit(ReturnInstruction node) {
-		if (node.returnExp != null) visit(node.returnExp);
+		visit(node.returnExp);
 	}
 	
 	public void visit(ScopedDirective node) {

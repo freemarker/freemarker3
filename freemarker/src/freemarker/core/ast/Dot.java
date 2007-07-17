@@ -79,8 +79,8 @@ public class Dot extends Expression {
         throw invalidTypeException(leftModel, target, env, "hash");
     }
 
-    boolean _isLiteral() {
-        return target._isLiteral();
+    boolean isLiteral() {
+        return target.isLiteral();
     }
 
     Expression _deepClone(String name, Expression subst) {

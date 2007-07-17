@@ -67,8 +67,8 @@ public class NotExpression extends BooleanExpression {
         return (!target.isTrue(env));
     }
 
-    boolean _isLiteral() {
-        return target._isLiteral();
+    boolean isLiteral() {
+        return target.isLiteral();
     }
 
     Expression _deepClone(String name, Expression subst) {
