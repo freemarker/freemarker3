@@ -858,7 +858,7 @@ Expression PrimaryExpression() :
       |
       exp=HashLiteral()
       |
-      exp=StringLiteral(true)
+      exp=StringLiteral()
       |
       exp=BooleanLiteral()
       |
@@ -1141,8 +1141,6 @@ Expression AndExpression() :
       <AND>
       rhs=EqualityExpression()
       {
-//         booleanLiteralOnly(lhs);
-//         booleanLiteralOnly(rhs);
          result = new AndExpression(lhs, rhs);
          result.setLocation(template, lhs, rhs);
          lhs = result;
@@ -1164,8 +1162,6 @@ Expression OrExpression() :
       <OR>
       rhs=AndExpression()
       {
-//         booleanLiteralOnly(lhs);
-//         booleanLiteralOnly(rhs);
          result = new OrExpression(lhs, rhs);
          result.setLocation(template, lhs, rhs);
          lhs = result;
@@ -1241,7 +1237,7 @@ Expression IdentifierOrStringLiteral() :
    (
       exp=Identifier()
       |
-      exp=StringLiteral(false)
+      exp=StringLiteral()
    )
    {
       return exp;
@@ -1442,7 +1438,7 @@ MethodCall MethodArgs(Expression exp) :
      }
 }
 
-StringLiteral StringLiteral(boolean interpolate) :
+StringLiteral StringLiteral() :
 {
   Token t;
   boolean raw = false;
@@ -1469,9 +1465,6 @@ StringLiteral StringLiteral(boolean interpolate) :
        }
        StringLiteral result = new StringLiteral(s, raw);
        result.setLocation(template, t, t);
-       if (interpolate && !raw) {
-           result.checkInterpolation();
-       }
        return result;
    }
 }
@@ -1559,7 +1552,7 @@ DollarVariable StringOutput() :
    } catch (ParseException pe) {
    	   if (!recoverFromErrors) throw pe;
    	   recoverToToken(CLOSE_BRACE);
-       exp = new InvalidExpression(pe.getMessage());
+       exp = new InvalidExpression("The expression inside the interpolation is invalid.");
        exp.setLocation(template, begin.next, token);
    }
    end=<CLOSE_BRACE>
@@ -2363,16 +2356,6 @@ TemplateElement UnifiedMacroTransform() :
     [
        <SEMICOLON>
        bodyParameters=ParameterList()
-/*       
-       {bodyParameters = new ArrayList();}
-       [
-           t=<ID> {bodyParameters.add(t.image);}
-           (
-               <COMMA>
-               t = <ID>{bodyParameters.add(t.image);}
-           )*
-       ]
-*/              
        {
            result.setBodyParameters(bodyParameters);
        }
@@ -2625,15 +2608,7 @@ NoEscapeBlock NoEscape() :
     TemplateElement content;
 }
 {
-    start=<NOESCAPE>
-    {
-        if(escapes.isEmpty()) {
-                String msg = getErrorStart(start)
-                                  + "\nnoescape with no matching escape encountered.";
-            throw new ParseException(msg, start.beginLine, start.beginColumn);
-        }
-        Object escape = escapes.removeFirst();
-    }
+    start=<NOESCAPE> {Object escape = escapes.removeFirst();}
     content=OptionalBlock()
     end=<END_NOESCAPE>
     {
