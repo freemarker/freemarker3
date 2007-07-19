@@ -70,14 +70,12 @@ public class MacroContext extends BlockContext {
     public ParameterList bodyParameters;
     TemplateNamespace bodyNamespace;
     MacroContext invokingMacroContext;
-    Map namedFragments;
     Scope invokingScope;
     
     public MacroContext(Macro macro,
     		Environment env,
             TemplateElement body,
-            ParameterList bodyParameters,
-            Map namedFragments)
+            ParameterList bodyParameters)
     {
     	super(macro, env.getMacroNamespace(macro)); // REVISIT
     	this.macro = macro;
@@ -86,7 +84,6 @@ public class MacroContext extends BlockContext {
         this.invokingScope = env.getCurrentScope();
         this.body = body;
         this.bodyParameters = bodyParameters;
-        this.namedFragments = namedFragments;
     }
     
     void runMacro() throws TemplateException, IOException { 

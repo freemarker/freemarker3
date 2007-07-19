@@ -68,9 +68,8 @@ public class MacroInvocationBodyContext extends BlockContext {
     MacroContext invokingMacroContext;
     TemplateElement enclosingDirective;
     
-    public MacroInvocationBodyContext(Environment env, PositionalArgsList bodyArgs, String fragmentName) throws TemplateException {
+    public MacroInvocationBodyContext(Environment env, PositionalArgsList bodyArgs) throws TemplateException {
     	super(null, env.getCurrentMacroContext().invokingScope);
-    	this.fragmentName = fragmentName; 
         invokingMacroContext = env.getCurrentMacroContext();
         block = invokingMacroContext.body;
         if (invokingMacroContext.body != null) {
@@ -85,10 +84,6 @@ public class MacroInvocationBodyContext extends BlockContext {
         }
     }
     
-    public String getFragmentName() {
-    	return fragmentName;
-    }
-
     public boolean definesVariable(String name) {
     	return enclosingDirective.declaresScopedVariable(name);
     }

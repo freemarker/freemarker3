@@ -65,7 +65,6 @@ import freemarker.core.parser.ParseException;
 public class UnifiedCall extends TemplateElement {
 
     private Expression nameExp;
-    private Map<String, NamedFragment> namedFragments;
     private ArgsList args;
     private ParameterList bodyParameters;
     
@@ -104,11 +103,6 @@ public class UnifiedCall extends TemplateElement {
     	}
     }
 
-    public void addNamedFragment(NamedFragment fragment) {
-    	if (namedFragments == null) namedFragments = new HashMap<String, NamedFragment>();
-    	namedFragments.put(fragment.getName(), fragment);
-    }
-    
     public void execute(Environment env) throws TemplateException, IOException {
         TemplateModel tm = nameExp.getAsTemplateModel(env);
         if (tm == Macro.DO_NOTHING_MACRO) return; // shortcut here.
@@ -130,8 +124,7 @@ public class UnifiedCall extends TemplateElement {
             env.render(macro,
             		  args, 
             		  bodyParameters,
-                      nestedBlock,
-                      namedFragments);
+                      nestedBlock);
         }
         else {
         	throw new TemplateException(getStartLocation() + ": " + nameExp + " is not a Macro or Transform.", env);

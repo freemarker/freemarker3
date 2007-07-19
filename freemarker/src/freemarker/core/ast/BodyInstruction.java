@@ -66,18 +66,9 @@ public class BodyInstruction extends TemplateElement {
     
 //    private List bodyParameters;
 	private PositionalArgsList args;
-    private String fragmentName;
     
     public BodyInstruction(PositionalArgsList args) {
     	this.args = args;
-    }
-    
-    public void setFragmentName(String name) {
-    	this.fragmentName = name;
-    }
-    
-    public String getFragmentName() {
-    	return fragmentName;
     }
     
     public ArgsList getArgs() {
@@ -95,7 +86,7 @@ public class BodyInstruction extends TemplateElement {
      * I (JR) realized this thanks to some incisive comments from Daniel Dekany.
      */
     public void execute(Environment env) throws IOException, TemplateException {
-        MacroInvocationBodyContext bodyContext = new MacroInvocationBodyContext(env, args, fragmentName);
+        MacroInvocationBodyContext bodyContext = new MacroInvocationBodyContext(env, args);
         env.render(bodyContext);
     }
 

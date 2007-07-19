@@ -82,7 +82,6 @@ import freemarker.core.ast.Expression;
 import freemarker.core.ast.Identifier;
 import freemarker.core.ast.Include;
 import freemarker.core.ast.Macro;
-import freemarker.core.ast.NamedFragment;
 import freemarker.core.ast.ParameterList;
 import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.UnifiedCall;
@@ -421,18 +420,6 @@ public final class Environment extends Configurable implements Scope {
             throws TemplateException, IOException {
         MacroContext invokingMacroContext = getCurrentMacroContext();
         TemplateElement body = invokingMacroContext.body;
-        String fragmentName = bctxt.getFragmentName();
-        if (fragmentName != null) {
-            Map namedFragments = invokingMacroContext.namedFragments;
-            NamedFragment fragment = null;
-            if (namedFragments != null) {
-                fragment = (NamedFragment) namedFragments.get(fragmentName);
-            }
-            if (fragment == null)
-                throw new TemplateException(
-                        "No fragment named " + fragmentName, this);
-            body = fragment.getNestedBlock();
-        }
         if (body != null) {
             this.currentMacroContext = invokingMacroContext.invokingMacroContext;
             Configurable prevParent = getParent();
@@ -490,7 +477,7 @@ public final class Environment extends Configurable implements Scope {
         try {
             TemplateModel macroOrTransform = getNodeProcessor(node);
             if (macroOrTransform instanceof Macro) {
-                render((Macro) macroOrTransform, null, null, null, null);
+                render((Macro) macroOrTransform, null, null, null);
             } else if (macroOrTransform instanceof TemplateTransformModel) {
                 render(null, (TemplateTransformModel) macroOrTransform, null);
             } else {
@@ -555,7 +542,7 @@ public final class Environment extends Configurable implements Scope {
         TemplateModel macroOrTransform = getNodeProcessor(currentNodeName,
                 currentNodeNS, nodeNamespaceIndex);
         if (macroOrTransform instanceof Macro) {
-            render((Macro) macroOrTransform, null, null, null, null);
+            render((Macro) macroOrTransform, null, null, null);
         } else if (macroOrTransform instanceof TemplateTransformModel) {
             render(null, (TemplateTransformModel) macroOrTransform, null);
         }
@@ -566,7 +553,7 @@ public final class Environment extends Configurable implements Scope {
      */
     public void render(Macro macro, ArgsList args, 
             ParameterList bodyParameters, 
-            TemplateElement nestedBlock, Map namedFragments)
+            TemplateElement nestedBlock)
             throws TemplateException, IOException {
         if (macro == Macro.DO_NOTHING_MACRO) {
             return;
@@ -574,7 +561,7 @@ public final class Environment extends Configurable implements Scope {
         pushElement(macro);
         try {
             MacroContext mc = new MacroContext(macro, this, nestedBlock,
-                    bodyParameters, namedFragments);
+                    bodyParameters);
             MacroContext prevMc = macroContextLookup.get(macro);
             macroContextLookup.put(macro, mc);
             if (args != null) {
