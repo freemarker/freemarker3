@@ -87,7 +87,6 @@ public class MethodCall extends Expression {
     {
         TemplateModel targetModel = target.getAsTemplateModel(env);
         if (targetModel instanceof TemplateMethodModel) {
-//        	PositionalArgsList args = (PositionalArgsList) arguments;
             TemplateMethodModel targetMethod = (TemplateMethodModel)targetModel;
             List argumentStrings = arguments.getParameterSequence(targetMethod, env);
             Object result = targetMethod.exec(argumentStrings);
@@ -102,7 +101,7 @@ public class MethodCall extends Expression {
             Writer prevOut = env.getOut();
             try {
                 env.setOut(Environment.NULL_WRITER);
-                env.render(func, arguments, null, null, null);
+                env.render(func, arguments, null, null);
             } catch (IOException ioe) {
                 throw new InternalError("This should be impossible.");
             } finally {

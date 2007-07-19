@@ -400,8 +400,6 @@ TOKEN:
     |
     <MACRO : <START_TAG> "macro" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <FRAGMENT : <START_TAG> "fragment" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
-    |
     <TRANSFORM : <START_TAG> "transform" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
     |
     <VISIT : <START_TAG> "visit" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
@@ -445,8 +443,6 @@ TOKEN:
     <END_FUNCTION : <END_TAG> "function" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
     |
     <END_MACRO : <END_TAG> "macro" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <END_FRAGMENT : <END_TAG> "fragment" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
     |
     <END_COMPRESS : <END_TAG> "compress" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
     |
@@ -627,9 +623,9 @@ TOKEN:
   |
   <NOT_EQUALS : "!=">
   |
-  <LESS_THAN : "lt" | "\\lt" | "<" | "&lt;">
+  <LESS_THAN : "lt" | "<" | "&lt;">
   |
-  <LESS_THAN_EQUALS : "lte" | "\\lte" | "<=" | "&lt;=">
+  <LESS_THAN_EQUALS : "lte" | "<=" | "&lt;=">
   |
   <ESCAPED_GT: "gt" | "\\gt" |  "&gt;">
   |
@@ -1912,12 +1908,10 @@ StopInstruction Stop() :
 
 TemplateElement Nested() :
 {
-  Token t, end, fragment;
+  Token t, end;
 //  ArrayList bodyParameters;
   PositionalArgsList args=null;
   BodyInstruction result = null;
-  Expression fragmentName = null;
-  String fragname = null;
 }
 {
    (
@@ -1931,35 +1925,15 @@ TemplateElement Nested() :
       |
       (
           t=<NESTED>
-          [
-             LOOKAHEAD(<ID><EQUALS>)
-             fragment=<ID>
-             <EQUALS>
-             fragmentName=IdentifierOrStringLiteral()
-             {
-                 if (!fragment.image.equalsIgnoreCase("fragment")) {
-                     throw new ParseException("Expecting \"fragment=\" here.", fragmentName.getBeginLine(), fragmentName.getBeginColumn());
-                 }
-                 fragname = (fragmentName instanceof StringLiteral) ? ((StringLiteral) fragmentName).getAsString() : fragmentName.toString();
-             }
-          ]
           args=PositionalArgsList()
           end=LooseDirectiveEnd()
           {
              result = new BodyInstruction(args);
-             result.setFragmentName(fragname);
              result.setLocation(template, t, end);
           }
       )
    )
    {
-       if (currentMacro == null) {
-          throw new ParseException(getErrorStart(t)
-	                           + "\nCannot use a "
-				   + t.image
-				   + " instruction outside a macro.",
-                                   t.beginLine, t.beginColumn);
-       }
        return result;
    }
 }
@@ -2291,44 +2265,6 @@ CompressedBlock Compress() :
     }
 }
 
-NamedFragment Fragment() :
-{
-   Token t, start, end;
-   NamedFragment result = null;
-   Expression nameExp = null;
-   ArrayList<String> bodyParameters = new ArrayList<String>();
-   TemplateElement block=null;
-//   ParameterList bodyParameters = null;
-}
-{
-   start=<FRAGMENT>
-   nameExp=IdentifierOrStringLiteral()
-   {
-      String name = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
-      if (currentCall == null) {
-          throw new ParseException("Can only have a named fragment within a macro invocation body.", start.beginLine, start.beginColumn);
-      }
-      result = new NamedFragment(name, currentCall);
-   }
-   [<SEMICOLON>]
-   [
-      t=<ID> {bodyParameters.add(t.image);}
-      (
-         <COMMA>
-         t=<ID> {bodyParameters.add(t.image);}
-      )*
-   ]
-   <DIRECTIVE_END>
-   block=OptionalBlock()
-   end=<END_FRAGMENT>
-   {
-      result.setNestedBlock(block);
-//      result.setBodyParameterNames(bodyParameters); //REVISIT
-      result.setLocation(template, start, end);
-      currentCall.addNamedFragment(result);
-      return result;
-   }
-}
 
 PositionalArgsList PositionalArgsList() : 
 {
@@ -2606,12 +2542,15 @@ SwitchBlock Switch() :
 {
    start=<SWITCH>
    switchExp=Expression()
-   <DIRECTIVE_END> {switchBlock = new SwitchBlock(switchExp);}
+   <DIRECTIVE_END>
+   {
+      switchBlock = new SwitchBlock(switchExp);
+   }
    (
      LOOKAHEAD(2)
      caseIns=Case()
      {
-       if (caseIns.isDefault()) {
+       if (caseIns.isDefault) {
 	   if (defaultFound) {
                 String msg = getErrorStart(start)
                             + "\nYou can only have one default case in a switch statement";
@@ -2809,8 +2748,6 @@ TemplateElement FreemarkerDirective() :
      tp=Compress()
      |
      tp=UnifiedMacroTransform()
-     |
-     tp=Fragment()
      |
      tp=Call()
      |

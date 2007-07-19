@@ -216,7 +216,7 @@ public class DefaultTreeDumper {
 	public String render(Case node) {
 		StringBuilder buf = new StringBuilder();
 		buf.append(OPEN_BRACKET);
-		if (node.isDefault()) {
+		if (node.isDefault) {
 			buf.append("#default");
 		} else {
 			buf.append("#case ");

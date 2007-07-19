@@ -1,15 +1,15 @@
 package freemarker.core.parser;
 
 import freemarker.core.ast.*;
-import freemarker.template.TemplateBooleanModel;
-import freemarker.template.TemplateDateModel;
-import freemarker.template.TemplateHashModel;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateNumberModel;
-import freemarker.template.TemplateScalarModel;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.*;
 
 import java.util.*;
+
+/**
+ * A class that visits the AST after the parsing step proper,
+ * and makes various checks and adjustments. 
+ * @author revusky
+ */
 
 public class PostParseVisitor extends BaseASTVisitor {
 	
@@ -113,6 +113,15 @@ public class PostParseVisitor extends BaseASTVisitor {
 		}
 	}
 	
+	public void visit(BodyInstruction node) {
+		super.visit(node);
+		Macro macro = getContainingMacro(node);
+		if (macro == null) {
+       		String msg = "\n" + node.getStartLocation() + " : " + "The nested directive can only be used inside a function or macro."; 
+       		errors.append(msg);
+		}
+	}
+	
 	public void visit(ReturnInstruction node) {
 		super.visit(node);
 		TemplateElement parent = node;
@@ -145,6 +154,20 @@ public class PostParseVisitor extends BaseASTVisitor {
        			parent.declareScopedVariable(key);
         	}
         }
+	}
+	
+	public void visit(SwitchBlock node) {
+		super.visit(node);
+		boolean foundDefaultCase = false;
+		for (TemplateElement te : node.getCases()) {
+			if (((Case) te).isDefault) {
+				if (foundDefaultCase) {
+					String msg = "\n" + te.getStartLocation() + " : You can only have one default case in a switch construct.";
+					errors.append(msg);
+				}
+				foundDefaultCase = true;
+			}
+		}
 	}
 	
 	public void visit(TextBlock node) {

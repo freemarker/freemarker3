@@ -89,8 +89,8 @@ public class Case extends TemplateElement {
         } 
         return "case " + expression;
     }
-    
+/*    
     public boolean isDefault() {
     	return isDefault;
-    }
+    }*/
 }
