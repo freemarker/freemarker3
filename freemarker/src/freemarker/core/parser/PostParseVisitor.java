@@ -3,6 +3,7 @@ package freemarker.core.parser;
 import freemarker.core.ast.*;
 import freemarker.template.*;
 
+import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -18,6 +19,11 @@ public class PostParseVisitor extends BaseASTVisitor {
 	public PostParseVisitor(boolean stripWhitespace) {
 		this.stripWhitespace = stripWhitespace;
 		
+	}
+	
+	public void visit(InvalidExpression node) {
+		String msg= "\n" + "Invalid expression inside the interpolation " + node.getStartLocation();
+		errors.append(msg);
 	}
 	
 	public void visit(AndExpression node) {
@@ -77,6 +83,19 @@ public class PostParseVisitor extends BaseASTVisitor {
         } else {
             super.visit(node);
         }
+	}
+	
+	public void visit(NoEscapeBlock node) {
+		super.visit(node);
+		TemplateElement parent = node;
+		while (parent != null && !(parent instanceof EscapeBlock)) {
+			parent = parent.getParent();
+		}
+		if (parent == null) {
+			String msg = "\n" + node.getStartLocation();
+			msg += " : The noescape directive only makes sense inside an escape block.";
+			errors.append(msg);
+		}
 	}
 	
 	public void visit(IteratorBlock node) {
@@ -228,6 +247,16 @@ public class PostParseVisitor extends BaseASTVisitor {
 			checkLiteralInStringContext(key);
 		}
 		super.visit(node);
+	}
+	
+	public void visit(StringLiteral node) {
+		if (!node.raw) try {
+			node.checkInterpolation();
+		} catch (ParseException pe) {
+			String msg = "\nError in string " + node.getStartLocation();
+			msg += "\n" + pe.getMessage();
+			errors.append(msg);
+		}
 	}
 
 	public void visit(Range node) {

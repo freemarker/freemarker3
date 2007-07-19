@@ -16,6 +16,10 @@ public class InvalidExpression extends Expression {
 	public InvalidExpression(String message) {
 		this.message = message;
 	}
+	
+	public String getMessage() {
+		return message;
+	}
 
 	@Override
 	Expression _deepClone(String name, Expression subst) {
