@@ -57,6 +57,7 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.Token;
+import freemarker.core.parser.TemplateLocation;
 import freemarker.core.helpers.DefaultReferenceChecker;
 import freemarker.core.helpers.DefaultTreeDumper;
 
@@ -66,92 +67,12 @@ import freemarker.core.helpers.DefaultTreeDumper;
  * in the compiled tree representation of the template
  * all descend from this abstract base class.
  */
-public abstract class TemplateNode {
+
+public abstract class TemplateNode extends TemplateLocation {
 	
 	static private DefaultReferenceChecker referenceChecker = DefaultReferenceChecker.instance;
 	static private DefaultTreeDumper canonicalTreeRenderer = new DefaultTreeDumper(false);
 	
-    private Template template;
-    protected int beginColumn, beginLine, endColumn, endLine;
-
-    public final void setLocation(Template template, Token begin, Token end)
-    throws
-        ParseException
-    {
-        setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
-    }
-
-    public final void setLocation(Template template, Token begin, TemplateNode end)
-    throws
-        ParseException
-    {
-        setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
-    }
-
-    public final void setLocation(Template template, TemplateNode begin, Token end)
-    throws
-        ParseException
-    {
-        setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
-    }
-
-    public final void setLocation(Template template, TemplateNode begin, TemplateNode end)
-    throws
-        ParseException
-    {
-        setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
-    }
-
-    public final int getBeginColumn() {
-        return beginColumn;
-    }
-
-    public final int getBeginLine() {
-        return beginLine;
-    }
-
-    public final int getEndColumn() {
-        return endColumn;
-    }
-
-    public final int getEndLine() {
-        return endLine;
-    }
-
-    public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine)
-    throws
-        ParseException
-    {
-        this.template = template;
-        this.beginColumn = beginColumn;
-        this.beginLine = beginLine;
-        this.endColumn = endColumn;
-        this.endLine = endLine;
-    }
-    
-    /**
-     * Returns a string that indicates
-     * where in the template source, this object is.
-     */
-    public String getStartLocation() {
-        String templateName = template != null ? template.getName() : "input";
-        return "on line " 
-              + beginLine 
-              + ", column " 
-              + beginColumn
-              + " in "
-              + templateName;
-    }
-
-    public String getEndLocation() {
-        String templateName = template != null ? template.getName() : "input";
-        return "on line " 
-              + endLine
-              + ", column "
-              + endColumn
-              + " in "
-              + templateName;
-    }
 
     public String getSource() {
         if (template != null) {
@@ -168,42 +89,6 @@ public abstract class TemplateNode {
     		return getCanonicalForm();
     	}
     }
-
-    /**
-     * @return whether the point in the template file specified by the 
-     * column and line numbers is contained within this template object.
-     */
-    public boolean contains(int column, int line) {
-        if (line < beginLine || line > endLine) {
-            return false;
-        }
-        if (line == beginLine) {
-            if (column < beginColumn) {
-                return false;
-            }
-        }
-        if (line == endLine) {
-            if (column > endColumn) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public Template getTemplate()
-    {
-        return template;
-    }
-
-    public TemplateNode copyLocationFrom(TemplateNode from)
-    {
-        template = from.template;
-        beginColumn = from.beginColumn;
-        beginLine = from.beginLine;
-        endColumn = from.endColumn;
-        endLine = from.endLine;
-        return this;
-    }    
 
     
     static public TemplateException invalidTypeException(TemplateModel model, Expression exp, Environment env, String expected)

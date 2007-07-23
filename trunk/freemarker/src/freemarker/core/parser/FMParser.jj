@@ -1546,11 +1546,11 @@ DollarVariable StringOutput() :
    Token begin, end;
 }
 {
-   begin=<OUTPUT_ESCAPE>
+   begin=<OUTPUT_ESCAPE> 
    try {
 	   exp=Expression()
-   } catch (ParseException pe) {
-   	   if (!recoverFromErrors) throw pe;
+   }
+   catch (ParseException pe) {
    	   recoverToToken(CLOSE_BRACE);
        exp = new InvalidExpression("The expression inside the interpolation is invalid.");
        exp.setLocation(template, begin.next, token);
