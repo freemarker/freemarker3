@@ -199,7 +199,7 @@ public final class TextBlock extends TemplateElement {
     private boolean deliberateRightTrim() {
         boolean result = false;
         for (TemplateElement elem = this.prevTerminalNode(); 
-             elem != null && elem.endLine == this.beginLine;
+             elem != null && elem.getEndLine() == this.beginLine;
              elem = elem.prevTerminalNode())
         {
             if (elem instanceof TrimInstruction) {
@@ -235,7 +235,7 @@ public final class TextBlock extends TemplateElement {
                         // THIS BLOCK IS HEINOUS! THERE MUST BE A BETTER WAY! REVISIT (JR)
                             boolean trimTrailingPart = true;
                             for (TemplateElement te = this.nextTerminalNode(); 
-                                 te != null && te.beginLine == this.endLine;
+                                 te != null && te.getBeginLine() == this.endLine;
                                  te = te.nextTerminalNode()) 
                             {
                                 if (te.heedsOpeningWhitespace()) 
@@ -304,7 +304,7 @@ public final class TextBlock extends TemplateElement {
 // We look at the preceding elements on the line to see if we should
 // strip the opening newline and any whitespace preceding it.
         for (TemplateElement elem = this.prevTerminalNode(); 
-             elem != null && elem.endLine == this.beginLine;
+             elem != null && elem.getEndLine() == this.beginLine;
              elem = elem.prevTerminalNode())
         {
             if (elem.heedsOpeningWhitespace())
@@ -332,7 +332,7 @@ public final class TextBlock extends TemplateElement {
 // We look at the elements afterward on the same line to see if we should
 // strip any whitespace after the last newline
         for (TemplateElement elem = this.nextTerminalNode(); 
-             elem != null && elem.beginLine == this.endLine;
+             elem != null && elem.getBeginLine() == this.endLine;
              elem = elem.nextTerminalNode()) 
         {
             if (elem.heedsTrailingWhitespace()) 

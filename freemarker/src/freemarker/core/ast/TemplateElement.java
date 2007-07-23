@@ -87,8 +87,6 @@ abstract public class TemplateElement extends TemplateNode {
      */
     abstract public void execute(Environment env) throws TemplateException, IOException;
 
-    abstract public String getDescription();
-    
     public Scope createLocalScope(Scope enclosingScope) {
     	return new BlockContext(this, enclosingScope);
     }

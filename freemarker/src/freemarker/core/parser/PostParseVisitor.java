@@ -14,16 +14,21 @@ import java.util.*;
 
 public class PostParseVisitor extends BaseASTVisitor {
 	
-	protected boolean stripWhitespace, limitNesting;
+	protected boolean stripWhitespace;
+	private List<ParsingProblem> problems = new ArrayList<ParsingProblem>();
+	
+	public void reportErrors() throws ParseException {
+		if (!problems.isEmpty()) {
+			throw new MultiParseException(problems); 
+		}
+	}
 	
 	public PostParseVisitor(boolean stripWhitespace) {
 		this.stripWhitespace = stripWhitespace;
-		
 	}
 	
 	public void visit(InvalidExpression node) {
-		String msg= "\n" + "Invalid expression inside the interpolation " + node.getStartLocation();
-		errors.append(msg);
+		problems.add(new ParsingProblem("Invalid expression: " + node.getSource(), node));
 	}
 	
 	public void visit(AndExpression node) {
@@ -38,8 +43,8 @@ public class PostParseVisitor extends BaseASTVisitor {
         if (node.type == AssignmentInstruction.LOCAL) {
         	Macro macro = getContainingMacro(node);
         	if (macro == null) {
-        		String msg = "\n" + node.getStartLocation() + " : " + "The local directive can only be used inside a function or macro."; 
-        		errors.append(msg);
+        		ParsingProblem problem = new ParsingProblem("The local directive can only be used inside a function or macro.", node);
+        		problems.add(problem);
         	}
         	else for (String varname : node.getVarNames()) {
         		if (!macro.declaresScopedVariable(varname)) {
@@ -54,8 +59,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		if (node.type == AssignmentInstruction.LOCAL) {
 			Macro macro = getContainingMacro(node);
 			if (macro == null) {
-        		String msg = "\n" + node.getStartLocation() + " : " + "The local directive can only be used inside a function or macro."; 
-        		errors.append(msg);
+				problems.add(new ParsingProblem("The local directive can only be used inside a function or macro.", node));
 			} else {
 				if (!macro.declaresScopedVariable(node.varName)) {
 					macro.declareScopedVariable(node.varName);
@@ -76,7 +80,7 @@ public class PostParseVisitor extends BaseASTVisitor {
             try {
             	cblock.setLocation(node.getTemplate(), cblock, node);
             } catch (ParseException pe) {
-            	errors.append(pe.getMessage());
+            	problems.add(new ParsingProblem(pe.getMessage(), node));
             }
             node.getParent().replace(node, cblock);
             visit(cblock);
@@ -93,8 +97,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		}
 		if (parent == null) {
 			String msg = "\n" + node.getStartLocation();
-			msg += " : The noescape directive only makes sense inside an escape block.";
-			errors.append(msg);
+			problems.add(new ParsingProblem("The noescape directive only makes sense inside an escape block.", node));
 		}
 	}
 	
@@ -115,8 +118,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 	public void visit(FallbackInstruction node) {
 		super.visit(node);
 		if (getContainingMacro(node) == null) {
-       		String msg = "\n" + node.getStartLocation() + " : " + "The fallback directive can only be used inside a macro."; 
-       		errors.append(msg);
+			problems.add(new ParsingProblem("The fallback directive can only be used inside a macro", node));
 		}
 	}
 	
@@ -127,8 +129,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 			parent = parent.getParent();
 		}
 		if (parent == null) {
-			String msg = "\n" + node.getStartLocation() + " : The break directive can only be used within a loop or a switch-case construct.";
-			errors.append(msg);
+			problems.add(new ParsingProblem("The break directive can only be used within a loop or a switch-case construct.", node));
 		}
 	}
 	
@@ -136,8 +137,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		super.visit(node);
 		Macro macro = getContainingMacro(node);
 		if (macro == null) {
-       		String msg = "\n" + node.getStartLocation() + " : " + "The nested directive can only be used inside a function or macro."; 
-       		errors.append(msg);
+			problems.add(new ParsingProblem("The nested directive can only be used inside a function or macro.", node));
 		}
 	}
 	
@@ -148,17 +148,14 @@ public class PostParseVisitor extends BaseASTVisitor {
 			parent = parent.getParent();
 		}
 		if (parent == null) {
-       		String msg = "\n" + node.getStartLocation() + " : " + "The return directive can only be used inside a function or macro."; 
-       		errors.append(msg);
+       		problems.add(new ParsingProblem("The return directive can only be used inside a function or macro.", node));
 		} else {
 			Macro macro = (Macro) parent;
 			if (!macro.isFunction() && node.returnExp != null) {
-				String msg = "\n" + node.getStartLocation() + " : " + "Can only return a value from a function, not a macro";
-				errors.append(msg);
+				problems.add(new ParsingProblem("Can only return a value from a function, not a macro", node));
 			}
 			else if (macro.isFunction() && node.returnExp == null) {
-				String msg = "\n" + node.getStartLocation() + " : " + "A function must return a value.";
-				errors.append(msg);
+				problems.add(new ParsingProblem("A function must return a value.", node));
 			}
 		}
 	}
@@ -181,8 +178,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		for (TemplateElement te : node.getCases()) {
 			if (((Case) te).isDefault) {
 				if (foundDefaultCase) {
-					String msg = "\n" + te.getStartLocation() + " : You can only have one default case in a switch construct.";
-					errors.append(msg);
+					problems.add(new ParsingProblem("You can only have one default case in a switch construct.", node));
 				}
 				foundDefaultCase = true;
 			}
@@ -223,19 +219,16 @@ public class PostParseVisitor extends BaseASTVisitor {
 		super.visit(node);
 		TemplateModel target = node.target.literalValue();
 		if (target != null && !(target instanceof TemplateHashModel)) {
-			String msg = "\n" + node.getStartLocation();
-			msg += ": Expression: " + node.target.getSource() + " is not a hash type.";
-			errors.append(msg);
+			problems.add(new ParsingProblem("Expression " + node.target.getSource() + " is not a hash type.", node.target));
 		}
 	}
 	
 	public void visit(DynamicKeyName node) {
 		super.visit(node);
 		TemplateModel target = node.target.literalValue();
-			if (target != null && !(target instanceof TemplateHashModel) && !(target instanceof TemplateSequenceModel)) {
-			String msg = "\n" + node.getStartLocation();
-			msg += ": Expression: " + node.target.getSource() + " is not a hash or sequence type.";
-			errors.append(msg);
+		if (target != null && !(target instanceof TemplateHashModel) && !(target instanceof TemplateSequenceModel)) {
+			String msg = "Expression: " + node.target.getSource() + " is not a hash or sequence type.";
+			problems.add(new ParsingProblem(msg, node.target));
 		}
 		if (!(node.nameExpression instanceof Range)) {
 			checkLiteralInScalarContext(node.nameExpression);
@@ -253,9 +246,9 @@ public class PostParseVisitor extends BaseASTVisitor {
 		if (!node.raw) try {
 			node.checkInterpolation();
 		} catch (ParseException pe) {
-			String msg = "\nError in string " + node.getStartLocation();
+			String msg = "Error in string " + node.getStartLocation();
 			msg += "\n" + pe.getMessage();
-			errors.append(msg);
+			problems.add(new ParsingProblem(msg, node));
 		}
 	}
 
@@ -284,39 +277,39 @@ public class PostParseVisitor extends BaseASTVisitor {
 	private void checkLiteralInBooleanContext(Expression exp) {
 		TemplateModel value = exp.literalValue();
 		if (value != null && !(value instanceof TemplateBooleanModel)) {
-			String msg = "\n" + exp.getStartLocation();
+			String msg;
 			if (value == TemplateModel.INVALID_EXPRESSION) {
-				msg += ": Expression " + exp.getSource() + " is invalid.";
+				msg = "Invalid expression: " + exp.getSource();
 			} else {
-				msg += ": Expression: " + exp.getSource() + " is not a boolean (true/false) value.";
+				msg = "Expression: " + exp.getSource() + " is not a boolean (true/false) value.";
 			}
-			errors.append(msg);
+			problems.add(new ParsingProblem(msg, exp));
 		}
 	}
 	
 	private void checkLiteralInStringContext(Expression exp) {
 		TemplateModel value = exp.literalValue();
 		if (value != null && !(value instanceof TemplateScalarModel)) {
-			String msg = "\n" + exp.getStartLocation();
+			String msg;
 			if (value == TemplateModel.INVALID_EXPRESSION) {
-				msg += ": Expression " + exp.getSource() + " is invalid.";
+				msg = "Invalid expression: " + exp.getSource();
 			} else {
-				msg += ": Expression: " + exp.getSource() + " is not a string.";
+				msg = "Expression: " + exp.getSource() + " is not a string.";
 			}
-			errors.append(msg);
+			problems.add(new ParsingProblem(msg, exp));
 		}
 	}
 	
 	private void checkLiteralInNumericalContext(Expression exp) {
 		TemplateModel value = exp.literalValue();
 		if (value != null && !(value instanceof TemplateNumberModel)) {
-			String msg = "\n" + exp.getStartLocation();
+			String msg;
 			if (value == TemplateModel.INVALID_EXPRESSION) {
-				msg += ": Expression " + exp.getSource() + " is invalid.";
+				msg = "Invalid expression: " + exp.getSource();
 			} else {
-				msg += ": Expression: " + exp.getSource() + " is not a numerical value.";
+				msg = "Expression: " + exp.getSource() + " is not a numerical value.";
 			}
-			errors.append(msg);
+			problems.add(new ParsingProblem(msg, exp));
 		}
 	}
 	
@@ -326,13 +319,13 @@ public class PostParseVisitor extends BaseASTVisitor {
 			&& !(value instanceof TemplateNumberModel)
 			&& !(value instanceof TemplateDateModel)) 
 		{
-			String msg = "\n" + exp.getStartLocation();
+			String msg;
 			if (value == TemplateModel.INVALID_EXPRESSION) {
-				msg += ": Expression " + exp.getSource() + " is invalid.";
+				msg = "Invalid expression: " + exp.getSource();
 			} else {
-				msg += ": Expression: " + exp.getSource() + " is not a string, date, or number.";
+				msg = "Expression: " + exp.getSource() + " is not a string, date, or number.";
 			}
-			errors.append(msg);
+			problems.add(new ParsingProblem(msg, exp));
 		}
 	}
 	

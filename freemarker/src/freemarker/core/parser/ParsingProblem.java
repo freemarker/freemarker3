@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003 The Visigoth Software Society. All rights
+ * Copyright (c) 2007 The Visigoth Software Society. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,47 +50,28 @@
  * http://www.visigoths.org/
  */
 
-package freemarker.core.ast;
-
-import java.io.IOException;
-import freemarker.core.Environment;
-import freemarker.template.*;
-
+package freemarker.core.parser;
 
 /**
- * Represents a case in a switch statement.
+ * An object that encapsulates a problem that occurs 
+ * when parsing a template. 
+ * @author revusky
  */
-public class Case extends TemplateElement {
 
-
-    // might as well just make these package-visible 
-    // so the Switch can use them, no need to be too anal-retentive
-    public final boolean isDefault;
-    public final Expression expression;
-
-    public Case(Expression expression, TemplateElement nestedBlock, boolean isDefault) 
-    {
-        this.expression = expression;
-        this.nestedBlock = nestedBlock;
-        this.isDefault = isDefault;
-    }
-
-    public void execute(Environment env) 
-        throws TemplateException, IOException 
-    {
-        if (nestedBlock != null) {
-            env.render(nestedBlock);
-        }
-    }
-
-    public String getDescription() {
-        if (isDefault) {
-            return "default case";
-        } 
-        return "case " + expression;
-    }
-/*    
-    public boolean isDefault() {
-    	return isDefault;
-    }*/
+public class ParsingProblem extends TemplateLocation {
+	
+	private String description;
+	
+	public ParsingProblem(String description) {
+		this.description = description;
+	}
+	
+	public ParsingProblem(String description, TemplateLocation location) {
+		this.description = description;
+		this.copyLocationFrom(location);
+	}
+	
+	public String getDescription() {
+		return description;
+	}
 }

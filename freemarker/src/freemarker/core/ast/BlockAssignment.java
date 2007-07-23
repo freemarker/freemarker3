@@ -55,10 +55,9 @@ package freemarker.core.ast;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.Map;
-import java.util.List;
-import freemarker.template.TemplateModel;
+import java.util.*;
 
+import freemarker.template.TemplateModel;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.Scope;
