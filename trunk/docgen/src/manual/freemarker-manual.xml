@@ -126,7 +126,7 @@
       </indexterm>
 
       <indexterm>
-        <primary>homepage</primary>
+        <primary>home page</primary>
       </indexterm>
 
       <indexterm>
@@ -138,8 +138,9 @@
       </indexterm>
 
       <para>For the latest version of FreeMarker and to subscribe to the
-      <emphasis>mailing lists</emphasis> visit the FreeMarker homepage: <olink
-      targetdoc="homepage"><phrase role="homepage"></phrase></olink></para>
+      <emphasis>mailing lists</emphasis> visit the FreeMarker home page:
+      <olink targetdoc="homepage"><phrase
+      role="homepage"></phrase></olink></para>
 
       <para>If you <emphasis>need help</emphasis> or you have
       <emphasis>suggestions</emphasis>, use the mailing lists (mail archives
@@ -753,9 +754,9 @@ All Rights Reserved.
   <emphasis>[#list animals as being]</emphasis>
   &lt;tr&gt;
     &lt;td&gt;
-      <emphasis>[#if being.size = "large"]</emphasis>&lt;font size="+1"&gt;<emphasis>[/#if]</emphasis>
+      <emphasis>[#if being.size == "large"]</emphasis>&lt;font size="+1"&gt;<emphasis>[/#if]</emphasis>
       ${being.name}
-      <emphasis>[#if being.size = "large"]</emphasis>&lt;/font&gt;<emphasis>[/#if]</emphasis>
+      <emphasis>[#if being.size == "large"]</emphasis>&lt;/font&gt;<emphasis>[/#if]</emphasis>
     &lt;td&gt;${being.price} Euros
   <emphasis>[/#list]</emphasis>
 &lt;/table&gt;</programlisting>
@@ -833,13 +834,17 @@ All Rights Reserved.
         <sect2>
           <title>What is a value?</title>
 
+          <indexterm id="topic.value">
+            <primary>value</primary>
+          </indexterm>
+
           <para role="forProgrammers">Real programmers can safely skip this
           section.</para>
 
           <para>Examples of <emphasis>values</emphasis> as you know the term
-          from the everyday life are 16, 0.5, and so on. In the case of
-          computer languages the value term has a wider meaning, as a value
-          needn't be a number. For example, take this data model:</para>
+          from the everyday math are 16, 0.5, and so on, i.e. numbers. In the
+          case of computer languages the value term has a wider meaning, as a
+          value needn't be a number. For example, take this data model:</para>
 
           <programlisting id="example.stdDataModel" role="dataModel">(root)
  |
@@ -1548,25 +1553,18 @@ The average of the price of a python and an elephant is:
             <para>End-tag:
             <literal>[/#<replaceable>directivename</replaceable>]</literal></para>
           </listitem>
-
-          <listitem>
-            <para>Empty directive tag:
-            <literal>[#<replaceable>directivename</replaceable>
-            <replaceable>parameters</replaceable>/]</literal></para>
-          </listitem>
         </itemizedlist>
 
         <para>This is similar to HTML or XML syntax, except that
         <literal>[</literal> and <literal>]</literal> is used instead of
         <literal>&lt;</literal> and <literal>&gt;</literal>, and the tag name
-        starts with <literal>#</literal>. The empty directive tag is
-        equivalent to a start-tag plus an end-tag where there is nothing
-        between them. If the directive doesn't support nested content (content
-        between the start-tag and the end-tag), you must use an empty
-        directive tag, or the start-tag with no end-tag. For example instead
-        of <literal>[#include "something"/]</literal> you can just write
-        <literal>[#include "something"]</literal> as FreeMarker knows it can't
-        have nested content anyway.</para>
+        starts with <literal>#</literal>. If the directive doesn't have nested
+        content (content between the start-tag and the end-tag), you must use
+        the start-tag with no end-tag. For example you write <literal>[#if
+        <replaceable>something</replaceable>]<replaceable>...</replaceable>[/#if]</literal>,
+        but just <literal>[#include
+        <replaceable>something</replaceable>]</literal> as FreeMarker knows
+        that include can't have nested content.</para>
 
         <para>The format of the
         <literal><replaceable>parameters</replaceable></literal> depends on
@@ -1578,11 +1576,15 @@ The average of the price of a python and an elephant is:
         <link linkend="gloss.userDefinedDirective">user-defined
         directives</link>. For user-defined directives you use
         <literal>@</literal> instead of <literal>#</literal>, for example
-        <literal>[@mydirective]<replaceable>...</replaceable>[/@mydirective]</literal>.
+        <literal>[@mydirective
+        <replaceable>parameters</replaceable>]<replaceable>...</replaceable>[/@mydirective]</literal>.
         Further difference is that if the directive has no nested content, you
-        must use the empty directive tag; you can't use a star-tag instead.
-        But user-defined directives is an advanced topic that will be
-        discussed <link linkend="dgui_misc_userdefdir">later</link>.</para>
+        must use a tag like <literal>[@mydirective
+        <replaceable>parameters</replaceable> /]</literal>, similarly as in
+        XML (e.g. <literal>&lt;img <replaceable>...</replaceable>
+        /&gt;</literal>). But user-defined directives is an advanced topic
+        that will be discussed <link
+        linkend="dgui_misc_userdefdir">later</link>.</para>
 
         <para>FTL tags, like HTML tags, must be properly nested. So the code
         below is wrong, as the <literal>if</literal> directive is both inside
@@ -1592,15 +1594,15 @@ The average of the price of a python and an elephant is:
         <programlisting role="template">&lt;ul&gt;
 <emphasis>[#list animals as being]</emphasis>
   &lt;li&gt;${being.name} for ${being.price} Euros
-  <emphasis>[#if use = "Big Joe"]</emphasis>
+  <emphasis>[#if use == "Big Joe"]</emphasis>
      (except for you)
-<emphasis>[/#list]</emphasis>
-<emphasis>[/#if]</emphasis> [#-- WRONG! --]
+<emphasis>[/#list]</emphasis> [#-- WRONG! The "if" jas to be closed first. --]
+<emphasis>[/#if]</emphasis>
 &lt;/ul&gt;</programlisting>
 
         <para>Note that FreeMarker doesn't care about the nesting of HTML
         tags, only about the nesting of FTL tags. It just sees HTML as flat
-        text.</para>
+        text, it doesn't interpret it on any way.</para>
 
         <para>If you try to use a non-existing directive (e.g., you mistype
         the directive name), FreeMarker will decline to use the template and
@@ -1633,12 +1635,12 @@ The average of the price of a python and an elephant is:
           <para>FreeMarker can be configured to use <literal>&lt;</literal>
           and <literal>&gt;</literal> instead of <literal>[</literal> and
           <literal>]</literal> in the FTL tags and FTL comments, like
-          <literal>&lt;#if use = "Big
+          <literal>&lt;#if use == "Big
           Joe"&gt;<replaceable>...</replaceable>&lt;/#if&gt;</literal>. For
           more information read: <xref
           linkend="dgui_misc_alternativesyntax" />. FreeMarker can be further
           configured so that it also understands predefined directives without
-          <literal>#</literal> (like <literal>&lt;if user = "Big
+          <literal>#</literal> (like <literal>&lt;if user == "Big
           Joe"&gt;<replaceable>...</replaceable>&lt;/if&gt;</literal>).
           However we don't recommend the usage of this mode. For more
           information read: <xref linkend="ref_depr_oldsyntax" /></para>
@@ -1686,8 +1688,13 @@ The average of the price of a python and an elephant is:
               <listitem>
                 <para><link
                 linkend="dgui_template_exp_direct_hash">Hashes</link>:
-                <literal>{"name":"green&nbsp;mouse",
-                "price":150}</literal></para>
+                <literal>{"name": "green&nbsp;mouse", "price":
+                150}</literal></para>
+              </listitem>
+
+              <listitem>
+                <para><link lang="" linkend="dgui_template_exp_direct_null"
+                remap="">Null:</link> <literal>null</literal></para>
               </listitem>
             </itemizedlist>
           </listitem>
@@ -1704,7 +1711,7 @@ The average of the price of a python and an elephant is:
 
               <listitem>
                 <para><link linkend="dgui_template_exp_var_hash">Retrieving
-                data from a hash</link>: <literal>user.name</literal>,
+                data from a hash</link>: <literal>user.name</literal> or
                 <literal>user["name"]</literal></para>
               </listitem>
 
@@ -1716,7 +1723,8 @@ The average of the price of a python and an elephant is:
 
               <listitem>
                 <para><link linkend="dgui_template_exp_var_special">Special
-                variable</link>: <literal>.main</literal></para>
+                variables</link>: <literal>.language</literal>,
+                <literal>.version</literal>, etc.</para>
               </listitem>
             </itemizedlist>
           </listitem>
@@ -1730,8 +1738,8 @@ The average of the price of a python and an elephant is:
                 <para><link
                 linkend="dgui_template_exp_stringop_interpolation">Interpolation
                 (or concatenation)</link>:
-                <literal>"Hello&nbsp;${user}!"</literal> (or
-                <literal>"Free"&nbsp;+&nbsp;"Marker"</literal>)</para>
+                <literal>"Hello&nbsp;${user}!"</literal> or <literal>"Hello
+                "&nbsp;+ user +&nbsp;"!"</literal>)</para>
               </listitem>
 
               <listitem>
@@ -1769,7 +1777,7 @@ The average of the price of a python and an elephant is:
               <listitem>
                 <para><link
                 linkend="dgui_template_exp_hashop_cat">Concatenation</link>:
-                <literal>passwords + {"joe":"secret42"}</literal></para>
+                <literal>passwords + {"joe": "secret42"}</literal></para>
               </listitem>
             </itemizedlist>
           </listitem>
@@ -1848,13 +1856,13 @@ The average of the price of a python and an elephant is:
 
         <para><indexterm>
             <primary>expression</primary>
-          </indexterm>When you supply values for interpolations or directive
+          </indexterm>When you supply <link
+        linkend="topic.value">values</link> for interpolations or directive
         parameters you can use variables or more complex expressions. For
         example, if x is the number 8 and y is 5, the value of <literal>(x +
         y)/2</literal> resolves to the numerical value 6.5.</para>
 
-        <para>Before we go into details, let see some concrete
-        examples:</para>
+        <para>Before we go into details, some concrete examples:</para>
 
         <itemizedlist>
           <listitem>
@@ -1862,16 +1870,16 @@ The average of the price of a python and an elephant is:
             interpolations is
             <literal>${<replaceable>expression</replaceable>}</literal> where
             expression gives the value you want to insert into the output as
-            text. So <literal>${(5 + 8)/2}</literal> prints ''6.5'' to the
-            output (or possibly ''6,5'' if the language of your output is not
-            US English).</para>
+            text. So <literal>${(5 + 8)/2}</literal> prints something like
+            ''6.5'' to the output (if the language of your output is US
+            English).</para>
           </listitem>
 
           <listitem>
             <para>When you supply a value for the directive parameter: You
-            have already seen the <literal>if</literal> directive in the
-            Getting Started section. The syntax of this directive is:
-            <literal>[#if
+            have already seen the <literal>if</literal> directive in the <xref
+            linkend="dgui_quickstart" /> section. The syntax of this directive
+            is: <literal>[#if
             <replaceable>expression</replaceable>]<replaceable>...</replaceable>[/#if]</literal>.
             The expression here must evaluate to a boolean value. For example
             in <literal>[#if 2 &lt; 3]</literal> the <literal>2 &lt;
@@ -1904,7 +1912,7 @@ The average of the price of a python and an elephant is:
             </indexterm>
 
             <para>To specify a string value directly you give the text in
-            quotation marks, e.g.: <literal>"some text"</literal> or in
+            quotation marks, e.g., <literal>"some text"</literal> or in
             apostrophe-quote, e.g., <literal>'some text'</literal>. The two
             forms are equivalent. If the text itself contains the character
             used for the quoting (either <literal>"</literal> or
@@ -1931,8 +1939,8 @@ this is a backslash: \</programlisting>
               <para>Of course, you could simply type the above text into the
               template, without using
               <literal>${<replaceable>...</replaceable>}</literal>. But we do
-              it here just for the sake of example, to demonstrate
-              expressions.</para>
+              it here just for the sake of example, to demonstrate string
+              literal expressions.</para>
             </note>
 
             <anchor id="topic.escapeSequence" />
@@ -1941,7 +1949,7 @@ this is a backslash: \</programlisting>
               <primary>escape sequences</primary>
             </indexterm>
 
-            <para>This is the list of all supported escape sequences. All
+            <para>Below is the list of all supported escape sequences. All
             other usage of backlash in string literals is an error and any
             attempt to use the template will fail.</para>
 
@@ -2051,9 +2059,10 @@ this is a backslash: \</programlisting>
             will be confused.</para>
 
             <para>Note that the character sequence <literal>${</literal> (and
-            <literal>#{</literal>) has special meaning. It's used to insert
-            the value of expressions (typically: the value of variables, as in
-            <literal>"Hello&nbsp;${user}!"</literal>). This will be explained
+            <literal>#{</literal> for backward compatibility) has special
+            meaning. It's used to insert the value of expressions (typically:
+            the value of variables, as in
+            <literal>"Hello&nbsp;${user}!"</literal>); this will be explained
             <link
             linkend="dgui_template_exp_stringop_interpolation">later</link>.
             If you want to print <literal>${</literal>, you should escape the
@@ -2066,14 +2075,14 @@ this is a backslash: \</programlisting>
 
             <para>A special kind of string literals is the raw string
             literals. In raw string literals, backslash and
-            <literal>${</literal> have no special meaning, they are considered
-            as plain characters. To indicate that a string literal is a raw
-            string literal, you have to put an <literal>r</literal> directly
-            before the opening quotation mark or apostrophe-quote.
-            Example:</para>
+            <literal>${</literal> (and <literal>#{</literal>) have no special
+            meaning, they are considered as plain characters. To indicate that
+            a string literal is a raw string literal, you have to put an
+            <literal>r</literal> directly before the opening quotation mark or
+            apostrophe-quote. Example:</para>
 
             <programlisting role="template">${r"${foo}"}
-${r"C:\foo\bar"}</programlisting>
+${r'C:\foo\bar'}</programlisting>
 
             <para>will print:</para>
 
@@ -2109,7 +2118,11 @@ C:\foo\bar</programlisting>
             <literal>8</literal> are totally equivalent as they all symbolize
             the number eight. Thus, <literal>${08}</literal>,
             <literal>${+8}</literal>, <literal>${8.00}</literal> and
-            <literal>${8}</literal> will all print exactly same.</para>
+            <literal>${8}</literal> will all print exactly same. <phrase
+            role="forProgrammers">(Unlike in most programming languages, there
+            is nothing like floating point versus integers either. Like both
+            <literal>1/2</literal> and <literal>1.0/2</literal> is
+            0.5.)</phrase></para>
           </sect3>
 
           <sect3 id="dgui_template_exp_direct_boolean">
@@ -2209,9 +2222,19 @@ autumn
             <para>To specify a hash in a template, you list the key/value
             pairs separated by commas, and put the list into curly brackets.
             The key and value within a key/value pair are separated with a
-            colon. Here is an example: <literal>{"name":"green&nbsp;mouse",
-            "price":150}</literal>. Note that both the names and the values
+            colon. Here is an example: <literal>{"name": "green&nbsp;mouse",
+            "price": 150}</literal>. Note that both the names and the values
             are expressions. However, the lookup names must be strings.</para>
+          </sect3>
+
+          <sect3 id="dgui_template_exp_direct_null">
+            <title>Null</title>
+
+            <para>Null is a value used in the Java language to indicate
+            missing or undefined things. Although this concept is not needed
+            for FTL, as it accesses Java object you will have to run into it
+            sometimes. The FTL literal that symbolizes this value is
+            <literal>null</literal>.</para>
           </sect3>
         </sect2>
 
@@ -2229,8 +2252,8 @@ autumn
 
             <para>To access a top-level variable, you simply use the variable
             name. For example, the expression <literal>user</literal> will
-            evaluate to the value of variable stored with name ''user'' in the
-            root. So this will print what you store there:</para>
+            evaluate to the value of variable stored with name ''user''. So
+            this will print what you store there:</para>
 
             <programlisting role="template">${user}</programlisting>
 
@@ -2344,11 +2367,15 @@ autumn
             <para>Special variables are variables defined by the FreeMarker
             engine itself. To access them, you use the
             <literal>.<replaceable>variable_name</replaceable></literal>
-            syntax.</para>
+            syntax. For example, to print the version of FreeMarker you
+            write:</para>
 
-            <para>Normally you don't need to use special variables. They are
-            for expert users. The complete list of special variables can be
-            found in the <link linkend="ref_specvar">reference</link>.</para>
+            <programlisting role="template">${.version}</programlisting>
+
+            <para>Normally you don't need to use special variables; they are
+            mostly for expert users. The complete list of special variables
+            can be found in the <link
+            linkend="ref_specvar">reference</link>.</para>
           </sect3>
         </sect2>
 
@@ -3039,7 +3066,7 @@ Horse</programlisting>
 
         <sect2 id="dgui_template_exp_missing"
                xreflabel="Designer's Guide/The Template/Expressions/Handling missing values (including null-s)">
-          <title>Handling missing values</title>
+          <title>Handling missing and null values</title>
 
           <indexterm>
             <primary>undefined variable</primary>
@@ -3092,7 +3119,7 @@ Horse</programlisting>
             FAQ entry</link>.</para>
           </note>
 
-          <sect3 id="dgui_template_exp_missing_default">
+          <sect3 id="dgui_template_exp_missing_default" label="">
             <title>Default value operator</title>
 
             <indexterm>
@@ -4582,6 +4609,24 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
         it, but since FreeMarker works together with Java programs (mostly),
         it just couldn't avoid <literal>null</literal>-s. So FTL knows
         <literal>null</literal> (since FreeMarker 2.4).</para>
+
+        <para>To fund out if an existing variable is <literal>null</literal>,
+        Java programmers would immediately write <literal>var ==
+        null</literal>, but that's wrong in FTL. You should write:
+        <literal><replaceable>var</replaceable>?</literal><literal>is_null</literal>.</para>
+
+        <para role="forProgrammers">Why is <literal>var == null</literal>
+        wrong? In Java/C++ the <literal>==</literal> operator does a pointer
+        comparison. For example, if you compare two string like <literal>s1 ==
+        s2</literal>, then you ask if the two objects has the same identity
+        (same memory address), and not if they store identical text. For that,
+        you had to write <literal>s1.equals(s2)</literal> in Java. But in FTL,
+        like in most scripting languages, <literal>s1 == s2</literal> is like
+        <literal>s1.equals(s2)</literal>. And thus, like in Java,
+        <literal>s1.equals(null)</literal> will fail, simply because it
+        doesn't make sense to ask "Is this text the same as another text that
+        I don't know about?". Of course that question can't be answered and
+        thus is an error.</para>
 
         <para>[!!UC]</para>
       </sect1>
@@ -6266,7 +6311,9 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         defaults that can be overridden in a per template manner. The value
         comes from <literal>Configuration</literal> instance or
         <literal>Template</literal> instance can be further overridden for a
-        single <literal>Template.process</literal> call with the <link
+        single <literal>Template.process</literal> call in the
+        <literal>freemarker.core.Environment</literal> object, or in the
+        template with the <link
         linkend="ref.directive.setting"><literal>setting</literal>
         directive</link>. The thing that stores the state of single a
         <literal>Template.process</literal> call is called the runtime
