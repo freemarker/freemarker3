@@ -31,6 +31,10 @@ public class PostParseVisitor extends BaseASTVisitor {
 		problems.add(new ParsingProblem("Invalid expression: " + node.getSource(), node));
 	}
 	
+	public void visit(UnclosedElement node) {
+		problems.add(new ParsingProblem(node.getDescription(), node));
+	}
+	
 	public void visit(AndExpression node) {
 		visit(node.left);
 		checkLiteralInBooleanContext(node.left);

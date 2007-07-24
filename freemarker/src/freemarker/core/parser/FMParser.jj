@@ -148,13 +148,23 @@ public class FMParser {
       return exp;
   }
   
-  private void recoverToToken(int kind) {
+  /**
+   * Used in error recovery, scans forward for a 
+   * token of a given kind, and optionally consumes it.
+   * @return the token right before the one of the kind
+   *         that we were scanning ahead for
+   */
+  
+  private Token recoverToToken(int kind, boolean consume) {
   	  Token t = this.token, prevToken;
   	  do {
   	  	prevToken = t;
   	  	t = getNextToken();
   	  } while (t.kind != kind && t.kind != EOF);
-  	  this.token = prevToken;
+  	  if (!consume) {
+  	  	this.token = prevToken;
+  	  }
+	  return prevToken;
   }
   
   private boolean getBoolean(Expression exp) throws ParseException {
@@ -1540,10 +1550,11 @@ HashLiteral HashLiteral() :
  * A production representing the ${...}
  * that outputs a variable.
  */
-DollarVariable StringOutput() :
+TemplateElement StringOutput() :
 {
    Expression exp;
    Token begin, end;
+   boolean unclosed = false;
 }
 {
    begin=<OUTPUT_ESCAPE> 
@@ -1551,13 +1562,30 @@ DollarVariable StringOutput() :
 	   exp=Expression()
    }
    catch (ParseException pe) {
-   	   recoverToToken(CLOSE_BRACE);
-       exp = new InvalidExpression("The expression inside the interpolation is invalid.");
-       exp.setLocation(template, begin.next, token);
+   	   end=recoverToToken(CLOSE_BRACE, false);
+       exp = new InvalidExpression("Error parsing the interpolation expression.");
+       exp.setLocation(template, begin.next, end);
    }
-   end=<CLOSE_BRACE>
+   try {
+	   end=<CLOSE_BRACE>
+   }
+   catch (ParseException pe2) {
+   	   end=recoverToToken(CLOSE_BRACE, true);
+   	   exp=new InvalidExpression("The expression inside the interpolation is invalid.");
+   	   exp.setLocation(template, begin.next, end);
+   	   if (end.next.kind != EOF) {
+	   	   end = end.next;
+   	   } else {
+   	   	   unclosed = true;
+   	   }
+   }
    {
-      DollarVariable result = new DollarVariable(exp, escapedExpression(exp));
+   	  TemplateElement result;
+   	  if (unclosed) {
+   	  	  result = new UnclosedElement("Unclosed output interpolation, expecting a closing '}'");
+   	  } else {
+	      result = new DollarVariable(exp, escapedExpression(exp));
+   	  }
       result.setLocation(template, begin, end);
       return result;
    }
