@@ -20,12 +20,10 @@ public class InvalidExpression extends Expression {
 	public String getMessage() {
 		return message;
 	}
-
-	@Override
-	Expression _deepClone(String name, Expression subst) {
-		// TODO Auto-generated method stub
-		return this;
-	}
+	
+    Expression _deepClone(String name, Expression subst) {
+    	return this;
+    }	
 
 	@Override
 	TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
