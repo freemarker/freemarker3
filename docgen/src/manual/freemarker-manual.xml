@@ -1436,6 +1436,10 @@ The average of the price of a python and an elephant is:
           <listitem>
             <para><emphasis role="term">Comments</emphasis><indexterm>
                 <primary>comment</primary>
+              </indexterm><indexterm>
+                <primary>[#--...--]</primary>
+              </indexterm><indexterm>
+                <primary>#</primary>
               </indexterm>: Comments are similar to HTML comments, but they
             are delimited by <literal>[#--</literal> and
             <literal>--]</literal>. Comments will be ignored by FreeMarker,
@@ -1523,6 +1527,14 @@ The average of the price of a python and an elephant is:
 
       <sect1 id="dgui_template_directives">
         <title>Directives</title>
+
+        <indexterm>
+          <primary>[#...]</primary>
+        </indexterm>
+
+        <indexterm>
+          <primary>#</primary>
+        </indexterm>
 
         <anchor id="term.designer.directive" />
 
@@ -1817,10 +1829,15 @@ The average of the price of a python and an elephant is:
           </listitem>
 
           <listitem>
-            <para><link linkend="dgui_template_exp_missing">Missing value
-            handler operators</link>:</para>
+            <para><link linkend="dgui_template_exp_missing">Treating undefined
+            variables and null values</link>:</para>
 
             <itemizedlist spacing="compact">
+              <listitem>
+                <para><link
+                linkend="dgui_template_exp_missing_overview">Overview</link></para>
+              </listitem>
+
               <listitem>
                 <para><link
                 linkend="dgui_template_exp_missing_default">Default
@@ -2170,7 +2187,7 @@ C:\foo\bar</programlisting>
             commas, and put the whole list into square brackets. For
             example:</para>
 
-            <programlisting role="template">[$list <emphasis>["winter", "spring", "summer", "autumn"]</emphasis> as x]
+            <programlisting role="template">[#list <emphasis>["winter", "spring", "summer", "autumn"]</emphasis> as x]
 ${x}
 [/#list]</programlisting>
 
@@ -2367,7 +2384,7 @@ autumn
             <para>Special variables are variables defined by the FreeMarker
             engine itself. To access them, you use the
             <literal>.<replaceable>variable_name</replaceable></literal>
-            syntax. For example, to print the version of FreeMarker you
+            syntax. For example, to print the version number of FreeMarker you
             write:</para>
 
             <programlisting role="template">${.version}</programlisting>
@@ -2425,7 +2442,10 @@ autumn
             <literal>#{<replaceable>...</replaceable>}</literal>) in string
             literals. <literal>${<replaceable>...</replaceable>}</literal>
             behaves similarly as in <phrase role="markedText">text</phrase>
-            sections. For example (assume that user is ''Big Joe''):</para>
+            sections (except that the <link
+            linkend="ref.directive.escape"><literal>escape</literal>
+            directive</link> has no effect on it). For example (assume that
+            user is ''Big Joe''):</para>
 
             <programlisting role="template">${"Hello ${user}!"}
 ${"${user}${user}${user}${user}"}</programlisting>
@@ -2436,8 +2456,7 @@ ${"${user}${user}${user}${user}"}</programlisting>
 Big JoeBig JoeBig JoeBig Joe</programlisting>
 
             <para>Alternatively, you can use the <literal>+</literal> operator
-            to achieve similar result. This is the old method, and it is
-            called string concatenation. Example:</para>
+            to achieve similar result:</para>
 
             <programlisting role="template">${"Hello " + user + "!"}
 ${user + user + user + user}</programlisting>
@@ -2458,9 +2477,9 @@ ${user + user + user + user}</programlisting>
               syntactically <emphasis>WRONG</emphasis>. You should simply
               write <literal>[#if isBig]Wow![/#if]</literal>. Also,
               <literal>[#if "${isBig}"]Wow![/#if]</literal> is
-              <emphasis>WRONG</emphasis> too, since the parameter value will
-              be a string, and the <literal>if</literal> directive wants a
-              boolean value, so it will cause a runtime error.</para>
+              <emphasis>WRONG</emphasis>, since this way the parameter value
+              will be a string, and the <literal>if</literal> directive wants
+              a boolean, so it will cause a runtime error.</para>
             </warning>
           </sect3>
 
@@ -2486,10 +2505,10 @@ ${user + user + user + user}</programlisting>
 
             <para>Since the sequence subvariable syntax and the character
             getter syntax clashes, you can use the character getter syntax
-            only if the variable is not a sequence as well (which is possible
-            because FTL supports multi-typed values), since in that case the
-            sequence behavior prevails. (To work this around, you can use
-            <link linkend="ref_builtin_string_for_string">the
+            only if the variable is not a sequence as well (FTL supports
+            multi-typed values), since in that case the sequence behavior
+            prevails. (To work this around, you can use <link
+            linkend="ref_builtin_string_for_string">the
             <literal>string</literal> built-in</link>, e.g.,
             <literal>user?string[0]</literal>. Don't worry if you don't
             understand this yet; built-ins will be discussed later.)</para>
@@ -2509,7 +2528,7 @@ J</programlisting>
               <para>You can get a range of characters in the same way as you
               <link linkend="dgui_template_exp_seqenceop_slice">get a sequence
               slice</link>, e.g <literal>${user[1..4]}</literal> and
-              <literal>${user[4..]}</literal>. However, it's now depreacted to
+              <literal>${user[4..]}</literal>. However, it's now deprecated to
               utilize this, and instead you should use <link
               linkend="ref_builtin_substring">the <literal>substring</literal>
               built-in</link>; built-ins will be discussed later.</para>
@@ -2563,15 +2582,15 @@ J</programlisting>
 
 </programlisting>
 
-            <para>Note that sequence concatenation is not to be used for many
-            repeated concatenations, like for appending items to a sequence
-            inside a loop. It's just for things like <literal>[#list users +
-            admins as person]</literal>. Although concatenating sequences is
-            fast and its speed is independently of the size of the
-            concatenated sequences, the resulting sequence will be always a
-            little bit slower to read than the original two sequences were.
-            This way the result of many repeated concatenations is a sequence
-            that is slow to read.</para>
+            <para><emphasis>Sequence concatenation is not to be used for many
+            repeated concatenations</emphasis>, like for appending items to a
+            sequence inside a loop. It's just for things like <literal>[#list
+            users + admins + coadmins as person]</literal>. Although
+            concatenating sequences is fast and its speed is independently of
+            the size of the concatenated sequences, the resulting sequence
+            will be always a little bit slower to read than the original two
+            sequences were. This way the result of many repeated
+            concatenations is a sequence that is too slow to read.</para>
           </sect3>
 
           <sect3 id="dgui_template_exp_seqenceop_slice">
@@ -2656,9 +2675,13 @@ J</programlisting>
             <para>You can concatenate hashes in the same way as strings, with
             <literal>+</literal>. If both hashes contain the same key, the
             hash on the right-hand side of the <literal>+</literal> takes
-            precedence. Example:</para>
+            precedence. Example (the <link
+            linkend="ref.directive.set"><literal>set</literal>
+            directive</link> creates a new variable and sets its value to the
+            value of the expression on the right side of the
+            <literal>=</literal>):</para>
 
-            <programlisting role="template">[#set ages = {"Joe":23, "Fred":25} + {"Joe":30, "Julia":18}]
+            <programlisting role="template">[#set ages = {"Joe": 23, "Fred": 25} + {"Joe": 30, "Julia": 18}]
 - Joe is ${ages.Joe}
 - Fred is ${ages.Fred}
 - Julia is ${ages.Julia}</programlisting>
@@ -2743,10 +2766,10 @@ ${12 % 10}</programlisting>
 2.5
 2</programlisting>
 
-          <para>Both operands must be expressions which evaluate to a
-          numerical value. So the example below will cause an error when
-          FreeMarker tries to evaluate it, since <literal>"5"</literal> is a
-          string and not the number 5:</para>
+          <para>Both operands must be expressions which evaluate to a number.
+          So the example below will cause an error when FreeMarker tries to
+          evaluate it, since <literal>"5"</literal> is a string and not the
+          number 5:</para>
 
           <programlisting role="template">${3 * "5"} [#-- WRONG! --]</programlisting>
 
@@ -2813,30 +2836,28 @@ ${-1.999?int}</programlisting>
           <literal>true</literal> then the things between the begin and
           end-tag will be processed, otherwise they will be skipped.</para>
 
-          <para>To test two values for equality you use <literal>=</literal>
-          (or <literal>==</literal> as in Java or C; the two are absolutely
-          equivalent.) To test two values for inequality you use
-          <literal>!=</literal>. For example, assume that
-          <literal>user</literal> is ''Big Joe'':</para>
+          <para>To test two values for equality you use <literal>==</literal>.
+          To test two values for inequality you use <literal>!=</literal>. For
+          example, assume that <literal>user</literal> is ''Big Joe'':</para>
 
-          <programlisting role="template">[#if <emphasis>user = "Big Joe"</emphasis>]
+          <programlisting role="template">[#if <emphasis>user == "Big Joe"</emphasis>]
   It is Big Joe
 [/#if]
 [#if <emphasis>user != "Big Joe"</emphasis>]
   It is not Big Joe
 [/#if]</programlisting>
 
-          <para>The <literal>user = "Big Joe"</literal> expression in the
+          <para>The <literal>user == "Big Joe"</literal> expression in the
           <literal>[#if ...]</literal> will evaluate to the boolean
           <literal>true</literal>, so the above will say ''It is Big
           Joe''.</para>
 
-          <para>The expressions on both sides of the <literal>=</literal> or
+          <para>The expressions on both sides of the <literal>==</literal> or
           <literal>!=</literal> must evaluate to a scalar. Furthermore, the
           two scalars must have the same type (i.e., strings can only be
           compared to strings and numbers can only be compared to numbers,
           etc.) or else an error will abort template processing. For example
-          <literal>[#if 1 = "1"]</literal> will cause an error. Note that
+          <literal>[#if 1 == "1"]</literal> will cause an error. Note that
           FreeMarker does exact comparison, so string comparisons are case and
           white-space sensitive: <literal>"x"</literal> and
           <literal>"x&nbsp;"</literal> and <literal>"X"</literal> are not
@@ -2850,6 +2871,41 @@ ${-1.999?int}</programlisting>
           <programlisting role="template">[#if x <emphasis>&lt;=</emphasis> 12]
   x is less or equivalent with 12
 [/#if]</programlisting>
+
+          <para>Alternative syntaxes:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><literal>gt</literal>, <literal>lt</literal>,
+              <literal>gte</literal>, <literal>lte</literal> can be used
+              instead of <literal>&gt;</literal>, <literal>&lt;</literal>,
+              <literal>&gt;=</literal> and <literal>&lt;=</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><literal>&amp;gt;</literal> and
+              <literal>&amp;lt;</literal> can be used instead of angle
+              brackets, like you can write <literal>&amp;gt;=</literal>
+              instead of <literal>&gt;=</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><literal>=</literal> can be used instead of
+              <literal>==</literal>, although <literal>=</literal> is used for
+              other purposes as well, so using <literal>==</literal> is
+              considered a better practice.</para>
+            </listitem>
+          </itemizedlist>
+
+          <caution>
+            <para>You can't compare anything with <literal>null</literal>,
+            because <literal>null</literal> indicates the lack of a value
+            <phrase role="forProgrammers">(and FTL does value comparisons, not
+            pointer/identity comparisons)</phrase>. To test if
+            <literal>user</literal> is <literal>null</literal>, use
+            <literal>user?is_null</literal> (the <literal>?</literal> syntax
+            will be explained later).</para>
+          </caution>
         </sect2>
 
         <sect2 id="dgui_template_exp_logicalop">
@@ -2901,7 +2957,7 @@ ${-1.999?int}</programlisting>
           <programlisting role="template">[#if x &lt; 12 <emphasis>&amp;&amp;</emphasis> color = "green"]
   We have less than 12 things, and they are green.
 [/#if]
-[#if <emphasis>!</emphasis>hot&gt; [#-- here hot must be a boolean --]
+[#if <emphasis>!</emphasis>hot] [#-- here hot must be a boolean --]
   It's not hot.
 [/#if]</programlisting>
         </sect2>
@@ -2915,12 +2971,11 @@ ${-1.999?int}</programlisting>
 
           <para>Built-ins provide, as the name suggest, certain built-in
           functionality that is always available. Typically, a built-in
-          provides a different version of a variable, or some information
-          about the variable in question. The syntax for accessing a built-in
-          is like that of accessing a subvariable in a hash, except that you
-          use the question mark instead of a dot. For example, to get the
-          upper case version of a string:
-          <literal>user?upper_case</literal>.</para>
+          provides a transformed version of a value, or some information about
+          a value. The syntax for accessing a built-in is like that of
+          accessing a subvariable in a hash, except that you use the question
+          mark instead of a dot. For example, to get the upper case version of
+          a string: <literal>user?upper_case</literal>.</para>
 
           <para>You can find the complete <link linkend="ref_builtins">list of
           built-ins in the Reference</link>. For now, just a few of the more
@@ -2954,6 +3009,11 @@ ${-1.999?int}</programlisting>
                 </listitem>
 
                 <listitem>
+                  <para><literal>length</literal>: The length of the
+                  string</para>
+                </listitem>
+
+                <listitem>
                   <para><literal>trim</literal>: The string without leading
                   and trailing <link
                   linkend="gloss.whiteSpace">white-spaces</link></para>
@@ -2978,8 +3038,8 @@ ${-1.999?int}</programlisting>
               <itemizedlist>
                 <listitem>
                   <para><literal>int</literal>: The integer part of a number
-                  (e.g., <literal>-1.9?int</literal> is
-                  <literal>-1</literal>)</para>
+                  (e.g., <literal>1.9?int</literal> is
+                  <literal>1</literal>)</para>
                 </listitem>
               </itemizedlist>
             </listitem>
@@ -2998,7 +3058,8 @@ TOM &amp;amp; JERRY</programlisting>
 
           <para>Note the <literal>test?upper_case?html</literal>. Since the
           result of <literal>test?upper_case</literal> is a string, you can
-          use the <literal>html</literal> built-in with it.</para>
+          use the <literal>html</literal> built-in with it. Also note how
+          similar it looks to <literal>test.upper_case.html</literal>.</para>
 
           <para>Another example:</para>
 
@@ -3029,18 +3090,18 @@ Horse</programlisting>
             <secondary>call</secondary>
           </indexterm>
 
-          <para>If you have a method then you can use the method call
-          operation on it. The method call operation is a comma-separated list
-          of expressions in parentheses. These values are called parameters.
-          The method call operation passes these values to the method which
-          will in turn return a result. This result will be the value of the
-          whole method call expression.</para>
+          <para>If you have a value that's a method then you can use the
+          method call operation on it. The method call operation is a
+          comma-separated list of expressions in parentheses. These values are
+          called parameters. The method call operation passes these values to
+          the method which will in turn return a result. This result will be
+          the value of the whole method call expression.</para>
 
           <para>For example, assume the programmers have made available a
-          method variable called <literal>repeat</literal>. You give a string
-          as the first parameter, and a number as the second parameter, and it
-          returns a string which repeats the first parameter the number of
-          times specified by the second parameter.</para>
+          method variable called <literal>repeat</literal> in the data-model.
+          You give a string as the first parameter, and a number as the second
+          parameter, and it returns a string which repeats the first parameter
+          the number of times specified by the second parameter.</para>
 
           <programlisting role="template">${repeat("What", 3)}</programlisting>
 
@@ -3066,7 +3127,7 @@ Horse</programlisting>
 
         <sect2 id="dgui_template_exp_missing"
                xreflabel="Designer's Guide/The Template/Expressions/Handling missing values (including null-s)">
-          <title>Handling missing and null values</title>
+          <title>Treating undefined variables and null values</title>
 
           <indexterm>
             <primary>undefined variable</primary>
@@ -3088,36 +3149,93 @@ Horse</programlisting>
             <primary>error handling</primary>
           </indexterm>
 
-          <para>As we explained earlier, an error will occur and abort the
-          template processing if you try to access a missing variable. However
-          two special operators can suppress this error, and handle the
-          problematic situation. The handled variable can be top-level
-          variable, hash subvariable, or sequence subvariable as well.
-          Furthermore these operators handle the situation when a method call
-          doesn't return a value <phrase role="forProgrammers">(from the
-          viewpoint of Java programmers: it returns <literal>null</literal> or
-          it's return type is <literal>void</literal>)</phrase>, so it's more
-          correct to say that these operators handle missing values in
-          general, rather than just missing variables.</para>
+          <sect3 id="dgui_template_exp_missing_overview">
+            <title>Overview</title>
 
-          <para><phrase role="forProgrammers">For those who know what's Java
-          <literal>null</literal>, FreeMarker 2.3.<replaceable>x</replaceable>
-          treats them as missing values. Simply, the template language doesn't
-          know the concept of <literal>null</literal>. For example, if you
-          have a bean that has a <literal>maidenName</literal> property, and
-          the value of that property is <literal>null</literal>, then that's
-          the same as if there were no such property at all, as far as the
-          template is concerned (assuming you didn't configured FreeMarker to
-          use some extreme object wrapper, that is). The result of a method
-          call that returns <literal>null</literal> is also treated as a
-          missing variable (again, assuming that you use some usual object
-          wrapper). See also: <xref linkend="faq_null" />)</phrase></para>
+            <para>Let's say we have this data model:</para>
 
-          <note>
-            <para>If you wonder why is FreeMarker so picky about missing
-            variables, <link linkend="faq_picky_about_missing_vars">read this
-            FAQ entry</link>.</para>
-          </note>
+            <programlisting role="dataModel">(root)
+ |
+ +- n = null</programlisting>
+
+            <para>Here <literal>n</literal> is <literal>null</literal>, and
+            <literal>m</literal> is undefined (i.e., it's not there at
+            all).</para>
+
+            <para>For those who don't know <literal>null</literal>, it's a
+            special value extensively used in the Java world for indicating
+            that something is missing or on some other way undefined or not
+            applicable. This is something that FTL doesn't need, and really
+            just causes trouble and confusion, but since FreeMarker works
+            together with Java programs (mostly), it just couldn't avoid
+            <literal>null</literal>-s. So FTL knows <literal>null</literal>
+            (since FreeMarker 2.4).</para>
+
+            <para>As far as the template author is concerned in most
+            use-cases, the <emphasis>value</emphasis> of both
+            <literal>m</literal> and <literal>n</literal> is missing. So in
+            general, the difference between a missing variable and a variable
+            that is null is subtle, like both <literal>${n}</literal> and
+            <literal>${m}</literal> will abort the template processing with
+            error. But there is a difference:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Any attempt to read an undefined variable is an
+                error</para>
+              </listitem>
+
+              <listitem>
+                <para>Reading a variable that is <literal>null</literal> is
+                OK, there is nothing special in it. <literal>null</literal> is
+                just a value like <literal>123</literal> or
+                <literal>"Joe"</literal>. But FreeMarker is reluctant to do
+                anything with a <literal>null</literal> value, because it
+                means "not a value/value unknown". So you cant compare it to
+                anything, can't convert it to string, can't add it to a number
+                or string, etc. The only situations where using a
+                <literal>null</literal> value (wherever it come from -- it
+                need not come from a variable after all) will not abort
+                template processing with an error are:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>Assigning it to a variable, e.g., <literal>[#set x =
+                    n]</literal></para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Using it as a subvariable in a sequence or hash
+                    literal, e.g., <literal>[1, n, 3]</literal>,
+                    <literal>{"a": 1, "b": n, "c": 3}</literal></para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Using it as a parameter when calling something
+                    (method, macro, etc.), e.g., <literal>repeat(n,
+                    2)</literal>. But then it is still possible that the
+                    called stuff (method, macro, etc.) doesn't accept null as
+                    the parameter value, so you end up with an error
+                    again.</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </itemizedlist>
+
+            <para>To recapitulate, an error will occur and abort the template
+            processing if you try to access a missing variable, or if you try
+            to do something with a <literal>null</literal> value other than
+            storing it or passing it as parameter. But I have lied. There is
+            few special operators for treating such missing values, and those
+            can suppress the error and handle the problematic situation. These
+            will be introduced below.</para>
+
+            <note>
+              <para>If you wonder why is FreeMarker so picky about missing
+              values, <link linkend="faq_picky_about_missing_vars">read this
+              FAQ entry</link>.</para>
+            </note>
+          </sect3>
 
           <sect3 id="dgui_template_exp_missing_default" label="">
             <title>Default value operator</title>
@@ -3133,20 +3251,27 @@ Horse</programlisting>
             or
             <literal>(<replaceable>unsafe_expr</replaceable>)!</literal></para>
 
-            <para>This opertor allows you to specify a default value for the
-            case when the value is missing.</para>
+            <para>This operator allows you to specify a default value for the
+            case when the value is missing. Missing means that either
+            <literal><replaceable>unsafe_expr</replaceable></literal> is a
+            reference to the variable that is not defined at all, or the value
+            of <literal><replaceable>unsafe_expr</replaceable></literal> is
+            <literal>null</literal>.</para>
 
             <para>Example. Assume no variable called <literal>mouse</literal>
-            is present:</para>
+            is exists initially:</para>
 
             <programlisting role="template">${mouse!"No mouse."}
-[#set mouse="Jerry"]
+[#set mouse = "Jerry"]
+${mouse!"No mouse."}
+[#set mouse = null]
 ${mouse!"No mouse."}</programlisting>
 
             <para>The output will be:</para>
 
             <programlisting role="output">No mouse.
-Jerry</programlisting>
+Jerry
+No mouse.</programlisting>
 
             <para>The default value can be any kind of expression, so it
             doesn't have to be a string. For example you can write
@@ -3154,9 +3279,8 @@ Jerry</programlisting>
             "blue"]</literal>. There is no restriction regarding the
             complexity of the expression that specifies the default value, but
             to prevent ambiguities sometimes you will have to put the default
-            value expression inside parenthesses, for example:
-            <literal>cargo.weight!(item.weight * itemCount +
-            10)</literal></para>
+            value expression inside parentheses, for example:
+            <literal>weight!(item.weight * itemCount + 10)</literal></para>
 
             <para>If the default value is omitted, then it will be empty
             string and empty sequence and empty hash at the same time. (This
@@ -3167,12 +3291,15 @@ Jerry</programlisting>
 
             <programlisting role="template">(${mouse!})
 [#set mouse = "Jerry"]
+(${mouse!})
+[#set mouse = null]
 (${mouse!})</programlisting>
 
             <para>The output will be:</para>
 
             <programlisting role="output">()
-(Jerry)</programlisting>
+(Jerry)
+()</programlisting>
 
             <para>You can use this operator in two ways with non-top-level
             variables:</para>
@@ -3183,8 +3310,9 @@ Jerry</programlisting>
             inside <literal>product</literal> (and returns
             <literal>"red"</literal> if so), but will not handle if
             <literal>product</literal> is missing. That is, the
-            <literal>product</literal> variable itself must exist, otherwise
-            the template processing will die with error.</para>
+            <literal>product</literal> variable itself must exist and be
+            non-<literal>null</literal>, otherwise the template processing
+            will die with error.</para>
 
             <programlisting role="template">(product.color)!"red"</programlisting>
 
@@ -3195,27 +3323,29 @@ Jerry</programlisting>
             <literal>"red"</literal>, and no error will occur. The important
             difference between this and the previous example is that when
             surrounded with parentheses, it is allowed for any component of
-            the expression to be undefined, while without parentheses only the
-            last component of the expression is allowed to be
-            undefined.</para>
+            the expression to be missing (i.e., undefined or
+            <literal>null</literal>), while without parentheses only the last
+            component of the expression is allowed to be missing.</para>
 
             <para>Of course, the default value operator can be used with
             sequence subvariables as well:</para>
 
-            <programlisting role="template">[#set seq = ['a', 'b']]
+            <programlisting role="template">[#set seq = ['a', null, 'c']]
 ${seq[0]!'-'}
 ${seq[1]!'-'}
 ${seq[2]!'-'}
-${seq[3]!'-'}</programlisting>
+${seq[3]!'-'}
+${seq[4]!'-'}</programlisting>
 
-            <para>the outpur will be:</para>
+            <para>The output will be:</para>
 
             <programlisting role="output">a
-b
+-
+c
 -
 -</programlisting>
 
-            <para>A negative sequence index (as
+            <para>However, a negative sequence index (as
             <literal>seq[-1]!'-'</literal>) will always cause an error, you
             can't suppress that with this or any other operator.</para>
           </sect3>
@@ -3253,7 +3383,11 @@ b
 
             <para>This operator tells if a value is missing or not. Depending
             on that, the result is either <literal>true</literal> or
-            <literal>false</literal>.</para>
+            <literal>false</literal>. (Missing means that either
+            <literal><replaceable>unsafe_expr</replaceable></literal> is a
+            reference to the variable that is not defined at all, or the value
+            of <literal><replaceable>unsafe_expr</replaceable></literal> is
+            <literal>null</literal>.)</para>
 
             <para>Example. Assume no variable called <literal>mouse</literal>
             is present:</para>
@@ -3278,9 +3412,20 @@ Creating mouse...
   Mouse found</programlisting>
 
             <para>With non-top-level variables the rules are the same as with
-            the default value operator, that is, you can write
+            the <link linkend="dgui_template_exp_missing_default">default
+            value operator</link>, that is, you can write
             <literal>product.color??</literal> and
-            <literal>(product.color)??</literal>.</para>
+            <literal>(product.color)??</literal>. Also you can write things
+            like <literal>seq[2]??</literal>, again similarly as with the
+            <link linkend="dgui_template_exp_missing_default">default value
+            operator</link>.</para>
+
+            <note>
+              <para>If you only want to know if a <emphasis>defined</emphasis>
+              variable is <literal>null</literal>, use the <link
+              linkend="ref_builtin_is_null"><literal>is_null</literal>
+              built-in</link>.</para>
+            </note>
           </sect3>
         </sect2>
 
@@ -3440,235 +3585,207 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
       <sect1 id="dgui_template_valueinsertion">
         <title>Interpolations</title>
 
-        <para>You use interpolation to insert values into the output. There
-        are two types of interpolations:</para>
+        <indexterm>
+          <primary>interpolation</primary>
+        </indexterm>
 
-        <itemizedlist>
-          <listitem>
-            <para>Universal interpolation:
-            <literal>${<replaceable>expression</replaceable>}</literal></para>
-          </listitem>
+        <indexterm>
+          <primary>${...}</primary>
+        </indexterm>
 
-          <listitem>
-            <para>Numerical interpolation:
-            <literal>#{<replaceable>expression</replaceable>}</literal> or
-            <literal>#{<replaceable>expression</replaceable>;
-            <replaceable>format</replaceable>}</literal></para>
-          </listitem>
-        </itemizedlist>
+        <para>The format of interpolations is
+        <literal>${<replaceable>expression</replaceable>}</literal>, where
+        <literal><replaceable>expression</replaceable></literal> can be all
+        kind of expression (e.g. <literal>${100 + x}</literal>).</para>
 
-        <warning>
-          <para>A frequent mistake of users is the usage of interpolations in
-          places where it shouldn't/can't be used. Interpolations work
-          <emphasis>only</emphasis> in <link
-          linkend="dgui_template_overallstructure"><phrase
-          role="markedText">text</phrase> sections</link> (e.g.,
-          <literal>&lt;h1&gt;Hello ${name}!&lt;/h1&gt;</literal>) and <link
-          linkend="dgui_template_exp_stringop_interpolation">in string
-          literals</link> (e.g., <literal>[#include
-          "/footer/${company}.html"]</literal>). A typical bad usage is
+        <para>The interpolation is used to insert the value of the
+        <literal><replaceable>expression</replaceable></literal> as text (as
+        string). Interpolations can be used only on two places: in <link
+        linkend="dgui_template_overallstructure"><phrase
+        role="markedText">text</phrase> sections</link> (e.g.,
+        <literal>&lt;h1&gt;Hello ${name}!&lt;/h1&gt;</literal>) and <link
+        linkend="dgui_template_exp_stringop_interpolation">in string literal
+        expressions</link> (e.g., <literal>[#include
+        "/footer/${company}.html"]</literal>).</para>
+
+        <important>
+          <para>A frequent mistake is the usage of interpolations in places
+          where it shouldn't/can't be used. A typical bad usage is
           <literal>[#if ${isBig}]Wow![/#if]</literal>, which is syntactically
           <emphasis>WRONG</emphasis>. You should simply write <literal>[#if
           isBig]Wow![/#if]</literal>. Also, <literal>[#if
-          "${isBig}"]Wow![/#if]</literal> is <emphasis>WRONG</emphasis> too,
-          since the parameter value will be a string, and the
-          <literal>if</literal> directive wants a boolean value, so it will
-          cause a runtime error.</para>
-        </warning>
+          "${isBig}"]Wow![/#if]</literal> is <emphasis>WRONG</emphasis>, since
+          the parameter value will be a string, and the <literal>if</literal>
+          directive wants a boolean value, so it will cause a runtime
+          error.</para>
+        </important>
 
-        <sect2 id="dgui_template_valueinserion_universal">
-          <title>Universal interpolations</title>
+        <para>The value of the expression will be automatically converted to
+        string. However, only strings, numbers and dates are possibly
+        converted automatically. Other kind of values (such as booleans,
+        sequences, <literal>null</literal>, etc.) must be converted "manually"
+        somehow, or an error will occur.</para>
 
-          <indexterm>
-            <primary>interpolation</primary>
-          </indexterm>
+        <para>If the interpolation is in a <link
+        linkend="dgui_template_overallstructure"><phrase
+        role="markedText">text</phrase> section</link> (i.e., not in a <link
+        linkend="dgui_template_exp_stringop_interpolation">string literal
+        expression</link>), the string that it will insert will be
+        automatically escaped if an <link
+        linkend="ref.directive.escape"><literal>escape</literal>
+        directive</link> is in effect.</para>
 
-          <indexterm>
-            <primary>universal interpolation</primary>
-          </indexterm>
+        <simplesect>
+          <title>Guide for inserting numerical values</title>
 
-          <sect3>
-            <title>Inserting string value</title>
+          <para>If the expression evaluates to a number then the numerical
+          value will be converted to string according to a default number
+          format. Usually the programmer should set the default format; you
+          don't have to deal with it (but if you care, see the
+          <literal>number_format</literal> setting in the <link
+          linkend="ref_directive_setting">documentation of
+          <literal>setting</literal> directive</link>).</para>
 
-            <para>If the expression evaluates to a string then it will be
-            simply printed to the output.</para>
-          </sect3>
+          <programlisting role="template">${1.5}</programlisting>
 
-          <sect3>
-            <title>Inserting numerical value</title>
+          <para>will print this if the language of output is English:</para>
 
-            <para>If the expression evaluates to a number then the numerical
-            value will be transformed to a text according to a default format.
-            Usually the programmer should set the default format; you don't
-            have to deal with it (but if you care, see the
-            <literal>number_format</literal> setting in the <link
-            linkend="ref_directive_setting">documentation of
-            <literal>setting</literal> directive</link>).</para>
+          <programlisting role="output">1.5</programlisting>
 
-            <programlisting role="template">${1.5}</programlisting>
+          <para>but it will print this if the language of output is
+          Hungarian:</para>
 
-            <para>will print this if the language of output is English:</para>
+          <programlisting role="output">1,5</programlisting>
 
-            <programlisting role="output">1.5</programlisting>
+          <para>since Hungarian people use the comma as the decimal
+          separator.</para>
 
-            <para>but it will print this if the language of output is
-            Hungarian:</para>
+          <para>You can modify the formatting for a single interpolation with
+          the <link
+          linkend="ref_builtin_string_for_number"><literal>string</literal>
+          built-in</link>.</para>
 
-            <programlisting role="output">1,5</programlisting>
+          <warning>
+            <para>As you can see, interpolations print for human audience (by
+            default at least), as opposed to ''computer audience''. In some
+            cases this is not good, like when you print a database record ID-s
+            as the part of an URL or as an invisible field value in a HTML
+            form, or when you print CSS/JavaScript numerical literals, because
+            these printed values will be read by computer programs and not by
+            humans. Most computer programs are very particular about the
+            format of the numbers, and understand only a kind of simple US
+            number formatting. For that, use the <link
+            linkend="ref_builtin_c"><literal>c</literal></link> (stands for
+            ''computer audience'') built-in, for example:</para>
 
-            <para>since Hungarian people use the comma as the decimal
-            separator.</para>
+            <programlisting role="template">&lt;a href="/shop/productdetails?id=${product.id?c}"&gt;Details...&lt;/a&gt;</programlisting>
+          </warning>
+        </simplesect>
 
-            <para>You can modify the formatting for a single interpolation
-            with the <link
-            linkend="ref_builtin_string_for_number"><literal>string</literal>
-            built-in</link>.</para>
+        <simplesect id="dgui_template_valueinserion_universal_date">
+          <title>Guide for inserting date/time values</title>
 
-            <warning>
-              <para>As you can see, interpolations print for human audience
-              (by default at least), as opposed to ''computer audience''. In
-              some cases this is not good, like when you print a database
-              record ID-s as the part of an URL or as an invisible field value
-              in a HTML form, or when you print CSS/JavaScript numerical
-              literals, because these printed values will be read by computer
-              programs and not by humans. Most computer programs are very
-              particular about the format of the numbers, and understand only
-              a kind of simple US number formatting. For that, use the <link
-              linkend="ref_builtin_c"><literal>c</literal></link> (stands for
-              ''computer audience'') built-in, for example:</para>
+          <para>If the expression evaluates to a date then the numerical value
+          will be transformed to a text according to a default format. Usually
+          the programmer should set the default format; you don't have to deal
+          with it (but if you care, see the <literal>date_format</literal>,
+          <literal>time_format</literal> and
+          <literal>datetime_format</literal> settings in the <link
+          linkend="ref_directive_setting">documentation of the
+          <literal>setting</literal> directive</link>).</para>
 
-              <programlisting role="template">&lt;a href="/shop/productdetails?id=${product.id?c}"&gt;Details...&lt;/a&gt;</programlisting>
-            </warning>
-          </sect3>
+          <para>You can modify the formatting for a single interpolation with
+          the <link
+          linkend="ref_builtin_string_for_date"><literal>string</literal>
+          built-in</link>.</para>
 
-          <sect3 id="dgui_template_valueinserion_universal_date">
-            <title>Inserting date value</title>
+          <warning>
+            <para>To display a date as text, FreeMarker must know which parts
+            of the date are in use, that is, if only the date part (year,
+            month, day), or only the time part (hour, minute, second,
+            millisecond), or both. Unfortunately, because of the technical
+            limitations of Java platform, for some variables it is not
+            possible to detect this automatically; ask the programmer if the
+            data model contains such problematic variables. If it is not
+            possible to find out which parts of the date are in use, then you
+            must help FreeMarker with the <link
+            linkend="ref_builtin_date_datetype"><literal>date</literal>,
+            <literal>time</literal> and <literal>datetime</literal></link>
+            built-ins, or it will stop with error.</para>
+          </warning>
+        </simplesect>
 
-            <para>If the expression evaluates to a date then the numerical
-            value will be transformed to a text according to a default format.
-            Usually the programmer should set the default format; you don't
-            have to deal with it (but if you care, see the
-            <literal>date_format</literal>, <literal>time_format</literal> and
-            <literal>datetime_format</literal> settings in the <link
-            linkend="ref_directive_setting">documentation of the
-            <literal>setting</literal> directive</link>).</para>
+        <simplesect>
+          <title>Guide for inserting boolean values</title>
 
-            <para>You can modify the formatting for a single interpolation
-            with the <link
-            linkend="ref_builtin_string_for_date"><literal>string</literal>
-            built-in</link>.</para>
+          <para>An attempt to print boolean values with interpolation causes
+          an error and aborts template processing. For example this will cause
+          an error: <literal>${a == 2}</literal> and will not print ''true''
+          or something like that.</para>
 
-            <warning>
-              <para>To display a date as text, FreeMarker must know which
-              parts of the date are in use, that is, if only the date part
-              (year, month, day), or only the time part (hour, minute, second,
-              millisecond), or both. Unfortunately, because of the technical
-              limitations of Java platform, for some variables it is not
-              possible to detect this automatically; ask the programmer if the
-              data model contains such problematic variables. If it is not
-              possible to find out which parts of the date are in use, then
-              you must help FreeMarker with the <link
-              linkend="ref_builtin_date_datetype"><literal>date</literal>,
-              <literal>time</literal> and <literal>datetime</literal></link>
-              built-ins, or it will stop with error.</para>
-            </warning>
-          </sect3>
+          <para>However, you can convert booleans to strings with the <link
+          linkend="ref_builtin_string_for_boolean"><literal>?string</literal>
+          built-in for booleans</link>.</para>
+        </simplesect>
 
-          <sect3>
-            <title>Inserting boolean value</title>
+        <simplesect>
+          <title>The exact conversion rules</title>
 
-            <para>An attempt to print boolean values with universal
-            interpolation causes an error and aborts template processing. For
-            example this will cause an error: <literal>${a = 2}</literal> and
-            will not print ''true'' or something like that.</para>
+          <para>For those who are interested, the exact rules of conversion
+          from the expression value to string (that is then still subject to
+          escaping) are these, in in this order:</para>
 
-            <para>However, you can convert booleans to strings with the <link
-            linkend="ref_builtin_string_for_boolean"><literal>string</literal></link>
-            built-in.</para>
-          </sect3>
-        </sect2>
-
-        <sect2>
-          <title>Numerical interpolations</title>
-
-          <indexterm>
-            <primary>interpolation</primary>
-          </indexterm>
-
-          <indexterm>
-            <primary>numerical interpolation</primary>
-          </indexterm>
-
-          <note>
-            <para>You can do more fine-gradient formatting with the
-            <literal>string</literal> built-in and with the
-            <literal>number_format</literal> setting even now. Numerical
-            interpolation will be deprecated and kept for backward
-            compatibility only when we introduce a terser syntax for using
-            <literal>string</literal> built-in.</para>
-          </note>
-
-          <para>With numerical interpolations the value must be numerical or
-          an error aborts template processing. The advantages over universal
-          interpolations are:</para>
-
-          <itemizedlist>
+          <orderedlist>
             <listitem>
-              <para>You can specify number formatting in the interpolation
-              (see later).</para>
+              <para>If the value is a number, then it is converted to string
+              in the format specified with the
+              <literal>number_format</literal> setting. So this usually
+              formats for human audience, as opposed to computer
+              audience.</para>
             </listitem>
 
             <listitem>
-              <para>Readability is better because it is visible that you want
-              to print a number. Also, it will catch the error when you
-              accidentally get a string where you should get a number.</para>
-            </listitem>
-          </itemizedlist>
-
-          <indexterm>
-            <primary>format</primary>
-
-            <secondary>number</secondary>
-          </indexterm>
-
-          <para>So what is number formatting? As you have seen the second
-          syntax of numerical insertion is:
-          <literal>#{<replaceable>expression</replaceable>;
-          <replaceable>format</replaceable>}</literal>. I show the usage of
-          <literal><replaceable>format</replaceable></literal> by
-          example:</para>
-
-          <itemizedlist>
-            <listitem>
-              <para>Specify that the length of decimal fraction is always
-              exactly 1: <literal>m1</literal></para>
+              <para>Else if the value is whatever kind of date, time or
+              date-time, then it is converted to string in the format
+              specified with the <literal>time_format</literal>,
+              <literal>date_format</literal>, or
+              <literal>datetime_format</literal> setting, depending on whether
+              the date information is time-only, date-only, or a date-time. If
+              it can't be detected what kind of date it is (date vs time vs
+              date-time), an error will occur.</para>
             </listitem>
 
             <listitem>
-              <para>Specify the maximum length of decimal fraction is 3, but
-              it will use as few decimal digits as possible:
-              <literal>M3</literal></para>
+              <para>Else if the value is a string, then there is no
+              conversion.</para>
             </listitem>
 
             <listitem>
-              <para>Specify the minimal length of decimal fraction is 1, but
-              it can extend up to 3 digits when required:
-              <literal>m1M3</literal></para>
+              <para>Else if the engine is <emphasis>not</emphasis> in classic
+              compatibility mode, and neither of the above holds, the it's an
+              error. If the engine is in classic compatibility mode,
+              then:</para>
+
+              <orderedlist>
+                <listitem>
+                  <para>If the value is a boolean, true values are converted
+                  to "true", false values are converted to an empty
+                  string.</para>
+                </listitem>
+
+                <listitem>
+                  <para>If the expression is undefined or
+                  <literal>null</literal>, it is converted to an empty
+                  string.</para>
+                </listitem>
+
+                <listitem>
+                  <para>Else the evaluation ends with an error.</para>
+                </listitem>
+              </orderedlist>
             </listitem>
-          </itemizedlist>
-
-          <para>For example, assume that <literal>x</literal> is
-          <literal>2.582</literal> and <literal>y</literal> is
-          <literal>4</literal>:</para>
-
-          <programlisting role="template">           [#-- If the language is US English the output is: --]
-#{x; M2}   [#-- 2.58 --]
-#{y; M2}   [#-- 4    --]
-#{x; m1}   [#-- 2.6 --]
-#{y; m1}   [#-- 4.0 --]
-#{x; m1M2} [#-- 2.58 --]
-#{y; m1M2} [#-- 4.0  --]</programlisting>
-        </sect2>
+          </orderedlist>
+        </simplesect>
       </sect1>
     </chapter>
 
@@ -3709,6 +3826,14 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <primary>tag</primary>
 
           <secondary>user-defined</secondary>
+        </indexterm>
+
+        <indexterm>
+          <primary>[@...]</primary>
+        </indexterm>
+
+        <indexterm>
+          <primary>@</primary>
         </indexterm>
 
         <para>Macro and transform variables can be used as user-defined
@@ -4190,8 +4315,8 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
             are accessible from everywhere in the template, or from the
             templates inserted with <literal>include</literal> directive. You
             can create and replace these variables with the <link
-            linkend="ref.directive.assign"><literal>set</literal></link> or
-            <link linkend="ref.directive.macro"><literal>macro</literal>
+            linkend="ref.directive.set"><literal>set</literal></link> or <link
+            linkend="ref.directive.macro"><literal>macro</literal>
             directives</link>.</para>
           </listitem>
 
@@ -4200,9 +4325,9 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
             only be set inside a <link
             linkend="gloss.macroDefinitionBody">macro definition body</link>,
             and are only visible from there. A local variable only exists for
-            the duration of a macro call. You can create and replace local
-            variables inside macro definition bodies with the <link
-            linkend="ref.directive.local"><literal>local</literal>
+            the duration of a macro call. You can create local variables
+            inside macro definition bodies with the <link
+            linkend="ref.directive.scoped"><literal>scoped</literal>
             directive</link>.</para>
           </listitem>
 
@@ -4300,11 +4425,11 @@ ${x}</programlisting>
 
         <para>Sometimes it happens that a variable hides the variable in the
         data model with the same name, but you want to read the variable of
-        the data model. In this case you can use the <link
-        linkend="dgui_template_exp_var_special">special variable</link>
-        <literal>globals</literal>. For example, assume we have a variable
-        called <literal>user</literal> in the data model with value ''Big
-        Joe'':</para>
+        the data model. In this case you can use the
+        <literal>.globals</literal> <link
+        linkend="dgui_template_exp_var_special">special variable</link>. For
+        example, assume we have a variable called <literal>user</literal> in
+        the data model with value ''Big Joe'':</para>
 
         <programlisting role="template">[#set user = "Joe Hider"]
 ${user}          [#-- prints: Joe Hider --]
@@ -4387,7 +4512,7 @@ ${.globals.user} [#-- prints: Big Joe --]</programlisting>
           <literal>aWebPage.ftl</literal> will look like:</para>
 
           <programlisting role="template">[#import "/lib/my_test.ftl" as <emphasis>my</emphasis>] [#-- the hash called "my" will be the "gate" --]
-[@<emphasis>my</emphasis>.copyright date="1999-2002"]
+[@<emphasis>my</emphasis>.copyright date="1999-2002" /]
 ${<emphasis>my</emphasis>.mail}</programlisting>
 
           <para>Note how does it access the variables in the namespace created
@@ -4494,9 +4619,9 @@ Fred@acme.com
             the template those are visible from all namespaces, exactly like
             the variables of the data model. But you can't change the data
             model with templates. Still, it is possible to achieve similar
-            result with the <literal>global</literal> directive; read the
-            <link linkend="ref.directive.global">reference</link> for more
-            details.</para>
+            result using the <literal>.globals</literal> special variable,
+            like <literal>[#set mail = "office@acme.com" in
+            .globals]</literal>.</para>
           </note>
         </sect2>
 
@@ -4587,48 +4712,6 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
           as <literal>/lib/example.sourceforge.net/example.ftl</literal>, or
           <literal>/lib/geocities.com/jsmith/example.ftl</literal>.</para>
         </sect2>
-      </sect1>
-
-      <sect1>
-        <title>Null and missing</title>
-
-        <para>Let's say we have this data model:</para>
-
-        <programlisting role="dataModel">(root)
- |
- +- n = null</programlisting>
-
-        <para>Here <literal>n</literal> is <literal>null</literal>, and
-        <literal>m</literal> is missing (i.e., it's just not there at
-        all).</para>
-
-        <para>For those who don't know <literal>null</literal>, it's a special
-        value extensively used in the Java world for indicating that something
-        is missing or on some other way undefined or not applicable. This is
-        something that FTL doesn't need, and actually just causes trouble for
-        it, but since FreeMarker works together with Java programs (mostly),
-        it just couldn't avoid <literal>null</literal>-s. So FTL knows
-        <literal>null</literal> (since FreeMarker 2.4).</para>
-
-        <para>To fund out if an existing variable is <literal>null</literal>,
-        Java programmers would immediately write <literal>var ==
-        null</literal>, but that's wrong in FTL. You should write:
-        <literal><replaceable>var</replaceable>?</literal><literal>is_null</literal>.</para>
-
-        <para role="forProgrammers">Why is <literal>var == null</literal>
-        wrong? In Java/C++ the <literal>==</literal> operator does a pointer
-        comparison. For example, if you compare two string like <literal>s1 ==
-        s2</literal>, then you ask if the two objects has the same identity
-        (same memory address), and not if they store identical text. For that,
-        you had to write <literal>s1.equals(s2)</literal> in Java. But in FTL,
-        like in most scripting languages, <literal>s1 == s2</literal> is like
-        <literal>s1.equals(s2)</literal>. And thus, like in Java,
-        <literal>s1.equals(null)</literal> will fail, simply because it
-        doesn't make sense to ask "Is this text the same as another text that
-        I don't know about?". Of course that question can't be answered and
-        thus is an error.</para>
-
-        <para>[!!UC]</para>
       </sect1>
 
       <sect1 id="dgui_misc_whitespace"
@@ -5689,9 +5772,9 @@ ${indexOf("foo", x)}</programlisting>
             reasons. For example lazily evaluated arguments are used by <link
             linkend="ref_builtins_boolean">the <literal>string</literal>
             built-in for booleans</link> because it's very much like
-            <literal><replaceable>exp</replaceable> ?
-            <replaceable>exp</replaceable> :
-            <replaceable>exp</replaceable></literal> in the Java
+            <literal><replaceable>expr</replaceable> ?
+            <replaceable>expr</replaceable> :
+            <replaceable>expr</replaceable></literal> in the Java
             Language.</para>
           </warning>
 
@@ -6863,10 +6946,10 @@ cfg.setTemplateExceptionHandler(new MyTemplateExceptionHandler());</programlisti
           <para>If an error occurs when evaluating the value of a parameter
           for a directive call, or if there are other problems with the
           parameter list, or if an error occurs when evaluating
-          <literal><replaceable>exp</replaceable></literal> in
-          <literal>[@<replaceable>exp</replaceable>
+          <literal><replaceable>expr</replaceable></literal> in
+          <literal>[@<replaceable>expr</replaceable>
           <replaceable>...</replaceable>]</literal>, or if the value of
-          <literal><replaceable>exp</replaceable></literal> is not a macro or
+          <literal><replaceable>expr</replaceable></literal> is not a macro or
           a transform, then the whole directive call is skipped. For example
           this:</para>
 
@@ -7022,7 +7105,7 @@ c</programlisting>
 
         <orderedlist>
           <listitem>
-            <para>In the Environment:</para>
+            <para>In the <literal>Environment</literal>:</para>
 
             <orderedlist>
               <listitem>
@@ -7046,10 +7129,10 @@ c</programlisting>
               </listitem>
 
               <listitem>
-                <para>In the set of variables created with
-                <literal>global</literal> directive. FTL handles these
+                <para>In the set of variables created in the
+                <literal>.globals</literal> namespace. FTL handles these
                 variables as if they were normal members of the data-model.
-                That is, they are visible in all namespaces, and you can
+                That is, they are visible from all namespaces, and you can
                 access them as if they would be in the data-model.</para>
               </listitem>
             </orderedlist>
@@ -7068,13 +7151,13 @@ c</programlisting>
 
         <para>In practice, from the viewpoint of template authors these 6
         layers are only 4 layers, since from that viewpoint the last 3 layers
-        (variables created with <literal>global</literal>, the actual
-        data-model object, shared variables) together constitute the set of
-        global variables.</para>
+        (variables in <literal>.globals</literal>, the actual data-model
+        object, shared variables) together constitute the set of global
+        variables.</para>
 
         <para>Note that it is possible to get variables from a specific layer
-        in FTL with <link linkend="ref_specvar">special
-        variables</link>.</para>
+        in FTL with <link linkend="ref_specvar">special variables</link> like
+        <literal>.data_model</literal>.</para>
       </sect1>
 
       <sect1 id="pgui_misc_charset">
@@ -8208,12 +8291,12 @@ TemplateHashModel roundingModeEnums =
 
             <para>Since JSP custom tags are written to operate in JSP
             environment, they assume that variables (often referred as
-            ''beans'' in JSP world) are stored in 4 scopes: page scope,
+            "attributes" in JSP world) are stored in 4 scopes: page scope,
             request scope, session scope and application scope. FTL has no
             such notation (the 4 scopes), but
             <literal>FreemarkerServlet</literal> provides emulated JSP
             environment for the custom JSP tags, which maintains
-            correspondence between the ''beans'' of JSP scopes and FTL
+            correspondence between the "attributes" of JSP scopes and FTL
             variables. For the custom JSP tags, the request, session and
             application scopes are exactly the same as with real JSP: the
             attributes of the <literal>javax.servlet.ServletContext</literal>,
@@ -8221,18 +8304,17 @@ TemplateHashModel roundingModeEnums =
             <literal>ServerRequest</literal> objects. From the FTL side you
             see these 3 scopes together as the data model, as it was explained
             earlier. The page scope corresponds to the FTL global variables
-            (see the <link
-            linkend="ref.directive.global"><literal>global</literal>
-            directive</link>). That is, if you create a variable with the
-            <literal>global</literal> directive, it will be visible for the
-            custom tags as page scope variable through the emulated JSP
-            environment. Also, if a JSP-tag creates a new page scope variable,
-            the result will be the same as if you create a variable with the
-            <literal>global</literal> directive. Note that the variables in
-            the data model are not visible as page-scope attributes for the
-            JSP tags, despite that they are globally visible, since the data
-            model corresponds to the request, session and application scopes,
-            not the page-scope.</para>
+            (about variable scopes see more <link
+            linkend="dgui_misc_var">here...</link>). That is, if you create a
+            variable with <literal>[#set <replaceable>var</replaceable> =
+            <replaceable>expr</replaceable> in .globals]</literal> then it
+            will be visible for the custom JSP tags as page scope variable.
+            Also, if a JSP tag creates a new page scope variable, it creates a
+            FreeMarker global variable. Note that the variables in the data
+            model are not visible as page-scope attributes for the JSP tags
+            (despite that they are globally visible in FreeMarker) since the
+            data model corresponds to the JSP request, session and application
+            scopes, not the JSP page-scope.</para>
 
             <para>On JSP pages you quote all attribute values, it does not
             mater if the type of the parameter is string or boolean or number.
@@ -10911,7 +10993,12 @@ End book</programlisting>
         </listitem>
 
         <listitem>
-          <para><link linkend="ref_builtin_isType">is_...</link></para>
+          <para><link linkend="ref_builtin_is_null">is_null</link></para>
+        </listitem>
+
+        <listitem>
+          <para><link
+          linkend="ref_builtin_isType">is_<replaceable>&lt;type&gt;</replaceable></link></para>
         </listitem>
 
         <listitem>
@@ -13540,8 +13627,52 @@ Sorted by name.last:
           extra bit of information if you get an error report.</para>
         </simplesect>
 
+        <simplesect id="ref_builtin_is_null">
+          <title>is_null</title>
+
+          <para>To find out if an existing variable is
+          <literal>null</literal>, Java programmers would immediately write
+          <literal><replaceable>expr</replaceable> == null</literal>, but
+          that's <emphasis>WRONG</emphasis> in FTL. You should write:
+          <literal><replaceable>exp</replaceable>?is_null</literal>. Note that
+          this built in will <emphasis>not</emphasis> suppress undefined
+          variable errors. (For more information about handling
+          <literal>null</literal> values and missing variables, <link lang=""
+          linkend="dgui_template_exp_missing">read this...</link>)</para>
+
+          <para>Before using it, consider if
+          <literal><replaceable>exp</replaceable>??</literal> wouldn't be
+          better. If you write
+          <literal><replaceable>variable</replaceable>?is_null</literal>, a
+          mistake in the variable name will cause undefined variable error,
+          which is a good thing. On the other hand, if you write
+          <literal><replaceable>variable</replaceable>??</literal>, the
+          template will endure the subtle data model changes where a variable
+          will be rather undefined than having a <literal>null</literal>
+          value. In general, non-programmer template authors should just
+          always use <literal><replaceable>exp</replaceable>??</literal>, as
+          it doesn't assume the deeper knowledge of the Java objects behind
+          data model.</para>
+
+          <para role="forProgrammers">Why is <literal>var == null</literal>
+          wrong? In Java/C++ the <literal>==</literal> operator does a pointer
+          comparison. For example, if you compare two
+          <literal>String</literal>-s like <literal>s1 == s2</literal>, then
+          you ask if the two objects has the same identity (same memory
+          address), and not if they store identical text. For that, you had to
+          write <literal>s1.equals(s2)</literal> in Java. But in FTL, like in
+          most scripting languages, <literal>s1 == s2</literal> is like
+          <literal>s1.equals(s2)</literal>. And thus, like in Java
+          <literal>s1.equals(null)</literal> or
+          <literal>null.equals(s2)</literal> fails, this will fail as well.
+          Not because of technical reasons, but simply because it doesn't make
+          sense to ask "Is this text the same as another text that I don't
+          know about?". That question can't be safely answered, and thus
+          FreeMarker stops with error.</para>
+        </simplesect>
+
         <simplesect id="ref_builtin_isType">
-          <title>is_...</title>
+          <title>is_&lt;type&gt;</title>
 
           <indexterm>
             <primary>is_... built-in</primary>
@@ -13673,9 +13804,8 @@ Sorted by name.last:
             <primary>namespace built-in</primary>
           </indexterm>
 
-          <para>This built-in returns the namespace (i.e., the ''gate'' hash
-          to the namespace) associated with a macro variable. You can use it
-          with macros only.</para>
+          <para>This built-in returns the namespace (a hash) associated with a
+          macro variable. You can use it with macros only.</para>
         </simplesect>
 
         <simplesect id="ref_builtin_new">
@@ -13800,10 +13930,6 @@ Sorted by name.last:
         </listitem>
 
         <listitem>
-          <para><link linkend="ref.directive.assign">assign</link></para>
-        </listitem>
-
-        <listitem>
           <para><link linkend="ref.directive.attempt">attempt</link></para>
         </listitem>
 
@@ -13848,10 +13974,6 @@ Sorted by name.last:
         </listitem>
 
         <listitem>
-          <para><link linkend="ref.directive.global">global</link></para>
-        </listitem>
-
-        <listitem>
           <para><link linkend="ref.directive.if">if</link></para>
         </listitem>
 
@@ -13868,10 +13990,6 @@ Sorted by name.last:
         </listitem>
 
         <listitem>
-          <para><link linkend="ref.directive.local">local</link></para>
-        </listitem>
-
-        <listitem>
           <para><link linkend="ref.directive.lt">lt</link></para>
         </listitem>
 
@@ -13881,10 +13999,6 @@ Sorted by name.last:
 
         <listitem>
           <para><link linkend="ref.directive.nested">nested</link></para>
-        </listitem>
-
-        <listitem>
-          <para><link linkend="ref.directive.noescape">noescape</link></para>
         </listitem>
 
         <listitem>
@@ -13910,7 +14024,15 @@ Sorted by name.last:
         </listitem>
 
         <listitem>
-          <para><link linkend="ref.directive.rt">lt</link></para>
+          <para><link linkend="ref.directive.rt">rt</link></para>
+        </listitem>
+
+        <listitem>
+          <para><link linkend="ref.directive.scoped">scoped</link></para>
+        </listitem>
+
+        <listitem>
+          <para><link linkend="ref.directive.set" os="">set</link></para>
         </listitem>
 
         <listitem>
@@ -13930,12 +14052,12 @@ Sorted by name.last:
         </listitem>
 
         <listitem>
-          <para><link linkend="ref.directive.userDefined">User-defined
-          directive ([@...])</link></para>
+          <para><link linkend="ref.directive.visit">visit</link></para>
         </listitem>
 
         <listitem>
-          <para><link linkend="ref.directive.visit">visit</link></para>
+          <para><link linkend="ref.directive.userDefined">@... (user-defined
+          directive call)</link></para>
         </listitem>
       </itemizedlist>
 
@@ -14993,17 +15115,25 @@ m2: &amp;lt;test&amp;gt;</programlisting>
         </sect2>
       </sect1>
 
-      <sect1 id="ref_directive_assign">
-        <title>set</title>
+      <sect1 id="ref_directive_set">
+        <title>set and scoped</title>
 
-        <anchor id="ref.directive.assign" />
+        <anchor id="ref.directive.set" />
 
         <indexterm>
           <primary>set directive</primary>
         </indexterm>
 
+        <anchor id="ref.directive.scoped" />
+
+        <indexterm>
+          <primary>scoped directive</primary>
+        </indexterm>
+
         <sect2>
           <title>Synopsis</title>
+
+          <para>For <literal>set</literal>:</para>
 
           <programlisting role="metaTemplate"><literal>[#set <replaceable>name</replaceable>=<replaceable>value</replaceable>]</literal>
 or
@@ -15018,6 +15148,16 @@ or
 <literal>[#set <replaceable>name</replaceable> in <replaceable>namespacehash</replaceable>]
   <replaceable>capture this</replaceable>
 [/#set]</literal></programlisting>
+
+          <para>For <literal>scoped</literal>:</para>
+
+          <programlisting role="metaTemplate"><literal>[#scoped <replaceable>name</replaceable>]</literal>
+or
+<literal>[#scoped <replaceable>name1</replaceable>, <replaceable>name2</replaceable>, ... <replaceable>nameN</replaceable>]</literal>
+or
+<literal>[#scoped <replaceable>name</replaceable>=<replaceable>value</replaceable>]</literal>
+or
+<literal>[#scoped <replaceable>name1</replaceable>=<replaceable>value1</replaceable> <replaceable>name2</replaceable>=<replaceable>value2</replaceable> <replaceable>... nameN</replaceable>=<replaceable>valueN</replaceable>]</literal></programlisting>
 
           <para>Where:</para>
 
@@ -15123,133 +15263,6 @@ ${x}</programlisting>
         </sect2>
       </sect1>
 
-      <sect1 id="ref_directive_global">
-        <title>global</title>
-
-        <anchor id="ref.directive.global" />
-
-        <indexterm>
-          <primary>global directive</primary>
-        </indexterm>
-
-        <sect2>
-          <title>Synopsis</title>
-
-          <programlisting role="metaTemplate"><literal>[#global <replaceable>name</replaceable>=<replaceable>value</replaceable>]</literal>
-or
-<literal>[#global <replaceable>name1</replaceable>=<replaceable>value1</replaceable> <replaceable>name2</replaceable>=<replaceable>value2</replaceable> <replaceable>... nameN</replaceable>=<replaceable>valueN</replaceable>]</literal>
-or
-<literal>[#global <replaceable>name</replaceable>]
-  <replaceable>capture this</replaceable>
-[/#global]</literal></programlisting>
-
-          <para>Where:</para>
-
-          <itemizedlist spacing="compact">
-            <listitem>
-              <para><literal><replaceable>name</replaceable></literal>: name
-              of the variable. It is not expression. However, it can be
-              written as a string literal, which is useful if the variable
-              name contains reserved characters, for example <literal>[#global
-              "foo-bar" = 1]</literal>. Note that this string literal does not
-              expand interpolations (as <literal>"${foo}"</literal>).</para>
-            </listitem>
-
-            <listitem>
-              <para><literal><replaceable>value</replaceable></literal>: the
-              value to store. Expression.</para>
-            </listitem>
-          </itemizedlist>
-        </sect2>
-
-        <sect2>
-          <title>Description</title>
-
-          <para>This directive is similar to <link
-          linkend="ref.directive.assign"><literal>assign</literal></link>, but
-          the variable created will be visible in all <link
-          linkend="dgui_misc_namespace">namespaces</link>, and will not be
-          inside any namespace. Exactly as if you would create (or replace) a
-          variable of the data-model. Hence, the variable is global. If a
-          variable with the same name already exists in the data-model, it
-          will be hidden by the variable created with this directive. If a
-          variable with the same name already exists in the current namespace,
-          that will hide the variable created with <literal>global</literal>
-          directive.</para>
-
-          <para>For example, with <literal>[#global x = 1]</literal> you
-          create a variable that is visible as <literal>x</literal> in all
-          namespaces, unless another variable called <literal>x</literal>
-          hides it (for example a variable what you have created as
-          <literal>[#set x = 2]</literal>). In this case, you can use <link
-          linkend="dgui_template_exp_var_special">special variable</link>
-          <literal>globals</literal>, like <literal>${.globals.x}</literal>.
-          Note that with <literal>globals</literal> you see all globally
-          accessible variables; not only the variables that were created with
-          <literal>global</literal> directive, but also the variables of the
-          data-model.</para>
-
-          <para>Note for custom JSP tag users: The set of variables created
-          with this directive corresponds to the JSP page-scope. This means,
-          that if a custom JSP tag wants to get a page-scope attribute
-          (page-scope bean), a variable with the same name in the current
-          namespace will not hide it from the viewpoint of the JSP tag.</para>
-        </sect2>
-      </sect1>
-
-      <sect1 id="ref_directive_local">
-        <title>local</title>
-
-        <anchor id="ref.directive.local" />
-
-        <indexterm>
-          <primary>local directive</primary>
-        </indexterm>
-
-        <sect2>
-          <title>Synopsis</title>
-
-          <programlisting role="metaTemplate"><literal>[#local <replaceable>name</replaceable>=<replaceable>value</replaceable>]</literal>
-or
-<literal>[#local <replaceable>name1</replaceable>=<replaceable>value1</replaceable> <replaceable>name2</replaceable>=<replaceable>value2</replaceable> <replaceable>... nameN</replaceable>=<replaceable>valueN</replaceable>]</literal>
-or
-<literal>[#local <replaceable>name</replaceable>]
-  <replaceable>capture this</replaceable>
-[/#local]
-</literal></programlisting>
-
-          <para>Where:</para>
-
-          <itemizedlist spacing="compact">
-            <listitem>
-              <para><literal><replaceable>name</replaceable></literal>: the
-              name of the local object in the root. It is not an expression.
-              However, it can be written as a string literal, which is useful
-              if the variable name contains reserved characters, for example
-              <literal>[#local "foo-bar" = 1]</literal>. Note that this string
-              literal does not expand interpolations (as
-              <literal>"${foo}"</literal>).</para>
-            </listitem>
-
-            <listitem>
-              <para><literal><replaceable>value</replaceable></literal>: the
-              value to store. Expression.</para>
-            </listitem>
-          </itemizedlist>
-        </sect2>
-
-        <sect2>
-          <title>Description</title>
-
-          <para>It is similar to <link linkend="ref.directive.assign">assign
-          directive</link>, but it creates or replaces local variables. This
-          works in macro definition bodies only.</para>
-
-          <para>For more information about variables, read this: <xref
-          linkend="dgui_misc_var" /></para>
-        </sect2>
-      </sect1>
-
       <sect1 id="ref_directive_setting">
         <title>setting</title>
 
@@ -15312,7 +15325,7 @@ or
             </listitem>
 
             <listitem>
-              <para><indexterm>
+              <para><anchor id="ref.setting.number_format" /><indexterm>
                   <primary>number_format</primary>
                 </indexterm><indexterm>
                   <primary>format</primary>
@@ -15332,7 +15345,7 @@ or
             </listitem>
 
             <listitem>
-              <para><indexterm>
+              <para><anchor id="ref.setting.boolean_format" /><indexterm>
                   <primary>boolean_format</primary>
                 </indexterm><indexterm>
                   <primary>format</primary>
@@ -15348,7 +15361,7 @@ or
             </listitem>
 
             <listitem>
-              <para><indexterm>
+              <para><anchor id="ref.setting.date_format" /><indexterm>
                   <primary>date_format</primary>
                 </indexterm><indexterm>
                   <primary>time_format</primary>
@@ -15438,6 +15451,14 @@ ${1.2}</programlisting>
 
         <indexterm>
           <primary>user-defined directive</primary>
+        </indexterm>
+
+        <indexterm>
+          <primary>[@...]</primary>
+        </indexterm>
+
+        <indexterm>
+          <primary>@</primary>
         </indexterm>
 
         <sect2>
@@ -16752,7 +16773,7 @@ or
           linkend="xgui">processing XML.</link></para>
 
           <sect3>
-            <title>Visit</title>
+            <title>visit</title>
 
             <para>When you call <literal>[#visit
             <replaceable>node</replaceable>]</literal>, it looks for a user
@@ -16917,7 +16938,7 @@ There was no specific handler for node y
           </sect3>
 
           <sect3>
-            <title>Recurse</title>
+            <title>recurse</title>
 
             <anchor id="ref.directive.recurse" />
 
@@ -16946,7 +16967,7 @@ There was no specific handler for node y
           </sect3>
 
           <sect3>
-            <title>Fallback</title>
+            <title>fallback</title>
 
             <anchor id="ref.directive.fallback" />
 
@@ -16988,203 +17009,6 @@ There was no specific handler for node y
   [/#if]
 [/#macro]</programlisting>
           </sect3>
-        </sect2>
-      </sect1>
-    </chapter>
-
-    <chapter id="ref_interpolations" xreflabel="Interpolation Reference">
-      <title>Interpolation Reference</title>
-
-      <indexterm>
-        <primary>interpolation</primary>
-      </indexterm>
-
-      <para>Alphabetical index of interpolations:</para>
-
-      <itemizedlist spacing="compact">
-        <listitem>
-          <para><link linkend="ref.interpolation.numerical">#{...}: Numerical
-          interpolation</link></para>
-        </listitem>
-
-        <listitem>
-          <para><link linkend="ref.interpolation.universal">${...}: Universal
-          interpolation</link></para>
-        </listitem>
-      </itemizedlist>
-
-      <sect1 id="ref_interpolation_universal">
-        <title>${...}: Universal interpolation</title>
-
-        <anchor id="ref.interpolation.universal" />
-
-        <indexterm>
-          <primary>universal interpolation</primary>
-        </indexterm>
-
-        <sect2>
-          <title>Synopsis</title>
-
-          <programlisting role="metaTemplate"><literal>${<replaceable>expression</replaceable>}</literal></programlisting>
-
-          <para>Where:</para>
-
-          <itemizedlist spacing="compact">
-            <listitem>
-              <para><literal><replaceable>expression</replaceable></literal>:
-              Expression that can be evaluated as a string.</para>
-            </listitem>
-          </itemizedlist>
-        </sect2>
-
-        <sect2>
-          <title>Description</title>
-
-          <para>The universal interpolation is used to output the string value
-          of an expression. The string value of an expression is defined as
-          follows:</para>
-
-          <orderedlist spacing="compact">
-            <listitem>
-              <para>if the expression evaluates to a
-              <literal>TemplateNumberModel</literal>, then it is output in the
-              format specified with the <literal>number_format</literal>
-              setting (but note that a more fine-grained formatting control
-              can be achieved using <link
-              linkend="ref_builtin_string_for_number">the
-              <literal>string</literal> built-in</link>). So this usually (by
-              default) prints for human audience, as opposed to computer
-              audience; see <link linkend="ref_builtin_c">the c
-              built-in</link> for more information.</para>
-            </listitem>
-
-            <listitem>
-              <para>if the expression evaluates to a
-              <literal>TemplateDateModel</literal>, then it is output in the
-              format specified with the <literal>time_format</literal>,
-              <literal>date_format</literal>, or
-              <literal>datetime_format</literal> setting, depending on whether
-              the date information is time-only, date-only, or a datetime.
-              Read about <link linkend="ref_builtin_string_for_date">?string
-              for dates</link> for more information.</para>
-            </listitem>
-
-            <listitem>
-              <para>if the expression evaluates to a
-              <literal>TemplateScalarModel</literal>, then its string value is
-              output as is.</para>
-            </listitem>
-
-            <listitem>
-              <para>if the engine is not in classic compatibility mode, and
-              neither of the above holds, the evaluation ends with an error.
-              Otherwise:</para>
-            </listitem>
-
-            <listitem>
-              <para>if the expression evaluates to a
-              <literal>TemplateBooleanModel</literal>, true values are output
-              as the literal "true", false values are output as empty string.
-              To output boolean values outside the classic compatibility mode,
-              apply the <literal>?string</literal> built-in explicitly on a
-              boolean expression.</para>
-            </listitem>
-
-            <listitem>
-              <para>if the expression is undefined it is output as empty
-              string.</para>
-            </listitem>
-
-            <listitem>
-              <para>in all other cases, the evaluation ends with an
-              error.</para>
-            </listitem>
-          </orderedlist>
-        </sect2>
-      </sect1>
-
-      <sect1 id="ref_interpolation_numerical">
-        <title>#{...}: Numerical interpolation</title>
-
-        <anchor id="ref.interpolation.numerical" />
-
-        <indexterm>
-          <primary>numerical interpolation</primary>
-        </indexterm>
-
-        <sect2>
-          <title>Synopsis</title>
-
-          <programlisting role="metaTemplate"><literal>#{<replaceable>expression</replaceable>}</literal>
-or
-<literal>#{<replaceable>expression</replaceable>; <replaceable>format</replaceable>}</literal></programlisting>
-
-          <para>Where:</para>
-
-          <itemizedlist spacing="compact">
-            <listitem>
-              <para><literal><replaceable>expression</replaceable></literal>:
-              expression that can be evaluated as a number.</para>
-            </listitem>
-
-            <listitem>
-              <para><literal><replaceable>format</replaceable></literal>:
-              optional format specifier.</para>
-            </listitem>
-          </itemizedlist>
-        </sect2>
-
-        <sect2>
-          <title>Description</title>
-
-          <warning>
-            <para>Numerical interpolations probably will be deprecated in the
-            future! Please use the <link
-            linkend="ref_builtin_string_for_number"><literal>string</literal></link>
-            built-in and the <link
-            linkend="ref_builtin_c"><literal>c</literal></link> built-in
-            instead.</para>
-          </warning>
-
-          <para>The numerical interpolation is used to output the value of a
-          numeric expression. The value of a numeric expression is defined as
-          follows:</para>
-
-          <orderedlist spacing="compact">
-            <listitem>
-              <para>if the expression evaluates to a
-              <literal>TemplateNumberModel</literal>, then it is output in the
-              format specified supplied format specifier.</para>
-            </listitem>
-
-            <listitem>
-              <para>in all other cases, the evaluation ends with an
-              error.</para>
-            </listitem>
-          </orderedlist>
-
-          <para>The format specifier specifies the minimum and the maximum
-          number of fractional digits in the format using syntax
-          <literal>m<replaceable>min</replaceable>M<replaceable>max</replaceable></literal>.
-          For example, <literal>m2M5</literal> means "at least two, at most
-          five fractional digits". Either part can be omitted. If only minimum
-          is specified, the maximum is equal to minimum. If only maximum is
-          specified, the minimum is 0.</para>
-
-          <para>Unlike <literal>${...}</literal>, <literal>#{...}</literal>
-          never prints grouping separators (like in: 1&nbsp;000&nbsp;000 or
-          100,000,000). This is actually a backward compatibility quirk, but
-          it can be useful when you print numbers in situations like
-          <literal>&lt;a href="quertyDatabase?id=#{id}"
-          <replaceable>...</replaceable>&gt;</literal>, where you surely don't
-          want separators. However, starting from FreeMarker 2.3.3 rather use
-          the <link linkend="ref_builtin_c"><literal>c</literal></link>
-          built-in instead.</para>
-
-          <para>Note, however that a more fine-grained formatting control of
-          numerals can be achieved using the universal interpolation and <link
-          linkend="ref_builtin_string_for_number">the
-          <literal>string</literal> built-in.</link></para>
         </sect2>
       </sect1>
     </chapter>
@@ -17244,12 +17068,11 @@ or
         </listitem>
 
         <listitem>
-          <para><literal>globals</literal>: A hash that you can use to access
-          the globally accessible variables: the data-model and the variables
-          created with <literal>global</literal> directive. Note that
-          variables created with <literal>assign</literal> or
-          <literal>macro</literal> are not globals, thus they never hide the
-          variables when you use <literal>globals</literal>.</para>
+          <para><literal><anchor id="ref.specvar.globals" />globals</literal>:
+          A hash that you can use to access the globally accessible variables:
+          the data-model, and the global variables created in templates with
+          <literal>[#set <replaceable>var</replaceable> =
+          <replaceable>expr</replaceable> in .globals]</literal>.</para>
         </listitem>
 
         <listitem>
@@ -17414,9 +17237,19 @@ or
 
         <itemizedlist>
           <listitem>
-            <para><link
-            linkend="ref.directive.call"><literal>call</literal></link>: use
-            <link linkend="ref.directive.userDefined">user-defined directive
+            <para><literal>assign</literal>: use the <link
+            linkend="ref.directive.set"><literal>set</literal>
+            directive</link> instead. <literal>[#assign x = y]</literal> is
+            equivalent with <literal>[#set x = y]</literal> if
+            <literal>x</literal> wasn't declared as scoped (i.e. local)
+            variable. It's equivalent with otherwise <literal>[#assign x = y
+            in .namespace]</literal>. That is, <literal>assign</literal> never
+            sets local variables.</para>
+          </listitem>
+
+          <listitem>
+            <para><literal>call</literal>: use <link
+            linkend="ref.directive.userDefined">user-defined directive
             call</link> instead</para>
           </listitem>
 
@@ -17438,10 +17271,27 @@ or
           </listitem>
 
           <listitem>
-            <para><link
-            linkend="ref.directive.transform"><literal>transform</literal></link>:
-            use <link linkend="ref.directive.userDefined">user-defined
-            directive call</link> instead</para>
+            <para><literal>global</literal>: use the <link
+            linkend="ref.directive.set"><literal>set</literal>
+            directive</link> instead. <literal>[#global x = y]</literal> is
+            equivalent with <literal>[#set x = y in
+            .globals]</literal>.</para>
+          </listitem>
+
+          <listitem>
+            <para><literal>local</literal>: use the <link
+            linkend="ref.directive.set"><literal>set</literal>
+            directive</link> instead combined with the <link
+            linkend="ref.directive.scoped"><literal>scoped</literal>
+            directive</link>. <literal>[#assign x = y]</literal> is equivalent
+            with <literal>[#set x = y]</literal> if <literal>x</literal> was
+            declared as scoped (i.e. local) variable.</para>
+          </listitem>
+
+          <listitem>
+            <para><literal>transform</literal>: use <link
+            linkend="ref.directive.userDefined">user-defined directive
+            call</link> instead</para>
           </listitem>
         </itemizedlist>
 
@@ -17870,6 +17720,101 @@ some test
             <literal>include</literal> element in the generated XML).</para>
           </listitem>
         </itemizedlist>
+      </sect1>
+
+      <sect1 id="ref_depr_numerical_interpolation">
+        <title>#{...}: Numerical interpolation</title>
+
+        <indexterm>
+          <primary>#{...}</primary>
+        </indexterm>
+
+        <para>Deprecated: Use the <link
+        linkend="ref.setting.number_format"><literal>number_format</literal>
+        setting</link> and <link linkend="ref_builtin_string_for_number">the
+        <literal>string</literal> built-in</link> instead. For formatting for
+        computer audience (i.e., no localized formatting) use the <link
+        linkend="ref_builtin_c"><literal>c</literal> built-in</link> (like
+        <literal><replaceable>number</replaceable>?c</literal>).</para>
+
+        <sect2>
+          <title>Synopsis</title>
+
+          <programlisting role="metaTemplate"><literal>#{<replaceable>expression</replaceable>}</literal>
+or
+<literal>#{<replaceable>expression</replaceable>; <replaceable>format</replaceable>}</literal></programlisting>
+
+          <para>Where:</para>
+
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para><literal><replaceable>expression</replaceable></literal>:
+              expression that can be evaluated as a number.</para>
+            </listitem>
+
+            <listitem>
+              <para><literal><replaceable>format</replaceable></literal>:
+              optional format specifier.</para>
+            </listitem>
+          </itemizedlist>
+        </sect2>
+
+        <sect2>
+          <title>Description</title>
+
+          <para>The numerical interpolation is used to output the value of a
+          numeric expression. The value of a numeric expression is defined as
+          follows:</para>
+
+          <orderedlist spacing="compact">
+            <listitem>
+              <para>if the expression evaluates to a
+              <literal>TemplateNumberModel</literal>, then it is output in the
+              format specified supplied format specifier.</para>
+            </listitem>
+
+            <listitem>
+              <para>in all other cases, the evaluation ends with an
+              error.</para>
+            </listitem>
+          </orderedlist>
+
+          <para>The format specifier specifies the minimum and the maximum
+          number of fractional digits in the format using syntax
+          <literal>m<replaceable>min</replaceable>M<replaceable>max</replaceable></literal>.
+          For example, <literal>m2M5</literal> means "at least two, at most
+          five fractional digits". Either part can be omitted. If only minimum
+          is specified, the maximum is equal to minimum. If only maximum is
+          specified, the minimum is 0.</para>
+
+          <para>Unlike <literal>${...}</literal>, <literal>#{...}</literal>
+          never prints grouping separators (like in: 1&nbsp;000&nbsp;000 or
+          100,000,000). This is actually a backward compatibility quirk, but
+          it can be useful when you print numbers in situations like
+          <literal>&lt;a href="quertyDatabase?id=#{id}"
+          <replaceable>...</replaceable>&gt;</literal>, where you surely don't
+          want separators. However, starting from FreeMarker 2.3.3 rather use
+          the <link linkend="ref_builtin_c"><literal>c</literal>
+          built-in</link> instead.</para>
+
+          <para>Note, however that a more fine-grained formatting control of
+          numerals can be achieved using the
+          <literal>${<replaceable>...</replaceable>}</literal> interpolation
+          and <link linkend="ref_builtin_string_for_number">the
+          <literal>string</literal> built-in</link>.</para>
+
+          <para>Examples. Assume that <literal>x</literal> is
+          <literal>2.582</literal> and <literal>y</literal> is
+          <literal>4</literal>:</para>
+
+          <programlisting role="template">           [#-- If the language is US English the output is: --]
+#{x; M2}   [#-- 2.58 --]
+#{y; M2}   [#-- 4    --]
+#{x; m1}   [#-- 2.6 --]
+#{y; m1}   [#-- 4.0 --]
+#{x; m1M2} [#-- 2.58 --]
+#{y; m1M2} [#-- 4.0  --]</programlisting>
+        </sect2>
       </sect1>
     </chapter>
   </part>
@@ -22637,10 +22582,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             <listitem>
               <para><literal>assign</literal>, <literal>local</literal> and
               <literal>global</literal> now can capture the output generated
-              be the nested template fragment into the variable. This
-              deprecates <literal>capture_output</literal> transform. More
-              information: <link linkend="ref.directive.assign">assign
-              directive reference</link></para>
+              be the nested template fragment into the variable, like
+              <literal>[#assign
+              x]<replaceable>...</replaceable>[/#assign]</literal>. This
+              deprecates <literal>capture_output</literal> transform.</para>
             </listitem>
 
             <listitem>
@@ -23045,10 +22990,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <listitem>
                 <para><literal>assign</literal>, <literal>local</literal> and
                 <literal>global</literal> now can capture the output generated
-                be the nested template fragment into the variable. This
-                deprecates <literal>capture_output</literal> transform. More
-                information: <link linkend="ref.directive.assign">assign
-                directive reference</link></para>
+                be the nested template fragment into the variable, like
+                <literal>[#assign
+                x]<replaceable>...</replaceable>[/#assign]</literal>. This
+                deprecates <literal>capture_output</literal> transform.</para>
               </listitem>
 
               <listitem>
@@ -23663,16 +23608,13 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <itemizedlist>
                 <listitem>
                   <para>Local variables for macros. You can create/replace
-                  local variables in macro definition bodies with the <link
-                  linkend="ref.directive.local"><literal>local</literal>
-                  directive</link></para>
+                  local variables in macro definition bodies with the
+                  <literal>local</literal> directive</para>
                 </listitem>
 
                 <listitem>
                   <para>You can create/replace global (non-local) variables
-                  with the <link
-                  linkend="ref.directive.global"><literal>global</literal>
-                  directive</link></para>
+                  with the <literal>global</literal> directive</para>
                 </listitem>
               </itemizedlist>
             </listitem>

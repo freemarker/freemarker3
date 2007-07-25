@@ -28,7 +28,6 @@ $Id: build.xml,v 1.51 2004/03/13 21:08:19 ddekany Exp $
 <path id='docgen.classpath'>
     <pathelement path="${docgen.class.dir}" />
     <pathelement path="lib/freemarker.jar"/>
-    <pathelement path="${classpath}"/>
 </path>
 
 <target name="init">
