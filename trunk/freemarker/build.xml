@@ -190,7 +190,8 @@
                         <include name="src"/>
                     </dirset>
                 </sourcepath>
-                <html outfile="${coverage.report.dir}/index.html"/>
+		<html outfile="${coverage.report.dir}/index.html"/>
+		<xml outfile="${coverage.report.dir}/report.xml" />
             </report>
         </emma>
    </target>
