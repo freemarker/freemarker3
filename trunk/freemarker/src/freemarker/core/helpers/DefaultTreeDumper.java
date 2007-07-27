@@ -334,7 +334,7 @@ public class DefaultTreeDumper {
 		buf.append("#escape ");
 		buf.append(node.variable);
 		buf.append(" as ");
-		buf.append(render(node.escapedExpr));
+		buf.append(render(node.expr));
 		buf.append(CLOSE_BRACKET);
 		buf.append(render(node.getNestedBlock()));
 		buf.append(OPEN_BRACKET);

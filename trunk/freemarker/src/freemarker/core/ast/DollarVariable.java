@@ -63,11 +63,19 @@ import freemarker.template.TemplateException;
 public class DollarVariable extends TemplateElement {
 
     public final Expression expression;
-    public final Expression escapedExpression;
+    private Expression escapedExpression; // This will be the same as the expression if we are not within an escape block.
 
-    public DollarVariable(Expression expression, Expression escapedExpression) {
+    public DollarVariable(Expression expression) {
         this.expression = expression;
-        this.escapedExpression = escapedExpression;
+        this.escapedExpression = expression;
+    }
+    
+    public void setEscapedExpression(Expression escapedExpression) {
+    	this.escapedExpression = escapedExpression;
+    }
+    
+    public Expression getEscapedExpression() {
+    	return this.escapedExpression;
     }
 
     /**

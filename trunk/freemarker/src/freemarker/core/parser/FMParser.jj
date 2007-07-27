@@ -81,11 +81,11 @@ public class FMParser {
 
 // variables that keep track of whether we are in a loop or a switch.
   private boolean stripWhitespace, stripText;
-  private LinkedList escapes = new LinkedList();
   private int contentNesting; // for stripText
   private UnifiedCall currentCall;
   private Macro currentMacro;
-  private boolean recoverFromErrors;
+  private boolean failOnErrors = true;
+
 
   
   /**
@@ -139,13 +139,6 @@ public class FMParser {
   
   public boolean isAltDirectiveSyntax() {
   	  return token_source.altDirectiveSyntax;
-  }
-  
-  private Expression escapedExpression(Expression exp) {
-      if(!escapes.isEmpty()) {
-          return ((EscapeBlock)escapes.getFirst()).doEscape(exp);
-      }
-      return exp;
   }
   
   /**
@@ -820,24 +813,46 @@ TOKEN:
 // expression syntax.
 
 /**
- * This is the same as OrExpression, since
- * the OR is the operator with the lowest
- * precedence.
+ * An Expression production with error recovery
+ * The start Token is the token just before the expression
+ * we are trying to parse, the recoverToType is 
+ * the kind of token to scan ahead for to recover from 
+ * errors, and the boolean consumeToken
+ * says whether to consume the recoverToken or not.
  */
 
-Expression Expression() :
+Expression Expression(Token start, int recoverToType, boolean consumeToken) :
 {
    Expression exp = null;
+   Token end;
 }
 {
    try {
 	   exp=OrExpression()
    } catch (ParseException pe) {
-	   throw pe;   	
+   	   String msg = "invalid expression";
+       Token t = this.token, prevToken;
+       do {
+  	  	   prevToken = t;
+		   t = getNextToken();
+ 	   } while (t.kind != recoverToType && t.kind != EOF);
+       if (!consumeToken) {
+  	  	   this.token = prevToken;
+  	   }
+  	   exp = new InvalidExpression(msg);
+  	   exp.setLocation(template, start.next, prevToken);
    }
    {
       return exp;
    }
+}
+
+Expression Exp() :
+{
+	Expression exp;
+}
+{
+	 exp=OrExpression() {return exp;}
 }
 
 JAVACODE
@@ -904,7 +919,7 @@ Expression Parenthesis() :
 }
 {
     start=<OPEN_PAREN>
-    exp=Expression()
+    exp=Expression(start, CLOSE_PAREN, false) 
     end=<CLOSE_PAREN>
     {
        result = new ParentheticalExpression(exp);
@@ -1191,10 +1206,10 @@ ListLiteral ListLiteral() :
 {
     begin=<OPEN_BRACKET>
     [
-      exp=Expression() {values.add(exp);}
+      exp=Exp() {values.add(exp);}
       (
          [<COMMA>]
-         exp=Expression() {values.add(exp);}
+         exp=Exp() {values.add(exp);}
       )*
     ]
     end=<CLOSE_BRACKET>
@@ -1316,8 +1331,8 @@ Expression DefaultTo(Expression exp) :
       (
        t=<EXCLAM>
        [
-         LOOKAHEAD(Expression())
-          rhs=Expression()
+         LOOKAHEAD(Exp())
+          rhs=Exp()
        ]
       )
    )
@@ -1419,7 +1434,7 @@ Expression DynamicKey(Expression exp) :
 }
 {
    <OPEN_BRACKET>
-   arg=Expression()
+   arg=Exp()
    t=<CLOSE_BRACKET>
    {
        DynamicKeyName dkn = new DynamicKeyName(exp, arg);
@@ -1520,18 +1535,18 @@ HashLiteral HashLiteral() :
 {
    begin=<OPEN_BRACE>
    [
-       key=Expression()
+       key=Exp()
        (<COMMA>|<COLON>)
-       value=Expression()
+       value=Exp()
        {
           keys.add(key);
           values.add(value);
        }
        (
           <COMMA>
-           key=Expression()
+           key=Exp()
            (<COMMA>|<COLON>)
-           value=Expression()
+           value=Exp()
            {
                keys.add(key);
                values.add(value);
@@ -1558,14 +1573,7 @@ TemplateElement StringOutput() :
 }
 {
    begin=<OUTPUT_ESCAPE> 
-   try {
-	   exp=Expression()
-   }
-   catch (ParseException pe) {
-   	   end=recoverToToken(CLOSE_BRACE, false);
-       exp = new InvalidExpression("Error parsing the interpolation expression.");
-       exp.setLocation(template, begin.next, end);
-   }
+   exp=Expression(begin, CLOSE_BRACE, false)
    try {
 	   end=<CLOSE_BRACE>
    }
@@ -1584,7 +1592,7 @@ TemplateElement StringOutput() :
    	  if (unclosed) {
    	  	  result = new UnclosedElement("Unclosed output interpolation, expecting a closing '}'");
    	  } else {
-	      result = new DollarVariable(exp, escapedExpression(exp));
+	      result = new DollarVariable(exp);
    	  }
       result.setLocation(template, begin, end);
       return result;
@@ -1598,7 +1606,7 @@ NumericalOutput NumericalOutput() :
 }
 {
    begin=<NUMERICAL_ESCAPE>
-   exp=Expression()
+   exp=Exp()
    [
       <SEMICOLON>
       fmt=<ID>
@@ -1690,7 +1698,7 @@ TemplateElement If() :
 }
 {
    start=<IF>
-   condition=Expression()
+   condition=Exp()
    <DIRECTIVE_END>
    block=OptionalBlock()
    {
@@ -1700,7 +1708,7 @@ TemplateElement If() :
    }
    (
        t=<ELSE_IF>
-       condition=Expression()
+       condition=Exp()
        LooseDirectiveEnd()
        block=OptionalBlock()
        {
@@ -1761,15 +1769,36 @@ RecoveryBlock Recover() :
    }
 }
 
-IteratorBlock List() :
+TemplateElement List() :
 {
     Expression exp;
-    Token index, start, end;
+    Token index, start, end, as=null, directiveEnd=null;
     TemplateElement block;
 }
 {
    start=<LIST> 
-   exp=Expression()
+   exp=Expression(start, AS, false)
+/*
+   try {
+	   exp=Exp()
+   }
+   catch (ParseException pe) {
+   	   end=recoverToToken(AS, false);
+   	   if (end.next.kind == EOF) {
+   	   	   TemplateElement result = new UnclosedElement("Unclosed list directive");
+   	   	   result.setLocation(template, start, end);
+   	   	   return result;
+   	   }
+   	   if (end.kind == LIST) {
+   	   	  exp = new InvalidExpression("Missing iteration expression");
+   	   	  exp.setLocation(template, start.next, start.next);
+   	   } 
+   	   else {
+	   	   exp= new InvalidExpression("Invalid iteration expression");
+	   	   exp.setLocation(template, start.next, end);
+   	   }
+   }*/
+
    <AS>
    index=<ID>
    <DIRECTIVE_END>
@@ -1795,7 +1824,7 @@ IteratorBlock ForEach() :
    start=<FOREACH> 
    index=<ID>
    <IN>
-   exp=Expression()
+   exp=Exp()
    <DIRECTIVE_END>
    block=OptionalBlock()
    end=<END_FOREACH>
@@ -1816,10 +1845,10 @@ VisitNode Visit() :
 }
 {
    start=<VISIT>
-   targetNode=Expression()
+   targetNode=Exp()
    [
        <USING>
-       namespaces=Expression()
+       namespaces=Exp()
    ]
    end=LooseDirectiveEnd()
    {
@@ -1841,11 +1870,11 @@ RecurseNode Recurse() :
       (
          start=<RECURSE>
          [
-            node=Expression()
+            node=Exp()
          ]
          [
             <USING>
-            namespaces=Expression()
+            namespaces=Exp()
          ]
          end=LooseDirectiveEnd()
       )
@@ -1900,7 +1929,7 @@ ReturnInstruction Return() :
    (
       start=<SIMPLE_RETURN>{end = start;}
       |
-      start=<RETURN> exp=Expression() end=LooseDirectiveEnd()
+      start=<RETURN> exp=Exp() end=LooseDirectiveEnd()
    )
    {
       ReturnInstruction result = new ReturnInstruction(exp);
@@ -1918,7 +1947,7 @@ StopInstruction Stop() :
     (
       start=<HALT>
       |
-      start=<STOP> exp=Expression() LooseDirectiveEnd()
+      start=<STOP> exp=Exp() LooseDirectiveEnd()
     )
     {
        StopInstruction result = new StopInstruction(exp);
@@ -2019,7 +2048,7 @@ TemplateElement Assign() :
     }
     ((
        <EQUALS>
-       exp=Expression() {assignments.put(varName, exp);}
+       exp=Exp() {assignments.put(varName, exp);}
        (
          LOOKAHEAD([<COMMA>](<ID>|<STRING_LITERAL>)<EQUALS>)
             [<COMMA>]
@@ -2028,14 +2057,14 @@ TemplateElement Assign() :
                varName = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
             }
             <EQUALS>
-            exp=Expression()
+            exp=Exp()
             {
             	assignments.put(varName, exp);
             } 
        )*
        [
           id=<IN>
-          nsExp=Expression() {if (type != AssignmentInstruction.SET && type != AssignmentInstruction.NAMESPACE)
+          nsExp=Exp() {if (type != AssignmentInstruction.SET && type != AssignmentInstruction.NAMESPACE)
           	throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.beginLine, id.beginColumn);}
        ]
        end=LooseDirectiveEnd()
@@ -2053,7 +2082,7 @@ TemplateElement Assign() :
     (
        [
           id=<IN>
-          nsExp=Expression() {if (type != AssignmentInstruction.NAMESPACE && type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.beginLine, id.beginColumn);}
+          nsExp=Exp() {if (type != AssignmentInstruction.NAMESPACE && type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.beginLine, id.beginColumn);}
        ]
        <DIRECTIVE_END>
        block=OptionalBlock()
@@ -2082,12 +2111,12 @@ Include Include() :
 }
 {
     start=<INCLUDE>
-    nameExp=Expression()
+    nameExp=Exp()
     [<SEMICOLON>]
     (
 	  att=<ID>
 	  <EQUALS>
-	  exp=Expression()
+	  exp=Exp()
 	  {
 	     String attString = att.image;
 	     if (attString.equalsIgnoreCase("parse")) {
@@ -2128,7 +2157,7 @@ LibraryLoad Import() :
 }
 {
    start=<IMPORT>
-   nameExp=Expression()
+   nameExp=Exp()
    <AS>
    ns=<ID>
    end=LooseDirectiveEnd()
@@ -2165,7 +2194,7 @@ ParameterList ParameterList() :
           ]
           [
             <EQUALS>
-          	defValue=Expression()
+          	defValue=Exp()
             {
 		      hasDefaults = true;
             }
@@ -2293,10 +2322,10 @@ PositionalArgsList PositionalArgsList() :
 	PositionalArgsList result = new PositionalArgsList();
 }
 {
-	firstArg=Expression() {result.addArg(firstArg); arg=firstArg;}
+	firstArg=Exp() {result.addArg(firstArg); arg=firstArg;}
 	(
 	   <COMMA>
-	   arg=Expression() {result.addArg(arg);}
+	   arg=Exp() {result.addArg(arg);}
 	)*
 	{
 		if (firstArg != null)
@@ -2318,7 +2347,7 @@ NamedArgsList NamedArgsList() :
     	token_source.SwitchTo(token_source.NAMED_PARAMETER_EXPRESSION);
     	token_source.inInvocation = true;
     }
-	arg=Expression()  
+	arg=Exp()  
 	{
 		result.addNamedArg(firstParam.image, arg);
 	}
@@ -2327,7 +2356,7 @@ NamedArgsList NamedArgsList() :
 	   id=<ID>
 	   <EQUALS>
 	   {token_source.SwitchTo(token_source.NAMED_PARAMETER_EXPRESSION);}
-	   arg=Expression()
+	   arg=Exp()
 	   {result.addNamedArg(id.image, arg);}
 	)*
 	{
@@ -2372,7 +2401,7 @@ TemplateElement UnifiedMacroTransform() :
 }
 {
     start=<UNIFIED_CALL>
-    exp=Expression()
+    exp=Exp()
     {
         if (exp instanceof Identifier || (exp instanceof Dot && ((Dot) exp).onlyHasIdentifiers())) {
            directiveName = exp.getCanonicalForm();
@@ -2460,7 +2489,7 @@ Map<String, Expression> NamedArgs() :
   (
      t=<ID>
      <EQUALS>
-     exp=Expression()
+     exp=Exp()
      {
         if (result.containsKey(t.image)) {
            throw new ParseException(getErrorStart(t)
@@ -2519,12 +2548,12 @@ TransformBlock Transform() :
 }
 {
     start=<TRANSFORM>
-    exp=Expression()
+    exp=Exp()
     [<SEMICOLON>]
     (
        argName=<ID>
        <EQUALS>
-       argExp = Expression()
+       argExp=Exp()
        {
            if (args == null) args = new HashMap<String, Expression>();
            args.put(argName.image, argExp);
@@ -2552,7 +2581,7 @@ SwitchBlock Switch() :
 }
 {
    start=<SWITCH>
-   switchExp=Expression()
+   switchExp=Exp()
    <DIRECTIVE_END>
    {
       switchBlock = new SwitchBlock(switchExp);
@@ -2590,7 +2619,7 @@ Case Case() :
 {
    [<WHITESPACE>]
    (
-      start=<CASE>exp=Expression()<DIRECTIVE_END>
+      start=<CASE>exp=Exp()<DIRECTIVE_END>
       |
       start=<DEFAUL>{isDefault = true;}
    )
@@ -2612,16 +2641,14 @@ EscapeBlock Escape() :
     start=<ESCAPE>
     variable=<ID>
     <AS>
-    escapeExpr=Expression()
+    escapeExpr=Exp()
     <DIRECTIVE_END>
     {
-        EscapeBlock result = new EscapeBlock(variable.image, escapeExpr, escapedExpression(escapeExpr));
-        escapes.addFirst(result);
+        EscapeBlock result = new EscapeBlock(variable.image, escapeExpr);
     }
     content=OptionalBlock()
     {
         result.setContent(content);
-        escapes.removeFirst();
     }
     end=<END_ESCAPE>
     {
@@ -2636,11 +2663,10 @@ NoEscapeBlock NoEscape() :
     TemplateElement content;
 }
 {
-    start=<NOESCAPE> {Object escape = escapes.removeFirst();}
+    start=<NOESCAPE>
     content=OptionalBlock()
     end=<END_NOESCAPE>
     {
-       escapes.addFirst(escape);
        NoEscapeBlock result = new NoEscapeBlock(content);
        result.setLocation(template, start, end);
        return result;
@@ -2675,7 +2701,7 @@ PropertySetting Setting() :
    start=<SETTING>
    key=<ID>
    <EQUALS>
-   value=Expression()
+   value=Exp()
    end=LooseDirectiveEnd()
    {
       PropertySetting result = new PropertySetting(key.image, value);
@@ -2697,7 +2723,7 @@ ScopedDirective Scoped() :
      var=IdentifierOrStringLiteral()
      [
        <EQUALS>
-       valueExp=Expression()
+       valueExp=Exp()
      ]
    )
    {
@@ -2710,7 +2736,7 @@ ScopedDirective Scoped() :
         var=IdentifierOrStringLiteral()
         [
            <EQUALS>
-           valueExp=Expression()
+           valueExp=Exp()
         ]
       )
       {
@@ -2952,7 +2978,7 @@ void HeaderElement() :
        (
           key=<ID>
           <EQUALS>
-          exp=Expression()
+          exp=Exp()
           {
              String ks = key.image;
              TemplateModel value = null;
@@ -3051,7 +3077,7 @@ Map ParamList() :
    (
       id=Identifier()
       <EQUALS>
-      exp=Expression() {result.put(id.toString(), exp);}
+      exp=Exp() {result.put(id.toString(), exp);}
       [<COMMA>]
    )+
    {
@@ -3079,7 +3105,13 @@ TemplateElement Root() :
        doc.setParentRecursively(null);
        PostParseVisitor ppv = new PostParseVisitor(stripWhitespace);
        ppv.visit(doc);
-       ppv.reportErrors();
+       if (failOnErrors) {
+       	// Under some circumstances, it will be useful
+       	// to defer error reporting to when we attempt
+       	// to render the template, also it may be useful
+       	// to build a complete tree even with error nodes.
+	       ppv.reportErrors();
+       }
        return doc;
    }
 }

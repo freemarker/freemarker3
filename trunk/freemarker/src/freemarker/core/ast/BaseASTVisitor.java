@@ -202,7 +202,7 @@ public abstract class BaseASTVisitor {
 	
 	public void visit(EscapeBlock node) {
 		visit(node.expr);
-		visit(node.escapedExpr);
+		visit(node.getEscapedExpression());
 		recurse(node);
 	}
 	
