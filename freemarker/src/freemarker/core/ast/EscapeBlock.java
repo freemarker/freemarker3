@@ -66,19 +66,28 @@ public class EscapeBlock extends TemplateElement {
 
     public final String variable;
     public final Expression expr;
-    public final Expression escapedExpr;
+    private Expression escapedExpr; // This will be the same as expr unless we are within another escape block.
 
 
-    public EscapeBlock(String variable, Expression expr, Expression escapedExpr) {
+    public EscapeBlock(String variable, Expression expr) {
         this.variable = variable;
         this.expr = expr;
-        this.escapedExpr = escapedExpr;
+        this.escapedExpr = expr;
+    }
+    
+    public Expression getEscapedExpression() {
+    	return escapedExpr;
+    }
+    
+    /**
+     * This is only used internally.
+     */
+    public void setEscapedExpression(Expression escapedExpr) {
+    	this.escapedExpr = escapedExpr;
     }
 
     public void setContent(TemplateElement nestedBlock) {
         this.nestedBlock = nestedBlock;
-        // We don't need it anymore at this point
-        // this.escapedExpr = null;
     }
 
     public void execute(Environment env) throws TemplateException, IOException {

@@ -168,7 +168,7 @@ abstract class StringBuiltins {
             parser.setTemplate(getTemplate());
             Expression exp = null;
             try {
-                exp = parser.Expression();
+                exp = parser.Exp();
             } catch (ParseException pe) {
                 throw new TemplateException(pe, env);
             }

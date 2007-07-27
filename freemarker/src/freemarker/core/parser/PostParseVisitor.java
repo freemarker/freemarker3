@@ -16,6 +16,16 @@ public class PostParseVisitor extends BaseASTVisitor {
 	
 	protected boolean stripWhitespace;
 	private List<ParsingProblem> problems = new ArrayList<ParsingProblem>();
+	private LinkedList<EscapeBlock> escapes = new LinkedList<EscapeBlock>();
+	
+	private Expression escapedExpression(Expression exp) {
+		if(!escapes.isEmpty()) {
+			return ((EscapeBlock)escapes.getFirst()).doEscape(exp);
+		}
+		return exp;
+	}
+	  
+	
 	
 	public void reportErrors() throws ParseException {
 		if (!problems.isEmpty()) {
@@ -74,7 +84,9 @@ public class PostParseVisitor extends BaseASTVisitor {
 	
 	public void visit(DollarVariable node) {
 		super.visit(node);
-		checkLiteralInScalarContext(node.escapedExpression);
+		Expression escapedExpression = escapedExpression(node.expression);
+		node.setEscapedExpression(escapedExpression);
+		checkLiteralInScalarContext(escapedExpression);
 	}
 	
 	public void visit(IfBlock node) {
@@ -93,8 +105,15 @@ public class PostParseVisitor extends BaseASTVisitor {
         }
 	}
 	
-	public void visit(NoEscapeBlock node) {
+	public void visit(EscapeBlock node) {
+		Expression escapedExpression = escapedExpression(node.expr);
+		node.setEscapedExpression(escapedExpression);
+		escapes.addFirst(node);
 		super.visit(node);
+		escapes.removeFirst();
+	}
+	
+	public void visit(NoEscapeBlock node) {
 		TemplateElement parent = node;
 		while (parent != null && !(parent instanceof EscapeBlock)) {
 			parent = parent.getParent();
@@ -103,6 +122,9 @@ public class PostParseVisitor extends BaseASTVisitor {
 			String msg = "\n" + node.getStartLocation();
 			problems.add(new ParsingProblem("The noescape directive only makes sense inside an escape block.", node));
 		}
+		EscapeBlock first = escapes.removeFirst();
+		super.visit(node);
+		escapes.addFirst(first);
 	}
 	
 	public void visit(IteratorBlock node) {
