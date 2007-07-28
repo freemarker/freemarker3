@@ -16,17 +16,16 @@ public class PostParseVisitor extends BaseASTVisitor {
 	
 	protected boolean stripWhitespace;
 	private List<ParsingProblem> problems = new ArrayList<ParsingProblem>();
-	private LinkedList<EscapeBlock> escapes = new LinkedList<EscapeBlock>();
+	private List<EscapeBlock> escapes = new ArrayList<EscapeBlock>();
 	
 	private Expression escapedExpression(Expression exp) {
-		if(!escapes.isEmpty()) {
-			return ((EscapeBlock)escapes.getFirst()).doEscape(exp);
+		if(escapes.isEmpty()) {
+			return exp;
 		}
-		return exp;
+		EscapeBlock lastEscape = escapes.get(escapes.size() -1);
+		return lastEscape.doEscape(exp);
 	}
 	  
-	
-	
 	public void reportErrors() throws ParseException {
 		if (!problems.isEmpty()) {
 			throw new MultiParseException(problems); 
@@ -108,9 +107,9 @@ public class PostParseVisitor extends BaseASTVisitor {
 	public void visit(EscapeBlock node) {
 		Expression escapedExpression = escapedExpression(node.expr);
 		node.setEscapedExpression(escapedExpression);
-		escapes.addFirst(node);
+		escapes.add(node);
 		super.visit(node);
-		escapes.removeFirst();
+		escapes.remove(escapes.size() -1);
 	}
 	
 	public void visit(NoEscapeBlock node) {
@@ -122,9 +121,9 @@ public class PostParseVisitor extends BaseASTVisitor {
 			String msg = "\n" + node.getStartLocation();
 			problems.add(new ParsingProblem("The noescape directive only makes sense inside an escape block.", node));
 		}
-		EscapeBlock first = escapes.removeFirst();
+		EscapeBlock last = escapes.remove(escapes.size() -1);
 		super.visit(node);
-		escapes.addFirst(first);
+		escapes.add(last);
 	}
 	
 	public void visit(IteratorBlock node) {
