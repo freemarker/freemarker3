@@ -2049,12 +2049,6 @@ this is a backslash: \</programlisting>
                   </row>
 
                   <row>
-                    <entry><literal>\{</literal></entry>
-
-                    <entry>Curly bracket: <literal>{</literal></entry>
-                  </row>
-
-                  <row>
                     <entry><literal>\x<replaceable>Code</replaceable></literal></entry>
 
                     <entry>Character given with its hexadecimal <link
@@ -2082,9 +2076,8 @@ this is a backslash: \</programlisting>
             <literal>"Hello&nbsp;${user}!"</literal>); this will be explained
             <link
             linkend="dgui_template_exp_stringop_interpolation">later</link>.
-            If you want to print <literal>${</literal>, you should escape the
-            <literal>{</literal>, as in <literal>"$\{user}"</literal>, or you
-            should use raw string literals as explained below.</para>
+            If you want to print <literal>${</literal>, you should use raw
+            string literals as explained below.</para>
 
             <indexterm>
               <primary>raw string literal</primary>
@@ -20400,11 +20393,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>#{</literal> in string literals are reserved for that.
               So if you have something like <literal>[#set x =
               "${foo}"]</literal>, then you have to replace it with
-              <literal>[#set x = "$\{foo}"]</literal> (this uses the new
-              escape sequence, <literal>\{</literal>). (Also, you may
-              intrested in the new raw string feature: <literal>[#set x =
-              r"${foo}"]</literal> -- beware, escapes such as
-              <literal>\n</literal> will not work in raw strings)</para>
+              <literal>[#set x = r"${foo}"]</literal> -- beware, escapes such
+              as <literal>\n</literal> will not work in raw
+              (<literal>r</literal>) strings.</para>
             </listitem>
 
             <listitem>
