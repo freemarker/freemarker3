@@ -90,7 +90,6 @@ public class DefaultTreeDumper {
 		String result = null;
     	try {
     		Class clazz = node.getClass();
-    		if (node instanceof BuiltIn) clazz = BuiltIn.class;
         	Method visitMethod = this.getClass().getMethod("render", new Class[] {clazz});
     		result = (String) visitMethod.invoke(this, new Object[] {node});
     	}
@@ -205,7 +204,7 @@ public class DefaultTreeDumper {
 		return OPEN_BRACKET + "#break" + CLOSE_BRACKET; 
 	}
 	
-	public String render(BuiltIn node) {
+	public String render(BuiltInExpression node) {
 		return render(node.getTarget()) + "?" + node.getName();
 	}
 	
@@ -694,16 +693,16 @@ public class DefaultTreeDumper {
 	
 	public String render(StringLiteral node) { //REVISIT
 		String result;
-		if (node.value.indexOf('"') == -1) {
-			result = "\"" + node.value + "\""; 
+		if (node.getValue().indexOf('"') == -1) {
+			result = "\"" + node.getValue() + "\""; 
 		} 
-		else if (node.value.indexOf('\'') == -1) {
-			result = "'" + node.value + "'";
+		else if (node.getValue().indexOf('\'') == -1) {
+			result = "'" + node.getValue() + "'";
 		}
 		else {
-			result = "\"" + node.value.replace("\"", "\\\"") + "\"";
+			result = "\"" + node.getValue().replace("\"", "\\\"") + "\"";
 		}
-		if (node.raw) {
+		if (node.isRaw()) {
 			result = "r" + result;
 		}
 		return result;

@@ -50,54 +50,32 @@
  * http://www.visigoths.org/
  */
 
-package freemarker.core.ast;
+package freemarker.core.builtins;
 
-import freemarker.template.*;
-import freemarker.core.Environment;
-import freemarker.core.Scope;
 import java.util.List;
 
-
+import freemarker.core.Scope;
+import freemarker.core.Environment;
+import freemarker.core.ast.BuiltInExpression;
+import freemarker.template.*;
 
 /**
- * A holder for builtins that operate exclusively on scopes.
+ * Implementation of ?resolve built-in 
  */
 
-abstract class ScopeBuiltins {
-    abstract static class ScopeBuiltIn extends BuiltIn {
-        TemplateModel _getAsTemplateModel(Environment env)
-        throws TemplateException
-        {
-        	try {
-        		return calculateResult((Scope) target.getAsTemplateModel(env), env);
-        	} catch (ClassCastException cce) {
-        		throw new TemplateException(cce, env);
-        	}
-        }
-        abstract TemplateModel calculateResult(Scope scope, Environment env) throws TemplateException;
-    }
-    
-    static class resolveBI extends ScopeBuiltIn {
-    	TemplateModel calculateResult(final Scope scope, Environment env) throws TemplateException {
-    		
-    		return new TemplateMethodModel() {
-        		@Parameters("key")
-    			public Object exec(List args) throws TemplateModelException {
-    				return scope.resolveVariable((String) args.get(0)); 
-    			}
-    		};
-    	}
-    }
-    
-    static class scopeBI extends BuiltIn {
-        TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
-            TemplateModel tm = target.getAsTemplateModel(env);
-            if (!(tm instanceof Macro)) {
-                throw new TemplateException("The ?scope built-in only applies to macros.", env);
-            }
-            TemplateModel result = env.getMacroContext((Macro) tm);
-            return result == null ? TemplateModel.JAVA_NULL : result;
-        }
-        
-    }
+public class HashBuiltins extends BuiltIn {
+	
+	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+		if (!(target instanceof TemplateHashModelEx)) {
+			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "extended hash");
+		}
+		TemplateHashModelEx hash = (TemplateHashModelEx) target;
+		if (builtInName == "keys") {
+			return hash.keys();
+		}
+		if (builtInName == "values") {
+			return hash.values();
+		}
+		throw new InternalError("Don't know how to deal with ?" + builtInName);
+	}
 }

@@ -91,7 +91,6 @@ public abstract class BaseASTVisitor {
 		if (node == null) return;
     	try {
     		Class clazz = node.getClass();
-    		if (node instanceof BuiltIn) clazz = BuiltIn.class;
         	Method visitMethod = this.getClass().getMethod("visit", new Class[] {clazz});
     		visitMethod.invoke(this, new Object[] {node});
     	}
@@ -147,15 +146,15 @@ public abstract class BaseASTVisitor {
 		visit(node.getArgs());
 	}
 	
+	public void visit(BuiltInExpression node) {
+		visit(node.getTarget());
+	}
+	
 	
 	public void visit(BooleanExpression node) {}
 	
 	
 	public void visit(BreakInstruction node) {}
-	
-	public void visit(BuiltIn node) {
-		visit(node.target);
-	}
 	
 	public void visit(BuiltinVariable node) {}
 	

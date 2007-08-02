@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003 The Visigoth Software Society. All rights
+ * Copyright (c) 2007 The Visigoth Software Society. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,86 +50,78 @@
  * http://www.visigoths.org/
  */
 
-package freemarker.core.ast;
+package freemarker.core.builtins;
 
 import freemarker.core.Environment;
+import freemarker.core.InvalidReferenceException;
+import freemarker.core.ast.BuiltInExpression;
 import freemarker.template.*;
+import freemarker.template.utility.StringUtil;
 
 /**
- * A holder for builtins that operate exclusively on TemplateSequenceModels.
+ * Implementations of ?cap_first, ?lower_case, ?upper_case and other
+ * built-ins that change a string into another string
  */
 
-abstract class NumericalBuiltins {
-    abstract static class NumberBuiltIn extends BuiltIn {
-        TemplateModel _getAsTemplateModel(Environment env)
-                throws TemplateException
-        {
-            TemplateModel model = target.getAsTemplateModel(env);
-            return calculateResult(EvaluationUtil.getNumber(model, target, env), model);
-        }
-        abstract TemplateModel calculateResult(Number num, TemplateModel model);
-    }
-
-    static class byteBI extends NumberBuiltIn {
-        TemplateModel calculateResult(Number num, TemplateModel model) {
-            if (num instanceof Byte) {
-                return model;
-            }
-            return new SimpleNumber(new Byte(num.byteValue()));
-        }
-    }
-
-    static class shortBI extends NumberBuiltIn {
-        TemplateModel calculateResult(Number num, TemplateModel model) {
-            if (num instanceof Short) {
-                return model;
-            }
-            return new SimpleNumber(new Short(num.shortValue()));
-        }
-    }
-
-    static class intBI extends NumberBuiltIn {
-        TemplateModel calculateResult(Number num, TemplateModel model) {
-            if (num instanceof Integer) {
-                return model;
-            }
-            return new SimpleNumber(num.intValue());
-        }
-    }
-
-    static class longBI extends NumberBuiltIn {
-        TemplateModel calculateResult(Number num, TemplateModel model) {
-            if (num instanceof Long) {
-                return model;
-            }
-            return new SimpleNumber(num.longValue());
-        }
-    }
-
-    static class floatBI extends NumberBuiltIn {
-        TemplateModel calculateResult(Number num, TemplateModel model) {
-            if (num instanceof Float) {
-                return model;
-            }
-            return new SimpleNumber(num.floatValue());
-        }
-    }
-
-    static class doubleBI extends NumberBuiltIn {
-        TemplateModel calculateResult(Number num, TemplateModel model) {
-            if (num instanceof Double) {
-                return model;
-            }
-            return new SimpleNumber(num.doubleValue());
-        }
-    }
-    
-    static class cBI extends NumberBuiltIn {
-
-        TemplateModel calculateResult(Number num, TemplateModel model) {
-            return new SimpleScalar(num.toString());
-        }
-        
-    }
-    
+public class StringTransformations extends BuiltIn {
+	
+	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+		try {
+			String string = ((TemplateScalarModel) target).getAsString();
+			return new SimpleScalar(convertString(string, builtInName));
+		} catch (ClassCastException cce) {
+			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "string");
+		} catch (NullPointerException npe) {
+			throw new InvalidReferenceException("String is undefined", env);
+		}
+	}
+	
+	private String convertString(String string, String builtInName) {
+		if (builtInName == "upper_case") {
+			return string.toUpperCase();
+		} 
+		if (builtInName == "lower_case") {
+			return string.toLowerCase();
+		}
+		if (builtInName == "html" || builtInName == "web_safe") {
+			return StringUtil.HTMLEnc(string);
+		}
+		if (builtInName == "xml") {
+			return StringUtil.XMLEnc(string);
+		}
+		if (builtInName == "rtf") {
+			return StringUtil.RTFEnc(string);
+		}
+		if (builtInName == "cap_first" || builtInName == "uncap_first") {
+			char[] chars = string.toCharArray();
+			for (int i=0; i<chars.length; i++) {
+				char ch = chars[i];
+				if (!Character.isWhitespace(ch)) {
+					if (builtInName == "cap_first") {
+						chars[i] = Character.toUpperCase(ch);
+					} else {
+						chars[i] = Character.toLowerCase(ch);
+					}
+					break;
+				}
+			}
+			return new String(chars);
+		}
+		if (builtInName == "trim") {
+			return string.trim();
+		}
+		if (builtInName == "j_string") {
+			return StringUtil.javaStringEnc(string);
+		}
+		if (builtInName == "js_string") {
+			return StringUtil.javaScriptStringEnc(string);
+		}
+		if (builtInName == "capitalize") {
+			return StringUtil.capitalize(string);
+		}
+		if (builtInName == "chop_linebreak") {
+			return StringUtil.chomp(string);
+		}
+		throw new InternalError("Cannot deal with built-in ?" + builtInName);
+	}
 }

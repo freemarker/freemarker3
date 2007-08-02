@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003 The Visigoth Software Society. All rights
+ * Copyright (c) 2007 The Visigoth Software Society. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,92 +50,79 @@
  * http://www.visigoths.org/
  */
 
-package freemarker.core.ast;
+package freemarker.core.builtins;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
+import freemarker.core.InvalidReferenceException;
+import freemarker.core.ast.BuiltInExpression;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
-import java.util.List;
 
 /**
- * A holder for builtins that operate on TemplateNodeModels.
+ * Implementations of ?children, ?node_name, and other 
+ * standard functions that operate on nodes
  */
 
-abstract class NodeBuiltins {
-    
-    abstract static class NodeBuiltIn extends BuiltIn {
-        TemplateModel _getAsTemplateModel(Environment env)
-                throws TemplateException
-        {
-            TemplateModel model = target.getAsTemplateModel(env);
-            if (!(model instanceof TemplateNodeModel)) {
-                throw invalidTypeException(model, target, env, "node model");
-            }
-            return calculateResult((TemplateNodeModel) model, env);
-        }
-        abstract TemplateModel calculateResult(TemplateNodeModel nodeModel, Environment env)
-                throws TemplateModelException;
-    }
+public class NodeFunctions extends BuiltIn {
+	
 
-    static class ancestorsBI extends NodeBuiltIn {
-       TemplateModel calculateResult(TemplateNodeModel nodeModel, Environment env) throws TemplateModelException {
+	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+		if (!(target instanceof TemplateNodeModel)) {
+			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "node");
+		}
+		TemplateNodeModel node = (TemplateNodeModel) target;
+		return getNodeFunction(node, builtInName, env, callingExpression);
+	}
+	
+	private TemplateModel getNodeFunction(TemplateNodeModel node, String builtInName, 
+			Environment env, BuiltInExpression callingExpression) throws TemplateException 
+	{
+		if (builtInName == "parent") {
+			return node.getParentNode();
+		}
+		if (builtInName == "children") {
+			return node.getChildNodes();
+		}
+		if (builtInName == "root") {
+			TemplateNodeModel result = node;
+			while (result.getParentNode() != null) {
+				result = result.getParentNode();
+			}
+			return result;
+		}
+		if (builtInName == "node_name") {
+			return new SimpleScalar(node.getNodeName());
+		}
+		if (builtInName == "node_namespace") {
+			String ns = node.getNodeNamespace();
+			return ns == null ? TemplateModel.JAVA_NULL : new SimpleScalar(ns);
+		}
+		if (builtInName == "node_type") {
+			String nt = node.getNodeType();
+			return nt == null ? TemplateModel.JAVA_NULL : new SimpleScalar(nt);
+		}
+		if (builtInName == "ancestors") {
            AncestorSequence result = new AncestorSequence(env);
-           TemplateNodeModel parent = nodeModel.getParentNode();
+           TemplateNodeModel parent = node.getParentNode();
            while (parent != null) {
                result.add(parent);
                parent = parent.getParentNode();
            }
            return result;
-       }
-    }
-    
-    static class childrenBI extends NodeBuiltIn {
-       TemplateModel calculateResult(TemplateNodeModel nodeModel, Environment env) throws TemplateModelException {
-            return nodeModel.getChildNodes();
-       }
-    }
-    
-    
-    static class node_nameBI extends NodeBuiltIn {
-       TemplateModel calculateResult(TemplateNodeModel nodeModel, Environment env) throws TemplateModelException {
-            return new SimpleScalar(nodeModel.getNodeName());
-       }
-    }
-    
-    static class node_typeBI extends NodeBuiltIn {
-       TemplateModel calculateResult(TemplateNodeModel nodeModel, Environment env) throws TemplateModelException {
-            return new SimpleScalar(nodeModel.getNodeType());
-        }
-    }
-
-    static class parentBI extends NodeBuiltIn {
-       TemplateModel calculateResult(TemplateNodeModel nodeModel, Environment env) throws TemplateModelException {
-            return nodeModel.getParentNode();
-       }
-    }
-    
-    static class rootBI extends NodeBuiltIn {
-       TemplateModel calculateResult(TemplateNodeModel nodeModel, Environment env) throws TemplateModelException {
-            TemplateNodeModel result = nodeModel;
-            TemplateNodeModel parent = nodeModel.getParentNode();
-            while (parent != null) {
-                result = parent;
-                parent = result.getParentNode();
-            }
-            return result;
-       }
-    }
-    
-    static class node_namespaceBI extends NodeBuiltIn {
-        TemplateModel calculateResult(TemplateNodeModel nodeModel, Environment env) throws TemplateModelException {
-            String nsURI = nodeModel.getNodeNamespace();
-            return nsURI == null ? null : new SimpleScalar(nsURI);
-        }
-    }
-    
-    
+		}
+		throw new InternalError("Cannot deal with built-in ?" + builtInName);
+	}
+	
     static class AncestorSequence extends SimpleSequence implements TemplateMethodModel {
-        private static final long serialVersionUID = -3486958880179062533L;
 
         private Environment env;
         
@@ -167,5 +154,5 @@ abstract class NodeBuiltins {
             }
             return result;
         }
-    }    
+    }	
 }

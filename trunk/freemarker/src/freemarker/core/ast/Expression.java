@@ -172,7 +172,7 @@ abstract public class Expression extends TemplateNode {
     }
 
 
-    static boolean isEmpty(TemplateModel model) throws TemplateModelException
+    static public boolean isEmpty(TemplateModel model) throws TemplateModelException
     {
         if (model instanceof BeanModel) {
             return ((BeanModel) model).isEmpty();

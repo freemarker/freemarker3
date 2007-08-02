@@ -25,8 +25,8 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
     }
     
 	public String render(MethodCall node) {
-		if (node.target instanceof BuiltIn) {
-			BuiltIn bi = (BuiltIn) node.target;
+		if (node.target instanceof BuiltInExpression) {
+			BuiltInExpression bi = (BuiltInExpression) node.target;
 			if (bi.getName().equals("default")) { // convert ?default to newer syntax
 				Expression lhs = bi.getTarget();
 				StringBuilder buf = new StringBuilder();
@@ -46,7 +46,7 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
 	}
 	
 
-    public String render(BuiltIn node) {
+    public String render(BuiltInExpression node) {
     	if (!convertExistence) {
     		return super.render(node);
     	}
