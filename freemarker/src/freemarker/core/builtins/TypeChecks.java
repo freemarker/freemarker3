@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003 The Visigoth Software Society. All rights
+ * Copyright (c) 2007 The Visigoth Software Society. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,7 +21,7 @@
  *    Alternately, this acknowledgement may appear in the software itself,
  *    if and wherever such third-party acknowledgements normally appear.
  *
- * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the 
+ * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the
  *    project contributors may be used to endorse or promote products derived
  *    from this software without prior written permission. For written
  *    permission, please contact visigoths@visigoths.org.
@@ -50,85 +50,67 @@
  * http://www.visigoths.org/
  */
 
-package freemarker.core.ast;
-
-import java.util.Date;
+package freemarker.core.builtins;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
+import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.ast.Macro;
 import freemarker.template.*;
+import freemarker.template.utility.StringUtil;
 
 /**
- * @version 1.0
- * @author Attila Szegedi
+ * Implementation of ?is_XXXX built-ins
  */
-public class EvaluationUtil
-{
-    private EvaluationUtil()
-    {
-    }
-    
-    static String getString(TemplateScalarModel model, Expression expr, Environment env)
-    throws
-        TemplateException
-    {
-        String value = model.getAsString();
-        if(value == null)
-        {
-            if(env != null && env.isClassicCompatible())
-            {
-                return "";
-            }
-            else
-            {
-                throw new TemplateException(expr + " evaluated to null string.", env);
-            }
-        }
-        return value;
-    }
 
-    static Number getNumber(Expression expr, Environment env)
-    throws
-        TemplateException
-    {
-        TemplateModel model = expr.getAsTemplateModel(env);
-        return getNumber(model, expr, env);
-    }
-
-    static public Number getNumber(TemplateModel model, Expression expr, Environment env)
-    throws
-        TemplateException
-    {
-        if(model instanceof TemplateNumberModel)
-        {
-            return getNumber((TemplateNumberModel)model, expr, env);
-        }
-        else if(model == null || model == TemplateModel.JAVA_NULL) {
-            throw new InvalidReferenceException(expr + " is undefined.", env);
-        }
-        else
-        {
-            throw new NonNumericalException(expr + " is not a number, it is " + model.getClass().getName(), env);
-        }
-    }
-
-    static Number getNumber(TemplateNumberModel model, Expression expr, Environment env)
-        throws TemplateModelException, TemplateException
-    {
-        Number value = model.getAsNumber();
-        if(value == null) {
-            throw new TemplateException(expr + " evaluated to null number.", env);
-        }
-        return value;
-    }
-
-    static public Date getDate(TemplateDateModel model, Expression expr, Environment env)
-        throws TemplateModelException, TemplateException
-    {
-        Date value = model.getAsDate();
-        if(value == null) {
-            throw new TemplateException(expr + " evaluated to null date.", env);
-        }
-        return value;
-    }
+public class TypeChecks extends BuiltIn {
+	
+	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+		boolean result = false;
+		if (builtInName == "is_string") {
+			result = target instanceof TemplateScalarModel;
+		}
+		else if (builtInName == "is_number") {
+			result = target instanceof TemplateNumberModel;
+		}
+		else if (builtInName == "is_date") {
+			result = target instanceof TemplateDateModel;
+		}
+		else if (builtInName == "is_enumerable") {
+			result = target instanceof TemplateSequenceModel || target instanceof TemplateCollectionModel;
+		}
+		else if (builtInName == "is_sequence" || builtInName == "is_indexable") {
+			result = target instanceof TemplateSequenceModel;
+		}
+		else if (builtInName == "is_macro") {
+			result = (target instanceof Macro) && !((Macro) target).isFunction();
+		}
+		else if (builtInName == "is_directive") {
+			result = target instanceof Macro || target instanceof TemplateTransformModel;
+		}
+		else if (builtInName == "is_boolean") {
+			result = target instanceof TemplateBooleanModel;
+		}
+		else if (builtInName == "is_hash") {
+			result = target instanceof TemplateHashModel;
+		}
+		else if (builtInName == "is_hash_ex") {
+			result = target instanceof TemplateHashModelEx;
+		}
+		else if (builtInName == "is_method") {
+			result = target instanceof TemplateMethodModel;
+		}
+		else if (builtInName == "is_node") {
+			result = target instanceof TemplateNodeModel;
+		}
+		else if (builtInName == "is_null") {
+			result = target == TemplateModel.JAVA_NULL;
+		}
+		else if (builtInName == "is_transform") {
+			result = target instanceof TemplateTransformModel;
+		}
+		else if (builtInName == "is_collection") {
+			result = target instanceof TemplateCollectionModel;
+		}
+		return result ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
+	}
 }

@@ -588,9 +588,10 @@ TOKEN:
              ("x" ["0"-"9","A"-"F","a"-"f"])
            )
   >
-  | 
+  |
+/*  
   <STRING_LITERAL :
-      ("\""
+      ("\"" 
         ((~["\"","\\"]) | <ESCAPED_CHAR>)*
       "\"")
       |
@@ -598,6 +599,22 @@ TOKEN:
         ((~["'","\\"]) | <ESCAPED_CHAR>)*
       "'"
       )
+  >
+  |
+  <STRING_LITERAL : 
+      ("\"" ((~[]))* "\"")
+      |
+      ("'" ( ("\\""\\\\" | "\\'" | ~["'"])* "'")
+  > {System.err.println(matchedToken.image);}
+  |*/
+  <STRING_LITERAL :
+      ("\"" 
+          ((~["\\", "\""]) | ("\\" ~[]))*      
+      "\"")
+      |
+      ("'"
+          ((~["\\", "'"]) | ("\\" ~[]))*            
+      "'")
   >
   |
   <RAW_STRING : "r" (("\"" (~["\""])* "\"") | ("'" (~["'"])* "'"))>
@@ -1370,6 +1387,7 @@ Expression BuiltIn(Expression exp) :
 {
    <BUILT_IN>
    t=<ID>
+/*   
    {
        BuiltIn result = null;
        try {
@@ -1381,6 +1399,11 @@ Expression BuiltIn(Expression exp) :
        }
        result.setLocation(template, exp, t);
        return result;
+   }*/
+   {
+   	   BuiltInExpression result = new BuiltInExpression(exp, t.image);
+   	   result.setLocation(template, exp, t);
+   	   return result;
    }
 }
 
@@ -1463,7 +1486,7 @@ MethodCall MethodArgs(Expression exp) :
      }
 }
 
-StringLiteral StringLiteral() :
+Expression StringLiteral() :
 {
   Token t;
   boolean raw = false;
@@ -1484,9 +1507,9 @@ StringLiteral StringLiteral() :
        else try {
           s = StringUtil.FTLStringLiteralDec(s);
        } catch (ParseException pe) {
-          pe.lineNumber = t.beginLine;
-          pe.columnNumber = t.beginColumn;
-          throw pe;
+       	  InvalidExpression invalid = new InvalidExpression("Malformed string literal: " + pe.getMessage());
+       	  invalid.setLocation(template, t, t);
+       	  return invalid;
        }
        StringLiteral result = new StringLiteral(s, raw);
        result.setLocation(template, t, t);
@@ -2939,6 +2962,9 @@ TemplateElement FreeMarkerText() :
     )+
     {
        nodes.setLocation(template, begin, elem);
+       PostParseVisitor ppv = new PostParseVisitor(false);
+       ppv.visit(nodes);
+       ppv.reportErrors();
        return nodes;
     }
 }

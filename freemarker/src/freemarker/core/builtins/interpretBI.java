@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003 The Visigoth Software Society. All rights
+ * Copyright (c) 2007 The Visigoth Software Society. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,7 +21,7 @@
  *    Alternately, this acknowledgement may appear in the software itself,
  *    if and wherever such third-party acknowledgements normally appear.
  *
- * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the 
+ * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the
  *    project contributors may be used to endorse or promote products derived
  *    from this software without prior written permission. For written
  *    permission, please contact visigoths@visigoths.org.
@@ -50,71 +50,52 @@
  * http://www.visigoths.org/
  */
 
-package freemarker.core.ast;
+package freemarker.core.builtins;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.Writer;
+import java.util.List;
+import java.util.Map;
 
 import freemarker.core.Environment;
+import freemarker.core.InvalidReferenceException;
+import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.ast.Expression;
 import freemarker.template.*;
 
-
 /**
- * A method that takes a parameter and evaluates it as a scalar,
- * then treats that scalar as template source code and returns a
- * transform model that evaluates the template in place.
- * The template inherits the configuration and environment of the executing
- * template. By default, its name will be equal to 
- * <tt>executingTemplate.getName() + "$anonymous_interpreted"</tt>. You can
- * specify another parameter to the method call in which case the
- * template name suffix is the specified id instead of "anonymous_interpreted".
- * @version $Id: Interpret.java,v 1.2 2005/06/16 18:13:56 ddekany Exp $
- * @author Attila Szegedi
+ * Implementation of ?new built-in 
  */
-class Interpret extends BuiltIn
-{
-    /**
-     * Constructs a template on-the-fly and returns it embedded in a
-     * {@link TemplateTransformModel}.
-     * 
-     * <p>The built-in has two arguments:
-     * the arguments passed to the method. It can receive at
-     * least one and at most two arguments, both must evaluate to a scalar. 
-     * The first scalar is interpreted as a template source code and a template
-     * is built from it. The second (optional) is used to give the generated
-     * template a name.
-     * 
-     * @return a {@link TemplateTransformModel} that when executed inside
-     * a <tt>&lt;transform></tt> block will process the generated template
-     * just as if it had been <tt>&lt;transform></tt>-ed at that point.
-     */
-    TemplateModel _getAsTemplateModel(Environment env)
-            throws TemplateException 
-    {
-        TemplateModel model = target.getAsTemplateModel(env);
-        Expression sourceExpr = null;
-        String id = "anonymous_interpreted";
-        if(model instanceof TemplateSequenceModel)
-        {
-            sourceExpr = ((Expression)new DynamicKeyName(target, new NumberLiteral(new Integer(0))).copyLocationFrom(target));
-            if(((TemplateSequenceModel)model).size() > 1)
-            {
-                id = ((Expression)new DynamicKeyName(target, new NumberLiteral(new Integer(1))).copyLocationFrom(target)).getStringValue(env);
-            }
-        }
-        else if (model instanceof TemplateScalarModel)
-        {
-            sourceExpr = target;
-        }
-        else
-        {
-            throw invalidTypeException(model, target, env, "sequence or string");
-        }
-        String templateSource = sourceExpr.getStringValue(env);
+
+public class interpretBI extends BuiltIn {
+	
+	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+		String id = null, interpretString = null;
+		if (target instanceof TemplateSequenceModel) {
+			TemplateSequenceModel tsm = (TemplateSequenceModel) target;
+			TemplateModel tm = tsm.get(1);
+			if (tm != null && !(tm instanceof TemplateScalarModel)) {
+				throw new TemplateModelException("Expecting string as second item of sequence of left of ?interpret built-in");
+			} else if (tm != null){
+				id = ((TemplateScalarModel) tm).getAsString();
+			}
+			tm = tsm.get(0);
+			if (!(tm instanceof TemplateScalarModel)) {
+				throw new TemplateModelException("Expecting string as first item of sequence of left of ?interpret built-in");
+			}
+			interpretString = ((TemplateScalarModel) tm).getAsString();
+		}
+		else if (target instanceof TemplateScalarModel) {
+			interpretString = ((TemplateScalarModel) target).getAsString();
+		}
+		if (id == null) id = "anonymous_interpreted";
+		if (interpretString == null) {
+			throw new InvalidReferenceException("No string to interpret", env);
+		}
         Template parentTemplate = env.getTemplate();
-        try
-        {
-            Template template = new Template(parentTemplate.getName() + "$" + id, new StringReader(templateSource), parentTemplate.getConfiguration());
+        try {
+            Template template = new Template(parentTemplate.getName() + "$" + id, new StringReader(interpretString), parentTemplate.getConfiguration());
             template.setLocale(env.getLocale());
             return new TemplateProcessorModel(template);
         }
@@ -122,7 +103,8 @@ class Interpret extends BuiltIn
         {
             throw new TemplateException("", e, env);
         }
-    }
+	}
+	
 
     private static class TemplateProcessorModel
     implements

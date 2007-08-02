@@ -18,6 +18,9 @@ public class InvalidExpression extends Expression {
 	}
 	
 	public String getMessage() {
+		if (message==null || message.length() ==0) {
+			return "Invalid Expression";
+		}
 		return message;
 	}
 	

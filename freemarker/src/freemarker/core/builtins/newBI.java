@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003 The Visigoth Software Society. All rights
+ * Copyright (c) 2007 The Visigoth Software Society. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,7 +21,7 @@
  *    Alternately, this acknowledgement may appear in the software itself,
  *    if and wherever such third-party acknowledgements normally appear.
  *
- * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the 
+ * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the
  *    project contributors may be used to endorse or promote products derived
  *    from this software without prior written permission. For written
  *    permission, please contact visigoths@visigoths.org.
@@ -50,25 +50,25 @@
  * http://www.visigoths.org/
  */
 
-package freemarker.core.ast;
+package freemarker.core.builtins;
 
+import java.io.StringReader;
 import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.ext.beans.*;
+import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.ast.Expression;
+import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.*;
 import freemarker.template.utility.ClassUtil;
 
 /**
- * A built-in that allows us to instantiate an instance of a java class.
- * Usage is something like:
- * &lt;#assign foobar = "foo.bar.MyClass"?new() /&gt;
+ * Implementation of ?new built-in 
  */
 
-class NewBI extends BuiltIn
-{
-    
+public class newBI extends BuiltIn {
+	
     static final Class<TemplateModel> TM_CLASS = TemplateModel.class;
     static final Class<freemarker.ext.beans.BeanModel> BEAN_MODEL_CLASS = freemarker.ext.beans.BeanModel.class;
     static Class<?> JYTHON_MODEL_CLASS;
@@ -80,24 +80,19 @@ class NewBI extends BuiltIn
         }
     }
     
-    TemplateModel _getAsTemplateModel(Environment env)
-            throws TemplateException 
-    {
-        TemplateModel tm = target.getAsTemplateModel(env);
-        String classname = null;
-        try {
-            classname = ((TemplateScalarModel) tm).getAsString();
-        } 
-        catch (ClassCastException cce) {
-            invalidTypeException(tm, target, env, "string");
-        } 
-        catch (NullPointerException npe) {
-            throw new InvalidReferenceException(getStartLocation() 
-                + "\nCould not resolve expression: " + target, env);
-        }
-        return new ConstructorFunction(classname, env);
-    }
-
+	
+	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+		try {
+			String classString = ((TemplateScalarModel) target).getAsString();
+			return new ConstructorFunction(classString, env);
+		} catch (ClassCastException cce) {
+			throw new TemplateModelException("Expecting string on left of ?new built-in");
+			
+		} catch (NullPointerException npe) {
+			throw new InvalidReferenceException("undefined string on left of ?new built-in", env);
+		}
+	}
+	
     static class ConstructorFunction implements TemplateMethodModelEx {
 
         private final Class<?> cl;

@@ -56,20 +56,30 @@ import freemarker.template.*;
 import freemarker.core.Environment;
 import freemarker.core.parser.*;
 import java.io.*;
+import freemarker.template.utility.StringUtil;
 
 public class StringLiteral extends Expression implements TemplateScalarModel {
     
-    public final String value;
-    public final boolean raw;
     private TemplateElement interpolatedOutput;
+    private String value;
+    private boolean raw;
     
     public StringLiteral(String value, boolean raw) {
         this.value = value;
         this.raw = raw;
     }
     
+    public boolean isRaw() {
+    	return raw;
+    }
+    
+    public String getValue() {
+    	return value;
+    }
+    
     public void checkInterpolation() throws ParseException {
-        if (value.length() >3 && value.indexOf("${") >= 0 || value.indexOf("#{") >= 0) {
+    	String src = this.getSource();
+        if (src.length() >5 && (src.indexOf("${") >= 0 || src.indexOf("#{") >= 0)) {
             SimpleCharStream scs = new SimpleCharStream(new StringReader(value), getBeginLine(), getBeginColumn()+1, value.length());
             FMParserTokenManager token_source = new FMParserTokenManager(scs);
             token_source.setOnlyTextOutput(true);

@@ -37,7 +37,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 	}
 	
 	public void visit(InvalidExpression node) {
-		problems.add(new ParsingProblem("Invalid expression: " + node.getSource(), node));
+		problems.add(new ParsingProblem(node.getMessage() + " " + node.getSource(), node));
 	}
 	
 	public void visit(UnclosedElement node) {
@@ -78,6 +78,14 @@ public class PostParseVisitor extends BaseASTVisitor {
 					macro.declareScopedVariable(node.varName);
 				}
 			}
+		}
+	}
+	
+	public void visit(BuiltInExpression node) {
+		super.visit(node);
+		if (node.findImplementation()==null) {
+			ParsingProblem problem = new ParsingProblem("Unknown builtin: " + node.getName(), node);
+			problems.add(problem);
 		}
 	}
 	
@@ -268,12 +276,14 @@ public class PostParseVisitor extends BaseASTVisitor {
 	}
 	
 	public void visit(StringLiteral node) {
-		if (!node.raw) try {
-			node.checkInterpolation();
-		} catch (ParseException pe) {
-			String msg = "Error in string " + node.getStartLocation();
-			msg += "\n" + pe.getMessage();
-			problems.add(new ParsingProblem(msg, node));
+		if (!node.isRaw()) {
+			try {
+				node.checkInterpolation();
+			} catch (ParseException pe) {
+				String msg = "Error in string " + node.getStartLocation();
+				msg += "\n" + pe.getMessage();
+				problems.add(new ParsingProblem(msg, node));
+			}
 		}
 	}
 

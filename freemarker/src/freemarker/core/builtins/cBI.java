@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003 The Visigoth Software Society. All rights
+ * Copyright (c) 2007 The Visigoth Software Society. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,7 +21,7 @@
  *    Alternately, this acknowledgement may appear in the software itself,
  *    if and wherever such third-party acknowledgements normally appear.
  *
- * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the 
+ * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the
  *    project contributors may be used to endorse or promote products derived
  *    from this software without prior written permission. For written
  *    permission, please contact visigoths@visigoths.org.
@@ -50,85 +50,28 @@
  * http://www.visigoths.org/
  */
 
-package freemarker.core.ast;
-
-import java.util.Date;
+package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
+import freemarker.core.ast.BuiltInExpression;
 import freemarker.template.*;
 
 /**
- * @version 1.0
- * @author Attila Szegedi
+ * Implementation of ?c built-in 
  */
-public class EvaluationUtil
-{
-    private EvaluationUtil()
-    {
-    }
-    
-    static String getString(TemplateScalarModel model, Expression expr, Environment env)
-    throws
-        TemplateException
-    {
-        String value = model.getAsString();
-        if(value == null)
-        {
-            if(env != null && env.isClassicCompatible())
-            {
-                return "";
-            }
-            else
-            {
-                throw new TemplateException(expr + " evaluated to null string.", env);
-            }
-        }
-        return value;
-    }
 
-    static Number getNumber(Expression expr, Environment env)
-    throws
-        TemplateException
-    {
-        TemplateModel model = expr.getAsTemplateModel(env);
-        return getNumber(model, expr, env);
-    }
-
-    static public Number getNumber(TemplateModel model, Expression expr, Environment env)
-    throws
-        TemplateException
-    {
-        if(model instanceof TemplateNumberModel)
-        {
-            return getNumber((TemplateNumberModel)model, expr, env);
-        }
-        else if(model == null || model == TemplateModel.JAVA_NULL) {
-            throw new InvalidReferenceException(expr + " is undefined.", env);
-        }
-        else
-        {
-            throw new NonNumericalException(expr + " is not a number, it is " + model.getClass().getName(), env);
-        }
-    }
-
-    static Number getNumber(TemplateNumberModel model, Expression expr, Environment env)
-        throws TemplateModelException, TemplateException
-    {
-        Number value = model.getAsNumber();
-        if(value == null) {
-            throw new TemplateException(expr + " evaluated to null number.", env);
-        }
-        return value;
-    }
-
-    static public Date getDate(TemplateDateModel model, Expression expr, Environment env)
-        throws TemplateModelException, TemplateException
-    {
-        Date value = model.getAsDate();
-        if(value == null) {
-            throw new TemplateException(expr + " evaluated to null date.", env);
-        }
-        return value;
-    }
+public class cBI extends BuiltIn {
+	
+	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+		try {
+			Number num = ((TemplateNumberModel) target).getAsNumber();
+			return new SimpleScalar(num.toString());
+		} catch (ClassCastException cce) {
+			throw new TemplateException("Expecting number on left of ?c built-in", env);
+			
+		} catch (NullPointerException npe) {
+			throw new InvalidReferenceException("Undefined number", env);
+		}
+	}
 }

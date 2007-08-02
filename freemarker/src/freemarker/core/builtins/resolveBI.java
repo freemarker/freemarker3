@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003 The Visigoth Software Society. All rights
+ * Copyright (c) 2007 The Visigoth Software Society. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -21,7 +21,7 @@
  *    Alternately, this acknowledgement may appear in the software itself,
  *    if and wherever such third-party acknowledgements normally appear.
  *
- * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the 
+ * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the
  *    project contributors may be used to endorse or promote products derived
  *    from this software without prior written permission. For written
  *    permission, please contact visigoths@visigoths.org.
@@ -50,85 +50,31 @@
  * http://www.visigoths.org/
  */
 
-package freemarker.core.ast;
+package freemarker.core.builtins;
 
-import java.util.Date;
+import java.util.List;
 
+import freemarker.core.Scope;
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
+import freemarker.core.ast.BuiltInExpression;
 import freemarker.template.*;
 
 /**
- * @version 1.0
- * @author Attila Szegedi
+ * Implementation of ?resolve built-in 
  */
-public class EvaluationUtil
-{
-    private EvaluationUtil()
-    {
-    }
-    
-    static String getString(TemplateScalarModel model, Expression expr, Environment env)
-    throws
-        TemplateException
-    {
-        String value = model.getAsString();
-        if(value == null)
-        {
-            if(env != null && env.isClassicCompatible())
-            {
-                return "";
-            }
-            else
-            {
-                throw new TemplateException(expr + " evaluated to null string.", env);
-            }
-        }
-        return value;
-    }
 
-    static Number getNumber(Expression expr, Environment env)
-    throws
-        TemplateException
-    {
-        TemplateModel model = expr.getAsTemplateModel(env);
-        return getNumber(model, expr, env);
-    }
-
-    static public Number getNumber(TemplateModel model, Expression expr, Environment env)
-    throws
-        TemplateException
-    {
-        if(model instanceof TemplateNumberModel)
-        {
-            return getNumber((TemplateNumberModel)model, expr, env);
-        }
-        else if(model == null || model == TemplateModel.JAVA_NULL) {
-            throw new InvalidReferenceException(expr + " is undefined.", env);
-        }
-        else
-        {
-            throw new NonNumericalException(expr + " is not a number, it is " + model.getClass().getName(), env);
-        }
-    }
-
-    static Number getNumber(TemplateNumberModel model, Expression expr, Environment env)
-        throws TemplateModelException, TemplateException
-    {
-        Number value = model.getAsNumber();
-        if(value == null) {
-            throw new TemplateException(expr + " evaluated to null number.", env);
-        }
-        return value;
-    }
-
-    static public Date getDate(TemplateDateModel model, Expression expr, Environment env)
-        throws TemplateModelException, TemplateException
-    {
-        Date value = model.getAsDate();
-        if(value == null) {
-            throw new TemplateException(expr + " evaluated to null date.", env);
-        }
-        return value;
-    }
+public class resolveBI extends BuiltIn {
+	
+	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+		if (!(target instanceof Scope)) {
+			throw new TemplateException("Expecting scope on left of ?resolve built-in", env);
+		}
+		final Scope scope = (Scope) target;
+		return new TemplateMethodModel() {
+    		@Parameters("key")
+			public Object exec(List args) throws TemplateModelException {
+				return scope.resolveVariable((String) args.get(0)); 
+			}
+		};
+	}
 }
