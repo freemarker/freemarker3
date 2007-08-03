@@ -63,19 +63,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.TimeZone;
+import java.util.*;
 
 import freemarker.core.ast.ArgsList;
 import freemarker.core.ast.Expression;
@@ -85,6 +73,7 @@ import freemarker.core.ast.Macro;
 import freemarker.core.ast.ParameterList;
 import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.UnifiedCall;
+import freemarker.core.parser.TemplateLocation;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
@@ -143,6 +132,8 @@ public final class Environment extends Configurable implements Scope {
     private final TemplateHashModel rootDataModel;
 
     private final List<TemplateElement> elementStack = new ArrayList<TemplateElement>();
+    
+    private final List<Expression> expressionStack = new ArrayList<Expression>();
 
     private final List<String> recoveredErrorStack = new ArrayList<String>();
 
@@ -306,9 +297,6 @@ public final class Environment extends Configurable implements Scope {
         } catch (TemplateException te) {
             handleTemplateException(te);
         } finally {
-            if (createNewScope) {
-                currentScope = prevScope;
-            }
             popElement();
         }
     }
@@ -1326,6 +1314,10 @@ public final class Environment extends Configurable implements Scope {
         }
         return result;
     }
+    
+    public List<TemplateElement> getElementStack() {
+    	return Collections.unmodifiableList(elementStack);
+    }
 
     private void pushElement(TemplateElement element) {
         elementStack.add(element);
@@ -1334,7 +1326,7 @@ public final class Environment extends Configurable implements Scope {
     private void popElement() {
         elementStack.remove(elementStack.size() - 1);
     }
-
+    
     public TemplateNodeModel getCurrentVisitorNode() {
         return currentVisitorNode;
     }

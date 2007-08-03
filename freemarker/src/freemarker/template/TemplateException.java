@@ -56,8 +56,13 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
+import java.util.*;
 
 import freemarker.core.Environment;
+import freemarker.core.parser.TemplateLocation;
+import freemarker.core.ast.Include;
+import freemarker.core.ast.TemplateElement;
+import freemarker.core.ast.UnifiedCall;
 
 /**
  * The FreeMarker classes usually use this exception and its descendants to
@@ -68,17 +73,6 @@ import freemarker.core.Environment;
 public class TemplateException extends Exception {
     private static final long serialVersionUID = -5875559384037048115L;
 
-    private static final boolean BEFORE_1_4 = before14();
-    private static boolean before14() {
-        Class ec = Exception.class;
-        try {
-            ec.getMethod("getCause", new Class[]{});
-        } catch (Throwable e) {
-            return true;
-        }
-        return false;
-    }
-
     private static final Class[] EMPTY_CLASS_ARRAY = new Class[]{};
 
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
@@ -86,7 +80,8 @@ public class TemplateException extends Exception {
     /** The underlying cause of this exception, if any */
     private final Exception causeException;
     private final Environment env;
-    private final String ftlInstructionStack;
+    
+    private List<TemplateLocation> ftlStack;
 
 
     /**
@@ -131,17 +126,12 @@ public class TemplateException extends Exception {
         super(getDescription(description, cause));
         causeException = cause;
         this.env = env;
-        if(env != null)
-        {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            env.outputInstructionStack(pw);
-            pw.flush();
-            ftlInstructionStack = sw.toString();
-        }
-        else
-        {
-            ftlInstructionStack = "";
+        if(env != null) {
+            ftlStack = new ArrayList<TemplateLocation>();
+            for (TemplateLocation location : env.getElementStack()) {
+            	ftlStack.add(location);
+            }
+            Collections.reverse(ftlStack); // We put this in opposite order, as the trace is usually displayed that way.
         }
     }
 
@@ -184,9 +174,46 @@ public class TemplateException extends Exception {
     
     /**
      * Returns the quote of the problematic FTL instruction and the FTL stack strace.
+     * As of FreeMarker 2.4, we provide access to the FTL instruction stack,
+     * so you might prefer to use getFTLStack() and format the items in 
+     * list yourself. 
      */
     public String getFTLInstructionStack() {
-        return ftlInstructionStack;
+    	StringBuilder buf = new StringBuilder("----------\n");
+    	if (ftlStack != null) {
+        	boolean atFirstElement = true;
+    		for (TemplateLocation location : ftlStack) {
+    			if (atFirstElement) {
+    				atFirstElement = false;
+    	            buf.append("==> ");
+    	            buf.append(location.getDescription());
+    	            buf.append(" [");
+    	            buf.append(location.getStartLocation());
+    	            buf.append("]\n");
+    			} else if (location instanceof UnifiedCall || location instanceof Include){ // We only show macro calls and includes
+                    String line = location.getDescription() + " ["
+                    + location.getStartLocation() + "]";
+                    if (line != null && line.length() > 0) {
+                    	buf.append(" in ");
+                    	buf.append(line);
+                    	buf.append("\n");
+                    }
+    			}
+    		}
+        	buf.append("----------\n");
+    	}
+    	return buf.toString();
+    }
+    
+    /**
+     * @return the FTL call stack (starting with current element)
+     */
+    
+    public List<TemplateLocation> getFTLStack() {
+    	if (ftlStack == null) {
+    		return Collections.EMPTY_LIST;
+    	}
+    	return Collections.unmodifiableList(ftlStack);
     }
 
     /**
@@ -205,17 +232,10 @@ public class TemplateException extends Exception {
     public void printStackTrace(PrintWriter pw) {
         pw.println();
         pw.println(getMessage());
-        if (ftlInstructionStack != null && ftlInstructionStack.length() != 0) {
-            pw.println("The problematic instruction:");
-            pw.println(ftlInstructionStack);
-        }
+        pw.println(getFTLInstructionStack());
         pw.println("Java backtrace for programmers:");
         pw.println("----------");
         super.printStackTrace(pw);
-        if (BEFORE_1_4 && causeException != null) {
-            pw.println("Underlying cause: ");
-            causeException.printStackTrace(pw);
-        }
         
         // Dirty hack to fight with stupid ServletException class whose
         // getCause() method doesn't work properly. Also an aid for pre-J2xE 1.4
@@ -226,7 +246,7 @@ public class TemplateException extends Exception {
             Throwable rootCause = (Throwable) m.invoke(causeException, EMPTY_OBJECT_ARRAY);
             if (rootCause != null) {
                 Throwable j14Cause = null;
-                if (!BEFORE_1_4 && causeException != null) {
+                if (causeException != null) {
                     m = causeException.getClass().getMethod("getCause", EMPTY_CLASS_ARRAY);
                     j14Cause = (Throwable) m.invoke(causeException, EMPTY_OBJECT_ARRAY);
                 }
@@ -239,5 +259,4 @@ public class TemplateException extends Exception {
             ; // ignore
         }
     }
-    
 }
