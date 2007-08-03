@@ -56,6 +56,7 @@ import java.io.Writer;
 import java.io.PrintWriter;
 
 import freemarker.core.Environment;
+import freemarker.core.parser.TemplateLocation;
 
 /**
  * An API for objects that handle exceptions that are thrown during
