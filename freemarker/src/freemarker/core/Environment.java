@@ -65,37 +65,12 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import freemarker.core.ast.ArgsList;
-import freemarker.core.ast.Expression;
-import freemarker.core.ast.Identifier;
-import freemarker.core.ast.Include;
-import freemarker.core.ast.Macro;
-import freemarker.core.ast.ParameterList;
-import freemarker.core.ast.TemplateElement;
-import freemarker.core.ast.UnifiedCall;
-import freemarker.core.parser.TemplateLocation;
+import freemarker.core.ast.*;
+import freemarker.core.parser.*;
+
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.log.Logger;
-import freemarker.template.Configuration;
-import freemarker.template.ObjectWrapper;
-import freemarker.template.SimpleCollection;
-import freemarker.template.SimpleScalar;
-import freemarker.template.SimpleSequence;
-import freemarker.template.Template;
-import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateDateModel;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
-import freemarker.template.TemplateHashModel;
-import freemarker.template.TemplateHashModelEx;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
-import freemarker.template.TemplateNodeModel;
-import freemarker.template.TemplateScalarModel;
-import freemarker.template.TemplateSequenceModel;
-import freemarker.template.TemplateTransformModel;
-import freemarker.template.TransformControl;
+import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;
 
 /**
@@ -365,13 +340,16 @@ public final class Environment extends Configurable implements Scope {
      */
 
     public void render(TemplateElement attemptBlock,
-            TemplateElement recoveryBlock) throws TemplateException,
+            TemplateElement recoveryBlock, List<ParsingProblem> parsingProblems) throws TemplateException,
             IOException {
         Writer prevOut = this.out;
         StringWriter sw = new StringWriter();
         this.out = sw;
         TemplateException thrownException = null;
         try {
+        	if (!parsingProblems.isEmpty()) {
+        		throw new TemplateException(new MultiParseException(parsingProblems), this);
+        	}
             render(attemptBlock);
         } catch (TemplateException te) {
             thrownException = te;
@@ -1104,6 +1082,8 @@ public final class Environment extends Configurable implements Scope {
      * Outputs the instruction stack. Useful for debugging.
      * {@link TemplateException}s incorporate this information in their stack
      * traces.
+     * @see #getElementStack() which exposes the actual element stack
+     * so that you can write your own custom stack trace or error message
      */
     public void outputInstructionStack(PrintWriter pw) {
         pw.println("----------");
