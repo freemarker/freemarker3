@@ -174,9 +174,10 @@ public class TemplateException extends Exception {
     
     /**
      * Returns the quote of the problematic FTL instruction and the FTL stack strace.
-     * As of FreeMarker 2.4, we provide access to the FTL instruction stack,
+     * As of FreeMarker 2.4, we provide access to the FTL instruction stack
      * so you might prefer to use getFTLStack() and format the items in 
-     * list yourself. 
+     * list yourself.
+     * @see #getFTLStack() 
      */
     public String getFTLInstructionStack() {
     	StringBuilder buf = new StringBuilder("----------\n");

@@ -53,14 +53,16 @@
 package freemarker.core.ast;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.*;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
+import freemarker.core.parser.ParsingProblem;
 
 public class AttemptBlock extends TemplateElement {
     
     private TemplateElement attemptBlock, recoveryBlock;
+    private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
     
     public AttemptBlock(TemplateElement attemptBlock, TemplateElement recoveryBlock) {
         this.attemptBlock = attemptBlock;
@@ -74,16 +76,28 @@ public class AttemptBlock extends TemplateElement {
     	return attemptBlock;
     }
     
-    public TemplateElement getRecoverBock() {
+    public TemplateElement getRecoverBlock() {
     	return recoveryBlock;
     }
 
     public void execute(Environment env) throws TemplateException, IOException 
     {
-        env.render(attemptBlock, recoveryBlock);
+        env.render(attemptBlock, recoveryBlock, parsingProblems);
     }
 
     public String getDescription() {
         return "attempt block";
+    }
+    
+    public boolean hasParsingProblems() {
+    	return !parsingProblems.isEmpty();
+    }
+    
+    public List<ParsingProblem> getParsingProblems() {
+    	return Collections.unmodifiableList(parsingProblems);
+    }
+    
+    public void addParsingProblem(ParsingProblem problem) {
+    	parsingProblems.add(problem);
     }
 }

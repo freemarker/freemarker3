@@ -152,7 +152,7 @@ public class DefaultTreeDumper {
 		return OPEN_BRACKET 
                 + "#attempt" 
                 + CLOSE_BRACKET 
-                + render(node.getAttemptBlock()) + render(node.getRecoverBock());
+                + render(node.getAttemptBlock()) + render(node.getRecoverBlock());
 	}
 	
 	public String render(BlockAssignment node) {
