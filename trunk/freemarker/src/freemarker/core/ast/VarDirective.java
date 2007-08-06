@@ -61,7 +61,7 @@ import freemarker.core.parser.ParseException;
 /**
  * @author Jonathan Revusky
  */
-public class ScopedDirective extends TemplateElement {
+public class VarDirective extends TemplateElement {
     private Map<String, Expression> vars = new LinkedHashMap<String, Expression>();
 
     public void execute(Environment env) throws TemplateException {

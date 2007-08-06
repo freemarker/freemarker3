@@ -134,7 +134,7 @@ abstract public class TemplateElement extends TemplateNode {
         this.parent = parent;
         int nestedSize = nestedElements == null ? 0 : nestedElements.size();
         for (int i = 0; i < nestedSize; i++) {
-            (nestedElements.get(i)).setParentRecursively(this);
+        	nestedElements.get(i).setParentRecursively(this);
         }
         if (nestedBlock != null) {
             nestedBlock.setParentRecursively(this);

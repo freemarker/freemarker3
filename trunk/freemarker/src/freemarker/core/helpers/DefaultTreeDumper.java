@@ -658,7 +658,7 @@ public class DefaultTreeDumper {
 		return buf.toString();
 	}
 
-	public String render(ScopedDirective node) {
+	public String render(VarDirective node) {
 		StringBuilder buf = new StringBuilder();
 		buf.append(OPEN_BRACKET);
 		buf.append("#scoped ");

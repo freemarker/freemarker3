@@ -337,7 +337,7 @@ public abstract class BaseASTVisitor {
 		visit(node.returnExp);
 	}
 	
-	public void visit(ScopedDirective node) {
+	public void visit(VarDirective node) {
 		for (Expression value : node.getVariables().values()) {
 			visit(value);
 		}

@@ -79,6 +79,7 @@ import freemarker.core.ast.TextBlock;
 import freemarker.core.parser.FMParser;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.TokenMgrError;
+import freemarker.core.parser.ParsingProblem;
 import freemarker.debug.impl.DebuggerService;
 
 /**
@@ -128,6 +129,8 @@ public class Template extends TemplateCore {
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
     private final CodeSource codeSource;
     private boolean syntaxKnown, altSyntax;
+    
+    private List<ParsingProblem> parsingProblems;
     
     
     
@@ -444,6 +447,18 @@ public class Template extends TemplateCore {
      */
     public Configuration getConfiguration() {
         return (Configuration) getParent();
+    }
+    
+    public List<ParsingProblem> getParsingProblems() {
+    	return parsingProblems;
+    }
+    
+    public boolean hasParsingProblems() {
+    	return parsingProblems != null && !parsingProblems.isEmpty();
+    }
+    
+    public void setParsingProblems(List<ParsingProblem> parsingProblems) {
+    	this.parsingProblems = parsingProblems;
     }
 
     /**
