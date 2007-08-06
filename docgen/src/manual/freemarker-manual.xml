@@ -3592,9 +3592,9 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         kind of expression (e.g. <literal>${100 + x}</literal>).</para>
 
         <para>The interpolation is used to insert the value of the
-        <literal><replaceable>expression</replaceable></literal> as text (as
-        string). Interpolations can be used only on two places: in <link
-        linkend="dgui_template_overallstructure"><phrase
+        <literal><replaceable>expression</replaceable></literal> converted to
+        text (to string). Interpolations can be used only on two places: in
+        <link linkend="dgui_template_overallstructure"><phrase
         role="markedText">text</phrase> sections</link> (e.g.,
         <literal>&lt;h1&gt;Hello ${name}!&lt;/h1&gt;</literal>) and <link
         linkend="dgui_template_exp_stringop_interpolation">in string literal
@@ -3613,11 +3613,14 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           error.</para>
         </important>
 
-        <para>The value of the expression will be automatically converted to
-        string. However, only strings, numbers and dates are possibly
-        converted automatically. Other kind of values (such as booleans,
-        sequences, <literal>null</literal>, etc.) must be converted "manually"
-        somehow, or an error will occur.</para>
+        <para>The result of the expression must be a string, number or date
+        value. This is because only numbers and dates will be converted to
+        string by the interpolation automatically, other types of values (such
+        as booleans, sequences, <literal>null</literal>, etc.) must be
+        converted to string "manually" somehow (e.g.,
+        <literal>${maidenName!"N/A"}</literal>, which will convert
+        <literal>null</literal> to <literal>"N/A"</literal>), or an error will
+        stop template processing.</para>
 
         <para>If the interpolation is in a <link
         linkend="dgui_template_overallstructure"><phrase
@@ -3632,9 +3635,9 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <title>Guide for inserting numerical values</title>
 
           <para>If the expression evaluates to a number then the numerical
-          value will be converted to string according to a default number
-          format. Usually the programmer should set the default format; you
-          don't have to deal with it (but if you care, see the
+          value will be converted to string according the default number
+          format. Usually the programmer should set the default number format;
+          the template author don't have to deal with it (but he can with the
           <literal>number_format</literal> setting in the <link
           linkend="ref_directive_setting">documentation of
           <literal>setting</literal> directive</link>).</para>
@@ -3718,7 +3721,9 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
 
           <para>However, you can convert booleans to strings with the <link
           linkend="ref_builtin_string_for_boolean"><literal>?string</literal>
-          built-in for booleans</link>.</para>
+          built-in</link>. For example, to print the value of the "married"
+          variable (assuming it's a boolean), you could write
+          <literal>${married?string("yes", "no")}</literal>.</para>
         </simplesect>
 
         <simplesect>
@@ -3754,10 +3759,8 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
             </listitem>
 
             <listitem>
-              <para>Else if the engine is <emphasis>not</emphasis> in classic
-              compatibility mode, and neither of the above holds, the it's an
-              error. If the engine is in classic compatibility mode,
-              then:</para>
+              <para>Else if the engine is in classic compatibility
+              mode:</para>
 
               <orderedlist>
                 <listitem>
@@ -3773,9 +3776,14 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
                 </listitem>
 
                 <listitem>
-                  <para>Else the evaluation ends with an error.</para>
+                  <para>Else an error will abort the template
+                  processing.</para>
                 </listitem>
               </orderedlist>
+            </listitem>
+
+            <listitem>
+              <para>Else an error will abort the template processing.</para>
             </listitem>
           </orderedlist>
         </simplesect>
@@ -3784,10 +3792,6 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
 
     <chapter id="dgui_misc" xreflabel="Designer's Guide/Miscellaneous">
       <title>Miscellaneous</title>
-
-      <remark>Do we need a short chapter on i18n/charset issues in general,
-      with the introduction of FreeMarker facilities on this field at the
-      end?</remark>
 
       <sect1 id="dgui_misc_userdefdir"
              xreflabel="Designer's Guide/Miscellaneous/Defining your own directives">
@@ -3868,11 +3872,11 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <programlisting role="template">[@greet][/@greet]</programlisting>
 
           <para>But since
-          <literal>&lt;<replaceable>anything</replaceable>&gt;&lt;/<replaceable>anything</replaceable>&gt;</literal>
+          <literal>&lt;@<replaceable>something</replaceable>&gt;&lt;/@<replaceable>something</replaceable>&gt;</literal>
           is equivalent with
-          <literal>&lt;<replaceable>anything</replaceable>/&gt;</literal> you
-          should use this shorter form (that is familiar for you if you know
-          <link linkend="gloss.XML">XML</link>):</para>
+          <literal>&lt;@<replaceable>something</replaceable>/&gt;</literal>
+          you should use this shorter form (which is familiar for you if you
+          know <link linkend="gloss.XML">XML</link>):</para>
 
           <programlisting role="template">[@greet/]</programlisting>
 
