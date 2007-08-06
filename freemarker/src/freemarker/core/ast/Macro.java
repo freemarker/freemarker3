@@ -153,12 +153,12 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     public void canonicalizeAssignments() {
         if (createsScope() && (nestedBlock instanceof MixedContent)) {
             MixedContent block = (MixedContent) nestedBlock;
-            ScopedDirective scopedDirective = null;
+            VarDirective scopedDirective = null;
             Set<String> declaredVariables = new HashSet<String>();
             declaredVariables.addAll(params.getParamNames());
             for (TemplateElement te : block.getNestedElements()) {
-                if (te instanceof ScopedDirective) {
-                    ScopedDirective sdir = (ScopedDirective) te; 
+                if (te instanceof VarDirective) {
+                    VarDirective sdir = (VarDirective) te; 
                     if (scopedDirective == null){
                         scopedDirective = sdir;
                     }
@@ -171,7 +171,7 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
             for (String varname : scopedVariables) {
                 if (!declaredVariables.contains(varname)) {
                     if (scopedDirective == null) {
-                        scopedDirective = new ScopedDirective();
+                        scopedDirective = new VarDirective();
                         block.prependElement(scopedDirective);
                     }
                     scopedDirective.addVar(varname);

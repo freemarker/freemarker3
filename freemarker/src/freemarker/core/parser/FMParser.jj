@@ -415,7 +415,7 @@ TOKEN:
     |
     <SETTING : <START_TAG> "setting" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <SCOPED : <START_TAG> "scoped"  <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <VAR : <START_TAG> "var"  <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
     |
     <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
     |
@@ -1759,11 +1759,20 @@ TemplateElement If() :
 AttemptBlock Attempt() :
 {
    Token start, end;
-   TemplateElement block, recoveryBlock;
+   TemplateElement block=null, recoveryBlock;
+   ParseException problem = null;
 }
 {
    start=<ATTEMPT>
-   block=OptionalBlock()
+   try {
+	   block=OptionalBlock()
+   } catch (ParseException pe) {
+   	   recoverToToken(RECOVER, false);
+   	   problem = pe;
+   } catch (TokenMgrError tme) {
+   	   recoverToToken(RECOVER, false);
+   	   problem = new ParseException(tme.getMessage());
+   }
    recoveryBlock=Recover()
    (
       end=<END_RECOVER>
@@ -1773,6 +1782,10 @@ AttemptBlock Attempt() :
    {
       AttemptBlock result = new AttemptBlock(block, recoveryBlock);
       result.setLocation(template, start, end);
+      if (problem != null) {
+      	ParsingProblem pp = new ParsingProblem(problem.getMessage(), result);
+      	result.addParsingProblem(pp);
+      }
       return result;
    }
 }
@@ -1801,27 +1814,6 @@ TemplateElement List() :
 {
    start=<LIST> 
    exp=Expression(start, AS, false)
-/*
-   try {
-	   exp=Exp()
-   }
-   catch (ParseException pe) {
-   	   end=recoverToToken(AS, false);
-   	   if (end.next.kind == EOF) {
-   	   	   TemplateElement result = new UnclosedElement("Unclosed list directive");
-   	   	   result.setLocation(template, start, end);
-   	   	   return result;
-   	   }
-   	   if (end.kind == LIST) {
-   	   	  exp = new InvalidExpression("Missing iteration expression");
-   	   	  exp.setLocation(template, start.next, start.next);
-   	   } 
-   	   else {
-	   	   exp= new InvalidExpression("Invalid iteration expression");
-	   	   exp.setLocation(template, start.next, end);
-   	   }
-   }*/
-
    <AS>
    index=<ID>
    <DIRECTIVE_END>
@@ -2733,15 +2725,15 @@ PropertySetting Setting() :
    }
 }
 
-ScopedDirective Scoped() :
+VarDirective Var() :
 {
     Token start, end;
     Expression var, valueExp = null;
-    ScopedDirective result = new ScopedDirective();
+    VarDirective result = new VarDirective();
     LinkedHashMap declarations = new LinkedHashMap();
 }
 {
-   start=<SCOPED>
+   start=<VAR>
    (
      var=IdentifierOrStringLiteral()
      [
@@ -2813,7 +2805,7 @@ TemplateElement FreemarkerDirective() :
      |
      tp=Setting()
      |
-     tp=Scoped()
+     tp=Var()
      |
      tp=Break()
      |

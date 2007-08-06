@@ -1,6 +1,6 @@
 <#set foo="set in namespace">
 <#list 1..2 as i>
-   <#scoped foo>
+   <#var foo>
    ${foo!"foo not available here"}
    <#set foo = "set in loop">
    ${foo}
@@ -9,7 +9,7 @@
 ${foo}
 ---------
 <#macro foobar>
-   <#scoped foo>
+   <#var foo>
    <#set foo="set in macro">
    ${foo}
    -----
@@ -17,7 +17,7 @@ ${foo}
 </#macro>
 
 <@foobar>
-   <#scoped foo="set in body">
+   <#var foo="set in body">
    ${foo}
    ${foobar?scope["foo"]}
 </@foobar>

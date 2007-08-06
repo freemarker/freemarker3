@@ -99,5 +99,11 @@ public class AttemptBlock extends TemplateElement {
     
     public void addParsingProblem(ParsingProblem problem) {
     	parsingProblems.add(problem);
+    	attemptBlock = TextBlock.EMPTY_BLOCK;
+    	nestedElements.set(0, attemptBlock);
+    }
+    
+    public void setParsingProblems(List<ParsingProblem> parsingProblems) {
+    	this.parsingProblems = parsingProblems;
     }
 }
