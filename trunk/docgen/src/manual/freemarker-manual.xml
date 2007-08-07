@@ -4115,7 +4115,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           macro are not visible in the nested content. Say, this:</para>
 
           <programlisting role="template">[#macro repeat count]
-  [#scoped y = "test"]
+  [#var y = "test"]
   [#list 1..count as x]
     ${y} ${count}/${x}: [#nested]
   [/#list]
@@ -4324,7 +4324,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
             and are only visible from there. A local variable only exists for
             the duration of a macro call. You can create local variables
             inside macro definition bodies with the <link
-            linkend="ref.directive.scoped"><literal>scoped</literal>
+            linkend="ref.directive.var"><literal>var</literal>
             directive</link>.</para>
           </listitem>
 
@@ -4367,7 +4367,7 @@ ${x}</programlisting>
 
 [#macro test]
   2. ${x}  [#-- we still see the plain var. here --]
-  [#scoped x = "local"]
+  [#var x = "local"]
   3. ${x}  [#-- now the scoped var. hides it --]
   [#list ["loop"] as x&gt;
     4. ${x}  [#-- now the loop var. hides variable in the enclosing scope. --]
@@ -4877,7 +4877,7 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
             <listitem>
               <para>White-space sandwiched between the following directives is
               ignored: <literal>macro</literal>, <literal>function</literal>,
-              <literal>set</literal>, <literal>scoped</literal>,
+              <literal>set</literal>, <literal>var</literal>,
               <literal>ftl</literal>, <literal>import</literal>, but only if
               there is <emphasis>only</emphasis> white-space and/or FTL
               comments between the directives. In practice it means that you
@@ -7091,7 +7091,7 @@ c</programlisting>
         the runtime state of template processing. Among other things, it
         stores the variables created by the template with directives like
         <literal>set</literal>, <literal>macro</literal>, or
-        <literal>scoped</literal>. It never tries to modify the data model
+        <literal>var</literal>. It never tries to modify the data model
         object that you pass to the <literal>process</literal> call, nor does
         it create or replace shared variables stored in the
         configuration.</para>
@@ -14025,10 +14025,6 @@ Sorted by name.last:
         </listitem>
 
         <listitem>
-          <para><link linkend="ref.directive.scoped">scoped</link></para>
-        </listitem>
-
-        <listitem>
           <para><link linkend="ref.directive.set" os="">set</link></para>
         </listitem>
 
@@ -14046,6 +14042,10 @@ Sorted by name.last:
 
         <listitem>
           <para><link linkend="ref.directive.t">t</link></para>
+        </listitem>
+
+        <listitem>
+          <para><link linkend="ref.directive.var">var</link></para>
         </listitem>
 
         <listitem>
@@ -15113,7 +15113,7 @@ m2: &amp;lt;test&amp;gt;</programlisting>
       </sect1>
 
       <sect1 id="ref_directive_set">
-        <title>set and scoped</title>
+        <title>set and var</title>
 
         <anchor id="ref.directive.set" />
 
@@ -15121,10 +15121,10 @@ m2: &amp;lt;test&amp;gt;</programlisting>
           <primary>set directive</primary>
         </indexterm>
 
-        <anchor id="ref.directive.scoped" />
+        <anchor id="ref.directive.var" />
 
         <indexterm>
-          <primary>scoped directive</primary>
+          <primary>var directive</primary>
         </indexterm>
 
         <sect2>
@@ -15146,15 +15146,15 @@ or
   <replaceable>capture this</replaceable>
 [/#set]</literal></programlisting>
 
-          <para>For <literal>scoped</literal>:</para>
+          <para>For <literal>var</literal>:</para>
 
-          <programlisting role="metaTemplate"><literal>[#scoped <replaceable>name</replaceable>]</literal>
+          <programlisting role="metaTemplate"><literal>[#var <replaceable>name</replaceable>]</literal>
 or
-<literal>[#scoped <replaceable>name1</replaceable>, <replaceable>name2</replaceable>, ... <replaceable>nameN</replaceable>]</literal>
+<literal>[#var <replaceable>name1</replaceable>, <replaceable>name2</replaceable>, ... <replaceable>nameN</replaceable>]</literal>
 or
-<literal>[#scoped <replaceable>name</replaceable>=<replaceable>value</replaceable>]</literal>
+<literal>[#var <replaceable>name</replaceable>=<replaceable>value</replaceable>]</literal>
 or
-<literal>[#scoped <replaceable>name1</replaceable>=<replaceable>value1</replaceable> <replaceable>name2</replaceable>=<replaceable>value2</replaceable> <replaceable>... nameN</replaceable>=<replaceable>valueN</replaceable>]</literal></programlisting>
+<literal>[#var <replaceable>name1</replaceable>=<replaceable>value1</replaceable> <replaceable>name2</replaceable>=<replaceable>value2</replaceable> <replaceable>... nameN</replaceable>=<replaceable>valueN</replaceable>]</literal></programlisting>
 
           <para>Where:</para>
 
@@ -16078,7 +16078,7 @@ ${avg(10, 20)}</programlisting>
           multiple numbers:</para>
 
           <programlisting role="template">[#function avg nums...]
-  [#scoped sum = 0]
+  [#var sum = 0]
   [#list nums as num]
     [#set sum = sum + num]
   [/#list]
@@ -17279,7 +17279,7 @@ There was no specific handler for node y
             <para><literal>local</literal>: use the <link
             linkend="ref.directive.set"><literal>set</literal>
             directive</link> instead combined with the <link
-            linkend="ref.directive.scoped"><literal>scoped</literal>
+            linkend="ref.directive.var"><literal>var</literal>
             directive</link>. <literal>[#assign x = y]</literal> is equivalent
             with <literal>[#set x = y]</literal> if <literal>x</literal> was
             declared as scoped (i.e. local) variable.</para>
