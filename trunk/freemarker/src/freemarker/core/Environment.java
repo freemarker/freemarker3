@@ -276,6 +276,35 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
+    public void render(final TemplateElement element,
+            TemplateRunnableModel runnableModel, Map<String, TemplateModel> args)
+            throws TemplateException, IOException {
+        TemplateRunnableBody nested;
+        if(element == null) {
+            nested = null;
+        }
+        else {
+            nested = new TemplateRunnableBody() {
+                public void render(Writer newOut) throws TemplateException, IOException {
+                    if(newOut == null) {
+                        Environment.this.render(element);
+                    }
+                    else {
+                        Writer prevOut = out;
+                        out = newOut;
+                        try {
+                            Environment.this.render(element);
+                        }
+                        finally {
+                            out = prevOut;
+                        }
+                    }
+                }
+            };
+        }
+        runnableModel.run(out, args, nested);
+    }
+    
     /**
      * "Visit" the template element, passing the output through a
      * TemplateTransformModel

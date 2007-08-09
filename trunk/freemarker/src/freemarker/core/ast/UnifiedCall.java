@@ -108,9 +108,14 @@ public class UnifiedCall extends TemplateElement {
         if (tm == Macro.DO_NOTHING_MACRO) return; // shortcut here.
         assertNonNull(tm, nameExp, env);
         if (tm instanceof TemplateTransformModel) {
-        	Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
+            Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
             if (args != null) argMap = args.getParameterMap(tm, env);
             env.render(nestedBlock, (TemplateTransformModel) tm, argMap);
+        }
+        else if (tm instanceof TemplateRunnableModel) {
+            Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
+            if (args != null) argMap = args.getParameterMap(tm, env);
+            env.render(nestedBlock, (TemplateRunnableModel) tm, argMap);
         }
         else if (tm instanceof Macro) {
             Macro macro = (Macro) tm;

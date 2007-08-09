@@ -73,6 +73,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.IterationTag;
+import javax.servlet.jsp.tagext.JspTag;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TryCatchFinally;
 
@@ -90,53 +91,21 @@ import freemarker.template.utility.StringUtil;
  * @version $Id: TagTransformModel.java,v 1.17 2005/06/11 12:13:39 szegedia Exp $
  * @author Attila Szegedi
  */
-class TagTransformModel implements TemplateTransformModel
+class TagTransformModel extends JspTagModelBase<Tag> implements TemplateTransformModel
 {
     private static final char[] NEWLINE = SecurityUtilities.getSystemProperty("line.separator").toCharArray();
     
     private static final Logger logger = Logger.getLogger("freemarker.servlet");
     
-    private final Class tagClass;
-    private final Method dynaSetter;
-    private final Map propertySetters = new HashMap();
     private final boolean isBodyTag;
     private final boolean isIterationTag;
     private final boolean isTryCatchFinally;
             
-    public TagTransformModel(Class tagClass)
-    throws
-        IntrospectionException
-    {
-        if(!Tag.class.isAssignableFrom(tagClass)) {
-            throw new IllegalArgumentException(tagClass.getName() + " does not implement the " + Tag.class.getName() + " interface.");
-        }
+    public TagTransformModel(Class<? extends Tag> tagClass) throws IntrospectionException {
+        super(tagClass);
         isIterationTag = IterationTag.class.isAssignableFrom(tagClass);
         isBodyTag = isIterationTag && BodyTag.class.isAssignableFrom(tagClass);
         isTryCatchFinally = TryCatchFinally.class.isAssignableFrom(tagClass);
-                
-        this.tagClass = tagClass;
-        BeanInfo bi = Introspector.getBeanInfo(tagClass);
-        PropertyDescriptor[] pda = bi.getPropertyDescriptors();
-        for (int i = 0; i < pda.length; i++)
-        {
-            PropertyDescriptor pd = pda[i];
-            Method m = pd.getWriteMethod();
-            if(m != null)
-            {
-                propertySetters.put(pd.getName(), m);
-            }
-        }
-        // Check to see if the tag implements the JSP2.0 DynamicAttributes
-        // interface, to allow setting of arbitrary attributes
-        Method dynaSetter;
-        try {
-            dynaSetter = tagClass.getMethod("setDynamicAttribute",
-                            new Class[] {String.class, String.class, Object.class});
-        }
-        catch (NoSuchMethodException nsme) {
-            dynaSetter = null;
-        }
-        this.dynaSetter = dynaSetter;
     }
     
     public Writer getWriter(Writer out, Map args) throws TemplateModelException
@@ -175,56 +144,11 @@ class TagTransformModel implements TemplateTransformModel
         catch(TemplateModelException e) {
             throw e;
         }
+        catch(RuntimeException e) {
+            throw e;
+        }
         catch(Exception e) {
             throw new TemplateModelException(e);
-        }
-    }
-
-    private Tag getTagInstance()
-    throws
-        IllegalAccessException,
-        InstantiationException
-    {
-        return (Tag)tagClass.newInstance();
-    }
-    
-    private void setupTag(Object tag, Map args, ObjectWrapper wrapper)
-    throws 
-        TemplateModelException, 
-        InvocationTargetException, 
-        IllegalAccessException
-    {
-        BeansWrapper bwrapper = 
-            wrapper instanceof BeansWrapper
-            ? (BeansWrapper)wrapper
-            : BeansWrapper.getDefaultInstance();
-        if(args != null && !args.isEmpty())
-        {
-            Object[] aarg = new Object[1];
-            for (Iterator iter = args.entrySet().iterator(); iter.hasNext();)
-            {
-                Map.Entry entry = (Map.Entry) iter.next();
-                Object arg = bwrapper.unwrap((TemplateModel)entry.getValue());
-                aarg[0] = arg;
-                Method m = (Method) propertySetters.get(entry.getKey());
-                if (m == null) {
-                    if (dynaSetter == null) {
-                        throw new TemplateModelException("Unknown property "
-                                + StringUtil.jQuote(entry.getKey().toString())
-                                + " on instance of " + tagClass.getName());
-                    }
-                    else {
-                        dynaSetter.invoke(tag, new Object[] {null, entry.getKey(), aarg[0]});
-                    }
-                }
-                else {
-                    if(arg instanceof BigDecimal) {
-                        aarg[0] = BeansWrapper.coerceBigDecimal(
-                                (BigDecimal)arg, m.getParameterTypes()[0]);
-                    }
-                    m.invoke(tag, aarg);
-                }
-            }
         }
     }
 

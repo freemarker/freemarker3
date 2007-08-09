@@ -176,6 +176,10 @@ public class TestJspTaglibs extends TestCase {
         public ServletContext getContext(String arg0) {
             throw new UnsupportedOperationException();
         }
+        
+        public String getContextPath() {
+            throw new UnsupportedOperationException();
+        }
 
         public int getMajorVersion() {
             return 0;

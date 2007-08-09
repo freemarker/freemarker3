@@ -58,6 +58,7 @@ import freemarker.ext.servlet.FreemarkerServlet;
 import freemarker.ext.servlet.HttpRequestHashModel;
 import freemarker.ext.servlet.ServletContextHashModel;
 import freemarker.ext.util.WrapperTemplateModel;
+import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateBooleanModel;
@@ -69,6 +70,11 @@ import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.utility.UndeclaredThrowableException;
 
+import javax.el.ELContext;
+import javax.el.ELResolver;
+import javax.el.FunctionMapper;
+import javax.el.ValueExpression;
+import javax.el.VariableMapper;
 import javax.servlet.GenericServlet;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -79,11 +85,19 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspApplicationContext;
+import javax.servlet.jsp.JspContext;
+import javax.servlet.jsp.JspFactory;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.el.ELException;
+import javax.servlet.jsp.el.ExpressionEvaluator;
+import javax.servlet.jsp.el.VariableResolver;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.Tag;
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -390,6 +404,11 @@ abstract class FreeMarkerPageContext extends PageContext implements TemplateMode
     }
 
     public void include(String url) throws ServletException, IOException {
+        //TODO: make sure this is 100% correct by looking at Jasper output 
+        request.getRequestDispatcher(url).include(request, response);
+    }
+
+    public void include(String url, boolean flush) throws ServletException, IOException {
         //TODO: make sure this is 100% correct by looking at Jasper output 
         request.getRequestDispatcher(url).include(request, response);
     }
