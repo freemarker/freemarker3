@@ -54,8 +54,7 @@ package freemarker.core.ast;
 
 import java.util.*;
 import freemarker.template.*;
-import freemarker.core.Environment;
-import freemarker.core.Scope;
+import freemarker.core.*;
 import freemarker.core.parser.ParseException;
 
 /**
@@ -97,6 +96,6 @@ public class VarDirective extends TemplateElement {
     }
 
     public String getDescription() {
-        return "declare scoped variables";
+        return "variable declaration";
     }
 }

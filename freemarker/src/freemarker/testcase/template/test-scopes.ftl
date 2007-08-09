@@ -1,26 +1,26 @@
-<#set foo="set in namespace">
-<#list 1..2 as i>
-   <#var foo>
+[#set foo = "set in namespace"]
+[#list 1..2 as i]
+   [#var foo]
    ${foo!"foo not available here"}
-   <#set foo = "set in loop">
+   [#set foo = "set in loop"]
    ${foo}
-</#list>
+[/#list]
 ---------
 ${foo}
 ---------
-<#macro foobar>
-   <#var foo>
-   <#set foo="set in macro">
+[#macro foobar]
+   [#var foo]
+   [#set foo = "set in macro"]
    ${foo}
    -----
-   <#nested>
-</#macro>
+   [#nested]
+[/#macro]
 
-<@foobar>
-   <#var foo="set in body">
+[@foobar]
+   [#var foo="set in body"]
    ${foo}
    ${foobar?scope["foo"]}
-</@foobar>
+[/@foobar]
 ------
 ${foo}
    

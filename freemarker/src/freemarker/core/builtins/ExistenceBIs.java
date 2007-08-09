@@ -98,7 +98,7 @@ public class ExistenceBIs extends BuiltIn {
 			return target;
 		}
 		if (builtInName == "has_content") {
-			return Expression.isEmpty(target) ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
+			return Expression.isEmpty(target) ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
 		}
 		return TemplateBooleanModel.TRUE;
 	}

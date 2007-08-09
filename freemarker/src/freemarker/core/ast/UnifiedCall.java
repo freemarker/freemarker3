@@ -94,11 +94,11 @@ public class UnifiedCall extends TemplateElement {
     	this.bodyParameters = bodyParameters;
     	if (bodyParameters != null) {
     		for (String paramName : bodyParameters.params) {
-    			declareScopedVariable(paramName);
+    			declareVariable(paramName);
     		}
     		String catchallParam = bodyParameters.getCatchAll();
     		if (catchallParam != null) {
-    			declareScopedVariable(catchallParam);
+    			declareVariable(catchallParam);
     		}
     	}
     }

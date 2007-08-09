@@ -76,10 +76,7 @@ import freemarker.core.TemplateCore;
 import freemarker.core.ast.LibraryLoad;
 import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.TextBlock;
-import freemarker.core.parser.FMParser;
-import freemarker.core.parser.ParseException;
-import freemarker.core.parser.TokenMgrError;
-import freemarker.core.parser.ParsingProblem;
+import freemarker.core.parser.*;
 import freemarker.debug.impl.DebuggerService;
 
 /**
@@ -129,8 +126,9 @@ public class Template extends TemplateCore {
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
     private final CodeSource codeSource;
     private boolean syntaxKnown, altSyntax;
+    boolean stripWhitespace;
     
-    private List<ParsingProblem> parsingProblems;
+    private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
     
     
     
@@ -182,13 +180,18 @@ public class Template extends TemplateCore {
             if (syntaxSet) {
                 B = getConfiguration().getTagSyntax() ? Boolean.TRUE : Boolean.FALSE;
             }
+            
+            this.stripWhitespace = getConfiguration().getWhitespaceStripping();
+            
         	
             FMParser parser = new FMParser(this, ltb,
                     getConfiguration().getStrictSyntaxMode(),
-                    getConfiguration().getWhitespaceStripping(), B);
+                    stripWhitespace, B);
             setRootElement(parser.Root());
             this.syntaxKnown = parser.isSyntaxSet();
             this.altSyntax = parser.isAltDirectiveSyntax();
+            PostParseVisitor ppv = new PostParseVisitor(this);
+            ppv.visit(this.getRootElement());
         }
         catch (TokenMgrError exc) {
             throw new ParseException("Token manager error: " + exc, 0, 0);
@@ -245,6 +248,10 @@ public class Template extends TemplateCore {
         template.setRootElement(block);
         DebuggerService.registerTemplate(template);
         return template;
+    }
+    
+    public void setStripWhitespace(boolean stripWhitespace) {
+    	this.stripWhitespace = stripWhitespace;
     }
 
     /**
@@ -454,11 +461,11 @@ public class Template extends TemplateCore {
     }
     
     public boolean hasParsingProblems() {
-    	return parsingProblems != null && !parsingProblems.isEmpty();
+    	return !parsingProblems.isEmpty();
     }
     
-    public void setParsingProblems(List<ParsingProblem> parsingProblems) {
-    	this.parsingProblems = parsingProblems;
+    void addParsingProblem(ParsingProblem problem) {
+    	parsingProblems.add(problem);
     }
 
     /**

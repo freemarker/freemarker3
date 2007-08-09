@@ -84,9 +84,6 @@ public class FMParser {
   private int contentNesting; // for stripText
   private UnifiedCall currentCall;
   private Macro currentMacro;
-  private boolean failOnErrors = true;
-
-
   
   /**
    * Create an FM expression parser using a string.
@@ -1764,6 +1761,8 @@ AttemptBlock Attempt() :
 }
 {
    start=<ATTEMPT>
+   block=OptionalBlock()
+/*   
    try {
 	   block=OptionalBlock()
    } catch (ParseException pe) {
@@ -1772,7 +1771,7 @@ AttemptBlock Attempt() :
    } catch (TokenMgrError tme) {
    	   recoverToToken(RECOVER, false);
    	   problem = new ParseException(tme.getMessage());
-   }
+   }*/
    recoveryBlock=Recover()
    (
       end=<END_RECOVER>
@@ -2954,9 +2953,6 @@ TemplateElement FreeMarkerText() :
     )+
     {
        nodes.setLocation(template, begin, elem);
-       PostParseVisitor ppv = new PostParseVisitor(false);
-       ppv.visit(nodes);
-       ppv.reportErrors();
        return nodes;
     }
 }
@@ -3028,6 +3024,9 @@ void HeaderElement() :
                  }
                  else if (ks.equalsIgnoreCase("STRIP_WHITESPACE")) {
                      this.stripWhitespace = getBoolean(exp);
+                     if (template != null) {
+                     	template.setStripWhitespace(stripWhitespace);
+                     }
                  }
                  else if (ks.equalsIgnoreCase("STRIP_TEXT")) {
                      this.stripText = getBoolean(exp);
@@ -3121,15 +3120,6 @@ TemplateElement Root() :
    <EOF>
    {
        doc.setParentRecursively(null);
-       PostParseVisitor ppv = new PostParseVisitor(stripWhitespace);
-       ppv.visit(doc);
-       if (failOnErrors) {
-       	// Under some circumstances, it will be useful
-       	// to defer error reporting to when we attempt
-       	// to render the template, also it may be useful
-       	// to build a complete tree even with error nodes.
-	       ppv.reportErrors();
-       }
        return doc;
    }
 }

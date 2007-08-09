@@ -55,7 +55,6 @@ package freemarker.core.ast;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import freemarker.log.Logger;
 
 
 import freemarker.core.parser.ParseException;
@@ -67,25 +66,16 @@ import freemarker.core.parser.ParseException;
  * 
  * The base implementations of visit(....) simply invoke
  * visit(...) on the subnodes (or do nothing if the node is terminal.)
+ * 
+ * For concrete implementations, see for example
+ * {@link freemarker.core.helpers.DefaultTreeDumper} or
+ * {@link freemarker.template.PostParseVisitor}
  * @author Jonathan Revusky
  */
 
 public abstract class BaseASTVisitor {
 	
-	private static final Logger logger = Logger.getLogger("freemarker.core");
-	
 	protected StringBuffer errors = new StringBuffer(), warnings = new StringBuffer();
-	
-	public void reportErrors() throws ParseException {
-		if (errors.length() > 0) {
-			throw new ParseException(errors.toString());
-		}
-	}
-	
-	protected void warn(String message) {
-		warnings.append(message);
-		logger.warn(message);
-	}
 	
 	public void visit(TemplateNode node) {
 		if (node == null) return;

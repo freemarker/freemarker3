@@ -77,7 +77,7 @@ abstract public class TemplateElement extends TemplateNode {
     
     // The scoped variables defined in this element.
     
-    HashSet<String> scopedVariables;
+    HashSet<String> declaredVariables;
     
     /**
      * Processes the contents of this <tt>TemplateElement</tt> and
@@ -91,13 +91,13 @@ abstract public class TemplateElement extends TemplateNode {
     	return new BlockContext(this, enclosingScope);
     }
     
-    public boolean declaresScopedVariable(String name) {
-    	return scopedVariables != null && scopedVariables.contains(name);
+    public boolean declaresVariable(String name) {
+    	return declaredVariables != null && declaredVariables.contains(name);
     }
     
-    public void declareScopedVariable(String varName) {
-    	if (scopedVariables == null) scopedVariables = new HashSet<String>();
-    	scopedVariables.add(varName);
+    public void declareVariable(String varName) {
+    	if (declaredVariables == null) declaredVariables = new HashSet<String>();
+    	declaredVariables.add(varName);
     }
     
     public TemplateElement getNestedBlock() {
@@ -375,7 +375,7 @@ abstract public class TemplateElement extends TemplateNode {
     }
     
     public boolean createsScope() {
-    	return scopedVariables != null && !scopedVariables.isEmpty();
+    	return declaredVariables != null && !declaredVariables.isEmpty();
     }
     
     public Macro getEnclosingMacro() {

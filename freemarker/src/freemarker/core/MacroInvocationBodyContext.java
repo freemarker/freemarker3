@@ -85,6 +85,6 @@ public class MacroInvocationBodyContext extends BlockContext {
     }
     
     public boolean definesVariable(String name) {
-    	return enclosingDirective.declaresScopedVariable(name);
+    	return enclosingDirective.declaresVariable(name);
     }
 }

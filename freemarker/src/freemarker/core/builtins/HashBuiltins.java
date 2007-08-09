@@ -57,6 +57,7 @@ import java.util.List;
 import freemarker.core.Scope;
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.ast.CollectionAndSequence;
 import freemarker.template.*;
 
 /**
@@ -70,12 +71,17 @@ public class HashBuiltins extends BuiltIn {
 			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "extended hash");
 		}
 		TemplateHashModelEx hash = (TemplateHashModelEx) target;
+		TemplateCollectionModel result = null;
 		if (builtInName == "keys") {
-			return hash.keys();
+			result = hash.keys();
 		}
-		if (builtInName == "values") {
-			return hash.values();
+		else if (builtInName == "values") {
+			result = hash.values();
 		}
-		throw new InternalError("Don't know how to deal with ?" + builtInName);
+		else throw new InternalError("Don't know how to deal with ?" + builtInName);
+		if (!(result instanceof TemplateSequenceModel)) {
+			return new CollectionAndSequence(result);
+		} 
+		return result;
 	}
 }
