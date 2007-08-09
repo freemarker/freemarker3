@@ -13,10 +13,10 @@
 This is the fallback behavior for an element, we just recurse over the children.
 --]
 
-[#macro @element][#recurse][/#macro]
+[#macro @element][#recurse ][/#macro]
 
 [#macro emphasis]
-   <i>[#recurse]</i>[#t]
+   <i>[#recurse ]</i>[#t]
 [/#macro]
 
 [#macro graphic]
@@ -24,52 +24,52 @@ This is the fallback behavior for an element, we just recurse over the children.
 [/#macro]
 
 [#macro itemizedlist]
-   <ul>[#recurse]</ul>[#t]
+   <ul>[#recurse ]</ul>[#t]
 [/#macro]
 
 [#macro listitem]
-   <li>[#recurse][#t]
+   <li>[#recurse ][#t]
 [/#macro]   
 
 [#macro literal]
-    <code>[#recurse]</code>[#t]
+    <code>[#recurse ]</code>[#t]
 [/#macro]
 
 [#set markup = literal]
 
 [#macro note]
-  <i>[#recurse]</i>[#t]
+  <i>[#recurse ]</i>[#t]
 [/#macro]  
 
 [#macro caution]
-  <i>[#recurse]</i>[#t]
+  <i>[#recurse ]</i>[#t]
 [/#macro]  
 
 [#macro orderedlist]
-   <ol>[#recurse]</ol>[#t]
+   <ol>[#recurse ]</ol>[#t]
 [/#macro]
 
 [#macro para]
-  <p>[#recurse]</p>[#t]
+  <p>[#recurse ]</p>[#t]
 [/#macro]
 
 [#macro programlisting]
-  <pre>[#recurse]</pre>[#t]
+  <pre>[#recurse ]</pre>[#t]
 [/#macro]
 
 [#macro row]
-  <tr>[#recurse]</tr>  
+  <tr>[#recurse ]</tr>  
 [/#macro]
 
 [#macro tbody]
-  <tbody>[#recurse]</tbody>
+  <tbody>[#recurse ]</tbody>
 [/#macro]
 
 [#macro thead]
-   <thead>[#recurse]</thead>
+   <thead>[#recurse ]</thead>
 [/#macro]
 
 [#macro title]
-   <h1>[#recurse]</h1>
+   <h1>[#recurse ]</h1>
 [/#macro]
 

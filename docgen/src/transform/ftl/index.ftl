@@ -8,7 +8,7 @@
          [#return]
       [/#if]
       [#if node.title?has_content]
-         [#scoped title = node.title]
+         [#var title=node.title]
          [#if !node.@id!?starts_with("autoid_")]
             ${title?trim?html}[#t]
             [#return]

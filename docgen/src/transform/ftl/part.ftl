@@ -20,7 +20,7 @@
   </div>
   
   [#list .node?children as child]
-     [#if child?node_name != "title" && child?node_name != "chapter" && child?node_name != "appendix"]
+     [#if child?node_name != "title"&&child?node_name != "chapter"&&child?node_name != "appendix"]
          [#visit child using namespaces]
      [/#if]
   [/#list]

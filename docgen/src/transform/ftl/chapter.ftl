@@ -18,7 +18,7 @@
   </div>
   
   [#list .node?children as child]
-     [#if child?node_name != "title" && child?node_name != "sect1"]
+     [#if child?node_name != "title"&&child?node_name != "sect1"]
          [#visit child using [toc, htmloutput, default]]
      [/#if]
   [/#list]
