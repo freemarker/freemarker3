@@ -15,7 +15,7 @@
 [#macro _plaintext]${.node}[/#macro]
 
 [#macro Anchor node=.node]
-  [#if !disableA && node.@id[0]??]
+  [#if !disableA&&node.@id[0]??]
     <a name="${node.@id[0]!}"></a>[#t]
   [/#if]  
 [/#macro]
@@ -27,7 +27,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <link rel="stylesheet" href="fmdoc.css" type="text/css">
   <meta name="generator" content="FreeMarker-based XDocBook Stylesheet">
-  [#scoped bookTitle = .node?root.book.title]
+  [#var bookTitle=.node?root.book.title]
   <title>[#if bookTitle != title]${bookTitle?html} - [/#if]${title?html}</title>
 </head>
 <body>
@@ -58,13 +58,13 @@
 [#macro answer]
 <tr class="answer">
    <td align="left" valign="top"><b></b></td>
-   <td align="left" valign="top">[#recurse]</td></tr>
+   <td align="left" valign="top">[#recurse ]</td></tr>
 [/#macro]
 
 [#macro emphasis]
-    [#scoped role = .node.@role[0]!"none"]
+    [#var role=.node.@role[0]!"none"]
     [#if role = "term" || role = "bold" || .node?ancestors("programlisting")?has_content]
-      <b>[#recurse]</b>[#t]
+      <b>[#recurse ]</b>[#t]
     [#else]
       [#fallback] 
     [/#if]
@@ -74,28 +74,28 @@
     [#if .node?parent?parent?node_name = "thead"]
 [#-- TODO: align should be parametrized, of course. --]    
        <th align="left">[#t]
-          [#recurse][#t]
+          [#recurse ][#t]
        </th>[#lt]
     [#else]
        <td align="left">[#t]
-          [#recurse][#t]
+          [#recurse ][#t]
        </td>[#lt]
     [/#if]
 [/#macro]
 
 [#macro glossentry]
-   [#recurse]
+   [#recurse ]
 [/#macro]
 
 [#macro glossdef]
-   <dd>[#recurse]
-   [#scoped seealsos = .node.glossseealso]
+   <dd>[#recurse ]
+   [#var seealsos=.node.glossseealso]
    [#if seealsos?has_content]
     <p>See Also
      [#list seealsos as also]
-       [#scoped otherTermID = also.@otherterm]
-       [#scoped otherNode = NodeFromID(otherTermID)]
-       [#scoped term = otherNode.glossterm]
+       [#var otherTermID=also.@otherterm]
+       [#var otherNode=NodeFromID(otherTermID)]
+       [#var term=otherNode.glossterm]
        <a href="${CreateLinkFromID(also.@otherterm)}">${term}</a>[#if also_has_next],[/#if] 
      [/#list]
     </p>
@@ -105,9 +105,9 @@
 
 [#macro glosssee]
     <dd><p>See
-       [#scoped otherTermID = .node.@otherterm]
-       [#scoped otherNode = NodeFromID(otherTermID)]
-       [#scoped term = otherNode.glossterm]
+       [#var otherTermID=.node.@otherterm]
+       [#var otherNode=NodeFromID(otherTermID)]
+       [#var term=otherNode.glossterm]
        <a href="${CreateLinkFromID(otherTermID)}">${term}</a>
     </p></dd>
 [/#macro]
@@ -117,11 +117,11 @@
 [/#macro]
 
 [#macro glossterm]
-   <dt>[@Anchor .node?parent/][#recurse]</dt>
+   <dt>[@Anchor .node?parent/][#recurse ]</dt>
 [/#macro]
 
 [#macro graphic]
-  [#scoped alt, role = .node.@role[0]!?string]
+  [#var alt role=.node.@role[0]!?string]
   [#if role?starts_with("alt:")]
     [#set alt = role[4.. .node.@role?length-1]?trim]
   [#else]  
@@ -137,20 +137,20 @@
 [#macro informaltable]
    <div class="informaltable">
       <table border="1" cellpadding="4">
-         [#recurse]
+         [#recurse ]
       </table>
    </div>
 [/#macro]
 
 [#macro itemizedlist]
-    [#scoped packed = .node.@spacing[0]! = "compact"] 
-    [#scoped prevCompactPara = compactPara]
+    [#var packed=.node.@spacing[0]! = "compact"] 
+    [#var prevCompactPara=compactPara]
     [#if packed]
        [#set compactPara = true]
     [/#if]
     [@CantNestedIntoP]
     <div class="itemizedlist">
-        [#scoped mark = .node.@mark[0]!]
+        [#var mark=.node.@mark[0]!]
         [#if mark = "bullet"]
             <ul type="disc">[#t]
         [#elseif mark = "box"]
@@ -162,7 +162,7 @@
         [#else]
             <ul type="${mark?html}">[#t]
         [/#if]
-        [#recurse]
+        [#recurse ]
         </ul>[#t]
     </div>
     [/@CantNestedIntoP]
@@ -170,30 +170,30 @@
 [/#macro]
 
 [#macro link]
-   <a href="${CreateLinkFromID(.node.@linkend)?html}">[#recurse]</a>[#t]
+   <a href="${CreateLinkFromID(.node.@linkend)?html}">[#recurse ]</a>[#t]
 [/#macro]
 
 [#macro listitem]
-   [#scoped mark = .node?parent.@mark[0]!]
+   [#var mark=.node?parent.@mark[0]!]
    [#if mark != ""]
        <li style="list-style-type: ${mark?html}">[#t]
    [#else]
        <li>[#t]
    [/#if]
-   [#recurse]
+   [#recurse ]
    </li>[#t]
 [/#macro]
 
 [#macro _inline_monospaced]
-    [#scoped moreStyle="", color = "#A03D10"]
+    [#var moreStyle="" color="#A03D10"]
     [#if .node?ancestors("link")?has_content]
         [#-- If we are within a link, we don't change color, just use the regular link color --]   
-        <tt>[#recurse]</tt>[#t]
+        <tt>[#recurse ]</tt>[#t]
     [#else]
         [#if fontBgColor! != ""]
             [#set moreStyle = "; background-color:${fontBgColor}"]
         [/#if]
-        <tt style="color: #A03D10${moreStyle}">[#recurse]</tt>[#t]
+        <tt style="color: #A03D10${moreStyle}">[#recurse ]</tt>[#t]
     [/#if]
 [/#macro]
 
@@ -228,51 +228,51 @@
 [#macro note]
 <div style="margin-left: 0.5in; margin-right: 0.5in;">
    <h3>Note</h3>
-   [#recurse]
+   [#recurse ]
 </div>
 [/#macro]  
 
 [#macro caution]
 <div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;">
    <h3>Caution</h3>
-   [#recurse]
+   [#recurse ]
 </div>
 [/#macro]  
 
 [#macro olink]
-    <a href="${olinks[.node.@targetdoc]}">[#recurse]</a>[#t]
+    <a href="${olinks[.node.@targetdoc]}">[#recurse ]</a>[#t]
 [/#macro]
 
 [#macro orderedlist]
-    [#scoped packed = (.node.@spacing[0]! = "compact")] 
-    [#scoped prevCompactPara = compactPara]
+    [#var packed=(.node.@spacing[0]! = "compact")] 
+    [#var prevCompactPara=compactPara]
     [#if packed]
        [#set compactPara = true]
     [/#if]
     [@CantNestedIntoP]
-    <div class="orderedlist"><ol type="1">[#recurse]</ol></div>[#t]
+    <div class="orderedlist"><ol type="1">[#recurse ]</ol></div>[#t]
     [/@CantNestedIntoP]
     [#set compactPara = prevCompactPara]
 [/#macro]
 
 [#macro para]
-  [#scoped style]
-  [#if .node.@role[0]! == 'forProgrammers']
-    [#set style=forProgrammersStyle]
+  [#var style]
+  [#if .node.@role[0]! = "forProgrammers"]
+    [#set style = forProgrammersStyle]
   [/#if]
   [#if compactPara!]
     [#if style??]
       <span style="${style}">[#t]
     [/#if]
-    [#recurse]
+    [#recurse ]
     [#if style??]
       </span>[#t]
     [/#if]
   [#else]
-    [#scoped content]
+    [#var content]
     [#set inHtmlP = true]
     <p[#if style??] style="${style}"[/#if]>[#t]
-    [#set content][#recurse][/#set][#t]
+    [#set content][#recurse ][/#set][#t]
     [#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. --]
     [#if !content?matches(r".*<p>\s*$", "s")]
         ${content}</p>[#t]
@@ -296,40 +296,39 @@
 [/#macro]
 
 [#macro phrase]
-  [#scoped lastFontBgColor = fontBgColor]
-  [#scoped moreStyle=""]
-  [#scoped role = .node.@role[0]!]
-  [#scoped bgcolors = {"markedComment" : "#6af666", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#8acbfa", "markedInterpolation" : "#ffb85d", "markedFTLTag" : "#dbfe5e"}]
+  [#var lastFontBgColor=fontBgColor]
+  [#var moreStyle=""]
+  [#var role=.node.@role[0]!]
+  [#var bgcolors={"markedComment" : "#6af666", "markedTemplate" : "#D8D8D8", "markedDataModel" : "#99CCFF", "markedOutput" : "#CCFFCC", "markedText" : "#8acbfa", "markedInterpolation" : "#ffb85d", "markedFTLTag" : "#dbfe5e"}]
   [#if role = "homepage"]
     http://freemarker.org[#t]
   [#elseif role = "markedInvisibleText"]
     [#if fontBgColor! != ""]
       [#set moreStyle = ";background-color:${fontBgColor}"]
     [/#if]
-    <i><span style="color: #999999 ${moreStyle}">[#recurse]</span></i>[#t]
+    <i><span style="color: #999999 ${moreStyle}">[#recurse ]</span></i>[#t]
   [#elseif role = "forProgrammers"]
     [#if fontBgColor! != ""]
       [#set moreStyle = ";background-color:${fontBgColor}"]
     [/#if]
-    <span style="${forProgrammersStyle}${moreStyle}">[#recurse]</span>[#t]
+    <span style="${forProgrammersStyle}${moreStyle}">[#recurse ]</span>[#t]
   [#else]
     [#set lastFontBgColor = fontBgColor!]
     [#set fontBgColor = bgcolors[role]]
-    <span style="background-color:${bgcolors[role]}">[#recurse]</span>[#t]
+    <span style="background-color:${bgcolors[role]}">[#recurse ]</span>[#t]
     [#set fontBgColor = lastFontBgColor]
   [/#if]
 [/#macro]
 
 [#macro programlisting]
   [@Anchor/]
-  [#scoped content bgcolor]
-  [#scoped role = .node.@role[0]!?string]
-  [#scoped dotidx = role?index_of(".")]
+  [#var content bgcolor]
+  [#var role=.node.@role[0]!?string]
+  [#var dotidx=role?index_of(".")]
   [#if dotidx != -1]
     [#set role = role[0..dotidx-1]]
   [/#if]
-  [#switch role]
-      [#case "output"]
+  [#switch role][#case "output"]
          [#set bgcolor = "#CCFFCC"]
          [#break]
       [#case "dataModel"]
@@ -343,7 +342,7 @@
          [#break]
       [#case "metaTemplate"]
          <pre class="metaTemplate">[#t]
-             [#recurse]
+             [#recurse ]
          </pre>[#lt]
          [#return]
       [#default]
@@ -362,7 +361,7 @@
         <td>[#t]
           <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="4" border="0" width="100%" style="margin: 0px">[#t]
             <tr><td><pre style="margin: 0px">[#t]
-            [#local content][#recurse][/#local]
+            [#local content][#recurse ][/#local]
             ${content?chop_linebreak}&nbsp;<span style="font-size: 1pt"> </span></pre></td></tr>[#t]
           </table>[#t]
         </td>[#t]
@@ -380,14 +379,14 @@
 
 [#macro qandaset]
 <div class="qandaset">
-[#scoped prevCompactPara = compactPara!]
+[#var prevCompactPara=compactPara!]
 [#set compactPara = true]
 [#set qaIndex = 1]
 <table border=0 cellpadding=0 cellspacing=4>
 [#list .node.qandaentry as qandaentry]
   <tr align="left" valign="top">
     <td>${qaIndex}.&nbsp;&nbsp;
-    [#scoped prevDisableA = disableA!]
+    [#var prevDisableA=disableA!]
     [#set disableA = true]
     <td>
     <a href="#${qandaentry.@id[0]!"faq_question_"+qaIndex}">
@@ -402,20 +401,20 @@
 [#set qaIndex = 1]
 <table border="0">
 <col align="left" width="1%">
-<tbody>[#recurse]</tbody>
+<tbody>[#recurse ]</tbody>
 </table>
   
 </div>
 [/#macro]
 
 [#macro question]
-[#scoped prevCompactPara = compactPara!]
+[#var prevCompactPara=compactPara!]
 [#set compactPara = true]
 <tr class="question">
   <td align="left" valign="bottom" colspan="2">
     [@Anchor .node?parent/]<a name="faq_question_${qaIndex}"></a><br>
     &nbsp;<br>
-    ${qaIndex}.&nbsp;&nbsp;[#recurse]<br>
+    ${qaIndex}.&nbsp;&nbsp;[#recurse ]<br>
     &nbsp;
   </td>
 </tr>
@@ -425,19 +424,19 @@
 
 [#macro remark]
   [#if showEditorNotes]
-    <p style="background-color:#FFFF00">[[#recurse]]</p>[#t]
+    <p style="background-color:#FFFF00">[[#recurse ]]</p>[#t]
   [/#if]
 [/#macro] 
 
 [#macro replaceable]
-  [#scoped moreStyle=""]
+  [#var moreStyle=""]
   [#if .node?ancestors("markup")?has_content]
     [#if fontBgColor! != ""]
       [#set moreStyle = ";background-color:${fontBgColor}"]
     [/#if]
-    <i style="color: #DD4400 ${moreStyle}">[#recurse]</i>[#t]
+    <i style="color: #DD4400 ${moreStyle}">[#recurse ]</i>[#t]
   [#else]
-    <i>[#recurse]</i>[#t]
+    <i>[#recurse ]</i>[#t]
   [/#if]
 [/#macro]
 
@@ -446,14 +445,14 @@
 [/#macro]
 
 [#macro simplesect]
-  <div class="simplesect">[#recurse]</div>[#t]
+  <div class="simplesect">[#recurse ]</div>[#t]
 [/#macro]
 
 [#macro title]
-    [#scoped headingSize]
-    [#scoped type = .node?parent?node_name]
-    [#scoped headingSizeMap = {"@document" : 1, "appendix" : 2, "book" : 1, "chapter" : 2, "part" : 1, "preface" : 2, "sect1" : 2, "sect2" : 3, "sect3" : 4, "simplesect" : 3}]
-    [#scoped titleInitial = ""]
+    [#var headingSize]
+    [#var type=.node?parent?node_name]
+    [#var headingSizeMap={"@document" : 1, "appendix" : 2, "book" : 1, "chapter" : 2, "part" : 1, "preface" : 2, "sect1" : 2, "sect2" : 3, "sect3" : 4, "simplesect" : 3}]
+    [#var titleInitial=""]
     [#if .node?parent?node_name = "chapter"]
        [#set titleInitial = "Chapter "+chapterNumber+". "]
     [#elseif .node?parent?node_name = "appendix"]
@@ -467,9 +466,9 @@
        [#set headingSize = headingSizeMap[type]]
 <div class="titlepage">
    <div>
-     <h${headingSize}>[@Anchor .node?parent/]${titleInitial}[#recurse]</h${headingSize}>
+     <h${headingSize}>[@Anchor .node?parent/]${titleInitial}[#recurse ]</h${headingSize}>
    </div>
-        [#scoped subtitle = .node?parent.subtitle]
+        [#var subtitle=.node?parent.subtitle]
         [#if subtitle?has_content]
            [#set headingSize = headingSize+1]
            <div>
@@ -481,19 +480,19 @@
 [/#macro]
 
 [#macro ulink]
-    <a href="${.node.@url?html}">[#recurse]</a>[#t]
+    <a href="${.node.@url?html}">[#recurse ]</a>[#t]
 [/#macro]
 
 [#macro warning]
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3>Warning!</h3>
-[#recurse]
+[#recurse ]
 </div>            
 [/#macro]
 
 [#macro xref]
-   [#scoped xrefID = .node.@linkend]
-   [#scoped xrefLabel = xrefLabelLookup[xrefID]]
+   [#var xrefID=.node.@linkend]
+   [#var xrefLabel=xrefLabelLookup[xrefID]]
    <a href="${CreateLinkFromID(.node.@linkend)}">${xrefLabel}</a>[#t]
 [/#macro]
 
