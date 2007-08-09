@@ -15,7 +15,4 @@ class FreeMarkerPageContext1 extends FreeMarkerPageContext {
     static FreeMarkerPageContext create() throws TemplateModelException {
         return new FreeMarkerPageContext1();
     }
-
-    public void include (String s, boolean b) {}
-
- }
+}

@@ -22,11 +22,17 @@ class PageContextFactory {
         Class impl;
         try {
             try {
-                PageContext.class.getMethod("getExpressionEvaluator", (Class[]) null);
-                impl = Class.forName("freemarker.ext.jsp.FreeMarkerPageContext2");
+                PageContext.class.getMethod("getELContext", (Class[]) null);
+                impl = Class.forName("freemarker.ext.jsp.FreeMarkerPageContext21");
             }
-            catch(NoSuchMethodException e) {
-                impl = Class.forName("freemarker.ext.jsp.FreeMarkerPageContext1");
+            catch(NoSuchMethodException e1) {
+                try {
+                    PageContext.class.getMethod("getExpressionEvaluator", (Class[]) null);
+                    impl = Class.forName("freemarker.ext.jsp.FreeMarkerPageContext2");
+                }
+                catch(NoSuchMethodException e2) {
+                    impl = Class.forName("freemarker.ext.jsp.FreeMarkerPageContext1");
+                }
             }
             constructor = impl.getDeclaredMethod("create", (Class[]) null);
         }
@@ -60,5 +66,4 @@ class PageContextFactory {
             throw new UndeclaredThrowableException(e);
         }
     }
-    
 }
