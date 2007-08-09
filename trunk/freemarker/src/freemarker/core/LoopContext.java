@@ -131,6 +131,6 @@ public class LoopContext extends BlockContext {
     }
     
     public boolean definesVariable(String name) {
-    	return block.declaresScopedVariable(name);
+    	return block.declaresVariable(name);
     }
 }

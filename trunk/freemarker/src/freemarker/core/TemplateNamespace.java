@@ -71,9 +71,4 @@ public class TemplateNamespace extends BaseContext {
 	public Template getTemplate() {
 		return template;
 	}
-	
-	public boolean containsSetting(String name) {
-		throw new UnsupportedOperationException("This method should not be called");
-	}
-
 }

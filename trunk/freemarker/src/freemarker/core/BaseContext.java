@@ -108,57 +108,26 @@ abstract public class BaseContext implements Scope {
 	
 	public TemplateCollectionModel keys() throws TemplateModelException {
 		return new SimpleCollection(variables.keySet(), TRIVIAL_WRAPPER);
-/*		
-		TemplateCollectionModel fallbackKeys = getEnclosingScope().keys();
-		LinkedHashSet<TemplateModel> aggregate = new LinkedHashSet<TemplateModel>();
-		for (TemplateModelIterator tmi = fallbackKeys.iterator(); tmi.hasNext();) {
-			aggregate.add(tmi.next());
-		}
-		for (String varname : variables.keySet()) {
-			aggregate.add(new SimpleScalar(varname));
-		}
-		return new SimpleCollection(aggregate, TRIVIAL_WRAPPER);
-*/		
 	}
 	
 	public TemplateCollectionModel values() throws TemplateModelException {
 		return new SimpleCollection(variables.values(), TRIVIAL_WRAPPER);
-/*		
-		TemplateCollectionModel fallbackValues = getEnclosingScope().values();
-		LinkedHashSet<TemplateModel> aggregate = new LinkedHashSet<TemplateModel>();
-		for (TemplateModelIterator tmi = fallbackValues.iterator(); tmi.hasNext();) {
-			aggregate.add(tmi.next());
-		}
-		for (TemplateModel value : variables.values()) {
-			aggregate.add(value);
-		}
-		return new SimpleCollection(aggregate, TRIVIAL_WRAPPER);
-*/		
 	}
 	
 	
 	public int size() throws TemplateModelException {
 		return variables.size();
-/*		
-		Scope enclosingScope = getEnclosingScope();
-		int result = enclosingScope.size();
-		for (String varname : variables.keySet()) {
-			if (enclosingScope.get(varname) != null) 
-				++result;
-		}
-		return result;
-*/		
 	}
 	
 	public void clear() {
 		variables.clear();
 	}
 	
-        public Collection<String> getDirectVariableNames() {
-            return Collections.unmodifiableCollection(variables.keySet());
-        }
+    public Collection<String> getDirectVariableNames() {
+    	return Collections.unmodifiableCollection(variables.keySet());
+    }
 
-        // An object wrapper where everything is known to be either a string or already a TemplateModel
+    // An object wrapper where everything is known to be either a string or already a TemplateModel
 	
 	static ObjectWrapper TRIVIAL_WRAPPER = new ObjectWrapper() {
 		public TemplateModel wrap(Object obj) {

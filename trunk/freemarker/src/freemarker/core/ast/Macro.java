@@ -108,11 +108,11 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     public void setParams(ParameterList params) throws ParseException {
     	this.params = params;
     	for (String paramName : params.params) {
-    		declareScopedVariable(paramName);
+    		declareVariable(paramName);
     	}
     	String catchallVar = params.getCatchAll();
     	if (catchallVar != null) {
-    		declareScopedVariable(catchallVar);
+    		declareVariable(catchallVar);
     	}
     }
     
@@ -153,28 +153,28 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     public void canonicalizeAssignments() {
         if (createsScope() && (nestedBlock instanceof MixedContent)) {
             MixedContent block = (MixedContent) nestedBlock;
-            VarDirective scopedDirective = null;
-            Set<String> declaredVariables = new HashSet<String>();
-            declaredVariables.addAll(params.getParamNames());
+            VarDirective varDirective = null;
+            Set<String> variables = new HashSet<String>();
+            variables.addAll(params.getParamNames());
             for (TemplateElement te : block.getNestedElements()) {
                 if (te instanceof VarDirective) {
                     VarDirective sdir = (VarDirective) te; 
-                    if (scopedDirective == null){
-                        scopedDirective = sdir;
+                    if (varDirective == null){
+                        varDirective = sdir;
                     }
                     Map<String, Expression> vars = sdir.getVariables();
                     for (String varname : vars.keySet()) {
-                        declaredVariables.add(varname);
+                        variables.add(varname);
                     }
                 }
             }
-            for (String varname : scopedVariables) {
-                if (!declaredVariables.contains(varname)) {
-                    if (scopedDirective == null) {
-                        scopedDirective = new VarDirective();
-                        block.prependElement(scopedDirective);
+            for (String varname : declaredVariables) {
+                if (!variables.contains(varname)) {
+                    if (varDirective == null) {
+                        varDirective = new VarDirective();
+                        block.prependElement(varDirective);
                     }
-                    scopedDirective.addVar(varname);
+                    varDirective.addVar(varname);
                 }
             }
         }

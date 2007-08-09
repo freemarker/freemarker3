@@ -1,6 +1,9 @@
-package freemarker.core.parser;
+package freemarker.template;
 
 import freemarker.core.ast.*;
+import freemarker.core.parser.MultiParseException;
+import freemarker.core.parser.ParseException;
+import freemarker.core.parser.ParsingProblem;
 import freemarker.template.*;
 
 import java.io.StringReader;
@@ -14,9 +17,12 @@ import java.util.*;
 
 public class PostParseVisitor extends BaseASTVisitor {
 	
-	protected boolean stripWhitespace;
-	private List<ParsingProblem> problems = new ArrayList<ParsingProblem>();
+	private Template template;
 	private List<EscapeBlock> escapes = new ArrayList<EscapeBlock>();
+	
+	public PostParseVisitor(Template template) {
+		this.template = template;
+	}
 	
 	private Expression escapedExpression(Expression exp) {
 		if(escapes.isEmpty()) {
@@ -26,22 +32,12 @@ public class PostParseVisitor extends BaseASTVisitor {
 		return lastEscape.doEscape(exp);
 	}
 	
-	public void reportErrors() throws ParseException {
-		if (!problems.isEmpty()) {
-			throw new MultiParseException(problems); 
-		}
-	}
-	
-	public PostParseVisitor(boolean stripWhitespace) {
-		this.stripWhitespace = stripWhitespace;
-	}
-	
 	public void visit(InvalidExpression node) {
-		problems.add(new ParsingProblem(node.getMessage() + " " + node.getSource(), node));
+		template.addParsingProblem(new ParsingProblem(node.getMessage() + " " + node.getSource(), node));
 	}
 	
 	public void visit(UnclosedElement node) {
-		problems.add(new ParsingProblem(node.getDescription(), node));
+		template.addParsingProblem(new ParsingProblem(node.getDescription(), node));
 	}
 	
 	public void visit(AndExpression node) {
@@ -57,11 +53,11 @@ public class PostParseVisitor extends BaseASTVisitor {
         	Macro macro = getContainingMacro(node);
         	if (macro == null) {
         		ParsingProblem problem = new ParsingProblem("The local directive can only be used inside a function or macro.", node);
-        		problems.add(problem);
+        		template.addParsingProblem(problem);
         	}
         	else for (String varname : node.getVarNames()) {
-        		if (!macro.declaresScopedVariable(varname)) {
-       				macro.declareScopedVariable(varname);
+        		if (!macro.declaresVariable(varname)) {
+       				macro.declareVariable(varname);
         		}
         	}
         }
@@ -72,10 +68,10 @@ public class PostParseVisitor extends BaseASTVisitor {
 		if (node.type == AssignmentInstruction.LOCAL) {
 			Macro macro = getContainingMacro(node);
 			if (macro == null) {
-				problems.add(new ParsingProblem("The local directive can only be used inside a function or macro.", node));
+				template.addParsingProblem(new ParsingProblem("The local directive can only be used inside a function or macro.", node));
 			} else {
-				if (!macro.declaresScopedVariable(node.varName)) {
-					macro.declareScopedVariable(node.varName);
+				if (!macro.declaresVariable(node.varName)) {
+					macro.declareVariable(node.varName);
 				}
 			}
 		}
@@ -85,7 +81,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		super.visit(node);
 		if (node.findImplementation()==null) {
 			ParsingProblem problem = new ParsingProblem("Unknown builtin: " + node.getName(), node);
-			problems.add(problem);
+			template.addParsingProblem(problem);
 		}
 	}
 	
@@ -103,7 +99,7 @@ public class PostParseVisitor extends BaseASTVisitor {
             try {
             	cblock.setLocation(node.getTemplate(), cblock, node);
             } catch (ParseException pe) {
-            	problems.add(new ParsingProblem(pe.getMessage(), node));
+            	template.addParsingProblem(new ParsingProblem(pe.getMessage(), node));
             }
             node.getParent().replace(node, cblock);
             visit(cblock);
@@ -127,7 +123,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		}
 		if (parent == null) {
 			String msg = "\n" + node.getStartLocation();
-			problems.add(new ParsingProblem("The noescape directive only makes sense inside an escape block.", node));
+			template.addParsingProblem(new ParsingProblem("The noescape directive only makes sense inside an escape block.", node));
 		}
 		EscapeBlock last = escapes.remove(escapes.size() -1);
 		super.visit(node);
@@ -135,9 +131,9 @@ public class PostParseVisitor extends BaseASTVisitor {
 	}
 	
 	public void visit(IteratorBlock node) {
-		node.declareScopedVariable(node.indexName);
-		node.declareScopedVariable(node.indexName + "_has_next");
-		node.declareScopedVariable(node.indexName + "_index");
+		node.declareVariable(node.indexName);
+		node.declareVariable(node.indexName + "_has_next");
+		node.declareVariable(node.indexName + "_index");
 		super.visit(node);
 	}
 	
@@ -148,19 +144,10 @@ public class PostParseVisitor extends BaseASTVisitor {
 		super.visit(node);
 	}
 	
-	public void visit(AttemptBlock node) {
-		PostParseVisitor ppv = new PostParseVisitor(this.stripWhitespace);
-		ppv.visit(node.getAttemptBlock());
-		if (!ppv.problems.isEmpty()) {
-			node.setParsingProblems(ppv.problems);
-		}
-		visit(node.getRecoverBlock());
-	}
-	
 	public void visit(FallbackInstruction node) {
 		super.visit(node);
 		if (getContainingMacro(node) == null) {
-			problems.add(new ParsingProblem("The fallback directive can only be used inside a macro", node));
+			template.addParsingProblem(new ParsingProblem("The fallback directive can only be used inside a macro", node));
 		}
 	}
 	
@@ -171,7 +158,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 			parent = parent.getParent();
 		}
 		if (parent == null) {
-			problems.add(new ParsingProblem("The break directive can only be used within a loop or a switch-case construct.", node));
+			template.addParsingProblem(new ParsingProblem("The break directive can only be used within a loop or a switch-case construct.", node));
 		}
 	}
 	
@@ -179,7 +166,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		super.visit(node);
 		Macro macro = getContainingMacro(node);
 		if (macro == null) {
-			problems.add(new ParsingProblem("The nested directive can only be used inside a function or macro.", node));
+			template.addParsingProblem(new ParsingProblem("The nested directive can only be used inside a function or macro.", node));
 		}
 	}
 	
@@ -190,14 +177,14 @@ public class PostParseVisitor extends BaseASTVisitor {
 			parent = parent.getParent();
 		}
 		if (parent == null) {
-       		problems.add(new ParsingProblem("The return directive can only be used inside a function or macro.", node));
+       		template.addParsingProblem(new ParsingProblem("The return directive can only be used inside a function or macro.", node));
 		} else {
 			Macro macro = (Macro) parent;
 			if (!macro.isFunction() && node.returnExp != null) {
-				problems.add(new ParsingProblem("Can only return a value from a function, not a macro", node));
+				template.addParsingProblem(new ParsingProblem("Can only return a value from a function, not a macro", node));
 			}
 			else if (macro.isFunction() && node.returnExp == null) {
-				problems.add(new ParsingProblem("A function must return a value.", node));
+				template.addParsingProblem(new ParsingProblem("A function must return a value.", node));
 			}
 		}
 	}
@@ -209,7 +196,7 @@ public class PostParseVisitor extends BaseASTVisitor {
         }
         if (parent != null) {
         	for (String key : node.getVariables().keySet()) {
-       			parent.declareScopedVariable(key);
+       			parent.declareVariable(key);
         	}
         }
 	}
@@ -220,7 +207,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		for (TemplateElement te : node.getCases()) {
 			if (((Case) te).isDefault) {
 				if (foundDefaultCase) {
-					problems.add(new ParsingProblem("You can only have one default case in a switch construct.", node));
+					template.addParsingProblem(new ParsingProblem("You can only have one default case in a switch construct.", node));
 				}
 				foundDefaultCase = true;
 			}
@@ -228,7 +215,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 	}
 	
 	public void visit(TextBlock node) {
-		node.whitespaceAdjust(!stripWhitespace);
+		node.whitespaceAdjust(!template.stripWhitespace);
 	}
 	
 	public void visit(OrExpression node) {
@@ -261,7 +248,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		super.visit(node);
 		TemplateModel target = node.target.literalValue();
 		if (target != null && !(target instanceof TemplateHashModel)) {
-			problems.add(new ParsingProblem("Expression " + node.target.getSource() + " is not a hash type.", node.target));
+			template.addParsingProblem(new ParsingProblem("Expression " + node.target.getSource() + " is not a hash type.", node.target));
 		}
 	}
 	
@@ -270,7 +257,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 		TemplateModel target = node.target.literalValue();
 		if (target != null && !(target instanceof TemplateHashModel) && !(target instanceof TemplateSequenceModel)) {
 			String msg = "Expression: " + node.target.getSource() + " is not a hash or sequence type.";
-			problems.add(new ParsingProblem(msg, node.target));
+			template.addParsingProblem(new ParsingProblem(msg, node.target));
 		}
 		if (!(node.nameExpression instanceof Range)) {
 			checkLiteralInScalarContext(node.nameExpression);
@@ -291,7 +278,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 			} catch (ParseException pe) {
 				String msg = "Error in string " + node.getStartLocation();
 				msg += "\n" + pe.getMessage();
-				problems.add(new ParsingProblem(msg, node));
+				template.addParsingProblem(new ParsingProblem(msg, node));
 			}
 		}
 	}
@@ -313,7 +300,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 	
 	protected void recurse(TemplateElement node){
 		super.recurse(node);
-		if (stripWhitespace) {
+		if (template.stripWhitespace) {
 			node.removeIgnorableChildren();
 		}
 	}
@@ -327,7 +314,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 			} else {
 				msg = "Expression: " + exp.getSource() + " is not a boolean (true/false) value.";
 			}
-			problems.add(new ParsingProblem(msg, exp));
+			template.addParsingProblem(new ParsingProblem(msg, exp));
 		}
 	}
 	
@@ -340,7 +327,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 			} else {
 				msg = "Expression: " + exp.getSource() + " is not a string.";
 			}
-			problems.add(new ParsingProblem(msg, exp));
+			template.addParsingProblem(new ParsingProblem(msg, exp));
 		}
 	}
 	
@@ -353,7 +340,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 			} else {
 				msg = "Expression: " + exp.getSource() + " is not a numerical value.";
 			}
-			problems.add(new ParsingProblem(msg, exp));
+			template.addParsingProblem(new ParsingProblem(msg, exp));
 		}
 	}
 	
@@ -369,7 +356,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 			} else {
 				msg = "Expression: " + exp.getSource() + " is not a string, date, or number.";
 			}
-			problems.add(new ParsingProblem(msg, exp));
+			template.addParsingProblem(new ParsingProblem(msg, exp));
 		}
 	}
 	

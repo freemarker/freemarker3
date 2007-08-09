@@ -3,9 +3,9 @@
 <title>FreeMarker: List Iterator Test</title>
 </head>
 <body>
-<#assign list= ["one", "two", "three", "four", "five"]>
-<#assign hash = {"key" : list}>
-<#assign  hash2 = {"value" : hash}>
+[#assign list = ["one", "two", "three", "four", "five"]]
+[#assign hash = {"key" : list}]
+[#assign hash2 = {"value" : hash}]
 
 <p>A simple test follows:</p>
 
@@ -13,43 +13,43 @@
 
 <p>Now iterate over a list:</p>
 
-<#foreach item in list>
+[#list list as item]
 <p>${item}</p>
-</#foreach>
+[/#list]
 
 <p>Now iterate again:</p>
 
-<#list list as item>
+[#list list as item]
 <p>${item_index}. ${item}</p>
-</#list>
+[/#list]
 
 <p>Iterate over a list in a hash:</p>
 
-<#list hash.key as item>
+[#list hash.key as item]
 <p>${item}</p>
-</#list>
+[/#list]
 
-<#foreach item in hash.key>
+[#list hash.key as item]
 <p>${item}</p>
-</#foreach>
+[/#list]
 
-<#foreach item in hash[ "key" ]>
+[#list hash["key"] as item]
 <p>${item}</p>
-</#foreach>
+[/#list]
 
-<#list hash["key"] as item>
+[#list hash["key"] as item]
 <p>${item}</p>
-</#list>
+[/#list]
 
 <p>Now test the list and foreach keywords...</p>
 
-<#list hash2["value"].key as key>
+[#list hash2["value"].key as key]
 <p>${key}</p>
-</#list>
+[/#list]
 
-<#foreach az in hash2.value.key>
+[#list hash2.value.key as az]
 <p>${az}</p>
-</#foreach>
+[/#list]
 
 </body>
 </html>

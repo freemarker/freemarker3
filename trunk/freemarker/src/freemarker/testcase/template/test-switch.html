@@ -5,32 +5,30 @@
 <body>
 
 <p>Here we iterate over a list of animals.</p>
-<#assign animalList = [ "aardvark", "kiwi", "gecko", "cat", "dog", "elephant",
-    "squirrel", "zebra" ]>
-<#assign favoriteAnimal = "kiwi">
+[#assign animalList = ["aardvark", "kiwi", "gecko", "cat", "dog", "elephant", "squirrel", "zebra"]]
+[#assign favoriteAnimal = "kiwi"]
 
-<#foreach animal in animalList>
+[#list animalList as animal]
 <p>Animal is: ${animal}.<br />
-<#switch animal>
-    <#case "zebra">
+[#switch animal][#case "zebra"]
         This is the HTML for a large stripey animal.
-    <#case "elephant">
-    <#case "rhinocerous">
+    [#case "elephant"]
+    [#case "rhinocerous"]
         This is the HTML for large animals.
-        <#break>
-    <#case "squirrel">
-    <#case "gecko">
+        [#break]
+    [#case "squirrel"]
+    [#case "gecko"]
         This is the HTML for small animals.
-        <#break>
-    <#case favoriteAnimal>
+        [#break]
+    [#case favoriteAnimal]
         This is the HTML for the user's favorite animal.
-        <#break>
-    <#default>
+        [#break]
+    [#default]
         This is the HTML for other animals.
-        <#break>
-</#switch>
+        [#break]
+[/#switch]
 </p>
-</#foreach>
+[/#list]
 
 </body>
 </html>

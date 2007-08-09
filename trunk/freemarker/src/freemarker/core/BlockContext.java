@@ -27,7 +27,7 @@ public class BlockContext extends BaseContext {
 	}
 	
 	public boolean definesVariable(String name) {
-		return getBlock().declaresScopedVariable(name);
+		return getBlock().declaresVariable(name);
 	}
 
 	public TemplateElement getBlock() {

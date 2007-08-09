@@ -111,7 +111,7 @@ public class MacroContext extends BlockContext {
 	}
 
 	public boolean definesVariable(String name) {
-		return macro.declaresScopedVariable(name);
+		return macro.declaresVariable(name);
 	}
 }
 
