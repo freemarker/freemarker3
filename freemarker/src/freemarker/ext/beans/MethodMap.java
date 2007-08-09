@@ -185,6 +185,7 @@ class MethodMap<T extends Member>
             UnwrapTypes previousTypes = unwrapTypes[i];
             if(previousTypes != null && previousTypes.isVarArg()) {
                 newTypes.update(previousTypes);
+                break;
             }
         }
         // Vararg unwrap spec with exactly one parameter more than the current
