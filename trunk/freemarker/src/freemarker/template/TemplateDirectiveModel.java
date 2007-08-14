@@ -18,10 +18,10 @@ import java.util.Map;
  * @author Attila Szegedi
  * @version $Id: $
  */
-public interface TemplateRunnableModel extends TemplateModel
+public interface TemplateDirectiveModel extends TemplateModel
 {
     /**
-     * Executes this runnable once.
+     * Executes this directive once.
      * @param out the writer to write the output to
      * @param args the arguments (if any) passed to the transformation as a 
      * map of key/value pairs where the keys are strings and the arguments are
@@ -32,6 +32,6 @@ public interface TemplateRunnableModel extends TemplateModel
      * @throws TemplateException
      * @throws IOException
      */
-    public void run(Writer out, Map<String, TemplateModel> args, 
-            TemplateRunnableBody body) throws TemplateException, IOException;
+    public void execute(Writer out, Map<String, TemplateModel> args, 
+            TemplateDirectiveBody body) throws TemplateException, IOException;
 }

@@ -14,16 +14,16 @@ import javax.servlet.jsp.tagext.Tag;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateRunnableBody;
-import freemarker.template.TemplateRunnableModel;
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateDirectiveModel;
 
 /**
  * @author Attila Szegedi
  * @version $Id: $
  */
-class SimpleTagRunnableModel extends JspTagModelBase<SimpleTag> implements TemplateRunnableModel
+class SimpleTagDirectiveModel extends JspTagModelBase<SimpleTag> implements TemplateDirectiveModel
 {
-    protected SimpleTagRunnableModel(Class<? extends SimpleTag> tagClass) throws IntrospectionException {
+    protected SimpleTagDirectiveModel(Class<? extends SimpleTag> tagClass) throws IntrospectionException {
         super(tagClass);
         if(!SimpleTag.class.isAssignableFrom(tagClass)) {
             throw new IllegalArgumentException(tagClass.getName() + 
@@ -33,7 +33,7 @@ class SimpleTagRunnableModel extends JspTagModelBase<SimpleTag> implements Templ
         }
     }
 
-    public void run(Writer out, Map<String, TemplateModel> args, final TemplateRunnableBody body) 
+    public void execute(Writer out, Map<String, TemplateModel> args, final TemplateDirectiveBody body) 
     throws TemplateException, IOException {
         try {
             SimpleTag tag = getTagInstance();

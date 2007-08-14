@@ -61,10 +61,10 @@ import java.util.Map;
  * block to perform arbitrary transformations on a part of the template
  * processing output, as well as in user-defined directive calls.
  * Note that you can also implement macro-like 
- * user-defined directives using {@link TemplateRunnableModel} as well. This
+ * user-defined directives using {@link TemplateDirectiveModel} as well. This
  * interface presents a different programming paradigm - for certain purposes
  * it is easier to implement a user-defined directive using this interface, for
- * other purposes you might find {@link TemplateRunnableModel} more handy. As 
+ * other purposes you might find {@link TemplateDirectiveModel} more handy. As 
  * far as the template engine is concerned, you can use both equivalently as a 
  * user-defined directive.
  * <P>Note that, as of FreeMarker 2.1, TemplateTransform Model
