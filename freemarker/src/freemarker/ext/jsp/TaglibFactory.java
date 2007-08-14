@@ -595,7 +595,7 @@ public class TaglibFactory implements TemplateHashModel {
                         impl = new TagTransformModel(tagClass); 
                     }
                     else {
-                        impl = new SimpleTagRunnableModel(tagClass); 
+                        impl = new SimpleTagDirectiveModel(tagClass); 
                     }
                     tags.put(tagName, impl);
                     tagName = null;

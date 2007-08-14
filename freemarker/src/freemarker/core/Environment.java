@@ -277,14 +277,14 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public void render(final TemplateElement element,
-            TemplateRunnableModel runnableModel, Map<String, TemplateModel> args)
+            TemplateDirectiveModel directiveModel, Map<String, TemplateModel> args)
             throws TemplateException, IOException {
-        TemplateRunnableBody nested;
+        TemplateDirectiveBody nested;
         if(element == null) {
             nested = null;
         }
         else {
-            nested = new TemplateRunnableBody() {
+            nested = new TemplateDirectiveBody() {
                 public void render(Writer newOut) throws TemplateException, IOException {
                     if(newOut == null) {
                         Environment.this.render(element);
@@ -302,7 +302,7 @@ public final class Environment extends Configurable implements Scope {
                 }
             };
         }
-        runnableModel.run(out, args, nested);
+        directiveModel.execute(out, args, nested);
     }
     
     /**
