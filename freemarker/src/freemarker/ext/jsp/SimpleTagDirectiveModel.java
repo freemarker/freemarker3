@@ -62,9 +62,17 @@ class SimpleTagDirectiveModel extends JspTagModelBase<SimpleTag> implements Temp
                         }
                     }
                 });
+                pageContext.pushTopTag(tag);
+                try {
+                    tag.doTag();
+                }
+                finally {
+                    pageContext.popTopTag();
+                }
             }
-            //TODO: set it as top tag?
-            tag.doTag();
+            else {
+                tag.doTag();
+            }
         }
         catch(TemplateException e) {
             throw e;
