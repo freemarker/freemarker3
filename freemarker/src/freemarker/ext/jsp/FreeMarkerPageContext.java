@@ -102,6 +102,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * @version $Id: FreeMarkerPageContext.java,v 1.27 2005/10/26 17:57:03 revusky Exp $
@@ -432,10 +433,17 @@ abstract class FreeMarkerPageContext extends PageContext implements TemplateMode
         return (JspWriter) getAttribute(OUT);
     }
 
-    Tag peekTopTag() {
-        return tags.isEmpty() ? null : (Tag) tags.get(tags.size() - 1);
+    <T> T peekTopTag(Class<T> tagClass) {
+        for (ListIterator iter = tags.listIterator(tags.size()); iter.hasPrevious();)
+        {
+            Object tag = iter.next();
+            if(tagClass.isInstance(tag)) {
+                return tagClass.cast(tag);
+            }
+        }
+        return null;
     }  
-    
+
     void popTopTag() {
         tags.remove(tags.size() - 1);
     }  
@@ -445,7 +453,7 @@ abstract class FreeMarkerPageContext extends PageContext implements TemplateMode
         setAttribute(OUT, jspOut);
     }
     
-    void pushTopTag(Tag tag) {
+    void pushTopTag(Object tag) {
         tags.add(tag);
     } 
     
