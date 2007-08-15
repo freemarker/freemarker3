@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.JspFragment;
+import javax.servlet.jsp.tagext.JspTag;
 import javax.servlet.jsp.tagext.SimpleTag;
 import javax.servlet.jsp.tagext.Tag;
 
@@ -39,7 +40,7 @@ class SimpleTagDirectiveModel extends JspTagModelBase<SimpleTag> implements Temp
             SimpleTag tag = getTagInstance();
             final FreeMarkerPageContext pageContext = PageContextFactory.getCurrentPageContext();
             tag.setJspContext(pageContext);
-            Tag parentTag = pageContext.peekTopTag();
+            JspTag parentTag = pageContext.peekTopTag(JspTag.class);
             if(parentTag != null) {
                 tag.setParent(parentTag);
             }

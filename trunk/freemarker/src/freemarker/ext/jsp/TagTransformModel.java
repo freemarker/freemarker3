@@ -52,20 +52,12 @@
 
 package freemarker.ext.jsp;
 
-import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.CharArrayReader;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;
@@ -73,19 +65,14 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTag;
 import javax.servlet.jsp.tagext.IterationTag;
-import javax.servlet.jsp.tagext.JspTag;
 import javax.servlet.jsp.tagext.Tag;
 import javax.servlet.jsp.tagext.TryCatchFinally;
 
-import freemarker.ext.beans.BeansWrapper;
 import freemarker.log.Logger;
-import freemarker.template.ObjectWrapper;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateTransformModel;
 import freemarker.template.TransformControl;
 import freemarker.template.utility.SecurityUtilities;
-import freemarker.template.utility.StringUtil;
 
 /**
  * @version $Id: TagTransformModel.java,v 1.17 2005/06/11 12:13:39 szegedia Exp $
@@ -113,8 +100,10 @@ class TagTransformModel extends JspTagModelBase<Tag> implements TemplateTransfor
         try {
             Tag tag = getTagInstance();
             FreeMarkerPageContext pageContext = PageContextFactory.getCurrentPageContext();
-            Tag parentTag = pageContext.peekTopTag();
-            tag.setParent(parentTag);
+            Tag parentTag = pageContext.peekTopTag(Tag.class);
+            if(parentTag != null) {
+                tag.setParent(parentTag);
+            }
             tag.setPageContext(pageContext);
             setupTag(tag, args, pageContext.getObjectWrapper());
             // If the parent of this writer is not a JspWriter itself, use
