@@ -102,6 +102,8 @@ import java.util.Map;
  * 
  * <P>Implementions of <tt>TemplateTransformModel</tt> should be thread-safe.
  *
+ * @deprecated Use {@link TemplateDirectiveModel} instead.
+ *
  * @version $Id: TemplateTransformModel.java,v 1.36 2003/04/11 20:57:32 revusky Exp $
  */
 public interface TemplateTransformModel extends TemplateModel {
