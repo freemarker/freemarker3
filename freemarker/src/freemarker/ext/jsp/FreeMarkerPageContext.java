@@ -436,7 +436,7 @@ abstract class FreeMarkerPageContext extends PageContext implements TemplateMode
     <T> T peekTopTag(Class<T> tagClass) {
         for (ListIterator iter = tags.listIterator(tags.size()); iter.hasPrevious();)
         {
-            Object tag = iter.next();
+            Object tag = iter.previous();
             if(tagClass.isInstance(tag)) {
                 return tagClass.cast(tag);
             }
