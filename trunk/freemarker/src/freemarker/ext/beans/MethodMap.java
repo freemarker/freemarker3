@@ -575,8 +575,8 @@ class MethodMap<T extends Member>
         
         private String listArgumentTypes()
         {
-            StringBuffer buf = 
-                new StringBuffer(classes.length * 32).append('(');
+            StringBuilder buf = 
+                new StringBuilder(classes.length * 32).append('(');
             for(int i = 0; i < classes.length; ++i)
             {
                 buf.append(classes[i].getName()).append(',');

@@ -136,7 +136,7 @@ public class ParameterList extends TemplateNode {
 		}
 		if (!argsMap.isEmpty()) {
 			// TODO location info
-			StringBuffer msg = new StringBuffer("Extraneous parameter(s) ");
+			StringBuilder msg = new StringBuilder("Extraneous parameter(s) ");
 			for (String s : argsMap.keySet()) {
 				msg.append(' ').append(s);
 			}

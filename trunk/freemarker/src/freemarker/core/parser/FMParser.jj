@@ -368,6 +368,10 @@ TOKEN:
     |
     <#CLOSE_TAG2 : (<BLANK>)* ("/")? (">" | "]")>
     |
+//    <CLOSE_BLOCK : ("</#" | "[/#"
+//    |
+    <ABBREVIATED_END_TAG : "</#>" | "[/#]"> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    |
     <ATTEMPT : <START_TAG> "attempt" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
     |
     <RECOVER : <START_TAG> "recover" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);} 
@@ -877,6 +881,14 @@ Token KeepGoingUntil(int type) {
 	} while (t.kind != type && t.kind != EOF);
 	if (t.kind == type) {
 		this.token = t;
+	}
+	return t;
+}
+
+JAVACODE
+Token CloseBlock(String directiveName) {
+	Token t = getNextToken();
+	if (t.kind == ABBREVIATED_END_TAG) {
 	}
 	return t;
 }
@@ -1746,7 +1758,7 @@ TemplateElement If() :
             ifBlock.addBlock(cblock);
          }
    ]
-   end=<END_IF>
+   (end=<END_IF> | end=<ABBREVIATED_END_TAG>)
    {
        ifBlock.setLocation(template, start, end);
        return ifBlock;
@@ -1777,6 +1789,8 @@ AttemptBlock Attempt() :
       end=<END_RECOVER>
       |
       end=<END_ATTEMPT>
+      |
+      end=<ABBREVIATED_END_TAG>
    )
    {
       AttemptBlock result = new AttemptBlock(block, recoveryBlock);
@@ -1817,7 +1831,7 @@ TemplateElement List() :
    index=<ID>
    <DIRECTIVE_END>
    block=OptionalBlock()
-   end=<END_LIST>
+   (end=<END_LIST> | end=<ABBREVIATED_END_TAG>)
    {
      IteratorBlock result = new IteratorBlock(exp,
                                               index.image,
@@ -1841,7 +1855,7 @@ IteratorBlock ForEach() :
    exp=Exp()
    <DIRECTIVE_END>
    block=OptionalBlock()
-   end=<END_FOREACH>
+   (end=<END_FOREACH> | end=<ABBREVIATED_END_TAG>)
    {
      IteratorBlock result = new IteratorBlock(exp,
                                               index.image,
@@ -2108,6 +2122,8 @@ TemplateElement Assign() :
           end=<END_GLOBAL> {if (type != AssignmentInstruction.GLOBAL) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags", end.beginLine, end.beginColumn);}
 	   	  |
 		  end=<END_SET> {if (type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags", end.beginLine, end.beginColumn);}
+		  |
+		  end=<ABBREVIATED_END_TAG>
        )
        {
           BlockAssignment ba = new BlockAssignment(block, varName, type, nsExp);
@@ -2297,6 +2313,8 @@ Macro Macro() :
         end=<END_MACRO> { if(result.isFunction()) throw new ParseException(getErrorStart(start) + "\nExpected function end tag here.", start.beginLine, start.endLine); }
         |
         end=<END_FUNCTION> { if(!result.isFunction()) throw new ParseException(getErrorStart(start) + "\nExpected macro end tag here.", start.beginLine, start.endLine); }
+        |
+        end=<ABBREVIATED_END_TAG>
     )
     {
 	   result.setName(name);
@@ -2321,7 +2339,7 @@ CompressedBlock Compress() :
 {
     start=<COMPRESS>
     block=OptionalBlock()
-    end=<END_COMPRESS>
+    (end=<END_COMPRESS> | end=<ABBREVIATED_END_TAG>)
     {
        CompressedBlock cb = new CompressedBlock(block);
        cb.setLocation(template, start, end);
@@ -2576,7 +2594,11 @@ TransformBlock Transform() :
     (
        end=<EMPTY_DIRECTIVE_END>
        |
-       (<DIRECTIVE_END>content=OptionalBlock()end=<END_TRANSFORM>)
+       (
+          <DIRECTIVE_END>
+          content=OptionalBlock()
+          (end=<END_TRANSFORM>|end=<ABBREVIATED_END_TAG>)
+       )
     )
     {
        TransformBlock result = new TransformBlock(exp, args, content);
@@ -2616,7 +2638,7 @@ SwitchBlock Switch() :
      }
    )*
    [<WHITESPACE>]
-   end=<END_SWITCH>
+   (end=<END_SWITCH> | end=<ABBREVIATED_END_TAG>)
    {
       switchBlock.setLocation(template, start, end);
       return switchBlock;
@@ -2664,7 +2686,7 @@ EscapeBlock Escape() :
     {
         result.setContent(content);
     }
-    end=<END_ESCAPE>
+    (end=<END_ESCAPE> | end=<ABBREVIATED_END_TAG>)
     {
        result.setLocation(template, start, end);
        return result;
@@ -2679,7 +2701,7 @@ NoEscapeBlock NoEscape() :
 {
     start=<NOESCAPE>
     content=OptionalBlock()
-    end=<END_NOESCAPE>
+    (end=<END_NOESCAPE> | end=<ABBREVIATED_END_TAG>)
     {
        NoEscapeBlock result = new NoEscapeBlock(content);
        result.setLocation(template, start, end);

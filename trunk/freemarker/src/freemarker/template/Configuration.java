@@ -131,6 +131,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     private ArrayList<String> autoIncludes = new ArrayList<String>();
     private String defaultEncoding = SecurityUtilities.getSystemProperty("file.encoding");
     private boolean secure = false;
+    private boolean tolerateParsingProblems = false;
 
     public Configuration() {
         cache = new TemplateCache();
@@ -516,7 +517,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
         if (result == null) {
             throw new FileNotFoundException("Template " + name + " not found.");
         }
-        if (result.hasParsingProblems()) {
+        if (result.hasParsingProblems() && !tolerateParsingProblems) {
         	throw new MultiParseException(result.getParsingProblems());
         }
         return result;
@@ -978,6 +979,18 @@ public class Configuration extends Configurable implements Cloneable, Scope {
             Template template = getTemplate(templateName, env.getLocale());
             env.include(template);
         }
+    }
+    
+    /**
+     * Set whether the getTemplate() methods throw exceptions
+     * when there is a (recoverable) parsing problem in the template.
+     * This would only be set true by certain tools such as FTL-aware
+     * editors that work with FTL code that contains syntactical errors. 
+     * @param tolerateParsingProblems
+     */
+    
+    public void setTolerateParsingProblems(boolean tolerateParsingProblems) {
+    	this.tolerateParsingProblems = tolerateParsingProblems;
     }
     
 // The following methods are so that a Configuration object

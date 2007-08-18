@@ -258,13 +258,13 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
                 return new SimpleScalar(localName);
             }
             if (key.equals("@@markup")) {
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 NodeOutputter nu = new NodeOutputter(node);
                 nu.outputContent(node, buf);
                 return new SimpleScalar(buf.toString());
             }
             if (key.equals("@@nested_markup")) {
-                StringBuffer buf = new StringBuffer();
+                StringBuilder buf = new StringBuilder();
                 NodeOutputter nu = new NodeOutputter(node);
                 nu.outputContent(node.getChildNodes(), buf);
                 return new SimpleScalar(buf.toString());
@@ -599,7 +599,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
             return ((org.w3c.dom.CharacterData) node).getData();
         }
         else if (node instanceof Element) {
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             NodeList children = node.getChildNodes();
             for (int i= 0; i<children.getLength(); i++) {
                 result.append(getText(children.item(i)));

@@ -20,6 +20,7 @@ public class PostParseVisitor extends BaseASTVisitor {
 	private Template template;
 	private List<EscapeBlock> escapes = new ArrayList<EscapeBlock>();
 	
+
 	public PostParseVisitor(Template template) {
 		this.template = template;
 	}

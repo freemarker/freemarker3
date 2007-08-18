@@ -191,7 +191,7 @@ public class Template extends TemplateCore {
             this.syntaxKnown = parser.isSyntaxSet();
             this.altSyntax = parser.isAltDirectiveSyntax();
             PostParseVisitor ppv = new PostParseVisitor(this);
-            ppv.visit(this.getRootElement());
+            ppv.visit(getRootTreeNode());
         }
         catch (TokenMgrError exc) {
             throw new ParseException("Token manager error: " + exc, 0, 0);
@@ -512,7 +512,7 @@ public class Template extends TemplateCore {
         --beginColumn;
         --endColumn;
         --endLine;
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (int i = beginLine ; i<=endLine; i++) {
             if (i < lines.size()) {
                 buf.append(lines.get(i));
@@ -531,7 +531,7 @@ public class Template extends TemplateCore {
      */
     private class LineTableBuilder extends FilterReader {
 
-        StringBuffer lineBuf = new StringBuffer();
+        StringBuilder lineBuf = new StringBuilder();
         int lastChar;
 
         /**
