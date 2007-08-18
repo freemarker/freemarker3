@@ -3,7 +3,7 @@
  ${sequence[0]}
 [#recover]
   We should never get here.
-[/#attempt]
+[/#]
 [#attempt]
  Let's try to output an undefined variable: ${undefined}
 [#recover]
@@ -14,9 +14,9 @@
  [#recover]
    Oops: ${.error}
    Remember, freeMarker sequences are zero-based! ${sequence[0]}
- [/#attempt]
+ [/#]
  Now we output the current error message: ${.error}
-[/#attempt]
+[/#]
 [#attempt]
   [#include "nonexistent_template"]
 [#recover]

@@ -86,7 +86,7 @@ public class XMLParser implements TemplateTransformModel, TemplateMethodModel
     public Writer getWriter(final Writer out,
                             final Map args) throws TemplateModelException
     {
-        final StringBuffer buf = new StringBuffer();
+        final StringBuilder buf = new StringBuilder();
         final Environment env = Environment.getCurrentEnvironment();
         TemplateModel name = (TemplateModel) args.get("var");
         if (name == null) {

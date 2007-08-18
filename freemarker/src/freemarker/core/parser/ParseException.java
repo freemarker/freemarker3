@@ -126,13 +126,14 @@ public class ParseException extends java.io.IOException implements FMParserConst
       this.columnNumber = tobj.getBeginColumn();
   }
 
+
   /**
    * This variable determines which constructor was used to create
    * this object and thereby affects the semantics of the
    * "getMessage" method (see below).
    */
   protected boolean specialConstructor;
-
+  
   /**
    * This is the last token that has been consumed successfully.  If
    * this object has been created due to a parse error, the token
@@ -141,7 +142,7 @@ public class ParseException extends java.io.IOException implements FMParserConst
   public Token currentToken;
 
   public int columnNumber, lineNumber;
-
+  
   /**
    * Each entry in this array is an array of integers.  Each array
    * of integers represents a sequence of tokens (by their ordinal

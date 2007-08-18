@@ -189,14 +189,4 @@ public class Include extends TemplateElement {
                  + "\nFound: " + parseExp, parseExp);
         }
     }
-
-/*
-    boolean heedsOpeningWhitespace() {
-        return true;
-    }
-
-    boolean heedsTrailingWhitespace() {
-        return true;
-    }
-*/
 }
