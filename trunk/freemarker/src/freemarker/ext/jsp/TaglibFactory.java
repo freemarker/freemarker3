@@ -233,7 +233,7 @@ public class TaglibFactory implements TemplateHashModel {
     private static class WebXmlParser extends DefaultHandler {
         private final Map locations;
         
-        private StringBuffer buf;
+        private StringBuilder buf;
         private String uri;
         private String location;
 
@@ -248,7 +248,7 @@ public class TaglibFactory implements TemplateHashModel {
             Attributes atts) {
             if ("taglib-uri".equals(qName)
                 || "taglib-location".equals(qName)) {
-                buf = new StringBuffer();
+                buf = new StringBuilder();
             }
         }
 
@@ -334,7 +334,7 @@ public class TaglibFactory implements TemplateHashModel {
     
     private static class TldUriReader extends DefaultHandler {
 
-        private StringBuffer buf;
+        private StringBuilder buf;
         private String uri;
 
         TldUriReader() {
@@ -350,7 +350,7 @@ public class TaglibFactory implements TemplateHashModel {
             String qName,
             Attributes atts) {
             if ("uri".equals(qName)) {
-                buf = new StringBuffer();
+                buf = new StringBuilder();
             }
         }
 
@@ -543,7 +543,7 @@ public class TaglibFactory implements TemplateHashModel {
         private final List listeners = new ArrayList();
         
         private Locator locator;
-        private StringBuffer buf;
+        private StringBuilder buf;
         private String tagName;
         private String tagClassName;
 
@@ -565,7 +565,7 @@ public class TaglibFactory implements TemplateHashModel {
             String qName,
             Attributes atts) {
             if ("name".equals(qName) || "tagclass".equals(qName) || "tag-class".equals(qName) || "listener-class".equals(qName)) {
-                buf = new StringBuffer();
+                buf = new StringBuilder();
             }
         }
 
