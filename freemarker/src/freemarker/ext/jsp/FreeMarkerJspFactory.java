@@ -15,12 +15,14 @@ import javax.servlet.jsp.PageContext;
  */
 abstract class FreeMarkerJspFactory extends JspFactory
 {
+    protected abstract String getSpecificationVersion();
+    
     @Override
     public JspEngineInfo getEngineInfo() {
         return new JspEngineInfo() {
             @Override
             public String getSpecificationVersion() {
-                return "2.1";
+                return FreeMarkerJspFactory.this.getSpecificationVersion();
             }
         };
     }
