@@ -1,10 +1,12 @@
 package freemarker.ext.jsp;
 
+import freemarker.log.Logger;
 import freemarker.template.TemplateModelException;
 
 import javax.servlet.jsp.el.ExpressionEvaluator;
 import javax.servlet.jsp.el.VariableResolver;
 import javax.servlet.jsp.el.ELException;
+import javax.servlet.jsp.JspFactory;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -18,6 +20,16 @@ import java.security.PrivilegedAction;
  * @version $Id: FreeMarkerPageContext2.java,v 1.1 2005/06/11 12:13:39 szegedia Exp $
  */
 class FreeMarkerPageContext2 extends FreeMarkerPageContext {
+    private static final Logger logger = Logger.getLogger("freemarker.jsp");
+
+    static {
+        if(JspFactory.getDefaultFactory() == null) {
+            JspFactory.setDefaultFactory(new FreeMarkerJspFactory2());
+        }
+        logger.debug("Using JspFactory implementation class " + 
+                JspFactory.getDefaultFactory().getClass().getName());
+    }
+
 
     private FreeMarkerPageContext2() throws TemplateModelException {
         super();

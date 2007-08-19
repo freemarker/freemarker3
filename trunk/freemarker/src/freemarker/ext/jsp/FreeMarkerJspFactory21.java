@@ -1,0 +1,34 @@
+package freemarker.ext.jsp;
+
+import javax.servlet.Servlet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.jsp.JspApplicationContext;
+import javax.servlet.jsp.PageContext;
+
+/**
+ * @author Attila Szegedi
+ * @version $Id: $
+ */
+class FreeMarkerJspFactory21 extends FreeMarkerJspFactory
+{
+    private static final String JSPCTX_KEY = 
+        FreeMarkerJspApplicationContext.class.getName();
+
+    @Override
+    public JspApplicationContext getJspApplicationContext(ServletContext ctx) {
+        JspApplicationContext jspctx = (JspApplicationContext)ctx.getAttribute(
+                JSPCTX_KEY);
+        if(jspctx == null) {
+            synchronized(ctx) {
+                jspctx = (JspApplicationContext)ctx.getAttribute(JSPCTX_KEY);
+                if(jspctx == null) {
+                    jspctx = new FreeMarkerJspApplicationContext();
+                    ctx.setAttribute(JSPCTX_KEY, jspctx);
+                }
+            }
+        }
+        return jspctx;
+    }
+}
