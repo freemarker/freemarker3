@@ -27,7 +27,7 @@ class FreeMarkerPageContext21 extends FreeMarkerPageContext {
 
     static {
         if(JspFactory.getDefaultFactory() == null) {
-            JspFactory.setDefaultFactory(new FreeMarkerJspFactory());
+            JspFactory.setDefaultFactory(new FreeMarkerJspFactory21());
         }
         logger.debug("Using JspFactory implementation class " + 
                 JspFactory.getDefaultFactory().getClass().getName());

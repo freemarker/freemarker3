@@ -13,11 +13,8 @@ import javax.servlet.jsp.PageContext;
  * @author Attila Szegedi
  * @version $Id: $
  */
-class FreeMarkerJspFactory extends JspFactory
+abstract class FreeMarkerJspFactory extends JspFactory
 {
-    private static final String JSPCTX_KEY = 
-        FreeMarkerJspApplicationContext.class.getName();
-
     @Override
     public JspEngineInfo getEngineInfo() {
         return new JspEngineInfo() {
@@ -27,23 +24,6 @@ class FreeMarkerJspFactory extends JspFactory
             }
         };
     }
-
-    @Override
-    public JspApplicationContext getJspApplicationContext(ServletContext ctx) {
-        JspApplicationContext jspctx = (JspApplicationContext)ctx.getAttribute(
-                JSPCTX_KEY);
-        if(jspctx == null) {
-            synchronized(ctx) {
-                jspctx = (JspApplicationContext)ctx.getAttribute(JSPCTX_KEY);
-                if(jspctx == null) {
-                    jspctx = new FreeMarkerJspApplicationContext();
-                    ctx.setAttribute(JSPCTX_KEY, jspctx);
-                }
-            }
-        }
-        return jspctx;
-    }
-
     @Override
     public PageContext getPageContext(Servlet servlet, ServletRequest request, 
             ServletResponse response, String errorPageURL, 
