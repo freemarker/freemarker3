@@ -75,7 +75,7 @@ import freemarker.core.parser.ParseException;
 
 public abstract class BaseASTVisitor {
 	
-	protected StringBuffer errors = new StringBuffer(), warnings = new StringBuffer();
+	protected StringBuilder errors = new StringBuilder(), warnings = new StringBuilder();
 	
 	public void visit(TemplateNode node) {
 		if (node == null) return;
