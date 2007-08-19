@@ -17,6 +17,11 @@ class FreeMarkerJspFactory21 extends FreeMarkerJspFactory
         FreeMarkerJspApplicationContext.class.getName();
 
     @Override
+    protected String getSpecificationVersion() {
+        return "2.1";
+    }
+
+    @Override
     public JspApplicationContext getJspApplicationContext(ServletContext ctx) {
         JspApplicationContext jspctx = (JspApplicationContext)ctx.getAttribute(
                 JSPCTX_KEY);
