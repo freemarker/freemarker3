@@ -87,13 +87,7 @@ public class IteratorBlock extends TemplateElement {
     public void execute(Environment env) throws TemplateException, IOException 
     {
         TemplateModel baseModel = listExpression.getAsTemplateModel(env);
-        if (baseModel == null) {
-            if (env.isClassicCompatible()) {
-                // Classic behavior of simply ignoring null references.
-                return;
-            }
-            assertNonNull(baseModel, listExpression, env);
-        }
+        assertNonNull(baseModel, listExpression, env);
         env.process(new LoopContext(this, env.getCurrentScope(), baseModel)); // REVISIT
     }
 

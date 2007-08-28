@@ -1,10 +1,10 @@
-<#ftl strict_syntax=false>
+<#ftl>
 <html>
 <head>
 <title>FreeMarker: Comment Test</title>
 </head>
 <body>
-[#--
+<#--
 
 A simple test follows:
 
@@ -14,17 +14,17 @@ A more rigorous test, showing that we're not faking it:
 
 ${message@#$%&}
 
---]<#-- > --><#-- -> --><#-- -- --><#-- -- > --><comment> > </comment><comment> </comment </comment>
-<if message?exists>
+--><#-- > --><#-- -> --><#-- -- --><#-- -- > --><#comment> > </#comment><#comment> </#comment </#comment>
+<#if message?exists>
 	<p>Message exists!
-	<comment>
+	<#comment>
 		...and even generates output!
-	</comment>
+	</#comment>
 	</p>
-</if>
+</#if>
 
 a <#-- < --> b
-a <#-- </comment> - -- --> b
+a <#-- </#comment> - -- --> b
 
 </body>
 </html>

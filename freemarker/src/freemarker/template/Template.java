@@ -184,9 +184,7 @@ public class Template extends TemplateCore {
             this.stripWhitespace = getConfiguration().getWhitespaceStripping();
             
         	
-            FMParser parser = new FMParser(this, ltb,
-                    getConfiguration().getStrictSyntaxMode(),
-                    stripWhitespace, B);
+            FMParser parser = new FMParser(this, ltb, stripWhitespace, B);
             setRootElement(parser.Root());
             this.syntaxKnown = parser.isSyntaxSet();
             this.altSyntax = parser.isAltDirectiveSyntax();

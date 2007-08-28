@@ -88,7 +88,6 @@ public class PerformanceTest
     {
         Configuration config = new Configuration();
         // config.setDebugMode(false);
-        config.setClassicCompatible(false);
         config.setClassForTemplateLoading(PerformanceTest.class, "/freemarker/testcase");
         Template template = config.getTemplate("PerformanceTest.fm");
         boolean toFile = args.length > 0 && args[0].equals("file");

@@ -118,13 +118,6 @@ public class LoopContext extends BlockContext {
                 }
             }
         }
-        else if (env.isClassicCompatible()) {
-            loopVar = list;
-            TemplateElement nestedBlock = iteratorBlock.getNestedBlock();
-            if (nestedBlock != null) {
-                env.render(nestedBlock);
-            }
-        }
         else {
             throw TemplateNode.invalidTypeException(list, iteratorBlock.listExpression, env, "collection or sequence");
         }

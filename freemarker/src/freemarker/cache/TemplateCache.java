@@ -497,21 +497,19 @@ public class TemplateCache
      */
     public static String getFullTemplatePath(Environment env, String parentTemplateDir, String templateNameString)
     {
-        if (!env.isClassicCompatible()) {
-            if (templateNameString.indexOf("://") >0) {
-                ;
+        if (templateNameString.indexOf("://") >0) {
+           ;
+        }
+        else if (templateNameString.length() > 0 && templateNameString.charAt(0) == '/')  {
+            int protIndex = parentTemplateDir.indexOf("://");
+            if (protIndex >0) {
+                templateNameString = parentTemplateDir.substring(0, protIndex + 2) + templateNameString;
+            } else {
+                templateNameString = templateNameString.substring(1);
             }
-            else if (templateNameString.length() > 0 && templateNameString.charAt(0) == '/')  {
-                int protIndex = parentTemplateDir.indexOf("://");
-                if (protIndex >0) {
-                    templateNameString = parentTemplateDir.substring(0, protIndex + 2) + templateNameString;
-                } else {
-                    templateNameString = templateNameString.substring(1);
-                }
-            }
-            else {
-                templateNameString = parentTemplateDir + templateNameString;
-            }
+        }
+        else {
+            templateNameString = parentTemplateDir + templateNameString;
         }
         return templateNameString;
     }

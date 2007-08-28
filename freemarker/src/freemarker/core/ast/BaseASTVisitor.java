@@ -86,11 +86,11 @@ public abstract class BaseASTVisitor {
     	}
     	catch (InvocationTargetException ite) {
     		Throwable cause = ite.getCause();
-    		cause.printStackTrace();
+//    		cause.printStackTrace();
     		if (cause instanceof RuntimeException) {
     			throw (RuntimeException) cause;
     		}
-    		throw new RuntimeException(ite.getMessage());
+    		throw new RuntimeException(ite);
     	}
     	catch (NoSuchMethodException nsme) {
     		if (node instanceof TemplateElement) {

@@ -73,16 +73,8 @@ public class EvaluationUtil
         TemplateException
     {
         String value = model.getAsString();
-        if(value == null)
-        {
-            if(env != null && env.isClassicCompatible())
-            {
-                return "";
-            }
-            else
-            {
-                throw new TemplateException(expr + " evaluated to null string.", env);
-            }
+        if(value == null) {
+            throw new TemplateException(expr + " evaluated to null string.", env);
         }
         return value;
     }

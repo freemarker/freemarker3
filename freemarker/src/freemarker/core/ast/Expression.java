@@ -128,19 +128,9 @@ abstract public class Expression extends TemplateNode {
         if (referentModel instanceof TemplateScalarModel) {
             return EvaluationUtil.getString((TemplateScalarModel) referentModel, exp, env);
         }
-        if(env.isClassicCompatible()) {
-            if (referentModel instanceof TemplateBooleanModel) {
-                return ((TemplateBooleanModel)referentModel).getAsBoolean() ? "true" : "";
-            }
-            if (referentModel == null || referentModel == TemplateModel.JAVA_NULL) {
-                return "";
-            }
-        }
         assertNonNull(referentModel, exp, env);
-        
         String msg = "Error " + exp.getStartLocation()
                      +"\nExpecting a string, " 
-                     + (env.isClassicCompatible() ? "boolean, " : "" )
                      + "date or number here, Expression " + exp 
                      + " is instead a " 
                      + referentModel.getClass().getName();
@@ -159,9 +149,6 @@ abstract public class Expression extends TemplateNode {
         TemplateModel referent = getAsTemplateModel(env);
         if (referent instanceof TemplateBooleanModel) {
             return ((TemplateBooleanModel) referent).getAsBoolean();
-        }
-        if (env.isClassicCompatible()) {
-            return referent != null && !isEmpty(referent);
         }
         assertNonNull(referent, this, env);
         String msg = "Error " + getStartLocation()

@@ -160,10 +160,6 @@ public class TemplateTestCase extends TestCase {
         else if ("output_encoding".equals(param)) {
             conf.setOutputEncoding(value);
         }
-        else if ("strict_syntax".equals(param)) {
-            boolean b = StringUtil.getYesNo(value);
-            conf.setStrictSyntaxMode(b);
-        }
         else if ("url_escaping_charset".equals(param)) {
             conf.setURLEscapingCharset(value);
         }

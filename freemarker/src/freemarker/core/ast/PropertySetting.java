@@ -84,7 +84,6 @@ public class PropertySetting extends TemplateElement {
             !key.equals(Configurable.DATETIME_FORMAT_KEY) &&
             !key.equals(Configurable.TIME_ZONE_KEY) &&
             !key.equals(Configurable.BOOLEAN_FORMAT_KEY) &&
-            !key.equals(Configurable.CLASSIC_COMPATIBLE_KEY) &&
             !key.equals(Configurable.URL_ESCAPING_CHARSET_KEY)) 
         {
             throw new ParseException(

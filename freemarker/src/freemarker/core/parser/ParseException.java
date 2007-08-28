@@ -171,10 +171,12 @@ public class ParseException extends java.io.IOException implements FMParserConst
     if (!specialConstructor) {
       return super.getMessage();
     }
+    String retval;
+/*    
     String retval = customGetMessage();
     if (retval != null) {
         return retval;
-    }
+    }*/
     // The default JavaCC message generation stuff follows.
     String expected = "";
     int maxSize = 0;
@@ -225,7 +227,7 @@ public class ParseException extends java.io.IOException implements FMParserConst
   }
 
   // Custom message generation
-
+/*
   private String customGetMessage() {
       Token nextToken = currentToken.next;
       int kind = nextToken.kind;
@@ -277,6 +279,7 @@ public class ParseException extends java.io.IOException implements FMParserConst
       }
       return null;
   }
+  */
 
   /**
    * The end of line string for this machine.
