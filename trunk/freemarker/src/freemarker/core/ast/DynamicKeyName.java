@@ -80,12 +80,7 @@ public class DynamicKeyName extends Expression {
         }
         TemplateModel keyModel = nameExpression.getAsTemplateModel(env);
         if(keyModel == null) {
-            if(env.isClassicCompatible()) {
-                keyModel = TemplateScalarModel.EMPTY_STRING;
-            }
-            else {
-                assertNonNull(keyModel, nameExpression, env);
-            }
+            assertNonNull(keyModel, nameExpression, env);
         }
         if (keyModel instanceof TemplateNumberModel) {
             int index = EvaluationUtil.getNumber(keyModel, nameExpression, env).intValue();

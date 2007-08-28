@@ -113,14 +113,6 @@ public class ComparisonExpression extends BooleanExpression {
     boolean isTrue(Environment env) throws TemplateException {
         TemplateModel ltm = left.getAsTemplateModel(env);
         TemplateModel rtm = right.getAsTemplateModel(env);
-        if (env != null && env.isClassicCompatible()) {
-            if (ltm == null || ltm == TemplateModel.JAVA_NULL) {
-                ltm = TemplateScalarModel.EMPTY_STRING;
-            }
-            if (rtm == null || rtm == TemplateModel.JAVA_NULL) {
-                rtm = TemplateScalarModel.EMPTY_STRING;
-            }
-        }
 /*
   The following block that allows comparison of nulls is now commented out.        
         if (ltm == TemplateModel.JAVA_NULL || rtm == TemplateModel.JAVA_NULL) {
@@ -191,12 +183,6 @@ public class ComparisonExpression extends BooleanExpression {
             boolean first = ((TemplateBooleanModel)ltm).getAsBoolean();
             boolean second = ((TemplateBooleanModel)rtm).getAsBoolean();
             comp = (first ? 1 : 0) - (second ? 1 : 0);
-        }
-        // Here we handle compatibility issues
-        else if(env != null && env.isClassicCompatible()) {
-            String first = left.getStringValue(env);
-            String second = right.getStringValue(env);
-            comp = env.getCollator().compare(first, second);
         }
         else {
             throw new TemplateException(

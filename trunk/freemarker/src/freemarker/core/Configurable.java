@@ -85,7 +85,6 @@ public class Configurable
     public static final String DATE_FORMAT_KEY = "date_format";
     public static final String DATETIME_FORMAT_KEY = "datetime_format";
     public static final String TIME_ZONE_KEY = "time_zone";
-    public static final String CLASSIC_COMPATIBLE_KEY = "classic_compatible";
     public static final String TEMPLATE_EXCEPTION_HANDLER_KEY = "template_exception_handler";
     public static final String ARITHMETIC_ENGINE_KEY = "arithmetic_engine";
     public static final String OBJECT_WRAPPER_KEY = "object_wrapper";
@@ -108,7 +107,6 @@ public class Configurable
     private TimeZone timeZone;
     private String trueFormat;
     private String falseFormat;
-    private Boolean classicCompatible;
     private TemplateExceptionHandler templateExceptionHandler;
     private ArithmeticEngine arithmeticEngine;
     private ObjectWrapper objectWrapper;
@@ -127,7 +125,6 @@ public class Configurable
         dateTimeFormat = "";
         trueFormat = "true";
         falseFormat = "false";
-        classicCompatible = Boolean.FALSE;
         templateExceptionHandler = TemplateExceptionHandler.DEBUG_HANDLER;
         arithmeticEngine = ArithmeticEngine.BIGDECIMAL_ENGINE;
         objectWrapper = ObjectWrapper.DEFAULT_WRAPPER;
@@ -141,7 +138,6 @@ public class Configurable
         properties.setProperty(DATETIME_FORMAT_KEY, dateTimeFormat);
         properties.setProperty(TIME_ZONE_KEY, timeZone.getID());
         properties.setProperty(NUMBER_FORMAT_KEY, numberFormat);
-        properties.setProperty(CLASSIC_COMPATIBLE_KEY, classicCompatible.toString());
         properties.setProperty(TEMPLATE_EXCEPTION_HANDLER_KEY, templateExceptionHandler.getClass().getName());
         properties.setProperty(ARITHMETIC_ENGINE_KEY, arithmeticEngine.getClass().getName());
         properties.setProperty(BOOLEAN_FORMAT_KEY, "true,false");
@@ -161,7 +157,6 @@ public class Configurable
         numberFormat = null;
         trueFormat = null;
         falseFormat = null;
-        classicCompatible = null;
         templateExceptionHandler = null;
         properties = new Properties(parent.properties);
         customAttributes = new HashMap<Object, Object>();
@@ -197,62 +192,6 @@ public class Configurable
         this.parent = parent;
     }
     
-    /**
-     * Toggles the "Classic Compatibile" mode. For a comprehensive description
-     * of this mode, see {@link #isClassicCompatible()}.
-     */
-    public void setClassicCompatible(boolean classicCompatibility) {
-        this.classicCompatible = classicCompatibility ? Boolean.TRUE : Boolean.FALSE;
-        properties.setProperty(CLASSIC_COMPATIBLE_KEY, classicCompatible.toString());
-    }
-
-    /**
-     * Returns whether the engine runs in the "Classic Compatibile" mode.
-     * When this mode is active, the engine behavior is altered in following
-     * way: (these resemble the behavior of the 1.7.x line of FreeMarker engine,
-     * now named "FreeMarker Classic", hence the name).
-     * <ul>
-     * <li>handle undefined expressions gracefully. Namely when an expression
-     *   "expr" evaluates to null:
-     *   <ul>
-     *     <li>as argument of the <tt>&lt;assign varname=expr></tt> directive, 
-     *       <tt>${expr}</tt> directive, <tt>otherexpr == expr</tt> or 
-     *       <tt>otherexpr != expr</tt> conditional expressions, or 
-     *       <tt>hash[expr]</tt> expression, then it is treated as empty string.
-     *     </li>
-     *     <li>as argument of <tt>&lt;list expr as item></tt> or 
-     *       <tt>&lt;foreach item in expr></tt>, the loop body is not executed
-     *       (as if it were a 0-length list)
-     *     </li>
-     *     <li>as argument of <tt>&lt;if></tt> directive, or otherwise where a
-     *       boolean expression is expected, it is treated as false
-     *     </li>
-     *   </ul>
-     * </li>
-     * <li>Non-boolean models are accepted in <tt>&lt;if></tt> directive,
-     *   or as operands of logical operators. "Empty" models (zero-length string,
-     * empty sequence or hash) are evaluated as false, all others are evaluated as
-     * true.</li>
-     * <li>When boolean value is treated as a string (i.e. output in 
-     *   <tt>${...}</tt> directive, or concatenated with other string), true 
-     * values are converted to string "true", false values are converted to 
-     * empty string.
-     * </li>
-     * <li>Scalar models supplied to <tt>&lt;list></tt> and 
-     *   <tt>&lt;foreach></tt> are treated as a one-element list consisting
-     *   of the passed model.
-     * </li>
-     * <li>Paths parameter of <tt>&lt;include></tt> will be interpreted as
-     * absolute path.
-     * </li>
-     * </ul>
-     * In all other aspects, the engine is a 2.1 engine even in compatibility
-     * mode - you don't lose any of the new functionality by enabling it.
-     */
-    public boolean isClassicCompatible() {
-        return classicCompatible != null ? classicCompatible.booleanValue() : parent.isClassicCompatible();
-    }
-
     /**
      * Sets the locale to assume when searching for template files with no 
      * explicit requested locale.
@@ -504,10 +443,6 @@ public class Configurable
      * <p>List of supported names and their valid values:
      * <ul>
      *   <li><code>"locale"</code>: local codes with the usual format, such as <code>"en_US"</code>.
-     *   <li><code>"classic_compatible"</code>:
-     *       <code>"true"</code>, <code>"false"</code>, <code>"yes"</code>, <code>"no"</code>,
-     *       <code>"t"</code>, <code>"f"</code>, <code>"y"</code>, <code>"n"</code>.
-     *       Case insensitive.
      *   <li><code>"template_exception_handler"</code>:  If the value contains dot, then it is
      *       interpreted as class name, and the object will be created with
      *       its parameterless constructor. If the value does not contain dot,
@@ -563,8 +498,6 @@ public class Configurable
                 setDateTimeFormat(value);
             } else if (TIME_ZONE_KEY.equals(key)) {
                 setTimeZone(TimeZone.getTimeZone(value));
-            } else if (CLASSIC_COMPATIBLE_KEY.equals(key)) {
-                setClassicCompatible(StringUtil.getYesNo(value));
             } else if (TEMPLATE_EXCEPTION_HANDLER_KEY.equals(key)) {
                 if (value.indexOf('.') == -1) {
                     if ("debug".equalsIgnoreCase(value)) {

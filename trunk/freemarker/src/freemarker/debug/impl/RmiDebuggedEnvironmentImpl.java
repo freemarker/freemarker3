@@ -147,7 +147,6 @@ implements
         {
             Configurable.ARITHMETIC_ENGINE_KEY,
             Configurable.BOOLEAN_FORMAT_KEY,
-            Configurable.CLASSIC_COMPATIBLE_KEY,
             Configurable.LOCALE_KEY,
             Configurable.NUMBER_FORMAT_KEY,
             Configurable.OBJECT_WRAPPER_KEY,

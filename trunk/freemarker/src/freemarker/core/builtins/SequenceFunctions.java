@@ -572,15 +572,6 @@ public class SequenceFunctions extends BuiltIn {
     public static boolean modelsEqual(TemplateModel model1, TemplateModel model2,
                                 Environment env, Template template)
             throws TemplateModelException {
-        if (env != null && env.isClassicCompatible()) {
-            if (model1 == null || model1 == TemplateModel.JAVA_NULL) {
-                model1 = TemplateScalarModel.EMPTY_STRING;
-            }
-            if (model2 == null || model1 == TemplateModel.JAVA_NULL) {
-                model2 = TemplateScalarModel.EMPTY_STRING;
-            }
-        }
-
         int comp = -1;
         if(model1 instanceof TemplateNumberModel && model2 instanceof TemplateNumberModel) {
             Number first = ((TemplateNumberModel) model1).getAsNumber();

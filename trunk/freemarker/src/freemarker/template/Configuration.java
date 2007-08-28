@@ -121,7 +121,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
 
     private static Configuration defaultConfig = new Configuration();
     private static String cachedVersion;
-    private boolean strictSyntax = true, localizedLookup = true, whitespaceStripping = true;
+    private boolean localizedLookup = true, whitespaceStripping = true;
     private boolean altDirectiveSyntax, directiveSyntaxSet;
     private TemplateCache cache;
     private HashMap<String, TemplateModel> variables = new HashMap<String, TemplateModel>();
@@ -419,19 +419,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
         cache.setDelay(1000L * delay);
     }
 
-    /**
-     * Sets whether directives such as if, else, etcetera
-     * must be written as #if, #else, etcetera.
-     * Any tag not starting with &lt;# or &lt;/# is considered as plain text
-     * and will go to the output as is. Tag starting with &lt# or &lt/# must
-     * be valid FTL tag, or else the template is invalid (i.e. &lt;#noSuchDirective>
-     * is an error).
-     */
-
-    public void setStrictSyntaxMode(boolean b) {
-        strictSyntax = b;
-    }
-    
     public void setAlternativeTagSyntax(boolean b) {
         altDirectiveSyntax = b;
     	    directiveSyntaxSet = true;
@@ -445,16 +432,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
         return directiveSyntaxSet;
     }
 
-    /**
-     * Tells whether directives such as if, else, etcetera
-     * must be written as #if, #else, etcetera.
-     *
-     * @see #setStrictSyntaxMode
-     */
-    public boolean getStrictSyntaxMode() {
-        return strictSyntax;
-    }
-    
     /**
      * Sets whether the FTL parser will try to remove
      * superfluous white-space around certain FTL tags.
@@ -714,8 +691,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      *       <code>"t"</code>, <code>"f"</code>, <code>"y"</code>, <code>"n"</code>.
      *       Case insensitive.
      *      See: {@link #setLocalizedLookup}
-     *   <li><code>"strict_syntax"</code>: <code>"true"</code>, <code>"false"</code>, etc.
-     *       See: {@link #setStrictSyntaxMode}
      *   <li><code>"whitespace_stripping"</code>: <code>"true"</code>, <code>"false"</code>, etc.
      *       See: {@link #setWhitespaceStripping}
      *   <li><code>"cache_storage"</code>: If the value contains dot, then it is
@@ -760,7 +735,8 @@ public class Configuration extends Configurable implements Cloneable, Scope {
             } else if (LOCALIZED_LOOKUP_KEY.equals(key)) {
                 setLocalizedLookup(StringUtil.getYesNo(value));
             } else if (STRICT_SYNTAX_KEY.equals(key)) {
-                setStrictSyntaxMode(StringUtil.getYesNo(value));
+// Should warn that this is no longer used.            	
+//                setStrictSyntaxMode(StringUtil.getYesNo(value));
             } else if (WHITESPACE_STRIPPING_KEY.equals(key)) {
                 setWhitespaceStripping(StringUtil.getYesNo(value));
             } else if (CACHE_STORAGE_KEY.equals(key)) {

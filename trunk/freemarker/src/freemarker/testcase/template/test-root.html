@@ -1,4 +1,4 @@
-<#ftl strict_syntax=false>
+<#ftl>
 <html>
 <head>
 <title>FreeMarker: Root Lookup Test</title>
@@ -19,12 +19,12 @@
 
 <p>Ensure that root lookups are unaffected by local variables:</p>
 
-<macro test(message)>
+<#macro test(message)>
   ${.data_model.message}
   ${message}
-</macro>
+</#macro>
 
-<call test(message + " Part Deux")>
+<#call test(message + " Part Deux")>
 
 </body>
 </html>

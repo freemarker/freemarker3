@@ -17,7 +17,6 @@
             object_wrapper CDATA #IMPLIED
             output_encoding CDATA #IMPLIED
             output_dir CDATA #IMPLIED
-            strict_syntax (Y|N) #IMPLIED
             templatedir CDATA #IMPLIED
       >
 ]>
@@ -50,9 +49,7 @@
    <testcase name="encoding-builtins" filename="test-encodingbuiltins.txt" />
    <testcase name="escapes" filename="test-escapes.txt" />
    <testcase name="hashliteral" filename="test-hashliteral.html" />
-   <testcase name="identifier" filename="test-identifier.html" >
-      <config strict_syntax="N" />
-   </testcase>
+   <testcase name="identifier" filename="test-identifier.html" />
    <testcase name="import" filename="test-import.txt">
       <config auto_import="test-import_lib.txt as my"/>
    </testcase>
@@ -94,9 +91,7 @@
    <testcase name="root" filename="test-root.html" />
    <testcase name="sequence-builtins" filename="test-sequencebuiltins.txt" />
    <testcase name="scopes" filename="test-scopes.ftl"/>
-   <testcase name="strictinheader" filename="test-strictinheader.html">
-      <config strict_syntax="N"/>
-   </testcase>
+   <testcase name="strictinheader" filename="test-strictinheader.html"/>
    <testcase name="string-builtins1" filename="test-stringbuiltins.txt" />
    <testcase name="string-builtins2" filename="test-stringbuiltins2.txt" />
    <testcase name="string-builtins3" filename="test-stringbimethods.txt" />

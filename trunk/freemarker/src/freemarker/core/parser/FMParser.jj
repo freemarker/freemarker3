@@ -99,19 +99,17 @@ public class FMParser {
    * Constructs a new parser object.
    * @param template The template associated with this parser.
    * @param reader The character stream to use as input
-   * @param strictEscapeSyntax Whether FreeMarker directives must start with a #
    */
-  public FMParser(Template template, Reader reader, boolean strictEscapeSyntax, boolean stripWhitespace) {
+  public FMParser(Template template, Reader reader, boolean stripWhitespace) {
       this(reader);
       this.template = template;
-      token_source.strictEscapeSyntax = strictEscapeSyntax;
       this.templateName = template != null ? template.getName() : "";
       token_source.templateName = templateName;
       this.stripWhitespace = stripWhitespace;
   }
   
-  public FMParser(Template template, Reader reader, boolean strictEscapeSyntax, boolean stripWhitespace, Boolean altDirectiveSyntax) {
-  	  this(template, reader, strictEscapeSyntax, stripWhitespace);
+  public FMParser(Template template, Reader reader, boolean stripWhitespace, Boolean altDirectiveSyntax) {
+  	  this(template, reader, stripWhitespace);
   	  if (altDirectiveSyntax != null) {
       	  token_source.setAltDirectiveSyntax(altDirectiveSyntax.booleanValue());
       }
@@ -247,8 +245,7 @@ TOKEN_MGR_DECLS :
  private int bracketNesting;
  private boolean inFTLHeader;
  private boolean seenFTLHeader; // Have we already seen a header? (There can only be one.)
- boolean strictEscapeSyntax, 
-         onlyTextOutput, 
+ boolean onlyTextOutput, 
          directiveSyntaxEstablished, 
          altDirectiveSyntax,
          inInvocation;
@@ -266,13 +263,9 @@ TOKEN_MGR_DECLS :
  // This method checks if we are in a strict mode where all
  // FreeMarker directives must start with <#
 
- private void strictSyntaxCheck(Token tok, int newLexState) {
+ private void syntaxCheck(Token tok, int newLexState) {
      if (onlyTextOutput) {
         tok.kind = PRINTABLE_CHARS;
-        return;
-     }
-     if (!strictEscapeSyntax) {
-        SwitchTo(newLexState);
         return;
      }
      if (!directiveSyntaxEstablished) {
@@ -293,9 +286,9 @@ TOKEN_MGR_DECLS :
  }
  
  private void unifiedCall(Token tok) {
-     if (!directiveSyntaxEstablished && strictEscapeSyntax) {
+     if (!directiveSyntaxEstablished) {
          setAltDirectiveSyntax(tok.image.charAt(0) == '[');
-     } else if (strictEscapeSyntax) {
+     } else {
          char firstChar = tok.image.charAt(0);
          if ((altDirectiveSyntax && firstChar == '<') || (!altDirectiveSyntax && firstChar == '[')) {
             tok.kind = PRINTABLE_CHARS;
@@ -306,7 +299,6 @@ TOKEN_MGR_DECLS :
  }
  
  private void unifiedCallEnd(Token tok) {
-     if (!strictEscapeSyntax) return;
      if (!directiveSyntaxEstablished) {
         tok.kind = PRINTABLE_CHARS;
         return;
@@ -360,137 +352,101 @@ TOKEN:
 {
     <#BLANK : [" ", "\t", "\n", "\r"]>
     |
-    <#START_TAG : "<" | "<#" | "[#">
-    |
-    <#END_TAG : "</" | "</#" | "[/#">
+    <#START_TAG : "<#" | "[#">
     |
     <#CLOSE_TAG1 : (<BLANK>)* (">" | "]")>
     |
     <#CLOSE_TAG2 : (<BLANK>)* ("/")? (">" | "]")>
     |
-//    <CLOSE_BLOCK : ("</#" | "[/#"
-//    |
-    <ABBREVIATED_END_TAG : "</#>" | "[/#]"> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <ATTEMPT : <START_TAG> "attempt" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <ATTEMPT : <START_TAG> "attempt" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <RECOVER : <START_TAG> "recover" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);} 
+    <RECOVER : <START_TAG> "recover" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);} 
     |
-    <IF : <START_TAG> "if" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <IF : <START_TAG> "if" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <ELSE_IF : <START_TAG> "elseif" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <ELSE_IF : <START_TAG> "elseif" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <LIST : <START_TAG> "list" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <LIST : <START_TAG> "list" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <FOREACH : <START_TAG> "foreach" <BLANK>>  {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <FOREACH : <START_TAG> "foreach" <BLANK>>  {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <SWITCH : <START_TAG> "switch" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <SWITCH : <START_TAG> "switch" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <CASE : <START_TAG> "case" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <CASE : <START_TAG> "case" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <ASSIGN : <START_TAG> "assign" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <ASSIGN : <START_TAG> "assign" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <GLOBALASSIGN : <START_TAG> "global" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <GLOBALASSIGN : <START_TAG> "global" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <LOCALASSIGN : <START_TAG> "local" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <LOCALASSIGN : <START_TAG> "local" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <SET : <START_TAG> "set" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <SET : <START_TAG> "set" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <INCLUDE : <START_TAG> "include" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <INCLUDE : <START_TAG> "include" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <IMPORT : <START_TAG> "import" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <IMPORT : <START_TAG> "import" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <FUNCTION : <START_TAG> "function" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <FUNCTION : <START_TAG> "function" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <MACRO : <START_TAG> "macro" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <MACRO : <START_TAG> "macro" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <TRANSFORM : <START_TAG> "transform" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <TRANSFORM : <START_TAG> "transform" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <VISIT : <START_TAG> "visit" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <VISIT : <START_TAG> "visit" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <STOP : <START_TAG> "stop" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <STOP : <START_TAG> "stop" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <RETURN : <START_TAG> "return" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <RETURN : <START_TAG> "return" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <CALL : <START_TAG> "call" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <CALL : <START_TAG> "call" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <SETTING : <START_TAG> "setting" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <SETTING : <START_TAG> "setting" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <VAR : <START_TAG> "var"  <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
+    <VAR : <START_TAG> "var"  <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <COMMENT : <START_TAG> "comment" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, NO_PARSE); noparseTag="comment";}
+    <COMMENT : <START_TAG> "comment" <CLOSE_TAG1>> {syntaxCheck(matchedToken, NO_PARSE); noparseTag="comment";}
     |
-    <TERSE_COMMENT : ("<" | "[") "#--" > {noparseTag = "-->"; strictSyntaxCheck(matchedToken, NO_PARSE); }
+    <TERSE_COMMENT : ("<" | "[") "#--" > {noparseTag = "-->"; syntaxCheck(matchedToken, NO_PARSE); }
     |
-    <NOPARSE : <START_TAG> "noparse" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, NO_PARSE); noparseTag="noparse";}
+    <NOPARSE : <START_TAG> "noparse" <CLOSE_TAG1>> {syntaxCheck(matchedToken, NO_PARSE); noparseTag="noparse";}
     |
-    <END_IF : <END_TAG> "if" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <ELSE : <START_TAG> "else" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_LIST : <END_TAG> "list" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <BREAK : <START_TAG> "break" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_RECOVER : <END_TAG> "recover" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <SIMPLE_RETURN : <START_TAG> "return" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_ATTEMPT : <END_TAG> "attempt" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <HALT : <START_TAG> "stop" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_FOREACH : <END_TAG> "foreach" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <FLUSH : <START_TAG> "flush" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_LOCAL : <END_TAG> "local" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <TRIM : <START_TAG> "t" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_GLOBAL : <END_TAG> "global" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <LTRIM : <START_TAG> "lt" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_ASSIGN : <END_TAG> "assign" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <RTRIM : <START_TAG> "rt" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_SET : <END_TAG> "set" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <NOTRIM : <START_TAG> "nt" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_FUNCTION : <END_TAG> "function" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <DEFAUL : <START_TAG> "default" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_MACRO : <END_TAG> "macro" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <SIMPLE_NESTED : <START_TAG> "nested" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_COMPRESS : <END_TAG> "compress" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <NESTED : <START_TAG> "nested" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <END_TRANSFORM : <END_TAG> "transform" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <SIMPLE_RECURSE : <START_TAG> "recurse" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <END_SWITCH : <END_TAG> "switch" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <RECURSE : <START_TAG> "recurse" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <ELSE : <START_TAG> "else" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <FALLBACK : <START_TAG> "fallback" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
     |
-    <BREAK : <START_TAG> "break" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <ESCAPE : <START_TAG> "escape" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <SIMPLE_RETURN : <START_TAG> "return" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <HALT : <START_TAG> "stop" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <FLUSH : <START_TAG> "flush" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <TRIM : <START_TAG> "t" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <LTRIM : <START_TAG> "lt" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <RTRIM : <START_TAG> "rt" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <NOTRIM : <START_TAG> "nt" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <DEFAUL : <START_TAG> "default" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <SIMPLE_NESTED : <START_TAG> "nested" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <NESTED : <START_TAG> "nested" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
-    |
-    <SIMPLE_RECURSE : <START_TAG> "recurse" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <RECURSE : <START_TAG> "recurse" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
-    |
-    <FALLBACK : <START_TAG> "fallback" <CLOSE_TAG2>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <ESCAPE : <START_TAG> "escape" <BLANK>> {strictSyntaxCheck(matchedToken, FM_EXPRESSION);}
-    |
-    <END_ESCAPE : <END_TAG> "escape" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <NOESCAPE : <START_TAG> "noescape" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
-    |
-    <END_NOESCAPE : <END_TAG> "noescape" <CLOSE_TAG1>> {strictSyntaxCheck(matchedToken, DEFAULT);}
+    <NOESCAPE : <START_TAG> "noescape" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);}
     |
     <UNIFIED_CALL : "<@" | "[@" >  {unifiedCall(matchedToken);}
     |
@@ -524,8 +480,7 @@ TOKEN:
     <UNKNOWN_DIRECTIVE : ("[#" | "[/#" | "<#" | "</#") (["a"-"z","A"-"Z", "_"])+>
     {
        char firstChar = matchedToken.image.charAt(0);
-       if (strictEscapeSyntax 
-          && directiveSyntaxEstablished
+       if (directiveSyntaxEstablished
           && ((altDirectiveSyntax && firstChar == '[') || (!altDirectiveSyntax && firstChar=='<')))
        {
           String s = matchedToken.image;
@@ -884,15 +839,6 @@ Token KeepGoingUntil(int type) {
 	}
 	return t;
 }
-
-JAVACODE
-Token CloseBlock(String directiveName) {
-	Token t = getNextToken();
-	if (t.kind == ABBREVIATED_END_TAG) {
-	}
-	return t;
-}
-
 
 /**
  * Lowest level expression, a literal, a variable,
@@ -1758,7 +1704,7 @@ TemplateElement If() :
             ifBlock.addBlock(cblock);
          }
    ]
-   (end=<END_IF> | end=<ABBREVIATED_END_TAG>)
+   end=CloseDirectiveBlock("if")
    {
        ifBlock.setLocation(template, start, end);
        return ifBlock;
@@ -1785,13 +1731,7 @@ AttemptBlock Attempt() :
    	   problem = new ParseException(tme.getMessage());
    }*/
    recoveryBlock=Recover()
-   (
-      end=<END_RECOVER>
-      |
-      end=<END_ATTEMPT>
-      |
-      end=<ABBREVIATED_END_TAG>
-   )
+   end=CloseDirectiveBlock("attempt, recover")
    {
       AttemptBlock result = new AttemptBlock(block, recoveryBlock);
       result.setLocation(template, start, end);
@@ -1831,7 +1771,7 @@ TemplateElement List() :
    index=<ID>
    <DIRECTIVE_END>
    block=OptionalBlock()
-   (end=<END_LIST> | end=<ABBREVIATED_END_TAG>)
+   end=CloseDirectiveBlock("list")
    {
      IteratorBlock result = new IteratorBlock(exp,
                                               index.image,
@@ -1855,7 +1795,7 @@ IteratorBlock ForEach() :
    exp=Exp()
    <DIRECTIVE_END>
    block=OptionalBlock()
-   (end=<END_FOREACH> | end=<ABBREVIATED_END_TAG>)
+   end=CloseDirectiveBlock("foreach")
    {
      IteratorBlock result = new IteratorBlock(exp,
                                               index.image,
@@ -2059,16 +1999,17 @@ TemplateElement Assign() :
    String varName;
    TemplateElement block;
    LinkedHashMap<String, Expression> assignments = new LinkedHashMap<String, Expression>();
+   String assignmentType;
 }
 {
     (
-      start=<ASSIGN> {type = AssignmentInstruction.NAMESPACE;}
+      start=<ASSIGN> {type = AssignmentInstruction.NAMESPACE; assignmentType="assign";}
       |
-      start=<GLOBALASSIGN>{type = AssignmentInstruction.GLOBAL;}
+      start=<GLOBALASSIGN>{type = AssignmentInstruction.GLOBAL; assignmentType = "global";}
       |
-      start=<LOCALASSIGN> {type = AssignmentInstruction.LOCAL;}
+      start=<LOCALASSIGN> {type = AssignmentInstruction.LOCAL; assignmentType = "local";}
       |
-      start=<SET> {type = AssignmentInstruction.SET;}
+      start=<SET> {type = AssignmentInstruction.SET; assignmentType = "set";}
     )
     nameExp=IdentifierOrStringLiteral()
     {
@@ -2114,18 +2055,15 @@ TemplateElement Assign() :
        ]
        <DIRECTIVE_END>
        block=OptionalBlock()
-       (
-          end=<END_LOCAL> {if (type != AssignmentInstruction.LOCAL) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.beginLine, end.beginColumn);}
-          |
-          end=<END_ASSIGN> {if (type != AssignmentInstruction.NAMESPACE) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.beginLine, end.beginColumn);}
-          |
-          end=<END_GLOBAL> {if (type != AssignmentInstruction.GLOBAL) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags", end.beginLine, end.beginColumn);}
-	   	  |
-		  end=<END_SET> {if (type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags", end.beginLine, end.beginColumn);}
-		  |
-		  end=<ABBREVIATED_END_TAG>
-       )
+       end=CloseDirectiveBlock(assignmentType)
        {
+       	  String name = end.image.substring(3, end.image.length() -1);
+       	  switch (type) {
+       	   	   case AssignmentInstruction.LOCAL : if (name.length() >0 && !name.equals("local")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.beginLine, end.beginColumn); break;
+       	   	   case AssignmentInstruction.NAMESPACE : if (name.length() >0 && !name.equals("assign")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.beginLine, end.beginColumn); break;
+       	   	   case AssignmentInstruction.GLOBAL : if (name.length() >0 && !name.equals("global")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.beginLine, end.beginColumn); break;
+       	   	   case AssignmentInstruction.SET : if (name.length() >0 && !name.equals("set")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.beginLine, end.beginColumn); break;
+       	  }
           BlockAssignment ba = new BlockAssignment(block, varName, type, nsExp);
           ba.setLocation(template, start, end);
           return ba;
@@ -2285,12 +2223,13 @@ Macro Macro() :
    String name;
    TemplateElement block;
    ParameterList params;
+   String functionOrMacro;
 }
 {
     (
-        start=<MACRO> 
+        start=<MACRO> {functionOrMacro = "macro";}
         |
-        start=<FUNCTION> {result.setFunction(true);}
+        start=<FUNCTION> {result.setFunction(true); functionOrMacro = "function";}
     )
     {
 /*    	
@@ -2309,13 +2248,7 @@ Macro Macro() :
     [<CLOSE_PAREN>]
     <DIRECTIVE_END>
     block=OptionalBlock()
-    (
-        end=<END_MACRO> { if(result.isFunction()) throw new ParseException(getErrorStart(start) + "\nExpected function end tag here.", start.beginLine, start.endLine); }
-        |
-        end=<END_FUNCTION> { if(!result.isFunction()) throw new ParseException(getErrorStart(start) + "\nExpected macro end tag here.", start.beginLine, start.endLine); }
-        |
-        end=<ABBREVIATED_END_TAG>
-    )
+    end=CloseDirectiveBlock(functionOrMacro)
     {
 	   result.setName(name);
 	   result.setNestedBlock(block);
@@ -2339,7 +2272,7 @@ CompressedBlock Compress() :
 {
     start=<COMPRESS>
     block=OptionalBlock()
-    (end=<END_COMPRESS> | end=<ABBREVIATED_END_TAG>)
+    end=CloseDirectiveBlock("compress")
     {
        CompressedBlock cb = new CompressedBlock(block);
        cb.setLocation(template, start, end);
@@ -2597,7 +2530,7 @@ TransformBlock Transform() :
        (
           <DIRECTIVE_END>
           content=OptionalBlock()
-          (end=<END_TRANSFORM>|end=<ABBREVIATED_END_TAG>)
+          end=CloseDirectiveBlock("transform")
        )
     )
     {
@@ -2638,7 +2571,7 @@ SwitchBlock Switch() :
      }
    )*
    [<WHITESPACE>]
-   (end=<END_SWITCH> | end=<ABBREVIATED_END_TAG>)
+   end=CloseDirectiveBlock("switch")
    {
       switchBlock.setLocation(template, start, end);
       return switchBlock;
@@ -2686,7 +2619,7 @@ EscapeBlock Escape() :
     {
         result.setContent(content);
     }
-    (end=<END_ESCAPE> | end=<ABBREVIATED_END_TAG>)
+    end=CloseDirectiveBlock("escape")
     {
        result.setLocation(template, start, end);
        return result;
@@ -2701,13 +2634,38 @@ NoEscapeBlock NoEscape() :
 {
     start=<NOESCAPE>
     content=OptionalBlock()
-    (end=<END_NOESCAPE> | end=<ABBREVIATED_END_TAG>)
+    end=CloseDirectiveBlock("noescape")
     {
        NoEscapeBlock result = new NoEscapeBlock(content);
        result.setLocation(template, start, end);
        return result;
     }
 }
+
+
+Token CloseDirectiveBlock(String expectedTags) :
+{
+	Token t;
+}
+{
+    t=<CLOSE_DIRECTIVE_BLOCK>
+	{
+		String name = t.image;
+		name = name.substring(3, name.length() -1);
+		if (name.length()>0) {
+			StringTokenizer st = new StringTokenizer(expectedTags, ", ");
+			boolean found = false;
+			while (st.hasMoreTokens()) {
+				if (st.nextToken().equals(name.trim())) found = true;
+			}
+			if (!found) {
+				throw new ParseException(getErrorStart(t) + " Expecting " + t.image.substring(0,3) + expectedTags + t.image.charAt(t.image.length() -1));
+			}
+		}
+		return t;
+	}
+}
+
 
 /**
  * Production to terminate potentially empty elements. Either a ">" or "/>"
@@ -3054,7 +3012,8 @@ void HeaderElement() :
                      this.stripText = getBoolean(exp);
                  }
                  else if (ks.equalsIgnoreCase("STRICT_SYNTAX")) {
-                     this.token_source.strictEscapeSyntax = getBoolean(exp);
+// should warn herethat this does nothing.                 	
+//                     this.token_source.strictEscapeSyntax = getBoolean(exp);
                  }
                  else if (ks.equalsIgnoreCase("ns_prefixes")) {
                      if (!(value instanceof TemplateHashModelEx)) {

@@ -99,21 +99,19 @@ public final class LibraryLoad extends TemplateElement {
         }
         Template importedTemplate;
         try {
-            if(!env.isClassicCompatible()) {
-                if (templateNameString.indexOf("://") >0) {
-                    ;
+            if (templateNameString.indexOf("://") >0) {
+                ;
+            }
+            else if(templateNameString.length() > 0 && templateNameString.charAt(0) == '/')  {
+                int protIndex = templatePath.indexOf("://");
+                if (protIndex >0) {
+                    templateNameString = templatePath.substring(0, protIndex + 2) + templateNameString;
+                } else {
+                    templateNameString = templateNameString.substring(1);
                 }
-                else if(templateNameString.length() > 0 && templateNameString.charAt(0) == '/')  {
-                    int protIndex = templatePath.indexOf("://");
-                    if (protIndex >0) {
-                        templateNameString = templatePath.substring(0, protIndex + 2) + templateNameString;
-                    } else {
-                        templateNameString = templateNameString.substring(1);
-                    }
-                }
-                else {
-                    templateNameString = templatePath + templateNameString;
-                }
+            }
+            else {
+                templateNameString = templatePath + templateNameString;
             }
             importedTemplate = env.getTemplateForImporting(templateNameString);
         }
