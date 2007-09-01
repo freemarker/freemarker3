@@ -52,6 +52,9 @@
 
 package freemarker.core.parser;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import freemarker.template.utility.SecurityUtilities;
 import freemarker.core.ast.*;
 
@@ -104,13 +107,16 @@ public class ParseException extends java.io.IOException implements FMParserConst
     super();
     specialConstructor = false;
   }
+  
+  public ParseException(List<ParsingProblem> problems) {
+	  this.problems = problems;
+  }
 
 
   public ParseException(String message) {
     super(message);
     specialConstructor = false;
   }
-
 
   public ParseException(String message, int lineNumber, int columnNumber) {
       super(message);
@@ -124,9 +130,10 @@ public class ParseException extends java.io.IOException implements FMParserConst
       specialConstructor = false;
       this.lineNumber = tobj.getBeginLine();
       this.columnNumber = tobj.getBeginColumn();
+      problems = new ArrayList<ParsingProblem>();
+      problems.add(new ParsingProblem(message, tobj));
   }
-
-
+  
   /**
    * This variable determines which constructor was used to create
    * this object and thereby affects the semantics of the
@@ -142,6 +149,9 @@ public class ParseException extends java.io.IOException implements FMParserConst
   public Token currentToken;
 
   public int columnNumber, lineNumber;
+  
+  public List<ParsingProblem> problems;
+  
   
   /**
    * Each entry in this array is an array of integers.  Each array
@@ -168,6 +178,16 @@ public class ParseException extends java.io.IOException implements FMParserConst
    * gets displayed.
    */
   public String getMessage() {
+	if (problems != null && problems.size() >0) {
+		StringBuilder buf = new StringBuilder();
+		for (ParsingProblem problem : problems) {
+			buf.append("\n");
+			buf.append(problem.getStartLocation());
+			buf.append(" : ");
+			buf.append(problem.getDescription());
+		}
+		return buf.toString();
+	}
     if (!specialConstructor) {
       return super.getMessage();
     }
@@ -225,62 +245,7 @@ public class ParseException extends java.io.IOException implements FMParserConst
                              currentToken.next.beginColumn :
                              columnNumber;
   }
-
-  // Custom message generation
-/*
-  private String customGetMessage() {
-      Token nextToken = currentToken.next;
-      int kind = nextToken.kind;
-      if (kind == EOF) {
-          StringBuilder buf = new StringBuilder("Unexpected end of file reached.\n");
-          for (int i = 0; i<expectedTokenSequences.length; i++) {
-              int[] sequence = expectedTokenSequences[i];
-              switch (sequence[0]) {
-                  case END_FOREACH :
-                      buf.append("Unclosed foreach directive.\n");
-                      break;
-                  case END_LIST :
-                      buf.append("Unclosed list directive.\n");
-                      break;
-                  case END_SWITCH :
-                      buf.append("Unclosed switch directive.\n");
-                      break;
-                  case END_IF :
-                      buf.append("Unclosed if directive.\n");
-                      break;
-                  case END_COMPRESS :
-                      buf.append("Unclosed compress directive.\n");
-                      break;
-                  case END_MACRO :
-                      buf.append("Unclosed macro directive.\n");
-                      break;
-                  case END_FUNCTION :
-                      buf.append("Unclosed function directive.\n");
-                      break;
-                  case END_TRANSFORM :
-                      buf.append("Unclosed transform directive.\n");
-                      break;
-                  case END_ESCAPE :
-                      buf.append("Unclosed escape directive.\n");
-                      break;
-                  case END_NOESCAPE :
-                      buf.append("Unclosed noescape directive.\n");
-                      break;
-              }
-          }
-          return buf.toString();
-      }
-      if (kind == END_IF || kind == ELSE_IF || kind == ELSE) {
-          return "Found unexpected directive: "
-              + nextToken
-              + " on line " + nextToken.beginLine
-              + ", column " + nextToken.beginColumn
-              + "\nCheck whether you have a well-formed if-else block.";
-      }
-      return null;
-  }
-  */
-
+  
   /**
    * The end of line string for this machine.
    */
@@ -335,5 +300,4 @@ public class ParseException extends java.io.IOException implements FMParserConst
       }
       return retval.toString();
    }
-
 }

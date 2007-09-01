@@ -21,7 +21,7 @@
  *    Alternately, this acknowledgement may appear in the software itself,
  *    if and wherever such third-party acknowledgements normally appear.
  *
- * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the
+ * 4. Neither the name "FreeMarker", "Visigoth", nor any of the names of the 
  *    project contributors may be used to endorse or promote products derived
  *    from this software without prior written permission. For written
  *    permission, please contact visigoths@visigoths.org.
@@ -50,30 +50,33 @@
  * http://www.visigoths.org/
  */
 
-package freemarker.core.parser;
+package freemarker.core.ast;
 
 import java.util.*;
+import freemarker.template.*;
 
-public class MultiParseException extends ParseException {
-	
-	private List<ParsingProblem> problems;
-	
-	public MultiParseException() {
-		problems = new ArrayList<ParsingProblem>();
+public class TemplateHeaderElement extends TemplateNode {
+
+	private Map<String,Expression> params;
+	private Map<String,TemplateModel> values = new HashMap<String, TemplateModel>();
+
+	public TemplateHeaderElement(Map<String,Expression> params) {
+		this.params = params;
 	}
 	
-	public MultiParseException(List<ParsingProblem> problems) {
-		this.problems = problems;
-	}
-	
-	public String getMessage() {
-		StringBuilder buf = new StringBuilder();
-		for (ParsingProblem problem : problems) {
-			buf.append("\n");
-			buf.append(problem.getStartLocation());
-			buf.append(" : ");
-			buf.append(problem.getDescription());
+	public TemplateModel getParameter(String name) {
+		if (values.containsKey(name)) {
+			return values.get(name);
 		}
-		return buf.toString();
+		Expression exp = params.get(name);
+		try {
+			TemplateModel tm = exp.getAsTemplateModel(null);
+			values.put(name, tm);
+			return tm;
+		} catch (TemplateException te) {
+			values.put(name, null);
+			return null;
+		}
 	}
 }
+

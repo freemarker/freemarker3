@@ -926,7 +926,7 @@ Expression NotExpression() :
 {
    Token t;
    Expression exp, result=null;
-   ArrayList nots = new ArrayList();
+   List<Token> nots = new ArrayList<Token>();
 }
 {
    (
@@ -936,7 +936,7 @@ Expression NotExpression() :
    {
       for (int i=0; i<nots.size(); i++) {
          result = new NotExpression(exp);
-         Token tok = (Token) nots.get(nots.size() -i -1);
+         Token tok = nots.get(nots.size() -i -1);
          result.setLocation(template, tok, exp);
          exp = result;
       }
@@ -1927,7 +1927,6 @@ StopInstruction Stop() :
 TemplateElement Nested() :
 {
   Token t, end;
-//  ArrayList bodyParameters;
   PositionalArgsList args=null;
   BodyInstruction result = null;
 }
@@ -2419,8 +2418,6 @@ TemplateElement Call() :
 {
    Token start, end;
    Identifier id;
-   Map namedArgs = null;
-   ArrayList positionalArgs = null;
    String macroName= null;
    UnifiedCall prevCall = this.currentCall;
    UnifiedCall result = this.currentCall = new UnifiedCall();
@@ -2709,7 +2706,6 @@ VarDirective Var() :
     Token start, end;
     Expression var, valueExp = null;
     VarDirective result = new VarDirective();
-    LinkedHashMap declarations = new LinkedHashMap();
 }
 {
    start=<VAR>
@@ -2831,7 +2827,7 @@ TextBlock PCData() :
       LOOKAHEAD(<WHITESPACE>|<PRINTABLE_CHARS>|<FALSE_ALERT>)
       (
          t=<WHITESPACE>
-	 |
+	     |
          t=<PRINTABLE_CHARS>
          |
          t=<FALSE_ALERT>
@@ -3065,11 +3061,39 @@ void HeaderElement() :
    )
 }
 
-Map ParamList() :
+TemplateHeaderElement HeaderElement2() : 
+{
+	Token key, start, end;
+	Expression exp;
+	Map<String,Expression> params = new LinkedHashMap<String,Expression>();
+}
+{
+   [<WHITESPACE>]
+   (
+     start=<TRIVIAL_FTL_HEADER> {end=start;}
+     |
+     (
+       start=<FTL_HEADER>
+       (
+          key=<ID>
+          <EQUALS>
+          exp=Exp() {params.put(key.image.toLowerCase(), exp);}
+       )*
+       end=LooseDirectiveEnd()
+     )
+   )
+   {
+   	   TemplateHeaderElement header = new TemplateHeaderElement(params);
+   	   header.setLocation(template, start, end);
+   	   return header;
+   }
+}
+
+Map<String,Expression> ParamList() :
 {
    Identifier id;
    Expression exp;
-   Map result = new HashMap();
+   Map<String,Expression> result = new HashMap<String,Expression>();
 }
 {
    (

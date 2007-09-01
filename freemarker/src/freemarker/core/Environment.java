@@ -377,7 +377,7 @@ public final class Environment extends Configurable implements Scope {
         TemplateException thrownException = null;
         try {
         	if (!parsingProblems.isEmpty()) {
-        		throw new TemplateException(new MultiParseException(parsingProblems), this);
+        		throw new TemplateException(new ParseException(parsingProblems), this);
         	}
             render(attemptBlock);
         } catch (TemplateException te) {
@@ -1069,7 +1069,7 @@ public final class Environment extends Configurable implements Scope {
      * @param model
      *            the value of the variable
      */
-    public void unqualifiedSet(String name, TemplateModel model) throws TemplateModelException {
+    public void unqualifiedSet(String name, TemplateModel model) throws TemplateException {
         Scope scope = this.currentScope;
         while (!(scope instanceof TemplateNamespace)) {
             if (scope.get(name) != null) {

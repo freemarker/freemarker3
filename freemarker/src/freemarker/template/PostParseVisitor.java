@@ -1,7 +1,6 @@
 package freemarker.template;
 
 import freemarker.core.ast.*;
-import freemarker.core.parser.MultiParseException;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
 import freemarker.template.*;
