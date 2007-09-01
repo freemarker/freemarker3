@@ -60,6 +60,7 @@ import freemarker.template.utility.StringUtil;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.parser.ParseException;
+import freemarker.core.parser.ParsingProblem;
 
 
 

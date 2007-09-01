@@ -79,7 +79,6 @@ import freemarker.core.Environment;
 import freemarker.core.FreeMarkerPermission;
 import freemarker.core.Scope;
 import freemarker.core.parser.ParseException;
-import freemarker.core.parser.MultiParseException;
 import freemarker.template.utility.CaptureOutput;
 import freemarker.template.utility.ClassUtil;
 import freemarker.template.utility.HtmlEscape;
@@ -495,7 +494,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
             throw new FileNotFoundException("Template " + name + " not found.");
         }
         if (result.hasParsingProblems() && !tolerateParsingProblems) {
-        	throw new MultiParseException(result.getParsingProblems());
+        	throw new ParseException(result.getParsingProblems());
         }
         return result;
     }

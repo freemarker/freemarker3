@@ -1,8 +1,7 @@
 package freemarker.core;
 
 import freemarker.core.ast.TemplateElement;
-import freemarker.template.Template;
-import freemarker.template.TemplateModel;
+import freemarker.template.*;
 
 
 public class BlockContext extends BaseContext {

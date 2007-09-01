@@ -60,13 +60,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.security.CodeSource;
 import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 
 import javax.swing.tree.TreePath;
 
@@ -465,7 +459,7 @@ public class Template extends TemplateCore {
     void addParsingProblem(ParsingProblem problem) {
     	parsingProblems.add(problem);
     }
-
+    
     /**
      * Sets the character encoding to use for
      * included files. Usually you don't set this value manually,
