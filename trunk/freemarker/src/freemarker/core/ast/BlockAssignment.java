@@ -116,7 +116,7 @@ public class BlockAssignment extends TemplateElement {
         String capturedText = ""; 
         
         public Writer getWriter(Writer out, List args) {
-        	return getWriter(out, (List) null);
+        	return getWriter(out, (Map) null);
         }
         
         public Writer getWriter(Writer out, Map<String, TemplateModel> args) {
