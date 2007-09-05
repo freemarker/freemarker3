@@ -196,7 +196,7 @@ implements TemplateHashModelEx, Serializable {
         if (result == null && key.length() == 1) {
         // just check for Character key if this is a single-character string
             try {
-            	Character charKey = new Character(key.charAt(0));
+            	Character charKey = Character.valueOf(key.charAt(0));
   	            result = map.get(charKey);
   	            if (result == null && map.containsKey(charKey)) {
   	            	result = JAVA_NULL;
