@@ -656,7 +656,7 @@ public class BeansWrapper implements ObjectWrapper
             if(model instanceof TemplateScalarModel) {
                 String s = ((TemplateScalarModel)model).getAsString();
                 if(s.length() == 1) {
-                    return new Character(s.charAt(0));
+                    return Character.valueOf(s.charAt(0));
                 }
             }
             // Character is final, no other conversion will work
@@ -723,11 +723,11 @@ public class BeansWrapper implements ObjectWrapper
     {
         if(hint == Integer.TYPE || hint == Integer.class) {
             return number instanceof Integer ? (Integer)number : 
-                new Integer(number.intValue());
+                Integer.valueOf(number.intValue());
         }
         if(hint == Long.TYPE || hint == Long.class) {
             return number instanceof Long ? (Long)number : 
-                new Long(number.longValue());
+                Long.valueOf(number.longValue());
         }
         if(hint == Float.TYPE || hint == Float.class) {
             return number instanceof Float ? (Float)number : 
@@ -740,11 +740,11 @@ public class BeansWrapper implements ObjectWrapper
         }
         if(hint == Byte.TYPE || hint == Byte.class) {
             return number instanceof Byte ? (Byte)number : 
-                new Byte(number.byteValue());
+                Byte.valueOf(number.byteValue());
         }
         if(hint == Short.TYPE || hint == Short.class) {
             return number instanceof Short ? (Short)number : 
-                new Short(number.shortValue());
+                Short.valueOf(number.shortValue());
         }
         if(hint == BigInteger.class) {
             return number instanceof BigInteger ? number : 
@@ -1456,22 +1456,22 @@ public class BeansWrapper implements ObjectWrapper
     public static Object coerceBigDecimal(BigDecimal bd, Class formalType) {
         // int is expected in most situations, so we check it first
         if(formalType == Integer.TYPE || formalType == Integer.class) {
-            return new Integer(bd.intValue());
+            return Integer.valueOf(bd.intValue());
         }
         else if(formalType == Double.TYPE || formalType == Double.class) {
             return new Double(bd.doubleValue());
         }
         else if(formalType == Long.TYPE || formalType == Long.class) {
-            return new Long(bd.longValue());
+            return Long.valueOf(bd.longValue());
         }
         else if(formalType == Float.TYPE || formalType == Float.class) {
             return new Float(bd.floatValue());
         }
         else if(formalType == Short.TYPE || formalType == Short.class) {
-            return new Short(bd.shortValue());
+            return Short.valueOf(bd.shortValue());
         }
         else if(formalType == Byte.TYPE || formalType == Byte.class) {
-            return new Byte(bd.byteValue());
+            return Byte.valueOf(bd.byteValue());
         }
         else if(BIGINTEGER_CLASS.isAssignableFrom(formalType)) {
             return bd.toBigInteger();
