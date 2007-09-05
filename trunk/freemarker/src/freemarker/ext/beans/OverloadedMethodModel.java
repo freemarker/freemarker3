@@ -142,7 +142,7 @@ implements
     public TemplateModel get(int index) throws TemplateModelException
     {
         return (TemplateModel) exec(Collections.singletonList(new 
-                SimpleNumber(new Integer(index))));
+                SimpleNumber(Integer.valueOf(index))));
     }
 
     public int size() throws TemplateModelException
