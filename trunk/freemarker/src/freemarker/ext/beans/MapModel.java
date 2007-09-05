@@ -132,7 +132,7 @@ implements
 		Object val = map.get(key);
 		if (val == null && key.length()==1) {
 			// just check for Character key if this is a single-character string
-			Character charKey = new Character(key.charAt(0));
+			Character charKey = Character.valueOf(key.charAt(0));
             val = map.get(charKey);
             if (val == null) {
             	return (map.containsKey(key) || map.containsKey(charKey)) ? JAVA_NULL : null;
