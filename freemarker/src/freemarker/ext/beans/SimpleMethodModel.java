@@ -170,7 +170,7 @@ public final class SimpleMethodModel
         throws
         TemplateModelException
     {
-        return (TemplateModel) exec(Collections.singletonList(new SimpleNumber(new Integer(index))));
+        return (TemplateModel) exec(Collections.singletonList(new SimpleNumber(Integer.valueOf(index))));
     }
 
     public int size() throws TemplateModelException
