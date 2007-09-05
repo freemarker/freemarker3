@@ -79,10 +79,10 @@ public class DateTime extends BuiltIn {
 
 	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
 		int dateType = TemplateDateModel.DATETIME;
-		if (builtInName == "date") {
+		if ("date".equals(builtInName)) {
 			dateType = TemplateDateModel.DATE;
 		}
-		else if (builtInName == "time") {
+		else if ("time".equals(builtInName)) {
 			dateType = TemplateDateModel.TIME;
 		}
 		if (target instanceof TemplateDateModel) {
