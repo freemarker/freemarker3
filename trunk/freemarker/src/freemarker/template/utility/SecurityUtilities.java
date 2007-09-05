@@ -119,7 +119,7 @@ public class SecurityUtilities
         {
             logger.warn("Insufficient permissions to read system property '" + 
                     key + "', using default value " + defValue + "");
-            return new Integer(defValue);
+            return Integer.valueOf(defValue);
         }
     }
 }
