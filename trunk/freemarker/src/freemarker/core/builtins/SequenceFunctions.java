@@ -452,7 +452,7 @@ public class SequenceFunctions extends BuiltIn {
 			cmprtr = new NumericalKVPComparator(Environment
 					.getCurrentEnvironment().getArithmeticEngine());
 		} else if (keyType == KEY_TYPE_DATE) {
-			cmprtr = new DateKVPComparator();
+			cmprtr = DateKVPComparator.INSTANCE;
 		} else {
 			throw new RuntimeException("FreeMarker bug: Bad key type");
 		}
@@ -513,6 +513,7 @@ public class SequenceFunctions extends BuiltIn {
     }
     
     static class DateKVPComparator implements Comparator {
+        static final DateKVPComparator INSTANCE = new DateKVPComparator();
         public int compare(Object arg0, Object arg1) {
             return ((Date) ((KVP) arg0).key).compareTo(
                     (Date) ((KVP) arg1).key);
@@ -630,7 +631,7 @@ public class SequenceFunctions extends BuiltIn {
         return (comp == 0);
     }
     
-    class SequenceContainsFunction implements TemplateMethodModelEx {
+    static class SequenceContainsFunction implements TemplateMethodModelEx {
     	TemplateSequenceModel sequence;
     	TemplateCollectionModel collection;
     	Environment env;
