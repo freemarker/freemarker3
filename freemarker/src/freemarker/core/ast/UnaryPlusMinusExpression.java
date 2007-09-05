@@ -59,7 +59,7 @@ public class UnaryPlusMinusExpression extends Expression {
 
     public final Expression target;
     public final boolean isMinus;
-    private static final Integer MINUS_ONE = new Integer(-1); 
+    private static final Integer MINUS_ONE = Integer.valueOf(-1); 
 
     public UnaryPlusMinusExpression(Expression target, boolean isMinus) {
         this.target = target;
