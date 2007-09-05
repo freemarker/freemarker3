@@ -176,7 +176,7 @@ public abstract class ArithmeticEngine {
         public Number modulus(Number first, Number second) {
             long left = first.longValue();
             long right = second.longValue();
-            return new Long(left % right);
+            return Long.valueOf(left % right);
         }
     
         public Number toNumber(String s) {
@@ -266,8 +266,8 @@ public abstract class ArithmeticEngine {
                     int n = n1 + n2;
                     return
                         ((n ^ n1) < 0 && (n ^ n2) < 0) // overflow check
-                        ? (Number)new Long(((long)n1) + n2)
-                        : (Number)new Integer(n);
+                        ? (Number)Long.valueOf(((long)n1) + n2)
+                        : (Number)Integer.valueOf(n);
                 }
                 case LONG: {
                     long n1 = first.longValue();
@@ -276,7 +276,7 @@ public abstract class ArithmeticEngine {
                     return
                         ((n ^ n1) < 0 && (n ^ n2) < 0) // overflow check
                         ? (Number)toBigInteger(first).add(toBigInteger(second))
-                        : (Number)new Long(n);
+                        : (Number)Long.valueOf(n);
                 }
                 case FLOAT: {
                     return new Float(first.floatValue() + second.floatValue());
@@ -308,8 +308,8 @@ public abstract class ArithmeticEngine {
                     int n = n1 - n2;
                     return
                         ((n ^ n1) < 0 && (n ^ ~n2) < 0) // overflow check
-                        ? (Number)new Long(((long)n1) - n2)
-                        : (Number)new Integer(n);
+                        ? (Number)Long.valueOf(((long)n1) - n2)
+                        : (Number)Integer.valueOf(n);
                 }
                 case LONG: {
                     long n1 = first.longValue();
@@ -318,7 +318,7 @@ public abstract class ArithmeticEngine {
                     return
                         ((n ^ n1) < 0 && (n ^ ~n2) < 0) // overflow check
                         ? (Number)toBigInteger(first).subtract(toBigInteger(second))
-                        : (Number)new Long(n);
+                        : (Number)Long.valueOf(n);
                 }
                 case FLOAT: {
                     return new Float(first.floatValue() - second.floatValue());
@@ -350,8 +350,8 @@ public abstract class ArithmeticEngine {
                     int n = n1 * n2;
                     return
                         n1==0 || n / n1 == n2 // overflow check
-                        ? (Number)new Integer(n)
-                        : (Number)new Long(((long)n1) * n2);
+                        ? (Number)Integer.valueOf(n)
+                        : (Number)Long.valueOf(((long)n1) * n2);
                 }
                 case LONG: {
                     long n1 = first.longValue();
@@ -359,7 +359,7 @@ public abstract class ArithmeticEngine {
                     long n = n1 * n2;
                     return
                         n1==0L || n / n1 == n2 // overflow check
-                        ? (Number)new Long(n)
+                        ? (Number)Long.valueOf(n)
                         : (Number)toBigInteger(first).multiply(toBigInteger(second));
                 }
                 case FLOAT: {
@@ -391,7 +391,7 @@ public abstract class ArithmeticEngine {
                     int n1 = first.intValue();
                     int n2 = second.intValue();
                     if (n1 % n2 == 0) {
-                        return new Integer(n1/n2);
+                        return Integer.valueOf(n1/n2);
                     }
                     return new Double(((double)n1)/n2);
                 }
@@ -399,7 +399,7 @@ public abstract class ArithmeticEngine {
                     long n1 = first.longValue();
                     long n2 = second.longValue();
                     if (n1 % n2 == 0) {
-                        return new Long(n1/n2);
+                        return Long.valueOf(n1/n2);
                     }
                     return new Double(((double)n1)/n2);
                 }
@@ -440,10 +440,10 @@ public abstract class ArithmeticEngine {
         public Number modulus(Number first, Number second) throws TemplateException {
             switch(getCommonClassCode(first, second)) {
                 case INTEGER: {
-                    return new Integer(first.intValue() % second.intValue());
+                    return Integer.valueOf(first.intValue() % second.intValue());
                 }
                 case LONG: {
-                    return new Long(first.longValue() % second.longValue());
+                    return Long.valueOf(first.longValue() % second.longValue());
                 }
                 case FLOAT: {
                     return new Float(first.floatValue() % second.floatValue());
@@ -471,15 +471,15 @@ public abstract class ArithmeticEngine {
         
         private static Map createClassCodesMap() {
             Map<Class, Integer> map = new HashMap<Class, Integer>(17);
-            Integer intcode = new Integer(INTEGER);
+            Integer intcode = Integer.valueOf(INTEGER);
             map.put(Byte.class, intcode);
             map.put(Short.class, intcode);
             map.put(Integer.class, intcode);
-            map.put(Long.class, new Integer(LONG));
-            map.put(Float.class, new Integer(FLOAT));
-            map.put(Double.class, new Integer(DOUBLE));
-            map.put(BigInteger.class, new Integer(BIGINTEGER));
-            map.put(BigDecimal.class, new Integer(BIGDECIMAL));
+            map.put(Long.class, Integer.valueOf(LONG));
+            map.put(Float.class, Integer.valueOf(FLOAT));
+            map.put(Double.class, Integer.valueOf(DOUBLE));
+            map.put(BigInteger.class, Integer.valueOf(BIGINTEGER));
+            map.put(BigDecimal.class, Integer.valueOf(BIGDECIMAL));
             return map;
         }
         
