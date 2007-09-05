@@ -211,7 +211,7 @@ public class FileTemplateLoader implements SecureTemplateLoader
     {
         return AccessController.doPrivileged(new PrivilegedAction<Long>() {
             public Long run() {
-            	return new Long(((File) templateSource).lastModified());
+            	return Long.valueOf(((File) templateSource).lastModified());
             }
         }).longValue();
     }
