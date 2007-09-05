@@ -151,7 +151,7 @@ public class StringFunctions extends BuiltIn {
 	private TemplateModel getStringFunction(final String string, final String builtInName, 
 			final Environment env, final BuiltInExpression callingExpression) throws TemplateException {
 		if (builtInName == "length") {
-			return new SimpleNumber(new Integer(string.length())); 
+			return new SimpleNumber(Integer.valueOf(string.length())); 
 		}
 		if (builtInName == "number") {
             try {
@@ -170,10 +170,10 @@ public class StringFunctions extends BuiltIn {
 			return new SubstringMethod(string, callingExpression);
 		}
 		if (builtInName == "replace") {
-			return new ReplaceMethod(string, callingExpression);
+			return new ReplaceMethod(string);
 		}
 		if (builtInName == "split") {
-			return new SplitMethod(string, callingExpression);
+			return new SplitMethod(string);
 		}
 		if (builtInName == "matches") {
 			return new MatcherBuilder(string, callingExpression);
@@ -182,13 +182,13 @@ public class StringFunctions extends BuiltIn {
 			return new IndexOfMethod(string, callingExpression);
 		}
 		if (builtInName == "contains") {
-			return new ContainsMethod(string, callingExpression);
+			return new ContainsMethod(string);
 		}
 		if (builtInName == "left_pad") {
-			return new LeftPadMethod(string, callingExpression);
+			return new LeftPadMethod(string);
 		}
 		if (builtInName == "right_pad") {
-			return new RightPadMethod(string, callingExpression);
+			return new RightPadMethod(string);
 		}
 		if (builtInName == "word_list") {
 			StringTokenizer st = new StringTokenizer(string);
@@ -206,11 +206,9 @@ public class StringFunctions extends BuiltIn {
 	
 	static class ReplaceMethod implements TemplateMethodModel {
 		String string;
-		BuiltInExpression callingExpression;
 		
-		ReplaceMethod(String string, BuiltInExpression callingExpression) {
+		ReplaceMethod(String string) {
 			this.string = string;
-			this.callingExpression = callingExpression;
 		}
 		
         public Object exec(List args) throws TemplateModelException {
@@ -273,11 +271,9 @@ public class StringFunctions extends BuiltIn {
 	
     static class SplitMethod implements TemplateMethodModel {
         private String string;
-        BuiltInExpression callingExpression;
 
-        SplitMethod(String string, BuiltInExpression callingExpression) {
+        SplitMethod(String string) {
             this.string = string;
-            this.callingExpression = callingExpression;
         }
 
         public Object exec(List args) throws TemplateModelException {
@@ -329,7 +325,7 @@ public class StringFunctions extends BuiltIn {
     static class RegexMatchModel 
     implements TemplateBooleanModel, TemplateCollectionModel, TemplateSequenceModel {
         Matcher matcher;
-        String input, matchedString;
+        String input;
         final boolean matches;
         TemplateSequenceModel groups;
         private ArrayList<TemplateModel> data;
@@ -338,9 +334,6 @@ public class StringFunctions extends BuiltIn {
             this.matcher = matcher;
             this.input = input;
             this.matches = matcher.matches();
-            if (matches) {
-                matchedString = input.substring(matcher.start(), matcher.end());
-            }
         }
         
         public boolean getAsBoolean() {
@@ -426,9 +419,8 @@ public class StringFunctions extends BuiltIn {
         private String string;
         private BuiltInExpression callingExpression;
 
-        LeftPadMethod(String s, BuiltInExpression callingExpression) {
+        LeftPadMethod(String s) {
             this.string = s;
-            this.callingExpression = callingExpression;
         }
 
         public Object exec(List args) throws TemplateModelException {
@@ -481,11 +473,9 @@ public class StringFunctions extends BuiltIn {
     
     static class RightPadMethod implements TemplateMethodModelEx {
         private String string;
-        BuiltInExpression callingExpression;
 
-        private RightPadMethod(String string, BuiltInExpression callingExpression) {
+        private RightPadMethod(String string) {
         	this.string = string;
-        	this.callingExpression = callingExpression;
         }
 
         public Object exec(List args) throws TemplateModelException {
@@ -676,11 +666,9 @@ public class StringFunctions extends BuiltIn {
     
     static class ContainsMethod implements TemplateMethodModelEx {
         private String s;
-        private BuiltInExpression callingExpression;
 
-        private ContainsMethod(String s, BuiltInExpression callingExpression) {
+        private ContainsMethod(String s) {
             this.s = s;
-            this.callingExpression = callingExpression;
         }
 
         public Object exec(List args) throws TemplateModelException {
