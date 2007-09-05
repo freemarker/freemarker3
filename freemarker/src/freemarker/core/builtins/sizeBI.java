@@ -74,6 +74,6 @@ public class sizeBI extends BuiltIn {
 		else {
 			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "a sequence or extended hash");
 		}
-		return new SimpleNumber(new Integer(size));
+		return new SimpleNumber(Integer.valueOf(size));
 	}
 }
