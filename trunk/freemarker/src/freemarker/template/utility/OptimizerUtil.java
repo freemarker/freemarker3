@@ -132,12 +132,12 @@ public class OptimizerUtil
             if(bi.compareTo(INTEGER_MAX) <= 0 && bi.compareTo(INTEGER_MIN) >= 0)
             {
                 // BigInteger -> Integer
-                return new Integer(bi.intValue());
+                return Integer.valueOf(bi.intValue());
             }
             if(bi.compareTo(LONG_MAX) <= 0 && bi.compareTo(LONG_MIN) >= 0)
             {
                 // BigInteger -> Long
-                return new Long(bi.longValue());
+                return Long.valueOf(bi.longValue());
             }
         }
         return number;
