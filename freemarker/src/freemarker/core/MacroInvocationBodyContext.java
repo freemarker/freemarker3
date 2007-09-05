@@ -64,7 +64,6 @@ import freemarker.template.TemplateModel;
  */
 
 public class MacroInvocationBodyContext extends BlockContext {
-	String fragmentName;
     MacroContext invokingMacroContext;
     TemplateElement enclosingDirective;
     
