@@ -117,7 +117,7 @@ abstract public class TemplateElement extends TemplateNode {
         if (nestedElements != null) {
             return new SimpleSequence(nestedElements);
         }
-        SimpleSequence result = null;
+        SimpleSequence result = new SimpleSequence();
         if (nestedBlock != null) {
             result.add(nestedBlock);
         } 
