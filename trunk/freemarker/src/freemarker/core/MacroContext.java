@@ -68,7 +68,6 @@ public class MacroContext extends BlockContext {
     private Macro macro;
     TemplateElement body; // REVISIT
     public ParameterList bodyParameters;
-    TemplateNamespace bodyNamespace;
     MacroContext invokingMacroContext;
     Scope invokingScope;
     
@@ -80,7 +79,6 @@ public class MacroContext extends BlockContext {
     	super(macro, env.getMacroNamespace(macro)); // REVISIT
     	this.macro = macro;
         this.invokingMacroContext = env.getCurrentMacroContext();
-        this.bodyNamespace = env.getCurrentNamespace();
         this.invokingScope = env.getCurrentScope();
         this.body = body;
         this.bodyParameters = bodyParameters;
