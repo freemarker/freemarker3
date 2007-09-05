@@ -77,22 +77,22 @@ public class NumericalCast extends BuiltIn {
 	
 	private Number getNumber(Number num, String builtInName) {
 		if (builtInName == "int") {
-			return new Byte(num.byteValue());
+			return Byte.valueOf(num.byteValue());
 		}
 		else if (builtInName == "double") {
 			return new Double(num.doubleValue());
 		}
 		else if (builtInName == "long") {
-			return new Long(num.longValue());
+			return Long.valueOf(num.longValue());
 		}
 		else if (builtInName == "float") {
 			return new Float(num.floatValue());
 		}
 		else if (builtInName == "byte") {
-			return new Byte(num.byteValue());
+			return Byte.valueOf(num.byteValue());
 		}
 		else if (builtInName == "short") {
-			return new Short(num.shortValue());
+			return Short.valueOf(num.shortValue());
 		}
 		else {
 			throw new InternalError("The only numerical cast built-ins available are ?int, ?long, ?short, ?byte, ?float and ?double.");
