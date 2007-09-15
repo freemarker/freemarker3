@@ -85,11 +85,7 @@ public class DefaultTreeDumper extends BaseASTVisitor {
 	}
 	
     public String render(Template template) {
-        return reconstructHeader(template) + render(template.getRootTreeNode());
-    }
-    
-    public String reconstructHeader(Template template) {
-    	return ""; //TODO
+        return render(template.getHeaderElement()) + render(template.getRootTreeNode());
     }
     
     public String render(TemplateNode node) {
@@ -112,6 +108,19 @@ public class DefaultTreeDumper extends BaseASTVisitor {
     	buffer.append("/#");
     	buffer.append(directiveName);
     	buffer.append(CLOSE_BRACKET);
+    }
+    
+    public void visit(TemplateHeaderElement header) {
+    	if (header == null) return;
+    	openDirective("ftl");
+    	for (String paramName : header.getParams().keySet()) {
+    		buffer.append(" ");
+    		buffer.append(paramName);
+    		buffer.append("=");
+    		visit(header.getParams().get(paramName));
+    	}
+    	buffer.append(CLOSE_BRACKET);
+    	buffer.append("\n");
     }
 	
 	public void visit(AddConcatExpression node) {

@@ -156,7 +156,7 @@ public class Canonicalize {
         if (verbose) {
         	System.err.println("Canonicalizing template: ");
         }
-        return dumper.render(template.getRootTreeNode());
+        return dumper.render(template);
     }
     
     static void info() {
