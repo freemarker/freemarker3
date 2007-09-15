@@ -53,9 +53,8 @@
 package freemarker.core.ast;
 
 import java.util.HashMap;
+import freemarker.template.*;
 import freemarker.core.Environment;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.builtins.*;
 
@@ -163,6 +162,7 @@ public class BuiltInExpression extends Expression implements Cloneable {
         knownBuiltins.put("exists", existenceBIs);
         knownBuiltins.put("default", existenceBIs);
         knownBuiltins.put("has_content", existenceBIs);
+        knownBuiltins.put("source", new sourceBI());
 	}
 	
 	Expression target;
@@ -190,7 +190,7 @@ public class BuiltInExpression extends Expression implements Cloneable {
 	TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
 		if (bi == null) bi = knownBuiltins.get(key); // WHy is this necessary? (REVISIT)
 		TemplateModel targetModel = null;
-		try {
+		if (key != "source") try { // If this is the source built-in, we don't try to evaluate.
 			targetModel = target.getAsTemplateModel(env);
 		} catch (InvalidReferenceException ire) {
 			if (!protectTargetEvaluation) throw ire;
@@ -207,11 +207,10 @@ public class BuiltInExpression extends Expression implements Cloneable {
 	}
 
 	boolean isLiteral() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	
-	
+/*	
 	@Override
     Expression _deepClone(String name, Expression subst) {
 		findImplementation();
@@ -224,5 +223,10 @@ public class BuiltInExpression extends Expression implements Cloneable {
         catch (CloneNotSupportedException e) {
             throw new InternalError();
         }
-    }
+    }*/
+	
+	Expression _deepClone(String name, Expression subst) {
+		return new BuiltInExpression(target.deepClone(name, subst), key);
+	}
+	
 }

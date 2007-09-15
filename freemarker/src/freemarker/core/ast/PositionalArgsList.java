@@ -243,5 +243,13 @@ public class PositionalArgsList extends ArgsList {
             }
         }
     }
-	
+    
+    
+    ArgsList deepClone(String name, Expression subst) {
+    	PositionalArgsList result = new PositionalArgsList();
+    	for (Expression arg : args) {
+    		result.addArg(arg.deepClone(name, subst));
+    	}
+    	return result;
+    }
 }
