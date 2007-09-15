@@ -167,4 +167,6 @@ abstract public class ArgsList extends TemplateNode {
 			
 		}
 	}
+	
+	abstract ArgsList deepClone(String name, Expression subst);
 }

@@ -125,4 +125,14 @@ public class NamedArgsList extends ArgsList {
 		}
 		return "";
 	}
+	
+	ArgsList deepClone(String name, Expression subst) {
+		NamedArgsList result = new NamedArgsList();
+		for (Map.Entry<String, Expression> entry : namedArgs.entrySet()) {
+			try {
+				result.addNamedArg(entry.getKey(), entry.getValue());
+			} catch (ParseException pe) {} // This can't happen anyway, since we already checked for repeats
+		}
+		return result;
+	}
 }
