@@ -273,6 +273,7 @@ public final class Environment extends Configurable implements Scope {
             handleTemplateException(te);
         } finally {
             popElement();
+            currentScope = prevScope;
         }
     }
 

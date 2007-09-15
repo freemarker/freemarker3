@@ -57,7 +57,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 
-import freemarker.core.parser.ParseException;
+import freemarker.template.Template;
 
 
 /**
@@ -100,6 +100,20 @@ public abstract class BaseASTVisitor {
     	catch (IllegalAccessException e) {
     		throw new RuntimeException(e.getMessage());
     	}
+	}
+	
+	public void visit(Template template) {
+		TemplateHeaderElement header = template.getHeaderElement();
+		if (header != null) visit(header);
+		visit(template.getRootTreeNode());
+	}
+	
+	public void visit(TemplateHeaderElement node) {
+		if (node == null) return;
+		Map<String,Expression> params = node.getParams();
+		for (Expression exp : params.values()) {
+			visit(exp);
+		}
 	}
 	
 	

@@ -65,7 +65,6 @@ package freemarker.core.parser;
 import freemarker.core.ast.*;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
-import freemarker.template.utility.DeepUnwrap;
 import java.io.*;
 import java.util.*;
 import java.security.CodeSource;
@@ -79,8 +78,8 @@ public class FMParser {
   Template template;
   private String templateName;
 
+  private boolean stripText;
 // variables that keep track of whether we are in a loop or a switch.
-  private boolean stripWhitespace, stripText;
   private int contentNesting; // for stripText
   private UnifiedCall currentCall;
   private Macro currentMacro;
@@ -100,23 +99,18 @@ public class FMParser {
    * @param template The template associated with this parser.
    * @param reader The character stream to use as input
    */
-  public FMParser(Template template, Reader reader, boolean stripWhitespace) {
+  public FMParser(Template template, Reader reader) {
       this(reader);
       this.template = template;
       this.templateName = template != null ? template.getName() : "";
       token_source.templateName = templateName;
-      this.stripWhitespace = stripWhitespace;
   }
   
-  public FMParser(Template template, Reader reader, boolean stripWhitespace, Boolean altDirectiveSyntax) {
-  	  this(template, reader, stripWhitespace);
+  public FMParser(Template template, Reader reader, Boolean altDirectiveSyntax) {
+  	  this(template, reader);
   	  if (altDirectiveSyntax != null) {
       	  token_source.setAltDirectiveSyntax(altDirectiveSyntax.booleanValue());
       }
-  }
-  
-  public FMParser(String template) {
-      this(null, new StringReader(template), true, true);
   }
   
   public void setTemplate(Template t) {
@@ -153,34 +147,6 @@ public class FMParser {
   	  	this.token = prevToken;
   	  }
 	  return prevToken;
-  }
-  
-  private boolean getBoolean(Expression exp) throws ParseException {
-      TemplateModel tm = null;
-      try {
-          tm = exp.getAsTemplateModel(null);
-      } catch (Exception e) {
-         throw new ParseException(e.getMessage() 
-                                  + "\nCould not evaluate expression: "
-                                  + exp.getCanonicalForm()
-                                  + exp.getStartLocation(), exp);
-      }
-      if (tm instanceof TemplateBooleanModel) {
-          try {
-             return ((TemplateBooleanModel) tm).getAsBoolean();
-          } catch (TemplateModelException tme) {
-          }
-      }
-      if (tm instanceof TemplateScalarModel) {
-          try {
-              return StringUtil.getYesNo(((TemplateScalarModel) tm).getAsString());
-          } catch (Exception e) {
-              throw new ParseException(e.getMessage()
-                                       + "\nExpecting yes/no, found: " + exp.getCanonicalForm()
-                                       + exp.getStartLocation(), exp);
-          }
-      }
-      throw new ParseException("Expecting boolean (yes/no) parameter" + exp.getStartLocation(), exp);
   }
 }
 
@@ -2953,115 +2919,8 @@ TemplateElement OptionalBlock() :
    }
 }
 
-void HeaderElement() :
-{
-   Token key;
-   Expression exp = null;
-}
-{
-   [<WHITESPACE>]
-   (
-     <TRIVIAL_FTL_HEADER>
-     |
-     (
-       <FTL_HEADER>
-       (
-          key=<ID>
-          <EQUALS>
-          exp=Exp()
-          {
-             String ks = key.image;
-             TemplateModel value = null;
-             try {
-                value = exp.getAsTemplateModel(null);
-             } catch (Exception e) {
-                throw new ParseException("Could not evaluate expression: " 
-                                         + exp.getCanonicalForm() + " " 
-                                         + exp.getStartLocation()
-                                         + "\nUnderlying cause: " + 
-                                         e.getMessage(), exp);
-             }
-	     String vs = null;
-             if (value instanceof TemplateScalarModel) {
-                try {
-                   vs = ((TemplateScalarModel) exp).getAsString();
-                } catch (TemplateModelException tme) {}
-             }
-             if (template != null) {
-                 if (ks.equalsIgnoreCase("encoding")) {
-                     if (vs == null) {
-                        throw new ParseException("expecting encoding string here: " 
-                                                 + exp.getStartLocation(), exp);
-                     }
-                     String encoding = template.getEncoding();
-                     if (encoding != null && !encoding.equals(vs)) {
-                         throw new Template.WrongEncodingException(vs);
-                     }
-                 }
-                 else if (ks.equalsIgnoreCase("STRIP_WHITESPACE")) {
-                     this.stripWhitespace = getBoolean(exp);
-                     if (template != null) {
-                     	template.setStripWhitespace(stripWhitespace);
-                     }
-                 }
-                 else if (ks.equalsIgnoreCase("STRIP_TEXT")) {
-                     this.stripText = getBoolean(exp);
-                 }
-                 else if (ks.equalsIgnoreCase("STRICT_SYNTAX")) {
-// should warn herethat this does nothing.                 	
-//                     this.token_source.strictEscapeSyntax = getBoolean(exp);
-                 }
-                 else if (ks.equalsIgnoreCase("ns_prefixes")) {
-                     if (!(value instanceof TemplateHashModelEx)) {
-                         throw new ParseException("Expecting a hash of prefixes to namespace URI's here. " + exp.getStartLocation(), exp);
-                     }
-                     TemplateHashModelEx prefixMap = (TemplateHashModelEx) value;
-                     try {
-                         TemplateCollectionModel keys = prefixMap.keys();
-                         for (TemplateModelIterator it = keys.iterator(); it.hasNext();) {
-                             String prefix = ((TemplateScalarModel) it.next()).getAsString();
-                             TemplateModel valueModel = prefixMap.get(prefix);
-                             if (!(valueModel instanceof TemplateScalarModel)) {
-                                 throw new ParseException("Non-string value in prefix to namespace hash. " + exp.getStartLocation(), exp);
-                             }
-                             String nsURI = ((TemplateScalarModel) valueModel).getAsString();
-                             try {
-                                 template.addPrefixNSMapping(prefix, nsURI);
-                             } catch (IllegalArgumentException iae) {
-                                 throw new ParseException(iae.getMessage() + " " + exp.getStartLocation(), exp);
-                             }
-                         }
-                     } catch (TemplateModelException tme) {
-                     }
-                 }
-                 else if (ks.equalsIgnoreCase("attributes")) {
-                     if (!(value instanceof TemplateHashModelEx)) {
-                         throw new ParseException("Expecting a hash of attribute names to values here. " + exp.getStartLocation(), exp);
-                     }
-                     TemplateHashModelEx attributeMap = (TemplateHashModelEx) value;
-                     try {
-                         TemplateCollectionModel keys = attributeMap.keys();
-                         for (TemplateModelIterator it = keys.iterator(); it.hasNext();) {
-                             String attName = ((TemplateScalarModel) it.next()).getAsString();
-                             Object attValue = DeepUnwrap.unwrap(attributeMap.get(attName));
-                             template.setCustomAttribute(attName, attValue);
-                         }
-                     } catch (TemplateModelException tme) {
-                     }
-                 }
-                 else {
-                     throw new ParseException("Unknown FTL header parameter: " + key.image,
-                                               key.beginLine, key.beginColumn);
-                 }
-             }
-          }
-       )*
-     )
-     LooseDirectiveEnd()
-   )
-}
 
-TemplateHeaderElement HeaderElement2() : 
+TemplateHeaderElement HeaderElement() : 
 {
 	Token key, start, end;
 	Expression exp;
@@ -3114,12 +2973,32 @@ Map<String,Expression> ParamList() :
  */
 TemplateElement Root() :
 {
+   TemplateHeaderElement header;
    TemplateElement doc;
 }
 {
    [
       LOOKAHEAD([<WHITESPACE>](<TRIVIAL_FTL_HEADER>|<FTL_HEADER>))
-       HeaderElement()
+       header=HeaderElement()
+       {
+       	   template.setHeaderElement(header);
+       	   String templateEncoding = template.getEncoding();
+       	   if (templateEncoding != null && header.hasParameter("encoding")) {
+       	   	  String encoding = null;
+       	   	  try {
+       	   	     encoding = header.getStringParameter("encoding");
+       	   	  } catch (Exception e) {}
+       	   	  if (encoding != null && !encoding.equals(templateEncoding)) {
+       	   	  	throw new Template.WrongEncodingException(encoding);
+       	   	  }
+       	   }
+       	   if (header.hasParameter("strip_text")) {
+       	   	  try {
+       	   	  	 this.stripText = header.getBooleanParameter("strip_text");
+       	   	  } catch (Exception e) {}
+       	   }
+       	   	
+       }
    ]
    doc=OptionalBlock()
    <EOF>
