@@ -69,6 +69,7 @@ import freemarker.core.Environment;
 import freemarker.core.TemplateCore;
 import freemarker.core.ast.LibraryLoad;
 import freemarker.core.ast.TemplateElement;
+import freemarker.core.ast.TemplateHeaderElement;
 import freemarker.core.ast.TextBlock;
 import freemarker.core.parser.*;
 import freemarker.debug.impl.DebuggerService;
@@ -123,6 +124,7 @@ public class Template extends TemplateCore {
     boolean stripWhitespace;
     
     private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
+    private TemplateHeaderElement headerElement;
     
     
     
@@ -178,12 +180,12 @@ public class Template extends TemplateCore {
             this.stripWhitespace = getConfiguration().getWhitespaceStripping();
             
         	
-            FMParser parser = new FMParser(this, ltb, stripWhitespace, B);
+            FMParser parser = new FMParser(this, ltb, B);
             setRootElement(parser.Root());
             this.syntaxKnown = parser.isSyntaxSet();
             this.altSyntax = parser.isAltDirectiveSyntax();
             PostParseVisitor ppv = new PostParseVisitor(this);
-            ppv.visit(getRootTreeNode());
+            ppv.visit(this);
         }
         catch (TokenMgrError exc) {
             throw new ParseException("Token manager error: " + exc, 0, 0);
@@ -483,6 +485,14 @@ public class Template extends TemplateCore {
      */
     public void addImport(LibraryLoad ll) {
         imports.add(ll);
+    }
+    
+    public void setHeaderElement(TemplateHeaderElement headerElement) {
+    	this.headerElement = headerElement;
+    }
+    
+    public TemplateHeaderElement getHeaderElement() {
+    	return headerElement;
     }
 
     /**
