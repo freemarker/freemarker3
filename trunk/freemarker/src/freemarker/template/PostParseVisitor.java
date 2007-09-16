@@ -4,6 +4,8 @@ import freemarker.core.ast.*;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
 import freemarker.template.*;
+import freemarker.template.utility.DeepUnwrap;
+
 
 import java.io.StringReader;
 import java.util.*;
@@ -30,6 +32,46 @@ public class PostParseVisitor extends BaseASTVisitor {
 		}
 		EscapeBlock lastEscape = escapes.get(escapes.size() -1);
 		return lastEscape.doEscape(exp);
+	}
+	
+	public void visit(TemplateHeaderElement header) {
+		if (header == null) return;
+		if (header.hasParameter("strip_whitespace")) {
+			try {
+				template.setStripWhitespace(header.getBooleanParameter("strip_whitespace"));
+			} catch (Exception e) {
+				ParsingProblem problem = new ParsingProblem(e.getMessage(), header.getParams().get("strip_whitespace"));
+				template.addParsingProblem(problem);
+			}
+		}
+		if (header.hasParameter("ns_prefixes")) {
+			try {
+				TemplateHashModelEx prefixMap = (TemplateHashModelEx) header.getParameter("ns_prefixes");
+                TemplateCollectionModel keys = prefixMap.keys();
+                for (TemplateModelIterator it = keys.iterator(); it.hasNext();) {
+                    String prefix = ((TemplateScalarModel) it.next()).getAsString();
+                    TemplateModel valueModel = prefixMap.get(prefix);
+                    String nsURI = ((TemplateScalarModel) valueModel).getAsString();
+                    template.addPrefixNSMapping(prefix, nsURI);
+                }
+			} catch (Exception e) {
+				ParsingProblem problem = new ParsingProblem(e.getMessage(), header.getParams().get("ns_prefixes"));
+				template.addParsingProblem(problem);
+			}
+		}
+		if (header.hasParameter("attributes")) {
+			try {
+				TemplateHashModelEx attributeMap = (TemplateHashModelEx) header.getParameter("attributes");
+                TemplateCollectionModel keys = attributeMap.keys();
+                for (TemplateModelIterator it = keys.iterator(); it.hasNext();) {
+                    String attName = ((TemplateScalarModel) it.next()).getAsString();
+                    Object attValue = DeepUnwrap.unwrap(attributeMap.get(attName));
+                    template.setCustomAttribute(attName, attValue);
+                }
+			} catch (Exception e ) {
+				ParsingProblem problem = new ParsingProblem(e.getMessage(), header.getParams().get("attributes"));
+			}
+		}
 	}
 	
 	public void visit(InvalidExpression node) {
