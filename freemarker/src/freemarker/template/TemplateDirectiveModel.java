@@ -5,16 +5,10 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * Objects that implement this interface can be used in unified calls much the
- * same as a macro could. They can implement arbitrary code, write arbitrary
+ * Objects that implement this interface can be used as user-defined directives 
+ * (much like macros). They can implement arbitrary code, write arbitrary
  * text to the template output, and trigger rendering of their nested content
- * any number of times. Note that you can also implement macro-like 
- * user-defined directives using {@link TemplateTransformModel} as well. This
- * interface presents a different programming paradigm - for certain purposes
- * it is easier to implement a user-defined directive using this interface, for
- * other purposes you might find {@link TemplateTransformModel} more handy. As
- * far as the template engine is concerned, you can use both equivalently as a 
- * user-defined directive.
+ * any number of times.
  * @author Attila Szegedi
  * @version $Id: $
  */

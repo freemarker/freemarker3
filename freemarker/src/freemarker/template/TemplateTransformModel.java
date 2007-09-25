@@ -57,16 +57,9 @@ import java.io.Writer;
 import java.util.Map;
 
 /**
- * Objects that implement this interface can be used in a <code>&lt;transform></code>
- * block to perform arbitrary transformations on a part of the template
- * processing output, as well as in user-defined directive calls.
- * Note that you can also implement macro-like 
- * user-defined directives using {@link TemplateDirectiveModel} as well. This
- * interface presents a different programming paradigm - for certain purposes
- * it is easier to implement a user-defined directive using this interface, for
- * other purposes you might find {@link TemplateDirectiveModel} more handy. As 
- * far as the template engine is concerned, you can use both equivalently as a 
- * user-defined directive.
+ * Objects that implement this interface can be used as user-defined directives 
+ * (much like macros).
+ *
  * <P>Note that, as of FreeMarker 2.1, TemplateTransform Model
  * has changed. This is a more powerful implementation. 
  * There is a quick-and-dirty way to patch any legacy
