@@ -85,7 +85,8 @@ public class TypeChecks extends BuiltIn {
 			result = (target instanceof Macro) && !((Macro) target).isFunction();
 		}
 		else if (builtInName == "is_directive") {
-			result = target instanceof Macro || target instanceof TemplateTransformModel;
+			result = target instanceof Macro || target instanceof TemplateTransformModel
+                                 || target instanceof TemplateDirectiveModel;
 		}
 		else if (builtInName == "is_boolean") {
 			result = target instanceof TemplateBooleanModel;
