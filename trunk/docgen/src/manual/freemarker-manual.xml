@@ -1458,25 +1458,23 @@ The average of the price of a python and an elephant is:
         <programlisting role="template"><phrase role="markedText">&lt;html&gt;<phrase
               role="markedInvisibleText">[BR]</phrase>
 &lt;head&gt;<phrase role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;&lt;title&gt;Welcome!&lt;/title&gt;<phrase
-              role="markedInvisibleText">[BR]</phrase>
+  &lt;title&gt;Welcome!&lt;/title&gt;<phrase role="markedInvisibleText">[BR]</phrase>
 &lt;/head&gt;<phrase role="markedInvisibleText">[BR]</phrase>
 &lt;body&gt;<phrase role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;<phrase role="markedComment">[#--&nbsp;Greet&nbsp;the&nbsp;user&nbsp;with&nbsp;his/her&nbsp;name&nbsp;--]</phrase><phrase
+  <phrase role="markedComment">[#-- Greet the user with his/her name --]</phrase><phrase
               role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;&lt;h1&gt;Welcome&nbsp;<phrase role="markedInterpolation">${user}</phrase>!&lt;/h1&gt;<phrase
+  &lt;h1&gt;Welcome <phrase role="markedInterpolation">${user}</phrase>!&lt;/h1&gt;<phrase
               role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;&lt;p&gt;We&nbsp;have&nbsp;these&nbsp;animals:<phrase
+  &lt;p&gt;We have these animals:<phrase role="markedInvisibleText">[BR]</phrase>
+  &lt;ul&gt;<phrase role="markedInvisibleText">[BR]</phrase>
+  <phrase role="markedFTLTag">[#list animals as being]</phrase><phrase
               role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;&lt;ul&gt;<phrase role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;<phrase role="markedFTLTag">[#list&nbsp;animals&nbsp;as&nbsp;being]</phrase><phrase
-              role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;&nbsp;&nbsp;&lt;li&gt;<phrase role="markedInterpolation">${being.name}</phrase>&nbsp;for&nbsp;<phrase
+    &lt;li&gt;<phrase role="markedInterpolation">${being.name}</phrase> for <phrase
               role="markedInterpolation">${being.price}</phrase> Euros<phrase
               role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;<phrase role="markedFTLTag">[/#list]</phrase><phrase
+  <phrase role="markedFTLTag">[/#list]</phrase><phrase
               role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;&lt;/ul&gt;<phrase role="markedInvisibleText">[BR]</phrase>
+  &lt;/ul&gt;<phrase role="markedInvisibleText">[BR]</phrase>
 &lt;/body&gt;<phrase role="markedInvisibleText">[BR]</phrase>
 &lt;/html&gt;</phrase></programlisting>
 
@@ -1502,13 +1500,12 @@ The average of the price of a python and an elephant is:
         role="markedInterpolation">interpolations</phrase>. For
         example:</para>
 
-        <programlisting role="template"><phrase role="markedText">&lt;h1&gt;Welcome&nbsp;<phrase
+        <programlisting role="template"><phrase role="markedText">&lt;h1&gt;Welcome <phrase
               role="markedInterpolation">${user <phrase role="markedComment">[#-- The name of user --]</phrase>}</phrase>!&lt;/h1&gt;<phrase
               role="markedInvisibleText">[BR]</phrase>
-&lt;p&gt;We&nbsp;have&nbsp;these&nbsp;animals:<phrase
-              role="markedInvisibleText">[BR]</phrase>
+&lt;p&gt;We have these animals:<phrase role="markedInvisibleText">[BR]</phrase>
 &lt;ul&gt;<phrase role="markedInvisibleText">[BR]</phrase>
-<phrase role="markedFTLTag">[list&nbsp;<phrase role="markedComment">[#-- some comment... --]</phrase> animals as&nbsp;<phrase
+<phrase role="markedFTLTag">[list <phrase role="markedComment">[#-- some comment... --]</phrase> animals as <phrase
                 role="markedComment">[#-- again... --]</phrase> being]</phrase><phrase
               role="markedInvisibleText">[BR]</phrase></phrase>
 <replaceable>...</replaceable></programlisting>
@@ -1626,14 +1623,13 @@ The average of the price of a python and an elephant is:
 
         <programlisting role="template"><phrase role="markedText"><phrase
               role="markedFTLTag">[#list<phrase role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;animals&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;as<phrase
-                role="markedInvisibleText">[BR]</phrase>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;being<phrase role="markedInvisibleText">[BR]</phrase>
+  animals       as<phrase role="markedInvisibleText">[BR]</phrase>
+     being<phrase role="markedInvisibleText">[BR]</phrase>
 ]</phrase><phrase role="markedInvisibleText">[BR]</phrase>
-<phrase role="markedInterpolation">${being.name}</phrase>&nbsp;for&nbsp;<phrase
-              role="markedInterpolation">${being.price}</phrase>&nbsp;Euros<phrase
+<phrase role="markedInterpolation">${being.name}</phrase> for <phrase
+              role="markedInterpolation">${being.price}</phrase> Euros<phrase
               role="markedInvisibleText">[BR]</phrase>
-<phrase role="markedFTLTag">[/#list&nbsp;&nbsp;&nbsp;&nbsp;]</phrase></phrase></programlisting>
+<phrase role="markedFTLTag">[/#list    ]</phrase></phrase></programlisting>
 
         <para>You may not, however, insert white-space between the
         <literal>[</literal> or <literal>[/</literal> and the directive
@@ -1700,7 +1696,7 @@ The average of the price of a python and an elephant is:
               <listitem>
                 <para><link
                 linkend="dgui_template_exp_direct_hash">Hashes</link>:
-                <literal>{"name": "green&nbsp;mouse", "price":
+                <literal>{"name": "green mouse", "price":
                 150}</literal></para>
               </listitem>
 
@@ -1749,9 +1745,8 @@ The average of the price of a python and an elephant is:
               <listitem>
                 <para><link
                 linkend="dgui_template_exp_stringop_interpolation">Interpolation
-                (or concatenation)</link>:
-                <literal>"Hello&nbsp;${user}!"</literal> or <literal>"Hello
-                "&nbsp;+ user +&nbsp;"!"</literal>)</para>
+                (or concatenation)</link>: <literal>"Hello ${user}!"</literal>
+                or <literal>"Hello " + user + "!"</literal>)</para>
               </listitem>
 
               <listitem>
@@ -1803,13 +1798,10 @@ The average of the price of a python and an elephant is:
           <listitem>
             <para><link
             linkend="dgui_template_exp_comparison">Comparison</link>:
-            <literal>x&nbsp;==&nbsp;y</literal>,
-            <literal>x&nbsp;!=&nbsp;y</literal>,
-            <literal>x&nbsp;&lt;&nbsp;y</literal>,
-            <literal>x&nbsp;&gt;&nbsp;y</literal>,
-            <literal>x&nbsp;&gt;=&nbsp;y</literal>,
-            <literal>x&nbsp;&lt;=&nbsp;y</literal>,
-            <literal>x&nbsp;&amp;lt;&nbsp;y</literal>, etc.</para>
+            <literal>x == y</literal>, <literal>x != y</literal>,
+            <literal>x &lt; y</literal>, <literal>x &gt; y</literal>,
+            <literal>x &gt;= y</literal>, <literal>x &lt;= y</literal>,
+            <literal>x &amp;lt; y</literal>, etc.</para>
           </listitem>
 
           <listitem>
@@ -2062,19 +2054,18 @@ this is a backslash: \</programlisting>
             <para>The <literal><replaceable>Code</replaceable></literal> after
             the <literal>\x</literal> is 1 to 4 hexadecimal digits. For
             example this all put a copyright sign into the string:
-            <literal>"\xA9&nbsp;1999-2001"</literal>,
-            <literal>"\x0A9&nbsp;1999-2001"</literal>,
-            <literal>"\x00A9&nbsp;1999-2001"</literal>. When the character
-            directly after the last hexadecimal digit can be interpreted as
-            hexadecimal digit, you must use all 4 digits or else FreeMarker
-            will be confused.</para>
+            <literal>"\xA9 1999-2001"</literal>,
+            <literal>"\x0A9 1999-2001"</literal>,
+            <literal>"\x00A9 1999-2001"</literal>. When the character directly
+            after the last hexadecimal digit can be interpreted as hexadecimal
+            digit, you must use all 4 digits or else FreeMarker will be
+            confused.</para>
 
             <para>Note that the character sequence <literal>${</literal> (and
             <literal>#{</literal> for backward compatibility) has special
             meaning. It's used to insert the value of expressions (typically:
             the value of variables, as in
-            <literal>"Hello&nbsp;${user}!"</literal>); this will be explained
-            <link
+            <literal>"Hello ${user}!"</literal>); this will be explained <link
             linkend="dgui_template_exp_stringop_interpolation">later</link>.
             If you want to print <literal>${</literal>, you should use raw
             string literals as explained below.</para>
@@ -2232,7 +2223,7 @@ autumn
             <para>To specify a hash in a template, you list the key/value
             pairs separated by commas, and put the list into curly brackets.
             The key and value within a key/value pair are separated with a
-            colon. Here is an example: <literal>{"name": "green&nbsp;mouse",
+            colon. Here is an example: <literal>{"name": "green mouse",
             "price": 150}</literal>. Note that both the names and the values
             are expressions. However, the lookup names must be strings.</para>
           </sect3>
@@ -2853,8 +2844,8 @@ ${-1.999?int}</programlisting>
           <literal>[#if 1 == "1"]</literal> will cause an error. Note that
           FreeMarker does exact comparison, so string comparisons are case and
           white-space sensitive: <literal>"x"</literal> and
-          <literal>"x&nbsp;"</literal> and <literal>"X"</literal> are not
-          equal values.</para>
+          <literal>"x "</literal> and <literal>"X"</literal> are not equal
+          values.</para>
 
           <para>For numerical and date values you can also use
           <literal>&lt;</literal>, <literal>&lt;=</literal>,
@@ -4868,7 +4859,7 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
               <replaceable>...</replaceable>&gt;[#list
               <replaceable>...</replaceable>&gt;</literal> is subject to
               white-space ignoring, while a line that contains <literal>[#if
-              <replaceable>...</replaceable>&gt;&nbsp;[#list
+              <replaceable>...</replaceable>&gt; [#list
               <replaceable>...</replaceable>&gt;</literal> is not, because the
               white-space between the two FTL tags is embedded white-space,
               not indentation or trailing white-space.</para>
@@ -7091,10 +7082,9 @@ c</programlisting>
         the runtime state of template processing. Among other things, it
         stores the variables created by the template with directives like
         <literal>set</literal>, <literal>macro</literal>, or
-        <literal>var</literal>. It never tries to modify the data model
-        object that you pass to the <literal>process</literal> call, nor does
-        it create or replace shared variables stored in the
-        configuration.</para>
+        <literal>var</literal>. It never tries to modify the data model object
+        that you pass to the <literal>process</literal> call, nor does it
+        create or replace shared variables stored in the configuration.</para>
 
         <para>When you try to read a variable, FreeMarker will seek the
         variable in this order, and stops when it finds a variable with the
@@ -8042,11 +8032,7 @@ TemplateHashModel roundingModeEnums =
         use such a framework (for example, <ulink
         url="http://jakarta.apache.org/struts">Apache Struts</ulink>), then
         read on. For other frameworks please refer to the documentation of the
-        framework. Note that if you are interested in a simple framework that
-        prefers FreeMarker, you may try <ulink
-        url="http://www.niggle.org/">Niggle</ulink>, a Web application
-        framework maintained by Jonathan Revusky, who is currently
-        (31/12/2002) the lead developer of FreeMarker.</para>
+        framework.</para>
 
         <sect2 id="pgui_misc_servlet_model2"
                xreflabel="Programmer's Guide/Using FreeMarker with servlets/Using FreeMarker for ''Model 2''">
@@ -9448,10 +9434,10 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
              |
              +- text "p2.2"</programlisting>
 
-        <para>Note that the disturbing <literal>"\n&nbsp;&nbsp;"</literal>-s
-        are the line-breaks (indicated here with <literal>\n</literal>, an
-        escape sequence used in FTL string literals) and the indentation
-        spaces between the tags.</para>
+        <para>Note that the disturbing <literal>"\n  "</literal>-s are the
+        line-breaks (indicated here with <literal>\n</literal>, an escape
+        sequence used in FTL string literals) and the indentation spaces
+        between the tags.</para>
 
         <para>Notes on the DOM related terminology:</para>
 
@@ -10111,7 +10097,7 @@ Test Book</programlisting>
                 <entry>Node name (<literal>?node_name</literal>)</entry>
 
                 <entry>String value
-                (e.g.,&nbsp;<literal>&lt;p&gt;${node}</literal>)</entry>
+                (e.g., <literal>&lt;p&gt;${node}</literal>)</entry>
 
                 <entry>Special hash keys</entry>
               </row>
@@ -10783,7 +10769,7 @@ End book</programlisting>
           linkend="ref.directive.visit"><literal>visit</literal>
           directive</link> you can visit a single node, instead of the
           children of the node:
-          <literal>[#visit&nbsp;<replaceable>nodeToVisist</replaceable>]</literal>.
+          <literal>[#visit <replaceable>nodeToVisist</replaceable>]</literal>.
           This can be useful sometimes.</para>
         </sect2>
 
@@ -11800,7 +11786,7 @@ String BEAN_NAME = "${beanName?j_string}";</programlisting>
               matches the pattern, otherwise <literal>false</literal>. For
               example, <literal>"fooo"?matches('fo*')</literal> is
               <literal>true</literal>, but
-              <literal>"fooo&nbsp;bar"?matches('fo*')</literal> is
+              <literal>"fooo bar"?matches('fo*')</literal> is
               <literal>false</literal>.</para>
             </listitem>
 
@@ -12399,10 +12385,9 @@ rif: foo XYr baar</programlisting>
           <secondary>built-ins</secondary>
         </indexterm>
 
-        <para>Related FAQs: Do you have things like 1,000,000 or
-        1&nbsp;000&nbsp;000 instead of 1000000, or something like 3.14 instead
-        of 3,14 or vice versa? See <link
-        linkend="faq_number_grouping">this</link> and <link
+        <para>Related FAQs: Do you have things like 1,000,000 or 1 000 000
+        instead of 1000000, or something like 3.14 instead of 3,14 or vice
+        versa? See <link linkend="faq_number_grouping">this</link> and <link
         linkend="faq_number_decimal_point">this</link> FAQ entry, also note
         the <literal>c</literal> built-in above.</para>
 
@@ -13091,8 +13076,8 @@ No 2nd param: ${names?seq_last_index_of("Joe")}
 
           <para>The number of subvariables in sequence (as a numerical value).
           The highest possible index in sequence <literal>s</literal> is
-          <literal>s?size&nbsp;-&nbsp;1</literal> (since the index of the
-          first subvariable is 0) assuming that the sequence has at least one
+          <literal>s?size - 1</literal> (since the index of the first
+          subvariable is 0) assuming that the sequence has at least one
           subvariable.</para>
         </simplesect>
 
@@ -14992,8 +14977,8 @@ I said, test only)</programlisting>
           automatically. This is a convenience method for avoiding writing
           similar expressions all over. It does not affect interpolations in
           string literals (as in <literal>[#set x =
-          "Hello&nbsp;${user}!"]</literal>). Also, it does not affect
-          numerical interpolations
+          "Hello ${user}!"]</literal>). Also, it does not affect numerical
+          interpolations
           (<literal>#{<replaceable>...</replaceable>}</literal>).</para>
 
           <para>Example:</para>
@@ -17034,8 +17019,8 @@ There was no specific handler for node y
           subvariables, so you need an artificial parent hash. For example, to
           read a top-level variable that has a strange name that would confuse
           FreeMarker, you can write
-          <literal>.vars["A&nbsp;strange&nbsp;name!"]</literal>. Or, to access
-          a top-level variable with dynamic name given with variable
+          <literal>.vars["A strange name!"]</literal>. Or, to access a
+          top-level variable with dynamic name given with variable
           <literal>varName</literal> you can write
           <literal>.vars[varName]</literal>. Note that the hash returned by
           <literal>.vars</literal> does not support <literal>?keys</literal>
@@ -17785,7 +17770,7 @@ or
           specified, the minimum is 0.</para>
 
           <para>Unlike <literal>${...}</literal>, <literal>#{...}</literal>
-          never prints grouping separators (like in: 1&nbsp;000&nbsp;000 or
+          never prints grouping separators (like in: 1 000 000 or
           100,000,000). This is actually a backward compatibility quirk, but
           it can be useful when you print numbers in situations like
           <literal>&lt;a href="quertyDatabase?id=#{id}"
@@ -18110,8 +18095,7 @@ or
         <qandaentry id="faq_number_grouping">
           <question>
             <para>Why does FreeMarker print the numbers with strange
-            formatting (as 1,000,000 or 1&nbsp;000&nbsp;000 instead of
-            1000000)?</para>
+            formatting (as 1,000,000 or 1 000 000 instead of 1000000)?</para>
           </question>
 
           <answer>
@@ -20567,9 +20551,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             <listitem>
               <para>Interpolation in string literals. For convenience,
               interpolations are now supported in string literals. For
-              example:
-              <literal>[@message&nbsp;"Hello&nbsp;${user}!"&nbsp;/]</literal>
-              is the same as <literal>[@message "Hello " + user + "!"
+              example: <literal>[@message "Hello ${user}!" /]</literal> is the
+              same as <literal>[@message "Hello " + user + "!"
               /]</literal></para>
             </listitem>
 
@@ -20624,7 +20607,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               accept arbitrary destination variable name with quoted syntax.
               For example: <literal>[#macro
               "name-with-hyphens"]<replaceable>...</replaceable></literal> or
-              <literal>[#set "foo&nbsp;bar" = 123]</literal>.</para>
+              <literal>[#set "foo bar" = 123]</literal>.</para>
             </listitem>
 
             <listitem>
@@ -21174,7 +21157,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
                   <listitem>
                     <para>have returned
                     <literal>&lt;foo&gt;&lt;/foo&gt;</literal> for empty
-                    elements instead of <literal>&lt;foo&nbsp;/&gt;</literal>.
+                    elements instead of <literal>&lt;foo /&gt;</literal>.
                     Other than it was needlessly verbose, it has confused
                     browsers if you generate HTML.</para>
                   </listitem>
@@ -24594,7 +24577,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       Software Society. The current copyright holder is the Visigoth Software
       Society.</para>
 
-      <para>&nbsp;</para>
+      <para> </para>
 
       <para>Copyright (c) 2003 The Visigoth Software Society. All rights
       reserved.</para>
@@ -24646,7 +24629,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
       THE POSSIBILITY OF SUCH DAMAGE.</para>
 
-      <para>&nbsp;</para>
+      <para> </para>
 
       <para>This software consists of voluntary contributions made by many
       individuals on behalf of the Visigoth Software Society. For more
