@@ -3824,13 +3824,11 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <primary>@</primary>
         </indexterm>
 
-        <para>Macro and transform variables can be used as user-defined
-        directives. The difference between macros and transforms is that
-        macros are defined in the template with the <literal>macro</literal>
-        directive, while transforms are defined by the programmers outside the
-        template (mostly in Java programming language). Both variable types
-        can be used as custom directive in exactly the same way. This tutorial
-        will introduce user-defined directives through macros.</para>
+        <para>As far as template authors are concerned, user-defined directives can be defined using the
+        <literal>macro</literal> directive. <phrase role="forProgrammers">Java
+        programmers who want to implement the directive in Java Language,
+        rather than in a template, should use
+        <literal>freemarker.template.TemplateDirectiveModel</literal> (see <link linkend="pgui_datamodel_directive">more here...</link>).</phrase></para>
 
         <sect2>
           <title>Basics</title>
@@ -5018,7 +5016,7 @@ That's all.</programlisting>
           </listitem>
 
           <listitem>
-            <para>Calling user defined directive: <literal>[@myMacro
+            <para>Calling user-defined directive: <literal>[@myMacro
             /]</literal></para>
           </listitem>
 
@@ -5775,134 +5773,320 @@ ${indexOf("foo", x)}</programlisting>
         </sect2>
       </sect1>
 
-      <sect1 id="pgui_datamodel_transform"
-             xreflabel="Programmer's Guide/The Data Model/Transforms">
-        <title>Transforms</title>
+      <sect1 id="pgui_datamodel_directive"
+             xreflabel="Programmer's Guide/The Data Model/Directive">
+        <title>Directives</title>
 
         <indexterm>
-          <primary>transforms</primary>
+          <primary>directives</primary>
 
           <secondary>Java side</secondary>
         </indexterm>
 
-        <para>Transforms implement the
-        <literal>TemplateTransformModel</literal> interface.</para>
-
-        <para>You can find some useful
-        <literal>TemplateTransformModel</literal> implementations in the
-        <literal>freemarker.template.utility</literal> package.</para>
+        <para>Java programmers can implement user-defined directives in Java
+        using the <literal>TemplateDirectiveModel</literal> interface. See in
+        the API documentation.</para>
 
         <sect2>
-          <title>Implementing your own transform</title>
+          <title>Example 1</title>
 
-          <para><literal>TemplateTransformModel</literal> interface contains
-          one method: <literal>Writer getWriter(Writer out, Map
-          args)</literal>. This is called at the transform <link
-          linkend="gloss.startTag">start-tag</link>. Between the transform
-          start-tag and <link linkend="gloss.endTag">end-tag</link> the
-          returned <literal>Writer</literal> will be used for printing to the
-          output.</para>
+          <para>We will implement a directive which converts all output
+          between its start-tag and end-tag to upper case. Like, this
+          template:</para>
 
-          <para>The returned <literal>Writer</literal> object does the actual
-          transformation. It should write the transformed output to the
-          <literal>Writer</literal> that was passed as the out parameter. When
-          a <literal>flush</literal> directive is reached, the
-          <literal>flush()</literal> method of the returned
-          <literal>Writer</literal> will be called; it should write the
-          contents of internal buffers into the out (if it uses any internal
-          buffers) and after that it should call
-          <literal>out.flush()</literal>, so the output will be send to the
-          client. When the transform end-tag is reached,
-          <literal>close()</literal> will be called. Don't call
-          <literal>out.close()</literal>.</para>
+          <programlisting role="template">
+foo
+<emphasis>&lt;@upper&gt;</emphasis>
+  bar
+  &lt;#-- All kind of FTL is allowed here --&gt;
+  &lt;#list ["red", "green", "blue"] as color&gt;
+    ${color}
+  &lt;/#list&gt;
+  baaz
+<emphasis>&lt;/@upper&gt;</emphasis>
+wombat
+</programlisting>
 
-          <para>Example: This is a possible implementation of a
-          <literal>TemplateTransformModel</literal> that converts the text to
-          uppercase:</para>
+          <para>will output this:</para>
 
-          <programlisting role="unspecified">import java.io.*;
-import java.util.*;
-import freemarker.template.TemplateTransformModel;
+          <programlisting role="output">
+foo
+  BAR
+    RED
+    GREEN
+    BLUE
+  BAAZ
+wombat
+</programlisting>
 
-class UpperCaseTransform implements TemplateTransformModel {
+          <para>This is the source code of the directive class:</para>
 
-    public Writer getWriter(Writer out, Map args) {
-        return new UpperCaseWriter(out);
+          <programlisting role="unspecified">package com.example;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
+
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateDirectiveModel;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateModelException;
+
+/**
+ *  FreeMarker user-defined directive that progressively transforms
+ *  the output of its nested content to upper-case.
+ *  
+ *  
+ *  &lt;p&gt;&lt;b&gt;Directive info&lt;/b&gt;&lt;/p&gt;
+ * 
+ *  &lt;p&gt;Parameters: None
+ *  &lt;p&gt;Nested content: Yes
+ */
+public class UpperDirective implements TemplateDirectiveModel {
+    
+    public void execute(Writer out, Map params, TemplateDirectiveBody body)
+            throws TemplateException, IOException {
+        // Check if no parameters were given:
+        if (!params.isEmpty()) {
+            throw new TemplateModelException(
+                    "This directive doesn't have parameters.");
+        }
+        
+        // If there is non-empty nested content:
+        if (body != null) {
+            // Executes the nested body. Same as &lt;#nested&gt; in FTL, except
+            // that for this directive we use our own Writer instead of the
+            // current output writer, as we need to "filter" then output.
+            body.render(new UpperCaseFilterWriter(out));
+        }
     }
-
-    private class UpperCaseWriter extends Writer {
+    
+    /**
+     * A {@link Writer} that transforms the character stream to upper case
+     * and forwards it to another {@link Writer}.
+     */ 
+    private static class UpperCaseFilterWriter extends Writer {
        
-        private Writer out;
+        private final Writer out;
            
-        UpperCaseWriter (Writer out) {
+        UpperCaseFilterWriter (Writer out) {
             this.out = out;
         }
 
         public void write(char[] cbuf, int off, int len)
                 throws IOException {
-            out.write(new String(cbuf, off, len).toUpperCase());
+            char[] transformedCbuf = new char[len];
+            for (int i = 0; i &lt; len; i++) {
+                transformedCbuf[i] = Character.toUpperCase(cbuf[i + off]);
+            }
+            out.write(transformedCbuf);
         }
 
         public void flush() throws IOException {
             out.flush();
         }
 
-        public void close() {
+        public void close() throws IOException {
+            out.close();
         }
     }
+
 }</programlisting>
 
-          <para>If you put an instance of the above class into the data
-          model:</para>
+          <para>Now we still need to create an instance of this class, and
+          make this directive available to the template with the name "upper"
+          (or with whatever name we want) somehow. A possible solution is to
+          put the directive in the data model:</para>
 
-          <programlisting role="unspecified">root.put("upperCase", new UpperCaseTransform());</programlisting>
+          <programlisting role="unspecified">root.put("upper", new com.example.UpperDirective());</programlisting>
 
-          <para>then this template:</para>
-
-          <programlisting role="template">blah1
-[@upperCase]
-blah2
-blah3
-[/@upperCase&gt;
-blah4</programlisting>
-
-          <para>will output this:</para>
-
-          <programlisting role="output">blah1
-BLAH2
-BLAH3
-blah4</programlisting>
-
-          <para>Typically it is better practice to put commonly used
-          transforms into the <literal>Configuration</literal> as <link
+          <para>But typically it is better practice to put commonly used
+          directives into the <literal>Configuration</literal> as <link
           linkend="pgui_config_sharedvariables">shared
           variables</link>.</para>
 
-          <para>It's important to realize, that if the transform is stateful,
-          then the state must be stored in the <literal>Writer</literal>
-          instance, not in the <literal>TemplateTransformModel</literal>
-          instance itself. <literal>TemplateTransformModel</literal> instance
-          should be stateless, basically just a factory of
-          <literal>Writer</literal> objects. Think of nested blocks of the
-          same transform, or shared variables accessed by multiple threads
-          concurrently.</para>
+          <para>It is also possible to put the directive into an FTL library
+          (collection of macros and like in a template, that you
+          <literal>include</literal> or <literal>import</literal> in other
+          templates) using the <link
+          linkend="ref_builtin_new"><literal>new</literal>
+          built-in</link>:</para>
 
-          <para>The returned <literal>Writer</literal> may implement
-          <literal>freemarker.template.TransformControl</literal> interface.
-          The methods on this interfaces are callbacks that will be called by
-          the template engine and that give the writer a chance to better
-          control the evaluation of the nested content (the template fragment
-          between the
-          <literal>[@<replaceable>myTransform</replaceable>]</literal> and
-          <literal>[/@<replaceable>myTransform</replaceable>&gt;</literal>).
-          The writer can instruct the engine to skip or to repeat the
-          evaluation of the nested content, and gets notified about exceptions
-          that are thrown during the nested content evaluation. For more
-          information please read the API documentation.</para>
+          <programlisting role="template">&lt;#-- Maybe you have directives that you have implemented in FTL --&gt;
+&lt;#macro something&gt;
+  ...
+&lt;/#macro&gt;
+
+&lt;#-- Now you can't use &lt;#macro upper&gt;, but instead you can: --&gt;
+&lt;#assign upper = "com.example.UpperDirective"?new()&gt;</programlisting>
+        </sect2>
+
+        <sect2>
+          <title>Example 2</title>
+
+          <para>We will create a directive that executes its nested content
+          again and again for the specified number of times (similarly to
+          <literal>list</literal> directive), optionally separating the the
+          output of the repetations with a <literal>&lt;hr&gt;</literal>-s.
+          Let's call this directive "repeat". Example template:</para>
+
+          <programlisting role="template">&lt;#assing x = 1&gt;
+
+<emphasis>&lt;@repeat count=4&gt;</emphasis>
+  Test ${x}
+  &lt;#assign x = x + 1&gt;
+<emphasis>&lt;/@repeat&gt;</emphasis>
+
+<emphasis>&lt;@repeat count=3 hr=true&gt;</emphasis>
+  Test
+<emphasis>&lt;/@repeat&gt;</emphasis></programlisting>
+
+          <para>Output:</para>
+
+          <programlisting role="output">&lt;#assing x = 1&gt;
+
+  Test 1
+  Test 2
+  Test 3
+  Test 4
+
+  Test
+&lt;hr&gt;  Test
+&lt;hr&gt;  Test</programlisting>
+
+          <para>The class:</para>
+
+          <programlisting role="unspecified">package com.example;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Iterator;
+import java.util.Map;
+
+import freemarker.template.TemplateBooleanModel;
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateDirectiveModel;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateNumberModel;
+
+/**
+ * FreeMarker user-defined directive for repeating a section of a template,
+ * optionally with separating the output of the repetations with
+ * &lt;tt&gt;&amp;lt;hr&gt;&lt;/tt&gt;-s.
+ *
+ * 
+ * &lt;p&gt;&lt;b&gt;Directive info&lt;/b&gt;&lt;/p&gt;
+ * 
+ * &lt;p&gt;Parameters:
+ * &lt;ul&gt;
+ *   &lt;li&gt;&lt;code&gt;count&lt;/code&gt;: The number of repetations. Required!
+ *       Must be a non-negative number. If it is not a whole number then it will
+ *       be rounded &lt;em&gt;down&lt;/em&gt;.
+ *   &lt;li&gt;&lt;code&gt;hr&lt;/code&gt;: Tells if a HTML "hr" element could be printed between
+ *       repetations. Boolean. Optional, defaults to &lt;code&gt;false&lt;/code&gt;. 
+ * &lt;/ul&gt;
+ * 
+ * &lt;p&gt;Nested content: Yes
+ */
+public class RepeatDirective implements TemplateDirectiveModel {
+    
+    private static final String PARAM_NAME_COUNT = "count";
+    private static final String PARAM_NAME_HR = "hr";
+    
+    public void execute(Writer out, Map params, TemplateDirectiveBody body)
+            throws TemplateException, IOException {
+        
+        // ---------------------------------------------------------------------
+        // Processing the parameters:
+        
+        int countParam = 0;
+        boolean countParamSet = false;
+        boolean hrParam = false;
+        
+        Iterator paramIter = params.entrySet().iterator();
+        while (paramIter.hasNext()) {
+            Map.Entry ent = (Map.Entry) paramIter.next();
+            
+            String paramName = (String) ent.getKey();
+            TemplateModel paramValue = (TemplateModel) ent.getValue();
+            
+            if (paramName.equals(PARAM_NAME_COUNT)) {
+                if (!(paramValue instanceof TemplateNumberModel)) {
+                    throw new TemplateModelException(
+                            "The \"" + PARAM_NAME_HR + "\" parameter "
+                            + "must be a number.");
+                }
+                countParam = ((TemplateNumberModel) paramValue)
+                        .getAsNumber().intValue();
+                countParamSet = true;
+                if (countParam &lt; 0) {
+                    throw new TemplateModelException(
+                            "The \"" + PARAM_NAME_HR + "\" parameter "
+                            + "can't be negative.");
+                }
+            } else if (paramName.equals(PARAM_NAME_HR)) {
+                if (!(paramValue instanceof TemplateBooleanModel)) {
+                    throw new TemplateModelException(
+                            "The \"" + PARAM_NAME_HR + "\" parameter "
+                            + "must be a boolean.");
+                }
+                hrParam = ((TemplateBooleanModel) paramValue)
+                        .getAsBoolean();
+            } else {
+                throw new TemplateModelException(
+                        "Unsupported parameter: " + paramName);
+            }
+        }
+        if (!countParamSet) {
+                throw new TemplateModelException(
+                        "The required \"" + PARAM_NAME_COUNT + "\" paramter "
+                        + "is missing.");
+        }
+        
+        // Yeah, it was long and boring...
+        
+        // ---------------------------------------------------------------------
+        // Do the actual directive execution:
+        
+        if (body != null) {
+            for (int i = 0; i &lt; countParam; i++) {
+                // Prints a &lt;hr&gt; between all repetations if the "hr" parameter
+                // was true:
+                if (hrParam &amp;&amp; i != 0) {
+                    out.write("&lt;hr&gt;");
+                }
+                // Executes the nested body (same as &lt;#nested&gt; in FTL). In this
+                // case we don't provide a special writer as the parameter.
+                // So in principle it should be body.render(out), but the
+                // API allows just passing null, which means the same.
+                body.render(null);
+            }
+        }
+    }
+
+}</programlisting>
+        </sect2>
+
+        <sect2>
+          <title>Notices</title>
+
+          <para>It's important that a
+          <literal>TemplateDirectiveModel</literal> object usually should not
+          be stateful. The typical mistake is the storing of the state of the
+          directive call execution in the fields of the object. Think of
+          nested calls of the same directive, or directive objects used as
+          shared variables accessed by multiple threads concurrently.</para>
 
           <para>If you need to access the runtime FTL environment (read/write
           variables, get the current locale, etc.), you can get it with
           <literal>Environment.getCurrentEnvironment()</literal>.</para>
+
+          <para>Unfortunatelly, <literal>TemplateDirectiveModel</literal>-s
+          don't support passing parameters by position (rather than by name).
+          This is fixed starting from FreeMarker 2.4.
+          <literal>TemplateDirectiveModel</literal>-s also can't define loop
+          variables.</para>
         </sect2>
       </sect1>
 
@@ -6293,11 +6477,11 @@ ${theObject.sin(123)}</programlisting>
 
         <programlisting role="unspecified">Configuration cfg = new Configuration();
 <replaceable>...</replaceable>
-cfg.setSharedVariable("to_upper", new UpperCaseTransform());
+cfg.setSharedVariable("wrap", new WrapDirective());
 cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WRAPPER</programlisting>
 
-        <para>In all templates that use this configuration, a transform with
-        name <literal>to_upper</literal> and a string with name
+        <para>In all templates that use this configuration, a directive with
+        name <literal>wrap</literal> and a string with name
         <literal>company</literal> will be visible in the data model root, so
         you don't have to add them to the root hash again and again. A
         variable in the root object that you pass to the
@@ -6311,9 +6495,12 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
           This is the typical situation for Servlet based Web sites.</para>
         </warning>
 
-        <para>The set of shared variables is initially (i.e., for a new
+        <para>Due to backward compatiblity heritage, the set of shared
+        variables is initially (i.e., for a new
         <literal>Configuration</literal> instance) not empty. It contains the
-        following transforms:</para>
+        following user-defined directives (they are "user-defined" in the
+        sense that you use <literal>@</literal> to call them instead of
+        <literal>#</literal>):</para>
 
         <informaltable frame="all">
           <tgroup align="left" cols="2" colsep="1" rowsep="1">
@@ -10546,11 +10733,11 @@ Test Book</programlisting>
         linkend="ref.directive.recurse"><literal>recurse</literal>
         directive</link>. This directive gets a node variable as parameter,
         and ''visits'' all its children nodes, one after the other, starting
-        with the first child. ''Visiting'' a node means that it calls a user
-        defined directive (macro or transform) that has the same name as the
-        name of the child node (<literal>?node_name</literal>). We say on
-        this, that the user defined directive <emphasis>handles</emphasis> the
-        node. The node that the user defined directive just handles is
+        with the first child. ''Visiting'' a node means that it calls a
+        user-defined directive (macro or transform) that has the same name as
+        the name of the child node (<literal>?node_name</literal>). We say on
+        this, that the user-defined directive <emphasis>handles</emphasis> the
+        node. The node that the user-defined directive just handles is
         available as special variable <literal>.node</literal>. For example,
         this FTL:</para>
 
@@ -10713,7 +10900,7 @@ End book</programlisting>
 
           <para>For some XML node types, there is a default handler, which
           will handle the node if you haven't defined a handler for the node
-          (i.e., if there is no user defined directive available with name
+          (i.e., if there is no user-defined directive available with name
           identical to the node name). Here are these node types, and what the
           default handler does:</para>
 
@@ -10729,7 +10916,7 @@ End book</programlisting>
 
             <listitem>
               <para>Processing instruction node: call handler called
-              <literal>@pi</literal> if you have created such user defined
+              <literal>@pi</literal> if you have created such user-defined
               directive, otherwise do nothing (ignore the node).</para>
             </listitem>
 
@@ -10782,7 +10969,7 @@ End book</programlisting>
             <secondary>in declarative processing</secondary>
           </indexterm>
 
-          <para>We said that the name of the handler user defined directive
+          <para>We said that the name of the handler user-defined directive
           (macro or transform) for an element is the name of the element. In
           fact, it is the full-qualified name of the element:
           <literal><replaceable>prefix</replaceable>:<replaceable>elementName</replaceable></literal>.
@@ -13400,7 +13587,7 @@ Sorted by name.last:
             <primary>node_name built-in</primary>
           </indexterm>
 
-          <para>Returns the string that is used to determine what user defined
+          <para>Returns the string that is used to determine what user-defined
           directive to invoke to handle this node when it is ''visited''. See:
           the <link linkend="ref.directive.visit">visit</link> and <link
           linkend="ref.directive.recurse">recurse</link> directives.</para>
@@ -13411,7 +13598,7 @@ Sorted by name.last:
           by the node type. See <link linkend="misc.xguiTable">this
           table</link>. Note that this node name is not the same as the node
           name returned in the DOM API; the goal of FreeMarker node names is
-          to give the name of the user defined directive that will process the
+          to give the name of the user-defined directive that will process the
           node.</para>
         </simplesect>
 
@@ -13766,7 +13953,11 @@ Sorted by name.last:
                 <row>
                   <entry><literal>is_directive</literal></entry>
 
-                  <entry>macro or transform</entry>
+                  <entry>Whatever kind of directive (for example a macro,
+                  <phrase role="forProgrammers">or
+                  <literal>TemplateDirectiveModel</literal>,
+                  <literal>TemplateTransformModel</literal>,
+                  etc.</phrase>)</entry>
                 </row>
 
                 <row>
@@ -14111,14 +14302,14 @@ Sorted by name.last:
           <para><literal>if</literal> with 0 <literal>elseif</literal> and no
           <literal>else</literal>:</para>
 
-          <programlisting role="template">[#if x = 1]
+          <programlisting role="template">[#if x == 1]
   x is 1
 [/#if]</programlisting>
 
           <para><literal>if</literal> with 0 <literal>elseif</literal> and
           <literal>else</literal>:</para>
 
-          <programlisting role="template">[#if x = 1]
+          <programlisting role="template">[#if x == 1]
   x is 1
 [#else]
   x is not 1
@@ -14127,24 +14318,24 @@ Sorted by name.last:
           <para><literal>if</literal> with 2 <literal>elseif</literal> and no
           <literal>else</literal>:</para>
 
-          <programlisting role="template">[#if x = 1]
+          <programlisting role="template">[#if x == 1]
   x is 1
-[#elseif x = 2]
+[#elseif x == 2]
   x is 2
-[#elseif x = 3]
+[#elseif x == 3]
   x is 3
 [/#if]</programlisting>
 
           <para><literal>if</literal> with 3 <literal>elseif</literal> and
           <literal>else</literal>:</para>
 
-          <programlisting role="template">[#if x = 1]
+          <programlisting role="template">[#if x == 1]
   x is 1
-[#elseif x = 2]
+[#elseif x == 2]
   x is 2
-[#elseif x = 3]
+[#elseif x == 3]
   x is 3
-[#elseif x = 4]
+[#elseif x == 4]
   x is 4
 [#else]
   x is not 1 nor 2 nor 3 nor 4
@@ -14156,9 +14347,9 @@ Sorted by name.last:
           <para>You can nest <literal>if</literal> directives (of
           course):</para>
 
-          <programlisting role="template">[#if x = 1]
+          <programlisting role="template">[#if x == 1]
   x is 1
-  [#if y = 1]
+  [#if y == 1]
     and y is 1 too
   [#else]
     but y is not
@@ -15446,36 +15637,36 @@ ${1.2}</programlisting>
         <sect2>
           <title>Synopsis</title>
 
-          <programlisting role="metaTemplate"><literal>[@<replaceable>macro_or_transf</replaceable> <replaceable>param1</replaceable>=<replaceable>val1</replaceable> <replaceable>param2</replaceable>=<replaceable>val2</replaceable> <replaceable>...</replaceable> <replaceable>paramN</replaceable>=<replaceable>valN</replaceable>/]</literal>
+          <programlisting role="metaTemplate"><literal>[@<replaceable>user_def_dir_exp</replaceable> <replaceable>param1</replaceable>=<replaceable>val1</replaceable> <replaceable>param2</replaceable>=<replaceable>val2</replaceable> <replaceable>...</replaceable> <replaceable>paramN</replaceable>=<replaceable>valN</replaceable>/]</literal>
 (Note the XML-style <literal>/</literal> before the <literal>]</literal>)  
 or if you need loop variables (<link
               linkend="ref_directive_userDefined_loopVar">more details...</link>)
-<literal>[@<replaceable>macro_or_transf</replaceable> <replaceable>param1</replaceable>=<replaceable>val1</replaceable> <replaceable>param2</replaceable>=<replaceable>val2</replaceable> <replaceable>...</replaceable> <replaceable>paramN</replaceable>=<replaceable>valN</replaceable> ; <replaceable>lv1</replaceable>, <replaceable>lv2</replaceable>, <replaceable>...</replaceable>, <replaceable>lvN</replaceable>/]</literal>
+<literal>[@<replaceable>user_def_dir_exp</replaceable> <replaceable>param1</replaceable>=<replaceable>val1</replaceable> <replaceable>param2</replaceable>=<replaceable>val2</replaceable> <replaceable>...</replaceable> <replaceable>paramN</replaceable>=<replaceable>valN</replaceable> ; <replaceable>lv1</replaceable>, <replaceable>lv2</replaceable>, <replaceable>...</replaceable>, <replaceable>lvN</replaceable>/]</literal>
 
 Or the same as the above two but with end-tag (<link
               linkend="ref_directive_userDefined_entTag">more details...</link>):
 
-<literal>[@<replaceable>macro_or_transf</replaceable> <replaceable>...</replaceable>]
+<literal>[@<replaceable>user_def_dir_exp</replaceable> <replaceable>...</replaceable>]
   ...
-[/@<replaceable>macro_or_transf</replaceable>&gt;</literal>
+[/@<replaceable>user_def_dir_exp</replaceable>&gt;</literal>
 or
-<literal>[@<replaceable>macro_or_transf</replaceable> <replaceable>...</replaceable>]
+<literal>[@<replaceable>user_def_dir_exp</replaceable> <replaceable>...</replaceable>]
   ...
 [/@]</literal>
 
 Or all above but with positional parameter passing (<link
               linkend="ref_directive_userDefined_positionalParam">more details...</link>):
 
-<literal>[@<replaceable>macro_or_transf</replaceable> <replaceable>val1</replaceable>, <replaceable>val2</replaceable>, <replaceable>...</replaceable>, <replaceable>valN</replaceable>/]</literal>
+<literal>[@<replaceable>user_def_dir_exp</replaceable> <replaceable>val1</replaceable>, <replaceable>val2</replaceable>, <replaceable>...</replaceable>, <replaceable>valN</replaceable>/]</literal>
 etc.</programlisting>
 
           <para>Where:</para>
 
           <itemizedlist spacing="compact">
             <listitem>
-              <para><literal><replaceable>macro_or_transf</replaceable></literal>:
-              Expression evaluates to the macro or transform that will be
-              called.</para>
+              <para><literal><replaceable>user_def_dir_exp</replaceable></literal>:
+              Expression evaluates to an user-defined directive (for example a
+              macro), that will be called.</para>
             </listitem>
 
             <listitem>
@@ -15513,9 +15704,9 @@ etc.</programlisting>
         <sect2>
           <title>Description</title>
 
-          <para>This will call a macro or transform. The meaning of
-          parameters, and the set of supported and required parameters depend
-          on the concrete macro or transform.</para>
+          <para>This will call an user-defined directive, for example a macro.
+          The meaning of parameters, and the set of supported and required
+          parameters depend on the concrete user-defined directive.</para>
 
           <para>You may read <link linkend="dgui_misc_userdefdir">the tutorial
           about user-defined directives</link>.</para>
@@ -15561,12 +15752,12 @@ etc.</programlisting>
             <title>End-tag</title>
 
             <para>You can omit the
-            <literal><replaceable>macro_or_transf</replaceable></literal> in
+            <literal><replaceable>user_def_dir_exp</replaceable></literal> in
             the <link linkend="gloss.endTag">end-tag</link>. That is, you can
             always write <literal>[/@&gt;</literal> instead of
             <literal>[/@<replaceable>anything</replaceable>&gt;</literal>.
             This rule is mostly useful when the
-            <literal><replaceable>macro_or_transf</replaceable></literal>
+            <literal><replaceable>user_def_dir_exp</replaceable></literal>
             expression is too complex, because you don't have to repeat the
             expression in the end-tag. Furthermore, if the expression contains
             other than simple variable names and dots, you are not allowed to
@@ -16758,9 +16949,9 @@ or
             <title>visit</title>
 
             <para>When you call <literal>[#visit
-            <replaceable>node</replaceable>]</literal>, it looks for a user
-            defined directive (macro or transform) to invoke that has the name
-            deducted from the node's name
+            <replaceable>node</replaceable>]</literal>, it looks for a
+            user-defined directive (macro or transform) to invoke that has the
+            name deducted from the node's name
             (<literal><replaceable>node</replaceable>?node_name</literal>) and
             namespace
             (<literal><replaceable>node</replaceable>?node_namesoace</literal>).
@@ -16807,7 +16998,7 @@ or
               </listitem>
             </itemizedlist>
 
-            <para>The node for which the user defined directive was invoked is
+            <para>The node for which the user-defined directive was invoked is
             available for it as special variable <literal>.node</literal>.
             Example:</para>
 
@@ -16880,17 +17071,17 @@ Done.</programlisting>
 
 </programlisting>
 
-            <para>If <literal>visit</literal> doesn't find a user defined
+            <para>If <literal>visit</literal> doesn't find a user-defined
             directive in either FTL namespaces with the name identical to the
             name deduced with the rules described earlier, then it tries to
-            find an user defined directive with name
+            find an user-defined directive with name
             <literal>@<replaceable>node_type</replaceable></literal>, or if
             the node does not support node type property (i.e.,
             <literal><replaceable>node</replaceable>?node_type</literal>
             returns undefined variable), then with name
             <literal>@default</literal>. For the lookup, it uses the same
             mechanism as was explained earlier. If it still doesn't find an
-            user defined directive to handle the node, then
+            user-defined directive to handle the node, then
             <literal>visit</literal> stops template processing with error.
             Some XML specific node types have special handling in this regard;
             see: <xref linkend="xgui_declarative_details" />. Example:</para>
@@ -23775,9 +23966,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
                 <listitem>
                   <para>Completely rewritten
                   <literal>TemplateTransformModel</literal> interface. More
-                  flexible, and does not impose output holding. More
-                  information: <xref
-                  linkend="pgui_datamodel_transform" /></para>
+                  flexible, and does not impose output holding.</para>
                 </listitem>
 
                 <listitem>
@@ -25086,8 +25275,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       <glossterm>Transform</glossterm>
 
       <glossdef>
-        <para>A transform is an object that transforms a stream of characters
-        into another stream of characters.</para>
+        <para>This term refers to user-defined directives that are implemetned
+        with the now obsolete <literal>TemplateTransformModel</literal> Java
+        interface. The feature was originally made for implementing output
+        filters, hence the name.</para>
       </glossdef>
     </glossentry>
 
