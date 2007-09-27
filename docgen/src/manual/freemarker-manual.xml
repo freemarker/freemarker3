@@ -94,7 +94,7 @@
 
       <programlisting role="template">something</programlisting>
 
-      <para>Data model examples are written like this:</para>
+      <para>Data-model examples are written like this:</para>
 
       <programlisting role="dataModel">something</programlisting>
 
@@ -166,8 +166,8 @@
   <part id="dgui" xreflabel="Template Author's Guide">
     <title>Template Author's Guide</title>
 
-    <chapter id="dgui_quickstart" xreflabel="Designer's Guide/Getting Started"
-             xml:base="">
+    <chapter id="dgui_quickstart"
+             xreflabel="Template Author's Guide/Getting Started">
       <title>Getting Started</title>
 
       <para>This chapter is a very rough introduction to FreeMarker. The
@@ -176,7 +176,7 @@
       simple but useful FreeMarker templates.</para>
 
       <sect1 id="dgui_quickstart_basics">
-        <title>Template + data model = output</title>
+        <title>Template + data-model = output</title>
 
         <para>Assume you need a HTML page in an e-shop application, similar to
         this:</para>
@@ -248,16 +248,16 @@
         different individuals.</para>
 
         <para><indexterm>
-            <primary>data model</primary>
-          </indexterm>So, while for FreeMarker (and for the template author)
-        it's not interesting <emphasis>how</emphasis> the data was calculated,
+            <primary>data-model</primary>
+          </indexterm>While for FreeMarker (and for the template author) it's
+        not interesting <emphasis>how</emphasis> the data was calculated,
         FreeMarker still have to know <emphasis>what</emphasis> the actual
         data is. All the data that the template can use is packed into the so
-        called <emphasis role="term">data model</emphasis>. It's created by
+        called <emphasis role="term">data-model</emphasis>. It's created by
         the already mentioned routines that calculate the data. As far as the
         template author is concerned, the data-model is a tree-like structure
-        (like a files and folders on your hard disk), that in this case could
-        be visualized as:</para>
+        (like folders and files on your hard disk), that in this case could be
+        visualized as:</para>
 
         <para><programlisting role="dataModel">(root)
   |
@@ -269,8 +269,8 @@
       |
       +- <emphasis>name</emphasis> = "green mouse"</programlisting></para>
 
-        <para>(To prevent misunderstandings: The data model is not a text
-        file, the above is just a visualization of a data model for you. It's
+        <para>(To prevent misunderstandings: The data-model is not a text
+        file, the above is just a visualization of a data-model for you. It's
         from Java objects, but let that be the problem of the Java
         programmers.)</para>
 
@@ -288,18 +288,18 @@
         directory. But as I said, it was just a simile; there are no files or
         directories here.</para>
 
-        <para>To recapitulate, a template and a data model is needed for
+        <para>To recapitulate, a template and a data-model is needed for
         FreeMarker to generate the output (like the HTML shown first):</para>
 
         <para><phrase role="markedTemplate">Template</phrase> + <phrase
-        role="markedDataModel">data model</phrase> = <phrase
+        role="markedDataModel">data-model</phrase> = <phrase
         role="markedOutput">output</phrase></para>
       </sect1>
 
       <sect1 id="dgui_quickstart_datamodel">
-        <title>The data model at a glance</title>
+        <title>The data-model at a glance</title>
 
-        <para>As you have seen, the data model is basically a tree. This tree
+        <para>As you have seen, the data-model is basically a tree. This tree
         can be arbitrarily complicated and deep, for example:</para>
 
         <programlisting id="example.qStart.dataModelWithHashes"
@@ -360,7 +360,7 @@
         role="term">sequences</emphasis>. They are similar to hashes, but they
         don't store names for the variables they contain. Instead, they store
         the subvariables sequentially, and you can access them with a
-        numerical index. For example, in this data model,
+        numerical index. For example, in this data-model,
         <literal>animals</literal> and <literal>whatnot.fruits</literal> are
         sequences:</para>
 
@@ -403,7 +403,7 @@
 
         <para>To access a subvariable of a sequence you use a numerical index
         in square brackets. Indexes start from 0 (it's a programmer tradition
-        to starts with 0), thus the index of the first item is 0, the index of
+        to start with 0), thus the index of the first item is 0, the index of
         the second item is 1, and so on. So to get the name of the first
         animal you write <literal>animals[0].name</literal>. To get the second
         item in <literal>whatnot.fruits</literal> (which is the string
@@ -446,7 +446,7 @@
 
         <itemizedlist>
           <listitem>
-            <para>The data model can be visualized as a tree.</para>
+            <para>The data-model can be visualized as a tree.</para>
           </listitem>
 
           <listitem>
@@ -461,8 +461,8 @@
 
           <listitem>
             <para>Sequences are containers that store other variables in an
-            ordered sequence. They can be retrieved via their numerical index,
-            starting from 0.</para>
+            ordered sequence. The stored variables can be retrieved via their
+            numerical index, starting from 0.</para>
           </listitem>
         </itemizedlist>
       </sect1>
@@ -478,7 +478,7 @@
 
         <itemizedlist>
           <listitem>
-            <para><literal>${<replaceable>...</replaceable>}</literal> thing:
+            <para><literal>${<replaceable>...</replaceable>}</literal>:
             FreeMarker will replace it in the output with the actual value of
             the thing inside the curly brackets. They are called <emphasis
             role="term">interpolation</emphasis>s. As an example see <link
@@ -487,13 +487,14 @@
 
           <listitem>
             <para><emphasis role="term">FTL tags</emphasis> (for FreeMarker
-            Template Language tags): FTL tags a bit similar to HTML tags, but
-            they are instructions to FreeMarker and will not be printed to the
-            output. The name of these tags start with <literal>#</literal>,
-            and hey use <literal>[</literal> and <literal>]</literal> instead
-            of <literal>&lt;</literal> and <literal>&gt;</literal>.
-            (User-defined FTL tags use <literal>@</literal> instead of
-            <literal>#</literal>, but they are an advanced topic.)</para>
+            Template Language tags): FTL tags are a bit similar to HTML tags,
+            but they are instructions to FreeMarker and will not be printed to
+            the output. The name of these tags start with
+            <literal>#</literal>, and hey use <literal>[</literal> and
+            <literal>]</literal> instead of <literal>&lt;</literal> and
+            <literal>&gt;</literal>. (User-defined FTL tags use
+            <literal>@</literal> instead of <literal>#</literal>, but they are
+            an advanced topic.)</para>
           </listitem>
 
           <listitem>
@@ -512,12 +513,13 @@
         it is just printed to the output as is.</para>
 
         <para>With FTL tags you refer to so-called <emphasis
-        role="term">directives</emphasis>. This is the same as with HTML tags
-        (e.g.: <literal>&lt;table&gt;</literal> and
-        <literal>&lt;/table&gt;</literal>) you refer to HTML elements (e.g.,
-        to the <literal>table</literal> element). If you don't feel the
-        difference then just consider that ''FTL tag'' and ''directive'' are
-        synonyms.</para>
+        role="term">directives</emphasis>. This is the same kind of
+        relationship as between HTML tags (e.g.:
+        <literal>&lt;table&gt;</literal> and
+        <literal>&lt;/table&gt;</literal>) and HTML elements (e.g., the
+        <literal>table</literal> element) to which you refer to with the HTML
+        tags. (If you don't feel this difference then just take "FTL tag" and
+        "directive" as synonyms.)</para>
 
         <sect2>
           <title>Examples of directives</title>
@@ -532,8 +534,8 @@
             <para>With the <literal>if</literal> directive you can
             conditionally skip a section of the template. For example, assume
             that in the <link linkend="example.first">very first
-            example</link> you want to greet your boss differently from other
-            users; the name of your boss is Big Joe:</para>
+            example</link> you want to greet your boss, Big Joe, differently
+            from other users:</para>
 
             <programlisting role="template">&lt;html&gt;
 &lt;head&gt;
@@ -560,13 +562,13 @@
             <para>Let's detail the
             <literal><replaceable>condition</replaceable></literal> used here:
             The <literal>==</literal> is an operator that tests if the values
-            at its left and right side are equivalent, and results in boolean
-            value, true or false accordingly. On the left side of
+            at its left and right side are equivalent, and the result is a
+            boolean value, true or false accordingly. On the left side of
             <literal>==</literal> I have <link
             linkend="topic.qStart.accessVariables">referenced a
             variable</link> with the syntax that should be already familiar;
             this will be replaced with the value of the variable. In general,
-            unquoted words inside directive or interpolations are treated as
+            unquoted words inside directives or interpolations are treated as
             references to variables. On the right side I have specified a
             literal string. Literal strings in templates must
             <emphasis>always</emphasis> be put inside quotation marks.</para>
@@ -595,7 +597,7 @@
             equivalent.</para>
 
             <para>You can write things like this too (using <link
-            linkend="example.qStart.dataModelWithHashes">the data model used
+            linkend="example.qStart.dataModelWithHashes">the data-model used
             to demonstrate hashes</link>):</para>
 
             <programlisting role="template">[#if <emphasis>animals.python.price &lt; animals.elephant.price</emphasis>]
@@ -630,7 +632,7 @@
 
             <para>This is useful when you want to list something. For example
             if you merge this template with the <link
-            linkend="example.qStart.dataModelWithSequences">data model I used
+            linkend="example.qStart.dataModelWithSequences">data-model I used
             earlier to demonstrate sequences</link>:</para>
 
             <programlisting role="template">&lt;p&gt;We have these animals:
@@ -680,7 +682,7 @@
             <para>The <literal>whatnot.fruits</literal> expression should be
             familiar to you; it <link
             linkend="topic.qStart.accessVariables">references a variable in
-            the data model</link>.</para>
+            the data-model</link>.</para>
           </sect3>
 
           <sect3>
@@ -769,7 +771,7 @@ All Rights Reserved.
         <sect2>
           <title>Dealing with missing variables</title>
 
-          <para>In practice the data model often has variables that are
+          <para>In practice the data-model often has variables that are
           optional (i.e., sometimes missing). To spot some typical human
           mistakes, FreeMarker doesn't tolerate the referring to missing
           variables unless you tell them explicitly what to do if the variable
@@ -803,7 +805,7 @@ All Rights Reserved.
           <para>Regarding variable accessing with multiple steps, like
           <literal>animals.python.price</literal>; writing
           <literal>animals.python.price!0</literal> is correct only if
-          <literal>animals.python</literal> always exists and only the last
+          <literal>animals.python</literal> is never missing and only the last
           subvariable, <literal>price</literal>, is possibly missing (in which
           case here we assume it's <literal>0</literal>). If
           <literal>animals</literal> or the <literal>python</literal> within
@@ -815,11 +817,12 @@ All Rights Reserved.
       </sect1>
     </chapter>
 
-    <chapter id="dgui_datamodel" xreflabel="Designer's Guide/Values, Types">
+    <chapter id="dgui_datamodel"
+             xreflabel="Template Author's Guide/Values, Types">
       <title>Values, Types</title>
 
       <sect1 id="dgui_datamodel_basics"
-             xreflabel="Designer's Guide/The Data Model/Basics">
+             xreflabel="Template Author's Guide/The Data Model/Basics">
         <title>Basics</title>
 
         <note>
@@ -828,8 +831,8 @@ All Rights Reserved.
         </note>
 
         <para>Understanding the concept of values and types is crucial for the
-        understanding of data models. However, the concept of values and types
-        is not confined to data models, as you will see.</para>
+        understanding of data-models. However, the concept of values and types
+        is not confined to data-models, as you will see.</para>
 
         <sect2>
           <title>What is a value?</title>
@@ -844,7 +847,7 @@ All Rights Reserved.
           <para>Examples of <emphasis>values</emphasis> as you know the term
           from the everyday math are 16, 0.5, and so on, i.e. numbers. In the
           case of computer languages the value term has a wider meaning, as a
-          value needn't be a number. For example, take this data model:</para>
+          value needn't be a number. For example, take this data-model:</para>
 
           <programlisting id="example.stdDataModel" role="dataModel">(root)
  |
@@ -885,8 +888,8 @@ All Rights Reserved.
           values (for example, the 2nd item in it is a the
           <emphasis>value</emphasis> 14), but still,
           <literal>lotteryNumbers</literal> itself is a single value. It's
-          like a box that stores many other items; the box itself is still
-          just a single item. Last not least we also have the
+          like a box that contains many other items; the whole box can be seen
+          as a single item. Last not least we also have the
           <emphasis>value</emphasis> of <literal>cargo</literal>, which is a
           hash (a box-like thing again).So, a value is something that can be
           stored in a variable (e.g., in <literal>user</literal> or
@@ -917,7 +920,7 @@ All Rights Reserved.
 
           <para>Values have an important aspect, their type. For example the
           type of the value of the <literal>user</literal> variable is string,
-          and the type of the value of the <literal>lotterNumbers</literal>
+          and the type of the value of the <literal>lotteryNumbers</literal>
           variable is sequence. The type of a value is important because it
           determines to a large extent how and where you can use the value.
           Like <literal>${user / 2}</literal> is an error, but
@@ -934,8 +937,10 @@ All Rights Reserved.
             value" or "a value of type boolean" are all the same.</para>
           </note>
 
-          <para>A value can have multiple types at the same time, although
-          it's rarely utilized. For example in the data model below
+          <para><indexterm id="topic.multitype">
+              <primary>Multi-typed value</primary>
+            </indexterm>A value can have multiple types at the same time,
+          although it's rarely utilized. For example in the data-model below
           <literal>mouse</literal> is both a string and a hash:</para>
 
           <programlisting role="dataModel">(root)
@@ -946,11 +951,11 @@ All Rights Reserved.
      |
      +- color = "brown"</programlisting>
 
-          <para>If you merge this template with the above data model:</para>
+          <para>If you merge this template with the above data-model:</para>
 
-          <programlisting role="template">${mouse}       [#-- use mouse as string --]
-${mouse.age}   [#-- use mouse as hash --]
-${mouse.color} [#-- use mouse as hash --]</programlisting>
+          <programlisting role="template">${mouse}       [#-- uses mouse as a string --]
+${mouse.age}   [#-- uses mouse as a hash --]
+${mouse.color} [#-- uses mouse as a hash --]</programlisting>
 
           <para>the output will be:</para>
 
@@ -960,16 +965,16 @@ brown</programlisting>
         </sect2>
 
         <sect2>
-          <title>The data model is a hash</title>
+          <title>The data-model is a hash</title>
 
           <para>Looking at the various data-model examples you may already
           realized: the thing marked as "(root)" is just a value of type hash.
           When you write something like <literal>user</literal>, that means
           that you want the "user" variable stored in the root hash. Like if
           you were writing <literal>root.user</literal>, except that there is
-          no variable called "root", so it won't work.</para>
+          no variable called "root" so that wouldn't work.</para>
 
-          <para>Some may get confused by the fact that our example data model,
+          <para>Some may get confused by the fact that our example data-model,
           that is, the root hash, contains further hashes and sequences
           (<literal>lotteryNumbers</literal> and <literal>cargo</literal>).
           There is nothing special in that. A hash contains other variables,
@@ -1056,7 +1061,7 @@ brown</programlisting>
         </itemizedlist>
 
         <sect2 id="dgui_datamodel_scalar"
-               xreflabel="Designer's Guide/The Data Model/Scalar variables">
+               xreflabel="Template Author's Guide/The Data Model/Scalar variables">
           <title>Scalars</title>
 
           <anchor id="topic.designer.scalarVariable" />
@@ -1066,7 +1071,11 @@ brown</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>String: It is simple text, e.g., the name of a
+              <para><indexterm>
+                  <primary>string</primary>
+
+                  <secondary>the FTL value type</secondary>
+                </indexterm>String: It is simple text, e.g., the name of a
               product.</para>
 
               <para>If you want to give a string value directly in the
@@ -1079,11 +1088,15 @@ brown</programlisting>
             </listitem>
 
             <listitem>
-              <para>Number: For example the price of a product. <phrase
-              role="forProgrammers">Whole number and non-whole numbers are not
-              distinguished; there is only a single number type. So for
-              example 3/2 will be always 1.5, and never 1. Just like if you
-              are using a calculator.</phrase></para>
+              <para><indexterm>
+                  <primary>number</primary>
+
+                  <secondary>the FTL value type</secondary>
+                </indexterm>Number: For example the price of a product.
+              <phrase role="forProgrammers">Whole numbers and non-whole
+              numbers are not distinguished; there is only a single number
+              type. So for example 3/2 will be always 1.5, and never 1. Just
+              like if you are using a calculator.</phrase></para>
 
               <para>If you want to give a numerical value directly in the
               template, then you write for example: <literal>150</literal> or
@@ -1095,6 +1108,8 @@ brown</programlisting>
             <listitem>
               <para><indexterm>
                   <primary>boolean</primary>
+
+                  <secondary>the FTL value type</secondary>
                 </indexterm>Boolean: A boolean value represents a logical true
               or false (yes or no). For example, if a the visitor has been
               logged in or not. Typically you use booleans as the condition of
@@ -1110,8 +1125,20 @@ brown</programlisting>
             </listitem>
 
             <listitem>
-              <para>Date: A date variable stores date/time related data. It
-              has three variations:</para>
+              <para><indexterm>
+                  <primary>date</primary>
+
+                  <secondary>the FTL value type</secondary>
+                </indexterm><indexterm>
+                  <primary>time</primary>
+
+                  <secondary>the FTL value type</secondary>
+                </indexterm><indexterm>
+                  <primary>date-time</primary>
+
+                  <secondary>the FTL value type</secondary>
+                </indexterm>Date: A date variable stores date/time related
+              data. It has three variations:</para>
 
               <itemizedlist>
                 <listitem>
@@ -1160,15 +1187,17 @@ brown</programlisting>
 
           <para>These are the values whose purpose is to contain other
           variables; they are just containers. The contained variables are
-          often referred as <emphasis>subvariables</emphasis>. The two basic
-          container types are:</para>
+          often referred as <emphasis>subvariables</emphasis>. The container
+          types are:</para>
 
           <itemizedlist>
             <listitem>
               <para><indexterm>
                   <primary>hash</primary>
-                </indexterm>A hash associates a unique lookup name with each
-              of its subvariables. The name is an unrestricted string. A hash
+
+                  <secondary>the FTL value type</secondary>
+                </indexterm>Hash: Associates a unique lookup name with each of
+              its subvariables. The name is an unrestricted string. A hash
               <emphasis>doesn't define an ordering</emphasis> for the
               subvariables in it. That is, there is no such thing as the first
               subvariable, and the second subvariable, etc.; the variables are
@@ -1178,39 +1207,45 @@ brown</programlisting>
             <listitem>
               <para><indexterm>
                   <primary>sequence</primary>
-                </indexterm>A sequence associates an integer number with each
+
+                  <secondary>the FTL value type</secondary>
+                </indexterm>Sequence: Associates an integer number with each
               of its subvariables. The first subvariable is associated with 0,
               the second with 1, the third to 2, and so on; the subvariables
-              are ordered. These number are often called the
-              <emphasis>indexes</emphasis> of the subvariables. The type of
-              the subvariable values need not be the same. Sequences are
+              are ordered. These numbers are often called the
+              <emphasis>indexes</emphasis> of the subvariables. Sequences are
               usually dense, i.e., all indexes up to the index of the last
               subvariable have an associated subvariable, but it's not
-              strictly necessary.</para>
+              strictly necessary. The type of the subvariable values need not
+              be the same.</para>
+            </listitem>
+
+            <listitem>
+              <para><indexterm>
+                  <primary>collection</primary>
+
+                  <secondary>the FTL value type</secondary>
+                </indexterm>Collection: A collection, from the viewpoint of
+              the template author, is a restricted sequence. You cannot access
+              its size or retrieve its subvariables by index, but they can be
+              still listed with the <link
+              linkend="ref.directive.list"><markup>list</markup>
+              directive</link>.</para>
             </listitem>
           </itemizedlist>
 
-          <para>Note that it is possible for a value to be both a hash and a
-          sequence, in which case, it would support index-based access as well
-          as access by lookup name. However, typically a container will be
-          either a hash or a sequence, not both.</para>
-
-          <indexterm>
-            <primary>collection</primary>
-          </indexterm>
-
-          <para>A collection, from the viewpoint of the template author, is a
-          restricted sequence. You cannot access its size or retrieve its
-          subvariables by index, but they can be still listed with the <link
-          linkend="ref.directive.list"><literal>list</literal>
-          directive</link>.</para>
+          <para>Note that since <link linkend="topic.multitype">a value can
+          have multiple types</link>, it is possible for a value to be both a
+          hash and a sequence, in which case it would support index-based
+          access as well as access by lookup name. However, typically a
+          container will be either a hash or a sequence, not both.</para>
 
           <para>As the value of the variables stored in hashes and sequences
           (and collections) can be anything, it can be a hash or sequence (or
           collection) as well. This way you can build arbitrarily deep
           structures.</para>
 
-          <para>The data model itself (or better said the root if it) is a
+          <para>The data-model itself (or better said the root if it) is a
           hash.</para>
         </sect2>
 
@@ -1224,6 +1259,8 @@ brown</programlisting>
 
             <indexterm>
               <primary>method</primary>
+
+              <secondary>the FTL value type</secondary>
             </indexterm>
 
             <para>A value that is a method or a function is used to calculate
@@ -1232,11 +1269,11 @@ brown</programlisting>
             <para role="forProgrammers">For programmer types:
             Methods/functions are first-class values, just like in functional
             programming languages. This means that functions/methods can be
-            the parameters or return values of other functions/methods, assign
-            them to variables, and so on.</para>
+            the parameters or return values of other functions/methods, you
+            can assign them to variables, and so on.</para>
 
             <para>Suppose that programmers have put the method variable
-            <literal>avg</literal> in the data model that can be used to
+            <literal>avg</literal> in the data-model that can be used to
             calculate the average of numbers. If you give the 3 and 5 as
             parameters when you access <literal>avg</literal>, then you get
             the value 4.</para>
@@ -1259,50 +1296,47 @@ The average of the price of a python and an elephant is:
 
             <para>What is the difference between a method and a function? As
             far as the template author is concerned, nothing. Well not really
-            nothing, as methods typically come from the data model (<phrase
+            nothing, as methods typically come from the data-model (<phrase
             role="forProgrammers">as they reflect the methods of Java
-            objects</phrase>), and functions are typically defined in
-            templates (with the <link
+            objects</phrase>), and while functions are defined in templates
+            (with the <link
             linkend="ref.directive.function"><literal>function</literal>
             directive</link> -- an advanced topic), but both can be used on
-            the same way. Also, methods are sometimes used to implement
-            "functions" in Java, rather than in the template language.</para>
+            the same way.</para>
           </sect3>
 
           <sect3 id="dgui_datamodel_transform">
-            <title>Macros and transforms</title>
-
-            <indexterm>
-              <primary>transform</primary>
-            </indexterm>
+            <title>User-defined directives</title>
 
             <indexterm>
               <primary>macro</primary>
+
+              <secondary>the FTL value type</secondary>
             </indexterm>
 
-            <para>Macro and transform values can be used as user-defined
-            directives (with other words, as FreeMarker tags). Macros and
-            transforms are subroutines, little template fragments. But this is
-            an advanced topic that will be explained <link
-            linkend="dgui_misc_userdefdir">later</link> in its own
+            <indexterm>
+              <primary>user-defined directive</primary>
+
+              <secondary>the FTL value type</secondary>
+            </indexterm>
+
+            <para>A value of this type can be used as user-defined directive
+            (with other words, as FreeMarker tag). An user-defined directive
+            is a subroutine, something like a little reusable template
+            fragment. But this is an advanced topic that will be explained
+            <link linkend="dgui_misc_userdefdir">later</link> in its own
             chapter.</para>
 
-            <para>What is the difference between a transform and a macro? As
-            far as the template author is concerned, nothing. Transforms are
-            used to implement "macros" in Java, rather than in the template
-            language. (However, macros can have some features that transforms
-            can't mimic, and also the other way around.)</para>
-
-            <para role="forProgrammers">For programmer types:
-            Macros/transforms are first-class values too, just like
+            <para role="forProgrammers">For programmer types: user-defined
+            directives (such as macros), are first-class values too, just like
             functions/methods are.</para>
 
-            <para>Just to get an idea about macros/tranforms (so just ignore
-            this if you won't understand), assume we have a variable,
-            <literal>box</literal>, whose value is a macro that prints some
-            kind of fancy HTML message box with a title bar and a message in
-            it. The <literal>box</literal> variable could be used in the
-            template like this (for example):</para>
+            <para>Just to get an idea about user-defined directives (so just
+            ignore this if you won't understand), assume we have a variable,
+            <literal>box</literal>, whose value is a user-defined directive
+            that prints some kind of fancy HTML message box with a title bar
+            and a message in it. The <literal>box</literal> variable could be
+            used in the template like this (for example):</para>
 
             <programlisting role="template">[@<emphasis>box</emphasis> title="Attention!"]
   Too much copy-pasting may leads to
@@ -1311,13 +1345,13 @@ The average of the price of a python and an elephant is:
           </sect3>
 
           <sect3>
-            <title>Function/method versus macro/transform</title>
+            <title>Function/method versus user-defined directive</title>
 
-            <para>This is for advanced users again (so ignore if you don't
+            <para>This is for advanced users again (so ignore it if you don't
             understand). It's a frequent dilemma if you should use a
-            function/method or a macro/transform to implement something. The
-            rule of thumb is: Implement the facility as macro/transform
-            instead of as function/method if:</para>
+            function/method or an user-defined directive to implement
+            something. The rule of thumb is: Implement the facility as
+            user-defined directive instead of as function/method if:</para>
 
             <itemizedlist>
               <listitem>
@@ -1325,26 +1359,33 @@ The average of the price of a python and an elephant is:
                 etc.). The main reason is that the result of functions are
                 subject to automatic XML-escaping (due to the nature of
                 <literal>${<replaceable>...</replaceable>}</literal>), while
-                the output of macros/transforms are not (due to the nature of
-                <literal>[@<replaceable>...</replaceable>]</literal>).</para>
+                the output of user-defined directives are not (due to the
+                nature of
+                <literal>[@<replaceable>...</replaceable>]</literal>; its
+                output is assumed to be markup, and hence already
+                escaped).</para>
               </listitem>
 
               <listitem>
                 <para>... it's the side-effect that is important and not the
-                return value. (In fact you can't have a return value for a
-                macro or transform, but some kind of feedback is still
-                possible by setting non-local variables.)</para>
+                return value. For example, a directive whose purpose is to add
+                an entry to the server log is like that. (In fact you can't
+                have a return value for a user-defined directive, but some
+                kind of feedback is still possible by setting non-local
+                variables.)</para>
               </listitem>
 
               <listitem>
-                <para>... it will do flow control. You just can't do that with
-                a function/method anyway.</para>
+                <para>... it will do flow control (like for example the
+                <literal>list</literal> or <literal>if</literal> directives
+                do). You just can't do that with a function/method
+                anyway.</para>
               </listitem>
             </itemizedlist>
 
-            <para>Of course, as methods usually come from the data model as
-            the methods of FreeMarker-unaware Java objects, in that case
-            there's no choice.</para>
+            <para>The Java methods of FreeMarker-unaware Java objects are
+            normally visible as methods in templates, regardless of the nature
+            of the Java method. That said, you have no chocice there.</para>
           </sect3>
         </sect2>
 
@@ -1354,26 +1395,32 @@ The average of the price of a python and an elephant is:
           <sect3 id="dgui_datamodel_node">
             <title>Nodes</title>
 
+            <indexterm>
+              <primary>node</primary>
+
+              <secondary>the FTL value type</secondary>
+            </indexterm>
+
             <para>Node variables represent a node in a tree structure, and are
             used mostly with <link linkend="xgui">XML processing</link>, which
             is an advanced, and specialized topic.</para>
 
             <para>Still, a quick overview <emphasis>for advanced
-            users</emphasis>: A node is similar to a sequence that store other
-            nodes, which are often referred as the children nodes. Also, node
-            stores a reference to its container node, which is often referred
-            as the parent node. The main point of being a node is the
+            users</emphasis>: A node is similar to a sequence that stores
+            other nodes, which are often referred as the children nodes. A
+            node stores a reference to its container node, which is often
+            referred as the parent node. The main point of being a node is the
             topological information; other data must be stored by utilizing
             that a value can have multiple types. Like, a value may be both a
             node and a number, in which case it can store a number as the
-            "playload". Apart from the topological information, a node can
+            "pay-load". Apart from the topological information, a node can
             store some metainformation as well: a node name, a node type
             (string), and a node namespace (string). For example, if the node
             symbolizes a <literal>h1</literal> element in an XHTML document,
             then its name could be <literal>"h1"</literal>, it's node type
             could be <literal>"element"</literal>, and it's namespace could be
             <literal>"http://www.w3.org/1999/xhtml"</literal>. But it's up to
-            the designer of the data model if what meaning these
+            the designer of the data-model if what meaning these
             metainformations have, and if they are used at all. The way of
             retrieving the topological and metainformations is described <link
             linkend="ref_builtins_node">in a later chapter</link> (that you
@@ -1383,7 +1430,8 @@ The average of the price of a python and an elephant is:
       </sect1>
     </chapter>
 
-    <chapter id="dgui_template" xreflabel="Designer's Guide/The Template">
+    <chapter id="dgui_template"
+             xreflabel="Template Author's Guide/The Template">
       <title>The Template</title>
 
       <indexterm>
@@ -1422,7 +1470,11 @@ The average of the price of a python and an elephant is:
                 <primary>interpolation</primary>
               </indexterm>: These sections will be replaced with a calculated
             value in the output. Interpolations are delimited by
-            <literal>${</literal> and <literal>}</literal>.</para>
+            <literal>${</literal> and <literal>}</literal> (or with
+            <literal>#{</literal> and <literal>}</literal>, but that shouldn't
+            be used anymore; <link
+            linkend="ref_depr_numerical_interpolation">see more
+            here</link>).</para>
           </listitem>
 
           <listitem>
@@ -1447,7 +1499,7 @@ The average of the price of a python and an elephant is:
           </listitem>
         </itemizedlist>
 
-        <para>Let see a concrete template. I have marked the template's
+        <para>Let's see a concrete template. I have marked the template's
         components with colors: <phrase role="markedText">text</phrase>,
         <phrase role="markedInterpolation">interpolation</phrase>, <phrase
         role="markedFTLTag">FTL tag</phrase>, <phrase
@@ -1505,7 +1557,7 @@ The average of the price of a python and an elephant is:
               role="markedInvisibleText">[BR]</phrase>
 &lt;p&gt;We have these animals:<phrase role="markedInvisibleText">[BR]</phrase>
 &lt;ul&gt;<phrase role="markedInvisibleText">[BR]</phrase>
-<phrase role="markedFTLTag">[list <phrase role="markedComment">[#-- some comment... --]</phrase> animals as <phrase
+<phrase role="markedFTLTag">[#list <phrase role="markedComment">[#-- some comment... --]</phrase> animals as <phrase
                 role="markedComment">[#-- again... --]</phrase> being]</phrase><phrase
               role="markedInvisibleText">[BR]</phrase></phrase>
 <replaceable>...</replaceable></programlisting>
@@ -1549,7 +1601,7 @@ The average of the price of a python and an elephant is:
 
         <para><indexterm>
             <primary>FTL tag</primary>
-          </indexterm>There are three type of FTL tags:</para>
+          </indexterm>There are two kind of FTL tags:</para>
 
         <itemizedlist>
           <listitem>
@@ -1573,7 +1625,8 @@ The average of the price of a python and an elephant is:
         <replaceable>something</replaceable>]<replaceable>...</replaceable>[/#if]</literal>,
         but just <literal>[#include
         <replaceable>something</replaceable>]</literal> as FreeMarker knows
-        that include can't have nested content.</para>
+        that the <markup>include</markup> directive can't have nested
+        content.</para>
 
         <para>The format of the
         <literal><replaceable>parameters</replaceable></literal> depends on
@@ -1603,7 +1656,7 @@ The average of the price of a python and an elephant is:
         <programlisting role="template">&lt;ul&gt;
 <emphasis>[#list animals as being]</emphasis>
   &lt;li&gt;${being.name} for ${being.price} Euros
-  <emphasis>[#if use == "Big Joe"]</emphasis>
+  <emphasis>[#if user == "Big Joe"]</emphasis>
      (except for you)
 <emphasis>[/#list]</emphasis> [#-- WRONG! The "if" jas to be closed first. --]
 <emphasis>[/#if]</emphasis>
@@ -1643,7 +1696,7 @@ The average of the price of a python and an elephant is:
           <para>FreeMarker can be configured to use <literal>&lt;</literal>
           and <literal>&gt;</literal> instead of <literal>[</literal> and
           <literal>]</literal> in the FTL tags and FTL comments, like
-          <literal>&lt;#if use == "Big
+          <literal>&lt;#if user == "Big
           Joe"&gt;<replaceable>...</replaceable>&lt;/#if&gt;</literal>. For
           more information read: <xref
           linkend="dgui_misc_alternativesyntax" />. FreeMarker can be further
@@ -1655,7 +1708,8 @@ The average of the price of a python and an elephant is:
         </note>
       </sect1>
 
-      <sect1 id="dgui_template_exp" xreflabel="Designer's Guide/Expressions">
+      <sect1 id="dgui_template_exp"
+             xreflabel="Template Author's Guide/Expressions">
         <title>Expressions</title>
 
         <para>Table of Contents and quick reminder:</para>
@@ -2286,7 +2340,7 @@ autumn
 
             <para>If we already have a hash as a result of an expression, then
             we can get its subvariable with a dot and the name of the
-            subvariable. Assume that we have this data model:</para>
+            subvariable. Assume that we have this data-model:</para>
 
             <programlisting role="dataModel">(root)
  |
@@ -2312,7 +2366,7 @@ autumn
             subvariable name with an expression:
             <literal>book["title"]</literal>. In the square brackets you can
             give any expression as long as it evaluates to a string. So with
-            this data model you can also read the title with
+            this data-model you can also read the title with
             <literal>book[test]</literal>. More examples; these are all
             equivalent: <literal>book.author.name</literal>,
             <literal>book["author"].name</literal>,
@@ -2353,7 +2407,7 @@ autumn
             bracket syntax only, and the expression in the brackets must
             evaluate to a number, not a string. For example to get the name of
             the first animal of the <link
-            linkend="example.stdDataModel">example data model</link> (remember
+            linkend="example.stdDataModel">example data-model</link> (remember
             that the number of the first item is 0, not 1):
             <literal>animals[0].name</literal></para>
           </sect3>
@@ -3110,7 +3164,7 @@ Horse</programlisting>
         </sect2>
 
         <sect2 id="dgui_template_exp_missing"
-               xreflabel="Designer's Guide/The Template/Expressions/Handling missing values (including null-s)">
+               xreflabel="Template Author's Guide/The Template/Expressions/Handling missing values (including null-s)">
           <title>Treating undefined variables and null values</title>
 
           <indexterm>
@@ -3136,7 +3190,7 @@ Horse</programlisting>
           <sect3 id="dgui_template_exp_missing_overview">
             <title>Overview</title>
 
-            <para>Let's say we have this data model:</para>
+            <para>Let's say we have this data-model:</para>
 
             <programlisting role="dataModel">(root)
  |
@@ -3611,7 +3665,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         converted to string "manually" somehow (e.g.,
         <literal>${maidenName!"N/A"}</literal>, which will convert
         <literal>null</literal> to <literal>"N/A"</literal>), or an error will
-        stop template processing.</para>
+        stop the template processing.</para>
 
         <para>If the interpolation is in a <link
         linkend="dgui_template_overallstructure"><phrase
@@ -3627,30 +3681,34 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
 
           <para>If the expression evaluates to a number then the numerical
           value will be converted to string according the default number
-          format. Usually the programmer should set the default number format;
-          the template author don't have to deal with it (but he can with the
-          <literal>number_format</literal> setting in the <link
+          format. This may includes the maximum number of decimals, grouping,
+          and like. Usually the programmer should set the default number
+          format; the template author don't have to deal with it (but he can
+          with the <literal>number_format</literal> setting; see in the <link
           linkend="ref_directive_setting">documentation of
-          <literal>setting</literal> directive</link>).</para>
+          <literal>setting</literal> directive</link>). You can override the
+          default number format for a single interpolation with the <link
+          linkend="ref_builtin_string_for_number"><literal>string</literal>
+          built-in</link>.</para>
+
+          <para>The decimal separator used (and other such symbols, like the
+          group separator) depends on the current locale (language, country),
+          that also should be set by the programmer. For example, this
+          template:</para>
 
           <programlisting role="template">${1.5}</programlisting>
 
-          <para>will print this if the language of output is English:</para>
+          <para>will print something like this if the current locale is
+          English:</para>
 
           <programlisting role="output">1.5</programlisting>
 
-          <para>but it will print this if the language of output is
-          Hungarian:</para>
+          <para>but if the current locale is Hungarian then it will print
+          something like:</para>
 
           <programlisting role="output">1,5</programlisting>
 
-          <para>since Hungarian people use the comma as the decimal
-          separator.</para>
-
-          <para>You can modify the formatting for a single interpolation with
-          the <link
-          linkend="ref_builtin_string_for_number"><literal>string</literal>
-          built-in</link>.</para>
+          <para>since Hungarian people use comma as decimal separator.</para>
 
           <warning>
             <para>As you can see, interpolations print for human audience (by
@@ -3681,8 +3739,8 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           linkend="ref_directive_setting">documentation of the
           <literal>setting</literal> directive</link>).</para>
 
-          <para>You can modify the formatting for a single interpolation with
-          the <link
+          <para>You can override the default formatting for a single
+          interpolation with the <link
           linkend="ref_builtin_string_for_date"><literal>string</literal>
           built-in</link>.</para>
 
@@ -3693,7 +3751,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
             millisecond), or both. Unfortunately, because of the technical
             limitations of Java platform, for some variables it is not
             possible to detect this automatically; ask the programmer if the
-            data model contains such problematic variables. If it is not
+            data-model contains such problematic variables. If it is not
             possible to find out which parts of the date are in use, then you
             must help FreeMarker with the <link
             linkend="ref_builtin_date_datetype"><literal>date</literal>,
@@ -3781,11 +3839,11 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
       </sect1>
     </chapter>
 
-    <chapter id="dgui_misc" xreflabel="Designer's Guide/Miscellaneous">
+    <chapter id="dgui_misc" xreflabel="Template Author's Guide/Miscellaneous">
       <title>Miscellaneous</title>
 
       <sect1 id="dgui_misc_userdefdir"
-             xreflabel="Designer's Guide/Miscellaneous/Defining your own directives">
+             xreflabel="Template Author's Guide/Miscellaneous/Defining your own directives">
         <title>Defining your own directives</title>
 
         <indexterm>
@@ -3824,11 +3882,14 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <primary>@</primary>
         </indexterm>
 
-        <para>As far as template authors are concerned, user-defined directives can be defined using the
-        <literal>macro</literal> directive. <phrase role="forProgrammers">Java
-        programmers who want to implement the directive in Java Language,
-        rather than in a template, should use
-        <literal>freemarker.template.TemplateDirectiveModel</literal> (see <link linkend="pgui_datamodel_directive">more here...</link>).</phrase></para>
+        <para>As far as template authors are concerned, user-defined
+        directives can be defined using the <literal>macro</literal>
+        directive. <phrase role="forProgrammers">Java programmers who want to
+        implement the directive in Java Language, rather than in a template,
+        should use
+        <literal>freemarker.template.TemplateDirectiveModel</literal> (see
+        <link linkend="pgui_datamodel_directive">more
+        here...</link>).</phrase></para>
 
         <sect2>
           <title>Basics</title>
@@ -4253,7 +4314,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
       </sect1>
 
       <sect1 id="dgui_misc_var"
-             xreflabel="Designer's Guide/Miscellaneous/Defining variables in the template">
+             xreflabel="Template Author's Guide/Miscellaneous/Defining variables in the template">
         <title>Defining variables in the template</title>
 
         <indexterm>
@@ -4273,8 +4334,8 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         </indexterm>
 
         <para>As we have described, a template can use the variables defined
-        in the data model. A template can also define variables outside the
-        data model for its own use. These temporary variables can be created
+        in the data-model. A template can also define variables outside the
+        data-model for its own use. These temporary variables can be created
         and replaced using FTL directives. Note that each <link
         linkend="gloss.templateProcessingJob">template processing job</link>
         has its own private set of these variables that exists while the given
@@ -4283,12 +4344,12 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         finished.</para>
 
         <para>You access a variable that you have defined in the template
-        exactly as if it were a variable in the data model root. The variable
+        exactly as if it were a variable in the data-model root. The variable
         has precedence over any variable of the same name defined in the data
         model. That is, if you define a variable called ''foo'' and
-        coincidentally, there is a ''foo'' in the data model as well, then the
+        coincidentally, there is a ''foo'' in the data-model as well, then the
         variable created in the template will hide (not overwrite!) the
-        variable in the data model root. For example,
+        variable in the data-model root. For example,
         <literal>${foo}</literal> will print the value of the variable created
         in the template.</para>
 
@@ -4410,12 +4471,12 @@ ${x}</programlisting>
         have seen above.</para>
 
         <para>Sometimes it happens that a variable hides the variable in the
-        data model with the same name, but you want to read the variable of
-        the data model. In this case you can use the
+        data-model with the same name, but you want to read the variable of
+        the data-model. In this case you can use the
         <literal>.globals</literal> <link
         linkend="dgui_template_exp_var_special">special variable</link>. For
         example, assume we have a variable called <literal>user</literal> in
-        the data model with value ''Big Joe'':</para>
+        the data-model with value ''Big Joe'':</para>
 
         <programlisting role="template">[#set user = "Joe Hider"]
 ${user}          [#-- prints: Joe Hider --]
@@ -4426,7 +4487,7 @@ ${.globals.user} [#-- prints: Big Joe --]</programlisting>
       </sect1>
 
       <sect1 id="dgui_misc_namespace"
-             xreflabel="Designer's Guide/Miscellaneous/Namespaces">
+             xreflabel="Template Author's Guide/Miscellaneous/Namespaces">
         <title>Namespaces</title>
 
         <indexterm>
@@ -4566,11 +4627,11 @@ jsmith@other.com</programlisting>
         </sect2>
 
         <sect2>
-          <title>Namespaces and data model</title>
+          <title>Namespaces and data-model</title>
 
-          <para>The variables of the data model are visible from everywhere.
+          <para>The variables of the data-model are visible from everywhere.
           For example, if you have a variable called <literal>user</literal>
-          in the data model, <literal>lib/my_test.ftl</literal> will access
+          in the data-model, <literal>lib/my_test.ftl</literal> will access
           that, exactly as <literal>aWebPage.ftl</literal> does:</para>
 
           <programlisting role="template">[#macro copyright date]
@@ -4596,14 +4657,14 @@ Fred@acme.com
           <para>Don't forget that the variables in the namespace (the
           variables you create with <literal>set</literal> or
           <literal>macro</literal> directives) have precedence over the
-          variables of the data model when you are in that namespace. Thus,
-          the contents of data model does not interfere with the variables
+          variables of the data-model when you are in that namespace. Thus,
+          the contents of data-model does not interfere with the variables
           created by the library.</para>
 
           <note>
             <para>In some unusual applications you want to create variables in
             the template those are visible from all namespaces, exactly like
-            the variables of the data model. But you can't change the data
+            the variables of the data-model. But you can't change the data
             model with templates. Still, it is possible to achieve similar
             result using the <literal>.globals</literal> special variable,
             like <literal>[#set mail = "office@acme.com" in
@@ -4701,7 +4762,7 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
       </sect1>
 
       <sect1 id="dgui_misc_whitespace"
-             xreflabel="Designer's Guide/Miscellaneous/White-space handling">
+             xreflabel="Template Author's Guide/Miscellaneous/White-space handling">
         <title>White-space handling</title>
 
         <indexterm>
@@ -4713,8 +4774,8 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
         problem that to some extent haunts every template engine in the
         business.</para>
 
-        <para>Let see this template. I have marked the components of template
-        with colors: <phrase role="markedText">text</phrase>, <phrase
+        <para>Let's see this template. I have marked the components of
+        template with colors: <phrase role="markedText">text</phrase>, <phrase
         role="markedInterpolation">interpolation</phrase>, <phrase
         role="markedFTLTag">FTL tag</phrase>. With the <phrase
         role="markedInvisibleText">[BR]</phrase>-s I visualize the <link
@@ -4824,7 +4885,7 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
         </itemizedlist>
 
         <sect2 id="dgui_misc_whitespace_stripping"
-               xreflabel="Designer's Guide/Miscellaneous/White-space handling/White-space stripping">
+               xreflabel="Template Author's Guide/Miscellaneous/White-space handling/White-space stripping">
           <title>White-space stripping</title>
 
           <indexterm>
@@ -4979,7 +5040,7 @@ That's all.</programlisting>
           <literal>compress</literal>-ed.</para>
 
           <para>Also, by default a transform called
-          <literal>compress</literal> is available in the data model. This is
+          <literal>compress</literal> is available in the data-model. This is
           the same as the directive, but you may optionally set the
           <literal>single_line</literal> parameter, which will remove all
           intervening line breaks. If you replace
@@ -4993,7 +5054,7 @@ That's all.</programlisting>
       </sect1>
 
       <sect1 id="dgui_misc_alternativesyntax"
-             xreflabel="Designer's Guide/Miscellaneous/Alternative syntax">
+             xreflabel="Template Author's Guide/Miscellaneous/Alternative syntax">
         <title>Alternative (square bracket) syntax</title>
 
         <indexterm>
@@ -5114,7 +5175,7 @@ That's all.</programlisting>
 // Here I set a file directory for it:
 cfg.setDirectoryForTemplateLoading(
         new File("<replaceable>/where/you/store/templates</replaceable>"));
-// Specify how templates will see the data model. This is an advanced topic...
+// Specify how templates will see the data-model. This is an advanced topic...
 // but just use this:
 cfg.setObjectWrapper(new DefaultObjectWrapper());</programlisting>
 
@@ -5125,15 +5186,15 @@ cfg.setObjectWrapper(new DefaultObjectWrapper());</programlisting>
       </sect1>
 
       <sect1 id="pgui_quickstart_createdatamodel">
-        <title>Create a data model</title>
+        <title>Create a data-model</title>
 
         <indexterm>
-          <primary>data model</primary>
+          <primary>data-model</primary>
 
           <secondary>assembling with Java</secondary>
         </indexterm>
 
-        <para>In simple cases you can build data models using
+        <para>In simple cases you can build data-models using
         <literal>java.lang</literal> and <literal>java.util</literal> classes
         and custom Java Beans:</para>
 
@@ -5171,9 +5232,9 @@ cfg.setObjectWrapper(new DefaultObjectWrapper());</programlisting>
           </listitem>
         </itemizedlist>
 
-        <para>For example, let's build the data model of the <link
-        linkend="example.first">first example of the Designer's Guide</link>.
-        For convenience, here it is again:</para>
+        <para>For example, let's build the data-model of the <link
+        linkend="example.first">first example of the Template Author's
+        Guide</link>. For convenience, here it is again:</para>
 
         <programlisting role="dataModel">(root)
   |
@@ -5243,7 +5304,7 @@ latest.put("name", "green mouse");</programlisting>
       </sect1>
 
       <sect1 id="pgui_quickstart_merge">
-        <title>Merging the template with the data model</title>
+        <title>Merging the template with the data-model</title>
 
         <indexterm>
           <primary>output</primary>
@@ -5255,11 +5316,11 @@ latest.put("name", "green mouse");</programlisting>
           <primary>merging</primary>
         </indexterm>
 
-        <para>As we know, data model + template = output, and we have a data
+        <para>As we know, data-model + template = output, and we have a data
         model (<literal>root</literal>) and a template
         (<literal>temp</literal>), so to get the output we have to merge them.
         This is done by the <literal>process</literal> method of the template.
-        It takes the data model root and a <literal>Writer</literal> as
+        It takes the data-model root and a <literal>Writer</literal> as
         parameters. It writes the produced output to the
         <literal>Writer</literal>. For the sake of simplicity here I write to
         the standard output:</para>
@@ -5270,10 +5331,10 @@ out.flush();</programlisting>
 
         <para>This will print to your terminal the output what you have seen
         in the <link linkend="example.first">first example</link> of the
-        Designer's Guide.</para>
+        Template Author's Guide.</para>
 
         <para>Once you have obtained a <literal>Template</literal> instance,
-        you can merge it with different data models for unlimited times
+        you can merge it with different data-models for unlimited times
         (<literal>Template</literal> instances are basically stateless). Also,
         the <literal>test.ftl</literal> file is accessed only while the
         <literal>Template</literal> instance is created, not when you call the
@@ -5310,7 +5371,7 @@ public class Test {
         /* Get or create a template */
         Template temp = cfg.getTemplate("test.ftl");
 
-        /* Create a data model */
+        /* Create a data-model */
         Map root = new HashMap();
         root.put("user", "Big Joe");
         Map latest = new HashMap();
@@ -5318,7 +5379,7 @@ public class Test {
         latest.put("url", "products/greenmouse.html");
         latest.put("name", "green mouse");
 
-        /* Merge data model with template */
+        /* Merge data-model with template */
         Writer out = new OutputStreamWriter(System.out);
         temp.process(root, out);
         out.flush();
@@ -5351,12 +5412,12 @@ public class Test {
         </indexterm>
 
         <indexterm>
-          <primary>data model</primary>
+          <primary>data-model</primary>
 
           <secondary>assembling with Java, without object wrapper</secondary>
         </indexterm>
 
-        <para>You have seen how to build a data model in the <link
+        <para>You have seen how to build a data-model in the <link
         linkend="pgui_quickstart">Quick Start</link> using the standard Java
         classes (<literal>Map</literal>, <literal>String</literal>, etc.).
         Internally, the variables available in the template are java objects
@@ -5413,7 +5474,7 @@ public class Test {
 
         <para>An easy way to try your own <literal>TemplateModel</literal>
         implementation, is to create an instance of that, and drop it directly
-        into the data model (as <literal>put</literal> it into the root hash).
+        into the data-model (as <literal>put</literal> it into the root hash).
         The object wrapper will expose it untouched for the template, as it
         already implements <literal>TemplateModel</literal>, so no conversion
         (wrapping) needed. (This trick is also useful in cases when you do not
@@ -5422,7 +5483,7 @@ public class Test {
       </sect1>
 
       <sect1 id="pgui_datamodel_scalar"
-             xreflabel="Designer's Guide/The Data Model/Scalars">
+             xreflabel="Template Author's Guide/The Data Model/Scalars">
         <title>Scalars</title>
 
         <indexterm>
@@ -5896,7 +5957,7 @@ public class UpperDirective implements TemplateDirectiveModel {
           <para>Now we still need to create an instance of this class, and
           make this directive available to the template with the name "upper"
           (or with whatever name we want) somehow. A possible solution is to
-          put the directive in the data model:</para>
+          put the directive in the data-model:</para>
 
           <programlisting role="unspecified">root.put("upper", new com.example.UpperDirective());</programlisting>
 
@@ -6094,7 +6155,7 @@ public class RepeatDirective implements TemplateDirectiveModel {
         <title>Node variables</title>
 
         <indexterm>
-          <primary>nodes</primary>
+          <primary>node</primary>
 
           <secondary>Java side</secondary>
         </indexterm>
@@ -6107,11 +6168,15 @@ public class RepeatDirective implements TemplateDirectiveModel {
           <primary>trees</primary>
         </indexterm>
 
-        <para>A Node variable embodies a node in a tree structure. Node
-        variables were introduced to help the handling of XML documents, but
-        they can be used for the modeling of other tree structures as well. A
-        node variable has the following properties, provided by the methods of
-        <literal>TemplateNodeModel</literal> interface:</para>
+        <para>A node variable embodies a node in a tree structure. Node
+        variables were introduced to help <link linkend="xgui">the handling of
+        XML documents in the data-model</link>, but they can be used for the
+        modeling of other tree structures as well. For more information about
+        nodes from the point of view of the template language <link
+        linkend="dgui_datamodel_node">read this earlier section</link>.</para>
+
+        <para>A node variable has the following properties, provided by the
+        methods of <literal>TemplateNodeModel</literal> interface:</para>
 
         <itemizedlist>
           <listitem>
@@ -6286,7 +6351,7 @@ root.put("theNumber", new Integer(8));
 root.put("theMap", map);
 root.put("theList", list);</programlisting>
 
-        <para>Assuming that root is the data model root, the resulting data
+        <para>Assuming that root is the data-model root, the resulting data
         model is:</para>
 
         <programlisting role="dataModel">(root)
@@ -6320,7 +6385,7 @@ root.put("theList", list);</programlisting>
         to access the <literal>anotherString</literal> subvariable of it, it
         will replace that with a <literal>SimpleScalar</literal>.</para>
 
-        <para>If you drop an ''arbitrary'' object into the data model,
+        <para>If you drop an ''arbitrary'' object into the data-model,
         <literal>DEFAULT_WRAPPER</literal> will invoke
         <literal>BEANS_WRAPPER</literal> to wrap the object:</para>
 
@@ -6353,7 +6418,7 @@ root.put("theObject", new TestObject("green mouse", 1200));</programlisting>
     }
 }</programlisting>
 
-        <para>The data model will be:</para>
+        <para>The data-model will be:</para>
 
         <programlisting role="dataModel">(root)
  |
@@ -6384,7 +6449,7 @@ ${theObject.sin(123)}</programlisting>
         <literal>SimpleHash</literal> or other FreeMarker specific class. It
         works because
         <literal>Template.process(<replaceable>...</replaceable>)</literal>
-        automatically wraps the object you give as its data model argument. It
+        automatically wraps the object you give as its data-model argument. It
         uses the object wrapper dictated by the
         <literal>Configuration</literal> level <link
         linkend="pgui_config_settings">setting</link>,
@@ -6482,7 +6547,7 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
 
         <para>In all templates that use this configuration, a directive with
         name <literal>wrap</literal> and a string with name
-        <literal>company</literal> will be visible in the data model root, so
+        <literal>company</literal> will be visible in the data-model root, so
         you don't have to add them to the root hash again and again. A
         variable in the root object that you pass to the
         <literal>Template.process</literal> will hide the shared variable with
@@ -7101,7 +7166,7 @@ cfg.setTemplateExceptionHandler(new MyTemplateExceptionHandler());</programlisti
           <literal>[#<replaceable>...</replaceable>]</literal> or
           <literal>[@<replaceable>...</replaceable>]</literal>), then the
           whole interpolation will be skipped. So this template (assuming that
-          <literal>badVar</literal> is missing from the data model):</para>
+          <literal>badVar</literal> is missing from the data-model):</para>
 
           <programlisting role="template">a${badVar}b</programlisting>
 
@@ -7269,7 +7334,7 @@ c</programlisting>
         the runtime state of template processing. Among other things, it
         stores the variables created by the template with directives like
         <literal>set</literal>, <literal>macro</literal>, or
-        <literal>var</literal>. It never tries to modify the data model object
+        <literal>var</literal>. It never tries to modify the data-model object
         that you pass to the <literal>process</literal> call, nor does it
         create or replace shared variables stored in the configuration.</para>
 
@@ -7452,7 +7517,7 @@ c</programlisting>
           regarding this question, then the common practice is either using
           the charset of the template file for the output, or using UTF-8.
           Using UTF-8 is usually a better practice, because arbitrary text may
-          comes from the data model, which then possibly contains characters
+          comes from the data-model, which then possibly contains characters
           that couldn't be encoded with the charset of the template.</para>
 
           <para>FreeMarker settings can be set for each individual template
@@ -7485,7 +7550,7 @@ env.process();</programlisting>
         </indexterm>
 
         <para>In a multithreaded environment <literal>Configuration</literal>
-        instances, <literal>Template</literal> instances and data models
+        instances, <literal>Template</literal> instances and data-models
         should be handled as immutable (read-only) objects. That is, you
         create and initialize them (for example with
         <literal>set<replaceable>...</replaceable></literal> methods), and
@@ -7502,9 +7567,9 @@ env.process();</programlisting>
         <para>The above restrictions do not apply if you access all objects
         from the <emphasis>same</emphasis> single thread only.</para>
 
-        <para>It is impossible to modify the data model object or a <link
+        <para>It is impossible to modify the data-model object or a <link
         linkend="pgui_config_sharedvariables">shared variable</link> with FTL,
-        unless you put methods (or other objects) into the data model that do
+        unless you put methods (or other objects) into the data-model that do
         that. We discourage you from writing methods that modify the data
         model object or the shared variables. Try to use variables that are
         stored in the environment object instead (this object is created for a
@@ -8366,12 +8431,12 @@ TemplateHashModel roundingModeEnums =
           then in the <literal>HttpSession</literal>, and if it still doesn't
           find it then in the <literal>ServletContext</literal>. In the case
           of FTL this works because <literal>FreemarkerServlet</literal>
-          builds the data model from the attributes of the mentioned 3
+          builds the data-model from the attributes of the mentioned 3
           objects. That is, in this case the root hash is not a
           <literal>java.util.Map</literal> (as it was in some example codes in
           this manual), but
           <literal>ServletContext</literal>+<literal>HttpSession</literal>+<literal>HttpServletRequest</literal>;
-          FreeMarker is pretty flexible about what the data model is. So if
+          FreeMarker is pretty flexible about what the data-model is. So if
           you want to put variable <literal>"name"</literal> into the data
           model, then you call <literal>servletRequest.setAttribute("name",
           "Fred")</literal>; this is the logic of Model 2, and FreeMarker
@@ -8392,7 +8457,7 @@ TemplateHashModel roundingModeEnums =
 
           <para><literal>FreemarkerServlet</literal> is easily tailored to
           special needs through subclassing. Say, if you need to have
-          additional variables available in your data model for all templates,
+          additional variables available in your data-model for all templates,
           subclass the servlet and override the
           <literal>preTemplateProcess()</literal> method to shove any
           additional data you need into the model before the template gets
@@ -8472,7 +8537,7 @@ TemplateHashModel roundingModeEnums =
             attributes of the <literal>javax.servlet.ServletContext</literal>,
             <literal>HttpSession</literal> and
             <literal>ServerRequest</literal> objects. From the FTL side you
-            see these 3 scopes together as the data model, as it was explained
+            see these 3 scopes together as the data-model, as it was explained
             earlier. The page scope corresponds to the FTL global variables
             (about variable scopes see more <link
             linkend="dgui_misc_var">here...</link>). That is, if you create a
@@ -8483,7 +8548,7 @@ TemplateHashModel roundingModeEnums =
             FreeMarker global variable. Note that the variables in the data
             model are not visible as page-scope attributes for the JSP tags
             (despite that they are globally visible in FreeMarker) since the
-            data model corresponds to the JSP request, session and application
+            data-model corresponds to the JSP request, session and application
             scopes, not the JSP page-scope.</para>
 
             <para>On JSP pages you quote all attribute values, it does not
@@ -8672,7 +8737,7 @@ TemplateHashModel roundingModeEnums =
           unknown location, using the <literal>grant "" {...}</literal> policy
           entry (it is usually present in the default policy file, and grants
           only few property read permissions). This is actually okay in most
-          cases - templates simply rendering text from the data model won't
+          cases - templates simply rendering text from the data-model won't
           require any additional privileges.</para>
 
           <para>Code source is emitted by the
@@ -9394,7 +9459,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
 
         <para>Note that if you are using the legacy (FreeMarker 2.2.x and
         earlier) XML adapter implementation, that still works, and the root of
-        the XML tree is placed in the data model as the variable
+        the XML tree is placed in the data-model as the variable
         <literal>document</literal>. That contains an instance of the legacy
         <literal>freemarker.ext.xml.NodeListModel</literal> class.</para>
 
@@ -9505,8 +9570,8 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
 
       <para>Technically, there is nothing special in transforming XML
       documents. It's just like when you do anything else with FreeMarker: you
-      drop the XML document into the data model (and possibly other
-      variables), and then you merge the data model with the FTL template(s)
+      drop the XML document into the data-model (and possibly other
+      variables), and then you merge the data-model with the FTL template(s)
       that generate the output text. The extra features introduced for better
       XML processing are the node FTL variable type (symbolizes a node in
       generic tree structures, usable not only for XML) and the built-ins and
@@ -9668,7 +9733,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         </itemizedlist>
 
         <para>The programmer drops the document node of the DOM tree into the
-        FreeMarker data model, and then the template author can walk the DOM
+        FreeMarker data-model, and then the template author can walk the DOM
         tree using that variable as the starting-point.</para>
 
         <para>The DOM nodes in FTL correspond to <emphasis role="term">node
@@ -9686,19 +9751,19 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
       </sect1>
 
       <sect1 id="xgui_expose_put"
-             xreflabel="XML Processing Guide/Exposing XML documents/Putting then XML into the data model">
-        <title>Putting the XML into the data model</title>
+             xreflabel="XML Processing Guide/Exposing XML documents/Putting then XML into the data-model">
+        <title>Putting the XML into the data-model</title>
 
         <note>
           <para>This section is for programmers.</para>
         </note>
 
         <para>It's easy to create a simple program to try the examples. Just
-        replace the ''Create a data model'' part of <link
+        replace the ''Create a data-model'' part of <link
         linkend="pgui_quickstart_all">the example of Programmer's Guide
         Quickstart</link> with this:</para>
 
-        <programlisting role="unspecified">/* Create a data model */
+        <programlisting role="unspecified">/* Create a data-model */
 Map root = new HashMap();
 root.put(
         "doc",
@@ -9752,7 +9817,7 @@ root.put(
         </note>
 
         <para>Assume that the programmer has put the XML document into the
-        data model as variable <literal>doc</literal>. This variable
+        data-model as variable <literal>doc</literal>. This variable
         corresponds to the root of the <link linkend="xgui_expose_dom">DOM
         tree</link>, the ''document''. The actual variable structure behind
         <literal>doc</literal> is wily enough, and only roughly resembles the
@@ -12839,7 +12904,7 @@ Apr 8, 2003 9:24 PM</programlisting>
             <literal>?time</literal> and <literal>?datetime</literal>
             built-ins</link>. For example:
             <literal>${lastUpdated?datetime?string.short}</literal>. Ask the
-            programmer if certain variables of the data model has this
+            programmer if certain variables of the data-model has this
             problem, or always use <literal>?date</literal>,
             <literal>?time</literal> and <literal>?datetime</literal>
             built-ins.</para>
@@ -13659,7 +13724,7 @@ Sorted by name.last:
         <para>These are the built-ins that normally you should not use, but in
         exceptional situations (debugging, advanced macros) they can be
         useful. If you need to use these in your normal page templates, you
-        may revisit the data model so you don't need to use these.</para>
+        may revisit the data-model so you don't need to use these.</para>
 
         <simplesect id="ref_builtin_numType">
           <title>byte, double, float, int, long, short</title>
@@ -13739,7 +13804,7 @@ Sorted by name.last:
           the value is not a string or sequence or hash or collection, then it
           counts as non-empty if it's a number or a date or a boolean (e.g.,
           <literal>0</literal> and <literal>false</literal> are not empty),
-          otherwise it counts as empty. Note that when your data model
+          otherwise it counts as empty. Note that when your data-model
           implements multiple template model interfaces you may get unexpected
           results. However, when in doubt you can use always use
           <literal>expr!?size &gt; 0</literal> or <literal>expr!?length &gt;
@@ -13816,12 +13881,12 @@ Sorted by name.last:
           mistake in the variable name will cause undefined variable error,
           which is a good thing. On the other hand, if you write
           <literal><replaceable>variable</replaceable>??</literal>, the
-          template will endure the subtle data model changes where a variable
+          template will endure the subtle data-model changes where a variable
           will be rather undefined than having a <literal>null</literal>
           value. In general, non-programmer template authors should just
           always use <literal><replaceable>exp</replaceable>??</literal>, as
           it doesn't assume the deeper knowledge of the Java objects behind
-          data model.</para>
+          data-model.</para>
 
           <para role="forProgrammers">Why is <literal>var == null</literal>
           wrong? In Java/C++ the <literal>==</literal> operator does a pointer
@@ -17779,7 +17844,7 @@ some test
 &lt;/transform&gt;</programlisting>
 
           <para>It is the task of the programmers to put the necessary
-          transforms into the data model. For the name and usage of accessible
+          transforms into the data-model. For the name and usage of accessible
           transforms ask the programmers. <phrase
           role="forProgrammers">Initially there is a <link
           linkend="pgui_config_sharedvariables">shared variable</link> for
@@ -17935,52 +18000,42 @@ or
         <sect2>
           <title>Description</title>
 
-          <para>The numerical interpolation is used to output the value of a
-          numeric expression. The value of a numeric expression is defined as
-          follows:</para>
+          <para>The numerical interpolation is used to output a number value.
+          If the expression doesn't evaluate to a number, the evaluation ends
+          with an error.</para>
 
-          <orderedlist spacing="compact">
-            <listitem>
-              <para>if the expression evaluates to a
-              <literal>TemplateNumberModel</literal>, then it is output in the
-              format specified supplied format specifier.</para>
-            </listitem>
-
-            <listitem>
-              <para>in all other cases, the evaluation ends with an
-              error.</para>
-            </listitem>
-          </orderedlist>
-
-          <para>The format specifier specifies the minimum and the maximum
-          number of fractional digits in the format using syntax
+          <para>The optional format specifier specifies the minimum and the
+          maximum number of displayed fractional digits using syntax
           <literal>m<replaceable>min</replaceable>M<replaceable>max</replaceable></literal>.
           For example, <literal>m2M5</literal> means "at least two, at most
-          five fractional digits". Either part can be omitted. If only minimum
-          is specified, the maximum is equal to minimum. If only maximum is
-          specified, the minimum is 0.</para>
+          five fractional digits". The minimum or the maximum specifier part
+          can be omitted. If only the minimum is specified, the maximum is
+          equal to the minimum. If only maximum is specified, the minimum is
+          0.</para>
+
+          <para>The decimal separator character of the output is
+          internationalized (according the current locale setting), which
+          means that it is not necessarily a dot.</para>
 
           <para>Unlike <literal>${...}</literal>, <literal>#{...}</literal>
-          never prints grouping separators (like in: 1 000 000 or
-          100,000,000). This is actually a backward compatibility quirk, but
+          ignores the <link
+          linkend="ref.setting.number_format"><literal>number_format</literal>
+          setting</link>. This is actually a backward compatibility quirk, but
           it can be useful when you print numbers in situations like
-          <literal>&lt;a href="quertyDatabase?id=#{id}"
-          <replaceable>...</replaceable>&gt;</literal>, where you surely don't
-          want separators. However, starting from FreeMarker 2.3.3 rather use
-          the <link linkend="ref_builtin_c"><literal>c</literal>
-          built-in</link> instead.</para>
-
-          <para>Note, however that a more fine-grained formatting control of
-          numerals can be achieved using the
-          <literal>${<replaceable>...</replaceable>}</literal> interpolation
-          and <link linkend="ref_builtin_string_for_number">the
-          <literal>string</literal> built-in</link>.</para>
+          <literal>&lt;a href="quertyDatabase?id=#{id}"&gt;</literal>, where
+          you surely don't want grouping separators or something fancy like
+          that. However, starting from FreeMarker 2.3.3 rather use the <link
+          linkend="ref_builtin_c"><literal>?c</literal> built-in</link> for
+          this purpose, like <literal>&lt;a
+          href="quertyDatabase?id=${id?c}"&gt;</literal>.</para>
 
           <para>Examples. Assume that <literal>x</literal> is
           <literal>2.582</literal> and <literal>y</literal> is
           <literal>4</literal>:</para>
 
           <programlisting role="template">           [#-- If the language is US English the output is: --]
+#{x}       [#-- 2.582 --]
+#{y}       [#-- 4    --]
 #{x; M2}   [#-- 2.58 --]
 #{y; M2}   [#-- 4    --]
 #{x; m1}   [#-- 2.6 --]
@@ -18023,7 +18078,7 @@ or
               <listitem>
                 <para>FreeMarker is not tied to servlets, networking or the
                 Web; it is just a class library to generate text output by
-                merging a template with Java objects (the data model). You can
+                merging a template with Java objects (the data-model). You can
                 execute templates anywhere and anytime; no HTTP request
                 forwarding or similar tricks needed, no servlet environment
                 needed at all. Because of this you can easily integrate it
@@ -18171,7 +18226,7 @@ or
               <listitem>
                 <para>It potentially hiders accidental mistakes, like a typo
                 in a variable name, or when the template author refers to a
-                variable that the programmer doesn't put into the data model,
+                variable that the programmer doesn't put into the data-model,
                 or for which the programmer uses a different name. Human is
                 prone to do such accidental mistakes, computers are not, so
                 missing this opportunity that the template engine can show
@@ -18219,11 +18274,11 @@ or
 
             <itemizedlist>
               <listitem>
-                <para>It's often normal that your data model contains
+                <para>It's often normal that your data-model contains
                 <literal>null</literal>-s or have optional variables. In such
                 cases use <link linkend="dgui_template_exp_missing">these
                 operators</link>. If you use them too often, try to rethink
-                your data model, because depending on them too much is not
+                your data-model, because depending on them too much is not
                 just results in awkward verbose templates, but increases the
                 probability of hiding errors and printing arbitrary incorrect
                 output (for the reasons described earlier).</para>
@@ -18494,7 +18549,7 @@ or
                 templates) should declare their arguments as
                 <literal>TemplateModel</literal>-s and the more specific sub
                 interfaces of that. After all, the object wrapping is about
-                apparently transforming the data model to something that
+                apparently transforming the data-model to something that
                 serves the purpose of the presentation layer, and these
                 methods are part of the presentation layer.</para>
               </listitem>
@@ -18549,23 +18604,23 @@ or
             that could be used for looking up values with keys of arbitrary
             type. FTL is presentation oriented language, and it has no feature
             dedicated for that purpose. It has, however, methods. Methods are
-            part of the data model, and they can do all kind of fancy data
+            part of the data-model, and they can do all kind of fancy data
             model related calculations, so of course you can add some methods
-            to the data model for <literal>Map</literal> lookup. The bad news
-            is that the building of the data model, as it's an application
+            to the data-model for <literal>Map</literal> lookup. The bad news
+            is that the building of the data-model, as it's an application
             specific issue, is the task of the programmers who use FreeMarker,
             so it's their task to ensure that such methods are present there
             to serve the template authors. (However, when template authors
             need to call methods that are not about presentation, then
-            consider if the data model is simple enough. Maybe you should push
-            some calculations back to the data model building phase. Ideally
-            the data model contains what should be displayed, and not
+            consider if the data-model is simple enough. Maybe you should push
+            some calculations back to the data-model building phase. Ideally
+            the data-model contains what should be displayed, and not
             something that serves as the base of further calculations.)</para>
 
             <para>If you read the programmer's guide, then you know that
-            technically, the data model is a tree of
+            technically, the data-model is a tree of
             <literal>freemarker.template.TemplateModel</literal> objects. The
-            building of the data model usually (but not necessary) happens by
+            building of the data-model usually (but not necessary) happens by
             automatically wrapping (enclosing) plain Java objects into
             <literal>TemplateModel</literal> objects. The object that does
             this wrapping is the object wrapper, and it's specified when you
@@ -18574,7 +18629,7 @@ or
             of them is <link
             linkend="pgui_misc_beanwrapper"><literal>freemarker.ext.beans.BeansWrapper</literal></link>.
             If you use an instance of this as the object wrapper, then
-            <literal>java.util.Map</literal>-s you put into the data model
+            <literal>java.util.Map</literal>-s you put into the data-model
             will also act as a method, so you can write
             <literal>myMap(myKey)</literal> in the template, that will
             internally call <literal>Map.get(myKey)</literal>. There will be
@@ -18605,7 +18660,7 @@ or
             <literal>Map</literal> object uses <literal>Integer</literal>
             keys, which assumes application specific knowledge.) Note that the
             casting is not needed when the key value comes directly from the
-            data model (i.e., you didn't modified its value with arithmetical
+            data-model (i.e., you didn't modified its value with arithmetical
             caluclations in the template), including the case when it's the
             return value of a method, and it was of the proper class before
             wrapping, because then the result of the unwrapping will be of the
@@ -18687,11 +18742,11 @@ or
             <para>The best is if you can divide the work between the data
             model builder program and the template so that the template
             doesn't need to modify sequences/hashes. Maybe if you rethink your
-            data model, you will realize this is possible. But, seldom there
+            data-model, you will realize this is possible. But, seldom there
             are cases where you need to modify sequences/hashes for some
             complex but purely presentation related algorithms. It seldom
             happens, so think twice whether that calculation (or parts of it)
-            rather belongs to the data model domain than to the presentation
+            rather belongs to the data-model domain than to the presentation
             domain. Let's assume you are sure it belongs to the presentation
             domain. For example, you want to display a keyword index on some
             very smart way, whose algorithm need you to create and write some
@@ -18709,7 +18764,7 @@ or
 
             <para>That is, you move out the complex part of the presentation
             task from the template into Java code. Note that it doesn't affect
-            the data model, so the presentation is still kept separated from
+            the data-model, so the presentation is still kept separated from
             other the other application logic. Of course the drawback is that
             for this the template author will need the help of a Java
             programmer, but for complex algorithms that's probably needed
@@ -18739,7 +18794,7 @@ or
                 sequences that were created with
                 <literal>pp.newWritableSequence()</literal>. So for example
                 the template author can't modify a sequence that comes from
-                the data model with this.</para>
+                the data-model with this.</para>
               </listitem>
 
               <listitem>
@@ -18773,7 +18828,7 @@ or
             could do <literal>[#set b =
             pp.newWritableSequence(a[5..10])]</literal> and <literal>[#set c =
             pp.newWritableHash(hashA + hashB)]</literal>). Of course this is
-            easy to miss... so again, rather try to build the data model so
+            easy to miss... so again, rather try to build the data-model so
             you will not need to modify collections, or use a presentation
             task helper class as was shown earlier.</para>
           </answer>
@@ -18794,7 +18849,7 @@ or
             <literal>null</literal> or not. When it technically faces with a
             <literal>null</literal>, it treats it exactly as a missing
             variable. For example, both if <literal>x</literal> is
-            <literal>null</literal> in the data model and if it's not present
+            <literal>null</literal> in the data-model and if it's not present
             at all, <literal>${x!'missing'}</literal> will print ''missing'',
             you can't tell the difference. Also, if for example you want to
             test if a Java method has returned <literal>null</literal>, just
@@ -18905,7 +18960,7 @@ t.process(root, out);
             you are still sure you want to do it, read on...</para>
 
             <para>When you use <literal>[#set x = "foo"]</literal>, then you
-            do not actually modify the data model (since that is read-only,
+            do not actually modify the data-model (since that is read-only,
             see: <xref linkend="pgui_misc_multithreading" />), but create the
             <literal>x</literal> variable in the runtime <link
             linkend="gloss.environment">environment</link> of the processing
@@ -19403,7 +19458,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>getEnumModels()</literal> method, you can retrieve a
               hash model that is keyed by class names and allows access to
               enumerated values. I.e., if you bind this hash model under name
-              <literal>enums</literal> in the data model, you can write
+              <literal>enums</literal> in the data-model, you can write
               expressions like
               <literal>enums["java.math.RoundingMode"].UP</literal> in the
               template. The enum values can be used as scalars and support
@@ -19554,7 +19609,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>getEnumModels()</literal> method, you can retrieve a
               hash model that is keyed by class names and allows access to
               enumerated values. I.e., if you bind this hash model under name
-              <literal>enums</literal> in the data model, you can write
+              <literal>enums</literal> in the data-model, you can write
               expressions like
               <literal>enums["java.math.RoundingMode"].UP</literal> in the
               template. The enum values can be used as scalars and support
@@ -23901,7 +23956,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>SimpleHash</literal> the old <literal>put(String key,
               TemplateModel value)</literal> is now <literal>put(String key,
               Object object)</literal>. Also, you can pass any kind of object
-              as data model to <literal>Template.process</literal>. The
+              as data-model to <literal>Template.process</literal>. The
               alternative reflection based <literal>ObjectWrapper</literal>
               can expose the members of any Java object automatically for the
               designer. More information: <link
@@ -24061,7 +24116,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
             <listitem>
               <para><literal>freemarker.ext.jython</literal> package:
-              FreeMarker can now directly use Jython objects as data models
+              FreeMarker can now directly use Jython objects as data-models
               using the <link linkend="pgui_misc_jythonwrapper">Jython
               wrapper</link>.</para>
             </listitem>
@@ -24925,7 +24980,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
     </glossentry>
 
     <glossentry id="gloss.dataModel">
-      <glossterm>Data model</glossterm>
+      <glossterm>Data-model</glossterm>
 
       <glossdef>
         <para>Something that holds the information the template has to show
@@ -24985,7 +25040,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
         call, an <literal>Environment</literal> instance will be created, and
         then discarded when <literal>process</literal> returns. This object
         stores the set of temporary variables created by the template, the
-        value of settings set by the template, the reference to the data model
+        value of settings set by the template, the reference to the data-model
         root, etc. Everything that is needed to fulfill the template
         processing job.</para>
       </glossdef>
@@ -25246,7 +25301,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
         embedded into it. A template processor (e.g., FreeMarker) will
         interpret special character sequences and it outputs a more or less
         different text from the original text file, where the differences are
-        often based on a <link linkend="gloss.dataModel">data model</link>.
+        often based on a <link linkend="gloss.dataModel">data-model</link>.
         Thus, the original text acts as a template of the possible
         outputs.</para>
       </glossdef>
@@ -25257,7 +25312,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
       <glossdef>
         <para>A template processing job is the act when FreeMarker merges a
-        template with a data model to produce the output for a visitor. Note
+        template with a data-model to produce the output for a visitor. Note
         that this may includes the execution of multiple template files
         because the template file used for the Web page may invokes other
         templates with <literal>include</literal> and
