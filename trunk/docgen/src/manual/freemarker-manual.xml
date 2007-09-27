@@ -10143,8 +10143,9 @@ Test Book</programlisting>
             url="http://jaxen.org/">Jaxen</ulink> (recommended, but use at
             least Jaxen 1.1-beta-8, not older) or <ulink
             url="http://xml.apache.org/xalan/">Apache Xalan</ulink> classes
-            are available. (Apache Xalan classes are included in Sun J2SE
-            1.4.x, but not in Sun J2SE 1.5.x.)</para>
+            are available. (Apache Xalan classes are included in Sun J2SE 1.4,
+            1.5 and 1.6 (and maybe later too); no separate Xalan jar is
+            needed.)</para>
           </note>
 
           <para>If a hash key used with a node variable can't be interpreted
@@ -19293,8 +19294,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
           <para>Jaxen (recommended, <ulink url="http://jaxen.org/">download
           here</ulink>) or Apache Xalan is needed for XML XPath support.
           Please use at least Jaxen 1.1-beta-8, not older versions! Apache
-          Xalan classes are included in Sun J2SE 1.4.x, but not in Sun J2SE
-          1.5.</para>
+          Xalan classes are included in Sun J2SE 1.4, 1.5 and 1.6 (and maybe
+          later too), so no separate Xalan jar is needed with those
+          versions.</para>
         </listitem>
 
         <listitem>
@@ -19331,60 +19333,25 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
       <para>If you want to modify the source code and rebuild
       <literal>freemarker.jar</literal>, you need <ulink
-      url="http://ant.apache.org/">Ant</ulink> 1.6.1 (or newer).</para>
-
-      <para>You have to define a <literal>dependencies.properties</literal>
-      file in the root directory of FreeMarker distribution to tell Ant where
-      your various <literal>.jar</literal> files are. Copy and modify one of
-      the sample files you can find there. As you can see, you need a lot of
-      jars; most of them can be downloaded from the <ulink
-      url="http://www.apache.org/">Apache Software Foundation</ulink>. JavaCC
-      can be downloaded from <ulink
-      url="http://javacc.dev.java.net/">http://javacc.dev.java.net/</ulink>
-      (when I write this we are using version 3.2). To download Jython, visit
-      <ulink url="http://www.jython.org">the Jython homepage</ulink>.</para>
-
-      <para>If you use earlier Java platform than version 1.4, you must ensure
-      the the standard XML related classes of 1.4 are available: JAXP
-      (<literal>javax.xml</literal>), SAX (<literal>org.xml.sax.*</literal>),
-      W3C DOM (<literal>org.w3c.dom.*</literal>). Also,
-      <literal>org.apache.xpath</literal> (distributed with Apache Xalan) is
-      needed. Note that Apache Xalan classes are included in Sun J2SE 1.4.x,
-      but maybe not in the later versions.</para>
-
-      <para>Some of the jars are optional:</para>
-
-      <itemizedlist spacing="compact">
-        <listitem>
-          <para>You don't need all the logging libraries. But the resulting
-          <literal>freemarker.jar</literal> will not support the missing log
-          libraries.</para>
-        </listitem>
-
-        <listitem>
-          <para>You don't need the Jython library, but then the resulting
-          <literal>freemarker.jar</literal> will not support Jython.</para>
-        </listitem>
-
-        <listitem>
-          <para>You don't need the Jaxen library, but then the resulting
-          <literal>freemarker.jar</literal> will not support Jaxen XPath
-          engine, only Xalan.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>If all above is done, run Ant from the root directory of the
-      distribution, and it will create the new
-      <literal>freemarker.jar</literal> in the <literal>lib</literal>
-      directory.</para>
+      url="http://ant.apache.org/">Ant</ulink> 1.6.1 (or newer) and JDK 5 (or
+      newer). If these are satisfied, just run Ant from the root directory of
+      the distribution, and it will create the new
+      <literal>freemarker.jar</literal>. Note that for the very first build
+      you must be on-line, because the build task will download a lot of
+      required dependencies (about 20 MB) into the <literal>lib</literal>
+      subdirectory of distribution root directory.</para>
 
       <para>Maybe you should check the new jar file against our test suite.
       This is done by running Ant with <literal>test</literal> target (go to
-      the root directory of the distribution, and issue "ant test"). Note that
-      you need Jython here, since the test suite contains Jython related
-      tests. If the test fails, read the resulting <literal>.txt</literal>
-      file in the <literal>build/testcase</literal> directory for more
-      details.</para>
+      the root directory of the distribution, and issue "ant test"). If the
+      test fails, read the resulting <literal>.txt</literal> file in the
+      <literal>build/testcase</literal> directory for more details.</para>
+
+      <para>Note that building a full distribution, which includes the
+      FreeMarker Manual and the off-line Web site, is not possible purely from
+      the source code that is included with the distribution. You will have to
+      check out the "docgen" and "site" sub-projects from the SVN repository
+      of FreeMarker for that.</para>
     </appendix>
 
     <appendix id="app_versions">
