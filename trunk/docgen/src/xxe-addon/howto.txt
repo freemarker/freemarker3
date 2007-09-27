@@ -2,13 +2,14 @@ XMLmind XML Editor addon for FreeMarker Manual editing
 ======================================================
 
 This addon customizes the bundled DocBook configuration so that
-it will be better for FreeMarker Manual editing.
+it will be better for FreeMarker Manual editing. The cusomtization
+will only affect the FreeMarker documentation, not other DocBook-s.
 
 THIS ADDON REQUIRES AT LEAST XXE 3.6.1.
 
 
-How to install this addon?
---------------------------
+How to install
+--------------
 
 Just copy the docbook-for-freemarker directory into
 "addon" subdirectory of your XXE user preferences directory,
@@ -21,9 +22,9 @@ On Windows XP:
   C:\Documents and Settings\%USERNAME%\Application Data\XMLmind\XMLeditor\addon
   (replace %USERNAME% with your user name that you see in the Windows start menu)
 
-Then restart XXE if it were running. From now all DocBook XML-s whose root element
-has a conformance="freemarker-documentation-conventions" attribute will be opened
-with this addon. Other docbooks are not affected.
+Then restart XXE if it were running. From now on all DocBook XML-s whose root
+element has a conformance="freemarker-documentation-conventions" attribute will
+be opened with this addon. Other docbooks are not affected.
 
 
 Using the ToC-like navigation
@@ -32,6 +33,6 @@ Using the ToC-like navigation
 Near the bottom of the XXE window you find a very thin (almost invisible)
 second view frame. Just grab its separator and drag it upwards with
 a quick big uncontrolled tug. Now you will see the ToC instead of the main
-view. Double click the chapter/section you want to jump too. Then grab the
+view. Double click on the chapter/section you want to jump too. Then grab the
 separator bar again, and drag it downwards, with a quick big uncontrolled
 tug again. Now you see the normal view again, at the correct position.
