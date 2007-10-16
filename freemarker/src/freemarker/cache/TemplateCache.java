@@ -253,21 +253,16 @@ public class TemplateCache
         boolean debug = logger.isDebugEnabled();
         String debugName = debug ? name + "[" + locale + "," + encoding + (parse ? ",parsed] " : ",unparsed] ") : null;
         TemplateKey tk = new TemplateKey(name, locale, encoding, parse);
-        synchronized (storage)
-        {
+        synchronized (storage) {
             CachedTemplate cachedTemplate = (CachedTemplate)storage.get(tk);
             long now = System.currentTimeMillis();
             long lastModified = -1L;
             Object newlyFoundSource = null;
-            try
-            {
-                if (cachedTemplate != null)
-                {
+            try {
+                if (cachedTemplate != null) {
                     // If we're within the refresh delay, return the cached copy
-                    if (now - cachedTemplate.lastChecked < getDelay())
-                    {
-                        if(debug)
-                        {
+                    if (now - cachedTemplate.lastChecked < getDelay()) {
+                        if(debug) {
                             logger.debug(debugName + "cached copy not yet stale; using cached.");
                         }
                         return cachedTemplate.template;
@@ -279,10 +274,8 @@ public class TemplateCache
                     newlyFoundSource = findTemplateSource(name, locale);
 
                     // Template source was removed
-                    if (newlyFoundSource == null)
-                    {
-                        if(debug)
-                        {
+                    if (newlyFoundSource == null) {
+                        if(debug) {
                             logger.debug(debugName + "no source found (removing from cache if it was cached).");
                         } 
                         storage.remove(tk);
@@ -294,27 +287,22 @@ public class TemplateCache
                     lastModified = loader.getLastModified(newlyFoundSource);
                     boolean lastModifiedNotChanged = lastModified == cachedTemplate.lastModified;
                     boolean sourceEquals = newlyFoundSource.equals(cachedTemplate.source);
-                    if(lastModifiedNotChanged && sourceEquals)
-                    {
-                        if(debug)
-                        {
+                    if(lastModifiedNotChanged && sourceEquals) {
+                        if(debug) {
                             logger.debug(debugName + "using cached since " + 
                                     newlyFoundSource + " didn't change.");
                         } 
                         cachedTemplate.lastChecked = now;
                         return cachedTemplate.template;
                     }
-                    else
-                    {
-                        if(debug && !sourceEquals)
-                        {
+                    else {
+                        if(debug && !sourceEquals) {
                             logger.debug("Updating source, info for cause: " + 
                                 "sourceEquals=" + sourceEquals + 
                                 ", newlyFoundSource=" + newlyFoundSource + 
                                 ", cachedTemplate.source=" + cachedTemplate.source);
                         }
-                        if(debug && !lastModifiedNotChanged)
-                        {
+                        if(debug && !lastModifiedNotChanged) {
                             logger.debug("Updating source, info for cause: " + 
                                 "lastModifiedNotChanged=" + lastModifiedNotChanged + 
                                 ", cache lastModified=" + cachedTemplate.lastModified + 
@@ -324,10 +312,8 @@ public class TemplateCache
                         cachedTemplate.source = newlyFoundSource;
                     }
                 }
-                else
-                {
-                    if(debug) 
-                    {
+                else {
+                    if(debug) {
                         logger.debug("Could not find template in cache, "
                             + "creating new one; id=[" + 
                             tk.name + "[" + tk.locale + "," + tk.encoding + 
@@ -338,8 +324,7 @@ public class TemplateCache
                     // cachedTemplate.lastModified to Long.MIN_VALUE. This is
                     // a flag that signs it has to be explicitly queried later on.
                     newlyFoundSource = findTemplateSource(name, locale);
-                    if (newlyFoundSource == null)
-                    {
+                    if (newlyFoundSource == null) {
                         return null;
                     }
                     cachedTemplate = new CachedTemplate();
@@ -348,25 +333,32 @@ public class TemplateCache
                     cachedTemplate.lastModified = lastModified = Long.MIN_VALUE;
                     storage.put(tk, cachedTemplate);
                 }
-                if(debug)
-                {
+                if(debug) {
                     logger.debug("Compiling FreeMarker template " + 
                         debugName + " from " + newlyFoundSource);
                 }
                 // If we get here, then we need to (re)load the template
                 Object source = cachedTemplate.source;
-                cachedTemplate.template =
-                    loadTemplate(loader, name, locale, encoding, parse, source);
-                cachedTemplate.lastModified =
-                    lastModified == Long.MIN_VALUE
-                        ? loader.getLastModified(source)
-                        : lastModified;
-                return cachedTemplate.template;
+                try {
+                    cachedTemplate.template =
+                        loadTemplate(loader, name, locale, encoding, parse, source);
+                    cachedTemplate.lastModified =
+                        lastModified == Long.MIN_VALUE
+                            ? loader.getLastModified(source)
+                            : lastModified;
+                    return cachedTemplate.template;
+                }
+                catch(RuntimeException e) {
+                    storage.remove(tk);
+                    throw e;
+                }
+                catch(IOException e) {
+                    storage.remove(tk);
+                    throw e;
+                }
             }
-            finally
-            {
-                if(newlyFoundSource != null)
-                {
+            finally {
+                if(newlyFoundSource != null) {
                     loader.closeTemplateSource(newlyFoundSource);
                 }
             }
@@ -385,10 +377,8 @@ public class TemplateCache
             codeSource = null;
         }
         Reader reader = loader.getReader(source, encoding);
-        try
-        {
-            if(parse)
-            {
+        try {
+            if(parse) {
                 try {
                     template = new Template(name, reader, config, encoding, codeSource);
                 }
@@ -399,21 +389,17 @@ public class TemplateCache
                 }
                 template.setLocale(locale);
             }
-            else
-            {
+            else {
                 // Read the contents into a StringWriter, then construct a single-textblock
                 // template from it.
                 StringWriter sw = new StringWriter();
                 char[] buf = new char[4096];
-                for(;;)
-                {
+                for(;;) {
                     int charsRead = reader.read(buf);
-                    if (charsRead > 0)
-                    {
+                    if (charsRead > 0) {
                         sw.write(buf, 0, charsRead);
                     }
-                    else if(charsRead == -1)
-                    {
+                    else if(charsRead == -1) {
                         break;
                     }
                 }
@@ -422,8 +408,7 @@ public class TemplateCache
             }
             template.setEncoding(encoding);
         }
-        finally
-        {
+        finally {
             reader.close();
         }
         return template;
@@ -525,24 +510,22 @@ public class TemplateCache
             String localeName = LOCALE_SEPARATOR + locale.toString();
             StringBuilder buf = new StringBuilder(name.length() + localeName.length());
             buf.append(prefix);
-            for (;;)
-            {
+            for (;;) {
                 buf.setLength(prefix.length());
                 String path = buf.append(localeName).append(suffix).toString();
                 Object templateSource = acquireTemplateSource(path);
-                if (templateSource != null)
-                {
+                if (templateSource != null) {
                     return templateSource;
                 }
                 int lastUnderscore = localeName.lastIndexOf('_');
-                if (lastUnderscore == -1)
+                if (lastUnderscore == -1) {
                     break;
+                }
                 localeName = localeName.substring(0, lastUnderscore);
             }
             return null;
         }
-        else
-        {
+        else {
             return acquireTemplateSource(name);
         }
     }
@@ -551,20 +534,16 @@ public class TemplateCache
     {
         int asterisk = path.indexOf(ASTERISK);
         // Shortcut in case there is no acquisition
-        if(asterisk == -1)
-        {
+        if(asterisk == -1) {
             return mainLoader.findTemplateSource(path);
         }
         StringTokenizer tok = new StringTokenizer(path, "/");
         int lastAsterisk = -1;
         List<String> tokpath = new ArrayList<String>();
-        while(tok.hasMoreTokens())
-        {
+        while(tok.hasMoreTokens()) {
             String pathToken = tok.nextToken();
-            if(pathToken.equals(ASTERISKSTR))
-            {
-                if(lastAsterisk != -1)
-                {
+            if(pathToken.equals(ASTERISKSTR)) {
+                if(lastAsterisk != -1) {
                     tokpath.remove(lastAsterisk);
                 }
                 lastAsterisk = tokpath.size();
@@ -574,28 +553,23 @@ public class TemplateCache
         String basePath = concatPath(tokpath, 0, lastAsterisk);
         String resourcePath = concatPath(tokpath, lastAsterisk + 1, 
                 tokpath.size());
-        if(resourcePath.endsWith("/"))
-        {
+        if(resourcePath.endsWith("/")) {
             resourcePath = resourcePath.substring(0, resourcePath.length() - 1);
         }
 
         StringBuilder buf = new StringBuilder(path.length()).append(basePath);
         int l = basePath.length();
         boolean debug = logger.isDebugEnabled();
-        for(;;)
-        {
+        for(;;) {
             String fullPath = buf.append(resourcePath).toString();
-            if(debug)
-            {
+            if(debug) {
                 logger.debug("Trying to find template source " + fullPath);
             }
             Object templateSource = mainLoader.findTemplateSource(fullPath);
-            if(templateSource != null)
-            {
+            if(templateSource != null) {
                 return templateSource;
             }
-            if(l == 0)
-            {
+            if(l == 0) {
                 return null;
             }
             l = basePath.lastIndexOf(SLASH, l - 2) + 1;
@@ -673,8 +647,7 @@ public class TemplateCache
 
         public boolean equals(Object o)
         {
-            if (o instanceof TemplateKey)
-            {
+            if (o instanceof TemplateKey) {
                 TemplateKey tk = (TemplateKey)o;
                 return
                     parse == tk.parse &&
