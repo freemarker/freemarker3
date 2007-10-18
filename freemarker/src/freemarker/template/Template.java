@@ -120,7 +120,6 @@ public class Template extends TemplateCore {
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
     private final CodeSource codeSource;
-    private boolean syntaxKnown, altSyntax;
     boolean stripWhitespace;
     
     private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
@@ -182,8 +181,6 @@ public class Template extends TemplateCore {
         	
             FMParser parser = new FMParser(this, ltb, B);
             setRootElement(parser.Root());
-            this.syntaxKnown = parser.isSyntaxSet();
-            this.altSyntax = parser.isAltDirectiveSyntax();
             PostParseVisitor ppv = new PostParseVisitor(this);
             ppv.visit(this);
         }
