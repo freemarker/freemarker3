@@ -287,23 +287,18 @@ public final class Environment extends Configurable implements Scope {
         else {
             nested = new TemplateDirectiveBody() {
                 public void render(Writer newOut) throws TemplateException, IOException {
-                    if(newOut == null) {
+                    Writer prevOut = out;
+                    out = newOut;
+                    try {
                         Environment.this.render(element);
                     }
-                    else {
-                        Writer prevOut = out;
-                        out = newOut;
-                        try {
-                            Environment.this.render(element);
-                        }
-                        finally {
-                            out = prevOut;
-                        }
+                    finally {
+                        out = prevOut;
                     }
                 }
             };
         }
-        directiveModel.execute(out, args, nested);
+        directiveModel.execute(this, args, nested);
     }
     
     /**

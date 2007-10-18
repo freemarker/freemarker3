@@ -1,8 +1,9 @@
 package freemarker.template;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.Map;
+
+import freemarker.core.Environment;
 
 /**
  * Objects that implement this interface can be used as user-defined directives 
@@ -16,7 +17,7 @@ public interface TemplateDirectiveModel extends TemplateModel
 {
     /**
      * Executes this directive once.
-     * @param out the writer to write the output to
+     * @param env the current processing environment
      * @param args the arguments (if any) passed to the transformation as a 
      * map of key/value pairs where the keys are strings and the arguments are
      * TemplateModel instances. This is never null.
@@ -26,6 +27,6 @@ public interface TemplateDirectiveModel extends TemplateModel
      * @throws TemplateException
      * @throws IOException
      */
-    public void execute(Writer out, Map<String, TemplateModel> args, 
+    public void execute(Environment env, Map<String, TemplateModel> args, 
             TemplateDirectiveBody body) throws TemplateException, IOException;
 }

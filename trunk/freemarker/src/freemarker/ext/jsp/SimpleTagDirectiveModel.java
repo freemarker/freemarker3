@@ -12,6 +12,7 @@ import javax.servlet.jsp.tagext.JspTag;
 import javax.servlet.jsp.tagext.SimpleTag;
 import javax.servlet.jsp.tagext.Tag;
 
+import freemarker.core.Environment;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -34,7 +35,7 @@ class SimpleTagDirectiveModel extends JspTagModelBase<SimpleTag> implements Temp
         }
     }
 
-    public void execute(Writer out, Map<String, TemplateModel> args, final TemplateDirectiveBody body) 
+    public void execute(Environment env, Map<String, TemplateModel> args, final TemplateDirectiveBody body) 
     throws TemplateException, IOException {
         try {
             SimpleTag tag = getTagInstance();
@@ -55,7 +56,7 @@ class SimpleTagDirectiveModel extends JspTagModelBase<SimpleTag> implements Temp
                     @Override
                     public void invoke(Writer out) throws JspException, IOException {
                         try {
-                            body.render(out);
+                            body.render(out == null ? pageContext.getOut() : out);
                         }
                         catch(TemplateException e) {
                             throw new JspException(e);
