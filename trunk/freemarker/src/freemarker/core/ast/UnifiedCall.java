@@ -115,7 +115,8 @@ public class UnifiedCall extends TemplateElement {
         else if (tm instanceof TemplateDirectiveModel) {
             Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
             if (args != null) argMap = args.getParameterMap(tm, env);
-            env.render(nestedBlock, (TemplateDirectiveModel) tm, argMap);
+            env.render(nestedBlock, (TemplateDirectiveModel) tm, argMap, 
+                    bodyParameters.getParamNames());
         }
         else if (tm instanceof Macro) {
             Macro macro = (Macro) tm;

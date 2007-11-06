@@ -35,7 +35,8 @@ class SimpleTagDirectiveModel extends JspTagModelBase<SimpleTag> implements Temp
         }
     }
 
-    public void execute(Environment env, Map<String, TemplateModel> args, final TemplateDirectiveBody body) 
+    public void execute(Environment env, Map<String, TemplateModel> args, 
+            TemplateModel[] outArgs, final TemplateDirectiveBody body) 
     throws TemplateException, IOException {
         try {
             SimpleTag tag = getTagInstance();

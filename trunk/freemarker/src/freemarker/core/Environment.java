@@ -277,8 +277,11 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
+    private static final TemplateModel[] NO_OUT_ARGS = new TemplateModel[0];
+
     public void render(final TemplateElement element,
-            TemplateDirectiveModel directiveModel, Map<String, TemplateModel> args)
+            TemplateDirectiveModel directiveModel, Map<String, TemplateModel> args,
+            final List<String> bodyParameterNames)
             throws TemplateException, IOException {
         TemplateDirectiveBody nested;
         if(element == null) {
@@ -298,7 +301,109 @@ public final class Environment extends Configurable implements Scope {
                 }
             };
         }
-        directiveModel.execute(this, args, nested);
+        final TemplateModel[] outArgs;
+        if(bodyParameterNames == null || bodyParameterNames.isEmpty()) {
+            outArgs = NO_OUT_ARGS;
+        }
+        else {
+            outArgs = new TemplateModel[bodyParameterNames.size()];
+        }
+        final Scope scope = currentScope;
+        if(outArgs.length > 0) {
+            currentScope = new Scope() {
+                public boolean definesVariable(String name) {
+                    return bodyParameterNames.contains(name);
+                }
+
+                public Collection<String> getDirectVariableNames() {
+                    return bodyParameterNames;
+                }
+
+                public Scope getEnclosingScope() {
+                    return scope;
+                }
+
+                public Environment getEnvironment() {
+                    return Environment.this;
+                }
+
+                public Template getTemplate() {
+                    return scope.getTemplate();
+                }
+
+                public void put(String key, TemplateModel value) {
+                    if(definesVariable(key)) {
+                        throw new IllegalStateException("Can not modify loop variable " + key + " from the body of the directive");
+                    }
+                    scope.put(key, value);
+                }
+
+                public TemplateModel remove(String key) {
+                    if(definesVariable(key)) {
+                        throw new IllegalStateException("Can not remove loop variable " + key + " from the body of the directive");
+                    }
+                    return scope.remove(key);
+                }
+
+                public TemplateModel resolveVariable(String name) throws TemplateModelException {
+                    int index = bodyParameterNames.indexOf(name);
+                    return index == -1 ? scope.resolveVariable(name) : outArgs[index];
+                }
+
+                public TemplateCollectionModel keys() {
+                    return new TemplateCollectionModel() {
+                        public TemplateModelIterator iterator() {
+                            final Iterator<String> it = bodyParameterNames.iterator();
+                            return new TemplateModelIterator() {
+                                public boolean hasNext() {
+                                    return it.hasNext();
+                                }
+                                public TemplateModel next() {
+                                    return new SimpleScalar(it.next());
+                                }
+                            };
+                        }
+                    };
+                }
+
+                public int size() throws TemplateModelException {
+                    return outArgs.length;
+                }
+
+                public TemplateCollectionModel values()  {
+                    return new TemplateCollectionModel() {
+                        public TemplateModelIterator iterator() {
+                            return new TemplateModelIterator() {
+                                int i = 0;
+                                public boolean hasNext() {
+                                    return i < outArgs.length;
+                                }
+                                public TemplateModel next() {
+                                    return outArgs[i++];
+                                }
+                            };
+                        }
+                    };
+                }
+
+                public TemplateModel get(String key) {
+                    int index = bodyParameterNames.indexOf(key);
+                    return index == -1 ? null : outArgs[index];
+                }
+
+                public boolean isEmpty() {
+                    return false;
+                }
+            };
+        }
+        try {
+            directiveModel.execute(this, args, outArgs, nested);
+        }
+        finally {
+            if(outArgs.length > 0) {
+                currentScope = scope;
+            }
+        }
     }
     
     /**
@@ -468,7 +573,7 @@ public final class Environment extends Configurable implements Scope {
         try {
             TemplateModel macroOrTransform = getNodeProcessor(node);
             if (macroOrTransform instanceof Macro) {
-                render((Macro) macroOrTransform, null, null, null);
+                render((Macro) macroOrTransform, (ArgsList)null, null, null);
             } else if (macroOrTransform instanceof TemplateTransformModel) {
                 render(null, (TemplateTransformModel) macroOrTransform, null);
             } else {
@@ -533,7 +638,7 @@ public final class Environment extends Configurable implements Scope {
         TemplateModel macroOrTransform = getNodeProcessor(currentNodeName,
                 currentNodeNS, nodeNamespaceIndex);
         if (macroOrTransform instanceof Macro) {
-            render((Macro) macroOrTransform, null, null, null);
+            render((Macro) macroOrTransform, (ArgsList)null, null, null);
         } else if (macroOrTransform instanceof TemplateTransformModel) {
             render(null, (TemplateTransformModel) macroOrTransform, null);
         }
