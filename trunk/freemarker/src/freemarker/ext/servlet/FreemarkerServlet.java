@@ -729,10 +729,21 @@ public class FreemarkerServlet extends HttpServlet
      * action before the template is processed. By default does nothing.
      * A typical action to perform here is to inject application-specific
      * objects into the model root
+     *
+     * <p>Example: Expose the Serlvet context path as "baseDir" for all templates:
+     *
+     *<pre>
+     *    ((SimpleHash) data).put("baseDir", request.getContextPath() + "/");
+     *    return true;
+     *</pre>
+     *
      * @param request the actual HTTP request
      * @param response the actual HTTP response
      * @param template the template that will get executed
-     * @param data the data that will be passed to the template
+     * @param data the data that will be passed to the template. By default this will be
+     *        an {@link AllHttpScopesHashModel} (which is a {@link freemarker.template.SimpleHash} subclass).
+     *        Thus, you can add new variables to the data-model with the
+     *        {@link freemarker.template.SimpleHash#put(String, Object)} subclass) method.
      * @return true to process the template, false to suppress template processing.
      */
     protected boolean preTemplateProcess(

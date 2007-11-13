@@ -43,6 +43,7 @@
       <get src="${libs.location}/saxpath.jar" dest="lib/saxpath.jar" usetimestamp="true"/>
       <get src="${libs.location}/script.jar" dest="lib/script.jar" usetimestamp="true"/>
       <get src="${libs.location}/servlet.jar" dest="lib/servlet.jar" usetimestamp="true"/>
+      <get src="${libs.location}/struts.jar" dest="lib/struts.jar" usetimestamp="true"/>
       <get src="${libs.location}/xalan.jar" dest="lib/xalan.jar" usetimestamp="true"/>
    </target>
    
@@ -84,6 +85,7 @@
             <available file="lib/saxpath.jar"/>
             <available file="lib/script.jar"/>
             <available file="lib/servlet.jar"/>
+            <available file="lib/struts.jar"/>
             <available file="lib/xalan.jar"/>
          </and>
        </condition>

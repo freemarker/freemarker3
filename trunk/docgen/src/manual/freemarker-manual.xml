@@ -5917,7 +5917,7 @@ public class UpperDirective implements TemplateDirectiveModel {
         if (body != null) {
             // Executes the nested body. Same as &lt;#nested&gt; in FTL, except
             // that for this directive we use our own Writer instead of the
-            // current output writer, as we need to "filter" then output.
+            // current output writer, as we need to "filter" the output.
             body.render(new UpperCaseFilterWriter(out));
         }
     }
