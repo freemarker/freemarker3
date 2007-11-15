@@ -95,15 +95,39 @@ class URLTemplateSource {
     }
     
     long lastModified() {
-        long lastModified = conn.getLastModified();
-        if (lastModified == -1L && url.getProtocol().equals("file")) {
-            // Hack for obtaining accurate last modified time for
-            // URLs that point to the local file system. This is fixed
-            // in JDK 1.4, but prior JDKs returns -1 for file:// URLs.
-            return new File(url.getFile()).lastModified();
-        } else {
-            return lastModified;
-        }
+        if (conn instanceof JarURLConnection) {
+            // There is a bug in sun's jar url connection that causes file handle leaks when calling getLastModified()
+            // Since the time stamps of jar file contents can't vary independent from the jar file timestamp, just use
+            // the jar file timestamp
+            URL jarURL=((JarURLConnection)conn).getJarFileURL();
+            if (jarURL.getProtocol().equals("file")) {
+              // Return the last modified time of the underlying file - saves some opening and closing
+              return new File(jarURL.getFile()).lastModified();
+            } else {
+              // Use the URL mechanism
+              URLConnection jarConn=null;
+              try {
+                jarConn=jarURL.openConnection();
+                return jarConn.getLastModified();
+              } catch (IOException e) {
+                return -1;
+              } finally {
+                try {
+                  if (jarConn!=null) jarConn.getInputStream().close();
+                } catch (IOException e) { }
+              }
+            }
+          } else {
+            long lastModified = conn.getLastModified();
+            if (lastModified == -1L && url.getProtocol().equals("file")) {
+                // Hack for obtaining accurate last modified time for
+                // URLs that point to the local file system. This is fixed
+                // in JDK 1.4, but prior JDKs returns -1 for file:// URLs.
+                return new File(url.getFile()).lastModified();
+            } else {
+                return lastModified;
+            }
+          }
     }
 
     InputStream getInputStream() throws IOException {
