@@ -2341,7 +2341,7 @@ TemplateElement UnifiedMacroTransform() :
     [<TERMINATING_WHITESPACE>]
     [args=ArgsList() {result.setArgs(args);}]
     [
-       <SEMICOLON>
+       <SEMICOLON>[<TERMINATING_WHITESPACE>]
        bodyParameters=ParameterList()
        {
            result.setBodyParameters(bodyParameters);
