@@ -40,6 +40,7 @@ public interface TemplateDirectiveModel extends TemplateModel
      * @throws TemplateException
      * @throws IOException
      */
-    public void execute(Environment env, Map params, TemplateModel[] loopVars, 
-            TemplateDirectiveBody body) throws TemplateException, IOException;
+    public void execute(Environment env, Map<String, TemplateModel> params, 
+            TemplateModel[] loopVars, TemplateDirectiveBody body) 
+    throws TemplateException, IOException;
 }
