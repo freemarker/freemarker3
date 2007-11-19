@@ -5848,6 +5848,12 @@ ${indexOf("foo", x)}</programlisting>
         using the <literal>TemplateDirectiveModel</literal> interface. See in
         the API documentation.</para>
 
+        <note>
+          <para><literal>TemplateDirectiveModel</literal> was introduced in
+          FreeMarker 2.3.11, replacing the now depreciated
+          <literal>TemplateTransformModel</literal>.</para>
+        </note>
+
         <sect2>
           <title>Example 1</title>
 
@@ -5855,23 +5861,21 @@ ${indexOf("foo", x)}</programlisting>
           between its start-tag and end-tag to upper case. Like, this
           template:</para>
 
-          <programlisting role="template">
-foo
-<emphasis>&lt;@upper&gt;</emphasis>
+          <programlisting role="template">foo
+<emphasis>[@upper]</emphasis>
   bar
-  &lt;#-- All kind of FTL is allowed here --&gt;
-  &lt;#list ["red", "green", "blue"] as color&gt;
+  [#-- All kind of FTL is allowed here --]
+  [#list ["red", "green", "blue"] as color]
     ${color}
-  &lt;/#list&gt;
+  [/#list]
   baaz
-<emphasis>&lt;/@upper&gt;</emphasis>
+<emphasis>[/@upper]</emphasis>
 wombat
 </programlisting>
 
           <para>will output this:</para>
 
-          <programlisting role="output">
-foo
+          <programlisting role="output">foo
   BAR
     RED
     GREEN
@@ -5883,14 +5887,15 @@ wombat
           <para>This is the source code of the directive class:</para>
 
           <programlisting role="unspecified">package com.example;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
+import freemarker.core.Environment;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
 /**
@@ -5900,25 +5905,33 @@ import freemarker.template.TemplateModelException;
  *  
  *  &lt;p&gt;&lt;b&gt;Directive info&lt;/b&gt;&lt;/p&gt;
  * 
- *  &lt;p&gt;Parameters: None
- *  &lt;p&gt;Nested content: Yes
+ *  &lt;p&gt;Directive parameters: None
+ *  &lt;p&gt;Loop variables: None
+ *  &lt;p&gt;Directive nested content: Yes
  */
 public class UpperDirective implements TemplateDirectiveModel {
     
-    public void execute(Writer out, Map params, TemplateDirectiveBody body)
+    public void execute(Environment env,
+            Map params, TemplateModel[] loopVars,
+            TemplateDirectiveBody body)
             throws TemplateException, IOException {
         // Check if no parameters were given:
         if (!params.isEmpty()) {
             throw new TemplateModelException(
-                    "This directive doesn't have parameters.");
+                    "This directive doesn't allow parameters.");
+        }
+        if (loopVars.length != 0) {
+                throw new TemplateModelException(
+                    "This directive doesn't allow loop variables.");
         }
         
         // If there is non-empty nested content:
         if (body != null) {
             // Executes the nested body. Same as &lt;#nested&gt; in FTL, except
-            // that for this directive we use our own Writer instead of the
-            // current output writer, as we need to "filter" the output.
-            body.render(new UpperCaseFilterWriter(out));
+            // that we use our own writer instead of the current output writer.
+            body.render(new UpperCaseFilterWriter(env.getOut()));
+        } else {
+            throw new RuntimeException("missing body");
         }
     }
     
@@ -5952,7 +5965,8 @@ public class UpperDirective implements TemplateDirectiveModel {
         }
     }
 
-}</programlisting>
+}
+</programlisting>
 
           <para>Now we still need to create an instance of this class, and
           make this directive available to the template with the name "upper"
@@ -5991,29 +6005,38 @@ public class UpperDirective implements TemplateDirectiveModel {
           output of the repetations with a <literal>&lt;hr&gt;</literal>-s.
           Let's call this directive "repeat". Example template:</para>
 
-          <programlisting role="template">&lt;#assing x = 1&gt;
+          <programlisting role="template">[#set x = 1]
 
-<emphasis>&lt;@repeat count=4&gt;</emphasis>
+<emphasis>[@repeat count=4]</emphasis>
   Test ${x}
   &lt;#assign x = x + 1&gt;
-<emphasis>&lt;/@repeat&gt;</emphasis>
+<emphasis>[/@repeat]</emphasis>
 
-<emphasis>&lt;@repeat count=3 hr=true&gt;</emphasis>
+<emphasis>[@repeat count=3 hr=true]</emphasis>
   Test
-<emphasis>&lt;/@repeat&gt;</emphasis></programlisting>
+<emphasis>[/@repeat]</emphasis>
+
+<emphasis>[@repeat count=3; cnt]</emphasis>
+  ${cnt}. Test
+<emphasis>[/@repeat]</emphasis>
+</programlisting>
 
           <para>Output:</para>
 
-          <programlisting role="output">&lt;#assing x = 1&gt;
-
-  Test 1
+          <programlisting role="output">  Test 1
   Test 2
   Test 3
   Test 4
 
   Test
 &lt;hr&gt;  Test
-&lt;hr&gt;  Test</programlisting>
+&lt;hr&gt;  Test
+
+  1. Test
+  2. Test
+  3. Test
+
+</programlisting>
 
           <para>The class:</para>
 
@@ -6023,6 +6046,8 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 
+import freemarker.core.Environment;
+import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateDirectiveModel;
@@ -6047,6 +6072,9 @@ import freemarker.template.TemplateNumberModel;
  *   &lt;li&gt;&lt;code&gt;hr&lt;/code&gt;: Tells if a HTML "hr" element could be printed between
  *       repetations. Boolean. Optional, defaults to &lt;code&gt;false&lt;/code&gt;. 
  * &lt;/ul&gt;
+ *
+ * &lt;p&gt;Loop variables: One, optional. It gives the number of the current
+ *    repetation, starting from 1.
  * 
  * &lt;p&gt;Nested content: Yes
  */
@@ -6055,7 +6083,9 @@ public class RepeatDirective implements TemplateDirectiveModel {
     private static final String PARAM_NAME_COUNT = "count";
     private static final String PARAM_NAME_HR = "hr";
     
-    public void execute(Writer out, Map params, TemplateDirectiveBody body)
+    public void execute(Environment env,
+            Map params, TemplateModel[] loopVars,
+            TemplateDirectiveBody body)
             throws TemplateException, IOException {
         
         // ---------------------------------------------------------------------
@@ -6101,8 +6131,13 @@ public class RepeatDirective implements TemplateDirectiveModel {
         }
         if (!countParamSet) {
                 throw new TemplateModelException(
-                        "The required \"" + PARAM_NAME_COUNT + "\" paramter "
+                        "The required \"" + PARAM_NAME_COUNT + "\" paramter"
                         + "is missing.");
+        }
+        
+        if (loopVars.length &gt; 1) {
+                throw new TemplateModelException(
+                        "At most one loop variable is allowed.");
         }
         
         // Yeah, it was long and boring...
@@ -6110,6 +6145,7 @@ public class RepeatDirective implements TemplateDirectiveModel {
         // ---------------------------------------------------------------------
         // Do the actual directive execution:
         
+        Writer out = env.getOut();
         if (body != null) {
             for (int i = 0; i &lt; countParam; i++) {
                 // Prints a &lt;hr&gt; between all repetations if the "hr" parameter
@@ -6117,16 +6153,21 @@ public class RepeatDirective implements TemplateDirectiveModel {
                 if (hrParam &amp;&amp; i != 0) {
                     out.write("&lt;hr&gt;");
                 }
+                
+                // Set the loop variable, if there is one:
+                if (loopVars.length &gt; 0) {
+                    loopVars[0] = new SimpleNumber(i + 1);
+                }
+                
                 // Executes the nested body (same as &lt;#nested&gt; in FTL). In this
-                // case we don't provide a special writer as the parameter.
-                // So in principle it should be body.render(out), but the
-                // API allows just passing null, which means the same.
-                body.render(null);
+                // case we don't provide a special writer as the parameter:
+                body.render(env.getOut());
             }
         }
     }
 
-}</programlisting>
+}
+</programlisting>
         </sect2>
 
         <sect2>
@@ -6138,16 +6179,6 @@ public class RepeatDirective implements TemplateDirectiveModel {
           directive call execution in the fields of the object. Think of
           nested calls of the same directive, or directive objects used as
           shared variables accessed by multiple threads concurrently.</para>
-
-          <para>If you need to access the runtime FTL environment (read/write
-          variables, get the current locale, etc.), you can get it with
-          <literal>Environment.getCurrentEnvironment()</literal>.</para>
-
-          <para>Unfortunatelly, <literal>TemplateDirectiveModel</literal>-s
-          don't support passing parameters by position (rather than by name).
-          This is fixed starting from FreeMarker 2.4.
-          <literal>TemplateDirectiveModel</literal>-s also can't define loop
-          variables.</para>
         </sect2>
       </sect1>
 
