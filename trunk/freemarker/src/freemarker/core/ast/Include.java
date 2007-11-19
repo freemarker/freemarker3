@@ -57,6 +57,7 @@ import java.io.IOException;
 import freemarker.cache.TemplateCache;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
+import freemarker.template.utility.UndeclaredThrowableException;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.parser.ParseException;
@@ -84,7 +85,7 @@ public class Include extends TemplateElement {
     public Include(Template template,
             Expression includedTemplateName,
             Expression encodingExp,
-            Expression parseExp)
+            Expression parseExp) throws ParseException
     {
     	if (template != null) {
     		String templatePath1 = template.getName();
@@ -99,14 +100,27 @@ public class Include extends TemplateElement {
         else {
             this.encodingExp = encodingExp;
         }
-        if (parseExp == null || parseExp == TemplateBooleanModel.TRUE) {
+        if(parseExp == null) {
             parse = true;
         }
-        else if (parseExp == TemplateBooleanModel.FALSE) {
-            parse = false;
-        }
-        else if (parseExp instanceof StringLiteral) {
-            parse = StringUtil.getYesNo(parseExp.toString());
+        else if(parseExp.isLiteral()) {
+            try {
+                if (parseExp instanceof StringLiteral) {
+                    parse = StringUtil.getYesNo(parseExp.getStringValue(null));
+                }
+                else {
+                    try {
+                        parse = parseExp.isTrue(null);
+                    }
+                    catch(NonBooleanException e) {
+                        throw new ParseException("Expected a boolean or string as the value of the parse attribute", parseExp);
+                    }
+                }
+            }
+            catch(TemplateException e) {
+                // evaluation of literals must not throw a TemplateException
+                throw new UndeclaredThrowableException(e);
+            }
         }
         else {
             this.parseExp = parseExp;
