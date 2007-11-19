@@ -8,6 +8,8 @@ import java.io.Writer;
  * class is passed to the {@link TemplateDirectiveModel#execute(freemarker.core.Environment, 
  * java.util.Map, TemplateModel[], TemplateDirectiveBody)}. The implementation of the method is
  * free to invoke it any number of times, with any writer.
+ *
+ * @since 2.3.11
  * @author Attila Szegedi
  * @version $Id: $
  */
