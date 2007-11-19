@@ -106,11 +106,14 @@ public class UnifiedCall extends TemplateElement {
     public void execute(Environment env) throws TemplateException, IOException {
         TemplateModel tm = nameExp.getAsTemplateModel(env);
         if (tm == Macro.DO_NOTHING_MACRO) return; // shortcut here.
-        assertNonNull(tm, nameExp, env);
-        if (tm instanceof TemplateTransformModel) {
-            Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
-            if (args != null) argMap = args.getParameterMap(tm, env);
-            env.render(nestedBlock, (TemplateTransformModel) tm, argMap);
+        if (tm instanceof Macro) {
+            Macro macro = (Macro) tm;
+            if (macro.isFunction()) {
+                throw new TemplateException("Routine " + macro.getName() 
+                        + " is a function. A function can only be called " +
+                        "within the evaluation of an expression.", env);
+            }    
+            env.render(macro, args, bodyParameters, nestedBlock);
         }
         else if (tm instanceof TemplateDirectiveModel) {
             Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
@@ -118,22 +121,15 @@ public class UnifiedCall extends TemplateElement {
             env.render(nestedBlock, (TemplateDirectiveModel) tm, argMap, 
                     bodyParameters.getParamNames());
         }
-        else if (tm instanceof Macro) {
-            Macro macro = (Macro) tm;
-            if (macro.isFunction()) {
-                throw new TemplateException("Routine " 
-                                             + macro.getName() 
-                                             + " is a function. "
-                                             + "A function can only be called within the evaluation of an expression.", 
-                                             env);
-            }    
-            env.render(macro,
-            		  args, 
-            		  bodyParameters,
-                      nestedBlock);
+        else if (tm instanceof TemplateTransformModel) {
+            Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
+            if (args != null) argMap = args.getParameterMap(tm, env);
+            env.render(nestedBlock, (TemplateTransformModel) tm, argMap);
         }
         else {
-        	throw new TemplateException(getStartLocation() + ": " + nameExp + " is not a Macro or Transform.", env);
+            assertNonNull(tm, nameExp, env);
+            throw new TemplateException(getStartLocation() + ": " + nameExp + 
+                    " is not a user-defined directive.", env);
         }
     }
     
