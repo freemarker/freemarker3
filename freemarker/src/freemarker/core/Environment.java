@@ -104,6 +104,17 @@ public final class Environment extends Configurable implements Scope {
 
     private static final Map<DateFormatKey, DateFormat> localizedDateFormats = new HashMap<DateFormatKey, DateFormat>();
 
+    // Do not use this object directly; clone it first! DecimalFormat isn't
+    // thread-safe.
+    private static final DecimalFormat C_NUMBER_FORMAT
+            = new DecimalFormat(
+                    "0.################",
+                    new DecimalFormatSymbols(Locale.US));
+    static {
+        C_NUMBER_FORMAT.setGroupingUsed(false);
+        C_NUMBER_FORMAT.setDecimalSeparatorAlwaysShown(false);
+    }
+
     private final TemplateHashModel rootDataModel;
 
     private final List<TemplateElement> elementStack = new ArrayList<TemplateElement>();
@@ -1062,14 +1073,7 @@ public final class Environment extends Configurable implements Scope {
         // It can't be cached in a static field, because DecimalFormat-s aren't
         // thread-safe.
         if (cNumberFormat == null) {
-            DecimalFormat nf = new DecimalFormat(
-                    "0.################",
-                    new DecimalFormatSymbols(Locale.US));
-            nf.setGroupingUsed(false);
-            nf.setDecimalSeparatorAlwaysShown(false);
-            
-            // Only when everything were successfull:
-            cNumberFormat = nf;
+            cNumberFormat = (DecimalFormat) C_NUMBER_FORMAT.clone();
         }
         return cNumberFormat;
     }
