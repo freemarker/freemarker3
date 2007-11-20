@@ -252,6 +252,17 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("date", new SimpleDate(cal.getTime(), TemplateDateModel.DATETIME));
             dataModel.put("unknownDate", new SimpleDate(cal.getTime(), TemplateDateModel.UNKNOWN));
         }
+    
+        else if (testName.equals("number-format")) {
+            dataModel.put("int", new SimpleNumber(Integer.valueOf(1)));
+            dataModel.put("double", new SimpleNumber(Double.valueOf(1.0)));
+            dataModel.put("double2", new SimpleNumber(Double.valueOf(1 + 1e-15)));
+            dataModel.put("double3", new SimpleNumber(Double.valueOf(1e-16)));
+            dataModel.put("double4", new SimpleNumber(Double.valueOf(-1e-16)));
+            dataModel.put("bigDecimal", new SimpleNumber(java.math.BigDecimal.valueOf(1)));
+            dataModel.put("bigDecimal2", new SimpleNumber(java.math.BigDecimal.valueOf(1, 16)));
+        }
+
         else if (testName.equals("default-xmlns")) {
             InputSource is = new InputSource(getClass().getResourceAsStream("test-defaultxmlns1.xml"));
             NodeModel nm = NodeModel.parse(is);

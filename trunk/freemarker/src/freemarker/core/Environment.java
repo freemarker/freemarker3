@@ -121,6 +121,8 @@ public final class Environment extends Configurable implements Scope {
     private DateFormat timeFormat, dateFormat, dateTimeFormat;
 
     private Map<String, DateFormat>[] dateFormats;
+    
+    private NumberFormat cNumberFormat;
 
     private Collator collator;
 
@@ -1049,6 +1051,27 @@ public final class Environment extends Configurable implements Scope {
             return DateFormat.FULL;
         }
         return -1;
+    }
+    
+    /**
+     * Returns the {@link NumberFormat} used for the <tt>c</tt> built-in.
+     * This is always US English <code>"0.################"</code>, without
+     * grouping and without superfluous decimal separator.
+     */
+    public NumberFormat getCNumberFormat() {
+        // It can't be cached in a static field, because DecimalFormat-s aren't
+        // thread-safe.
+        if (cNumberFormat == null) {
+            DecimalFormat nf = new DecimalFormat(
+                    "0.################",
+                    new DecimalFormatSymbols(Locale.US));
+            nf.setGroupingUsed(false);
+            nf.setDecimalSeparatorAlwaysShown(false);
+            
+            // Only when everything were successfull:
+            cNumberFormat = nf;
+        }
+        return cNumberFormat;
     }
 
     public TemplateTransformModel getTransform(Expression exp)
