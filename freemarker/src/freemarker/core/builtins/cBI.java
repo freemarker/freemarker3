@@ -62,16 +62,22 @@ import freemarker.template.*;
  */
 
 public class cBI extends BuiltIn {
-	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		try {
-			Number num = ((TemplateNumberModel) target).getAsNumber();
-			return new SimpleScalar(num.toString());
-		} catch (ClassCastException cce) {
-			throw new TemplateException("Expecting number on left of ?c built-in", env);
-			
-		} catch (NullPointerException npe) {
-			throw new InvalidReferenceException("Undefined number", env);
-		}
-	}
+    
+    public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+        Number num;
+        try {
+            num = ((TemplateNumberModel) target).getAsNumber();
+        } catch (ClassCastException e) {
+            throw new TemplateException(
+                    "Expecting a number on the left side of ?c", env);
+        } catch (NullPointerException e) {
+            throw new InvalidReferenceException("Undefined number", env);
+        }
+        if (num instanceof Integer) {
+            // We accelerate this fairly common case
+            return new SimpleScalar(num.toString());
+        } else {
+            return new SimpleScalar(env.getCNumberFormat().format(num));
+        }
+    }
 }
