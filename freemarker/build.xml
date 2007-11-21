@@ -21,12 +21,11 @@
       <echo>Fetching libraries from server.</echo>
       <get src="${libs.location}/README.txt" dest="lib/README.txt" usetimestamp="true"/>
       <get src="${libs.location}/ant.jar" dest="lib/ant.jar" usetimestamp="true"/>
-      <get src="${libs.location}/backport-util-concurrent.jar" dest="lib/backport-util-concurrent.jar" usetimestamp="true"/>
+      <get src="${libs.location}/backport-util-concurrent-3.1.jar" dest="lib/backport-util-concurrent-3.1.jar" usetimestamp="true"/>
       <get src="${libs.location}/cavalry.jar" dest="lib/cavalry.jar" usetimestamp="true"/>
       <!-- get src="${libs.location}/dom4j.jar" dest="lib/dom4j.jar" usetimestamp="true"/ -->
       <get src="${libs.location}/emma.jar" dest="lib/emma.jar" usetimestamp="true"/>
       <get src="${libs.location}/emma_ant.jar" dest="lib/emma_ant.jar" usetimestamp="true"/>
-      <get src="${libs.location}/jarjar-0.7.jar" dest="lib/jarjar-0.7.jar" usetimestamp="true"/>
       <get src="${libs.location}/javacc.jar" dest="lib/javacc.jar" usetimestamp="true"/>
       <get src="${libs.location}/jaxen.jar" dest="lib/jaxen.jar" usetimestamp="true"/>
       <!-- get src="${libs.location}/jdom.jar" dest="lib/jdom.jar" usetimestamp="true"/ -->
@@ -38,8 +37,8 @@
       <get src="${libs.location}/junit.jar" dest="lib/junit.jar" usetimestamp="true"/>
       <get src="${libs.location}/jython.jar" dest="lib/jython.jar" usetimestamp="true"/>
       <get src="${libs.location}/log4j.jar" dest="lib/log4j.jar" usetimestamp="true"/>
-      <get src="${libs.location}/retrotranslator.jar" dest="lib/retrotranslator.jar" usetimestamp="true"/>
-      <get src="${libs.location}/retrotranslator-runtime-1.0.5.jar" dest="lib/retrotranslator-runtime-1.0.5.jar" usetimestamp="true"/>
+      <get src="${libs.location}/retrotranslator-transformer-1.2.3.jar" dest="lib/retrotranslator-transformer-1.2.3.jar" usetimestamp="true"/>
+      <get src="${libs.location}/retrotranslator-runtime-1.2.3.jar" dest="lib/retrotranslator-runtime-1.2.3.jar" usetimestamp="true"/>
       <get src="${libs.location}/saxpath.jar" dest="lib/saxpath.jar" usetimestamp="true"/>
       <get src="${libs.location}/script.jar" dest="lib/script.jar" usetimestamp="true"/>
       <get src="${libs.location}/servlet.jar" dest="lib/servlet.jar" usetimestamp="true"/>
@@ -79,9 +78,9 @@
             <available file="lib/junit.jar"/>
             <available file="lib/jython.jar"/>
             <available file="lib/log4j.jar"/>
-            <available file="lib/retrotranslator.jar"/>
-            <available file="lib/retrotranslator-runtime-1.0.5.jar"/>
-            <available file="lib/backport-util-concurrent.jar"/>
+            <available file="lib/retrotranslator-transformer-1.2.3.jar"/>
+            <available file="lib/retrotranslator-runtime-1.2.3.jar"/>
+            <available file="lib/backport-util-concurrent-3.1.jar"/>
             <available file="lib/saxpath.jar"/>
             <available file="lib/script.jar"/>
             <available file="lib/servlet.jar"/>
@@ -253,20 +252,16 @@
        <taskdef name="retrotranslator" classpathref="build.class.path"
            classname="net.sf.retrotranslator.transformer.RetrotranslatorTask" />
        <copy file="${classes.dir}/freemarker/core/SecureRendererImpl.clazz" tofile="retrobuild/freemarker/core/SecureRendererImpl.class"/>
-       <retrotranslator srcdir="build/classes" destdir="retrobuild"/>
+       <retrotranslator srcdir="build/classes" destdir="retrobuild" embed="freemarker.retrosupport"/>
        <copy file="retrobuild/freemarker/core/SecureRendererImpl.class" tofile="retrobuild/freemarker/core/SecureRendererImpl.clazz"/>
    </target>
    
    <target name="retrojar" depends="retrotrans" description="Build a .jar file that can be run under 1.4">
-       <!-- TODO -->
-       <unzip src="lib/backport-util-concurrent.jar" dest="retrobuild"/>
-       <unzip src="lib/retrotranslator-runtime-1.0.5.jar" dest="retrobuild"/>
         <copy toDir="retrobuild">
           <fileset dir="src"
             excludes="**/CVS/**,**/*.bak,**/*.java,**/*.jj,**/package.html,freemarker/testcase/**"/>
         </copy>
-    	<taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" classpath="lib/jarjar-0.7.jar"/>
-        <jarjar basedir="retrobuild" jarfile="freemarker-14compat.jar" excludes="eclipse/**,freemarker/testcase/**,TEST*,freemarker/core/SecureRendererImpl.class">
+        <jar basedir="retrobuild" jarfile="freemarker-14compat.jar" excludes="eclipse/**,freemarker/testcase/**,TEST*,freemarker/core/SecureRendererImpl.class">
             <manifest>
                 <attribute name="Main-Class" value="freemarker.core.CommandLine" />
                 <attribute name="Extension-name" value="FreeMarker" />
@@ -277,9 +272,7 @@
                 <attribute name="Implementation-Version" value="${versionForMf}" />
                 <attribute name="Implementation-Vendor" value="freemarker.org" />
             </manifest>
-            <rule pattern="net.sf.retrotranslator.runtime.**" result="freemarker.retrosupport.@1"/>
-            <rule pattern="edu.emory.mathcs.**" result="freemarker.retrosupport.@1"/>
-       </jarjar>
+       </jar>
    </target>
    
     <target depends="" name="javadoc" description="Build the JavaDoc documentation" >
