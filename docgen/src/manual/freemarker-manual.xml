@@ -12692,25 +12692,28 @@ rif: foo XYr baar</programlisting>
             <secondary>number</secondary>
           </indexterm>
 
-          <para>This built-in converts a number to string for ''computer
-          audience'' as opposed to human audience. That is, it formats with
-          the rules that programming languages used to use (concretely the
-          Java programming language), which is independent of all locale and
-          number format settings. No grouping separators, and always uses dot
-          as decimal separator. This is useful because otherwise numbers are
-          converted to strings (like when they are pritend with an
-          interpolation as <literal>${x}</literal>) with the locale (language,
-          country) specific number formatting, which is for human readers
-          (like 300000 is printed as 3,000,000). This way when the number is
-          printed not for human audience (e.g., for a database record ID used
-          as the part of an URL or as invisible field value in a HTML form, or
-          for printing CSS/JavaScript numerical literals) this built-in must
-          be used to print the number (i.e., use <literal>${x?c}</literal>
-          instead of <literal>${x}</literal>), or else the output will be
-          broken depending on the current number formatting settings and
-          locale (like the decimal point is not dot, but comma in many
-          countries) and the value of numbers (like big numbers are possibly
-          ''damaged'' by grouping separators).</para>
+          <para>This built-in converts a number to string for "computer
+          audience" as opposed to human audience. That is, it formats with the
+          rules that programming languages used to use, which is independent
+          of all the locale and number format settings of FreeMarker. It
+          always uses dot as decimal separator, and it never uses grouping
+          separators (like 3,000,000), nor exponential form (like 5E20), nor
+          superfluous leading or trailing 0-s (like 03 or 1.0), nor + sign
+          (like +1). It will print at most 16 digits after the decimal dot,
+          and thus numbers whose absolute value is less than 1E-16 will be
+          shown as 0. This built-in is crucial because be default (like with
+          <literal>${x}</literal>) numbers are converted to strings with the
+          locale (language, country) specific number formatting, which is for
+          human readers (like 300000 is possibly printed as 3,000,000). When
+          the number is printed not for human audience (e.g., for a database
+          record ID used as the part of an URL, or as invisible field value in
+          a HTML form, or for CSS/JavaScript numerical literals) this built-in
+          must be used to print the number (i.e., use
+          <literal>${x?c}</literal> instead of <literal>${x}</literal>), or
+          else the output will be possibly broken depending on the current
+          number formatting settings and locale (like the decimal point is not
+          dot, but comma in many countries) and the value of the number (like
+          big numbers are possibly "damaged" by grouping separators).</para>
         </simplesect>
 
         <simplesect id="ref_builtin_string_for_number">
