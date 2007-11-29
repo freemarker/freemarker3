@@ -56,9 +56,9 @@
 [/#macro]
 
 [#macro answer]
-<tr class="answer">
-   <td align="left" valign="top"><b></b></td>
-   <td align="left" valign="top">[#recurse ]</td></tr>
+<div class="answer">
+  [#recurse ]
+</div>
 [/#macro]
 
 [#macro emphasis]
@@ -399,10 +399,7 @@
 [#set compactPara = prevCompactPara] 
 
 [#set qaIndex = 1]
-<table border="0">
-<col align="left" width="1%">
-<tbody>[#recurse ]</tbody>
-</table>
+[#recurse]
   
 </div>
 [/#macro]
@@ -410,14 +407,10 @@
 [#macro question]
 [#var prevCompactPara=compactPara!]
 [#set compactPara = true]
-<tr class="question">
-  <td align="left" valign="bottom" colspan="2">
-    [@Anchor .node?parent/]<a name="faq_question_${qaIndex}"></a><br>
-    &nbsp;<br>
-    ${qaIndex}.&nbsp;&nbsp;[#recurse ]<br>
-    &nbsp;
-  </td>
-</tr>
+<div class="question">
+  [@Anchor .node?parent/]<a name="faq_question_${qaIndex}"></a>
+  ${qaIndex}.&nbsp;&nbsp;[#recurse]
+</div>
 [#set qaIndex = qaIndex+1]
 [#set compactPara = prevCompactPara] 
 [/#macro] 

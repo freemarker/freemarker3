@@ -3339,6 +3339,16 @@ No mouse.</programlisting>
 (Jerry)
 ()</programlisting>
 
+            <warning>
+              <para>Due to the precedence rules, <literal>[@something a=x! b=y
+              /]</literal> will be interpreted as <literal>[@something
+              a=x!(b=y) /]</literal>, that is, the <literal>b=y</literal> will
+              be interpreted as a comparison that gives the default value for
+              <literal>x</literal>, rather than the specification of the
+              <literal>b</literal> parameter. To prevent this, write:
+              <literal>[@something a=(x!) b=y /]</literal></para>
+            </warning>
+
             <para>You can use this operator in two ways with non-top-level
             variables:</para>
 
@@ -18420,6 +18430,31 @@ or
             regardless of the locale (language) of the page. For that use the
             <link linkend="ref_builtin_c"><literal>c</literal> built-in</link>
             (like <literal>${x?c}</literal>).</para>
+          </answer>
+        </qandaentry>
+
+        <qandaentry id="faq_number_boolean_formatting">
+          <question>
+            <para>Why does FreeMarker give an error when I try to print a
+            boolean like <markup>${aBoolean}</markup>, and how to fix
+            it?</para>
+          </question>
+
+          <answer>
+            <para>Unlike numbers, booleans has no commonly accepted format,
+            not even a common format within the same page. Like when you show
+            on a HTML page if a product is washable, you will hardly want to
+            show for the visitor "Washable: true", but rather "Washable: yes".
+            So we force the template author (by <literal>${washable}</literal>
+            causing error) to find out with his human knowledge how the
+            boolean value should be shown at the given place. The common way
+            of formatting a boolean is like <literal>${washable?string("yes",
+            "no")}</literal>, <literal>${caching?string("Enabled",
+            "Disabled")}</literal>, <literal>${heating?string("on",
+            "off")}</literal>, etc. However, for generating source code
+            <literal>${washable?string("true", "false")}</literal> would be
+            very often used, so <literal>${washable?string}</literal> (i.e.,
+            omitting the parameter list) is equivalent with that.</para>
           </answer>
         </qandaentry>
 
