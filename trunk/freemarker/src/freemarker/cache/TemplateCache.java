@@ -88,10 +88,6 @@ public class TemplateCache
     private static final Logger logger = Logger.getLogger("freemarker.cache");
 
     private final TemplateLoader mainLoader;
-        /** DD: [noFallback]
-        , 
-        fallbackTemplateLoader = new ClassTemplateLoader(TemplateCache.class, "/");
-        */
     /** Here we keep our cached templates */
     private final CacheStorage storage;
     /** The default refresh delay in milliseconds. */
