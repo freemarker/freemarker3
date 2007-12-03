@@ -255,11 +255,11 @@ public class TemplateCache
                 storage.put(tk, cachedTemplate = new CachedTemplate());
             }
         }
-        long now = System.currentTimeMillis();
         long lastModified = -1L;
         Object newlyFoundSource = null;
         try {
             synchronized(cachedTemplate) {
+                long now = System.currentTimeMillis();
                 if (cachedTemplate.source != null) {
                     // If we're within the refresh delay, return the cached copy
                     if (now - cachedTemplate.lastChecked < getDelay()) {
