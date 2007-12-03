@@ -633,7 +633,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
                     xps = (XPathSupport) xpathSupportClass.newInstance();
                     xpathSupportMap.put(doc, new WeakReference(xps));
                 } catch (Exception e) {
-                    logger.error("Error instantiating xpathSupport class");
+                    logger.error("Error instantiating xpathSupport class", e);
                 }                
             }
         }
