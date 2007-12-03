@@ -239,11 +239,6 @@ public class TemplateCache
         if (mainLoader != null) {
             result = getTemplate(mainLoader, name, locale, encoding, parse);
         }
-        /** DD: [noFallback]
-        if (result == null && name.toLowerCase().endsWith(".ftl")) {
-            result = getTemplate(fallbackTemplateLoader, name, locale, encoding, parse);
-        }
-        */
         return result;
     }    
     
@@ -253,13 +248,19 @@ public class TemplateCache
         boolean debug = logger.isDebugEnabled();
         String debugName = debug ? name + "[" + locale + "," + encoding + (parse ? ",parsed] " : ",unparsed] ") : null;
         TemplateKey tk = new TemplateKey(name, locale, encoding, parse);
+        CachedTemplate cachedTemplate;
         synchronized (storage) {
-            CachedTemplate cachedTemplate = (CachedTemplate)storage.get(tk);
-            long now = System.currentTimeMillis();
-            long lastModified = -1L;
-            Object newlyFoundSource = null;
-            try {
-                if (cachedTemplate != null) {
+            cachedTemplate = (CachedTemplate)storage.get(tk);
+            if(cachedTemplate == null) {
+                storage.put(tk, cachedTemplate = new CachedTemplate());
+            }
+        }
+        long now = System.currentTimeMillis();
+        long lastModified = -1L;
+        Object newlyFoundSource = null;
+        try {
+            synchronized(cachedTemplate) {
+                if (cachedTemplate.source != null) {
                     // If we're within the refresh delay, return the cached copy
                     if (now - cachedTemplate.lastChecked < getDelay()) {
                         if(debug) {
@@ -277,8 +278,8 @@ public class TemplateCache
                     if (newlyFoundSource == null) {
                         if(debug) {
                             logger.debug(debugName + "no source found (removing from cache if it was cached).");
-                        } 
-                        storage.remove(tk);
+                        }
+                        removeCachedTemplate(tk);
                         return null;
                     }
 
@@ -320,18 +321,14 @@ public class TemplateCache
                             (tk.parse ? ",parsed] " : ",unparsed] ") + "]");
                     }
                     
-                    // Construct a new CachedTemplate entry. Note we set the
-                    // cachedTemplate.lastModified to Long.MIN_VALUE. This is
-                    // a flag that signs it has to be explicitly queried later on.
                     newlyFoundSource = findTemplateSource(name, locale);
                     if (newlyFoundSource == null) {
+                        removeCachedTemplate(tk);
                         return null;
                     }
-                    cachedTemplate = new CachedTemplate();
                     cachedTemplate.source = newlyFoundSource;
                     cachedTemplate.lastChecked = now;
                     cachedTemplate.lastModified = lastModified = Long.MIN_VALUE;
-                    storage.put(tk, cachedTemplate);
                 }
                 if(debug) {
                     logger.debug("Compiling FreeMarker template " + 
@@ -349,19 +346,25 @@ public class TemplateCache
                     return cachedTemplate.template;
                 }
                 catch(RuntimeException e) {
-                    storage.remove(tk);
+                    removeCachedTemplate(tk);
                     throw e;
                 }
                 catch(IOException e) {
-                    storage.remove(tk);
+                    removeCachedTemplate(tk);
                     throw e;
                 }
             }
-            finally {
-                if(newlyFoundSource != null) {
-                    loader.closeTemplateSource(newlyFoundSource);
-                }
+        }
+        finally {
+            if(newlyFoundSource != null) {
+                loader.closeTemplateSource(newlyFoundSource);
             }
+        }
+    }
+
+    private void removeCachedTemplate(TemplateKey tk) {
+        synchronized(storage) {
+            storage.remove(tk);
         }
     }
 
