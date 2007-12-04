@@ -3315,10 +3315,23 @@ No mouse.</programlisting>
             doesn't have to be a string. For example you can write
             <literal>hits!0</literal> or <literal>colors!["red", "green",
             "blue"]</literal>. There is no restriction regarding the
-            complexity of the expression that specifies the default value, but
-            to prevent ambiguities sometimes you will have to put the default
-            value expression inside parentheses, for example:
-            <literal>weight!(item.weight * itemCount + 10)</literal></para>
+            complexity of the expression that specifies the default value, for
+            example you can write: <literal>weight ! item.weight * itemCount +
+            10</literal>. (Note that the spaces around the
+            <literal>!</literal> are used only for visual clarity; they are
+            optional.)</para>
+
+            <warning>
+              <para>The precedence of <literal>!</literal> (when it's used as
+              default value operator) is very low. This means that, for
+              example, <literal>${x!1 + y}</literal> means <literal>${x!(1 +
+              y)}</literal>, not <literal>${(x!1) + y}</literal>. So, like in
+              this last example, you have to use parentheses if something
+              follows the default expression that shouldn't belong there. Or
+              if you want it to belong there, then you should use spaces
+              around the <literal>!</literal> to make the intent visually more
+              clear: <literal>${weight ! 1 + y}</literal>.</para>
+            </warning>
 
             <para>If the default value is omitted, then it will be empty
             string and empty sequence and empty hash at the same time. (This
@@ -3340,8 +3353,8 @@ No mouse.</programlisting>
 ()</programlisting>
 
             <warning>
-              <para>Due to the precedence rules, <literal>[@something a=x! b=y
-              /]</literal> will be interpreted as <literal>[@something
+              <para>Due to syntactical ambiguities <literal>[@something a=x!
+              b=y /]</literal> will be interpreted as <literal>[@something
               a=x!(b=y) /]</literal>, that is, the <literal>b=y</literal> will
               be interpreted as a comparison that gives the default value for
               <literal>x</literal>, rather than the specification of the
@@ -3562,14 +3575,13 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
 
                   <entry><literal>[<replaceable>subvarName</replaceable>]
                   [<replaceable>subStringRange</replaceable>] . ?
-                  (<replaceable>methodParams</replaceable>)</literal>
-                  <literal><replaceable>expr</replaceable>!<replaceable>default</replaceable></literal>
-                  <literal><replaceable>expr</replaceable>!</literal>
-                  <literal><replaceable>expr</replaceable>??</literal></entry>
+                  (<replaceable>methodParams</replaceable>)
+                  <replaceable>expr</replaceable>!
+                  <replaceable>expr</replaceable>??</literal></entry>
                 </row>
 
                 <row>
-                  <entry>unary operators</entry>
+                  <entry> unary operators</entry>
 
                   <entry><literal>+<replaceable>expr</replaceable>
                   -<replaceable>expr</replaceable> !expr</literal></entry>
@@ -3618,6 +3630,12 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
                   <entry>numerical range</entry>
 
                   <entry><literal>..</literal></entry>
+                </row>
+
+                <row>
+                  <entry>default value operator</entry>
+
+                  <entry><literal><replaceable>expr</replaceable>!<replaceable>default</replaceable></literal></entry>
                 </row>
               </tbody>
             </tgroup>
