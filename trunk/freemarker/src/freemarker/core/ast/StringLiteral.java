@@ -85,7 +85,13 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
             token_source.setOnlyTextOutput(true);
             FMParser parser = new FMParser(token_source);
             parser.setTemplate(getTemplate());
-            interpolatedOutput = parser.FreeMarkerText();
+            try {
+                interpolatedOutput = parser.FreeMarkerText();
+            }
+            catch(ParseException e) {
+                e.setTemplateName(getTemplate().getName());
+                throw e;
+            }
             this.constantValue = null;
         }
     }
