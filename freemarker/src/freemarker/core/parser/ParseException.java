@@ -167,6 +167,12 @@ public class ParseException extends java.io.IOException implements FMParserConst
    */
   public String[] tokenImage;
 
+  private String templateName = "unknown template";
+  
+  public void setTemplateName(String templateName) {
+    this.templateName = templateName;
+  }
+  
   /**
    * This method has the standard behavior when this object has been
    * created using the standard constructors.  Otherwise, it uses
@@ -186,10 +192,10 @@ public class ParseException extends java.io.IOException implements FMParserConst
 			buf.append(" : ");
 			buf.append(problem.getDescription());
 		}
-		return buf.toString();
+		return buf.append(" in ").append(templateName).toString();
 	}
     if (!specialConstructor) {
-      return super.getMessage();
+      return super.getMessage() + " in" + templateName;
     }
     String retval;
 /*    
@@ -224,7 +230,7 @@ public class ParseException extends java.io.IOException implements FMParserConst
       tok = tok.next;
     }
     retval += "\" at line " + currentToken.next.beginLine + ", column " + currentToken.next.beginColumn;
-    retval += "." + eol;
+    retval += " in " + templateName + "." + eol;
     if (expectedTokenSequences.length == 1) {
       retval += "Was expecting:" + eol + "    ";
     } else {

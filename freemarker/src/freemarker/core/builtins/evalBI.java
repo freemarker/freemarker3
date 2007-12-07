@@ -54,6 +54,8 @@ package freemarker.core.builtins;
 
 import java.io.StringReader;
 
+import sun.rmi.runtime.GetThreadPoolAction;
+
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Expression;
@@ -95,6 +97,7 @@ public class evalBI extends BuiltIn {
         try {
             exp = parser.Exp();
         } catch (ParseException pe) {
+            pe.setTemplateName(callingExpression.getTemplate().getName());
             throw new TemplateException(pe, env);
         }
         return exp.getAsTemplateModel(env);

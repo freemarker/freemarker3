@@ -170,22 +170,28 @@ public class Template extends TemplateCore {
         }
         LineTableBuilder ltb = new LineTableBuilder(reader);
         try {
-            Boolean B = null;
-            boolean syntaxSet = getConfiguration().isTagSyntaxSet();
-            if (syntaxSet) {
-                B = getConfiguration().getTagSyntax() ? Boolean.TRUE : Boolean.FALSE;
+            try {
+                Boolean B = null;
+                boolean syntaxSet = getConfiguration().isTagSyntaxSet();
+                if (syntaxSet) {
+                    B = getConfiguration().getTagSyntax() ? Boolean.TRUE : Boolean.FALSE;
+                }
+                
+                this.stripWhitespace = getConfiguration().getWhitespaceStripping();
+                
+            	
+                FMParser parser = new FMParser(this, ltb, B);
+                setRootElement(parser.Root());
+                PostParseVisitor ppv = new PostParseVisitor(this);
+                ppv.visit(this);
             }
-            
-            this.stripWhitespace = getConfiguration().getWhitespaceStripping();
-            
-        	
-            FMParser parser = new FMParser(this, ltb, B);
-            setRootElement(parser.Root());
-            PostParseVisitor ppv = new PostParseVisitor(this);
-            ppv.visit(this);
+            catch (TokenMgrError exc) {
+                throw new ParseException("Token manager error: " + exc, 0, 0);
+            }
         }
-        catch (TokenMgrError exc) {
-            throw new ParseException("Token manager error: " + exc, 0, 0);
+        catch(ParseException e) {
+            e.setTemplateName(name);
+            throw e;
         }
         finally {
             ltb.close();
