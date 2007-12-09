@@ -932,7 +932,7 @@ public class BeansWrapper implements ObjectWrapper
             {
                 MethodMap<Constructor> methodMap = (MethodMap<Constructor>)ctors; 
                 MemberAndArguments<Constructor> maa = 
-                    methodMap.getMemberAndArguments(arguments, this);
+                    methodMap.getMemberAndArguments(arguments);
                 objargs = maa.getArgs();
                 ctor = maa.getMember();
             }
@@ -1062,7 +1062,7 @@ public class BeansWrapper implements ObjectWrapper
             }
             else if(ctors.length > 1)
             {
-                MethodMap<Constructor> ctorMap = new MethodMap<Constructor>("<init>");
+                MethodMap<Constructor> ctorMap = new MethodMap<Constructor>("<init>", this);
                 for (int i = 0; i < ctors.length; i++)
                 {
                     ctorMap.addMember(ctors[i]);
@@ -1197,7 +1197,7 @@ public class BeansWrapper implements ObjectWrapper
                         if(previous instanceof Method)
                         {
                             // Overloaded method - replace method with a method map
-                            MethodMap<Method> methodMap = new MethodMap<Method>(name);
+                            MethodMap<Method> methodMap = new MethodMap<Method>(name, this);
                             methodMap.addMember((Method)previous);
                             methodMap.addMember(publicMethod);
                             classMap.put(name, methodMap);

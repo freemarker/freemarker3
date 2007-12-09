@@ -199,7 +199,7 @@ final class StaticModel implements TemplateHashModelEx
                     Object obj = map.get(name);
                     if (obj instanceof Method)
                     {
-                        MethodMap<Method> methodMap = new MethodMap<Method>(name);
+                        MethodMap<Method> methodMap = new MethodMap<Method>(name, wrapper);
                         methodMap.addMember((Method) obj);
                         methodMap.addMember(method);
                         map.put(name, methodMap);
@@ -232,7 +232,7 @@ final class StaticModel implements TemplateHashModelEx
                 else if (value instanceof MethodMap)
                 {
                     entry.setValue(new OverloadedMethodModel(null, 
-                            (MethodMap)value, wrapper));
+                            (MethodMap)value));
                 }
             }
         }

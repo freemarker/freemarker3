@@ -278,7 +278,7 @@ implements
         else if(desc instanceof MethodMap)
         {
             retval = member = 
-                new OverloadedMethodModel(object, (MethodMap<Method>)desc, wrapper);
+                new OverloadedMethodModel(object, (MethodMap<Method>)desc);
         }
         
         // If new cacheable member was created, cache it
