@@ -89,10 +89,16 @@ class MethodMap<T extends Member>
     private Map<T, Class[]> cachedArgumentTypes; 
     private UnwrapTypes[] unwrapTypes;
     private final List<T> methods = new LinkedList<T>();
+    private final BeansWrapper wrapper;
     
-    MethodMap(String name)
+    MethodMap(String name, BeansWrapper wrapper)
     {
         this.name = name;
+        this.wrapper = wrapper;
+    }
+    
+    BeansWrapper getWrapper() {
+        return wrapper;
     }
     
     void addMember(T member)
@@ -198,8 +204,8 @@ class MethodMap<T extends Member>
         }
     }
     
-    MemberAndArguments<T> getMemberAndArguments(List<TemplateModel> arguments, 
-            BeansWrapper wrapper) throws TemplateModelException {
+    MemberAndArguments<T> getMemberAndArguments(List<TemplateModel> arguments) 
+    throws TemplateModelException {
         Object[] args = wrapper.unwrapArguments(arguments, getUnwrapTypes(arguments));
         T member = getMostSpecific(args);
         if(args != null) {

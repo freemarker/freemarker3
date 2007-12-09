@@ -80,13 +80,11 @@ implements
 {
     private final Object object;
     private final MethodMap<Method> methodMap;
-    private final BeansWrapper wrapper;
     
-    public OverloadedMethodModel(Object object, MethodMap<Method> methodMap, BeansWrapper wrapper)
+    public OverloadedMethodModel(Object object, MethodMap<Method> methodMap)
     {
         this.object = object;
         this.methodMap = methodMap;
-        this.wrapper = wrapper;
     }
 
     /**
@@ -100,10 +98,10 @@ implements
     throws
         TemplateModelException
     {
-        MemberAndArguments<Method> maa = methodMap.getMemberAndArguments(arguments, wrapper);
+        MemberAndArguments<Method> maa = methodMap.getMemberAndArguments(arguments);
         Method method = maa.getMember();
         try {
-            return wrapper.invokeMethod(object, method, maa.getArgs());
+            return methodMap.getWrapper().invokeMethod(object, method, maa.getArgs());
         }
         catch(Exception e)
         {
