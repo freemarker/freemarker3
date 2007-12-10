@@ -128,7 +128,7 @@ public final class SimpleMethodModel
             Object[] args = wrapper.unwrapArguments(arguments, argTypes);
             if(args != null) {
                 BeansWrapper.coerceBigDecimals(argTypes, args);
-                if(varArg) {
+                if(varArg && shouldPackVarArgs(args)) {
                     args = BeansWrapper.packVarArgs(args, argTypes);
                 }
             }
@@ -159,6 +159,18 @@ public final class SimpleMethodModel
                         " threw an exception when invoked on " + object, e);
             }
         }
+    }
+    
+    boolean shouldPackVarArgs(Object[] args) {
+        int l = args.length;
+        if(l == argTypes.length) {
+            assert l > 0; // varArg methods must have at least one declared arg
+            Object lastArg = args[l - 1];
+            if(lastArg == null || argTypes[l - 1].getComponentType().isInstance(lastArg)) {
+                return false;
+            }
+        }
+        return true;
     }
     
     public Parameters getAnnotatedParameters() {
