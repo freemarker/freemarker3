@@ -252,7 +252,6 @@ public final class Environment extends Configurable implements Scope {
         if(currentCodeSource == null || !currentCodeSource.equals(
                 newCodeSource))
         {
-            System.err.println("currentCodeSource=" + currentCodeSource + " newCodeSource=" + newCodeSource);
             // Code sources differ - incorporate the new code source's
             // protection domain onto the Java call stack
             CodeSource oldCodeSource = currentCodeSource;
