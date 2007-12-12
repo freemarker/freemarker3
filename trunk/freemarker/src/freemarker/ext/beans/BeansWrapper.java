@@ -115,6 +115,7 @@ import freemarker.template.utility.UndeclaredThrowableException;
  */
 public class BeansWrapper implements ObjectWrapper
 {
+    public static final Object CAN_NOT_UNWRAP = new Object();
     private static final Class<java.math.BigInteger> BIGINTEGER_CLASS = java.math.BigInteger.class;
     private static final Class<Boolean> BOOLEAN_CLASS = Boolean.class;
     private static final Class<Character> CHARACTER_CLASS = Character.class;
@@ -514,7 +515,7 @@ public class BeansWrapper implements ObjectWrapper
         }
 
         if (model == TemplateModel.JAVA_NULL) {
-        	return null;
+            return null;
         }
         
         boolean isBoolean = Boolean.TYPE == requiredType;
@@ -567,7 +568,7 @@ public class BeansWrapper implements ObjectWrapper
                 return ((TemplateScalarModel)model).getAsString();
             }
             // String is final, so no other conversion will work
-            throw canNotConvert(model, requiredType);
+            return CAN_NOT_UNWRAP;
         }
 
         // Primitive numeric types & Number.class and its subclasses
@@ -588,7 +589,7 @@ public class BeansWrapper implements ObjectWrapper
                 ? Boolean.TRUE : Boolean.FALSE;
             }
             // Boolean is final, no other conversion will work
-            throw canNotConvert(model, requiredType);
+            return CAN_NOT_UNWRAP;
         }
 
         if(MAP_CLASS == requiredType) {
@@ -648,7 +649,7 @@ public class BeansWrapper implements ObjectWrapper
                 return array;
             }
             // array classes are final, no other conversion will work
-            throw canNotConvert(model, requiredType);
+            return CAN_NOT_UNWRAP;
         }
         
         // Allow one-char strings to be coerced to characters
@@ -660,7 +661,7 @@ public class BeansWrapper implements ObjectWrapper
                 }
             }
             // Character is final, no other conversion will work
-            throw canNotConvert(model, requiredType);
+            return CAN_NOT_UNWRAP;
         }
 
         if(DATE_CLASS.isAssignableFrom(requiredType)) {
@@ -716,7 +717,7 @@ public class BeansWrapper implements ObjectWrapper
             return model;
         }
         
-        throw canNotConvert(model, requiredType);
+        return CAN_NOT_UNWRAP;
     }
     
     private static Number convertUnwrappedNumber(Class hint, Number number)
@@ -772,65 +773,6 @@ public class BeansWrapper implements ObjectWrapper
         return null;
     }
     
-    private static TemplateModelException canNotConvert(TemplateModel model, 
-            Class hint) {
-        if(model == null) {
-            return new TemplateModelException("Could not convert null to " + 
-                    hint.getName());
-        }
-        return new TemplateModelException("Could not convert an instance of " + 
-                model.getClass().getName() + " with value [" + model.toString()
-                + "] to " + hint.getName());
-    }
-    
-    /**
-     * Auxiliary method that unwraps arguments for a method or constructor call.
-     * @param arguments the argument list of template models
-     * @param types the preferred types of the arguments
-     * @param
-     * @return Object[] the unwrapped arguments. null if the passed list was
-     * null.
-     * @throws TemplateModelException if unwrapping any argument throws one
-     */
-    Object[] unwrapArguments(List<TemplateModel> arguments, Class[] types) 
-    throws TemplateModelException
-    {
-        if(arguments == null) {
-            return null;
-        }
-        int argsLen = arguments.size();
-        int typeLen = types.length;
-        Object[] args = new Object[argsLen];
-        int min = Math.min(argsLen, typeLen);
-        ListIterator<TemplateModel> it = arguments.listIterator();
-        for (int i = 0; i < min; i++) {
-            args[i] = unwrap(it.next(), types[i]);
-        }
-        for (int i = min; i < argsLen; i++) {
-            args[i] = unwrap(it.next(), types[min - 1]);
-        }
-        return args;
-    }
-
-    static Object[] packVarArgs(Object[] args, Class[] argTypes)
-    {
-        int argsLen = args.length;
-        int typeLen = argTypes.length;
-        int fixArgsLen = typeLen - 1;
-        Object varArray = Array.newInstance(argTypes[fixArgsLen], 
-                argsLen - fixArgsLen);
-        for (int i = fixArgsLen; i < argsLen; i++) {
-            Array.set(varArray, i - fixArgsLen, args[i]);
-        }
-        if(argsLen != typeLen) {
-            Object[] newArgs = new Object[typeLen];
-            System.arraycopy(args, 0, newArgs, 0, fixArgsLen);
-            args = newArgs;
-        }
-        args[fixArgsLen] = varArray;
-        return args;
-    }
-
     /**
      * Invokes the specified method, wrapping the return value. The specialty
      * of this method is that if the return value is null, and the return type
@@ -916,17 +858,11 @@ public class BeansWrapper implements ObjectWrapper
             }
             Constructor ctor = null;
             Object[] objargs;
-            if(ctors instanceof Constructor)
+            if(ctors instanceof SimpleMemberModel)
             {
-                ctor = (Constructor)ctors;
-                Class[] argTypes = getArgTypes(classInfo, ctor);
-                objargs = unwrapArguments(arguments, argTypes);
-                if(objargs != null) {
-                    coerceBigDecimals(argTypes, objargs);
-                    if(ctor.isVarArgs()) {
-                        objargs = packVarArgs(objargs, argTypes);
-                    }
-                }
+                SimpleMemberModel<Constructor> smm = (SimpleMemberModel<Constructor>)ctors;
+                ctor = smm.getMember();
+                objargs = smm.unwrapArguments(arguments, this);
             }
             else if(ctors instanceof MethodMap)
             {
@@ -1056,9 +992,7 @@ public class BeansWrapper implements ObjectWrapper
             if(ctors.length == 1)
             {
                 Constructor ctor = ctors[0];
-                map.put(CONSTRUCTORS, ctor);
-                getArgTypes(map).put(ctor, componentizeLastArg(
-                        ctor.getParameterTypes(), ctor.isVarArgs()));
+                map.put(CONSTRUCTORS, new SimpleMemberModel<Constructor>(ctor, ctor.getParameterTypes()));
             }
             else if(ctors.length > 1)
             {

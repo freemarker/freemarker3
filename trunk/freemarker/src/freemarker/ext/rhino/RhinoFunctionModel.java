@@ -35,9 +35,19 @@ implements TemplateMethodModelEx {
         Object[] args = arguments.toArray();
         BeansWrapper wrapper = getWrapper();
         for (int i = 0; i < args.length; i++) {
-            args[i] = wrapper.unwrap((TemplateModel)args[i], Scriptable.class);
+            args[i] = unwrap(args[i], wrapper);
         }
         return wrapper.wrap(((Function)getScriptable()).call(cx, 
                 ScriptableObject.getTopLevelScope(fnThis), fnThis, args));
+    }
+
+    private Object unwrap(Object arg, BeansWrapper wrapper)
+            throws TemplateModelException
+    {
+        Object obj = wrapper.unwrap((TemplateModel)arg, Scriptable.class);
+        if(obj == BeansWrapper.CAN_NOT_UNWRAP) {
+            throw new TemplateModelException("Can not convert argument to Rhino Scriptable");
+        }
+        return obj;
     }
 }

@@ -74,14 +74,12 @@ import freemarker.template.Parameters;
  * @author Attila Szegedi, szegedia at users dot sourceforge dot net
  * @version $Id: SimpleMethodModel.java,v 1.27 2005/06/11 12:12:04 szegedia Exp $
  */
-public final class SimpleMethodModel
+public final class SimpleMethodModel extends SimpleMemberModel<Method>
     implements
     TemplateMethodModelEx,
     TemplateSequenceModel
 {
     private final Object object;
-    private final Method method;
-    private final Class[] argTypes;
     private final BeansWrapper wrapper;
 
     /**
@@ -93,9 +91,8 @@ public final class SimpleMethodModel
     SimpleMethodModel(Object object, Method method, Class[] argTypes, 
             BeansWrapper wrapper)
     {
+        super(method, argTypes);
         this.object = object;
-        this.method = method;
-        this.argTypes = argTypes;
         this.wrapper = wrapper;
     }
 
@@ -108,31 +105,8 @@ public final class SimpleMethodModel
     {
         try
         {
-            if(arguments == null) {
-                arguments = Collections.EMPTY_LIST;
-            }
-            boolean varArg = method.isVarArgs(); 
-            int typeLen = argTypes.length;
-            if(varArg) {
-                if(typeLen - 1 > arguments.size()) {
-                    throw new TemplateModelException("Method " + method + 
-                            " takes at least " + (typeLen - 1) + 
-                            " arguments");
-                }
-            }
-            else if(typeLen != arguments.size()) {
-                throw new TemplateModelException("Method " + method + 
-                        " takes exactly " + typeLen + " arguments");
-            }
-           
-            Object[] args = wrapper.unwrapArguments(arguments, argTypes);
-            if(args != null) {
-                BeansWrapper.coerceBigDecimals(argTypes, args);
-                if(varArg && shouldPackVarArgs(args)) {
-                    args = BeansWrapper.packVarArgs(args, argTypes);
-                }
-            }
-            return wrapper.invokeMethod(object, method, args);
+            return wrapper.invokeMethod(object, getMember(), unwrapArguments(
+                    arguments, wrapper));
         }
         catch(Exception e)
         {
@@ -148,41 +122,23 @@ public final class SimpleMethodModel
                     break;
                 }
             }
-            if((method.getModifiers() & Modifier.STATIC) != 0)
+            if((getMember().getModifiers() & Modifier.STATIC) != 0)
             {
-                throw new TemplateModelException("Method " + method + 
+                throw new TemplateModelException("Method " + getMember() + 
                         " threw an exception", e);
             }
             else
             {
-                throw new TemplateModelException("Method " + method + 
+                throw new TemplateModelException("Method " + getMember() + 
                         " threw an exception when invoked on " + object, e);
             }
         }
     }
     
-    boolean shouldPackVarArgs(Object[] args) {
-        int l = args.length;
-        if(l == argTypes.length) {
-            assert l > 0; // varArg methods must have at least one declared arg
-            Object lastArg = args[l - 1];
-            if(lastArg == null || argTypes[l - 1].getComponentType().isInstance(lastArg)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    public Parameters getAnnotatedParameters() {
-        return method.getAnnotation(Parameters.class);
-        
-    }
-
-    public TemplateModel get(int index)
-        throws
-        TemplateModelException
+    public TemplateModel get(int index) throws TemplateModelException
     {
-        return (TemplateModel) exec(Collections.singletonList(new SimpleNumber(Integer.valueOf(index))));
+        return (TemplateModel) exec(Collections.singletonList(new SimpleNumber(
+                Integer.valueOf(index))));
     }
 
     public int size() throws TemplateModelException
@@ -191,10 +147,10 @@ public final class SimpleMethodModel
     }
     
     public Parameters getParametersAnnotation() {
-        return method.getAnnotation(Parameters.class);
+        return getMember().getAnnotation(Parameters.class);
     }
     
     public String toString() {
-        return method.toGenericString();
+        return getMember().toGenericString();
     }
 }
