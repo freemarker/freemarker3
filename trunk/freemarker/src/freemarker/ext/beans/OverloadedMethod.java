@@ -81,7 +81,6 @@ abstract class OverloadedMethod<T extends Member> {
         members.add(member);
 
         Class<?>[] argTypes = OverloadedMethodUtilities.getParameterTypes(member);
-        signatures.put(member, argTypes.clone());
         int l = argTypes.length;
         onAddSignature(member, argTypes);
         if(marshalTypes == null) {
@@ -113,7 +112,11 @@ abstract class OverloadedMethod<T extends Member> {
     }
     
     Class<?>[] getSignature(T member) {
-        return signatures.get(member);
+        Class<?>[] signature = signatures.get(member);
+        if(signature == null) {
+            signatures.put(member, signature = OverloadedMethodUtilities.getParameterTypes(member));
+        }
+        return signature;
     }
     
     Class<?>[][] getMarshalTypes() {
