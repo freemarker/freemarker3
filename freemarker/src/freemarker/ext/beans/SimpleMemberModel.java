@@ -126,14 +126,24 @@ class SimpleMemberModel<T extends Member>
         int min = Math.min(argsLen, typeLen);
         Iterator<TemplateModel> it = arguments.iterator();
         for (int i = 0; i < min; i++) {
-            args[i] = w.unwrap(it.next(), argTypes[i]);
+            args[i] = unwrapArgument(it.next(), argTypes[i], w);
         }
         for (int i = min; i < argsLen; i++) {
-            args[i] = w.unwrap(it.next(), argTypes[min - 1]);
+            args[i] = unwrapArgument(it.next(), argTypes[min - 1], w);
         }
         return args;
     }
 
+    private static Object unwrapArgument(TemplateModel model, Class type, BeansWrapper w) 
+    throws TemplateModelException {
+        Object val = w.unwrap(model, type);
+        if(val == BeansWrapper.CAN_NOT_UNWRAP) {
+            throw new TemplateModelException("Can not unwrap argument " +
+                    model + " to " + type.getName());
+        }
+        return val;
+    }
+    
     private boolean shouldPackVarArgs(Object[] args) {
         int l = args.length;
         if(l == argTypes.length) {
