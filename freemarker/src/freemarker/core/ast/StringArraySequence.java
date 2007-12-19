@@ -62,7 +62,7 @@ import freemarker.template.TemplateSequenceModel;
  * resource utilization. Warning: it does not copy the wrapped array, so do
  * not modify that after the model was made!
  *
- * @author Dániel Dékány
+ * @author Daniel Dekany
  * @version $Id: StringArraySequence.java,v 1.2 2004/01/06 17:06:42 szegedia Exp $
  */
 public class StringArraySequence implements TemplateSequenceModel {
