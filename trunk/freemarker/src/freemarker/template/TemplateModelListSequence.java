@@ -62,7 +62,7 @@ import freemarker.template.TemplateSequenceModel;
  * directly, with minimal resource usage. Warning! It does not copy the original
  * list.
  *
- * @author Dániel Dékány
+ * @author Daniel Dekany
  * @version $Id: TemplateModelListSequence.java,v 1.2 2004/01/06 17:06:43 szegedia Exp $
  */
 public class TemplateModelListSequence implements TemplateSequenceModel {

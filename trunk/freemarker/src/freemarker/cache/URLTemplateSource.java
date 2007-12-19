@@ -66,7 +66,7 @@ import java.util.jar.JarFile;
 /**
  * Wraps a <code>java.net.URL</code>, and implements methods required for a typical template source.
  * @version $Id: URLTemplateSource.java,v 1.4 2003/04/02 11:43:18 szegedia Exp $
- * @author Daniel Dékány
+ * @author Daniel Dekany
  */
 class URLTemplateSource {
     private final URL url;
