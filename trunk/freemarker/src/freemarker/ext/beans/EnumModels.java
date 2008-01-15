@@ -79,8 +79,8 @@ class EnumModels extends ClassBasedModelFactory {
         }
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         for (int i = 0; i < obj.length; i++) {
-            Object value = obj[i];
-            map.put(String.valueOf(value), value);
+            Enum value = (Enum) obj[i];
+            map.put(value.name(), value);
         }
         return new SimpleMapModel(map, getWrapper());
     }
