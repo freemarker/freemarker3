@@ -41,39 +41,45 @@ class SimpleTagDirectiveModel extends JspTagModelBase<SimpleTag> implements Temp
         try {
             SimpleTag tag = getTagInstance();
             final FreeMarkerPageContext pageContext = PageContextFactory.getCurrentPageContext();
-            tag.setJspContext(pageContext);
-            JspTag parentTag = pageContext.peekTopTag(JspTag.class);
-            if(parentTag != null) {
-                tag.setParent(parentTag);
-            }
-            setupTag(tag, args, pageContext.getObjectWrapper());
-            if(body != null) {
-                tag.setJspBody(new JspFragment() {
-                    @Override
-                    public JspContext getJspContext() {
-                        return pageContext;
-                    }
-                    
-                    @Override
-                    public void invoke(Writer out) throws JspException, IOException {
-                        try {
-                            body.render(out == null ? pageContext.getOut() : out);
+            pageContext.pushWriter(new JspWriterAdapter(env.getOut()));
+            try {
+                tag.setJspContext(pageContext);
+                JspTag parentTag = pageContext.peekTopTag(JspTag.class);
+                if(parentTag != null) {
+                    tag.setParent(parentTag);
+                }
+                setupTag(tag, args, pageContext.getObjectWrapper());
+                if(body != null) {
+                    tag.setJspBody(new JspFragment() {
+                        @Override
+                        public JspContext getJspContext() {
+                            return pageContext;
                         }
-                        catch(TemplateException e) {
-                            throw new JspException(e);
+                        
+                        @Override
+                        public void invoke(Writer out) throws JspException, IOException {
+                            try {
+                                body.render(out == null ? pageContext.getOut() : out);
+                            }
+                            catch(TemplateException e) {
+                                throw new JspException(e);
+                            }
                         }
+                    });
+                    pageContext.pushTopTag(tag);
+                    try {
+                        tag.doTag();
                     }
-                });
-                pageContext.pushTopTag(tag);
-                try {
+                    finally {
+                        pageContext.popTopTag();
+                    }
+                }
+                else {
                     tag.doTag();
                 }
-                finally {
-                    pageContext.popTopTag();
-                }
             }
-            else {
-                tag.doTag();
+            finally {
+                pageContext.popWriter();
             }
         }
         catch(TemplateException e) {
