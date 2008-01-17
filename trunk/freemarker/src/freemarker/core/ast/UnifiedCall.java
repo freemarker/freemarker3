@@ -52,12 +52,17 @@
 
 package freemarker.core.ast;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import freemarker.template.*;
 import freemarker.core.Environment;
-import freemarker.core.parser.ParseException;
+import freemarker.template.TemplateDirectiveModel;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateTransformModel;
 
 /**
  * An element for the unified macro/transform syntax. 
@@ -90,7 +95,7 @@ public class UnifiedCall extends TemplateElement {
     	return nameExp;
     }
 
-    public void setBodyParameters(ParameterList bodyParameters) throws ParseException {
+    public void setBodyParameters(ParameterList bodyParameters) {
     	this.bodyParameters = bodyParameters;
     	if (bodyParameters != null) {
     		for (String paramName : bodyParameters.params) {
@@ -118,8 +123,14 @@ public class UnifiedCall extends TemplateElement {
         else if (tm instanceof TemplateDirectiveModel) {
             Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
             if (args != null) argMap = args.getParameterMap(tm, env);
-            env.render(nestedBlock, (TemplateDirectiveModel) tm, argMap, 
-                    bodyParameters.getParamNames());
+            List<String> paramNames;
+            if(bodyParameters == null) {
+                paramNames = Collections.emptyList();
+            }
+            else {
+                paramNames = bodyParameters.getParamNames();
+            }
+            env.render(nestedBlock, (TemplateDirectiveModel) tm, argMap, paramNames);
         }
         else if (tm instanceof TemplateTransformModel) {
             Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
