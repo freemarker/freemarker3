@@ -125,7 +125,7 @@ class XalanXPathSupport implements XPathSupport {
                 return ((XBoolean) xresult).bool() ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
             }
             if (xresult instanceof XNull) {
-                return null;
+                return TemplateModel.JAVA_NULL;
             }
             if (xresult instanceof XString) {
                 return new SimpleScalar(xresult.toString());

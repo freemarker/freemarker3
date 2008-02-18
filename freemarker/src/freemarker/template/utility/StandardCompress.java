@@ -57,6 +57,7 @@ import java.io.Writer;
 import java.util.Map;
 
 import freemarker.template.*;
+import freemarker.core.Environment;
 
 /**
  * <p>A filter that compresses each sequence of consecutive whitespace
@@ -104,7 +105,7 @@ import freemarker.template.*;
 
 @Parameters("buffer_size=2048 single_line=false")
 
-public class StandardCompress implements TemplateTransformModel {
+public class StandardCompress implements TemplateTransformModel, TemplateDirectiveModel {
     private static final String BUFFER_SIZE_KEY = "buffer_size";
     private static final String SINGLE_LINE_KEY = "single_line";
     private int defaultBufferSize;
@@ -115,7 +116,7 @@ public class StandardCompress implements TemplateTransformModel {
     {
         this(2048);
     }
-
+    
     /**
      * @param defaultBufferSize the default amount of characters to buffer
      */
@@ -125,7 +126,32 @@ public class StandardCompress implements TemplateTransformModel {
         this.defaultBufferSize = defaultBufferSize;
     }
 
-    public Writer getWriter(final Writer out, Map args)
+    public void execute(Environment env, Map<String, TemplateModel> args, TemplateModel[] bodyVars, TemplateDirectiveBody body) 
+    throws TemplateException, IOException {
+    	if (body == null) return;
+        int bufferSize = defaultBufferSize;
+        boolean singleLine = false;
+        if (args != null) {
+            try {
+                TemplateNumberModel num = (TemplateNumberModel)args.get(BUFFER_SIZE_KEY);
+                if (num != null)
+                    bufferSize = num.getAsNumber().intValue();
+            } catch (ClassCastException e) {
+                throw new TemplateModelException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
+            }
+            try {
+                TemplateBooleanModel flag = (TemplateBooleanModel)args.get(SINGLE_LINE_KEY);
+                if (flag != null)
+                    singleLine = flag.getAsBoolean();
+            } catch (ClassCastException e) {
+                throw new TemplateModelException("Expecting boolean argument to " + SINGLE_LINE_KEY);
+            }
+        }
+        Writer compressWriter = new StandardCompressWriter(env.getOut(), bufferSize, singleLine);
+        body.render(compressWriter);
+    }
+
+    public Writer getWriter(final Writer out, Map<String, TemplateModel> args)
     throws TemplateModelException
     {
         int bufferSize = defaultBufferSize;

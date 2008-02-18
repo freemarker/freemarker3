@@ -83,7 +83,6 @@ public class DollarVariable extends TemplateElement {
      */
     public void execute(Environment env) throws TemplateException, IOException {
         env.getOut().write(escapedExpression.getStringValue(env));
-//    	env.getOut().write(escapedExpression.getCanonicalForm());
     }
 
     public String getDescription() {

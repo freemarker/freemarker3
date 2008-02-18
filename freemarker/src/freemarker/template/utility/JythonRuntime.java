@@ -57,7 +57,7 @@ import java.io.Writer;
 import java.util.Map;
 import org.python.core.PyObject;
 import org.python.util.PythonInterpreter;
-import freemarker.template.TemplateTransformModel;
+import freemarker.template.*;
 import freemarker.core.Environment;
 
 /**
@@ -66,40 +66,60 @@ import freemarker.core.Environment;
  */
 
 public class JythonRuntime extends PythonInterpreter
-    implements TemplateTransformModel
+    implements TemplateDirectiveModel
 {
+	public void execute(Environment env, Map<String, TemplateModel> args, TemplateModel[] loopVars, TemplateDirectiveBody body) 
+	throws TemplateException, IOException 
+	{
+		Writer jythonWriter = new JythonWriter(env.getOut());
+		body.render(jythonWriter);
+	}
+	
+	
     public Writer getWriter(final Writer out,
                             final Map args)
     {
-        final StringBuilder buf = new StringBuilder();
-        final Environment env = Environment.getCurrentEnvironment();
-        return new Writer() {
-            public void write(char cbuf[], int off, int len) {
-                buf.append(cbuf, off, len);
-            }
+        return new JythonWriter(out);    
+    }
+    
+    class JythonWriter extends Writer {
+    	
+    	Environment env;
+    	StringBuilder buf;
+    	Writer out;
+    	
+    	JythonWriter(Writer out) {
+    		this.out = out;
+    		this.env = Environment.getCurrentEnvironment();
+    		this.buf = new StringBuilder();
+    	}
+    	
+        public void write(char cbuf[], int off, int len) {
+            buf.append(cbuf, off, len);
+        }
 
-            public void flush() throws IOException {
-                interpretBuffer();
-                out.flush();
-            }
+        public void flush() throws IOException {
+            interpretBuffer();
+            out.flush();
+        }
 
-            public void close() {
-                interpretBuffer();
-            }
+        public void close() {
+            interpretBuffer();
+        }
 
-            private void interpretBuffer() {
-                synchronized(JythonRuntime.this) {
-                    PyObject prevOut = systemState.stdout;
-                    try {
-                        setOut(out);
-                        set("env", env);
-                        exec(buf.toString());
-                        buf.setLength(0);
-                    } finally {
-                        setOut(prevOut);
-                    }
+        private void interpretBuffer() {
+        	Environment env = Environment.getCurrentEnvironment();
+            synchronized(JythonRuntime.this) {
+                PyObject prevOut = systemState.stdout;
+                try {
+                    setOut(out);
+                    set("env", env);
+                    exec(buf.toString());
+                    buf.setLength(0);
+                } finally {
+                    setOut(prevOut);
                 }
             }
-        };
+        }
     }
 }
