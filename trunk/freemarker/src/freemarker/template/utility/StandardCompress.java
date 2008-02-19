@@ -148,7 +148,12 @@ public class StandardCompress implements TemplateTransformModel, TemplateDirecti
             }
         }
         Writer compressWriter = new StandardCompressWriter(env.getOut(), bufferSize, singleLine);
-        body.render(compressWriter);
+        try {
+            body.render(compressWriter);
+        }
+        finally {
+            compressWriter.close();
+        }
     }
 
     public Writer getWriter(final Writer out, Map<String, TemplateModel> args)
@@ -195,7 +200,7 @@ public class StandardCompress implements TemplateTransformModel, TemplateDirecti
         private boolean inWhitespace = true;
         private int lineBreakState = AT_BEGINNING;
 
-        public StandardCompressWriter(Writer out, int bufSize, boolean singleLine) {
+        StandardCompressWriter(Writer out, int bufSize, boolean singleLine) {
             this.out = out;
             this.singleLine = singleLine;
             buf = new char[bufSize];
