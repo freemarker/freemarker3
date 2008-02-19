@@ -306,7 +306,6 @@ public final class Environment extends Configurable implements Scope {
                     out = newOut;
                     try {
                         Environment.this.render(element);
-                        out.flush();
                     }
                     finally {
                         out = prevOut;
