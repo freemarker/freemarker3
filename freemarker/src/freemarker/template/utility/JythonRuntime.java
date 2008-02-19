@@ -72,7 +72,12 @@ public class JythonRuntime extends PythonInterpreter
 	throws TemplateException, IOException 
 	{
 		Writer jythonWriter = new JythonWriter(env.getOut());
-		body.render(jythonWriter);
+		try {
+		    body.render(jythonWriter);
+		}
+		finally {
+		    jythonWriter.close();
+		}
 	}
 	
 	
