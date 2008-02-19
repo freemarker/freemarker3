@@ -71,7 +71,7 @@ public class stringBI extends BuiltIn {
 	
 	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
         if (target instanceof TemplateNumberModel) {
-            return new NumberFormatter(EvaluationUtil.getNumber((TemplateNumberModel)target, callingExpression.getTarget(), env), env);
+            return new NumberFormatter(EvaluationUtil.getNumber(target, callingExpression.getTarget(), env), env);
         }
         if (target instanceof TemplateDateModel) {
             TemplateDateModel dm = (TemplateDateModel) target;
