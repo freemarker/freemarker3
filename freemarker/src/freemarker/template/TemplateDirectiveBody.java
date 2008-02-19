@@ -16,7 +16,11 @@ import java.io.Writer;
 public interface TemplateDirectiveBody
 {
     /**
-     * Renders the body of the directive body to the specified writer.
+     * Renders the body of the directive body to the specified writer. The 
+     * writer is not flushed after the rendering. If you pass the environment's
+     * writer, there is no need to flush it. If you supply your own writer, you
+     * are responsible to flush/close it when you're done with using it (which
+     * might be after multiple renderings).
      * @param out the writer to write the output to.
      */
     public void render(Writer out) throws TemplateException, IOException;
