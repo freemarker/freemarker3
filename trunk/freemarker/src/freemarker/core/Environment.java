@@ -1612,16 +1612,16 @@ public final class Environment extends Configurable implements Scope {
      * 
      * @see #getTemplateForInclusion(String name, String encoding, boolean
      *      parse)
-     * @see #include(Template includedTemplate)
+     * @see #include(Template includedTemplate, boolean freshNamespace)
      */
     public void include(String name, String encoding, boolean parse)
             throws IOException, TemplateException {
-        include(getTemplateForInclusion(name, encoding, parse));
+        include(getTemplateForInclusion(name, encoding, parse), false);
     }
 
     /**
      * Gets a template for inclusion; used with
-     * {@link #include(Template includedTemplate)}. The advantage over simply
+     * {@link #include(Template includedTemplate, boolean freshNamespace)}. The advantage over simply
      * using <code>config.getTemplate(...)</code> is that it chooses the
      * default encoding as the <code>include</code> directive does.
      * 
@@ -1660,15 +1660,21 @@ public final class Environment extends Configurable implements Scope {
      *            to be a template returned by
      *            {@link #getTemplateForInclusion(String name, String encoding, boolean parse)}.
      */
-    public void include(Template includedTemplate) throws TemplateException,
+    public void include(Template includedTemplate, boolean freshNamespace) throws TemplateException,
             IOException {
         Template prevTemplate = getTemplate();
         setParent(includedTemplate);
-        importMacros(includedTemplate);
+        Scope prevScope = this.currentScope;
+        if (freshNamespace) {
+        	this.currentScope = new TemplateNamespace(this, includedTemplate);
+        } else {
+            importMacros(includedTemplate);
+        }
         try {
             renderSecurely(includedTemplate.getRootElement(), 
                     includedTemplate.getCodeSource());
         } finally {
+        	this.currentScope = prevScope;
             setParent(prevTemplate);
         }
     }
@@ -1745,7 +1751,7 @@ public final class Environment extends Configurable implements Scope {
             Writer prevOut = out;
             this.out = NULL_WRITER;
             try {
-                include(loadedTemplate);
+                include(loadedTemplate, false);
             } finally {
                 this.out = prevOut;
                 currentScope = prevScope;

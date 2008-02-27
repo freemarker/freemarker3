@@ -122,7 +122,7 @@ public class interpretBI extends BuiltIn {
             try
             {
                 Environment env = Environment.getCurrentEnvironment();
-                env.include(template);
+                env.include(template, false);
             }
             catch(TemplateModelException e)
             {
