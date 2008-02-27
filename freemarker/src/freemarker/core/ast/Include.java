@@ -75,6 +75,7 @@ public class Include extends TemplateElement {
     private String encoding;
     private boolean parse;
     private String templatePath="";
+    boolean freshNamespace;
 
     /**
      * @param template the template that this <tt>Include</tt> is a part of.
@@ -84,9 +85,11 @@ public class Include extends TemplateElement {
      */
     public Include(Template template,
             Expression includedTemplateName,
+            boolean freshNamespace,
             Expression encodingExp,
             Expression parseExp) throws ParseException
     {
+    	this.freshNamespace = freshNamespace;
     	if (template != null) {
     		String templatePath1 = template.getName();
     		int lastSlash = templatePath1.lastIndexOf('/');
@@ -166,7 +169,7 @@ public class Include extends TemplateElement {
                         + templateNameString;
             throw new TemplateException(msg, ioe, env);
         }
-        env.include(includedTemplate);
+        env.include(includedTemplate, freshNamespace);
     }
     
     public Expression getIncludedTemplateExpression() {
@@ -182,7 +185,12 @@ public class Include extends TemplateElement {
     }
 
     public String getDescription() {
-        return "include " + includedTemplateName;
+    	String name = freshNamespace ? "template " : "include ";
+        return name + includedTemplateName;
+    }
+    
+    public boolean useFreshNamespace() {
+    	return freshNamespace;
     }
 
     private boolean getYesNo(String s) throws ParseException {

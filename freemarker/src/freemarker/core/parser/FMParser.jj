@@ -370,6 +370,8 @@ TOKEN:
     |
     <SETTING : <START_TAG> "setting" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
+    <TEMPLATE : <START_TAG> "template" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    |
     <VAR : <START_TAG> "var"  <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
     <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);}
@@ -2036,14 +2038,19 @@ TemplateElement Assign() :
     ))
 }
 
+
 Include Include() :
 {
-   Expression nameExp;
    Token att, start, end;
-   Expression exp, parseExp = null, encodingExp = null;
+   Expression nameExp, exp, parseExp = null, encodingExp = null;
+   boolean freshNamespace;
 }
 {
-    start=<INCLUDE>
+    (
+        start=<INCLUDE> {freshNamespace = false;}
+        |
+        start=<TEMPLATE> {freshNamespace=true;}
+    )
     nameExp=Exp()
     [<SEMICOLON>]
     (
@@ -2077,7 +2084,7 @@ Include Include() :
 	)*
     end=LooseDirectiveEnd()
     {
-       Include result = new Include(template, nameExp, encodingExp, parseExp);
+       Include result = new Include(template, nameExp, freshNamespace, encodingExp, parseExp);
        result.setLocation(template, start, end);
        return result;
     }

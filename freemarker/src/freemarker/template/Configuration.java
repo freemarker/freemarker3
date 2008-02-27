@@ -952,7 +952,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
         for (int i = 0; i < autoIncludes.size(); i++) {
             String templateName = autoIncludes.get(i);
             Template template = getTemplate(templateName, env.getLocale());
-            env.include(template);
+            env.include(template, false);
         }
     }
     
