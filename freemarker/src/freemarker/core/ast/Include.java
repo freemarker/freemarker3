@@ -75,7 +75,7 @@ public class Include extends TemplateElement {
     private String encoding;
     private boolean parse;
     private String templatePath="";
-    boolean freshNamespace;
+    public final boolean freshNamespace;
 
     /**
      * @param template the template that this <tt>Include</tt> is a part of.

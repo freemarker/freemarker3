@@ -370,7 +370,7 @@ TOKEN:
     |
     <SETTING : <START_TAG> "setting" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
-    <TEMPLATE : <START_TAG> "template" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <EMBED : <START_TAG> "embed" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
     <VAR : <START_TAG> "var"  <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
     |
@@ -2049,7 +2049,7 @@ Include Include() :
     (
         start=<INCLUDE> {freshNamespace = false;}
         |
-        start=<TEMPLATE> {freshNamespace=true;}
+        start=<EMBED> {freshNamespace=true;}
     )
     nameExp=Exp()
     [<SEMICOLON>]

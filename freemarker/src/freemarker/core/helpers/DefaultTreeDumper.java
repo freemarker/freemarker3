@@ -381,7 +381,8 @@ public class DefaultTreeDumper extends BaseASTVisitor {
 	}
 	
 	public void visit(Include node) {
-		openDirective("include ");
+		if (node.freshNamespace) openDirective("embed ");
+		else openDirective("include ");
 		visit(node.getIncludedTemplateExpression());
 		Expression parseExp = node.getParseExp();
 		Expression encodingExp = node.getEncodingExp();
