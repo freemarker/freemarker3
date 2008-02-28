@@ -46,6 +46,7 @@
    <testcase name="default-xmlns" filename="test-defaultxmlns1.txt">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
    </testcase>
+   <testcase name="embed" filename="test-embed.ftl"/>
    <testcase name="encoding-builtins" filename="test-encodingbuiltins.txt" />
    <testcase name="escapes" filename="test-escapes.txt" />
    <testcase name="hashliteral" filename="test-hashliteral.html" />
@@ -96,7 +97,6 @@
    <testcase name="string-builtins2" filename="test-stringbuiltins2.txt" />
    <testcase name="string-builtins3" filename="test-stringbimethods.txt" />
    <testcase name="stringliteral" filename="test-stringliteral.html"/>
-   <testcase name="subtemplate" filename="test-subtemplate.ftl"/>
    <testcase name="switch-case" filename="test-switch.html" />
    <testcase name="transforms" filename="test-transformation.html"/>
    <testcase name="type-builtins" filename="test-typebuiltins.txt"/>
