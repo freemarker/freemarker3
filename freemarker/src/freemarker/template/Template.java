@@ -119,8 +119,10 @@ public class Template extends TemplateCore {
     private final ArrayList<String> lines = new ArrayList<String>();
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
+    private Set<String> declaredVariables = new HashSet<String>();
     private final CodeSource codeSource;
     boolean stripWhitespace;
+    boolean strictVariableDeclaration;
     
     private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
     private TemplateHeaderElement headerElement;
@@ -497,7 +499,20 @@ public class Template extends TemplateCore {
     public TemplateHeaderElement getHeaderElement() {
     	return headerElement;
     }
-
+    
+    public boolean declaresVariable(String name) {
+    	return declaredVariables.contains(name);
+    }
+    
+    public void declareVariable(String name) {
+    	if (declaredVariables == null) declaredVariables = new HashSet<String>();
+    	declaredVariables.add(name);
+    }
+    
+    public boolean strictVariableDeclaration() {
+    	return strictVariableDeclaration;
+    }
+    
     /**
      * Returns the template source at the location
      * specified by the coordinates given.

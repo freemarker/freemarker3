@@ -1205,7 +1205,11 @@ public final class Environment extends Configurable implements Scope {
             }
             scope = scope.getEnclosingScope();
         }
-        scope.put(name, model);
+        try {
+        	scope.put(name, model);
+        } catch (UndeclaredVariableException uve) {
+        	throw new TemplateException(uve, this);
+        }
     }
 
     public Scope getCurrentScope() {
@@ -1668,6 +1672,7 @@ public final class Environment extends Configurable implements Scope {
         if (freshNamespace) {
         	this.currentScope = new TemplateNamespace(this, includedTemplate);
         } else {
+        	this.currentScope = new IncludedTemplateNamespace(includedTemplate, prevScope);
             importMacros(includedTemplate);
         }
         try {

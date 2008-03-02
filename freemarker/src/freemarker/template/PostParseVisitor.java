@@ -103,6 +103,11 @@ public class PostParseVisitor extends BaseASTVisitor {
         		}
         	}
         }
+        if (node.type == AssignmentInstruction.NAMESPACE) {
+        	for (String varname : node.getVarNames()) {
+        		template.declareVariable(varname);
+        	}
+        }
 	}
 	
 	public void visit(BlockAssignment node) {
@@ -116,6 +121,9 @@ public class PostParseVisitor extends BaseASTVisitor {
 					macro.declareVariable(node.varName);
 				}
 			}
+		}
+		else if (node.type == AssignmentInstruction.NAMESPACE) {
+			template.declareVariable(node.varName);
 		}
 	}
 	
@@ -236,11 +244,14 @@ public class PostParseVisitor extends BaseASTVisitor {
         if (parent instanceof MixedContent) {
             parent = parent.getParent();
         }
-        if (parent != null) {
-        	for (String key : node.getVariables().keySet()) {
+       	for (String key : node.getVariables().keySet()) {
+       		if (parent == null) {
+       			template.declareVariable(key);
+       			template.strictVariableDeclaration = true;
+       		} else {
        			parent.declareVariable(key);
-        	}
-        }
+       		}
+       	}
 	}
 	
 	public void visit(SwitchBlock node) {
