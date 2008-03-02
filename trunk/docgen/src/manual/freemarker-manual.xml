@@ -1538,13 +1538,15 @@ The average of the price of a python and an elephant is:
 
         <para>It is important to realize that <phrase
         role="markedInterpolation">interpolations</phrase> can be used in
-        <phrase role="markedText">text</phrase> only (and in string literal
-        expressions as you will see <link
-        linkend="dgui_template_exp_stringop_interpolation">later</link>).</para>
+        <phrase role="markedText">text</phrase> (and in string literal
+        expressions; see <link
+        linkend="dgui_template_exp_stringop_interpolation">later</link>)
+        only.</para>
 
-        <para>An <phrase role="markedFTLTag">FTL tag</phrase> can't be placed
-        inside another <phrase role="markedFTLTag">FTL tag</phrase>. For
-        example it is <emphasis>WRONG</emphasis>: <literal>[#if [#include
+        <para>An <phrase role="markedFTLTag">FTL tag</phrase> can't be
+        inside another <phrase role="markedFTLTag">FTL tag</phrase> nor inside
+        an <phrase role="markedInterpolation">interpolation</phrase>. For
+        example this is <emphasis>WRONG</emphasis>: <literal>[#if [#include
         'foo']='bar']...[/#if]</literal></para>
 
         <para><phrase role="markedComment">Comments</phrase> can be placed
@@ -3581,7 +3583,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
                 </row>
 
                 <row>
-                  <entry> unary operators</entry>
+                  <entry>unary operators</entry>
 
                   <entry><literal>+<replaceable>expr</replaceable>
                   -<replaceable>expr</replaceable> !expr</literal></entry>
