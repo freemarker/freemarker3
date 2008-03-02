@@ -71,12 +71,12 @@ public class TemplateNamespace extends BaseContext {
 	public Template getTemplate() {
 		return template;
 	}
-/*	
+
 	public void put(String name, TemplateModel var) {
-		if (!template.declaresVariable(name)) {
+		if (template.strictVariableDeclaration() && !template.declaresVariable(name)) {
 			Environment env = Environment.getCurrentEnvironment();
-			throw new TemplateException("Cannot set variable " + name + " since it is not declared.", env);
+			throw new UndeclaredVariableException("Cannot set variable " + name + " since it is not declared.");
 		}
 		super.put(name, var);
-	}*/
+	}
 }
