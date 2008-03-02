@@ -166,6 +166,11 @@ public class PostParseVisitor extends BaseASTVisitor {
 		escapes.remove(escapes.size() -1);
 	}
 	
+	public void visit(Macro node) {
+		template.declareVariable(node.getName());
+		super.visit(node);
+	}
+	
 	public void visit(NoEscapeBlock node) {
 		TemplateElement parent = node;
 		while (parent != null && !(parent instanceof EscapeBlock)) {
