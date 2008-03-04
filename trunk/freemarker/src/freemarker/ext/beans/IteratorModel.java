@@ -135,7 +135,7 @@ implements
         }
         catch(NoSuchElementException e) {
             throw new TemplateModelException(
-                "No more elements in the iterator.");
+                "No more elements in the iterator.", e);
         }
     }
 
