@@ -54,15 +54,15 @@ package freemarker.template;
 
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import freemarker.core.Environment;
-import freemarker.core.parser.TemplateLocation;
 import freemarker.core.ast.Include;
-import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.UnifiedCall;
+import freemarker.core.parser.TemplateLocation;
 
 /**
  * The FreeMarker classes usually use this exception and its descendants to
@@ -78,7 +78,6 @@ public class TemplateException extends Exception {
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
     
     /** The underlying cause of this exception, if any */
-    private final Exception causeException;
     private final Environment env;
     
     private List<TemplateLocation> ftlStack;
@@ -123,8 +122,7 @@ public class TemplateException extends Exception {
      * exception to be raised
      */
     public TemplateException(String description, Exception cause, Environment env) {
-        super(getDescription(description, cause));
-        causeException = cause;
+        super(getDescription(description, cause), cause);
         this.env = env;
         if(env != null) {
             ftlStack = new ArrayList<TemplateLocation>();
@@ -157,21 +155,9 @@ public class TemplateException extends Exception {
      * exception to be raised
      */
     public Exception getCauseException() {
-        return causeException;
+        return (Exception)getCause();
     }
 
-    /**
-     * Returns the same exception as <code>getCauseException</code>. Provided
-     * to enable full JDK-generated stack traces when running under JDK 1.4.
-     *
-     * @see Throwable#getCause()
-     * @return the underlying <code>Exception</code>, if any, that caused this
-     * exception to be raised
-     */
-    public Throwable getCause() {
-        return causeException;
-    }
-    
     /**
      * Returns the quote of the problematic FTL instruction and the FTL stack strace.
      * As of FreeMarker 2.4, we provide access to the FTL instruction stack
@@ -212,7 +198,7 @@ public class TemplateException extends Exception {
     
     public List<TemplateLocation> getFTLStack() {
     	if (ftlStack == null) {
-    		return Collections.EMPTY_LIST;
+    		return Collections.emptyList();
     	}
     	return Collections.unmodifiableList(ftlStack);
     }
@@ -243,6 +229,7 @@ public class TemplateException extends Exception {
         // users.
         try {
             // Reflection is used to prevent dependency on Servlet classes.
+            Throwable causeException = getCause();
             Method m = causeException.getClass().getMethod("getRootCause", EMPTY_CLASS_ARRAY);
             Throwable rootCause = (Throwable) m.invoke(causeException, EMPTY_OBJECT_ARRAY);
             if (rootCause != null) {
