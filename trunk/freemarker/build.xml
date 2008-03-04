@@ -35,7 +35,7 @@
       <get src="${libs.location}/jsp-api-2.0.jar" dest="lib/jsp-api-2.0.jar" usetimestamp="true"/>
       <get src="${libs.location}/jsp-api-2.1.jar" dest="lib/jsp-api-2.1.jar" usetimestamp="true"/>
       <get src="${libs.location}/junit.jar" dest="lib/junit.jar" usetimestamp="true"/>
-      <get src="${libs.location}/jython.jar" dest="lib/jython.jar" usetimestamp="true"/>
+      <get src="${libs.location}/jython-2.2.1.jar" dest="lib/jython-2.2.1.jar" usetimestamp="true"/>
       <get src="${libs.location}/log4j.jar" dest="lib/log4j.jar" usetimestamp="true"/>
       <get src="${libs.location}/retrotranslator-transformer-1.2.3.jar" dest="lib/retrotranslator-transformer-1.2.3.jar" usetimestamp="true"/>
       <get src="${libs.location}/retrotranslator-runtime-1.2.3.jar" dest="lib/retrotranslator-runtime-1.2.3.jar" usetimestamp="true"/>
@@ -76,7 +76,7 @@
             <available file="lib/jsp-api-2.0.jar"/>
             <available file="lib/jsp-api-2.1.jar"/>
             <available file="lib/junit.jar"/>
-            <available file="lib/jython.jar"/>
+            <available file="lib/jython-2.2.1.jar"/>
             <available file="lib/log4j.jar"/>
             <available file="lib/retrotranslator-transformer-1.2.3.jar"/>
             <available file="lib/retrotranslator-runtime-1.2.3.jar"/>
