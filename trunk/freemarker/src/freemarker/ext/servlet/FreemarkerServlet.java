@@ -254,20 +254,19 @@ public class FreemarkerServlet extends HttpServlet
             if (templatePath == null)
                 templatePath = "class://";
             StringTokenizer tok = new StringTokenizer(templatePath, ",");
-            List loaders = new ArrayList();
+            List<TemplateLoader> loaders = new ArrayList<TemplateLoader>();
             while(tok.hasMoreTokens())
             {
                 loaders.add(createTemplateLoader(tok.nextToken()));
             }
             if(loaders.size() == 1)
             {
-                config.setTemplateLoader((TemplateLoader)loaders.get(0));
+                config.setTemplateLoader(loaders.get(0));
             }
             else
             {
                 config.setTemplateLoader(new MultiTemplateLoader(
-                        (TemplateLoader[])loaders.toArray(
-                                new TemplateLoader[loaders.size()])));
+                        loaders.toArray(new TemplateLoader[loaders.size()])));
             }
 
             // Process all other init-params:
