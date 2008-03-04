@@ -257,19 +257,7 @@ public class FreemarkerServlet extends HttpServlet
             List loaders = new ArrayList();
             while(tok.hasMoreTokens())
             {
-                String pathElement = tok.nextToken();
-                TemplateLoader loader;
-                if (pathElement.startsWith("class://")) {
-                    // substring(7) is intentional as we "reuse" the last slash
-                    loader = new ClassTemplateLoader(getClass(), pathElement.substring(7));
-                } else {
-                    if (pathElement.startsWith("file://")) {
-                        loader = new FileTemplateLoader(new File(pathElement.substring(7)));
-                    } else {
-                        loader = new WebappTemplateLoader(this.getServletContext(), pathElement);
-                    }
-                }
-                loaders.add(loader);
+                loaders.add(createTemplateLoader(tok.nextToken()));
             }
             if(loaders.size() == 1)
             {
@@ -381,6 +369,30 @@ public class FreemarkerServlet extends HttpServlet
             throw e;
         } catch (Exception e) {
             throw new ServletException(e);
+        }
+    }
+
+    /**
+     * Create the template loader. The default implementation will create a
+     * {@link ClassTemplateLoader} if the template path starts with "class://",
+     * a {@link FileTemplateLoader} if the template path starts with "file://",
+     * and a {@link WebappTemplateLoader} otherwise.
+     * @param templatePath the template path to create a loader for
+     * @return a newly created template loader
+     * @throws IOException
+     */
+    protected TemplateLoader createTemplateLoader(String templatePath) throws IOException
+    {
+        if (templatePath.startsWith("class://")) {
+            // substring(7) is intentional as we "reuse" the last slash
+            return new ClassTemplateLoader(getClass(), templatePath.substring(7));
+        } else {
+            if (templatePath.startsWith("file://")) {
+                templatePath = templatePath.substring(7);
+                return new FileTemplateLoader(new File(templatePath));
+            } else {
+                return new WebappTemplateLoader(this.getServletContext(), templatePath);
+            }
         }
     }
 
