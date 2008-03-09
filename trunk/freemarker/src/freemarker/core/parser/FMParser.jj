@@ -3002,7 +3002,9 @@ TemplateElement Root() :
        	   if (header.hasParameter("strip_text")) {
        	   	  try {
        	   	  	 this.stripText = header.getBooleanParameter("strip_text");
-       	   	  } catch (Exception e) {}
+       	   	  } catch (Exception e) {
+       	   	  	throw new ParseException(e.getMessage());
+       	   	  }
        	   }
        	   	
        }
