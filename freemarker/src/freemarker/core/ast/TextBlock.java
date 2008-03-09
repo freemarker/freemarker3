@@ -90,6 +90,10 @@ public final class TextBlock extends TemplateElement {
     	return new String(text);
     }
     
+    public void setText(String text) {
+    	this.text = text.toCharArray();
+    }
+    
     /**
      * Simply outputs the text.
      */
