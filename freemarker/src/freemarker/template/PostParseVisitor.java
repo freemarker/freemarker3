@@ -72,6 +72,7 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	private Template template;
 	private List<EscapeBlock> escapes = new ArrayList<EscapeBlock>();
+	private HashSet<String> varsImplicitlyDefinedInTemplate = new HashSet<String>();
 	
 
 	public PostParseVisitor(Template template) {
@@ -167,6 +168,9 @@ public class PostParseVisitor extends ASTVisitor {
         }
         if (node.type == AssignmentInstruction.NAMESPACE && node.getNamespaceExp() == null) {
         	for (String varname : node.getVarNames()) {
+        		if (!template.declaresVariable(varname)) {
+        			varsImplicitlyDefinedInTemplate.add(varname);
+        		}
         		template.declareVariable(varname);
         	}
         }
@@ -185,6 +189,9 @@ public class PostParseVisitor extends ASTVisitor {
 			}
 		}
 		else if (node.type == AssignmentInstruction.NAMESPACE) {
+			if (!template.declaresVariable(node.varName)) {
+			    varsImplicitlyDefinedInTemplate.add(node.varName);
+			}
 			template.declareVariable(node.varName);
 		}
 	}
@@ -229,6 +236,11 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(Macro node) {
+		String macroName = node.getName();
+		if (template.declaresVariable(macroName) && !varsImplicitlyDefinedInTemplate.contains(macroName)) {
+			ParsingProblem problem = new ParsingProblem("You already have declared a variable (or declared another macro) as " + macroName + ". You cannot reuse the variable name in the same template.", node);
+			template.addParsingProblem(problem);
+		}
 		template.declareVariable(node.getName());
 		super.visit(node);
 	}
@@ -313,9 +325,22 @@ public class PostParseVisitor extends ASTVisitor {
         }
        	for (String key : node.getVariables().keySet()) {
        		if (parent == null) {
+       			if (template.declaresVariable(key)) {
+           			ParsingProblem problem = new ParsingProblem("The variable " + key + " has already been declared in this template." + ".", node);
+           			template.addParsingProblem(problem);
+       			}
        			template.declareVariable(key);
+       			varsImplicitlyDefinedInTemplate.remove(key);
 //       			template.strictVariableDeclaration(true);
        		} else {
+       			if (parent.declaresVariable(key)) {
+       				String msg = "The variable " + key + " has already been declared in this block.";
+       				if (parent instanceof Macro) {
+       					String macroName = ((Macro) parent).getName();
+       					msg = "The variable " + key + " has already been declared in macro " + macroName + ".";
+       				}
+       				template.addParsingProblem(new ParsingProblem(msg, node));
+       			}
        			parent.declareVariable(key);
        		}
        	}

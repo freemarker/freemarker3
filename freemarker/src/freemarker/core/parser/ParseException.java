@@ -192,7 +192,7 @@ public class ParseException extends java.io.IOException implements FMParserConst
 			buf.append(" : ");
 			buf.append(problem.getDescription());
 		}
-		return buf.append(" in ").append(templateName).toString();
+		return buf.toString();
 	}
     if (!specialConstructor) {
       return super.getMessage() + " in" + templateName;
