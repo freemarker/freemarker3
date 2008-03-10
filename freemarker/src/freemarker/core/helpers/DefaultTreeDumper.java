@@ -66,7 +66,7 @@ import freemarker.template.utility.StringUtil;
  * @author Jonathan Revusky
  */
 
-public class DefaultTreeDumper extends BaseASTVisitor {
+public class DefaultTreeDumper extends ASTVisitor {
 	
 	String OPEN_BRACKET = "<";
 	String CLOSE_BRACKET = ">";
@@ -310,7 +310,7 @@ public class DefaultTreeDumper extends BaseASTVisitor {
 		visit(node.rhs);
 	}
 	
-	public void visit(DollarVariable node) {
+	public void visit(Interpolation node) {
 		buffer.append("${");
 		visit(node.expression);
 		buffer.append("}");

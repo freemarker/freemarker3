@@ -60,12 +60,12 @@ import freemarker.template.TemplateException;
 /**
  * An instruction that outputs the value of an <tt>Expression</tt>.
  */
-public class DollarVariable extends TemplateElement {
+public class Interpolation extends TemplateElement {
 
     public final Expression expression;
     private Expression escapedExpression; // This will be the same as the expression if we are not within an escape block.
 
-    public DollarVariable(Expression expression) {
+    public Interpolation(Expression expression) {
         this.expression = expression;
         this.escapedExpression = expression;
     }

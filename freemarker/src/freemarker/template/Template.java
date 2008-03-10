@@ -67,6 +67,7 @@ import javax.swing.tree.TreePath;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.TemplateCore;
+import freemarker.core.ast.ASTVisitor;
 import freemarker.core.ast.LibraryLoad;
 import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.TemplateHeaderElement;
@@ -122,12 +123,11 @@ public class Template extends TemplateCore {
     private Set<String> declaredVariables = new HashSet<String>();
     private final CodeSource codeSource;
     boolean stripWhitespace;
-    boolean strictVariableDeclaration;
+    private boolean strictVariableDeclaration;
     
     private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
     private TemplateHeaderElement headerElement;
-    
-    
+
     
     /**
      * A prime constructor to which all other constructors should
@@ -186,6 +186,14 @@ public class Template extends TemplateCore {
                 setRootElement(parser.Root());
                 PostParseVisitor ppv = new PostParseVisitor(this);
                 ppv.visit(this);
+                List<ASTVisitor> autoVisitors = cfg.getAutoVisitors();
+                System.err.println(autoVisitors.size());
+                for (ASTVisitor visitor : autoVisitors) {
+                	if (visitor instanceof Cloneable) {
+                		visitor = visitor.clone();
+                	}
+                	visitor.visit(this);
+                }
             }
             catch (TokenMgrError exc) {
                 throw new ParseException("Token manager error: " + exc, 0, 0);
@@ -511,6 +519,10 @@ public class Template extends TemplateCore {
     
     public boolean strictVariableDeclaration() {
     	return strictVariableDeclaration;
+    }
+    
+   public void setStrictVariableDeclaration(boolean strictVariableDeclaration) {
+    	this.strictVariableDeclaration = strictVariableDeclaration;
     }
     
     /**
