@@ -186,9 +186,7 @@ public class Template extends TemplateCore {
                 setRootElement(parser.Root());
                 PostParseVisitor ppv = new PostParseVisitor(this);
                 ppv.visit(this);
-                List<ASTVisitor> autoVisitors = cfg.getAutoVisitors();
-                System.err.println(autoVisitors.size());
-                for (ASTVisitor visitor : autoVisitors) {
+                for (ASTVisitor visitor : cfg.getAutoVisitors()) {
                 	if (visitor instanceof Cloneable) {
                 		visitor = visitor.clone();
                 	}
