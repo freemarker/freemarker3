@@ -1538,7 +1538,7 @@ TemplateElement StringOutput() :
    	  if (unclosed) {
    	  	  result = new UnclosedElement("Unclosed output interpolation, expecting a closing '}'");
    	  } else {
-	      result = new DollarVariable(exp);
+	      result = new Interpolation(exp);
    	  }
       result.setLocation(template, begin, end);
       return result;

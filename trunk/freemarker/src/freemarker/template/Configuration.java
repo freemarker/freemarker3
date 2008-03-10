@@ -88,6 +88,8 @@ import freemarker.template.utility.StandardCompress;
 import freemarker.template.utility.StringUtil;
 import freemarker.template.utility.XmlEscape;
 
+import freemarker.core.ast.ASTVisitor;
+
 /**
  * Main entry point into the FreeMarker API, this class encapsulates the 
  * various configuration parameters with which FreeMarker is run, as well
@@ -128,6 +130,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     private Map<String, String> autoImportMap = new HashMap<String, String>();
     private ArrayList<String> autoImports = new ArrayList<String>();
     private ArrayList<String> autoIncludes = new ArrayList<String>();
+    private ArrayList<ASTVisitor> autoVisitors = new ArrayList<ASTVisitor>();
     private String defaultEncoding = SecurityUtilities.getSystemProperty("file.encoding");
     private boolean secure = false;
     private boolean tolerateParsingProblems = false;
@@ -856,6 +859,30 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      
     public synchronized void removeAutoInclude(String templateName) {
         autoIncludes.remove(templateName);
+    }
+    
+    public synchronized void addAutoTemplateVisitors(ASTVisitor... visitors) {
+    	for (ASTVisitor visitor : visitors) {
+    		autoVisitors.remove(visitor);
+    		autoVisitors.add(visitor);
+    	}
+    }
+    
+    public synchronized void removeAutoTemplateVisitors(ASTVisitor... visitors) {
+    	for (ASTVisitor visitor : visitors) {
+    		autoVisitors.remove(visitor);
+    	}
+    }
+    
+    public synchronized void setAutoTemplateVisitors(ASTVisitor... visitors) {
+    	autoVisitors.clear();
+    	for (ASTVisitor visitor : visitors) {
+    		autoVisitors.add(visitor);
+    	}
+    }
+    
+    synchronized List<ASTVisitor> getAutoVisitors() {
+    	return new ArrayList<ASTVisitor>(autoVisitors);
     }
 
     /**

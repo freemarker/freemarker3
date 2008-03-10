@@ -67,13 +67,25 @@ import freemarker.template.Template;
  * The base implementations of visit(....) simply invoke
  * visit(...) on the subnodes (or do nothing if the node is terminal.)
  * 
- * For concrete implementations, see for example
+ * For some simple examples, see 
+ * {@link freemarker.template.utility.HTMLEncodingASTVisitor}
+ * or
+ * {@link freemarker.template.utility.PickyPunctuationASTVisitor}
+ * 
+ * For more complex examples, see: 
  * {@link freemarker.core.helpers.DefaultTreeDumper} or
  * {@link freemarker.template.PostParseVisitor}
+ * 
+ * If your ASTVisitor implementation maintains state, and hence,
+ * is not thread-safe, you should have it implement Cloneable.
+ * Code that takes an ASTVisitor object should check
+ * if it is an instance of Cloneable, and if so, clone
+ * new instance to use.
+ * 
  * @author Jonathan Revusky
  */
 
-public abstract class BaseASTVisitor {
+public abstract class ASTVisitor {
 	
 	protected StringBuilder errors = new StringBuilder(), warnings = new StringBuilder();
 	
@@ -190,7 +202,7 @@ public abstract class BaseASTVisitor {
 		}
 	}
 	
-	public void visit(DollarVariable node) {
+	public void visit(Interpolation node) {
 		visit(node.expression); // Or do we visit escapedExpression ???
 	}
 	
@@ -398,5 +410,13 @@ public abstract class BaseASTVisitor {
         } else {
         	visit(node.nestedBlock);
         }
+	}
+	
+	public ASTVisitor clone() {
+		try {
+			return (ASTVisitor) super.clone();
+		} catch (CloneNotSupportedException cse) {
+			throw new IllegalStateException("You tried to clone a visitior implementation that was does not implement cloneable");
+		}
 	}
 }
