@@ -1,3 +1,4 @@
+[#var foo mymessage one cc hash test]
 <html>
 <head>
 <title>FreeMarker: Hash Literal Test</title>
@@ -10,8 +11,8 @@
 
 <p>Now perform a hash assignment:</p>
 
-[#assign mymessage = "hello", foo = "bar", one = "1"]
-[#assign test = {"test1" : "test23", "test45" : message, mymessage : "hello all", foo : one}]
+[#set mymessage = "hello", foo = "bar", one = "1"]
+[#set test = {"test1" : "test23", "test45" : message, mymessage : "hello all", foo : one}]
 
 ${test.test1}
 ${test.test45}
@@ -20,7 +21,7 @@ ${test.bar}
 
 <p>Now update the assignment and repeat:</p>
 
-[#assign mymessage = "world"]
+[#set mymessage = "world"]
 
 ${test.test1}
 ${test.test45}
@@ -30,8 +31,8 @@ ${test.bar}
 
 <p>Now reassign the list and repeat:</p>
 
-[#assign hash = {"temp" : "Temporary"}]
-[#assign test = {"test1" : "test23", "test45" : message, mymessage : "hello all", foo : one, "hash" : hash["temp"], "true" : hash.temp, "newhash" : hash}]
+[#set hash = {"temp" : "Temporary"}]
+[#set test = {"test1" : "test23", "test45" : message, mymessage : "hello all", foo : one, "hash" : hash["temp"], "true" : hash.temp, "newhash" : hash}]
 
 ${test.test1}
 ${test.test45}
@@ -44,15 +45,15 @@ ${test.newhash.temp}
 
 <p>Pathological case: zero item hash:</p>
 
-[#assign test = {}]
+[#set test = {}]
 ${test.test1!}
 
 <p>Hash of number literals:</p>
-[#assign test = {"1" : 2}]
+[#set test = {"1" : 2}]
 ${test["1"]}
 
 <p>Hash concatenation:</p>
-[#assign cc = {"a" : 1, "b" : 2}+{"b" : 3, "c" : 4}]
+[#set cc = {"a" : 1, "b" : 2}+{"b" : 3, "c" : 4}]
 [#list cc?keys?sort as key]
 ${key} => ${cc[key]}
 [/#list]

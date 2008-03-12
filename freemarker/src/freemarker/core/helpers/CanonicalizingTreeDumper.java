@@ -48,9 +48,10 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
     				varDirective.addVar(varname);
     			}
     			visit(varDirective);
+    			buffer.append("\n");
     		}
-    		super.visit(node);
        	}
+		super.visit(node);
     }
     
     
