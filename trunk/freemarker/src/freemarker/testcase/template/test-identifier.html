@@ -1,3 +1,4 @@
+[#var f]
 <html>
 <head>
 <title>FreeMarker: Identifier Test</title>
@@ -9,12 +10,12 @@
 
 <p>A tag inside a tag...</p>
 
-[#assign f = "f"]
-<i[#if message?exists]>this is a test[#else]>no message[/#if]</i>
+[#set f = "f"]
+<i[#if message??]>this is a test[#else]>no message[/#if]</i>
 
 <i${f}>Blah</i${f}>
 <ifthisisindeedworkingthisshouldnotparseasafreemarkertag>
 
-<[#if message?exists]b>This is a test</b[#else]>strong>no message</strong[/#if]>
+<[#if message??]b>This is a test</b[#else]>strong>no message</strong[/#if]>
 </body>
 </html>

@@ -1,3 +1,4 @@
+[#var animalList favoriteAnimal]
 <html>
 <head>
 <title>FreeMarker: Switch-Case Test</title>
@@ -5,8 +6,8 @@
 <body>
 
 <p>Here we iterate over a list of animals.</p>
-[#assign animalList = ["aardvark", "kiwi", "gecko", "cat", "dog", "elephant", "squirrel", "zebra"]]
-[#assign favoriteAnimal = "kiwi"]
+[#set animalList = ["aardvark", "kiwi", "gecko", "cat", "dog", "elephant", "squirrel", "zebra"]]
+[#set favoriteAnimal = "kiwi"]
 
 [#list animalList as animal]
 <p>Animal is: ${animal}.<br />
