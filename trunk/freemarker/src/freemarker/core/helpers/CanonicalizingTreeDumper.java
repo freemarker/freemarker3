@@ -1,7 +1,8 @@
 package freemarker.core.helpers;
 
-import java.util.List;
+import java.util.*;
 import freemarker.core.ast.*;
+import freemarker.template.Template;
 
 /**
  * An object that transforms an FTL tree to convert older
@@ -21,6 +22,35 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
     
     public CanonicalizingTreeDumper(boolean altSyntax) {
         super(altSyntax);
+    }
+    
+    public void visit(MixedContent node) {
+    	if (node.getParent() == null) { // the root node
+    		Template template = node.getTemplate();
+    		List<String> declaredVariables = new ArrayList<String>(template.getDeclaredVariables());
+    		// Now we get rid of the ones that are already declared, either
+    		// via var or via macro.
+    		for (TemplateElement te : node) {
+    			if (te instanceof Macro) {
+    				String macroName = ((Macro) te).getName();
+    				declaredVariables.remove(macroName);
+    			}
+    			if (te instanceof VarDirective) {
+    				VarDirective varDirective = (VarDirective) te;
+    				for (String varname : varDirective.getVariables().keySet()) {
+    					declaredVariables.remove(varname);
+    				}
+    			}
+    		}
+    		if (!declaredVariables.isEmpty()) {
+    			VarDirective varDirective = new VarDirective();
+    			for (String varname : declaredVariables) {
+    				varDirective.addVar(varname);
+    			}
+    			visit(varDirective);
+    		}
+    		super.visit(node);
+       	}
     }
     
     

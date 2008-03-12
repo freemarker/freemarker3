@@ -65,7 +65,7 @@ import freemarker.core.parser.ParseException;
  * tree representation of the template necessarily 
  * descend from this abstract class.
  */
-abstract public class TemplateElement extends TemplateNode {
+abstract public class TemplateElement extends TemplateNode implements Iterable<TemplateElement> {
 	
     protected TemplateElement parent;
 
@@ -122,6 +122,15 @@ abstract public class TemplateElement extends TemplateNode {
             result.add(nestedBlock);
         } 
         return result;
+    }
+    
+    public Iterator<TemplateElement> iterator() {
+    	if (nestedElements != null) {
+    		return nestedElements.iterator();
+    	} 
+    	ArrayList<TemplateElement> l = new ArrayList<TemplateElement>();
+    	if (nestedBlock != null) l.add(nestedBlock);
+    	return l.iterator();
     }
     
     public TemplateElement getParent() {

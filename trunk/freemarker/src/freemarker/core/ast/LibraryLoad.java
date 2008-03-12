@@ -125,7 +125,7 @@ public final class LibraryLoad extends TemplateElement {
                         + templateNameString;
             throw new TemplateException(msg, ioe, env);
         }
-        env.importLib(importedTemplate, namespace);
+        env.importLib(importedTemplate, namespace, false);
     }
 
     public String getDescription() {

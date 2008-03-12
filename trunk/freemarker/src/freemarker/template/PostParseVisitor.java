@@ -73,6 +73,7 @@ public class PostParseVisitor extends ASTVisitor {
 	private Template template;
 	private List<EscapeBlock> escapes = new ArrayList<EscapeBlock>();
 	private HashSet<String> varsImplicitlyDefinedInTemplate = new HashSet<String>();
+	private HashSet<String> namespacesImported = new HashSet<String>();
 	
 
 	public PostParseVisitor(Template template) {
@@ -85,6 +86,11 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 		EscapeBlock lastEscape = escapes.get(escapes.size() -1);
 		return lastEscape.doEscape(exp);
+	}
+	
+	public void visit(Template template) {
+		super.visit(template);
+		template.setImplicitlyDeclaredVariables(varsImplicitlyDefinedInTemplate);
 	}
 	
 	public void visit(TemplateHeaderElement header) {
@@ -426,6 +432,17 @@ public class PostParseVisitor extends ASTVisitor {
 				template.addParsingProblem(new ParsingProblem(msg, node));
 			}
 		}
+	}
+	
+	public void visit(LibraryLoad node) {
+		String namespaceName = node.namespace;
+		if (template.declaresVariable(namespaceName) 
+				&& !varsImplicitlyDefinedInTemplate.contains(namespaceName)) {
+			String msg = "The variable "+namespaceName + " is already declared and should not be used as a namespace name to import.";
+			template.addParsingProblem(new ParsingProblem(msg, node));
+		}
+		template.declareVariable(namespaceName);
+		super.visit(node);
 	}
 
 	public void visit(Range node) {

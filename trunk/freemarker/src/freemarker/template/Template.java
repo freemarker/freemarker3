@@ -121,9 +121,12 @@ public class Template extends TemplateCore {
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
     private Set<String> declaredVariables = new HashSet<String>();
+    
+    //This is necessary for backward compatibility
+    private Set<String> implicitlyDeclaredVariables = new HashSet<String>();
     private final CodeSource codeSource;
     boolean stripWhitespace;
-    private boolean strictVariableDeclaration;
+    private boolean strictVariableDeclaration=true;
     
     private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
     private TemplateHeaderElement headerElement;
@@ -180,6 +183,7 @@ public class Template extends TemplateCore {
                 }
                 
                 this.stripWhitespace = getConfiguration().getWhitespaceStripping();
+                this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
                 
             	
                 FMParser parser = new FMParser(this, ltb, B);
@@ -510,9 +514,39 @@ public class Template extends TemplateCore {
     	return declaredVariables.contains(name);
     }
     
+    public Set<String> getDeclaredVariables() {
+    	return Collections.unmodifiableSet(declaredVariables);
+    }
+    
     public void declareVariable(String name) {
     	if (declaredVariables == null) declaredVariables = new HashSet<String>();
     	declaredVariables.add(name);
+    }
+    
+    /**
+     * Used internally, this is a complication necessary for
+     * backward compatibility in includes.
+     */
+    public void setImplicitlyDeclaredVariables(Set<String> names) {
+    	if (this.getName().equals("test-included.html")) {
+    		System.err.println("implicitly defined vars:");
+    		for (String name : names) {
+    			System.err.println(name);
+    		}
+    	}
+    	implicitlyDeclaredVariables = names;
+    }
+    
+    /**
+     * only used internally, it says whether the variable
+     * was implicitly declared, that means not in a #var
+     * statement but either via a legacy #assign or as the 
+     * name of a macro or as the namespace name in an #import
+     * This is rather tricky and only necessary for backward
+     * compatibility with older style #include's 
+     */
+    public boolean isImplicitlyDeclared(String varname) {
+    	return implicitlyDeclaredVariables.contains(varname);
     }
     
     public boolean strictVariableDeclaration() {

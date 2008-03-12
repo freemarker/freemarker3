@@ -77,7 +77,7 @@ public class IncludedTemplateNamespace extends BaseContext {
 	
 	
 	public void put(String name, TemplateModel var) {
-		if (!template.declaresVariable(name)) {
+		if (!template.declaresVariable(name) || template.isImplicitlyDeclared(name)) {
 			getEnclosingScope().put(name, var);
 		} else {
 			super.put(name, var);

@@ -1,4 +1,4 @@
-<#set color = "red">
+<#var color = "red">
 
 <#macro tr color="blue">
    ${color} <#-- blue when unqualified, since this was passed in as a local param -->

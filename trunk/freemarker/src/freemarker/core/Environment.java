@@ -1673,7 +1673,7 @@ public final class Environment extends Configurable implements Scope {
         	this.currentScope = new TemplateNamespace(this, includedTemplate);
         } else {
         	this.currentScope = new IncludedTemplateNamespace(includedTemplate, prevScope);
-            importMacros(includedTemplate);
+//            importMacros(includedTemplate);
         }
         try {
             renderSecurely(includedTemplate.getRootElement(), 
@@ -1696,16 +1696,16 @@ public final class Environment extends Configurable implements Scope {
      * intelligent error handling.
      * 
      * @see #getTemplateForImporting(String name)
-     * @see #importLib(Template includedTemplate, String namespace)
+     * @see #importLib(Template includedTemplate, String namespace, boolean global)
      */
     public TemplateNamespace importLib(String name, String namespace)
             throws IOException, TemplateException {
-        return importLib(getTemplateForImporting(name), namespace);
+        return importLib(getTemplateForImporting(name), namespace, true);
     }
 
     /**
      * Gets a template for importing; used with
-     * {@link #importLib(Template importedTemplate, String namespace)}. The
+     * {@link #importLib(Template importedTemplate, String namespace, boolean global)}. The
      * advantage over simply using <code>config.getTemplate(...)</code> is
      * that it chooses the encoding as the <code>import</code> directive does.
      * 
@@ -1728,7 +1728,7 @@ public final class Environment extends Configurable implements Scope {
      *            to be a template returned by
      *            {@link #getTemplateForImporting(String name)}.
      */
-    public TemplateNamespace importLib(Template loadedTemplate, String namespace)
+    public TemplateNamespace importLib(Template loadedTemplate, String namespace, boolean global)
             throws IOException, TemplateException {
         if (loadedLibs == null) {
             loadedLibs = new HashMap<String, TemplateNamespace>();
@@ -1743,7 +1743,11 @@ public final class Environment extends Configurable implements Scope {
             TemplateNamespace newNamespace = new TemplateNamespace(this,
                     loadedTemplate);
             if (namespace != null) {
-                setVariable(namespace, newNamespace);
+            	if (global) {
+            		setGlobalVariable(namespace, newNamespace);
+            	} else {
+                    setVariable(namespace, newNamespace);
+            	}
                 if (getCurrentNamespace() == mainNamespace) {
                     // We make libs imported into the main namespace globally visible
                     // for least surprise reasons. (Is this right???) 
