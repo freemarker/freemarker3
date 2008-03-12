@@ -397,6 +397,7 @@ public final class TextBlock extends TemplateElement {
     private boolean nonOutputtingType(TemplateElement element) {
         return (element instanceof Macro ||
                 element instanceof AssignmentInstruction ||
+                element instanceof VarDirective ||
                 element instanceof PropertySetting ||
                 element instanceof LibraryLoad ||
                 element instanceof Comment);

@@ -1,4 +1,4 @@
-[#set foo = "set in namespace"]
+[#var foo = "set in namespace"]
 [#list 1..2 as i]
    [#var foo]
    ${foo!"foo not available here"}

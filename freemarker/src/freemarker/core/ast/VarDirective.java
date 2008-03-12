@@ -91,7 +91,7 @@ public class VarDirective extends TemplateElement {
         vars.put(varname, value);
     }
     
-    void addVar(String name) {
+    public void addVar(String name) {
         vars.put(name, null);
     }
 

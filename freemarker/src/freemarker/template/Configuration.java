@@ -118,11 +118,12 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     public static final String TEMPLATE_UPDATE_DELAY_KEY = "template_update_delay";
     public static final String AUTO_IMPORT_KEY = "auto_import";
     public static final String AUTO_INCLUDE_KEY = "auto_include";
+    public static final String STRICT_VARS_KEY = "strict_vars";
     public static final String SECURE = "secure";
 
     private static Configuration defaultConfig = new Configuration();
     private static String cachedVersion;
-    private boolean localizedLookup = true, whitespaceStripping = true;
+    private boolean localizedLookup = true, whitespaceStripping = true, strictVariableDefinition=true;
     private boolean altDirectiveSyntax, directiveSyntaxSet;
     private TemplateCache cache;
     private HashMap<String, TemplateModel> variables = new HashMap<String, TemplateModel>();
@@ -433,6 +434,28 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     public boolean isTagSyntaxSet() {
         return directiveSyntaxSet;
     }
+    
+    /**
+     * Sets whether, by default, templates use strict variable
+     * definition syntax, such that any variable created 
+     * at the top template level must be declared with a #var
+     * directive. At the moment, the factory-set default is on.
+     */
+    
+    public void setStrictVariableDefinition(boolean b) {
+    	this.strictVariableDefinition = b;
+    }
+    
+    /**
+     * @return whether, by default, templates use strict variable
+     * definition syntax, such that any variable created 
+     * at the top template level must be declared with a #var
+     * directive. At the moment, the factory-set default is on.
+     */
+    
+    public boolean getStrictVariableDefinition() {
+    	return strictVariableDefinition;
+    }
 
     /**
      * Sets whether the FTL parser will try to remove
@@ -693,6 +716,8 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      *       <code>"t"</code>, <code>"f"</code>, <code>"y"</code>, <code>"n"</code>.
      *       Case insensitive.
      *      See: {@link #setLocalizedLookup}
+     *   <li><code>"strict_vars"</code>: <code>"true"</code>, <code>"false"</code>, etc.
+     *       See: {@link #setStrictVariableDefinition}
      *   <li><code>"whitespace_stripping"</code>: <code>"true"</code>, <code>"false"</code>, etc.
      *       See: {@link #setWhitespaceStripping}
      *   <li><code>"cache_storage"</code>: If the value contains dot, then it is
@@ -732,16 +757,18 @@ public class Configuration extends Configurable implements Cloneable, Scope {
             key = DEFAULT_ENCODING_KEY;
         }
         try {
-            if (DEFAULT_ENCODING_KEY.equals(key)) {
+            if (DEFAULT_ENCODING_KEY.equalsIgnoreCase(key)) {
                 setDefaultEncoding(value);
-            } else if (LOCALIZED_LOOKUP_KEY.equals(key)) {
+            } else if (LOCALIZED_LOOKUP_KEY.equalsIgnoreCase(key)) {
                 setLocalizedLookup(StringUtil.getYesNo(value));
-            } else if (STRICT_SYNTAX_KEY.equals(key)) {
+            } else if (STRICT_SYNTAX_KEY.equalsIgnoreCase(key)) {
 // Should warn that this is no longer used.            	
 //                setStrictSyntaxMode(StringUtil.getYesNo(value));
-            } else if (WHITESPACE_STRIPPING_KEY.equals(key)) {
+            } else if (STRICT_VARS_KEY.equalsIgnoreCase(key)) {
+            	setStrictVariableDefinition(StringUtil.getYesNo(value));
+            } else if (WHITESPACE_STRIPPING_KEY.equalsIgnoreCase(key)) {
                 setWhitespaceStripping(StringUtil.getYesNo(value));
-            } else if (CACHE_STORAGE_KEY.equals(key)) {
+            } else if (CACHE_STORAGE_KEY.equalsIgnoreCase(key)) {
                 if (value.indexOf('.') == -1) {
                     int strongSize = 0;
                     int softSize = 0;
@@ -771,13 +798,13 @@ public class Configuration extends Configurable implements Cloneable, Scope {
                     setCacheStorage((CacheStorage) ClassUtil.forName(value)
                             .newInstance());
                 }
-            } else if (TEMPLATE_UPDATE_DELAY_KEY.equals(key)) {
+            } else if (TEMPLATE_UPDATE_DELAY_KEY.equalsIgnoreCase(key)) {
                 setTemplateUpdateDelay(Integer.parseInt(value));
-            } else if (AUTO_INCLUDE_KEY.equals(key)) {
+            } else if (AUTO_INCLUDE_KEY.equalsIgnoreCase(key)) {
                 setAutoIncludes(new SettingStringParser(value).parseAsList());
-            } else if (AUTO_IMPORT_KEY.equals(key)) {
+            } else if (AUTO_IMPORT_KEY.equalsIgnoreCase(key)) {
                 setAutoImports(new SettingStringParser(value).parseAsImportList());
-            } else if (SECURE.equals(key)) {
+            } else if (SECURE.equalsIgnoreCase(key)) {
                 setSecure(Boolean.valueOf(value));
             } else {
                 super.setSetting(key, value);
