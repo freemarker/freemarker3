@@ -98,7 +98,7 @@ import freemarker.template.utility.UndeclaredThrowableException;
 public final class Environment extends Configurable implements Scope {
     private static final ThreadLocal<Environment> threadEnv = new ThreadLocal<Environment>();
 
-    private static final Logger logger = Logger.getLogger("freemarker.runtime");
+    static final Logger logger = Logger.getLogger("freemarker.runtime");
 
     private static final Map<NumberFormatKey, NumberFormat> localizedNumberFormats = new HashMap<NumberFormatKey, NumberFormat>();
 
@@ -533,7 +533,7 @@ public final class Environment extends Configurable implements Scope {
             Configurable prevParent = getParent();
             Scope prevScope = currentScope;
             setParent(getCurrentNamespace().getTemplate());
-             currentScope = bctxt;
+            currentScope = bctxt;
             try {
                 render(body);
             } finally {
@@ -1386,7 +1386,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     /**
-     * Returns the main name-space. This is correspondent of FTL
+     * Returns the current name-space. This is correspondent of FTL
      * <code>.namespace</code> hash.
      */
     public TemplateNamespace getCurrentNamespace() {
@@ -1758,12 +1758,17 @@ public final class Environment extends Configurable implements Scope {
             Scope prevScope = currentScope;
             currentScope = newNamespace;
             Writer prevOut = out;
+            Configurable prevParent = getParent();
             this.out = NULL_WRITER;
+            setParent(loadedTemplate);
             try {
-                include(loadedTemplate, false);
+                renderSecurely(loadedTemplate.getRootElement(), 
+                        loadedTemplate.getCodeSource());
+//                include(loadedTemplate, false);
             } finally {
                 this.out = prevOut;
                 currentScope = prevScope;
+                setParent(prevParent);
             }
         }
         return loadedLibs.get(templateName);

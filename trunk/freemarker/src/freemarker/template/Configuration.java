@@ -123,7 +123,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
 
     private static Configuration defaultConfig = new Configuration();
     private static String cachedVersion;
-    private boolean localizedLookup = true, whitespaceStripping = true, strictVariableDefinition=true;
+    private boolean localizedLookup = true, whitespaceStripping = true, strictVariableDefinition=false;
     private boolean altDirectiveSyntax, directiveSyntaxSet;
     private TemplateCache cache;
     private HashMap<String, TemplateModel> variables = new HashMap<String, TemplateModel>();

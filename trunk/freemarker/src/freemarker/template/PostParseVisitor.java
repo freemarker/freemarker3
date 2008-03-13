@@ -243,11 +243,12 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(Macro node) {
 		String macroName = node.getName();
-		if (template.declaresVariable(macroName) && !varsImplicitlyDefinedInTemplate.contains(macroName)) {
+		if (template.declaresVariable(macroName)) {
 			ParsingProblem problem = new ParsingProblem("You already have declared a variable (or declared another macro) as " + macroName + ". You cannot reuse the variable name in the same template.", node);
 			template.addParsingProblem(problem);
 		}
 		template.declareVariable(node.getName());
+		varsImplicitlyDefinedInTemplate.add(macroName);
 		super.visit(node);
 	}
 	

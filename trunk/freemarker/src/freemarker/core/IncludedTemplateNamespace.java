@@ -61,26 +61,43 @@ import freemarker.template.*;
  * @author revusky
  */
 
-public class IncludedTemplateNamespace extends BaseContext {
-	
-	
-	private Template template;
-	
+public class IncludedTemplateNamespace extends TemplateNamespace {
+
 	IncludedTemplateNamespace(Template template, Scope includingScope) {
-		super(includingScope);
-		this.template = template;
+		super(includingScope, template);
 	}
-	
-	public Template getTemplate() {
-		return template;
-	}
-	
 	
 	public void put(String name, TemplateModel var) {
 		if (!template.declaresVariable(name) || template.isImplicitlyDeclared(name)) {
-			getEnclosingScope().put(name, var);
+			try {
+				getEnclosingScope().put(name, var);
+			} catch (UndeclaredVariableException uve) {
+				if (!template.isImplicitlyDeclared(name)) {
+					throw uve;
+				}
+				TemplateNamespace tns = getIncludingTemplateNamespace();
+				tns.forcePut(name, var);
+				Environment.logger.warn("The variable " 
+						+ name 
+						+ " was declared implicitly in template "
+						+ template.getName() 
+						+ " but since this is a template included (directly or indirectly) from template " 
+						+  tns.getTemplate().getName()
+						+ " it is taken to be set in the namespace of "
+						+ tns.getTemplate().getName()
+						+ ". \nThe variable " +  name + " should be declared in that template."
+						+ "\nThis condition will likely throw an exception in later FreeMarker releases.");
+			}
 		} else {
 			super.put(name, var);
 		}
+	}
+	
+	TemplateNamespace getIncludingTemplateNamespace() {
+		Scope scope = getEnclosingScope();
+		while (scope instanceof IncludedTemplateNamespace || !(scope instanceof TemplateNamespace)) {
+			scope = scope.getEnclosingScope();
+		}
+		return (TemplateNamespace) scope;
 	}
 }

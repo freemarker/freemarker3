@@ -61,9 +61,9 @@ import freemarker.template.*;
 
 public class TemplateNamespace extends BaseContext {
 	
-	private Template template;
+	Template template;
 	
-	TemplateNamespace(Environment env, Template template) {
+	TemplateNamespace(Scope env, Template template) {
 		super(env);
 		this.template = template;
 	}
@@ -74,9 +74,17 @@ public class TemplateNamespace extends BaseContext {
 
 	public void put(String name, TemplateModel var) {
 		if (template.strictVariableDeclaration() && !template.declaresVariable(name)) {
-			Environment env = Environment.getCurrentEnvironment();
 			throw new UndeclaredVariableException("Cannot set variable " + name + " since it is not declared.");
 		}
+		super.put(name, var);
+	}
+	
+	/**
+	 * We use this for backward compatibility, we'll handle 
+	 * a variable even if it's not declared under certain cases. 
+	 */
+	
+	void forcePut(String name, TemplateModel var) {
 		super.put(name, var);
 	}
 }
