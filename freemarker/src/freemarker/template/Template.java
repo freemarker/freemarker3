@@ -528,12 +528,6 @@ public class Template extends TemplateCore {
      * backward compatibility in includes.
      */
     public void setImplicitlyDeclaredVariables(Set<String> names) {
-    	if (this.getName().equals("test-included.html")) {
-    		System.err.println("implicitly defined vars:");
-    		for (String name : names) {
-    			System.err.println(name);
-    		}
-    	}
     	implicitlyDeclaredVariables = names;
     }
     
