@@ -64,6 +64,7 @@ public class UnaryPlusMinusExpression extends Expression {
     public UnaryPlusMinusExpression(Expression target, boolean isMinus) {
         this.target = target;
         this.isMinus = isMinus;
+        target.parent = this;
     }
     
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {

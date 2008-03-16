@@ -65,6 +65,7 @@ public class ExistsExpression extends Expression {
 	
 	public ExistsExpression(Expression exp) {
 		this.exp = exp;
+		exp.parent = this;
 	}
 
 	TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {

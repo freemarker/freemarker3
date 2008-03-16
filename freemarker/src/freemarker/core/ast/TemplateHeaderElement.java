@@ -60,6 +60,7 @@ public class TemplateHeaderElement extends TemplateNode {
 
 	private Map<String,Expression> params;
 	private Map<String,TemplateModel> values = new HashMap<String, TemplateModel>();
+	protected TemplateElement parent;
 	
 	public TemplateHeaderElement(Map<String,Expression> params) {
 		this.params = params;
@@ -126,6 +127,10 @@ public class TemplateHeaderElement extends TemplateNode {
 			}
 		}
 		throw new IllegalArgumentException("Parameter " + name + " is not a boolean type.");
+	}
+
+	public TemplateElement getParent() {
+	    return parent;
 	}
 }
 

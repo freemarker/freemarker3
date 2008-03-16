@@ -88,6 +88,8 @@ abstract public class ArgsList extends TemplateNode {
 	
 	abstract List getParameterSequence(TemplateModel target, Environment env) throws TemplateException;
 	
+	abstract void setParent(Expression parent);
+	
 	static final ParameterList getParameterList(TemplateModel target) throws TemplateException {
             String keyName = target.getClass().getName();
             if (target instanceof SimpleMethodModel) {

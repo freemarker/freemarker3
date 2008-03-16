@@ -61,6 +61,7 @@ public class NotExpression extends BooleanExpression {
 
     public NotExpression(Expression target) {
         this.target = target;
+        target.parent = this;
     }
 
     boolean isTrue(Environment env) throws TemplateException {

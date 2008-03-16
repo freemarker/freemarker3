@@ -14,7 +14,7 @@ import freemarker.template.Template;
 
 public class CanonicalizingTreeDumper extends DefaultTreeDumper {
 	
-	boolean convertAssignments = true, convertExistence = true;
+	boolean convertAssignments = true, convertExistence = true, strictVars;
     
 	public CanonicalizingTreeDumper() {
         super(true);
@@ -25,12 +25,12 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
     }
     
     public void visit(MixedContent node) {
-    	if (node.getParent() == null) { // the root node
+    	if (strictVars && node.getParent() == null) { // the root node
     		Template template = node.getTemplate();
     		List<String> declaredVariables = new ArrayList<String>(template.getDeclaredVariables());
     		// Now we get rid of the ones that are already declared, either
     		// via var or via macro.
-    		for (TemplateElement te : node) {
+    		for (TemplateNode te : node) {
     			if (te instanceof Macro) {
     				String macroName = ((Macro) te).getName();
     				declaredVariables.remove(macroName);

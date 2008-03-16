@@ -67,10 +67,6 @@ import freemarker.core.parser.ParseException;
  */
 abstract public class TemplateElement extends TemplateNode implements Iterable<TemplateElement> {
 	
-    protected TemplateElement parent;
-
-// Only one of nestedBlock and nestedElements can be non-null.
-
     protected TemplateElement nestedBlock;
 
     protected List<TemplateElement> nestedElements;
@@ -78,6 +74,8 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     // The scoped variables defined in this element.
     
     HashSet<String> declaredVariables;
+
+	protected TemplateElement parent;
     
     /**
      * Processes the contents of this <tt>TemplateElement</tt> and
@@ -133,12 +131,6 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     	return l.iterator();
     }
     
-    public TemplateElement getParent() {
-        return parent;
-    }
-
-    // Walk the tree and set the parent field in all the nested elements recursively.
-
     public void setParentRecursively(TemplateElement parent) {
         this.parent = parent;
         int nestedSize = nestedElements == null ? 0 : nestedElements.size();
@@ -404,7 +396,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
      * @param current
      */
     
-    public void replace(TemplateElement prev, TemplateElement current) {
+    public void replace(TemplateNode prev, TemplateElement current) {
     	if (nestedBlock != null) {
     		if (prev == nestedBlock) {
     			nestedBlock = current;
@@ -413,7 +405,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     	} 
     	else if (nestedElements != null) {
     		for (int i=0; i<nestedElements.size(); i++) {
-    			TemplateElement nestedElement = nestedElements.get(i);
+    			TemplateNode nestedElement = nestedElements.get(i);
     			if (nestedElement == prev) {
     				nestedElements.set(i, current);
     				current.parent = this;
@@ -421,4 +413,8 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     		}
     	}
     }
+
+	public TemplateElement getParent() {
+	    return parent;
+	}
 }

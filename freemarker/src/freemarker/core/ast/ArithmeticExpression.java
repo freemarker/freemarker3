@@ -75,6 +75,8 @@ public class ArithmeticExpression extends Expression {
         this.left = left;
         this.right = right;
         this.operation = operation;
+        left.parent = this;
+        right.parent = this;
     }
 
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException 

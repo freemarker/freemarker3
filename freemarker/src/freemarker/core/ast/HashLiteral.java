@@ -67,6 +67,13 @@ public class HashLiteral extends Expression {
         this.size = keys.size();
         keys.trimToSize();
         values.trimToSize();
+        for (Expression exp : keys) {
+        	exp.parent = this;
+        }
+        
+        for (Expression exp : values) {
+        	exp.parent = this;
+        }
     }
 
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {

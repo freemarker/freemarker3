@@ -94,6 +94,8 @@ public class DefaultToExpression extends Expression {
 	public DefaultToExpression(Expression lhs, Expression rhs) {
 		this.lhs = lhs;
 		this.rhs = rhs;
+		lhs.parent = this;
+		if (rhs != null) rhs.parent = this;
 	}
 
 	TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {

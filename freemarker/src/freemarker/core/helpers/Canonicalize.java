@@ -58,7 +58,7 @@ import java.io.*;
 public class Canonicalize {
 	static File outputDir = null;
 	static String outputEncoding = "ISO-8859-1";
-	static boolean verbose = true, angleBrackets, assignmentConversion = true, existenceConversion = true;
+	static boolean verbose = true, angleBrackets, strictVars, assignmentConversion = true, existenceConversion = true;
 	
     static public void main(String[] args) {
     	if (args.length == 0) {
@@ -66,6 +66,10 @@ public class Canonicalize {
     		System.exit(-1);
     	}
 		processOptions(args);
+		if (!assignmentConversion && strictVars) {
+			System.err.println("If you choose to convert to strictVars, you must also convert legacy assignment directives.");
+			assignmentConversion = true;
+		}
 		if (outputDir != null && !outputDir.exists()) {
 			boolean created = outputDir.mkdir();
 			if (!created) {
@@ -132,6 +136,7 @@ public class Canonicalize {
     						case 'o' : angleBrackets = true; break;
     						case 'a' : assignmentConversion = false; break;
     						case 'x' : existenceConversion = false; break;
+    						case 's' : strictVars = true; break;
     						default : throw new IllegalArgumentException("Unknown option " + c);
     					}
     				}
@@ -153,6 +158,7 @@ public class Canonicalize {
         CanonicalizingTreeDumper dumper = new CanonicalizingTreeDumper(!angleBrackets);
         dumper.convertAssignments = assignmentConversion;
         dumper.convertExistence = existenceConversion;
+        dumper.strictVars = strictVars;
         if (verbose) {
         	System.err.println("Canonicalizing template: ");
         }
@@ -175,6 +181,7 @@ public class Canonicalize {
     	System.err.println("   -o : use older angle bracket syntax");
     	System.err.println("   -a : Do not convert to #set syntax");
     	System.err.println("   -x : Do not convert existence built-ins to shorter syntax");
+    	System.err.println("   -s : Convert to strict_vars");
     	System.err.println();
     }
     

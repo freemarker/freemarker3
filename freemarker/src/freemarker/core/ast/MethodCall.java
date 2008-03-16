@@ -76,7 +76,9 @@ public class MethodCall extends Expression {
     
     public MethodCall(Expression target, ArgsList args) {
     	this.target = target;
+    	target.parent = this;
     	this.arguments = args;
+    	args.setParent(this);
     }
     
     public ArgsList getArgs() {

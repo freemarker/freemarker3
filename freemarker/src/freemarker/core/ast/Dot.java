@@ -67,6 +67,7 @@ public class Dot extends Expression {
 
     public Dot(Expression target, String key) {
         this.target = target;
+        target.parent = this;
         this.key = key;
     }
 

@@ -68,6 +68,10 @@ public class NamedArgsList extends ArgsList {
 		namedArgs.put(name, exp);
 	}
 	
+	void setParent(Expression parent) {
+		for (Expression exp : namedArgs.values()) exp.parent = parent;
+	}
+	
 	public Map<String, Expression> getArgs() {
 		return namedArgs;
 	}

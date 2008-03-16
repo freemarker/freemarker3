@@ -203,7 +203,8 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(Interpolation node) {
-		visit(node.expression); // Or do we visit escapedExpression ???
+		visit(node.expression); // Do we visit both?
+		visit(node.getEscapedExpression());
 	}
 	
 	public void visit(Dot node) {
@@ -404,7 +405,7 @@ public abstract class ASTVisitor {
 	
 	protected void recurse(TemplateElement node) {
         if (node.nestedElements != null) {
-        	for (TemplateElement te : node.nestedElements) {
+        	for (TemplateNode te : node.nestedElements) {
         		visit(te);
         	}
         } else {

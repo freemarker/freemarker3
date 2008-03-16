@@ -156,7 +156,7 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
             VarDirective varDirective = null;
             Set<String> variables = new HashSet<String>();
             variables.addAll(params.getParamNames());
-            for (TemplateElement te : block.getNestedElements()) {
+            for (TemplateNode te : block.getNestedElements()) {
                 if (te instanceof VarDirective) {
                     VarDirective sdir = (VarDirective) te; 
                     if (varDirective == null){
