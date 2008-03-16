@@ -373,7 +373,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(IfBlock node) {
 		List<TemplateElement> subBlocks = node.getSubBlocks();
-		for (TemplateElement block : node.getSubBlocks()) {
+		for (TemplateNode block : node.getSubBlocks()) {
 			visit(block);
 			
 		}
@@ -647,7 +647,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 		buffer.append(render(node.testExpression));
 		buffer.append(CLOSE_BRACKET);
 		List<TemplateElement> cases = node.getCases();
-		if (cases != null) for (TemplateElement cas : node.getCases()) {
+		if (cases != null) for (TemplateNode cas : node.getCases()) {
 			visit(cas);
 		}
 		closeDirective("switch");

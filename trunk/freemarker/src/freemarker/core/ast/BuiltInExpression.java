@@ -174,6 +174,7 @@ public class BuiltInExpression extends Expression implements Cloneable {
 	
 	public BuiltInExpression(Expression target, String key) {
 		this.target = target;
+		target.parent = this;
 		this.key = key.intern();
 		this.isExistenceBI = this.key == "exists" 
 			              || this.key == "if_exists" 

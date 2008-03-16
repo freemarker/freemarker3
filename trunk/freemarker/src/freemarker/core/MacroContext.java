@@ -92,7 +92,8 @@ public class MacroContext extends BlockContext {
         }
     }
 
-// REVISIT: This may be incorrect (It's tricky...)    
+// REVISIT: This may be incorrect (It's tricky...)
+    /*
 	public TemplateModel get(String key) throws TemplateModelException {
 		TemplateModel result = super.get(key);
 		if (result == null) {
@@ -106,7 +107,7 @@ public class MacroContext extends BlockContext {
 			}
 		}
 		return result;
-	}
+	}*/
 
 	public boolean definesVariable(String name) {
 		return macro.declaresVariable(name);

@@ -73,7 +73,6 @@ public class PostParseVisitor extends ASTVisitor {
 	private Template template;
 	private List<EscapeBlock> escapes = new ArrayList<EscapeBlock>();
 	private HashSet<String> varsImplicitlyDefinedInTemplate = new HashSet<String>();
-	private HashSet<String> namespacesImported = new HashSet<String>();
 	
 
 	public PostParseVisitor(Template template) {
@@ -160,6 +159,16 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(AssignmentInstruction node) {
 		super.visit(node);
+		if (template.strictVariableDeclaration()) {
+			if (node.type == AssignmentInstruction.NAMESPACE) {
+				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
+				template.addParsingProblem(problem);
+			}
+			if (node.type == AssignmentInstruction.LOCAL) {
+				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
+				template.addParsingProblem(problem);
+			}
+		}
         if (node.type == AssignmentInstruction.LOCAL) {
         	Macro macro = getContainingMacro(node);
         	if (macro == null) {
@@ -184,6 +193,16 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(BlockAssignment node) {
 		super.visit(node);
+		if (template.strictVariableDeclaration()) {
+			if (node.type == AssignmentInstruction.NAMESPACE) {
+				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
+				template.addParsingProblem(problem);
+			}
+			if (node.type == AssignmentInstruction.LOCAL) {
+				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
+				template.addParsingProblem(problem);
+			}
+		}
 		if (node.type == AssignmentInstruction.LOCAL) {
 			Macro macro = getContainingMacro(node);
 			if (macro == null) {
@@ -243,11 +262,11 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(Macro node) {
 		String macroName = node.getName();
-		if (template.declaresVariable(macroName)) {
+		if (template.strictVariableDeclaration() && template.declaresVariable(macroName)) {
 			ParsingProblem problem = new ParsingProblem("You already have declared a variable (or declared another macro) as " + macroName + ". You cannot reuse the variable name in the same template.", node);
 			template.addParsingProblem(problem);
 		}
-		template.declareVariable(node.getName());
+		template.declareVariable(macroName);
 		varsImplicitlyDefinedInTemplate.add(macroName);
 		super.visit(node);
 	}
@@ -327,18 +346,15 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(VarDirective node) {
         TemplateElement parent = node.getParent();
-        if (parent instanceof MixedContent) {
+        while (parent instanceof MixedContent 
+        		|| parent instanceof EscapeBlock 
+        		|| parent instanceof NoEscapeBlock) {
             parent = parent.getParent();
         }
        	for (String key : node.getVariables().keySet()) {
        		if (parent == null) {
-       			if (template.declaresVariable(key)) {
-           			ParsingProblem problem = new ParsingProblem("The variable " + key + " has already been declared in this template." + ".", node);
-           			template.addParsingProblem(problem);
-       			}
        			template.declareVariable(key);
        			varsImplicitlyDefinedInTemplate.remove(key);
-//       			template.strictVariableDeclaration(true);
        		} else {
        			if (parent.declaresVariable(key)) {
        				String msg = "The variable " + key + " has already been declared in this block.";
@@ -356,7 +372,7 @@ public class PostParseVisitor extends ASTVisitor {
 	public void visit(SwitchBlock node) {
 		super.visit(node);
 		boolean foundDefaultCase = false;
-		for (TemplateElement te : node.getCases()) {
+		for (TemplateNode te : node.getCases()) {
 			if (((Case) te).isDefault) {
 				if (foundDefaultCase) {
 					template.addParsingProblem(new ParsingProblem("You can only have one default case in a switch construct.", node));
@@ -437,8 +453,8 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(LibraryLoad node) {
 		String namespaceName = node.namespace;
-		if (template.declaresVariable(namespaceName) 
-				&& !varsImplicitlyDefinedInTemplate.contains(namespaceName)) {
+		if (template.strictVariableDeclaration() && 
+				template.declaresVariable(namespaceName)) { 
 			String msg = "The variable "+namespaceName + " is already declared and should not be used as a namespace name to import.";
 			template.addParsingProblem(new ParsingProblem(msg, node));
 		}

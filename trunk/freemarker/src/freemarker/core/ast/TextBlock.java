@@ -387,14 +387,14 @@ public final class TextBlock extends TemplateElement {
             return false;
         }
         boolean atTopLevel = (getParent().getParent() == null);
-        TemplateElement prevSibling = previousSibling();
-        TemplateElement nextSibling = nextSibling();
+        TemplateNode prevSibling = previousSibling();
+        TemplateNode nextSibling = nextSibling();
         return ((prevSibling == null && atTopLevel) || nonOutputtingType(prevSibling))
               && ((nextSibling == null && atTopLevel) || nonOutputtingType(nextSibling));
     }
     
 
-    private boolean nonOutputtingType(TemplateElement element) {
+    private boolean nonOutputtingType(TemplateNode element) {
         return (element instanceof Macro ||
                 element instanceof AssignmentInstruction ||
                 element instanceof VarDirective ||

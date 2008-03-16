@@ -72,6 +72,9 @@ public class ListLiteral extends Expression {
     public ListLiteral(ArrayList<Expression> values) {
         this.values = values;
         values.trimToSize();
+        for (Expression value : values) {
+        	value.parent = this;
+        }
     }
     
     public List<Expression> getElements() {

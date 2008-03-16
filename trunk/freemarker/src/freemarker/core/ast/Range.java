@@ -66,6 +66,8 @@ public class Range extends Expression {
     public Range(Expression left, Expression right) {
         this.left = left;
         this.right = right;
+        left.parent = this;
+        if (right != null) right.parent = this;
     }
     
     boolean hasRhs() {

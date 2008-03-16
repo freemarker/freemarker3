@@ -75,6 +75,7 @@ abstract public class Expression extends TemplateNode {
     // is possible, of course.
     
     TemplateModel constantValue;
+	protected Expression parent;
     
     /**
      * @return the value of the expression if it is a literal, null otherwise.
@@ -159,7 +160,12 @@ abstract public class Expression extends TemplateNode {
     }
 
 
-    static public boolean isEmpty(TemplateModel model) throws TemplateModelException
+    public Expression getParent() {
+	    return parent;
+	}
+    
+    
+	static public boolean isEmpty(TemplateModel model) throws TemplateModelException
     {
         if (model instanceof BeanModel) {
             return ((BeanModel) model).isEmpty();

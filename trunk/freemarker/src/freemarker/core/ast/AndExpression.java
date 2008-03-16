@@ -63,6 +63,8 @@ public class AndExpression extends BooleanExpression {
     public AndExpression(Expression left, Expression right) {
         this.left = left;
         this.right = right;
+        left.parent = this;
+        right.parent = this;
     }
 
     boolean isTrue(Environment env) throws TemplateException {

@@ -82,7 +82,7 @@ public class IfBlock extends TemplateElement {
     
     public void execute(Environment env) throws TemplateException, IOException {
     	
-        for (TemplateElement te : nestedElements) {
+        for (TemplateNode te : nestedElements) {
             ConditionalBlock cblock = (ConditionalBlock) te;
             Expression condition = cblock.condition;
             if (condition == null || condition.isTrue(env)) {

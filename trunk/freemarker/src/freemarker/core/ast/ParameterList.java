@@ -27,14 +27,18 @@ public class ParameterList extends TemplateNode {
 	private Map<String, Expression> defaults;
 	private String catchall;
     private boolean curryGenerated;
+	protected TemplateElement parent;
 	
 	public void addParam(String paramName) {
 		params.add(paramName);
 	}
 	
 	public List<String> getParamNames() {
-		return params;
+		List<String> result = new ArrayList<String>(params);
+		if (catchall != null) result.add(catchall);
+		return result;
 	}
+
     
     boolean containsParam(String name) {
         return params.contains(name);
@@ -258,4 +262,8 @@ public class ParameterList extends TemplateNode {
             }
             return b.toString();
         }
+
+		public TemplateElement getParent() {
+		    return parent;
+		}
 }

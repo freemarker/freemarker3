@@ -295,11 +295,10 @@ public final class Environment extends Configurable implements Scope {
             TemplateDirectiveModel directiveModel, Map<String, TemplateModel> args,
             final List<String> bodyParameterNames)
             throws TemplateException, IOException {
-        TemplateDirectiveBody nested;
-        if(element == null) {
-            nested = null;
-        }
-        else {
+        TemplateDirectiveBody nested = null;
+        boolean createsNewScope = false;
+        if(element != null) {
+        	createsNewScope = element.getParent().createsScope();
             nested = new TemplateDirectiveBody() {
                 public void render(Writer newOut) throws TemplateException, IOException {
                     Writer prevOut = out;
@@ -321,7 +320,7 @@ public final class Environment extends Configurable implements Scope {
             outArgs = new TemplateModel[bodyParameterNames.size()];
         }
         final Scope scope = currentScope;
-        if(outArgs.length > 0) {
+        if (createsNewScope) {
             currentScope = new Scope() {
                 public boolean definesVariable(String name) {
                     return bodyParameterNames.contains(name);
@@ -412,9 +411,7 @@ public final class Environment extends Configurable implements Scope {
             directiveModel.execute(this, args, outArgs, nested);
         }
         finally {
-            if(outArgs.length > 0) {
-                currentScope = scope;
-            }
+            currentScope = scope;
         }
     }
     
@@ -1251,14 +1248,14 @@ public final class Environment extends Configurable implements Scope {
                 .listIterator(elementStack.size());
         if (iter.hasPrevious()) {
             pw.print("==> ");
-            TemplateElement prev = iter.previous();
+            TemplateNode prev = iter.previous();
             pw.print(prev.getDescription());
             pw.print(" [");
             pw.print(prev.getStartLocation());
             pw.println("]");
         }
         while (iter.hasPrevious()) {
-            TemplateElement prev = iter.previous();
+            TemplateNode prev = iter.previous();
             if (prev instanceof UnifiedCall || prev instanceof Include) {
                 String location = prev.getDescription() + " ["
                         + prev.getStartLocation() + "]";

@@ -70,6 +70,8 @@ public class AddConcatExpression extends Expression {
     public AddConcatExpression(Expression left, Expression right) {
         this.left = left;
         this.right = right;
+        left.parent = this;
+        right.parent = this;
     }
 
     TemplateModel _getAsTemplateModel(Environment env)

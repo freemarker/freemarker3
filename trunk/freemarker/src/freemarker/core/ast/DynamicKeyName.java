@@ -69,6 +69,8 @@ public class DynamicKeyName extends Expression {
     public DynamicKeyName(Expression target, Expression nameExpression) {
         this.target = target; 
         this.nameExpression = nameExpression;
+        target.parent = this;
+        nameExpression.parent = this;
     }
 
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException

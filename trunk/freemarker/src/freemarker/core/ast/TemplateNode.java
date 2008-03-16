@@ -72,9 +72,7 @@ public abstract class TemplateNode extends TemplateLocation {
 	
 	static private DefaultReferenceChecker referenceChecker = DefaultReferenceChecker.instance;
 	static private DefaultTreeDumper canonicalTreeRenderer = new DefaultTreeDumper(false);
-	
-
-    public String getSource() {
+	public String getSource() {
         if (template != null) {
             return template.getSource(beginColumn, beginLine, endColumn, endLine);
         } else {
