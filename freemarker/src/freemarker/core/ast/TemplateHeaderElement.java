@@ -73,7 +73,12 @@ public class TemplateHeaderElement extends TemplateNode {
 	public boolean hasParameter(String name) {
 		return params.containsKey(name);
 	}
-
+	
+	public void addParameter(String name, Expression exp) {
+		params.put(name, exp);
+		values.remove(name);
+	}
+	
 	public TemplateModel getParameter(String name) {
 		if (values.containsKey(name)) {
 			return values.get(name);

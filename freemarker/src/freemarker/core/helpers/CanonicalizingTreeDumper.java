@@ -24,6 +24,21 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
         super(altSyntax);
     }
     
+    public String render(Template template) {
+    	if (strictVars) {
+    		TemplateHeaderElement header = template.getHeaderElement();
+    		if (header == null) {
+    			Map<String, Expression> params = new HashMap<String, Expression>();
+    			params.put("strict_vars", new BooleanLiteral(true));
+    			header = new TemplateHeaderElement(params);
+    		} else {
+    			header.addParameter("strict_vars", new BooleanLiteral(false));
+    		}
+    	}
+    	return super.render(template);
+    }
+    
+    
     public void visit(MixedContent node) {
     	if (strictVars && node.getParent() == null) { // the root node
     		Template template = node.getTemplate();
