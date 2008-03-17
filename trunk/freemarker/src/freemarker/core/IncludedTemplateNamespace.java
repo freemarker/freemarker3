@@ -68,7 +68,7 @@ public class IncludedTemplateNamespace extends TemplateNamespace {
 	}
 	
 	public void put(String name, TemplateModel var) {
-		if (!template.declaresVariable(name) || template.isImplicitlyDeclared(name)) {
+		if (!template.declaresVariable(name)) {
 			try {
 				getEnclosingScope().put(name, var);
 			} catch (UndeclaredVariableException uve) {

@@ -72,8 +72,6 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	private Template template;
 	private List<EscapeBlock> escapes = new ArrayList<EscapeBlock>();
-	private HashSet<String> varsImplicitlyDefinedInTemplate = new HashSet<String>();
-	
 
 	public PostParseVisitor(Template template) {
 		this.template = template;
@@ -85,11 +83,6 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 		EscapeBlock lastEscape = escapes.get(escapes.size() -1);
 		return lastEscape.doEscape(exp);
-	}
-	
-	public void visit(Template template) {
-		super.visit(template);
-		template.setImplicitlyDeclaredVariables(varsImplicitlyDefinedInTemplate);
 	}
 	
 	public void visit(TemplateHeaderElement header) {
@@ -181,6 +174,7 @@ public class PostParseVisitor extends ASTVisitor {
         		}
         	}
         }
+/*        
         if (node.type == AssignmentInstruction.NAMESPACE && node.getNamespaceExp() == null) {
         	for (String varname : node.getVarNames()) {
         		if (!template.declaresVariable(varname)) {
@@ -188,7 +182,7 @@ public class PostParseVisitor extends ASTVisitor {
         		}
         		template.declareVariable(varname);
         	}
-        }
+        }*/
 	}
 	
 	public void visit(BlockAssignment node) {
@@ -212,12 +206,6 @@ public class PostParseVisitor extends ASTVisitor {
 					macro.declareVariable(node.varName);
 				}
 			}
-		}
-		else if (node.type == AssignmentInstruction.NAMESPACE) {
-			if (!template.declaresVariable(node.varName)) {
-			    varsImplicitlyDefinedInTemplate.add(node.varName);
-			}
-			template.declareVariable(node.varName);
 		}
 	}
 	
@@ -266,8 +254,9 @@ public class PostParseVisitor extends ASTVisitor {
 			ParsingProblem problem = new ParsingProblem("You already have declared a variable (or declared another macro) as " + macroName + ". You cannot reuse the variable name in the same template.", node);
 			template.addParsingProblem(problem);
 		}
-		template.declareVariable(macroName);
-		varsImplicitlyDefinedInTemplate.add(macroName);
+		if (template.strictVariableDeclaration()) {
+			template.declareVariable(macroName);
+		}
 		super.visit(node);
 	}
 	
@@ -354,7 +343,6 @@ public class PostParseVisitor extends ASTVisitor {
        	for (String key : node.getVariables().keySet()) {
        		if (parent == null) {
        			template.declareVariable(key);
-       			varsImplicitlyDefinedInTemplate.remove(key);
        		} else {
        			if (parent.declaresVariable(key)) {
        				String msg = "The variable " + key + " has already been declared in this block.";
