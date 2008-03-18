@@ -25,12 +25,12 @@ public class BlockContext extends BaseContext {
 		super.put(key, tm);
 	}
 	
-	public boolean definesVariable(String name) {
-		return getBlock().declaresVariable(name);
-	}
-
 	public TemplateElement getBlock() {
 		return block;
+	}
+	
+	public boolean definesVariable(String name) {
+		return getBlock().declaresVariable(name);
 	}
 }
 
