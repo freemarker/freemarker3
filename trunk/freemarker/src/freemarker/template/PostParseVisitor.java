@@ -174,15 +174,6 @@ public class PostParseVisitor extends ASTVisitor {
         		}
         	}
         }
-/*        
-        if (node.type == AssignmentInstruction.NAMESPACE && node.getNamespaceExp() == null) {
-        	for (String varname : node.getVarNames()) {
-        		if (!template.declaresVariable(varname)) {
-        			varsImplicitlyDefinedInTemplate.add(varname);
-        		}
-        		template.declareVariable(varname);
-        	}
-        }*/
 	}
 	
 	public void visit(BlockAssignment node) {

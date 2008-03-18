@@ -79,12 +79,7 @@ public class TemplateNamespace extends BaseContext {
 		super.put(name, var);
 	}
 	
-	/**
-	 * We use this for backward compatibility, we'll handle 
-	 * a variable even if it's not declared under certain cases. 
-	 */
-	
-	void forcePut(String name, TemplateModel var) {
-		super.put(name, var);
+	public boolean definesVariable(String name) {
+		return template.declaresVariable(name);
 	}
 }
