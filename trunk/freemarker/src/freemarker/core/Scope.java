@@ -119,4 +119,6 @@ public interface Scope extends TemplateHashModelEx {
      * @throws TemplateModelException
      */
     Collection<String> getDirectVariableNames() throws TemplateModelException;
+    
+    
 }

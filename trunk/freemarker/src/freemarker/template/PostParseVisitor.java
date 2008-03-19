@@ -247,6 +247,13 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 		if (template.strictVariableDeclaration()) {
 			template.declareVariable(macroName);
+			TemplateElement parent = node.getParent();
+			while (parent != null) {
+				if (!(parent instanceof EscapeBlock || parent instanceof NoEscapeBlock)) {
+					ParsingProblem problem = new ParsingProblem("Macro " + macroName + " is within a " + parent.getDescription() + ". It must be a top-level element.");
+					template.addParsingProblem(problem);
+				}
+			}
 		}
 		super.visit(node);
 	}

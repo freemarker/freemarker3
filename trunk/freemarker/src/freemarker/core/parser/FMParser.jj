@@ -81,8 +81,6 @@ public class FMParser {
   private boolean stripText;
 // variables that keep track of whether we are in a loop or a switch.
   private int contentNesting; // for stripText
-  private UnifiedCall currentCall;
-  private Macro currentMacro;
   
   /**
    * Create an FM expression parser using a string.
@@ -2185,11 +2183,9 @@ ParameterList ParameterList() :
 
 Macro Macro() :
 {
-   Macro parentMacro = this.currentMacro;
    CodeSource codeSource = Template.NULL_CODE_SOURCE;
    if (template != null) codeSource = template.getCodeSource();
-   if (parentMacro != null) codeSource = parentMacro.getCodeSource();
-   Macro result = this.currentMacro  = new Macro(codeSource);
+   Macro result = new Macro(codeSource);
    Token arg, start, end;
    Expression nameExp;
    String name;
@@ -2203,13 +2199,6 @@ Macro Macro() :
         |
         start=<FUNCTION> {result.setFunction(true); functionOrMacro = "function";}
     )
-    {
-/*    	
-       if (currentMacro != null) {
-         throw new ParseException(getErrorStart(start)
-                     + "\nMacros cannot be nested.", start.beginLine, start.endLine);
-       }*/
-    }
     nameExp=IdentifierOrStringLiteral()
     {
        name = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
@@ -2225,12 +2214,7 @@ Macro Macro() :
 	   result.setName(name);
 	   result.setNestedBlock(block);
        result.setLocation(template, start, end);
-       if (parentMacro == null && template != null) {
-	       template.addMacro(result);
-	   } else if (parentMacro != null) {
-	       parentMacro.addNestedMacro(result);
-	   }
-       this.currentMacro = parentMacro;
+       template.addMacro(result);
        return result;
     }
 }
@@ -2331,8 +2315,7 @@ TemplateElement UnifiedMacroTransform() :
    String directiveName = null;
    TemplateElement nestedBlock = null;
    Expression exp;
-   UnifiedCall parentCall = currentCall;
-   UnifiedCall result = this.currentCall = new UnifiedCall();
+   UnifiedCall result = new UnifiedCall();
    ArgsList args = null;
    ParameterList bodyParameters = null;
 }
@@ -2382,7 +2365,6 @@ TemplateElement UnifiedMacroTransform() :
     )
     {
        result.setLocation(template, start, end);
-       this.currentCall = parentCall;
        return result;
     }
 }
@@ -2392,8 +2374,7 @@ TemplateElement Call() :
    Token start, end;
    Identifier id;
    String macroName= null;
-   UnifiedCall prevCall = this.currentCall;
-   UnifiedCall result = this.currentCall = new UnifiedCall();
+   UnifiedCall result = new UnifiedCall();
    ArgsList args = null;
 }
 {
@@ -2409,7 +2390,6 @@ TemplateElement Call() :
     {
        result.setLocation(template, start, end);
        args.setLocationInfoIfAbsent(result);
-       this.currentCall = prevCall;
        return result;
     }
 }

@@ -91,26 +91,5 @@ public class MacroContext extends BlockContext {
             getEnvironment().renderSecurely(nestedBlock, macro.getCodeSource());
         }
     }
-
-// REVISIT: This may be incorrect (It's tricky...)
-    /*
-	public TemplateModel get(String key) throws TemplateModelException {
-		TemplateModel result = super.get(key);
-		if (result == null) {
-			MacroContext ctxt = this;
-			while (ctxt != null) {
-				ctxt = ctxt.invokingMacroContext;
-				if (ctxt != null && ctxt.getBlock() == macro.getParentMacro()) {
-					result = ctxt.get(key);
-					break;
-				}
-			}
-		}
-		return result;
-	}*/
-
-	public boolean definesVariable(String name) {
-		return macro.declaresVariable(name);
-	}
 }
 
