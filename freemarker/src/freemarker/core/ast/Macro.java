@@ -74,7 +74,6 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     }
     
     private Map<String, Macro> nestedMacros;
-    private Macro parentMacro;
     private final CodeSource codeSource;
     
     public Macro() {
@@ -120,10 +119,6 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     	return params;
     }
     
-    public Macro getParentMacro() {
-    	return parentMacro;
-    }
-    
     public boolean isFunction() {
     	return this.isFunction;
     }
@@ -132,12 +127,6 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     	this.isFunction = b;
     }
     
-    public void addNestedMacro(Macro nestedMacro) {
-    	if (nestedMacros == null) nestedMacros = new HashMap<String, Macro>();
-    	nestedMacros.put(nestedMacro.getName(), nestedMacro);
-    	nestedMacro.parentMacro = this;
-    }
-
     public String getName() {
         return name;
     }

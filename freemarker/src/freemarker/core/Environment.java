@@ -1205,7 +1205,11 @@ public final class Environment extends Configurable implements Scope {
         try {
         	scope.put(name, model);
         } catch (UndeclaredVariableException uve) {
-        	throw new TemplateException(uve, this);
+        	if (globalVariables.containsKey(name)) {
+        		globalVariables.put(name, model);
+        	} else {
+        		throw new TemplateException(uve, this);
+        	}
         }
     }
 

@@ -122,8 +122,4 @@ public class LoopContext extends BlockContext {
             throw TemplateNode.invalidTypeException(list, iteratorBlock.listExpression, env, "collection or sequence");
         }
     }
-    
-    public boolean definesVariable(String name) {
-    	return block.declaresVariable(name);
-    }
 }

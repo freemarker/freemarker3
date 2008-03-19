@@ -86,7 +86,7 @@ abstract public class BaseContext implements Scope {
 		return variables.remove(key);
 	}
 	
-	public TemplateModel get(String key) throws TemplateModelException{
+	public TemplateModel get(String key) { 
 		return variables.get(key);
 	}
 	
