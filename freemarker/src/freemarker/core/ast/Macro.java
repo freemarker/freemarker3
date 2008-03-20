@@ -131,7 +131,7 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
         return name;
     }
 
-    public void execute(Environment env) {
+    public void execute(Environment env) throws TemplateException {
         env.visitMacroDef(this);
     }
 

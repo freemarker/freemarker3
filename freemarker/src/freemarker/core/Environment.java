@@ -181,7 +181,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public Environment(Template template,
-            final TemplateHashModel rootDataModel, Writer out) {
+            final TemplateHashModel rootDataModel, Writer out) throws TemplateException {
         super(template);
         this.currentScope = mainNamespace = new TemplateNamespace(
                 this, template);
@@ -699,10 +699,11 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    public void visitMacroDef(Macro macro) {
+    public void visitMacroDef(Macro macro) throws TemplateException {
         if (currentMacroContext == null) {
             macroToNamespaceLookup.put(macro, getCurrentNamespace());
-            getCurrentNamespace().put(macro.getName(), macro);
+//            getCurrentNamespace().put(macro.getName(), macro);
+            this.unqualifiedSet(macro.getName(), macro);
         }
     }
 
@@ -1788,7 +1789,7 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    void importMacros(Template template) {
+    void importMacros(Template template) throws TemplateException {
         for (Iterator it = ((TemplateCore)template).getMacrosNoCheck().values().iterator(); it
                 .hasNext();) {
             visitMacroDef((Macro) it.next());
