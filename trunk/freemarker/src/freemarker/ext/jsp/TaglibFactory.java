@@ -377,10 +377,11 @@ public class TaglibFactory implements TemplateHashModel {
         is.setSystemId(url);
         SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(false);
-        factory.setValidating(true);
+        factory.setValidating(false);
         XMLReader reader = factory.newSAXParser().getXMLReader();
         reader.setEntityResolver(new LocalTaglibDtds());
         reader.setContentHandler(handler);
+        reader.setErrorHandler(handler);
         reader.parse(is);
     }
 
