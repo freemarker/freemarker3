@@ -129,10 +129,18 @@ public class PostParseVisitor extends ASTVisitor {
 				boolean strictVariableDeclaration = header.getBooleanParameter("strict_vars");
          	   	template.setStrictVariableDeclaration(strictVariableDeclaration);
        	   	} catch (Exception e) {
-       	   		ParsingProblem problem = new ParsingProblem(e.getMessage());
+       	   		ParsingProblem problem = new ParsingProblem(e.getMessage(), header);
        	   		template.addParsingProblem(problem);
        	   	}
        	}
+	}
+	
+	public void visit(Include node) {
+		if (template.strictVariableDeclaration()) {
+			ParsingProblem problem = new ParsingProblem("The legacy #include instruction is not permitted in strict_vars mode. Use #embed or possibly #import.", node);
+			template.addParsingProblem(problem);
+		}
+		super.visit(node);
 	}
 	
 	public void visit(InvalidExpression node) {
