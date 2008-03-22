@@ -74,7 +74,7 @@ public class IncludedTemplateNamespace extends TemplateNamespace {
 		else {
 			Scope scope = getEnclosingScope();
 			while (!(scope instanceof TemplateNamespace) && !scope.definesVariable(name)) {
-				scope = getEnclosingScope();
+				scope = scope.getEnclosingScope();
 			}
 			scope.put(name, var);
 		}
