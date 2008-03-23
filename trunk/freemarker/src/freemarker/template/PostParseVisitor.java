@@ -87,56 +87,48 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(TemplateHeaderElement header) {
 		if (header == null) return;
-		if (header.hasParameter("strip_whitespace")) {
+		for (Map.Entry<String, Expression> entry : header.getParams().entrySet()) {
+			String key = entry.getKey();
 			try {
-				template.setStripWhitespace(header.getBooleanParameter("strip_whitespace"));
+				if (key.equals("strip_whitespace")) {
+					template.setStripWhitespace(header.getBooleanParameter("strip_whitespace"));
+				} 
+				else if (key.equals("ns_prefixes")) {
+					TemplateHashModelEx prefixMap = (TemplateHashModelEx) header.getParameter("ns_prefixes");
+	                TemplateCollectionModel keys = prefixMap.keys();
+	                for (TemplateModelIterator it = keys.iterator(); it.hasNext();) {
+	                    String prefix = ((TemplateScalarModel) it.next()).getAsString();
+	                    TemplateModel valueModel = prefixMap.get(prefix);
+	                    String nsURI = ((TemplateScalarModel) valueModel).getAsString();
+	                    template.addPrefixNSMapping(prefix, nsURI);
+	                }
+				}
+				else if (key.equals("attributes")) {
+					TemplateHashModelEx attributeMap = (TemplateHashModelEx) header.getParameter("attributes");
+	                TemplateCollectionModel keys = attributeMap.keys();
+	                for (TemplateModelIterator it = keys.iterator(); it.hasNext();) {
+	                    String attName = ((TemplateScalarModel) it.next()).getAsString();
+	                    Object attValue = DeepUnwrap.unwrap(attributeMap.get(attName));
+	                    template.setCustomAttribute(attName, attValue);
+	                }
+				}
+				else if (key.equals("strict_vars")) {
+					boolean strictVariableDeclaration = header.getBooleanParameter("strict_vars");
+	         	   	template.setStrictVariableDeclaration(strictVariableDeclaration);
+	       	   	}
+				else if (!key.equals("strip_text") && !key.equals("encoding")) {
+					ParsingProblem problem  = new ParsingProblem("Unknown ftl header parameter: " + entry.getKey(), header);
+					template.addParsingProblem(problem);
+				}
 			} catch (Exception e) {
-				ParsingProblem problem = new ParsingProblem(e.getMessage(), header.getParams().get("strip_whitespace"));
+				ParsingProblem problem = new ParsingProblem(e.getMessage(), header);
 				template.addParsingProblem(problem);
 			}
 		}
-		if (header.hasParameter("ns_prefixes")) {
-			try {
-				TemplateHashModelEx prefixMap = (TemplateHashModelEx) header.getParameter("ns_prefixes");
-                TemplateCollectionModel keys = prefixMap.keys();
-                for (TemplateModelIterator it = keys.iterator(); it.hasNext();) {
-                    String prefix = ((TemplateScalarModel) it.next()).getAsString();
-                    TemplateModel valueModel = prefixMap.get(prefix);
-                    String nsURI = ((TemplateScalarModel) valueModel).getAsString();
-                    template.addPrefixNSMapping(prefix, nsURI);
-                }
-			} catch (Exception e) {
-				ParsingProblem problem = new ParsingProblem(e.getMessage(), header.getParams().get("ns_prefixes"));
-				template.addParsingProblem(problem);
-			}
-		}
-		if (header.hasParameter("attributes")) {
-			try {
-				TemplateHashModelEx attributeMap = (TemplateHashModelEx) header.getParameter("attributes");
-                TemplateCollectionModel keys = attributeMap.keys();
-                for (TemplateModelIterator it = keys.iterator(); it.hasNext();) {
-                    String attName = ((TemplateScalarModel) it.next()).getAsString();
-                    Object attValue = DeepUnwrap.unwrap(attributeMap.get(attName));
-                    template.setCustomAttribute(attName, attValue);
-                }
-			} catch (Exception e ) {
-				ParsingProblem problem = new ParsingProblem(e.getMessage(), header.getParams().get("attributes"));
-				template.addParsingProblem(problem);
-			}
-		}
-		if (header.hasParameter("strict_vars")) {
-			try {
-				boolean strictVariableDeclaration = header.getBooleanParameter("strict_vars");
-         	   	template.setStrictVariableDeclaration(strictVariableDeclaration);
-       	   	} catch (Exception e) {
-       	   		ParsingProblem problem = new ParsingProblem(e.getMessage(), header);
-       	   		template.addParsingProblem(problem);
-       	   	}
-       	}
 	}
 	
 	public void visit(Include node) {
-		if (template.strictVariableDeclaration()) {
+		if (template.strictVariableDeclaration() && !node.useFreshNamespace()) {
 			ParsingProblem problem = new ParsingProblem("The legacy #include instruction is not permitted in strict_vars mode. Use #embed or possibly #import.", node);
 			template.addParsingProblem(problem);
 		}

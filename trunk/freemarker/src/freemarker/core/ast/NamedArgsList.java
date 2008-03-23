@@ -66,10 +66,7 @@ public class NamedArgsList extends ArgsList {
 	public void addNamedArg(String name, Expression exp) throws ParseException{
 		if (namedArgs.containsKey(name)) throw new ParseException("Error at: " + exp.getStartLocation() + "\nArgument " + name + " was already specified.");
 		namedArgs.put(name, exp);
-	}
-	
-	void setParent(Expression parent) {
-		for (Expression exp : namedArgs.values()) exp.parent = parent;
+		exp.parent = this;
 	}
 	
 	public Map<String, Expression> getArgs() {

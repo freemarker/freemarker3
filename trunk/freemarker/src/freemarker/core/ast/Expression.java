@@ -75,7 +75,6 @@ abstract public class Expression extends TemplateNode {
     // is possible, of course.
     
     TemplateModel constantValue;
-	protected Expression parent;
     
     /**
      * @return the value of the expression if it is a literal, null otherwise.
@@ -141,6 +140,7 @@ abstract public class Expression extends TemplateNode {
     Expression deepClone(String name, Expression subst) {
         Expression clone = _deepClone(name, subst);
         clone.copyLocationFrom(this);
+        clone.parent = this.parent;
         return clone;
     }
 
@@ -161,7 +161,7 @@ abstract public class Expression extends TemplateNode {
 
 
     public Expression getParent() {
-	    return parent;
+	    return (Expression) parent;
 	}
     
     
