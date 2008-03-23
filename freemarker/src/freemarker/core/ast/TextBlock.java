@@ -137,7 +137,7 @@ public final class TextBlock extends TemplateElement {
         if (onlyExplicitTrimming || text.length == 0 ) {
             return;
         }
-        if (parent.getParent() == null && previousSibling() == null) return;
+        if (getParent().getParent() == null && previousSibling() == null) return;
         if (!deliberateLeftTrim) {
             trailingCharsToStrip = trailingCharsToStrip();
         }

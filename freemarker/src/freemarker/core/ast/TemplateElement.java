@@ -75,8 +75,6 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     
     HashSet<String> declaredVariables;
 
-	protected TemplateElement parent;
-    
     /**
      * Processes the contents of this <tt>TemplateElement</tt> and
      * outputs the resulting text
@@ -87,6 +85,10 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
 
     public Scope createLocalScope(Scope enclosingScope) {
     	return new BlockContext(this, enclosingScope);
+    }
+    
+    public TemplateElement getParent() {
+    	return (TemplateElement) parent;
     }
     
     public boolean declaresVariable(String name) {
@@ -174,7 +176,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
             return prev.getLastLeaf();
         }
         else if (parent != null) {
-            return parent.prevTerminalNode();
+            return getParent().prevTerminalNode();
         }
         return null;
     }
@@ -185,7 +187,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
             return next.getFirstLeaf();
         }
         else if (parent != null) {
-            return parent.nextTerminalNode();
+            return getParent().nextTerminalNode();
         }
         return null;
     }
@@ -196,13 +198,14 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
         if (parent == null) {
             return null;
         }
-        List siblings = parent.nestedElements;
+        TemplateElement parentElement = (TemplateElement) this.parent;
+        List<TemplateElement> siblings = parentElement.nestedElements;
         if (siblings == null) {
             return null;
         }
         for (int i = siblings.size() - 1; i>=0; i--) {
             if (siblings.get(i) == this) {
-                return(i >0) ? (TemplateElement) siblings.get(i-1) : null;
+                return(i >0) ? siblings.get(i-1) : null;
             }
         }
         return null;
@@ -212,7 +215,8 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
         if (parent == null) {
             return null;
         }
-        List siblings = parent.nestedElements;
+        TemplateElement parent = (TemplateElement) this.parent;
+        List<TemplateElement> siblings = parent.nestedElements;
         if (siblings == null) {
             return null;
         }
@@ -413,8 +417,4 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     		}
     	}
     }
-
-	public TemplateElement getParent() {
-	    return parent;
-	}
 }

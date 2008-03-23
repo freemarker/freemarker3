@@ -62,16 +62,13 @@ public class PositionalArgsList extends ArgsList {
 	
 	List<Expression> args = new ArrayList<Expression>();
 	
-	void setParent(Expression parent) {
-		for (Expression exp : args) exp.parent = parent;
-	}
-	
 	public List<Expression> getArgs() {
 		return args;
 	}
 	
 	public void addArg(Expression exp) {
 		args.add(exp);
+		exp.parent = this;
 	}
 	
 	Map<String, TemplateModel> getParameterMap(TemplateModel target, Environment env)

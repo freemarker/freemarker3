@@ -81,6 +81,7 @@ public class UnifiedCall extends TemplateElement {
     
     public void setArgs(ArgsList args) {
     	this.args = args;
+    	args.parent = this;
     }
     
     public ParameterList getBodyParameters() {
