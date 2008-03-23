@@ -446,8 +446,10 @@ TOKEN:
     <UNKNOWN_DIRECTIVE : ("[#" | "[/#" | "<#" | "</#") (["a"-"z","A"-"Z", "_"])+>
     {
        char firstChar = matchedToken.image.charAt(0);
-       if (directiveSyntaxEstablished
-          && ((altDirectiveSyntax && firstChar == '[') || (!altDirectiveSyntax && firstChar=='<')))
+       if (!directiveSyntaxEstablished) {
+       	  throw new TokenMgrError("Unknown directive: " + matchedToken.image.substring(1), TokenMgrError.LEXICAL_ERROR);
+       }
+       else if ((altDirectiveSyntax && firstChar == '[') || (!altDirectiveSyntax && firstChar=='<'))
        {
           String s = matchedToken.image;
           int index = s.indexOf('#');
@@ -459,9 +461,6 @@ TOKEN:
                         + ", in template: " + templateName;
           
           throw new TokenMgrError(msg, TokenMgrError.LEXICAL_ERROR);
-       }
-       else {
-           matchedToken.kind = PRINTABLE_CHARS;
        }
     }
 }
