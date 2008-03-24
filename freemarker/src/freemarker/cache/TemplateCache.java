@@ -75,7 +75,7 @@ import freemarker.template.Template;
  * @author Attila Szegedi, szegedia at freemail dot hu
  * @version $Id: TemplateCache.java,v 1.62 2004/03/17 01:14:33 ddekany Exp $
  */
-public class TemplateCache
+public class TemplateCache 
 {
     private static final String ASTERISKSTR = "*";
     private static final String LOCALE_SEPARATOR = "_";
@@ -379,7 +379,7 @@ public class TemplateCache
         try {
             if(parse) {
                 try {
-                    template = new Template(name, reader, config, encoding, codeSource);
+                    template = createTemplate(name, reader, config, encoding, codeSource);
                 }
                 catch (Template.WrongEncodingException wee) {
                     encoding = wee.specifiedEncoding;
@@ -583,6 +583,10 @@ public class TemplateCache
             buf.append(path.get(i)).append('/');
         }
         return buf.toString();
+    }
+    
+    protected Template createTemplate(String name, Reader reader, Configuration config, String encoding, CodeSource codeSource) throws IOException {
+    	return new Template(name, reader, config, encoding, codeSource);
     }
     
     private static String normalizeName(String name) {

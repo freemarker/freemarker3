@@ -142,6 +142,16 @@ public class Configuration extends Configurable implements Cloneable, Scope {
         cache.setDelay(5000);
         loadBuiltInSharedVariables();
     }
+    
+    public void setTemplateCache(TemplateCache cache) {
+    	this.cache = cache;
+    	cache.setConfiguration(this);
+    	cache.setDelay(5000);
+    }
+    
+    public TemplateCache getTemplateCache() {
+    	return cache;
+    }
 
     public Object clone() {
         try {

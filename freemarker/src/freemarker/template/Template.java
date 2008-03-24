@@ -126,7 +126,7 @@ public class Template extends TemplateCore {
     private Set<String> implicitlyDeclaredVariables = new HashSet<String>();
     private final CodeSource codeSource;
     boolean stripWhitespace;
-    private boolean strictVariableDeclaration=true;
+    private boolean strictVariableDeclaration;
     
     private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
     private TemplateHeaderElement headerElement;
@@ -136,7 +136,7 @@ public class Template extends TemplateCore {
      * A prime constructor to which all other constructors should
      * delegate directly or indirectly.
      */
-    private Template(String name, Configuration cfg, CodeSource codeSource)
+    protected Template(String name, Configuration cfg, CodeSource codeSource)
     {
         super(cfg != null ? cfg : Configuration.getDefaultConfiguration());
         this.name = name;
