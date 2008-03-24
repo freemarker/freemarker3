@@ -587,7 +587,7 @@ public class Template extends TemplateCore {
      * This is a helper class that builds up the line table
      * info for us.
      */
-    private class LineTableBuilder extends FilterReader {
+    protected class LineTableBuilder extends FilterReader {
 
         StringBuilder lineBuf = new StringBuilder();
         int lastChar;
@@ -595,7 +595,7 @@ public class Template extends TemplateCore {
         /**
          * @param r the character stream to wrap
          */
-        LineTableBuilder(Reader r) {
+        public LineTableBuilder(Reader r) {
             super(r);
         }
 
