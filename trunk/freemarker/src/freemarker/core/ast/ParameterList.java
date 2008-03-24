@@ -24,7 +24,7 @@ import freemarker.template.TemplateModelException;
 public class ParameterList extends TemplateNode {
 	
 	List<String> params = new ArrayList<String>();
-	private Map<String, Expression> defaults;
+	private Map<String, Expression> defaults = new HashMap<String,Expression>();
 	private String catchall;
     private boolean curryGenerated;
 	protected TemplateElement parent;
