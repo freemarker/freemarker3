@@ -104,7 +104,7 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
         }
     }
     
-    public void setParams(ParameterList params) throws ParseException {
+    public void setParams(ParameterList params) {
     	this.params = params;
     	for (String paramName : params.params) {
     		declareVariable(paramName);
