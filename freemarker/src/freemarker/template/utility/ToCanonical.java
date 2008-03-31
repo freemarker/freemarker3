@@ -61,7 +61,7 @@ import java.io.*;
 
 public class ToCanonical {
 
-    static Configuration config = Configuration.getDefaultConfiguration();
+    static Configuration config = new Configuration();
 
     static public void main(String[] args) {
         config.setWhitespaceStripping(false);

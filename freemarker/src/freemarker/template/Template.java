@@ -176,17 +176,13 @@ public class Template extends TemplateCore {
         LineTableBuilder ltb = new LineTableBuilder(reader);
         try {
             try {
-                Boolean B = null;
-                boolean syntaxSet = getConfiguration().isTagSyntaxSet();
-                if (syntaxSet) {
-                    B = getConfiguration().getTagSyntax() ? Boolean.TRUE : Boolean.FALSE;
-                }
-                
+            	
+                int syntaxSetting = getConfiguration().getTagSyntax();
+                FMParser parser = new FMParser(this, ltb, syntaxSetting);
                 this.stripWhitespace = getConfiguration().getWhitespaceStripping();
                 this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
                 
             	
-                FMParser parser = new FMParser(this, ltb, B);
                 setRootElement(parser.Root());
                 PostParseVisitor ppv = new PostParseVisitor(this);
                 ppv.visit(this);

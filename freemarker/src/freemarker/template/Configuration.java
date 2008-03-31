@@ -120,11 +120,14 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     public static final String AUTO_INCLUDE_KEY = "auto_include";
     public static final String STRICT_VARS_KEY = "strict_vars";
     public static final String SECURE = "secure";
+    public static final int AUTO_DETECT_TAG_SYNTAX = 0;
+    public static final int ANGLE_BRACKET_TAG_SYNTAX = 1;
+    public static final int SQUARE_BRACKET_TAG_SYNTAX = 2;
+
 
     private static Configuration defaultConfig = new Configuration();
     private static String cachedVersion;
     private boolean localizedLookup = true, whitespaceStripping = true, strictVariableDefinition=false;
-    private boolean altDirectiveSyntax, directiveSyntaxSet;
     private TemplateCache cache;
     private HashMap<String, TemplateModel> variables = new HashMap<String, TemplateModel>();
     private HashMap<String, String> encodingMap = new HashMap<String, String>();
@@ -135,6 +138,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     private String defaultEncoding = SecurityUtilities.getSystemProperty("file.encoding");
     private boolean secure = false;
     private boolean tolerateParsingProblems = false;
+    private int tagSyntax = AUTO_DETECT_TAG_SYNTAX;
 
     public Configuration() {
         cache = new TemplateCache();
@@ -431,20 +435,61 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     public void setTemplateUpdateDelay(int delay) {
         cache.setDelay(1000L * delay);
     }
+    
+    
+    /**
+     * Determines the syntax of the template files (angle bracket VS square bracket)
+     * that has no <markup>ftl</markup> directive in it. The <code>tagSyntax</code>
+     * parameter must be one of:
+     * <ul>
+     *   <li>{@link Configuration#AUTO_DETECT_TAG_SYNTAX}:
+     *     use the syntax of the first FreeMarker tag (can be anything, like <tt>list</tt>,
+     *     <tt>include</tt>, user defined, ...etc)
+     *   <li>{@link Configuration#ANGLE_BRACKET_TAG_SYNTAX}:
+     *     use the angle bracket syntax (the normal syntax)
+     *   <li>{@link Configuration#SQUARE_BRACKET_TAG_SYNTAX}:
+     *     use the square bracket syntax
+     * </ul>
+     *
+     * <p>In FreeMarker 2.3.x {@link Configuration#ANGLE_BRACKET_TAG_SYNTAX} is the
+     * default for better backward compatibility. Starting from 2.4.x {@link
+     * Configuration#AUTO_DETECT_TAG_SYNTAX} is the default, so it is recommended to use
+     * that even for 2.3.x.
+     * 
+     * <p>This setting is ignored for the templates that have <tt>ftl</tt> directive in
+     * it. For those templates the syntax used for the <tt>ftl</tt> directive determines
+     * the syntax.
+     */    
+    
+    public void setTagSyntax(int tagSyntax) {
+        if (tagSyntax != AUTO_DETECT_TAG_SYNTAX
+            && tagSyntax != SQUARE_BRACKET_TAG_SYNTAX
+            && tagSyntax != ANGLE_BRACKET_TAG_SYNTAX)
+        {
+            throw new IllegalArgumentException(
+                        "This can only be set to one of three settings: Configuration.AUTO_DETECT_TAG_SYNTAX, Configuration.ANGLE_BRACKET_SYNTAX, or Configuration.SQAUARE_BRACKET_SYNTAX");
+        }
+        this.tagSyntax = tagSyntax;
+    }
+    
+    /**
+     * 
+     * @return one of:
+     * <ul>
+     *   <li>{@link Configuration#AUTO_DETECT_TAG_SYNTAX}:
+     *     use the syntax of the first FreeMarker tag (can be anything, like <tt>list</tt>,
+     *     <tt>include</tt>, user defined, ...etc)
+     *   <li>{@link Configuration#ANGLE_BRACKET_TAG_SYNTAX}:
+     *     use the angle bracket syntax (the normal syntax)
+     *   <li>{@link Configuration#SQUARE_BRACKET_TAG_SYNTAX}:
+     *     use the square bracket syntax
+     * </ul>
+     */
+    public int getTagSyntax() {
+        return tagSyntax;
+    }
+    
 
-    public void setAlternativeTagSyntax(boolean b) {
-        altDirectiveSyntax = b;
-    	    directiveSyntaxSet = true;
-    }
-    
-    public boolean getTagSyntax() {
-        return altDirectiveSyntax;
-    }
-    
-    public boolean isTagSyntaxSet() {
-        return directiveSyntaxSet;
-    }
-    
     /**
      * Sets whether, by default, templates use strict variable
      * definition syntax, such that any variable created 

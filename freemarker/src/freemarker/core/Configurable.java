@@ -127,7 +127,7 @@ public class Configurable
         falseFormat = "false";
         templateExceptionHandler = TemplateExceptionHandler.DEBUG_HANDLER;
         arithmeticEngine = ArithmeticEngine.BIGDECIMAL_ENGINE;
-        objectWrapper = ObjectWrapper.DEFAULT_WRAPPER;
+        objectWrapper = new DefaultObjectWrapper();
         // outputEncoding and urlEscapingCharset defaults to null,
         // which means "not specified"
         
@@ -379,7 +379,7 @@ public class Configurable
      * Sets the object wrapper used to wrap objects to template models.
      *
      * @param objectWrapper the object wrapper used to wrap objects to template
-     * models.By default, {@link ObjectWrapper#DEFAULT_WRAPPER} is used.
+     * models.
      */
     public void setObjectWrapper(ObjectWrapper objectWrapper) {
         if (objectWrapper == null) throw new IllegalArgumentException("Setting \"object_wrapper\" can't be null");
@@ -537,11 +537,11 @@ public class Configurable
             } else if (OBJECT_WRAPPER_KEY.equals(key)) {
                 if (value.indexOf('.') == -1) {
                     if ("default".equalsIgnoreCase(value)) {
-                        setObjectWrapper(ObjectWrapper.DEFAULT_WRAPPER);
+                        setObjectWrapper(new DefaultObjectWrapper());
                     } else if ("simple".equalsIgnoreCase(value)) {
-                        setObjectWrapper(ObjectWrapper.SIMPLE_WRAPPER);
+                        setObjectWrapper(new SimpleObjectWrapper());
                     } else if ("beans".equalsIgnoreCase(value)) {
-                        setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
+                        setObjectWrapper(new BeansWrapper());
                     } else if ("jython".equalsIgnoreCase(value)) {
                         Class clazz = Class.forName(
                                 "freemarker.ext.jython.JythonWrapper");
