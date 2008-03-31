@@ -96,7 +96,8 @@ public class Transform {
     
     Transform(File inputFile, File ftlFile, File outputFile, Locale locale, String encoding) throws IOException {
         if (encoding == null) {
-            encoding = System.getProperty("file.encoding");
+        	encoding = "ISO-8859-1";
+//            encoding = System.getProperty("file.encoding");
         }
         if (locale ==  null) {
             locale = Locale.getDefault();
