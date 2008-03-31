@@ -96,12 +96,7 @@
         <javacc
 	target="src/freemarker/core/parser/FMParser.jj"
 	outputdirectory="src/freemarker/core/parser"
-            javacchome="lib"
-        />
-        <replace
-		file="src/freemarker/core/parser/FMParser.java"
-              token="enum"
-              value="ENUM"
+            javacchome="lib" jdkversion="1.5"
         />
    </target>
    

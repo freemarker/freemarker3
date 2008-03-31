@@ -183,6 +183,13 @@ public class TemplateTestCase extends TestCase {
             BeansWrapper w5 = new BeansWrapper();
             BeansWrapper w6 = new BeansWrapper();
             BeansWrapper w7 = new BeansWrapper();
+            w1.setSimpleMapWrapper(false);
+            w2.setSimpleMapWrapper(false);
+            w3.setSimpleMapWrapper(false);
+            w4.setSimpleMapWrapper(false);
+            w5.setSimpleMapWrapper(false);
+            w6.setSimpleMapWrapper(false);
+            w7.setSimpleMapWrapper(false);
     
             w1.setExposureLevel(BeansWrapper.EXPOSE_PROPERTIES_ONLY);
             w2.setExposureLevel(BeansWrapper.EXPOSE_PROPERTIES_ONLY);

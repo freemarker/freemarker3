@@ -104,11 +104,11 @@ public class FMParser {
       token_source.templateName = templateName;
   }
   
-  public FMParser(Template template, Reader reader, Boolean altDirectiveSyntax) {
+  public FMParser(Template template, Reader reader, int syntaxSetting) {
   	  this(template, reader);
-  	  if (altDirectiveSyntax != null) {
-      	  token_source.setAltDirectiveSyntax(altDirectiveSyntax.booleanValue());
-      }
+  	  if (syntaxSetting != Configuration.AUTO_DETECT_TAG_SYNTAX) {
+  	  	   token_source.setAltDirectiveSyntax(syntaxSetting==Configuration.SQUARE_BRACKET_TAG_SYNTAX);
+  	  }
   }
   
   public void setTemplate(Template t) {
@@ -471,8 +471,6 @@ TOKEN:
     |
     <PRINTABLE_CHARS : (~["$", "<", "#", "[", "{", "\n", "\r", "\t", " "])+>
     |
-//    <FALSE_ALERT : "$" | "#" | "<"("@" <WHITESPACE>)? > // to handle a lone dollar sign or "<" or "# or <@ with whitespace after"
-//    <FALSE_ALERT : "$" | "#" | "<" | "@"> // to handle a lone dollar sign or "<" or "# or <@ with whitespace after"
     <FALSE_ALERT : "$" | "#" | "<" | "[" | "{"> // to handle a lone dollar sign or "<" or "# or <@ with whitespace after"
     |
     <OUTPUT_ESCAPE : "${" > : FM_EXPRESSION
@@ -502,32 +500,6 @@ TOKEN:
 
 <FM_EXPRESSION, IN_PAREN, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
 {
-  <#ESCAPED_CHAR :  "\\"
-           (
-             ["n","t","r","f","b","g","l","a","\\","'","\"","$","{"]
-             |
-             ("x" ["0"-"9","A"-"F","a"-"f"])
-           )
-  >
-  |
-/*  
-  <STRING_LITERAL :
-      ("\"" 
-        ((~["\"","\\"]) | <ESCAPED_CHAR>)*
-      "\"")
-      |
-      ("'"
-        ((~["'","\\"]) | <ESCAPED_CHAR>)*
-      "'"
-      )
-  >
-  |
-  <STRING_LITERAL : 
-      ("\"" ((~[]))* "\"")
-      |
-      ("'" ( ("\\""\\\\" | "\\'" | ~["'"])* "'")
-  > {System.err.println(matchedToken.image);}
-  |*/
   <STRING_LITERAL :
       ("\"" 
           ((~["\\", "\""]) | ("\\" ~[]))*      

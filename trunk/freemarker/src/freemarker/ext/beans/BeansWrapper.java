@@ -210,7 +210,7 @@ public class BeansWrapper implements ObjectWrapper
     private int defaultDateType = TemplateDateModel.UNKNOWN;
 
     private ObjectWrapper outerIdentity = this;
-    private boolean simpleMapWrapper;
+    private boolean simpleMapWrapper=true;
     private boolean strict = false;
     
     /**
@@ -286,6 +286,7 @@ public class BeansWrapper implements ObjectWrapper
      * map will be visible as <code>TemplateHashModelEx</code>,
      * and the subvariables will be the content of the map,
      * without the other methods and properties of the map object.
+     * As of 2.4 this is on by default.
      * @param simpleMapWrapper enable simple map wrapping
      */
     public void setSimpleMapWrapper(boolean simpleMapWrapper)
