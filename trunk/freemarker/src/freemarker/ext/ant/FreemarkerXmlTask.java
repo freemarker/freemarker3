@@ -310,7 +310,8 @@ extends
     /** the default output extension is .html */
     private String extension = ".html";
 
-    private String encoding = SecurityUtilities.getSystemProperty("file.encoding");
+//    private String encoding = SecurityUtilities.getSystemProperty("file.encoding");
+    private String encoding = "ISO-8859-1";
     private String templateEncoding = encoding;
     private boolean validation = false;
 

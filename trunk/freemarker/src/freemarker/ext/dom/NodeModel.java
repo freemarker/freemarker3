@@ -519,6 +519,11 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
     static public void useDefaultXPathSupport() {
         xpathSupportClass = null;
         jaxenXPathSupport = null;
+        if (xpathSupportClass == null) try {
+            useJaxenXPathSupport();
+        } catch (Exception e) {
+            ; // ignore
+        }
         try {
             useXalanXPathSupport();
         } catch (Exception e) {
@@ -528,11 +533,6 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
         	useSunInternalXPathSupport();
         } catch (Exception e) {
         	; // ignore
-        }
-        if (xpathSupportClass == null) try {
-            useJaxenXPathSupport();
-        } catch (Exception e) {
-            ; // ignore
         }
     }
     
