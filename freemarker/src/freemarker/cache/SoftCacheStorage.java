@@ -55,104 +55,86 @@ package freemarker.cache;
 import java.lang.ref.Reference;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
- * Strong cache storage is a cache storage that uses {@link SoftReference} 
+ * Soft cache storage is a cache storage that uses {@link SoftReference} 
  * objects to hold the objects it was passed, therefore allows the garbage
  * collector to purge the cache when it determines that it wants to free up
  * memory.
- * This class is <em>NOT</em> thread-safe. If it is accessed from multiple
- * threads concurrently, proper synchronization must be provided by the callers.
- * Note that {@link TemplateCache}, the natural user of this class provides the
- * necessary synchronizations when it uses the class.
+ * This class is thread-safe to the extent that its underlying map is. The 
+ * default implementation uses a concurrent map on Java 5 and above.
  * @author Attila Szegedi
  * @version $Id: SoftCacheStorage.java,v 1.4 2003/09/22 20:47:03 ddekany Exp $
  *
- * @deprecated use {@link MruCacheStorage} instead.
  */
-public class SoftCacheStorage implements CacheStorage
+public class SoftCacheStorage implements ConcurrentCacheStorage
 {
-    private final ReferenceQueue<Object> queue = new ReferenceQueue<Object>();
-    private final Map<Object, ? super Reference> map;
+    private final ReferenceQueue queue = new ReferenceQueue();
+    private final Map map;
+    private final boolean concurrent;
     
-    /**
-     * Creates a new soft cache storage
-     */
-    public SoftCacheStorage()
-    {
-        this(new HashMap<Object, Reference>());
+    public SoftCacheStorage() {
+        this(new ConcurrentHashMap());
     }
     
-    /**
-     * Creates a new soft cache storage, using the specified map as its backing
-     * map.
-     * @param backingMap the map backing this storage
-     */
-    public SoftCacheStorage(Map<Object, ? super Reference> backingMap)
-    {
-        this.map = backingMap;
+    public boolean isConcurrent() {
+        return concurrent;
     }
     
-    public Object get(Object key)
-    {
+    public SoftCacheStorage(Map backingMap) {
+        map = backingMap;
+        this.concurrent = map instanceof ConcurrentMap;
+    }
+    
+    public Object get(Object key) {
         processQueue();
         Reference ref = (Reference)map.get(key);
         return ref == null ? null : ref.get();
     }
 
-    public void put(Object key, Object value)
-    {
+    public void put(Object key, Object value) {
         processQueue();
         map.put(key, new SoftValueReference(key, value, queue));
     }
 
-    public void remove(Object key)
-    {
+    public void remove(Object key) {
         processQueue();
         map.remove(key);
     }
 
-    public void clear()
-    {
+    public void clear() {
         map.clear();
         processQueue();
     }
 
-    private void processQueue()
-    {
-        for(;;)
-        {
-            SoftValueReference<Object> ref = (SoftValueReference<Object>)queue.poll();
-            if(ref == null)
-            {
+    private void processQueue() {
+        for(;;) {
+            SoftValueReference ref = (SoftValueReference)queue.poll();
+            if(ref == null) {
                 return;
             }
             Object key = ref.getKey();
-            // First check for reference identity, so that we don't remove
-            // a reloaded template with the same key inadvertently.
-            if(map.get(key) == ref)
-            {
+            if(concurrent) {
+                ((ConcurrentMap)map).remove(key, ref);
+            }
+            else if(map.get(key) == ref) {
                 map.remove(key);
             }
         }
     }
 
-    private static final class SoftValueReference<T>
-    extends
-        SoftReference<T>
-    {
+    private static final class SoftValueReference extends SoftReference {
         private final Object key;
 
-        SoftValueReference(Object key, T value, ReferenceQueue<Object> queue)
-        {
+        SoftValueReference(Object key, Object value, ReferenceQueue queue) {
             super(value, queue);
             this.key = key;
         }
 
-        Object getKey()
-        {
+        Object getKey() {
             return key;
         }
     }

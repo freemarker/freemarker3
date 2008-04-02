@@ -55,6 +55,7 @@ package freemarker.cache;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,7 @@ public class TemplateCache
     private final TemplateLoader mainLoader;
     /** Here we keep our cached templates */
     private final CacheStorage storage;
+    private final boolean isStorageConcurrent;
     /** The default refresh delay in milliseconds. */
     private long delay = 5000;
     /** Specifies if localized template lookup is enabled or not */
@@ -124,7 +126,7 @@ public class TemplateCache
      */
     public TemplateCache(TemplateLoader loader)
     {
-        this(loader, new MruCacheStorage(0, Integer.MAX_VALUE));
+        this(loader, new SoftCacheStorage());
     }
 
     /**
@@ -141,6 +143,8 @@ public class TemplateCache
         {
             throw new IllegalArgumentException("storage == null");
         }
+        isStorageConcurrent = storage instanceof ConcurrentCacheStorage &&
+            ((ConcurrentCacheStorage)storage).isConcurrent();
     }
 
     /**
@@ -245,110 +249,119 @@ public class TemplateCache
         String debugName = debug ? name + "[" + locale + "," + encoding + (parse ? ",parsed] " : ",unparsed] ") : null;
         TemplateKey tk = new TemplateKey(name, locale, encoding, parse);
         CachedTemplate cachedTemplate;
-        synchronized (storage) {
+        if(isStorageConcurrent) {
             cachedTemplate = (CachedTemplate)storage.get(tk);
-            if(cachedTemplate == null) {
-                storage.put(tk, cachedTemplate = new CachedTemplate());
+        }
+        else {
+            synchronized(storage) {
+                cachedTemplate = (CachedTemplate)storage.get(tk);
             }
         }
+        long now = System.currentTimeMillis();
         long lastModified = -1L;
         Object newlyFoundSource = null;
         try {
-            synchronized(cachedTemplate) {
-                long now = System.currentTimeMillis();
-                if (cachedTemplate.source != null) {
-                    // If we're within the refresh delay, return the cached copy
-                    if (now - cachedTemplate.lastChecked < getDelay()) {
-                        if(debug) {
-                            logger.debug(debugName + "cached copy not yet stale; using cached.");
-                        }
-                        return cachedTemplate.template;
-                    }
-                    // Else, update the last-checked flag
-                    cachedTemplate.lastChecked = now;
-
-                    // Find the template source
-                    newlyFoundSource = findTemplateSource(name, locale);
-
-                    // Template source was removed
-                    if (newlyFoundSource == null) {
-                        if(debug) {
-                            logger.debug(debugName + "no source found (removing from cache if it was cached).");
-                        }
-                        removeCachedTemplate(tk);
-                        return null;
-                    }
-
-                    // If the source didn't change and its last modified date
-                    // also didn't change, return the cached version.
-                    lastModified = loader.getLastModified(newlyFoundSource);
-                    boolean lastModifiedNotChanged = lastModified == cachedTemplate.lastModified;
-                    boolean sourceEquals = newlyFoundSource.equals(cachedTemplate.source);
-                    if(lastModifiedNotChanged && sourceEquals) {
-                        if(debug) {
-                            logger.debug(debugName + "using cached since " + 
-                                    newlyFoundSource + " didn't change.");
-                        } 
-                        cachedTemplate.lastChecked = now;
-                        return cachedTemplate.template;
-                    }
-                    else {
-                        if(debug && !sourceEquals) {
-                            logger.debug("Updating source, info for cause: " + 
-                                "sourceEquals=" + sourceEquals + 
-                                ", newlyFoundSource=" + newlyFoundSource + 
-                                ", cachedTemplate.source=" + cachedTemplate.source);
-                        }
-                        if(debug && !lastModifiedNotChanged) {
-                            logger.debug("Updating source, info for cause: " + 
-                                "lastModifiedNotChanged=" + lastModifiedNotChanged + 
-                                ", cache lastModified=" + cachedTemplate.lastModified + 
-                                " != file lastModified=" + lastModified);
-                        }
-                        // Update the source
-                        cachedTemplate.source = newlyFoundSource;
-                    }
-                }
-                else {
+            if (cachedTemplate != null) {
+                // If we're within the refresh delay, return the cached copy
+                if (now - cachedTemplate.lastChecked < delay) {
                     if(debug) {
-                        logger.debug("Could not find template in cache, "
-                            + "creating new one; id=[" + 
-                            tk.name + "[" + tk.locale + "," + tk.encoding + 
-                            (tk.parse ? ",parsed] " : ",unparsed] ") + "]");
+                        logger.debug(debugName + "cached copy not yet stale; using cached.");
                     }
-                    
-                    newlyFoundSource = findTemplateSource(name, locale);
-                    if (newlyFoundSource == null) {
-                        removeCachedTemplate(tk);
-                        return null;
-                    }
-                    cachedTemplate.source = newlyFoundSource;
-                    cachedTemplate.lastChecked = now;
-                    cachedTemplate.lastModified = lastModified = Long.MIN_VALUE;
-                }
-                if(debug) {
-                    logger.debug("Compiling FreeMarker template " + 
-                        debugName + " from " + newlyFoundSource);
-                }
-                // If we get here, then we need to (re)load the template
-                Object source = cachedTemplate.source;
-                try {
-                    cachedTemplate.template =
-                        loadTemplate(loader, name, locale, encoding, parse, source);
-                    cachedTemplate.lastModified =
-                        lastModified == Long.MIN_VALUE
-                            ? loader.getLastModified(source)
-                            : lastModified;
+                    // Can be null, indicating a cached negative lookup
                     return cachedTemplate.template;
                 }
-                catch(RuntimeException e) {
-                    removeCachedTemplate(tk);
-                    throw e;
+                // Clone as the instance bound to the map should be treated as
+                // immutable to ensure proper concurrent semantics
+                cachedTemplate = cachedTemplate.cloneCachedTemplate();
+                // Update the last-checked flag
+                cachedTemplate.lastChecked = now;
+
+                // Find the template source
+                newlyFoundSource = findTemplateSource(name, locale);
+
+                // Template source was removed
+                if (newlyFoundSource == null) {
+                    if(debug) {
+                        logger.debug(debugName + "no source found.");
+                    } 
+                    storeNegativeLookup(tk, cachedTemplate);
+                    return null;
                 }
-                catch(IOException e) {
-                    removeCachedTemplate(tk);
-                    throw e;
+
+                // If the source didn't change and its last modified date
+                // also didn't change, return the cached version.
+                lastModified = loader.getLastModified(newlyFoundSource);
+                boolean lastModifiedNotChanged = lastModified == cachedTemplate.lastModified;
+                boolean sourceEquals = newlyFoundSource.equals(cachedTemplate.source);
+                if(lastModifiedNotChanged && sourceEquals) {
+                    if(debug) {
+                        logger.debug(debugName + "using cached since " + 
+                                newlyFoundSource + " didn't change.");
+                    }
+                    storeCached(tk, cachedTemplate);
+                    return cachedTemplate.template;
                 }
+                else {
+                    if(debug && !sourceEquals) {
+                        logger.debug("Updating source, info for cause: " + 
+                            "sourceEquals=" + sourceEquals + 
+                            ", newlyFoundSource=" + newlyFoundSource + 
+                            ", cachedTemplate.source=" + cachedTemplate.source);
+                    }
+                    if(debug && !lastModifiedNotChanged) {
+                        logger.debug("Updating source, info for cause: " + 
+                            "lastModifiedNotChanged=" + lastModifiedNotChanged + 
+                            ", cache lastModified=" + cachedTemplate.lastModified + 
+                            " != file lastModified=" + lastModified);
+                    }
+                    // Update the source
+                    cachedTemplate.source = newlyFoundSource;
+                }
+            }
+            else {
+                if(debug) {
+                    logger.debug("Could not find template in cache, "
+                        + "creating new one; id=[" + 
+                        tk.name + "[" + tk.locale + "," + tk.encoding + 
+                        (tk.parse ? ",parsed] " : ",unparsed] ") + "]");
+                }
+                
+                // Construct a new CachedTemplate entry. Note we set the
+                // cachedTemplate.lastModified to Long.MIN_VALUE. This is
+                // a flag that signs it has to be explicitly queried later on.
+                newlyFoundSource = findTemplateSource(name, locale);
+                cachedTemplate = new CachedTemplate();
+                cachedTemplate.lastChecked = now;
+                if (newlyFoundSource == null) {
+                    storeNegativeLookup(tk, cachedTemplate);
+                    return null;
+                }
+                cachedTemplate.source = newlyFoundSource;
+                cachedTemplate.lastModified = lastModified = Long.MIN_VALUE;
+            }
+            if(debug) {
+                logger.debug("Compiling FreeMarker template " + 
+                    debugName + " from " + newlyFoundSource);
+            }
+            // If we get here, then we need to (re)load the template
+            Object source = cachedTemplate.source;
+            try {
+                cachedTemplate.template =
+                    loadTemplate(loader, name, locale, encoding, parse, source);
+                cachedTemplate.lastModified =
+                    lastModified == Long.MIN_VALUE
+                        ? loader.getLastModified(source)
+                        : lastModified;
+                storeCached(tk, cachedTemplate);
+                return cachedTemplate.template;
+            }
+            catch(RuntimeException e) {
+                storeNegativeLookup(tk, cachedTemplate);
+                throw e;
+            }
+            catch(IOException e) {
+                storeNegativeLookup(tk, cachedTemplate);
+                throw e;
             }
         }
         finally {
@@ -358,9 +371,22 @@ public class TemplateCache
         }
     }
 
-    private void removeCachedTemplate(TemplateKey tk) {
-        synchronized(storage) {
-            storage.remove(tk);
+    private void storeNegativeLookup(TemplateKey tk, 
+            CachedTemplate cachedTemplate) {
+        cachedTemplate.template = null;
+        cachedTemplate.source = null;
+        cachedTemplate.lastModified = 0L;
+        storeCached(tk, cachedTemplate);
+    }
+
+    private void storeCached(TemplateKey tk, CachedTemplate cachedTemplate) {
+        if(isStorageConcurrent) {
+            storage.put(tk, cachedTemplate);
+        }
+        else {
+            synchronized(storage) {
+                storage.put(tk, cachedTemplate);
+            }
         }
     }
 
@@ -676,11 +702,20 @@ public class TemplateCache
      * (the source object, and the last-checked and last-modified timestamps).
      * It is used as the value in the cached templates map.
      */
-    private static final class CachedTemplate
+    private static final class CachedTemplate implements Cloneable
     {
         Template template;
         Object source;
         long lastChecked;
         long lastModified;
+        
+        public CachedTemplate cloneCachedTemplate() {
+            try {
+                return (CachedTemplate)super.clone();
+            }
+            catch(CloneNotSupportedException e) {
+                throw new UndeclaredThrowableException(e);
+            }
+        }
     }
 }
