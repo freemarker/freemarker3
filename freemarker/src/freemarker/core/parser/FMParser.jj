@@ -839,8 +839,7 @@ Expression Parenthesis() :
 
 /**
  * A primary expression preceded by zero or
- * more unary operators. (The only unary operator we
- * currently have is the NOT.)
+ * more unary operators. 
  */
 Expression UnaryExpression() :
 {
@@ -1240,8 +1239,8 @@ Expression DefaultTo(Expression exp) :
       (
        t=<EXCLAM>
        [
-         LOOKAHEAD(Exp())
-          rhs=Exp()
+         LOOKAHEAD(PrimaryExpression())
+          rhs=PrimaryExpression()
        ]
       )
    )
@@ -2393,7 +2392,7 @@ Map<String, Expression> NamedArgs() :
 Comment Comment() :
 {
    Token start, end;
-   StringBuffer buf = new StringBuffer();
+   StringBuilder buf = new StringBuilder();
 }
 {
     (
@@ -2412,7 +2411,7 @@ Comment Comment() :
 TextBlock NoParse() :
 {
    Token start, end;
-   StringBuffer buf = new StringBuffer();
+   StringBuilder buf = new StringBuilder();
 }
 {
     start=<NOPARSE>
@@ -2743,15 +2742,16 @@ TemplateElement FreemarkerDirective() :
 
 TextBlock PCData() :
 {
-    StringBuffer buf = new StringBuffer();
-    Token t, start=null;
+    StringBuilder buf = new StringBuilder();
+    Token t=null, start=null, prevToken = null;
 }
 {
     (
       LOOKAHEAD(<WHITESPACE>|<PRINTABLE_CHARS>|<FALSE_ALERT>)
       (
+         {prevToken = t;}         
          t=<WHITESPACE>
-	     |
+	 |
          t=<PRINTABLE_CHARS>
          |
          t=<FALSE_ALERT>
@@ -2759,6 +2759,7 @@ TextBlock PCData() :
       {
          buf.append(t.image);
          if (start == null) start = t;
+         {if (prevToken != null) prevToken.next = null;}
       }
     )+
     {
@@ -2778,7 +2779,7 @@ TextBlock PCData() :
  * of the tag is put in buf.
  */
 
-Token UnparsedContent(StringBuffer buf) :
+Token UnparsedContent(StringBuilder buf) :
 {
    Token t;
 }
