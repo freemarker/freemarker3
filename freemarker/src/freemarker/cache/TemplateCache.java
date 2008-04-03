@@ -268,7 +268,17 @@ public class TemplateCache
                         logger.debug(debugName + "cached copy not yet stale; using cached.");
                     }
                     // Can be null, indicating a cached negative lookup
-                    return cachedTemplate.template;
+                    Object t = cachedTemplate.templateOrException;
+                    if(t instanceof Template || t == null) {
+                        return (Template)t;
+                    }
+                    else if(t instanceof RuntimeException) {
+                        throwLoadFailedException((RuntimeException)t);
+                    }
+                    else if(t instanceof IOException) {
+                        throwLoadFailedException((IOException)t);
+                    }
+                    throw new AssertionError("t is " + t.getClass().getName());
                 }
                 // Clone as the instance bound to the map should be treated as
                 // immutable to ensure proper concurrent semantics
@@ -284,7 +294,7 @@ public class TemplateCache
                     if(debug) {
                         logger.debug(debugName + "no source found.");
                     } 
-                    storeNegativeLookup(tk, cachedTemplate);
+                    storeNegativeLookup(tk, cachedTemplate, null);
                     return null;
                 }
 
@@ -299,7 +309,7 @@ public class TemplateCache
                                 newlyFoundSource + " didn't change.");
                     }
                     storeCached(tk, cachedTemplate);
-                    return cachedTemplate.template;
+                    return (Template)cachedTemplate.templateOrException;
                 }
                 else {
                     if(debug && !sourceEquals) {
@@ -333,7 +343,7 @@ public class TemplateCache
                 cachedTemplate = new CachedTemplate();
                 cachedTemplate.lastChecked = now;
                 if (newlyFoundSource == null) {
-                    storeNegativeLookup(tk, cachedTemplate);
+                    storeNegativeLookup(tk, cachedTemplate, null);
                     return null;
                 }
                 cachedTemplate.source = newlyFoundSource;
@@ -346,21 +356,22 @@ public class TemplateCache
             // If we get here, then we need to (re)load the template
             Object source = cachedTemplate.source;
             try {
-                cachedTemplate.template =
+                Template t = 
                     loadTemplate(loader, name, locale, encoding, parse, source);
+                cachedTemplate.templateOrException = t;
                 cachedTemplate.lastModified =
                     lastModified == Long.MIN_VALUE
                         ? loader.getLastModified(source)
                         : lastModified;
                 storeCached(tk, cachedTemplate);
-                return cachedTemplate.template;
+                return t;
             }
             catch(RuntimeException e) {
-                storeNegativeLookup(tk, cachedTemplate);
+                storeNegativeLookup(tk, cachedTemplate, e);
                 throw e;
             }
             catch(IOException e) {
-                storeNegativeLookup(tk, cachedTemplate);
+                storeNegativeLookup(tk, cachedTemplate, e);
                 throw e;
             }
         }
@@ -371,9 +382,16 @@ public class TemplateCache
         }
     }
 
+    private void throwLoadFailedException(Exception e) throws IOException {
+        IOException ioe = new IOException("There was an error loading the " +
+                "template on an earlier attempt; it is attached as a cause");
+        ioe.initCause(e);
+        throw ioe;
+    }
+
     private void storeNegativeLookup(TemplateKey tk, 
-            CachedTemplate cachedTemplate) {
-        cachedTemplate.template = null;
+            CachedTemplate cachedTemplate, Exception e) {
+        cachedTemplate.templateOrException = e;
         cachedTemplate.source = null;
         cachedTemplate.lastModified = 0L;
         storeCached(tk, cachedTemplate);
@@ -704,7 +722,7 @@ public class TemplateCache
      */
     private static final class CachedTemplate implements Cloneable
     {
-        Template template;
+        Object templateOrException;
         Object source;
         long lastChecked;
         long lastModified;
