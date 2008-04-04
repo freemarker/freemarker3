@@ -59,6 +59,23 @@ public class TemplateCacheTest extends TestCase
         }
     }
     
+    public void testCachedNotFound() throws Exception
+    {
+        MockTemplateLoader loader = new MockTemplateLoader();
+        TemplateCache cache = new TemplateCache(loader, new StrongCacheStorage());
+        cache.setDelay(1000L);
+        cache.setLocalizedLookup(false);
+        assertNull(cache.getTemplate("t", Locale.getDefault(), "", true));
+        assertEquals(1, loader.getFindCount());
+        assertNull(cache.getTemplate("t", Locale.getDefault(), "", true));
+        // Still 1 - returned cached exception
+        assertEquals(1, loader.getFindCount());
+        Thread.sleep(1100L);
+        assertNull(cache.getTemplate("t", Locale.getDefault(), "", true));
+        // Cache had to retest
+        assertEquals(2, loader.getFindCount());
+    }
+
     private static class MockTemplateLoader implements TemplateLoader
     {
         private boolean throwException;
