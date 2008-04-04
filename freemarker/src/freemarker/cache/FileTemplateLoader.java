@@ -99,11 +99,8 @@ public class FileTemplateLoader implements SecureTemplateLoader
      * applies to the directory will apply to all templates.
      * @throws IOException if an I/O exception occurs
      */
-    public FileTemplateLoader()
-    throws
-    	IOException
-    {
-        this(new File(SecurityUtilities.getSystemProperty("user.dir")), true);
+    public FileTemplateLoader() throws IOException {
+        this(new File(SecurityUtilities.getSystemProperty("user.dir")));
     }
 
     /**
@@ -114,11 +111,8 @@ public class FileTemplateLoader implements SecureTemplateLoader
      * @param baseDir the base directory for loading templates
      * @throws IOException if an I/O exception occurs
      */
-    public FileTemplateLoader(File baseDir)
-    throws
-        IOException
-    {
-        this(baseDir, true);
+    public FileTemplateLoader(File baseDir) throws IOException {
+        this(baseDir, false);
     }
     
     /**
@@ -126,6 +120,21 @@ public class FileTemplateLoader implements SecureTemplateLoader
      * as the base directory for loading templates and a specified code source
      * policy.
      * @param baseDir the base directory for loading templates
+     * @param allowLinking if true, it will allow following symlinks pointing
+     * outside the baseDir
+     * @throws IOException if an I/O exception occurs
+     */
+    public FileTemplateLoader(final File baseDir, final boolean allowLinking) throws IOException {
+        this(baseDir, allowLinking, true);
+    }
+    
+    /**
+     * Creates a new file template loader that will use the specified directory
+     * as the base directory for loading templates and a specified code source
+     * policy.
+     * @param baseDir the base directory for loading templates
+     * @param allowLinking if true, it will allow following symlinks pointing
+     * outside the baseDir
      * @param useBaseDirCodeSource if true, the code source URL of all 
      * templates will be set to the file: URL of the directory, so a single set
      * of permissions that applies to the directory will apply to all 
@@ -134,28 +143,28 @@ public class FileTemplateLoader implements SecureTemplateLoader
      * specified in the policy file at expense of having multiple code sources.
      * @throws IOException if an I/O exception occurs
      */
-    public FileTemplateLoader(final File baseDir, boolean useBaseDirCodeSource)
-    throws
-    	IOException
+    public FileTemplateLoader(final File baseDir, final boolean allowLinking,
+            boolean useBaseDirCodeSource) throws IOException
     {
-        try
-        {
+        try {
             Object[] retval = AccessController.doPrivileged(
-                new PrivilegedExceptionAction<Object[]>()
-                {
-                    public Object[] run() throws IOException
-                    {
-                        if (!baseDir.exists())
-                        {
+                new PrivilegedExceptionAction<Object[]>() {
+                    public Object[] run() throws IOException {
+                        if (!baseDir.exists()) {
                             throw new FileNotFoundException(baseDir + " does not exist.");
                         }
-                        if (!baseDir.isDirectory())
-                        {
+                        if (!baseDir.isDirectory()) {
                             throw new IOException(baseDir + " is not a directory.");
                         }
                         Object[] retval2 = new Object[3];
-                        retval2[0] = baseDir.getCanonicalFile();
-                        retval2[1] = ((File) retval2[0]).getPath() + File.separatorChar;
+                        if(allowLinking) {
+                            retval2[0] = baseDir;
+                            retval2[1] = null;
+                        }
+                        else {
+                            retval2[0] = baseDir.getCanonicalFile();
+                            retval2[1] = ((File) retval2[0]).getPath() + File.separatorChar;
+                        }
                         retval2[2] = baseDir.toURL();
                         return retval2;
                     }
@@ -169,46 +178,40 @@ public class FileTemplateLoader implements SecureTemplateLoader
                 baseDirCodeSource = null;
             }
         }
-        catch(PrivilegedActionException e)
-        {
+        catch(PrivilegedActionException e) {
             throw (IOException)e.getException();
         }
     }
     
-    public Object findTemplateSource(final String name)
-    throws
-    	IOException
-    {
-        try
-        {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<File>()
-            {
-                public File run()
-                throws
-                    IOException
-                {
+    public Object findTemplateSource(final String name) throws IOException {
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<File>() {
+                public File run() throws IOException {
                     File source = new File(baseDir, SEP_IS_SLASH ? name : name.replace('/', File.separatorChar));
                     if(!source.isFile()) {
                         return null;
                     }
-                    // Security check for inadvertently returning something outside the
-                    // template directory.
-                    String normalized = source.getCanonicalPath(); 
-                    if (normalized.startsWith(canonicalPath)) {
-                        return source;
+                    // Security check for inadvertently returning something 
+                    // outside the template directory when linking is not 
+                    // allowed.
+                    if(canonicalPath != null) {
+                        String normalized = source.getCanonicalPath(); 
+                        if (!normalized.startsWith(canonicalPath)) {
+                            throw new SecurityException(source.getAbsolutePath() 
+                                    + " resolves to " + normalized + " which " + 
+                                    " doesn't start with " + canonicalPath);
+                        }
                     }
-                    throw new SecurityException(normalized + " doesn't start with " + canonicalPath);
+                    return source;
                 }
             });
         }
-        catch(PrivilegedActionException e)
-        {
+        catch(PrivilegedActionException e) {
             throw (IOException)e.getException();
         }
     }
     
-    public long getLastModified(final Object templateSource)
-    {
+    public long getLastModified(final Object templateSource) {
         return AccessController.doPrivileged(new PrivilegedAction<Long>() {
             public Long run() {
             	return Long.valueOf(((File) templateSource).lastModified());
@@ -217,19 +220,11 @@ public class FileTemplateLoader implements SecureTemplateLoader
     }
     
     public Reader getReader(final Object templateSource, final String encoding)
-    throws
-        IOException
+    throws IOException
     {
-        // TODO: this shouldn't really be in a doPrivileged() as unprivileged
-        // code can use it to read the file by loading a template from it and
-        // then rendering it into its own writer. The question is whether we 
-        // can modify it without breaking BWC... This is actually a security
-        // bugfix.
-        try
-        {
+        try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<Reader>() {
-                public Reader run() throws IOException
-                {
+                public Reader run() throws IOException {
                     if (!(templateSource instanceof File)) {
                         throw new IllegalArgumentException(
                                 "templateSource is a: " + templateSource.getClass().getName());
@@ -238,25 +233,20 @@ public class FileTemplateLoader implements SecureTemplateLoader
                 }
             });
         }
-        catch(PrivilegedActionException e)
-        {
+        catch(PrivilegedActionException e) {
             throw (IOException)e.getException();
         }
     }
     
-    public void closeTemplateSource(Object templateSource)
-    {
+    public void closeTemplateSource(Object templateSource) {
         // Do nothing.
     }
     
-    public CodeSource getCodeSource(Object templateSource) throws IOException
-    {
-        if(baseDirCodeSource != null)
-        {
+    public CodeSource getCodeSource(Object templateSource) throws IOException {
+        if(baseDirCodeSource != null) {
             return baseDirCodeSource;
         }
         File f = (File)templateSource;
         return new CodeSource(f.toURL(), (Certificate[])null);
     }
-
 }
