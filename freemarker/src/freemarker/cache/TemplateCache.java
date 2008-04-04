@@ -260,6 +260,7 @@ public class TemplateCache
         long now = System.currentTimeMillis();
         long lastModified = -1L;
         Object newlyFoundSource = null;
+        boolean rethrown = false;
         try {
             if (cachedTemplate != null) {
                 // If we're within the refresh delay, return the cached copy
@@ -276,6 +277,7 @@ public class TemplateCache
                         throwLoadFailedException((RuntimeException)t);
                     }
                     else if(t instanceof IOException) {
+                        rethrown = true;
                         throwLoadFailedException((IOException)t);
                     }
                     throw new AssertionError("t is " + t.getClass().getName());
@@ -339,9 +341,9 @@ public class TemplateCache
                 // Construct a new CachedTemplate entry. Note we set the
                 // cachedTemplate.lastModified to Long.MIN_VALUE. This is
                 // a flag that signs it has to be explicitly queried later on.
-                newlyFoundSource = findTemplateSource(name, locale);
                 cachedTemplate = new CachedTemplate();
                 cachedTemplate.lastChecked = now;
+                newlyFoundSource = findTemplateSource(name, locale);
                 if (newlyFoundSource == null) {
                     storeNegativeLookup(tk, cachedTemplate, null);
                     return null;
@@ -355,25 +357,25 @@ public class TemplateCache
             }
             // If we get here, then we need to (re)load the template
             Object source = cachedTemplate.source;
-            try {
-                Template t = 
-                    loadTemplate(loader, name, locale, encoding, parse, source);
-                cachedTemplate.templateOrException = t;
-                cachedTemplate.lastModified =
-                    lastModified == Long.MIN_VALUE
-                        ? loader.getLastModified(source)
-                        : lastModified;
-                storeCached(tk, cachedTemplate);
-                return t;
-            }
-            catch(RuntimeException e) {
+            Template t = 
+                loadTemplate(loader, name, locale, encoding, parse, source);
+            cachedTemplate.templateOrException = t;
+            cachedTemplate.lastModified =
+                lastModified == Long.MIN_VALUE
+                    ? loader.getLastModified(source)
+                    : lastModified;
+            storeCached(tk, cachedTemplate);
+            return t;
+        }
+        catch(RuntimeException e) {
+            storeNegativeLookup(tk, cachedTemplate, e);
+            throw e;
+        }
+        catch(IOException e) {
+            if(!rethrown) {
                 storeNegativeLookup(tk, cachedTemplate, e);
-                throw e;
             }
-            catch(IOException e) {
-                storeNegativeLookup(tk, cachedTemplate, e);
-                throw e;
-            }
+            throw e;
         }
         finally {
             if(newlyFoundSource != null) {
