@@ -11,9 +11,6 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
 /**
- * <p><font color="red">Experimental: no backward compatibility guarantees</font>;
- * any feedback is highly welcome!</p>
- * 
  * @author Attila Szegedi
  * @version $Id: RhinoWrapper.java,v 1.2 2005/06/22 10:52:52 ddekany Exp $
  */
