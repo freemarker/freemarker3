@@ -65,7 +65,8 @@ import java.util.concurrent.ConcurrentMap;
  * collector to purge the cache when it determines that it wants to free up
  * memory.
  * This class is thread-safe to the extent that its underlying map is. The 
- * default implementation uses a concurrent map on Java 5 and above.
+ * default implementation uses a concurrent map on Java 5 and above, so it is
+ * thread-safe in that case.
  * @author Attila Szegedi
  * @version $Id: SoftCacheStorage.java,v 1.4 2003/09/22 20:47:03 ddekany Exp $
  *

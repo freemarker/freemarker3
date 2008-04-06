@@ -61,7 +61,8 @@ import java.util.concurrent.ConcurrentMap;
  * It holds a strong reference to all objects it was passed, therefore prevents
  * the cache from being purged during garbage collection.
  * This class is thread-safe to the extent that its underlying map is. The 
- * default implementation uses a concurrent map on Java 5 and above.
+ * default implementation uses a concurrent map on Java 5 and above, so it is
+ * thread-safe in that case.
  * @author Attila Szegedi
  * @version $Id: StrongCacheStorage.java,v 1.3 2003/09/22 20:47:03 ddekany Exp $
  *
