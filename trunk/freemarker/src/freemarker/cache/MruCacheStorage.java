@@ -61,16 +61,28 @@ import java.util.Map;
  * A cache storage that implements a two-level Most Recently Used cache. In the
  * first level, items are strongly referenced up to the specified maximum. When
  * the maximum is exceeded, the least recently used item is moved into the  
- * second level cache, where they are softly referenced, up to another specified
- * maximum. When the second level maximum is also exceeded, the least recently
- * used item is discarded altogether. This cache storage is a generalization of
- * both {@link StrongCacheStorage} and {@link SoftCacheStorage} - the effect of
- * both of them can be achieved by setting one maximum to zero and the other to
- * the largest positive integer.
+ * second level cache, where they are softly referenced, up to another 
+ * specified maximum. When the second level maximum is also exceeded, the least 
+ * recently used item is discarded altogether. This cache storage is a 
+ * generalization of both {@link StrongCacheStorage} and 
+ * {@link SoftCacheStorage} - the effect of both of them can be achieved by 
+ * setting one maximum to zero and the other to the largest positive integer. 
+ * On the other hand, if you wish to use this storage in a strong-only mode, or
+ * in a soft-only mode, you might consider using {@link StrongCacheStorage} or
+ * {@link SoftCacheStorage} instead, as they can be used by 
+ * {@link TemplateCache} concurrently without any synchronization on a 5.0 or 
+ * later JRE. 
  * This class is <em>NOT</em> thread-safe. If it is accessed from multiple
  * threads concurrently, proper synchronization must be provided by the callers.
  * Note that {@link TemplateCache}, the natural user of this class provides the
  * necessary synchronizations when it uses the class.
+ * Also you might consider whether you need this sort of a mixed storage at all
+ * in your solution, as in most cases SoftCacheStorage can also be sufficient. 
+ * SoftCacheStorage will use Java soft references, and they already use access 
+ * timestamps internally to bias the garbage collector against clearing 
+ * recently used references, so you can get reasonably good (and 
+ * memory-sensitive) most-recently-used caching through 
+ * {@link SoftCacheStorage} as well.
  * @author Attila Szegedi
  * @version $Id: MruCacheStorage.java,v 1.7 2003/12/18 16:20:07 ddekany Exp $
  */
