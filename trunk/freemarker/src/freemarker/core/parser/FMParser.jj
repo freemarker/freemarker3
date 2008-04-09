@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2007 The Visigoth Software Society. All rights
+ * Copyright (c) 2003-2008 The Visigoth Software Society. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -495,7 +495,9 @@ TOKEN:
     |
     < "-">
     |
-    < "-->"  | "--]" > {if (parenthesisNesting >0) SwitchTo(IN_PAREN); else if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION); else SwitchTo(FM_EXPRESSION);}
+    < "-->">  {if (parenthesisNesting >0) SwitchTo(IN_PAREN); else if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION); else SwitchTo(FM_EXPRESSION);} 
+    |
+    < "--]" > {if (parenthesisNesting >0) SwitchTo(IN_PAREN); else if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION); else SwitchTo(FM_EXPRESSION);}
 }
 
 <FM_EXPRESSION, IN_PAREN, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
@@ -777,6 +779,42 @@ Token KeepGoingUntil(int type) {
 	return t;
 }
 
+Expression DefaultToExpression() :
+{
+	Token t;
+	Expression exp, prev, next=null;
+}
+{
+	exp=PrimaryExpression()
+	(
+	  LOOKAHEAD(<EXCLAM>PrimaryExpression())
+	  (
+	     <EXCLAM>
+	     next=PrimaryExpression(){
+	     	prev = exp;
+	     	exp=new DefaultToExpression(exp, next);
+	     	exp.setLocation(template, prev, next);
+	     }
+	  )
+	)*
+	[
+	    LOOKAHEAD(<EXCLAM>|<TERMINATING_EXCLAM>)
+	    (
+	       t=<EXCLAM>
+	       |
+	       t=<TERMINATING_EXCLAM>
+	    )
+	    {
+	    	prev =exp;
+	    	exp = new DefaultToExpression(prev, null);
+	    	exp.setLocation(template, prev, t);
+	    }
+	]
+	{
+		return exp;
+	}
+}
+
 /**
  * Lowest level expression, a literal, a variable,
  * or a possibly more complex expression bounded
@@ -811,8 +849,6 @@ Expression PrimaryExpression() :
                 |<OPEN_BRACKET>
                 |<OPEN_PAREN>
                 |<BUILT_IN>
-                |<EXCLAM>
-                |<TERMINATING_EXCLAM>
                 |<EXISTS>)
       exp=AddSubExpression(exp)
   )*
@@ -851,7 +887,7 @@ Expression UnaryExpression() :
    |
    result=NotExpression()
    |
-   result=PrimaryExpression()
+   result=DefaultToExpression()
   )
   {
      return result;
@@ -868,7 +904,7 @@ Expression NotExpression() :
    (
       t=<EXCLAM> {nots.add(t);}
    )+
-   exp=PrimaryExpression()
+   exp=DefaultToExpression()
    {
       for (int i=0; i<nots.size(); i++) {
          result = new NotExpression(exp);
@@ -892,7 +928,7 @@ Expression UnaryPlusMinusExpression() :
       |
       t=<MINUS> {isMinus = true;}
    )
-   exp=PrimaryExpression()
+   exp=DefaultToExpression()
    {
       result = new UnaryPlusMinusExpression(exp, isMinus);  
       result.setLocation(template, t, exp);
@@ -1216,8 +1252,6 @@ Expression AddSubExpression(Expression exp) :
        result=MethodArgs(exp)
        |
        result=BuiltIn(exp)
-       |
-       result=DefaultTo(exp)
        |
        result=Exists(exp)
      )
@@ -2751,7 +2785,7 @@ TextBlock PCData() :
       (
          {prevToken = t;}         
          t=<WHITESPACE>
-	 |
+	     |
          t=<PRINTABLE_CHARS>
          |
          t=<FALSE_ALERT>
@@ -2759,7 +2793,7 @@ TextBlock PCData() :
       {
          buf.append(t.image);
          if (start == null) start = t;
-         {if (prevToken != null) prevToken.next = null;}
+         if (prevToken != null) prevToken.next = null;
       }
     )+
     {
