@@ -114,10 +114,10 @@ public class Template extends TemplateCore {
     public static final String DEFAULT_NAMESPACE_PREFIX = "D";
     public static final String NO_NS_PREFIX = "N";
 
+	protected String templateText;
     private List<LibraryLoad> imports = new Vector<LibraryLoad>();
     private String encoding, defaultNS;
     private final String name;
-	private String templateText;
 	private ArrayList<String> lines;
 	
     
@@ -174,42 +174,7 @@ public class Template extends TemplateCore {
         
         this.encoding = encoding;
         
-        int charsRead = 0;
-        StringBuilder buf = new StringBuilder();
-        char[] chars = new char[0x10000];
-        try {
-        	do {
-        		charsRead = reader.read(chars);
-        		if (charsRead >0) buf.append(chars, 0, charsRead);
-        	} while(charsRead >=0);
-        }
-        finally {
-        	reader.close();
-        }
-        this.templateText = buf.toString();
-        
-        // now create line table
-        
-        lines = new ArrayList<String>();
-        int lineStart = 0, lastLineStart = 0;
-        int offset = 0;
-        char lastChar = 0;
-        while (offset < templateText.length()) {
-        	char c = templateText.charAt(offset++);
-        	if (c == '\n' || c=='\r') {
-        		if (c == '\n' && lastChar == '\r') {
-        			lines.set(lines.size() -1, templateText.substring(lastLineStart, offset));
-        			lineStart = offset;
-        		} else {
-        			lines.add(templateText.substring(lineStart, offset));
-        			lastLineStart = lineStart;
-        			lineStart = offset;
-        		}
-        	} else if (offset == templateText.length()) {
-        		lines.add(templateText.substring(lineStart, offset));
-        	}
-        	lastChar = c;
-        }
+        readInTemplateText(reader);
         try {
             try {
                 int syntaxSetting = getConfiguration().getTagSyntax();
@@ -237,6 +202,45 @@ public class Template extends TemplateCore {
         DebuggerService.registerTemplate(this);
         namespaceURIToPrefixLookup = Collections.unmodifiableMap(namespaceURIToPrefixLookup);
         prefixToNamespaceURILookup = Collections.unmodifiableMap(prefixToNamespaceURILookup);
+	}
+
+	protected void readInTemplateText(Reader reader) throws IOException {
+        int charsRead = 0;
+        StringBuilder buf = new StringBuilder();
+        char[] chars = new char[0x10000];
+        try {
+        	do {
+        		charsRead = reader.read(chars);
+        		if (charsRead >0) buf.append(chars, 0, charsRead);
+        	} while(charsRead >=0);
+        }
+        finally {
+        	reader.close();
+        }
+        this.templateText = buf.toString();
+        
+        // now create line table
+		
+		lines = new ArrayList<String>();
+        int lineStart = 0, lastLineStart = 0;
+        int offset = 0;
+        char lastChar = 0;
+        while (offset < templateText.length()) {
+        	char c = templateText.charAt(offset++);
+        	if (c == '\n' || c=='\r') {
+        		if (c == '\n' && lastChar == '\r') {
+        			lines.set(lines.size() -1, templateText.substring(lastLineStart, offset));
+        			lineStart = offset;
+        		} else {
+        			lines.add(templateText.substring(lineStart, offset));
+        			lastLineStart = lineStart;
+        			lineStart = offset;
+        		}
+        	} else if (offset == templateText.length()) {
+        		lines.add(templateText.substring(lineStart, offset));
+        	}
+        	lastChar = c;
+        }
 	}
     
     
@@ -610,7 +614,7 @@ public class Template extends TemplateCore {
   		for (int i=0; i<numChars; i++) {
   			char c = firstLine.charAt(firstLineRealOffset + i);
   			buf.append(c);
-  			if (c=='\t') c+=7;
+  			if (c=='\t') i+=7;
   		}
   		for (int i=beginLine +1; i<endLine; i++) {
   			buf.append(lines.get(i));
@@ -618,7 +622,7 @@ public class Template extends TemplateCore {
   		if (endLine != beginLine) {
   			String lastLine = lines.get(endLine);
   			for (int i=0; i <= endColumn; i++) {
-  				char c = lastLine.charAt(0);
+  				char c = lastLine.charAt(i);
   				buf.append(c);
   				if (c == '\t') i+=7;
   			}
