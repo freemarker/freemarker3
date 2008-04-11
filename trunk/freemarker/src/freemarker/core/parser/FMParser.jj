@@ -111,6 +111,10 @@ public class FMParser {
   	  }
   }
   
+  public FMParser(Template template, String input, int syntaxSetting) {
+  	  this(template, new StringReader(input), syntaxSetting); 
+  }
+  
   public void setTemplate(Template t) {
       this.template = t;
   }
@@ -1312,19 +1316,6 @@ Expression BuiltIn(Expression exp) :
 {
    <BUILT_IN>
    t=<ID>
-/*   
-   {
-       BuiltIn result = null;
-       try {
-           result = BuiltIn.newBuiltIn(exp, t.image, t, templateName);
-       } catch (ParseException pe) {
-           pe.lineNumber = t.beginLine;
-           pe.columnNumber = t.beginColumn;
-           throw pe;
-       }
-       result.setLocation(template, exp, t);
-       return result;
-   }*/
    {
    	   BuiltInExpression result = new BuiltInExpression(exp, t.image);
    	   result.setLocation(template, exp, t);

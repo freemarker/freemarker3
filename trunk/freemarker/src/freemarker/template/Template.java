@@ -117,7 +117,10 @@ public class Template extends TemplateCore {
     private List<LibraryLoad> imports = new Vector<LibraryLoad>();
     private String encoding, defaultNS;
     private final String name;
-    private final ArrayList<String> lines = new ArrayList<String>();
+	private String templateText;
+	private ArrayList<String> lines;
+	
+    
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
     private Set<String> declaredVariables = new HashSet<String>();
@@ -163,26 +166,56 @@ public class Template extends TemplateCore {
      * is run within a secured environment. Can be null, which is treated as 
      * being equivalent to untrusted code.
      */
-    public Template(String name, Reader reader, Configuration cfg, 
-            String encoding, CodeSource codeSource)
-    throws IOException
-    {
-        this(name, cfg, codeSource);
+    
+    
+	public Template(String name, Reader reader, Configuration cfg,
+			String encoding, CodeSource codeSource) throws IOException {
+       this(name, cfg, codeSource);
+        
         this.encoding = encoding;
-
-        if (!(reader instanceof BufferedReader)) {
-            reader = new BufferedReader(reader, 0x1000);
+        
+        int charsRead = 0;
+        StringBuilder buf = new StringBuilder();
+        char[] chars = new char[0x10000];
+        try {
+        	do {
+        		charsRead = reader.read(chars);
+        		if (charsRead >0) buf.append(chars, 0, charsRead);
+        	} while(charsRead >=0);
         }
-        LineTableBuilder ltb = new LineTableBuilder(reader);
+        finally {
+        	reader.close();
+        }
+        this.templateText = buf.toString();
+        
+        // now create line table
+        
+        lines = new ArrayList<String>();
+        int lineStart = 0, lastLineStart = 0;
+        int offset = 0;
+        char lastChar = 0;
+        while (offset < templateText.length()) {
+        	char c = templateText.charAt(offset++);
+        	if (c == '\n' || c=='\r') {
+        		if (c == '\n' && lastChar == '\r') {
+        			lines.set(lines.size() -1, templateText.substring(lastLineStart, offset));
+        			lineStart = offset;
+        		} else {
+        			lines.add(templateText.substring(lineStart, offset));
+        			lastLineStart = lineStart;
+        			lineStart = offset;
+        		}
+        	} else if (offset == templateText.length()) {
+        		lines.add(templateText.substring(lineStart, offset));
+        	}
+        	lastChar = c;
+        }
         try {
             try {
-            	
                 int syntaxSetting = getConfiguration().getTagSyntax();
-                FMParser parser = new FMParser(this, ltb, syntaxSetting);
                 this.stripWhitespace = getConfiguration().getWhitespaceStripping();
                 this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
-                
-            	
+                FMParser parser = new FMParser(this, templateText, syntaxSetting);
                 setRootElement(parser.Root());
                 PostParseVisitor ppv = new PostParseVisitor(this);
                 ppv.visit(this);
@@ -201,14 +234,12 @@ public class Template extends TemplateCore {
             e.setTemplateName(name);
             throw e;
         }
-        finally {
-            ltb.close();
-        }
         DebuggerService.registerTemplate(this);
         namespaceURIToPrefixLookup = Collections.unmodifiableMap(namespaceURIToPrefixLookup);
         prefixToNamespaceURILookup = Collections.unmodifiableMap(prefixToNamespaceURILookup);
-    }
-
+	}
+    
+    
     public Template(String name, Reader reader, Configuration cfg, 
             String encoding)
     throws IOException
@@ -546,6 +577,74 @@ public class Template extends TemplateCore {
    public void setStrictVariableDeclaration(boolean strictVariableDeclaration) {
     	this.strictVariableDeclaration = strictVariableDeclaration;
     }
+   
+	
+
+   public String getSource(int beginColumn,
+           int beginLine,
+           int endColumn,
+           int endLine)
+   {
+   	if (beginLine > endLine) {
+   		throw new IllegalArgumentException("Internal error: start location is after end location!");
+   	}
+   	if (beginLine == endLine && beginColumn > endColumn) {
+   		throw new IllegalArgumentException("Internal error: start location is after end location!");
+   	}
+   	
+   	// Our container is zero-based.
+   	--beginLine;
+   	--beginColumn;
+   	--endColumn;
+   	--endLine;
+
+   	int numLines = 1 + endLine - beginLine;
+  		String firstLine = lines.get(beginLine);
+  		
+  		// And we have to do these horrendous adjustments for tabs.
+  		// Tabs are evil.
+  		
+  		int firstLineRealOffset = getRealOffset(firstLine, beginColumn);
+  		StringBuilder buf = new StringBuilder();
+  		int numChars = (endLine == beginLine) ? 1 + endColumn - beginColumn : tabAdjustedLength(firstLine) - beginColumn;
+  		for (int i=0; i<numChars; i++) {
+  			char c = firstLine.charAt(firstLineRealOffset + i);
+  			buf.append(c);
+  			if (c=='\t') c+=7;
+  		}
+  		for (int i=beginLine +1; i<endLine; i++) {
+  			buf.append(lines.get(i));
+  		}
+  		if (endLine != beginLine) {
+  			String lastLine = lines.get(endLine);
+  			for (int i=0; i <= endColumn; i++) {
+  				char c = lastLine.charAt(0);
+  				buf.append(c);
+  				if (c == '\t') i+=7;
+  			}
+  		}
+  		return buf.toString();
+	}
+   
+   static private int tabAdjustedLength(String s) {
+   	int result = 0;
+   	for (char c : s.toCharArray()) {
+   		if (c=='\t') result +=8;
+   		else result++;
+   	}
+   	return result;
+   }
+   
+   static private int getRealOffset(String s, int offset) {
+   	if (s.indexOf('\t')<0) return offset;
+   	int result=0;
+   	for (int i=0; i<offset; i++) {
+   		if (s.charAt(result) == '\t') i+=7;
+   		++result;
+     	}
+   	return result;
+   }
+
     
     /**
      * Returns the template source at the location
@@ -556,92 +655,6 @@ public class Template extends TemplateCore {
      * @param endLine the last line of the requested source, 1-based
      * @see freemarker.core.ast.TemplateNode#getSource()
      */
-    public String getSource(int beginColumn,
-                            int beginLine,
-                            int endColumn,
-                            int endLine)
-    {
-        // Our container is zero-based.
-        --beginLine;
-        --beginColumn;
-        --endColumn;
-        --endLine;
-        StringBuilder buf = new StringBuilder();
-        for (int i = beginLine ; i<=endLine; i++) {
-            if (i < lines.size()) {
-                buf.append(lines.get(i));
-            }
-        }
-        int lastLineLength = lines.get(endLine).length();
-        int trailingCharsToDelete = lastLineLength - endColumn -1;
-        buf.delete(0, beginColumn);
-        buf.delete(buf.length() - trailingCharsToDelete, buf.length());
-        return buf.toString();
-    }
-
-    /**
-     * This is a helper class that builds up the line table
-     * info for us.
-     */
-    protected class LineTableBuilder extends FilterReader {
-
-        StringBuilder lineBuf = new StringBuilder();
-        int lastChar;
-
-        /**
-         * @param r the character stream to wrap
-         */
-        public LineTableBuilder(Reader r) {
-            super(r);
-        }
-
-        public int read() throws IOException {
-            int c = in.read();
-            handleChar(c);
-            return c;
-        }
-
-        public int read(char cbuf[], int off, int len) throws IOException {
-            int numchars = in.read(cbuf, off, len);
-            for (int i=off; i < off+numchars; i++) {
-                char c = cbuf[i];
-                handleChar(c);
-            }
-            return numchars;
-        }
-
-        public void close() throws IOException {
-            if (lineBuf.length() >0) {
-                lines.add(lineBuf.toString());
-                lineBuf.setLength(0);
-            }
-            super.close();
-        }
-
-        private void handleChar(int c) {
-            if (c == '\n' || c == '\r') {
-                if (lastChar == '\r' && c == '\n') { // CRLF under Windoze
-                    int lastIndex = lines.size() -1;
-                    String lastLine = lines.get(lastIndex);
-                    lines.set(lastIndex, lastLine + '\n');
-                } else {
-                    lineBuf.append((char) c);
-                    lines.add(lineBuf.toString());
-                    lineBuf.setLength(0);
-                }
-            }
-            else if (c == '\t') {
-                int numSpaces = 8 - (lineBuf.length() %8);
-                for (int i=0; i<numSpaces; i++) {
-                    lineBuf.append(' ');
-                }
-            }
-            else {
-                lineBuf.append((char) c);
-            }
-            lastChar = c;
-        }
-    }
 
     /**
      *  @return the root TemplateElement object.
