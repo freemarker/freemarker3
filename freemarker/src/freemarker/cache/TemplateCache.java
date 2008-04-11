@@ -67,6 +67,7 @@ import freemarker.log.Logger;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
+
 /**
  * A class that performs caching and on-demand loading of the templates.
  * The actual loading is delegated to a {@link TemplateLoader}. Also,
@@ -430,7 +431,7 @@ public class TemplateCache
                 catch (Template.WrongEncodingException wee) {
                     encoding = wee.specifiedEncoding;
                     reader = loader.getReader(source, encoding);
-                    template = new Template(name, reader, config, encoding);
+                    template = createTemplate(name, reader, config, encoding, codeSource);
                 }
                 template.setLocale(locale);
             }
