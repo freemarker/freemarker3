@@ -53,6 +53,8 @@
 package freemarker.template;
 
 import java.io.BufferedReader;
+import java.io.CharArrayReader;
+import java.io.CharArrayWriter;
 import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -114,11 +116,11 @@ public class Template extends TemplateCore {
     public static final String DEFAULT_NAMESPACE_PREFIX = "D";
     public static final String NO_NS_PREFIX = "N";
 
-	protected String templateText;
+	protected char[] templateText;
     private List<LibraryLoad> imports = new Vector<LibraryLoad>();
     private String encoding, defaultNS;
     private final String name;
-	private ArrayList<String> lines;
+	private int[] lineStartOffsets;
 	
     
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
@@ -180,7 +182,7 @@ public class Template extends TemplateCore {
                 int syntaxSetting = getConfiguration().getTagSyntax();
                 this.stripWhitespace = getConfiguration().getWhitespaceStripping();
                 this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
-                FMParser parser = new FMParser(this, templateText, syntaxSetting);
+                FMParser parser = new FMParser(this, new CharArrayReader(templateText), syntaxSetting);
                 setRootElement(parser.Root());
                 PostParseVisitor ppv = new PostParseVisitor(this);
                 ppv.visit(this);
@@ -203,7 +205,7 @@ public class Template extends TemplateCore {
         namespaceURIToPrefixLookup = Collections.unmodifiableMap(namespaceURIToPrefixLookup);
         prefixToNamespaceURILookup = Collections.unmodifiableMap(prefixToNamespaceURILookup);
 	}
-
+	
 	protected void readInTemplateText(Reader reader) throws IOException {
         int charsRead = 0;
         StringBuilder buf = new StringBuilder();
@@ -217,32 +219,10 @@ public class Template extends TemplateCore {
         finally {
         	reader.close();
         }
-        this.templateText = buf.toString();
-        
-        // now create line table
-		
-		lines = new ArrayList<String>();
-        int lineStart = 0, lastLineStart = 0;
-        int offset = 0;
-        char lastChar = 0;
-        while (offset < templateText.length()) {
-        	char c = templateText.charAt(offset++);
-        	if (c == '\n' || c=='\r') {
-        		if (c == '\n' && lastChar == '\r') {
-        			lines.set(lines.size() -1, templateText.substring(lastLineStart, offset));
-        			lineStart = offset;
-        		} else {
-        			lines.add(templateText.substring(lineStart, offset));
-        			lastLineStart = lineStart;
-        			lineStart = offset;
-        		}
-        	} else if (offset == templateText.length()) {
-        		lines.add(templateText.substring(lineStart, offset));
-        	}
-        	lastChar = c;
-        }
-	}
-    
+        this.templateText = new char[buf.length()];
+        buf.getChars(0, buf.length(), templateText, 0);
+        this.lineStartOffsets = createLineTable(templateText);
+	}    
     
     public Template(String name, Reader reader, Configuration cfg, 
             String encoding)
@@ -250,6 +230,7 @@ public class Template extends TemplateCore {
     {
         this(name, reader, cfg, encoding, NULL_CODE_SOURCE);
     }
+    
     /**
      * This is equivalent to Template(name, reader, cfg, null)
      */
@@ -285,6 +266,7 @@ public class Template extends TemplateCore {
             Configuration config) {
         Template template = new Template(name, config, NULL_CODE_SOURCE);
         TextBlock block = new TextBlock(content);
+        template.templateText = content.toCharArray();
         template.setRootElement(block);
         DebuggerService.registerTemplate(template);
         return template;
@@ -582,72 +564,98 @@ public class Template extends TemplateCore {
     	this.strictVariableDeclaration = strictVariableDeclaration;
     }
    
-	
-
-   public String getSource(int beginColumn,
+   	public String getSource(int beginColumn,
            int beginLine,
            int endColumn,
            int endLine)
-   {
-   	if (beginLine > endLine) {
-   		throw new IllegalArgumentException("Internal error: start location is after end location!");
+   	{
+   		// Our container is zero-based, but location info is 1-based
+   		--beginLine;
+   		--beginColumn;
+   		--endColumn;
+   		--endLine;
+   		int startOffset = lineStartOffsets[beginLine] + beginColumn;
+   		int endOffset = lineStartOffsets[endLine] + endColumn;
+   		int numChars = 1+endOffset - startOffset;
+   		return new String(templateText, startOffset, numChars);
    	}
-   	if (beginLine == endLine && beginColumn > endColumn) {
-   		throw new IllegalArgumentException("Internal error: start location is after end location!");
-   	}
-   	
-   	// Our container is zero-based.
-   	--beginLine;
-   	--beginColumn;
-   	--endColumn;
-   	--endLine;
-
-   	int numLines = 1 + endLine - beginLine;
-  		String firstLine = lines.get(beginLine);
-  		
-  		// And we have to do these horrendous adjustments for tabs.
-  		// Tabs are evil.
-  		
-  		int firstLineRealOffset = getRealOffset(firstLine, beginColumn);
-  		StringBuilder buf = new StringBuilder();
-  		int numChars = (endLine == beginLine) ? 1 + endColumn - beginColumn : tabAdjustedLength(firstLine) - beginColumn;
-  		for (int i=0; i<numChars; i++) {
-  			char c = firstLine.charAt(firstLineRealOffset + i);
-  			buf.append(c);
-  			if (c=='\t') i+=7;
-  		}
-  		for (int i=beginLine +1; i<endLine; i++) {
-  			buf.append(lines.get(i));
-  		}
-  		if (endLine != beginLine) {
-  			String lastLine = lines.get(endLine);
-  			for (int i=0; i <= endColumn; i++) {
-  				char c = lastLine.charAt(i);
-  				buf.append(c);
-  				if (c == '\t') i+=7;
-  			}
-  		}
-  		return buf.toString();
-	}
    
-   static private int tabAdjustedLength(String s) {
-   	int result = 0;
-   	for (char c : s.toCharArray()) {
-   		if (c=='\t') result +=8;
-   		else result++;
-   	}
-   	return result;
-   }
+    public String getLine(int lineNumber) {
+    	lineNumber--;
+    	int lineStartOffset = lineStartOffsets[lineNumber];
+    	int numChars;
+    	if (lineNumber == lineStartOffsets.length-1) {
+    		numChars = templateText.length - lineStartOffset;
+    	} else {
+    		numChars = lineStartOffsets[lineNumber+1] - lineStartOffset;
+    	}
+     	return new String(templateText, lineStartOffset, numChars);
+    }
+    
+    public int getTabAdjustedColumn(int lineNumber, int column, int tabSize) {
+    	if (tabSize == 1 || column == 1) return column;
+    	int lineStartOffset = lineStartOffsets[lineNumber-1];
+    	int result = 1;
+    	char c=0;
+    	for (int i=0; i< column-1; i++) {
+    		c = templateText[lineStartOffset+i];
+    		if (c == '\t') 
+    			result += (tabSize - i%tabSize);
+    		else ++result;
+    	}
+    	return result;
+    }
    
-   static private int getRealOffset(String s, int offset) {
-   	if (s.indexOf('\t')<0) return offset;
-   	int result=0;
-   	for (int i=0; i<offset; i++) {
-   		if (s.charAt(result) == '\t') i+=7;
-   		++result;
+   
+    public void writeTextAt(Writer out, 
+    					  int beginColumn,
+    					  int beginLine, 
+    					  int endColumn, 
+		                  int endLine) throws IOException 
+    {
+    	--beginLine; --beginColumn; --endColumn; --endLine;
+   		int startOffset = lineStartOffsets[beginLine] + beginColumn;
+   		int endOffset = lineStartOffsets[endLine] + endColumn;
+   		out.write(templateText, startOffset, 1+endOffset - startOffset);
+    }
+    
+    public void writeTemplateText(Writer out) throws IOException {
+    	out.write(templateText);
+    }
+    
+    static private int countLines(char[] chars) {
+     	if (chars == null || chars.length == 0) return 0;
+     	int numLines = 1;
+        for (int i=0; i<chars.length; i++) {
+         	boolean isLastChar = (i == chars.length-1);
+         	if (chars[i] =='\r') {
+         		if (!isLastChar && chars[i+1] != '\n') ++numLines;
+         	}
+         	else if (chars[i] == '\n') {
+         		if (!isLastChar) ++numLines;
+         	}
+         }
+         return numLines;
+    }
+     
+    static private int[] createLineTable(final char[] text) {
+     	int numLines = countLines(text);
+     	int[] table = new int[numLines];
+     	int lineNumber = 0;
+     	boolean newLine = true;
+     	for (int i=0; i<text.length; i++) {
+     		if (newLine) table[lineNumber++] = i;
+     		newLine = false;
+     		if (text[i] == '\r') {
+     			newLine = (i != text.length -1 && text[i+1] !='\n');
+     		}
+     		else if (text[i] == '\n') {
+     			newLine = true;
+     		}
      	}
-   	return result;
-   }
+     	return table;
+     }
+     
 
     
     /**

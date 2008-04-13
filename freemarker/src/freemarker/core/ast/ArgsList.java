@@ -162,7 +162,7 @@ abstract public class ArgsList extends TemplateNode {
 	}
 	
 	public void setLocationInfoIfAbsent(TemplateNode invoker) {
-		if (this.beginLine == 0) {
+		if (getBeginLine() == 0) {
 			this.copyLocationFrom(invoker);
 			
 		}

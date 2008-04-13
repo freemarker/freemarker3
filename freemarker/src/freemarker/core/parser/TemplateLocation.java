@@ -67,6 +67,8 @@ public class TemplateLocation {
 	protected int beginLine, beginColumn, endLine, endColumn;
 	protected Template template;
 	
+	static public int tabSize = 8;
+	
 	public final String getDescription(Locale locale) {
 		return "";
 	}
@@ -75,10 +77,16 @@ public class TemplateLocation {
 		return "";
 	}
 	
+	public int getBeginColumnTabAdjusted() {
+		return (template == null) ? beginColumn 
+                : template.getTabAdjustedColumn(beginLine, beginColumn, tabSize);
+	}
+	
 	public int getBeginColumn() {
 		return beginColumn;
 	}
 	
+
 	public int getBeginLine() {
 		return beginLine;
 	}
@@ -91,6 +99,12 @@ public class TemplateLocation {
 		return endColumn;
 	}
 	
+	public int getEndColumnTabAdjusted() {
+		return template==null ? endColumn 
+            : template.getTabAdjustedColumn(beginLine, endColumn, tabSize);
+			
+	}
+	
 	public String getSource() {
 		return template.getSource(beginColumn, beginLine, endColumn, endLine);
 	}
@@ -101,7 +115,7 @@ public class TemplateLocation {
 	
 	public String toString() {
 		String templateName = template == null ? "input" : template.getName();
-        return "on line " + beginLine + ", column " + beginColumn 
+        return "on line " + getBeginLine() + ", column " + beginColumn 
         	+ " in " + templateName;
 	}
 	
@@ -114,7 +128,7 @@ public class TemplateLocation {
         return "on line " 
               + beginLine 
               + ", column " 
-              + beginColumn
+              + getBeginColumn()
               + " in "
               + templateName;
     }
@@ -124,7 +138,7 @@ public class TemplateLocation {
         return "on line " 
               + endLine
               + ", column "
-              + endColumn
+              + getEndColumn()
               + " in "
               + templateName;
     }
@@ -170,21 +184,21 @@ public class TemplateLocation {
         setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
     }
     
-    public final void setLocation(Template template, Token begin, TemplateNode end)
+    public final void setLocation(Template template, Token begin, TemplateLocation end)
     throws
         ParseException
     {
         setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
     }
 
-    public final void setLocation(Template template, TemplateNode begin, Token end)
+    public final void setLocation(Template template, TemplateLocation begin, Token end)
     throws
         ParseException
     {
         setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
     }
 
-    public final void setLocation(Template template, TemplateNode begin, TemplateNode end)
+    public final void setLocation(Template template, TemplateLocation begin, TemplateLocation end)
     throws
         ParseException
     {

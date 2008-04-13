@@ -67,7 +67,6 @@
             <!--available file="lib/dom4j.jar"/-->
             <available file="lib/emma.jar"/>
             <available file="lib/emma_ant.jar"/>
-            <available file="lib/jarjar-0.7.jar"/>
             <available file="lib/javacc.jar"/>
             <available file="lib/jaxen.jar"/>
             <!--available file="lib/jdom.jar"/-->

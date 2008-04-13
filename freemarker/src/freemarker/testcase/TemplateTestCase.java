@@ -408,7 +408,7 @@ public class TemplateTestCase extends TestCase {
                 fail = true;
                 pw.println("Difference found on line " + ref.getLineNumber() + 
                                             ".\nReference text is: " + refLine +
-                                            "\nOutput text is: " + outLine);
+                                            "\nOutput text is   : " + outLine);
             }
         }
         if(fail) {
