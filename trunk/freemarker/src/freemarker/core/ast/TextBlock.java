@@ -293,7 +293,7 @@ public final class TextBlock extends TemplateElement {
      */
     private int openingCharsToStrip() {
         int newlineIndex = firstNewLineIndex();
-        if (newlineIndex == -1 && beginColumn != 1) {
+        if (newlineIndex == -1 && getBeginColumn() != 1) {
             return 0;
         }
         ++newlineIndex;
@@ -326,7 +326,7 @@ public final class TextBlock extends TemplateElement {
     private int trailingCharsToStrip() {
         String content = new String(text);
         int lastNewlineIndex = lastNewLineIndex();
-        if (lastNewlineIndex == -1 && beginColumn != 1) {
+        if (lastNewlineIndex == -1 && getBeginColumn() != 1) {
             return 0;
         }
         String substring = content.substring(lastNewlineIndex +1);

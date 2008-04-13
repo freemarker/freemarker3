@@ -77,7 +77,7 @@ public abstract class TemplateNode extends TemplateLocation {
 	
 	public String getSource() {
         if (template != null) {
-            return template.getSource(beginColumn, beginLine, endColumn, endLine);
+            return template.getSource(getBeginColumn(), getBeginLine(), getEndColumn(), getEndLine());
         } else {
             return getCanonicalForm();
         }

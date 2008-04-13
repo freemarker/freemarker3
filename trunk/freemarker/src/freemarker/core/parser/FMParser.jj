@@ -102,6 +102,7 @@ public class FMParser {
       this.template = template;
       this.templateName = template != null ? template.getName() : "";
       token_source.templateName = templateName;
+      token_source.input_stream.setTabSize(1);
   }
   
   public FMParser(Template template, Reader reader, int syntaxSetting) {

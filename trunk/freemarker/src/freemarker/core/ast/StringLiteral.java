@@ -79,6 +79,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
     
     public void checkInterpolation() throws ParseException {
     	String src = this.getSource();
+//    	String src = value;
         if (src.length() >5 && (src.indexOf("${") >= 0 || src.indexOf("#{") >= 0)) {
             SimpleCharStream scs = new SimpleCharStream(new StringReader(value), getBeginLine(), getBeginColumn()+1, value.length());
             FMParserTokenManager token_source = new FMParserTokenManager(scs);
