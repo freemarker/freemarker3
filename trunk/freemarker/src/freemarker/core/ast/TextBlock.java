@@ -379,7 +379,7 @@ public final class TextBlock extends TemplateElement {
         return true;
     }
 
-    boolean isIgnorable() {
+    public boolean isIgnorable() {
         if (text == null || text.length == 0) {
             return true;
         }
