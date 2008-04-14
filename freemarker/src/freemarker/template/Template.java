@@ -121,6 +121,9 @@ public class Template extends TemplateCore {
     private String encoding, defaultNS;
     private final String name;
 	private int[] lineStartOffsets;
+	private byte[] lineInfoTable; // contain bitsets that describe what happens
+	                              // on the line.
+	
 	
     
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
@@ -186,6 +189,8 @@ public class Template extends TemplateCore {
                 setRootElement(parser.Root());
                 PostParseVisitor ppv = new PostParseVisitor(this);
                 ppv.visit(this);
+                WhitespaceAdjuster wadj = new WhitespaceAdjuster(this);
+                wadj.visit(this);
                 for (ASTVisitor visitor : cfg.getAutoVisitors()) {
                 	if (visitor instanceof Cloneable) {
                 		visitor = visitor.clone();
@@ -222,6 +227,7 @@ public class Template extends TemplateCore {
         this.templateText = new char[buf.length()];
         buf.getChars(0, buf.length(), templateText, 0);
         this.lineStartOffsets = createLineTable(templateText);
+        this.lineInfoTable = new byte[lineStartOffsets.length];
 	}    
     
     public Template(String name, Reader reader, Configuration cfg, 
@@ -654,7 +660,54 @@ public class Template extends TemplateCore {
      		}
      	}
      	return table;
-     }
+    }
+    
+    public void setLineSaysLeftTrim(int i) {
+    	--i;
+    	lineInfoTable[i] = (byte) (lineInfoTable[i] | 0x01);
+    }
+    
+    public void setLineSaysRightTrim(int i) {
+    	--i;
+    	lineInfoTable[i] = (byte) (lineInfoTable[i] | 0x02);
+    }
+    
+    public void setLineSaysTrim(int i) {
+    	--i;
+    	lineInfoTable[i] = (byte) (lineInfoTable[i] | 0x03);
+    }
+    
+    public void setLineSaysNoTrim(int i) {
+    	--i;
+    	lineInfoTable[i] = (byte) (lineInfoTable[i] | 0x04);
+    }
+    
+    public boolean lineSaysLeftTrim(int i) {
+    	--i;
+    	return (lineInfoTable[i] & 1) != 0;
+    }
+    
+    public boolean lineSaysRightTrim(int i) {
+    	--i;
+    	return (lineInfoTable[i] & 2) != 0;
+    }
+    
+    public boolean lineSaysNoTrim(int i) {
+    	--i;
+    	return (lineInfoTable[i] & 4) != 0;
+    }
+    
+    public void setLineDefinitelyProducesOutput(int i) {
+    	--i;
+    	lineInfoTable[i] = (byte) (lineInfoTable[i] | 0x08);
+    }
+    
+    public boolean lineDefinitelyProducesOutput(int i) {
+    	--i;
+    	return (lineInfoTable[i] & 8) != 0;
+    }
+    
+    
      
 
     

@@ -210,6 +210,7 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(Interpolation node) {
 		super.visit(node);
+		markAsProducingOutput(node);
 		Expression escapedExpression = escapedExpression(node.expression);
 		node.setEscapedExpression(escapedExpression);
 		checkLiteralInScalarContext(escapedExpression);
@@ -367,9 +368,49 @@ public class PostParseVisitor extends ASTVisitor {
 			}
 		}
 	}
-	
+/*
 	public void visit(TextBlock node) {
 		node.whitespaceAdjust(!template.stripWhitespace);
+	}
+*/	
+
+	public void visit(TextBlock node) {
+		if (node.getBeginLine() == 0) {
+			//REVISIT
+			//test-jsptaglibs.txt, test-sequencebuiltins.txt
+			return;
+		}
+		String firstLine = firstLine(node);
+		if (node.unparsed) {
+			int realStart = firstLine.indexOf('>');
+			if (realStart <0) realStart = firstLine.indexOf(']');
+			firstLine = firstLine.substring(1+realStart);
+		}
+		if (firstLine.trim().length() != 0) {
+			template.setLineDefinitelyProducesOutput(node.getBeginLine());
+		}
+		if (node.getEndLine() == node.getBeginLine()) {
+			int lineNumber = node.getBeginLine();
+			if (node.getText().trim().length() != 0) {
+				template.setLineDefinitelyProducesOutput(lineNumber);
+			} else if (node.getEndColumn() != template.getLine(lineNumber).length()){
+				template.setLineDefinitelyProducesOutput(lineNumber);
+			}
+		}
+		else {
+			for (int i = node.getBeginLine() +1; i< node.getEndLine(); i++) {
+				template.setLineDefinitelyProducesOutput(i);
+			}
+			String lastLine = lastLine(node);
+			if (node.unparsed) {
+				int realEnd = Math.max(lastLine.lastIndexOf('<'), lastLine.lastIndexOf('['));
+				lastLine = lastLine.substring(0, realEnd);
+				
+			}
+			if (lastLine.trim().length() != 0 || lastLine.length() == template.getLine(node.getEndLine()).length()) {
+				template.setLineDefinitelyProducesOutput(node.getEndLine());
+			}
+		}
 	}
 	
 	public void visit(OrExpression node) {
@@ -395,6 +436,7 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(NumericalOutput node) {
 		super.visit(node);
+		markAsProducingOutput(node);
 		checkLiteralInNumericalContext(node.expression);
 	}
 	
@@ -460,6 +502,17 @@ public class PostParseVisitor extends ASTVisitor {
 	public void visit(UnaryPlusMinusExpression node) {
 		checkLiteralInNumericalContext(node.target);
 		super.visit(node);
+	}
+	
+	public void visit(TrimInstruction node) {
+		for (int i = node.getBeginLine(); i<= node.getEndLine(); i++) {
+			if (node.left)
+				template.setLineSaysLeftTrim(i);
+			if (node.right)
+				template.setLineSaysRightTrim(i);
+			if (!(node.left || node.right)) 
+				template.setLineSaysNoTrim(i);
+		}
 	}
 	
 	
@@ -532,4 +585,27 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 		return (Macro) parent;
 	}
+	
+	private void markAsProducingOutput(TemplateNode node) {
+		for (int i= node.getBeginLine(); i<=node.getEndLine(); i++) {
+			template.setLineDefinitelyProducesOutput(i);
+		}
+	}
+	
+    public String firstLine(TemplateNode node) {
+    	String line = template.getLine(node.getBeginLine());
+    	if (node.getBeginLine() == node.getEndLine()) {
+    		line = line.substring(0, node.getEndColumn());
+    	}
+    	return line.substring(node.getBeginColumn() -1);
+    }
+    
+    public String lastLine(TemplateNode node) {
+    	String line = template.getLine(node.getEndLine());
+    	line = line.substring(0, node.getEndColumn());
+    	if (node.getBeginLine() == node.getEndLine()) {
+    		line = line.substring(node.getBeginColumn() -1);
+    	}
+    	return line;
+    }
 }
