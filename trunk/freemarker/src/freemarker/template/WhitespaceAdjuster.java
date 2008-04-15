@@ -89,7 +89,7 @@ public class WhitespaceAdjuster extends ASTVisitor {
 			TemplateElement next = (i == childElements.size() -1) ? null : childElements.get(i+1); 
 			if (elem instanceof TextBlock) {
 				TextBlock text = (TextBlock) elem;
-				if (text.getText().trim().length() == 0) {
+				if (text.isWhitespace()) {
 					if (ignoresSandwichedWhitespace(previous) && ignoresSandwichedWhitespace(next)) {
 						text.setIgnore(true);
 					}
@@ -107,10 +107,11 @@ public class WhitespaceAdjuster extends ASTVisitor {
 
 	public void visit(TextBlock node) {
 		int nodeType = node.getType();
-		if (nodeType == TextBlock.REGULAR_TEXT) return;
+		if (nodeType !=  TextBlock.OPENING_WS && nodeType != TextBlock.TRAILING_WS) return;
 		int lineNumber = node.getBeginLine();
 		boolean noTrim = template.lineSaysNoTrim(lineNumber);
-		boolean ignorable = template.stripWhitespace && !template.lineDefinitelyProducesOutput(lineNumber) && !noTrim; 
+		boolean inMacro = PostParseVisitor.getContainingMacro(node) != null;
+		boolean ignorable = template.stripWhitespace && !template.isOutputtingLine(lineNumber, inMacro) && !noTrim; 
 		if (nodeType == TextBlock.OPENING_WS) {
 			boolean deliberateLeftTrim = template.lineSaysLeftTrim(lineNumber);
 			if (ignorable || deliberateLeftTrim) {

@@ -2213,7 +2213,6 @@ Macro Macro() :
 	   result.setName(name);
 	   result.setNestedBlock(block);
        result.setLocation(template, start, end);
-       template.addMacro(result);
        return result;
     }
 }

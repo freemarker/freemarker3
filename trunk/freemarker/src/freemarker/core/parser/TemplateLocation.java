@@ -180,34 +180,26 @@ public class TemplateLocation {
     }
     
     public final void setLocation(Template template, Token begin, Token end)
-    throws ParseException {
+    {
         setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
     }
     
     public final void setLocation(Template template, Token begin, TemplateLocation end)
-    throws
-        ParseException
     {
         setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
     }
 
     public final void setLocation(Template template, TemplateLocation begin, Token end)
-    throws
-        ParseException
     {
         setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
     }
 
     public final void setLocation(Template template, TemplateLocation begin, TemplateLocation end)
-    throws
-        ParseException
     {
         setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
     }
 
     public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine)
-    throws
-        ParseException
     {
         this.template = template;
         this.beginColumn = beginColumn;

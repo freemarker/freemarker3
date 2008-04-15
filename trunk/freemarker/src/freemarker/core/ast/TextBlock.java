@@ -77,26 +77,44 @@ public final class TextBlock extends TemplateElement {
 	private char[] text;
 	private int type;
 	private boolean ignore;
-	private boolean isWhitespace;
 	public final boolean unparsed;
 
-	public static final int REGULAR_TEXT = 0;
-	public static final int OPENING_WS = 1;
-	public static final int TRAILING_WS = 2;
+	public static final int PRINTABLE_TEXT = 0;
+	public static final int WHITE_SPACE = 1;
+	public static final int OPENING_WS = 2;
+	public static final int TRAILING_WS = 3;
 
 	public TextBlock(String text) {
+		this.text = text.toCharArray();
 		this.unparsed = false;
-		this.isWhitespace = (text.trim().length() == 0);
 	}
 
 	public TextBlock(String text, boolean unparsed) {
 		this.text = text.toCharArray();
 		this.unparsed = unparsed;
 	}
-
-	private TextBlock(char[] text, boolean unparsed) {
-		this.text = text;
-		this.unparsed = unparsed;
+	
+	public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine) {
+		super.setLocation(template, beginColumn, beginLine, endColumn, endLine);
+		if (!unparsed) { // REVISIT, deal with this case later
+			boolean printable = false;
+			for (char c : text){
+				if (c != ' ' && c!='\t' && c!='\r' && c!='\n') printable = true;
+			}
+			if (printable) {
+				this.type = PRINTABLE_TEXT;
+			}
+			else {
+				char lastChar = text[text.length -1];
+				boolean containsEOL = (lastChar == '\n' || lastChar == '\r');
+				boolean containsStart = (beginColumn == 1);
+				if (containsEOL && containsStart) this.type = WHITE_SPACE;
+				else if (!containsEOL && !containsStart) this.type = WHITE_SPACE;
+				else if (containsEOL) this.type = TRAILING_WS;
+				else this.type = OPENING_WS;
+			}
+			this.text = null; // Now that we have location info, we don't need this. :-)
+		}
 	}
 
 	public String getText() {
@@ -105,12 +123,6 @@ public final class TextBlock extends TemplateElement {
 
 	public void setText(String text) {
 		this.text = text.toCharArray();
-	}
-
-	public void setType(int type) {
-		if (type != REGULAR_TEXT && type != TRAILING_WS && type != OPENING_WS)
-			throw new IllegalArgumentException();
-		this.type = type;
 	}
 	
 	public int getType() {
@@ -138,7 +150,7 @@ public final class TextBlock extends TemplateElement {
 	}
 
 	 public String getDescription() {
-		 String s = new String(text).trim();
+		 String s = new String(getText()).trim();
 		 if (s.length() == 0) {
 			 return "whitespace";
 		 }
@@ -164,16 +176,16 @@ public final class TextBlock extends TemplateElement {
 				 element instanceof Comment);
 	 }
 
-	 private static char[] trim(char[] c) {
-		 if (c.length == 0) {
-			 return c;
+	 public boolean isWhitespace() {
+		 if (text == null) return this.type != PRINTABLE_TEXT;
+		 for (char c : text) {
+			 if (!isWhitespace(c)) return false;
 		 }
-		 return new String(c).trim().toCharArray();
+		 return true;
 	 }
-
-	 boolean isWhitespace() {
-		 if (text == null) return isWhitespace;
-		 return trim(text).length == 0;
+	 
+	 static public boolean isWhitespace(char c) {
+		 return c == '\n' || c == '\r' || c == '\t' || c == ' ';
 	 }
 
 
@@ -220,7 +232,6 @@ public final class TextBlock extends TemplateElement {
 		 ) 
 		 {
 			 TextBlock tb = new TextBlock(input);
-			 tb.setType(REGULAR_TEXT);
 			 tb.setLocation(template, column, line, column + input.length() -1, line);
 			 result.add(tb);
 			 return result;
@@ -230,13 +241,11 @@ public final class TextBlock extends TemplateElement {
 			 String openingWS = input.substring(0, input.length() - printablePart.length());
 			 if (openingWS.length() >0) {
 				 TextBlock tb = new TextBlock(openingWS);
-				 tb.setType(OPENING_WS);
 				 tb.setLocation(template, column, line, openingWS.length()-1, line);
 				 result.add(tb);
 			 }
 			 if (printablePart.length() >0) {
 				 TextBlock tb = new TextBlock(printablePart);
-				 tb.setType(REGULAR_TEXT);
 				 tb.setLocation(template, column + openingWS.length(), line, column + input.length() -1, line);
 				 result.add(tb);
 			 }
@@ -247,13 +256,11 @@ public final class TextBlock extends TemplateElement {
 		 String trailingWS = input.substring(startingPart.length());
 		 if (startingPart.length() >0) {
 			 TextBlock tb = new TextBlock(startingPart);
-			 tb.setType(REGULAR_TEXT);
 			 tb.setLocation(template, column, line, column + startingPart.length() -1, line);
 			 result.add(tb);
 		 }
 		 if (trailingWS.length()>0) {
 			 TextBlock tb = new TextBlock(trailingWS);
-			 tb.setType(TRAILING_WS);
 			 tb.setLocation(template, column + startingPart.length(), line, column + input.length() -1, line);
 			 result.add(tb);
 		 }
@@ -279,13 +286,12 @@ public final class TextBlock extends TemplateElement {
 				 String trailingWS = firstLine.substring(firstPart.length());
 				 if (firstPart.length() >0) {
 					 TextBlock tb = new TextBlock(firstPart);
-					 tb.setType(REGULAR_TEXT);
+					 int type = firstPart.trim().length() == 0 ? WHITE_SPACE : PRINTABLE_TEXT;
 					 tb.setLocation(template, beginColumn, beginLine, beginColumn + firstPart.length() -1, beginLine);
 					 result.add(tb);
 				 }
 				 if (trailingWS.length() >0) {
 					 TextBlock tb = new TextBlock(trailingWS);
-					 tb.setType(TRAILING_WS);
 					 tb.setLocation(template, beginColumn + firstPart.length(), beginLine, beginColumn + firstLine.length() -1, beginLine);
 					 result.add(tb);
 				 }
@@ -310,7 +316,6 @@ public final class TextBlock extends TemplateElement {
 			 }
 			 if (middleLines.length() > 0) {
 				 TextBlock tb = new TextBlock(middleLines.toString());
-				 tb.setType(REGULAR_TEXT);
 				 int startingLine = beginLine;
 				 int startingColumn = 1;
 				 if (beginColumn != 1) ++startingLine;
@@ -325,13 +330,11 @@ public final class TextBlock extends TemplateElement {
 				 String openingWS= lastLine.substring(0, lastLine.length() - printablePart.length());
 				 if (openingWS.length() >0) {
 					 TextBlock tb = new TextBlock(openingWS);
-					 tb.setType(OPENING_WS);
 					 tb.setLocation(template, 1, beginLine + numLines -1, openingWS.length(), beginLine + numLines -1);
 					 result.add(tb);
 				 }
 				 if (printablePart.length()>0) {
 					 TextBlock tb = new TextBlock(printablePart);
-					 tb.setType(REGULAR_TEXT);
 					 tb.setLocation(template, 1 + openingWS.length(), beginLine + numLines -1, lastLine.length(), beginLine + numLines -1);
 					 result.add(tb);
 				 }

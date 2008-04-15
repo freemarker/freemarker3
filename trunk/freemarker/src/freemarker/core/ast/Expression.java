@@ -87,8 +87,6 @@ abstract public class Expression extends TemplateNode {
     // Hook in here to set the constant value if possible.
     
     public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine)
-    throws
-        ParseException
     {
         super.setLocation(template, beginColumn, beginLine, endColumn, endLine);
         if (isLiteral()) {
