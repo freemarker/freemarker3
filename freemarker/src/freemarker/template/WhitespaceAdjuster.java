@@ -93,7 +93,8 @@ public class WhitespaceAdjuster extends ASTVisitor {
 					if (ignoresSandwichedWhitespace(previous) && ignoresSandwichedWhitespace(next)) {
 						text.setIgnore(true);
 					}
-					if (previous == null && atTopLevel && ignoresSandwichedWhitespace(next)) {
+					if (previous == null && atTopLevel  
+							&& (node.getBeginColumn() != 1 || ignoresSandwichedWhitespace(next))) {
 						text.setIgnore(true);
 					}
 					

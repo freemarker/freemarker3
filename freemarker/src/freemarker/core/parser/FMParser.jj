@@ -54,6 +54,7 @@ options
 {
    STATIC=false;
    UNICODE_INPUT=true;
+   COMMON_TOKEN_ACTION=true;   
 //   DEBUG_TOKEN_MANAGER=true;
 //   DEBUG_PARSER=true;
 }
@@ -88,7 +89,7 @@ public class FMParser {
   static public FMParser createExpressionParser(String s) {
       SimpleCharStream scs = new SimpleCharStream(new StringReader(s), 1, 1, s.length());
       FMParserTokenManager token_source = new FMParserTokenManager(scs);
-      token_source.SwitchTo(FMParserConstants.FM_EXPRESSION);
+      token_source.SwitchTo(FMParserConstants.EXPRESSION);
       return new FMParser(token_source);
   }
   
@@ -159,34 +160,42 @@ PARSER_END(FMParser)
 
 /**
  * The lexer portion defines 5 lexical states:
- * DEFAULT, FM_EXPRESSION, IN_PAREN, NO_PARSE, and EXPRESSION_COMMENT.
- * The DEFAULT state is when you are parsing
- * text but are not inside a FreeMarker expression.
- * FM_EXPRESSION is the state you are in
+ * DEFAULT, NO_PARSE, EXPRESSION, EXPRESSION_COMMENT, 
+ * NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION
+ * The lexer is in the DEFAULT state when it is 
+ * just consuming regular text, but are scanning for
+ * FreeMarker constructs. NO_PARSE is the simplest state.
+ * We are consuming text, but ignoring FreeMarker constructs,
+ * so ${x} or [#if..] are just treated as plain text.
+ * There is a closing noParseTag string we are on the lookout
+ * for to go back into the DEFAULT state. 
+ * EXPRESSION is the state you are in
  * when the parser wants a FreeMarker expression.
- * IN_PAREN is almost identical really. The difference
- * is that you are in this state when you are within
- * FreeMarker expression and also within (...).
- * This is a necessary subtlety because the
- * ">" and ">=" symbols can only be used
- * within parentheses because otherwise, it would
- * be ambiguous with the end of a directive.
- * So, for example, you enter the FM_EXPRESSION state
+ * So, for example, you enter the EXPRESSION state
  * right after a ${ and leave it after the matching }.
- * Or, you enter the FM_EXPRESSION state right after
- * an "<if" and then, when you hit the matching ">"
- * that ends the if directive,
- * you go back to DEFAULT lexical state.
- * If, within the FM_EXPRESSION state, you enter a
- * parenthetical expression, you enter the IN_PAREN
- * state.
+ * Or, you enter the EXPRESSION state right after
+ * an "<#if" and then, when you hit the matching ">"
+ * that ends the if directive, you go back to DEFAULT lexical state.
  * Note that whitespace is ignored in the
- * FM_EXPRESSION and IN_PAREN states
- * but is passed through to the parser as PCDATA in the DEFAULT state.
- * NO_PARSE and EXPRESSION_COMMENT are extremely simple
- * lexical states. NO_PARSE is when you are in a comment
- * block and EXPRESSION_COMMENT is when you are in a comment
- * that is within an FTL expression.
+ * EXPRESSION statep but is passed through to the parser as PCDATA 
+ * in the DEFAULT state. EXPRESSION_COMMENT is a lexical state
+ * we are in if for comments within an FTL expression.
+ * NO_SPACE_EXPRESSION and NAMED_PARAMETER_EXPRESSION
+ * are slight variants on the EXPRESSION state. 
+ * They basically exist as kludges to deal with nasty
+ * little corners in FTL syntax. In NO_SPACE_EXPRESSION,
+ * spaces are not ignored, so a whitespace token effectively ends
+ * the parsing of an expression. THus, for example, [@x (y+1)/]
+ * is parsed as the macro x with the single argument (y+1) rather than
+ * the macro x(y+1) with no args.
+ * NAMED_PARAMETER_EXPRESSION is a special state for parsing
+ * macro/function/method invocations with name=value pairs. It exists
+ * basically as a kludge so that the ! for ?if_exists behaves in a 
+ * not too surprising manner. [@myMacro x=y! z=t/] does not parse
+ * the first name/value key as x=y!z but rather as x=y! and then the 
+ * next name/value pair is z=t. This is because the ![WS] is recognized
+ * as a special token that terminates the expression. All other whitespace
+ * is ignored in the NAMED_PARAMETER_EXPRESSION lexical state. :-)
  */
 
 TOKEN_MGR_DECLS :
@@ -214,12 +223,12 @@ TOKEN_MGR_DECLS :
  private int hashLiteralNesting;
  private int parenthesisNesting;
  private int bracketNesting;
- private boolean inFTLHeader;
  private boolean seenFTLHeader; // Have we already seen a header? (There can only be one.)
  boolean onlyTextOutput, 
          directiveSyntaxEstablished, 
          altDirectiveSyntax,
-         inInvocation;
+         inInvocation,
+         justAfterDot;
  String templateName;
  
  public void setOnlyTextOutput(boolean b) {
@@ -230,94 +239,107 @@ TOKEN_MGR_DECLS :
     altDirectiveSyntax = b;
     directiveSyntaxEstablished = true;
  }
-
- // This method checks if we are in a strict mode where all
- // FreeMarker directives must start with <#
-
- private void syntaxCheck(Token tok, int newLexState) {
-     if (onlyTextOutput) {
-        tok.kind = PRINTABLE_CHARS;
-        return;
-     }
-     if (!directiveSyntaxEstablished) {
-         setAltDirectiveSyntax(tok.image.charAt(0) == '[');
-     }
-     if (altDirectiveSyntax) {
-         if (!tok.image.startsWith("[#") && !tok.image.startsWith("[/#")) {
-            tok.kind = PRINTABLE_CHARS;
-            return;
-         }
-     } else {
-         if (!tok.image.startsWith("<#") && !tok.image.startsWith("</#")) {
-            tok.kind = PRINTABLE_CHARS;
-            return;
-         }
-     }
-     SwitchTo(newLexState);
- }
  
- private void unifiedCall(Token tok) {
-     if (!directiveSyntaxEstablished) {
-         setAltDirectiveSyntax(tok.image.charAt(0) == '[');
-     } else {
-         char firstChar = tok.image.charAt(0);
-         if ((altDirectiveSyntax && firstChar == '<') || (!altDirectiveSyntax && firstChar == '[')) {
-            tok.kind = PRINTABLE_CHARS;
-            return;
-         }
-     }
-     SwitchTo(NO_SPACE_EXPRESSION);
- }
  
- private void unifiedCallEnd(Token tok) {
-     if (!directiveSyntaxEstablished) {
-        tok.kind = PRINTABLE_CHARS;
-        return;
-     }
-     char firstChar = tok.image.charAt(0);
-     if ((altDirectiveSyntax && firstChar == '<') || (!altDirectiveSyntax && firstChar == '[')) {
-        tok.kind = PRINTABLE_CHARS;
-     }
+ private void CommonTokenAction(Token token) {
+ 	if (token.kind == EOF) return;
+ 	String tokText = token.image;
+ 	char firstChar = tokText.charAt(0);
+ 	if (justAfterDot) {
+ 		if (StringUtil.isFTLIdentifier(tokText) || tokText.equals("*") || tokText.equals("**")) {
+ 			token.kind = ID;
+ 			return;
+ 		} 
+ 	}
+ 	if (firstChar == '[' || firstChar=='<') {
+ 		String chopFirst = tokText.substring(1);
+ 		if (chopFirst.startsWith("#") || chopFirst.startsWith("/#")) {
+	 		boolean squareBracket = firstChar == '[';
+ 			if (!directiveSyntaxEstablished) {
+ 				setAltDirectiveSyntax(squareBracket);
+ 			} 
+ 			else if (altDirectiveSyntax != squareBracket) {
+ 				token.kind = PRINTABLE_CHARS;
+ 				return;
+ 			}
+ 			if (token.kind == UNKNOWN_DIRECTIVE) {
+    	      int index = tokText.indexOf('#');
+        	  String s = tokText.substring(index);
+              String msg = "Unknown directive: " 
+                        + s
+                        + " on line: " + token.beginLine
+                        + ", column: " + token.beginColumn +1
+                        + ", in template: " + templateName;
+          	  throw new TokenMgrError(msg, TokenMgrError.LEXICAL_ERROR);
+ 			}
+ 		}
+ 	}
+  	switch(token.kind) {
+        case GREATER_THAN_EQUALS : 
+  		case GREATER_THAN:
+			if (parenthesisNesting == 0 && !altDirectiveSyntax) {
+				if (token.kind == GREATER_THAN_EQUALS) {
+					input_stream.backup(1); // So that the = doesn't get eaten.
+				} 
+				token.kind = DIRECTIVE_END;
+				SwitchTo(DEFAULT);
+			}
+			break;
+		case OPEN_PAREN :
+			parenthesisNesting++;
+			SwitchTo(EXPRESSION);
+			break;
+		case CLOSE_PAREN : 
+			parenthesisNesting--;
+			break;
+  		case OPEN_BRACKET:
+  			bracketNesting++;
+  			break;
+  		case CLOSE_BRACKET : 
+            if (bracketNesting >0) {
+        	   --bracketNesting;
+            } else {
+            	token.kind=DIRECTIVE_END;
+        		SwitchTo(DEFAULT);
+            }   
+            break; 
+        case OPEN_BRACE :
+        	++hashLiteralNesting;
+        	break;
+        case CLOSE_BRACE :
+        	if (hashLiteralNesting >0) {
+        		--hashLiteralNesting;
+        	} else {
+        		SwitchTo(DEFAULT);
+        	}
+        	break;
+  		case UNIFIED_CALL:
+  			SwitchTo(NO_SPACE_EXPRESSION);
+  			break;
+		case NOPARSE: 
+			noparseTag = "noparse"; 
+			SwitchTo(NO_PARSE); 
+			break; 		
+ 		case TERSE_COMMENT: 
+ 			noparseTag = "-->"; 
+ 			SwitchTo(NO_PARSE); 
+ 			break;
+ 		case COMMENT: 
+ 			noparseTag = "comment"; 
+ 			SwitchTo(NO_PARSE); 
+ 			break;
+  		case FUNCTION: case MACRO: case NESTED: case TRANSFORM: case STOP: case RETURN: case CALL:
+  		case IF: case ELSE_IF: 
+  		case VISIT: case RECURSE: 
+ 		case VAR: case SET: case ASSIGN: case LOCALASSIGN: case GLOBALASSIGN:
+ 		case LIST: case FOREACH:
+ 		case SWITCH: case CASE:
+ 		case INCLUDE: case IMPORT: case EMBED:  
+  		case ESCAPE: case SETTING: 
+ 			SwitchTo(EXPRESSION);
+ 	}
  }
- 
- private void closeBracket(Token tok) {
-     if (bracketNesting >0) {
-        --bracketNesting;
-     } else {
-        tok.kind=DIRECTIVE_END;
-        if (inFTLHeader) {
-           eatNewline(); 
-           inFTLHeader = false; 
-        }     
-        SwitchTo(DEFAULT);     
-     }
  }
- 
- private void eatNewline() {
-     int charsRead = 0;
-     try {
-        while (true) {
-           char c = input_stream.readChar();
-           ++charsRead;
-           if (!Character.isWhitespace(c)) {
-              input_stream.backup(charsRead);
-	      return;
-           } else if (c=='\r') {
-              char next = input_stream.readChar();
-              ++charsRead;
-              if (next != '\n') {
-                 input_stream.backup(1);
-              }
-              return;
-           } else if (c=='\n') {
-              return;
-           }
-        }
-     } catch (IOException ioe) {
-        input_stream.backup(charsRead);
-     }
- }
-}
 
 TOKEN:
 {
@@ -329,101 +351,101 @@ TOKEN:
     |
     <#CLOSE_TAG2 : (<BLANK>)* ("/")? (">" | "]")>
     |
-    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> {syntaxCheck(matchedToken, DEFAULT);}
+    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> 
     |
-    <ATTEMPT : <START_TAG> "attempt" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);}
+    <ATTEMPT : <START_TAG> "attempt" <CLOSE_TAG1>> 
     |
-    <RECOVER : <START_TAG> "recover" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);} 
+    <RECOVER : <START_TAG> "recover" <CLOSE_TAG1>>
     |
-    <IF : <START_TAG> "if" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <IF : <START_TAG> "if" <BLANK>> 
     |
-    <ELSE_IF : <START_TAG> "elseif" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <ELSE_IF : <START_TAG> "elseif" <BLANK>>
     |
-    <LIST : <START_TAG> "list" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <LIST : <START_TAG> "list" <BLANK>> 
     |
-    <FOREACH : <START_TAG> "foreach" <BLANK>>  {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <FOREACH : <START_TAG> "foreach" <BLANK>> 
     |
-    <SWITCH : <START_TAG> "switch" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <SWITCH : <START_TAG> "switch" <BLANK>> 
     |
-    <CASE : <START_TAG> "case" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <CASE : <START_TAG> "case" <BLANK>> 
     |
-    <ASSIGN : <START_TAG> "assign" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <ASSIGN : <START_TAG> "assign" <BLANK>>
     |
-    <GLOBALASSIGN : <START_TAG> "global" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <GLOBALASSIGN : <START_TAG> "global" <BLANK>> 
     |
-    <LOCALASSIGN : <START_TAG> "local" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <LOCALASSIGN : <START_TAG> "local" <BLANK>> 
     |
-    <SET : <START_TAG> "set" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <SET : <START_TAG> "set" <BLANK>>
     |
-    <INCLUDE : <START_TAG> "include" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <INCLUDE : <START_TAG> "include" <BLANK>> 
     |
-    <IMPORT : <START_TAG> "import" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <IMPORT : <START_TAG> "import" <BLANK>> 
     |
-    <FUNCTION : <START_TAG> "function" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <FUNCTION : <START_TAG> "function" <BLANK>> 
     |
-    <MACRO : <START_TAG> "macro" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <MACRO : <START_TAG> "macro" <BLANK>> 
     |
-    <TRANSFORM : <START_TAG> "transform" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <TRANSFORM : <START_TAG> "transform" <BLANK>> 
     |
-    <VISIT : <START_TAG> "visit" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <VISIT : <START_TAG> "visit" <BLANK>> 
     |
-    <STOP : <START_TAG> "stop" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <STOP : <START_TAG> "stop" <BLANK>> 
     |
-    <RETURN : <START_TAG> "return" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <RETURN : <START_TAG> "return" <BLANK>> 
     |
-    <CALL : <START_TAG> "call" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <CALL : <START_TAG> "call" <BLANK>> 
     |
-    <SETTING : <START_TAG> "setting" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <SETTING : <START_TAG> "setting" <BLANK>> 
     |
-    <EMBED : <START_TAG> "embed" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <EMBED : <START_TAG> "embed" <BLANK>> 
     |
-    <VAR : <START_TAG> "var"  <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <VAR : <START_TAG> "var"  <BLANK>>
     |
-    <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);}
+    <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> 
     |
-    <COMMENT : <START_TAG> "comment" <CLOSE_TAG1>> {syntaxCheck(matchedToken, NO_PARSE); noparseTag="comment";}
+    <COMMENT : <START_TAG> "comment" <CLOSE_TAG1>>
     |
-    <TERSE_COMMENT : ("<" | "[") "#--" > {noparseTag = "-->"; syntaxCheck(matchedToken, NO_PARSE); }
+    <TERSE_COMMENT : ("<" | "[") "#--" > 
     |
-    <NOPARSE : <START_TAG> "noparse" <CLOSE_TAG1>> {syntaxCheck(matchedToken, NO_PARSE); noparseTag="noparse";}
+    <NOPARSE : <START_TAG> "noparse" <CLOSE_TAG1>> 
     |
-    <ELSE : <START_TAG> "else" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <ELSE : <START_TAG> "else" <CLOSE_TAG2>> 
     |
-    <BREAK : <START_TAG> "break" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <BREAK : <START_TAG> "break" <CLOSE_TAG2>> 
     |
-    <SIMPLE_RETURN : <START_TAG> "return" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <SIMPLE_RETURN : <START_TAG> "return" <CLOSE_TAG2>>
     |
-    <HALT : <START_TAG> "stop" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <HALT : <START_TAG> "stop" <CLOSE_TAG2>> 
     |
-    <FLUSH : <START_TAG> "flush" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <FLUSH : <START_TAG> "flush" <CLOSE_TAG2>> 
     |
-    <TRIM : <START_TAG> "t" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <TRIM : <START_TAG> "t" <CLOSE_TAG2>> 
     |
-    <LTRIM : <START_TAG> "lt" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <LTRIM : <START_TAG> "lt" <CLOSE_TAG2>> 
     |
-    <RTRIM : <START_TAG> "rt" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <RTRIM : <START_TAG> "rt" <CLOSE_TAG2>> 
     |
-    <NOTRIM : <START_TAG> "nt" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <NOTRIM : <START_TAG> "nt" <CLOSE_TAG2>> 
     |
-    <DEFAUL : <START_TAG> "default" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);}
+    <DEFAUL : <START_TAG> "default" <CLOSE_TAG1>> 
     |
-    <SIMPLE_NESTED : <START_TAG> "nested" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <SIMPLE_NESTED : <START_TAG> "nested" <CLOSE_TAG2>> 
     |
-    <NESTED : <START_TAG> "nested" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <NESTED : <START_TAG> "nested" <BLANK>> 
     |
-    <SIMPLE_RECURSE : <START_TAG> "recurse" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <SIMPLE_RECURSE : <START_TAG> "recurse" <CLOSE_TAG2>>
     |
-    <RECURSE : <START_TAG> "recurse" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <RECURSE : <START_TAG> "recurse" <BLANK>>
     |
-    <FALLBACK : <START_TAG> "fallback" <CLOSE_TAG2>> {syntaxCheck(matchedToken, DEFAULT);}
+    <FALLBACK : <START_TAG> "fallback" <CLOSE_TAG2>> 
     |
-    <ESCAPE : <START_TAG> "escape" <BLANK>> {syntaxCheck(matchedToken, FM_EXPRESSION);}
+    <ESCAPE : <START_TAG> "escape" <BLANK>> 
     |
-    <NOESCAPE : <START_TAG> "noescape" <CLOSE_TAG1>> {syntaxCheck(matchedToken, DEFAULT);}
+    <NOESCAPE : <START_TAG> "noescape" <CLOSE_TAG1>> 
     |
-    <UNIFIED_CALL : "<@" | "[@" >  {unifiedCall(matchedToken);}
+    <UNIFIED_CALL : "<@" | "[@" > 
     |
-    <UNIFIED_CALL_END : ("<" | "[") "/@" ((<ID>) ("."<ID>)*)? <CLOSE_TAG1>> {unifiedCallEnd(matchedToken);}
+    <UNIFIED_CALL_END : ("<" | "[") "/@" ((<ID>) ("."<ID>)*)? <CLOSE_TAG1>> 
     |
     <FTL_HEADER : ("<#ftl" | "[#ftl") <BLANK>> 
     {
@@ -432,8 +454,7 @@ TOKEN:
           matchedToken.kind = PRINTABLE_CHARS;
        } else {
           setAltDirectiveSyntax(headerUsesAlt);
-          inFTLHeader = true; 
-          SwitchTo(FM_EXPRESSION);
+          SwitchTo(EXPRESSION);
           seenFTLHeader = true;
        }
     }
@@ -445,31 +466,11 @@ TOKEN:
            matchedToken.kind = PRINTABLE_CHARS;
         } else {
            setAltDirectiveSyntax(headerUsesAltSyntax);
-           eatNewline();
            seenFTLHeader = true;
         }   
     }
     |
     <UNKNOWN_DIRECTIVE : ("[#" | "[/#" | "<#" | "</#") (["a"-"z","A"-"Z", "_"])+>
-    {
-       char firstChar = matchedToken.image.charAt(0);
-       if (!directiveSyntaxEstablished) {
-       	  throw new TokenMgrError("Unknown directive: " + matchedToken.image.substring(1), TokenMgrError.LEXICAL_ERROR);
-       }
-       else if ((altDirectiveSyntax && firstChar == '[') || (!altDirectiveSyntax && firstChar=='<'))
-       {
-          String s = matchedToken.image;
-          int index = s.indexOf('#');
-          s = s.substring(index);
-          String msg = "Unknown directive: " 
-                        + s
-                        + " on line: " + matchedToken.beginLine
-                        + ", column: " + matchedToken.beginColumn +1
-                        + ", in template: " + templateName;
-          
-          throw new TokenMgrError(msg, TokenMgrError.LEXICAL_ERROR);
-       }
-    }
 }
 
 <DEFAULT, NODIRECTIVE> TOKEN :
@@ -478,15 +479,14 @@ TOKEN:
     |
     <PRINTABLE_CHARS : (~["$", "<", "#", "[", "{", "\n", "\r", "\t", " "])+>
     |
-    // to handle a lone dollar sign or "<" etcetera
     <FALSE_ALERT : "$" | "#" | "<" | "[" | "{"> {matchedToken.kind = PRINTABLE_CHARS;} 
     |
-    <OUTPUT_ESCAPE : "${" > : FM_EXPRESSION
+    <OUTPUT_ESCAPE : "${" > : EXPRESSION
     |
-    <NUMERICAL_ESCAPE : "#{" > : FM_EXPRESSION
+    <NUMERICAL_ESCAPE : "#{" > : EXPRESSION
 }
 
-<FM_EXPRESSION, IN_PAREN, NAMED_PARAMETER_EXPRESSION> SKIP :
+<EXPRESSION, NAMED_PARAMETER_EXPRESSION> SKIP :
 {
     < ( " " | "\t" | "\n" | "\r" )+ >
     |
@@ -503,12 +503,12 @@ TOKEN:
     |
     < "-">
     |
-    < "-->">  {if (parenthesisNesting >0) SwitchTo(IN_PAREN); else if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION); else SwitchTo(FM_EXPRESSION);} 
+    < "-->">  {if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION); else SwitchTo(EXPRESSION);} 
     |
-    < "--]" > {if (parenthesisNesting >0) SwitchTo(IN_PAREN); else if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION); else SwitchTo(FM_EXPRESSION);}
+    < "--]" > {if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION); else SwitchTo(EXPRESSION);}
 }
 
-<FM_EXPRESSION, IN_PAREN, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
+<EXPRESSION, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
 {
   <STRING_LITERAL :
       ("\"" 
@@ -546,6 +546,12 @@ TOKEN:
   |
   <NOT_EQUALS : "!=">
   |
+  <GREATER_THAN : ">">
+  |
+  <GREATER_THAN_EQUALS: ">=">
+  |
+  <EMPTY_DIRECTIVE_END : "/>" | "/]"> :DEFAULT
+  |
   <LESS_THAN : "lt" | "<" | "&lt;">
   |
   <LESS_THAN_EQUALS : "lte" | "<=" | "&lt;=">
@@ -580,35 +586,17 @@ TOKEN:
   |
   <COLON : ":">
   |
-  <OPEN_BRACKET : "["> {++bracketNesting;}
+  <OPEN_BRACKET : "[">
   |
-  <CLOSE_BRACKET : "]"> {closeBracket(matchedToken);}
+  <CLOSE_BRACKET : "]"> 
   |
   <OPEN_PAREN : "(">
-  {
-     ++parenthesisNesting;
-     if (parenthesisNesting == 1)
-        SwitchTo(IN_PAREN);
-  }
   |
   <CLOSE_PAREN : ")">
-  {
-     --parenthesisNesting;
-     if (parenthesisNesting == 0) {
-		if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION);     	
-		else SwitchTo(FM_EXPRESSION);
-     }
-  }
   |
-  <OPEN_BRACE : "{" > {++hashLiteralNesting;}
+  <OPEN_BRACE : "{" > 
   |
   <CLOSE_BRACE : "}" >
-  {
-     if (hashLiteralNesting == 0)
-        SwitchTo(DEFAULT);
-     else
-        --hashLiteralNesting;
-  }
   |
   <IN : "in">
   |
@@ -657,40 +645,17 @@ TOKEN:
   >
 }
 
-<FM_EXPRESSION, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
-{
-  <DIRECTIVE_END : ">">
-  {
-      if (inFTLHeader) eatNewline();
-      inFTLHeader = false;
-      if (altDirectiveSyntax) {
-          matchedToken.kind = NATURAL_GT;
-      } else {
-          SwitchTo(DEFAULT);
-      }
-  }
-  |
-  <EMPTY_DIRECTIVE_END : "/>" | "/]"> {if (inFTLHeader) eatNewline(); inFTLHeader = false; SwitchTo(DEFAULT);}
-}
-
-<IN_PAREN> TOKEN :
-{
-  <NATURAL_GT : ">">
-  |
-  <NATURAL_GTE : ">=">
-}
-
 <NO_SPACE_EXPRESSION> TOKEN :
 {
-    <TERMINATING_WHITESPACE :  (["\n", "\r", "\t", " "])+> : FM_EXPRESSION
+    <TERMINATING_WHITESPACE :  (["\n", "\r", "\t", " "])+> : EXPRESSION
 }
 
 <NAMED_PARAMETER_EXPRESSION> TOKEN :
 {
-	<TERMINATING_EXCLAM : "!" (["\n", "\r", "\t", " "])+> : FM_EXPRESSION
+	<TERMINATING_EXCLAM : "!" (["\n", "\r", "\t", " "])+> : EXPRESSION
 }
 
-<FM_EXPRESSION, IN_PAREN, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
+<EXPRESSION, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
 {
 	<UNEXPECTED : ~[]>
 }
@@ -727,6 +692,8 @@ TOKEN:
     |
     <LONE_LESS_THAN_OR_DASH : ["<", "[", "-"]>
 }
+
+<PHONY> TOKEN: {<DIRECTIVE_END : ">"|"]">}
 
 // Now the actual parsing code, starting
 // with the productions for FreeMarker's
@@ -1051,13 +1018,13 @@ Expression RelationalExpression() :
 {
    lhs=RangeExpression() {result = lhs;}
    [
-     LOOKAHEAD(<NATURAL_GTE>|<ESCAPED_GTE>|<NATURAL_GT>|<ESCAPED_GT>|<LESS_THAN_EQUALS>|<LESS_THAN_EQUALS>|<LESS_THAN>)
+     LOOKAHEAD(<GREATER_THAN_EQUALS>|<ESCAPED_GTE>|<GREATER_THAN>|<ESCAPED_GT>|<LESS_THAN_EQUALS>|<LESS_THAN_EQUALS>|<LESS_THAN>)
      (
-      t=<NATURAL_GTE>
+      t=<GREATER_THAN_EQUALS>
       |
       t=<ESCAPED_GTE>
       |
-      t=<NATURAL_GT>
+      t=<GREATER_THAN>
       |
       t=<ESCAPED_GT>
       |
@@ -1335,30 +1302,8 @@ Expression DotVariable(Expression exp) :
   Token t;
 }
 {
-     <DOT>
-     (
-        t=<ID> | t=<TIMES> | t=<DOUBLE_STAR> 
-        |
-        (
-            t=<LESS_THAN>
-          | t=<LESS_THAN_EQUALS>
-          | t=<ESCAPED_GT>
-          | t=<ESCAPED_GTE>
-          | t=<FALSE>
-          | t=<TRUE>
-     	  | t=<NULL>
-          | t=<IN>
-          | t=<AS>
-          | t=<USING>
-        )
-        {
-            if (!Character.isLetter(t.image.charAt(0))) {
-                String msg = getErrorStart(t)
-                            + "\n" + t.image + " is not a valid identifier.";
-                throw new ParseException(msg, t.beginLine, t.beginColumn);
-            }
-        }
-     )
+     <DOT>{token_source.justAfterDot = true;}
+     t=<ID>{token_source.justAfterDot = false;}
      {
          Dot dot = new Dot(exp, t.image);
          dot.setLocation(template, exp, t);
