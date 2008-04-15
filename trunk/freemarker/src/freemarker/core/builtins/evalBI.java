@@ -90,7 +90,7 @@ public class evalBI extends BuiltIn {
                 new StringReader("(" + s + ")"), callingExpression.getBeginLine(),
                 callingExpression.getBeginColumn(), s.length() + 2);
         FMParserTokenManager token_source = new FMParserTokenManager(scs);
-        token_source.SwitchTo(FMParserConstants.FM_EXPRESSION);
+        token_source.SwitchTo(FMParserConstants.EXPRESSION);
         FMParser parser = new FMParser(token_source);
         parser.setTemplate(callingExpression.getTemplate());
         Expression exp = null;
