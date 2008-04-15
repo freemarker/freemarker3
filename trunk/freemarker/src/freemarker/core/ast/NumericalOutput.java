@@ -121,14 +121,6 @@ public class NumericalOutput extends TemplateElement {
         return getSource();
     }
 
-    boolean heedsOpeningWhitespace() {
-        return true;
-    }
-
-    boolean heedsTrailingWhitespace() {
-        return true;
-    }
-    
     private static class FormatHolder {
         final NumberFormat format;
         final Locale locale;

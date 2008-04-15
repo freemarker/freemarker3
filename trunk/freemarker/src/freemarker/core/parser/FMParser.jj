@@ -151,6 +151,8 @@ public class FMParser {
   	  }
 	  return prevToken;
   }
+  
+  
 }
 
 PARSER_END(FMParser)
@@ -472,11 +474,12 @@ TOKEN:
 
 <DEFAULT, NODIRECTIVE> TOKEN :
 {
-    <WHITESPACE : (["\n", "\r", "\t", " "])+>
+    <WHITESPACE : (["\t", " ", "\r", "\n"])+>
     |
     <PRINTABLE_CHARS : (~["$", "<", "#", "[", "{", "\n", "\r", "\t", " "])+>
     |
-    <FALSE_ALERT : "$" | "#" | "<" | "[" | "{"> // to handle a lone dollar sign or "<" or "# or <@ with whitespace after"
+    // to handle a lone dollar sign or "<" etcetera
+    <FALSE_ALERT : "$" | "#" | "<" | "[" | "{"> {matchedToken.kind = PRINTABLE_CHARS;} 
     |
     <OUTPUT_ESCAPE : "${" > : FM_EXPRESSION
     |
@@ -2766,21 +2769,20 @@ TemplateElement FreemarkerDirective() :
  * FreeMarker directives.
  */
 
-TextBlock PCData() :
+List<TextBlock> PCData() :
 {
     StringBuilder buf = new StringBuilder();
     Token t=null, start=null, prevToken = null;
+    List<TextBlock> result = new ArrayList<TextBlock>();
 }
 {
     (
       LOOKAHEAD(<WHITESPACE>|<PRINTABLE_CHARS>|<FALSE_ALERT>)
       (
          {prevToken = t;}         
-         t=<WHITESPACE>
-	     |
          t=<PRINTABLE_CHARS>
          |
-         t=<FALSE_ALERT>
+         t=<WHITESPACE>
       )
       {
          buf.append(t.image);
@@ -2789,12 +2791,17 @@ TextBlock PCData() :
       }
     )+
     {
-         if (stripText && contentNesting == 1)
-             return TextBlock.EMPTY_BLOCK;
-
-         TextBlock result = new TextBlock(buf.toString(), false);
-         result.setLocation(template, start, t);
+         if (stripText && contentNesting == 1) {
+             result.add(TextBlock.EMPTY_BLOCK);
+             return result;
+         }
+         result = TextBlock.breakIntoBlocks(buf.toString(), template, start.beginColumn, start.beginLine);
          return result;
+/*         
+         TextBlock block = new TextBlock(buf.toString(), false);
+         block.setLocation(template, start, t);
+         result.add(block);
+         return result;*/
     }
 }
 
@@ -2823,14 +2830,15 @@ Token UnparsedContent(StringBuilder buf) :
 TemplateElement Content() :
 {
     MixedContent nodes = new MixedContent();
-    TemplateElement elem, begin=null;
+    TemplateElement elem=null, begin=null;
     contentNesting++;
+    List<TextBlock> text = null;
 }
 {
     (
       LOOKAHEAD(1) // Just tells javacc that we know what we're doing.
       (
-         elem=PCData()
+         text=PCData() {elem = null;}
          |
          elem=StringOutput()
          |
@@ -2840,13 +2848,18 @@ TemplateElement Content() :
       )
       {
             if (begin == null) {
-               begin = elem;
+               begin = elem == null ? text.get(0) : elem;
             }
-            nodes.addElement(elem);
+            if (elem == null) {
+            	for (TextBlock tb : text) nodes.addElement(tb);
+            } else {
+            	nodes.addElement(elem);
+            }
       }
     )+
     {
         contentNesting--;
+        if (elem == null) elem = text.get(text.size() -1);
         nodes.setLocation(template, begin, elem);
 	    return nodes;
     }
@@ -2860,12 +2873,13 @@ TemplateElement Content() :
 TemplateElement FreeMarkerText() :
 {
      MixedContent nodes = new MixedContent();
-     TemplateElement elem, begin = null;
+     TemplateElement elem = null, begin = null;
+     List<TextBlock> text = null;
 }
 {
     (
       (
-        elem=PCData()
+        text=PCData() {elem = null;}
         |
         elem=StringOutput()
         |
@@ -2873,12 +2887,17 @@ TemplateElement FreeMarkerText() :
       )
       {
          if (begin == null) {
-            begin = elem;
+            begin = elem == null ? text.get(0) : elem;
          }
-         nodes.addElement(elem);
+         if (elem != null) {
+         	nodes.addElement(elem);
+         } else {
+         	for (TextBlock tb : text) nodes.addElement(tb);
+         }
       }
     )+
     {
+       if (elem == null) elem = text.get(text.size() -1);
        nodes.setLocation(template, begin, elem);
        return nodes;
     }

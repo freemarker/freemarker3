@@ -1322,6 +1322,26 @@ public class StringUtil {
     	if (isFTLIdentifier(s)) return s;
     	return "\"" + FTLStringLiteralEnc(s) + "\""; 
     }
+    
+    public static String rightTrim(String s) {
+    	for (int i= s.length() -1; i>=0; i--) {
+    		char c = s.charAt(i);
+    		if (!Character.isWhitespace(c)) {
+    			return s.substring(0, i+1);
+    		}
+    	}
+    	return "";
+    }
+    
+    public static String leftTrim(String s) {
+    	for (int i=0; i<s.length(); i++) {
+    		char c = s.charAt(i);
+    		if (!Character.isWhitespace(c)) {
+    			return s.substring(i);
+    		}
+    	}
+    	return "";
+    }
 }
 
 
