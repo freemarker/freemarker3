@@ -697,14 +697,21 @@ public class Template extends TemplateCore {
     	return (lineInfoTable[i] & 4) != 0;
     }
     
-    public void setLineDefinitelyProducesOutput(int i) {
-    	--i;
-    	lineInfoTable[i] = (byte) (lineInfoTable[i] | 0x08);
+    public void markAsOutputtingLine(int lineNumber, boolean inMacro) {
+    	--lineNumber;
+    	int bitMask = inMacro ? 0x10 : 0x08;
+    	if (inMacro) {
+    		lineInfoTable[lineNumber] = (byte) (lineInfoTable[lineNumber] | bitMask);
+    		
+    	} else {
+    		lineInfoTable[lineNumber] = (byte) (lineInfoTable[lineNumber] | bitMask);
+    	}
     }
     
-    public boolean lineDefinitelyProducesOutput(int i) {
+    public boolean isOutputtingLine(int i, boolean inMacro) {
     	--i;
-    	return (lineInfoTable[i] & 8) != 0;
+    	int bitMask = inMacro ? 0x10 : 0x08;
+    	return (lineInfoTable[i] & bitMask) != 0;
     }
     
     

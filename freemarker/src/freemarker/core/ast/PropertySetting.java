@@ -72,29 +72,6 @@ public class PropertySetting extends TemplateElement {
         this.value = value;
     }
 
-    public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine)
-    throws
-        ParseException
-    {
-        super.setLocation(template, beginColumn, beginLine, endColumn, endLine);
-        if (!key.equals(Configurable.LOCALE_KEY) &&
-            !key.equals(Configurable.NUMBER_FORMAT_KEY) &&
-            !key.equals(Configurable.TIME_FORMAT_KEY) &&
-            !key.equals(Configurable.DATE_FORMAT_KEY) &&
-            !key.equals(Configurable.DATETIME_FORMAT_KEY) &&
-            !key.equals(Configurable.TIME_ZONE_KEY) &&
-            !key.equals(Configurable.BOOLEAN_FORMAT_KEY) &&
-            !key.equals(Configurable.URL_ESCAPING_CHARSET_KEY)) 
-        {
-            throw new ParseException(
-                    "Error " + getStartLocation()
-                    + "\nInvalid setting name, or it is not allowed to change "
-                    + "the value of the setting with FTL: "
-                    + key,
-                    beginLine, beginColumn);
-        }
-    }
-
     public void execute(Environment env) throws TemplateException {
         TemplateModel mval = value.getAsTemplateModel(env);
         String strval;

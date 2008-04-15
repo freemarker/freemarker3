@@ -52,6 +52,7 @@
 
 package freemarker.template;
 
+import freemarker.core.Configurable;
 import freemarker.core.ast.*;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
@@ -220,11 +221,7 @@ public class PostParseVisitor extends ASTVisitor {
         if (node.getChildCount() == 1) {
             ConditionalBlock cblock = (ConditionalBlock) node.getChildAt(0);
             cblock.setIsSimple(true);
-            try {
-            	cblock.setLocation(node.getTemplate(), cblock, node);
-            } catch (ParseException pe) {
-            	template.addParsingProblem(new ParsingProblem(pe.getMessage(), node));
-            }
+           	cblock.setLocation(node.getTemplate(), cblock, node);
             node.getParent().replace(node, cblock);
             visit(cblock);
         } else {
@@ -256,6 +253,7 @@ public class PostParseVisitor extends ASTVisitor {
 				}
 			}
 		}
+		template.addMacro(node);
 		super.visit(node);
 	}
 	
@@ -370,10 +368,11 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(TextBlock node) {
-		if (node.getType() == TextBlock.REGULAR_TEXT) {
+		if (node.getType() == TextBlock.PRINTABLE_TEXT) {
 			for (int i = node.getBeginLine(); i<=node.getEndLine(); i++) {
+				boolean inMacro = getContainingMacro(node) != null;
 				if (i >0) //REVISIT THIS
-					template.setLineDefinitelyProducesOutput(i);
+					template.markAsOutputtingLine(i, inMacro);
 			}
 		}
 	}
@@ -480,6 +479,23 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 	}
 	
+    public void visit(PropertySetting node) {
+    	String key = node.key;
+        if (!key.equals(Configurable.LOCALE_KEY) &&
+                !key.equals(Configurable.NUMBER_FORMAT_KEY) &&
+                !key.equals(Configurable.TIME_FORMAT_KEY) &&
+                !key.equals(Configurable.DATE_FORMAT_KEY) &&
+                !key.equals(Configurable.DATETIME_FORMAT_KEY) &&
+                !key.equals(Configurable.TIME_ZONE_KEY) &&
+                !key.equals(Configurable.BOOLEAN_FORMAT_KEY) &&
+                !key.equals(Configurable.URL_ESCAPING_CHARSET_KEY)) 
+            {
+        		ParsingProblem problem = new ParsingProblem("Invalid setting name, or it is not allowed to change the "
+                        + "value of the setting with FTL: "
+                        + key, node);
+        		template.addParsingProblem(problem);
+            }
+    }
 	
 	protected void recurse(TemplateElement node){
 		super.recurse(node);
@@ -543,17 +559,18 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 	}
 	
-	private Macro getContainingMacro(TemplateElement node) {
-		TemplateElement parent = node;
+	static Macro getContainingMacro(TemplateNode node) {
+		TemplateNode parent = node;
 		while (parent != null && !(parent instanceof Macro)) {
-			parent = parent.getParent();
+			parent = parent.getParentNode();
 		}
 		return (Macro) parent;
 	}
 	
 	private void markAsProducingOutput(TemplateNode node) {
 		for (int i= node.getBeginLine(); i<=node.getEndLine(); i++) {
-			template.setLineDefinitelyProducesOutput(i);
+			boolean inMacro = getContainingMacro(node) != null;
+			template.markAsOutputtingLine(i, inMacro);
 		}
 	}
 	
@@ -573,4 +590,5 @@ public class PostParseVisitor extends ASTVisitor {
     	}
     	return line;
     }
+    
 }
