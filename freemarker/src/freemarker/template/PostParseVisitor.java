@@ -368,47 +368,12 @@ public class PostParseVisitor extends ASTVisitor {
 			}
 		}
 	}
-/*
+	
 	public void visit(TextBlock node) {
-		node.whitespaceAdjust(!template.stripWhitespace);
-	}
-*/	
-
-	public void visit(TextBlock node) {
-		if (node.getBeginLine() == 0) {
-			//REVISIT
-			//test-jsptaglibs.txt, test-sequencebuiltins.txt
-			return;
-		}
-		String firstLine = firstLine(node);
-		if (node.unparsed) {
-			int realStart = firstLine.indexOf('>');
-			if (realStart <0) realStart = firstLine.indexOf(']');
-			firstLine = firstLine.substring(1+realStart);
-		}
-		if (firstLine.trim().length() != 0) {
-			template.setLineDefinitelyProducesOutput(node.getBeginLine());
-		}
-		if (node.getEndLine() == node.getBeginLine()) {
-			int lineNumber = node.getBeginLine();
-			if (node.getText().trim().length() != 0) {
-				template.setLineDefinitelyProducesOutput(lineNumber);
-			} else if (node.getEndColumn() != template.getLine(lineNumber).length()){
-				template.setLineDefinitelyProducesOutput(lineNumber);
-			}
-		}
-		else {
-			for (int i = node.getBeginLine() +1; i< node.getEndLine(); i++) {
-				template.setLineDefinitelyProducesOutput(i);
-			}
-			String lastLine = lastLine(node);
-			if (node.unparsed) {
-				int realEnd = Math.max(lastLine.lastIndexOf('<'), lastLine.lastIndexOf('['));
-				lastLine = lastLine.substring(0, realEnd);
-				
-			}
-			if (lastLine.trim().length() != 0 || lastLine.length() == template.getLine(node.getEndLine()).length()) {
-				template.setLineDefinitelyProducesOutput(node.getEndLine());
+		if (node.getType() == TextBlock.REGULAR_TEXT) {
+			for (int i = node.getBeginLine(); i<=node.getEndLine(); i++) {
+				if (i >0) //REVISIT THIS
+					template.setLineDefinitelyProducesOutput(i);
 			}
 		}
 	}

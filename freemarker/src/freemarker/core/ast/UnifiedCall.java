@@ -149,14 +149,4 @@ public class UnifiedCall extends TemplateElement {
     public String getDescription() {
         return "user-directive " + nameExp;
     }
-/*
-    //REVISIT
-    boolean heedsOpeningWhitespace() {
-        return nestedBlock == null;
-    }
-
-    //REVISIT
-    boolean heedsTrailingWhitespace() {
-        return nestedBlock == null;
-    }*/
 }

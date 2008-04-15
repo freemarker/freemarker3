@@ -93,14 +93,4 @@ public class BodyInstruction extends TemplateElement {
     public String getDescription() {
         return "nested macro content";
     }
-
-/*
-    boolean heedsOpeningWhitespace() {
-        return true;
-    }
-
-    boolean heedsTrailingWhitespace() {
-        return true;
-    }
-*/
 }

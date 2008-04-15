@@ -361,24 +361,6 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
         return te;
     }
 
-    /**
-     * determines whether this element's presence on a line 
-     * indicates that we should not strip opening whitespace
-     * in the post-parse whitespace gobbling step.
-     */
-    boolean heedsOpeningWhitespace() {
-        return false;
-    }
-
-    /**
-     * determines whether this element's presence on a line 
-     * indicates that we should not strip trailing whitespace
-     * in the post-parse whitespace gobbling step.
-     */
-    boolean heedsTrailingWhitespace() {
-        return false;
-    }
-    
     public boolean createsScope() {
     	return declaredVariables != null && !declaredVariables.isEmpty();
     }

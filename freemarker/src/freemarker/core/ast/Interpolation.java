@@ -91,12 +91,4 @@ public class Interpolation extends TemplateElement {
             ? "" 
             : " escaped ${" + escapedExpression.getCanonicalForm() + "}");
     }
-
-    boolean heedsOpeningWhitespace() {
-        return true;
-    }
-
-    boolean heedsTrailingWhitespace() {
-        return true;
-    }
 }

@@ -271,7 +271,7 @@ public class Template extends TemplateCore {
     static public Template getPlainTextTemplate(String name, String content, 
             Configuration config) {
         Template template = new Template(name, config, NULL_CODE_SOURCE);
-        TextBlock block = new TextBlock(content);
+        TextBlock block = new TextBlock(content, true);
         template.templateText = content.toCharArray();
         template.setRootElement(block);
         DebuggerService.registerTemplate(template);

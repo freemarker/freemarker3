@@ -53,86 +53,75 @@
 package freemarker.template;
 
 import freemarker.core.ast.*;
+import java.util.List;
+import java.util.ArrayList;
 
 public class WhitespaceAdjuster extends ASTVisitor {
 	
 	private Template template;
-	private boolean stripWhitespace;
 	
 	public WhitespaceAdjuster(Template template) {
 		this.template = template;
-		stripWhitespace = template.stripWhitespace;
 	}
+
+	private boolean ignoresSandwichedWhitespace(TemplateElement elem) {
+		return (elem instanceof Macro) 
+		       || (elem instanceof AssignmentInstruction) 
+		       || (elem instanceof VarDirective)
+		       || (elem instanceof LibraryLoad)
+		       || (elem instanceof PropertySetting)
+		       || (elem instanceof Comment);
+ 	}
 	
-	public void visit(TextBlock node) {
-		
-		int beginLine = node.getBeginLine();
-		int beginColumn = node.getBeginColumn();
-		int endLine = node.getEndLine();
-		int endColumn = node.getEndColumn();
-		String nodeText = node.getText();
-		if (beginLine == endLine) {
-			char lastChar = nodeText.charAt(nodeText.length()-1);
-			if (lastChar == '\n' || lastChar == '\r') {
-				if ((stripWhitespace && !template.lineDefinitelyProducesOutput(beginLine)) || template.lineSaysRightTrim(beginLine)) {
-					int count = nodeText.length();
-					while (count >0) {
-						lastChar = nodeText.charAt(--count);
-						if (!Character.isWhitespace(lastChar)) break;
-					}
-					nodeText = rightTrim(nodeText);
-					node.setText(nodeText);
-				}
+	public void visit(MixedContent node) {
+		boolean atTopLevel = node.getParent() == null;
+		super.visit(node);
+		List<TemplateElement> childElements = new ArrayList<TemplateElement>();
+		TemplateElement prev = null;
+		for (TemplateElement elem : node.getNestedElements()) {
+			if (!(elem instanceof TextBlock) || !((TextBlock) elem).isIgnorable()) {
+				childElements.add(elem);
 			}
 		}
-		else {
-			if ((stripWhitespace && !template.lineDefinitelyProducesOutput(endLine)) 
-					|| template.lineSaysLeftTrim(endLine)) {
-				String endLineText = template.getLine(endLine).substring(0, endColumn);
-				if (node.unparsed) {
-					int realEnd = endLineText.lastIndexOf('<');
-					if (realEnd <0) realEnd = endLineText.lastIndexOf('[');
-					endLineText = endLineText.substring(0, realEnd);
-				}
-				nodeText = nodeText.substring(0, nodeText.length() - endLineText.length());
-				nodeText += leftTrim(endLineText);
-				node.setText(nodeText);
-			}
-			if (nodeText.length() >0) {
-				if ((stripWhitespace && !template.lineDefinitelyProducesOutput(beginLine)) 
-						|| template.lineSaysRightTrim(beginLine)) {
+		for (int i=0; i<childElements.size(); i++) {
+			TemplateElement elem = childElements.get(i);
+			TemplateElement previous = (i==0) ? null : childElements.get(i-1);
+			TemplateElement next = (i == childElements.size() -1) ? null : childElements.get(i+1); 
+			if (elem instanceof TextBlock) {
+				TextBlock text = (TextBlock) elem;
+				if (text.getText().trim().length() == 0) {
+					if (ignoresSandwichedWhitespace(previous) && ignoresSandwichedWhitespace(next)) {
+						text.setIgnore(true);
+					}
+					if (previous == null && atTopLevel && ignoresSandwichedWhitespace(next)) {
+						text.setIgnore(true);
+					}
 					
-					String firstLine = template.getLine(beginLine).substring(beginColumn -1);
-					if (node.unparsed) {
-						int realStart = firstLine.indexOf('>');
-						if (realStart<0) realStart = firstLine.indexOf(']');
-						firstLine = firstLine.substring(1+realStart);
+					if (next == null && atTopLevel && ignoresSandwichedWhitespace(prev)) {
+						text.setIgnore(true);
 					}
-					nodeText = nodeText.substring(firstLine.length());
-					nodeText = rightTrim(firstLine) + nodeText;
-					node.setText(nodeText);
 				}
 			}
 		}
-		if (node.isIgnorable()) node.setText(""); //REVISIT
 	}
-	
-	
-	static private String rightTrim(String s) {
-		int charsToStrip = 0;
-		for (int i=s.length()-1; i>=0; i--) {
-			if (Character.isWhitespace(s.charAt(i))) charsToStrip++;
-			else break;
+
+	public void visit(TextBlock node) {
+		int nodeType = node.getType();
+		if (nodeType == TextBlock.REGULAR_TEXT) return;
+		int lineNumber = node.getBeginLine();
+		boolean noTrim = template.lineSaysNoTrim(lineNumber);
+		boolean ignorable = template.stripWhitespace && !template.lineDefinitelyProducesOutput(lineNumber) && !noTrim; 
+		if (nodeType == TextBlock.OPENING_WS) {
+			boolean deliberateLeftTrim = template.lineSaysLeftTrim(lineNumber);
+			if (ignorable || deliberateLeftTrim) {
+				node.setIgnore(true);
+			}
 		}
-		return s.substring(0, s.length() - charsToStrip);
-	}
-	
-	static private String leftTrim(String s) {
-		int charsToStrip = 0;
-		for (int i=0; i<s.length(); i++) {
-			if (Character.isWhitespace(s.charAt(i))) charsToStrip++;
-			else break;
+		if (nodeType == TextBlock.TRAILING_WS) {
+			boolean deliberateRightTrim = template.lineSaysRightTrim(lineNumber);
+			if (ignorable || deliberateRightTrim) {
+				node.setIgnore(true);
+			}
 		}
-		return s.substring(charsToStrip);
 	}
 }
