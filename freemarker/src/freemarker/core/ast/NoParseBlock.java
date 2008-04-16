@@ -54,21 +54,20 @@ package freemarker.core.ast;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.template.TemplateException;
 import freemarker.template.Template;
 
-public class NoParseBlock extends TemplateElement {
+public class NoParseBlock extends MixedContent {
 	
-	private char[] text;
-	private int textBeginColumn, textBeginLine, textEndColumn, textEndLine;
 	private String startTag, endTag;
 
-	public NoParseBlock(String startTag, String endTag, String text) {
-		this.text = text.toCharArray();
+	public NoParseBlock(String startTag, String endTag, List<TextBlock> text) {
 		this.startTag = startTag;
 		this.endTag = endTag;
+		for (TextBlock tb : text) addElement(tb);
 	}
 	
 	public String getStartTag() {
@@ -79,68 +78,10 @@ public class NoParseBlock extends TemplateElement {
 		return endTag;
 	}
 
-	public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine) {
-		super.setLocation(template, beginColumn, beginLine, endColumn, endLine);
-		textBeginColumn = beginColumn;
-		textBeginLine = beginLine;
-		textEndColumn = endColumn;
-		textEndLine = endLine;
-		char lastChar = 0;
-		for (char c : startTag.toCharArray()) {
-			switch (c) {
-			    case '\r' : 
-			    	textBeginLine++; 
-			    	textBeginColumn = 1;
-			    	break;
-				case '\n' : 
-					if (lastChar!='\r') {
-						textBeginLine++;
-						textBeginColumn = 1;
-					}
-					break;
-				default : textBeginColumn++;
-
-			}
-			lastChar = c;
-		}
-		lastChar = 0;
-		for (int i=endTag.length() -1; i>=0; i--) {
-			char c = endTag.charAt(i);
-			switch (c) {
-			   case '\n' : 
-				   textEndLine--;
-				   textEndColumn = template.getLine(textEndLine).length();
-				   break;
-			   case '\r' : 
-				   if (lastChar != '\r') {
-					   textEndLine--;
-					   textEndColumn = template.getLine(textEndLine).length();
-				   }
-				   break;
-			   default : textEndColumn--;
-
-			}
-			lastChar = c;
-		}
-		this.text = null;
-	}
-	
-	public String getText() {
-		if (text != null) return new String(text);
-		return template.getSource(textBeginColumn, textBeginLine, textEndColumn, textEndLine);
-	}
-	
-	
-	public void execute(Environment env) throws TemplateException, IOException {
-		Writer out = env.getOut();
-		if (text != null) {
-			out.write(text);
-		} else {
-			template.writeTextAt(out, textBeginColumn, textBeginLine, textEndColumn, textEndLine);
-		}
-	}
-	
 	public boolean isIgnorable() {
-		return getText().trim().length() == 0;
+		for (TemplateElement elem : this) {
+			if (!elem.isIgnorable()) return false;
+		}
+		return true;
 	}
 }

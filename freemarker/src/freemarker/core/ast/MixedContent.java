@@ -62,7 +62,7 @@ import freemarker.core.parser.ParseException;
 /**
  * Encapsulates an array of <tt>TemplateElement</tt> objects. 
  */
-public class MixedContent extends TemplateElement {
+public class MixedContent extends TemplateElement implements Iterable<TemplateElement>{
 
     public MixedContent()
     {
@@ -85,6 +85,10 @@ public class MixedContent extends TemplateElement {
 
     public List<TemplateElement> getNestedElements() {
     	return nestedElements;
+    }
+    
+    public Iterator<TemplateElement> iterator() {
+    	return nestedElements.iterator();
     }
 
     /**
