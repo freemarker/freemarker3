@@ -656,11 +656,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(TextBlock node) {
 		String text = node.getText();
-		try {
-			text = node.getSource();
-		} catch (Exception e) {} 
-		if (!node.unparsed
-			&& text.indexOf(OPEN_BRACKET + "#") <0
+		if (text.indexOf(OPEN_BRACKET + "#") <0
 		    && text.indexOf(OPEN_BRACKET + "@") <0
 		    && text.indexOf(OPEN_BRACKET + "/#") <0
 		    && text.indexOf(OPEN_BRACKET + "/@") <0) 
@@ -668,9 +664,11 @@ public class DefaultTreeDumper extends ASTVisitor {
 			buffer.append(text);
 			return;
 		}
+	}
+	public void visit(NoParseBlock node) {
 		openDirective("noparse");
 		buffer.append(CLOSE_BRACKET);
-		buffer.append(text);
+		buffer.append(node.getText());
 		closeDirective("noparse");
 	}
 	

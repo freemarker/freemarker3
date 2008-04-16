@@ -77,7 +77,6 @@ public final class TextBlock extends TemplateElement {
 	private char[] text;
 	private int type;
 	private boolean ignore;
-	public final boolean unparsed;
 
 	public static final int PRINTABLE_TEXT = 0;
 	public static final int WHITE_SPACE = 1;
@@ -86,35 +85,27 @@ public final class TextBlock extends TemplateElement {
 
 	public TextBlock(String text) {
 		this.text = text.toCharArray();
-		this.unparsed = false;
 	}
 
-	public TextBlock(String text, boolean unparsed) {
-		this.text = text.toCharArray();
-		this.unparsed = unparsed;
-	}
-	
 	public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine) {
 		super.setLocation(template, beginColumn, beginLine, endColumn, endLine);
-		if (!unparsed) { // REVISIT, deal with this case later
-			boolean printable = false;
-			for (char c : text){
-				if (c != ' ' && c!='\t' && c!='\r' && c!='\n') printable = true;
-			}
-			if (printable) {
-				this.type = PRINTABLE_TEXT;
-			}
-			else {
-				char lastChar = text[text.length -1];
-				boolean containsEOL = (lastChar == '\n' || lastChar == '\r');
-				boolean containsStart = (beginColumn == 1);
-				if (containsEOL && containsStart) this.type = WHITE_SPACE;
-				else if (!containsEOL && !containsStart) this.type = WHITE_SPACE;
-				else if (containsEOL) this.type = TRAILING_WS;
-				else this.type = OPENING_WS;
-			}
-			this.text = null; // Now that we have location info, we don't need this. :-)
+		boolean printable = false;
+		for (char c : text){
+			if (c != ' ' && c!='\t' && c!='\r' && c!='\n') printable = true;
 		}
+		if (printable) {
+			this.type = PRINTABLE_TEXT;
+		}
+		else {
+			char lastChar = text[text.length -1];
+			boolean containsEOL = (lastChar == '\n' || lastChar == '\r');
+			boolean containsStart = (beginColumn == 1);
+			if (containsEOL && containsStart) this.type = WHITE_SPACE;
+			else if (!containsEOL && !containsStart) this.type = WHITE_SPACE;
+			else if (containsEOL) this.type = TRAILING_WS;
+			else this.type = OPENING_WS;
+		}
+		this.text = null; // Now that we have location info, we don't need this. :-)
 	}
 
 	public String getText() {
