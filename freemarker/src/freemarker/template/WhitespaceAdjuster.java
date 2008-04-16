@@ -64,7 +64,7 @@ public class WhitespaceAdjuster extends ASTVisitor {
 		this.template = template;
 	}
 
-	private boolean ignoresSandwichedWhitespace(TemplateElement elem) {
+	boolean ignoresSandwichedWhitespace(TemplateElement elem) {
 		return (elem instanceof Macro) 
 		       || (elem instanceof AssignmentInstruction) 
 		       || (elem instanceof VarDirective)
@@ -79,7 +79,7 @@ public class WhitespaceAdjuster extends ASTVisitor {
 		List<TemplateElement> childElements = new ArrayList<TemplateElement>();
 		TemplateElement prev = null;
 		for (TemplateElement elem : node.getNestedElements()) {
-			if (!(elem instanceof TextBlock) || !((TextBlock) elem).isIgnorable()) {
+			if (!elem.isIgnorable()) {
 				childElements.add(elem);
 			}
 		}

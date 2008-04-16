@@ -157,16 +157,6 @@ public final class TextBlock extends TemplateElement {
 		 return ignore;
 	 }
 
-
-	 private boolean nonOutputtingType(TemplateNode element) {
-		 return (element instanceof Macro ||
-				 element instanceof AssignmentInstruction ||
-				 element instanceof VarDirective ||
-				 element instanceof PropertySetting ||
-				 element instanceof LibraryLoad ||
-				 element instanceof Comment);
-	 }
-
 	 public boolean isWhitespace() {
 		 if (text == null) return this.type != PRINTABLE_TEXT;
 		 for (char c : text) {
@@ -232,7 +222,7 @@ public final class TextBlock extends TemplateElement {
 			 String openingWS = input.substring(0, input.length() - printablePart.length());
 			 if (openingWS.length() >0) {
 				 TextBlock tb = new TextBlock(openingWS);
-				 tb.setLocation(template, column, line, openingWS.length()-1, line);
+				 tb.setLocation(template, column, line, openingWS.length(), line);
 				 result.add(tb);
 			 }
 			 if (printablePart.length() >0) {

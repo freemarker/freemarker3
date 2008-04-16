@@ -111,7 +111,7 @@ public class MixedContent extends TemplateElement implements Iterable<TemplateEl
         return "content"; // MixedContent is uninteresting in a stack trace.
     }
 
-    boolean isIgnorable() {
+    public boolean isIgnorable() {
         return nestedElements == null || nestedElements.size() == 0;
     }
 }
