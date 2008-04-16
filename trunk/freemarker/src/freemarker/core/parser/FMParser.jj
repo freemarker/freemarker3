@@ -824,7 +824,9 @@ Expression PrimaryExpression() :
                 |<OPEN_BRACKET>
                 |<OPEN_PAREN>
                 |<BUILT_IN>
-                |<EXISTS>)
+                |<EXISTS>
+                |<EXCLAM>
+                |<TERMINATING_EXCLAM>)
       exp=AddSubExpression(exp)
   )*
   {
@@ -862,7 +864,7 @@ Expression UnaryExpression() :
    |
    result=NotExpression()
    |
-   result=DefaultToExpression()
+   result=PrimaryExpression()
   )
   {
      return result;
@@ -1229,6 +1231,8 @@ Expression AddSubExpression(Expression exp) :
        result=BuiltIn(exp)
        |
        result=Exists(exp)
+       |
+       result=DefaultTo(exp)
      )
      {
         return result;
@@ -2390,7 +2394,19 @@ NoParseBlock NoParse() :
     start=<NOPARSE>
     end=UnparsedContent(buf)
     {
-        NoParseBlock result = new NoParseBlock(start.image, end.image, buf.toString());
+    	int beginColumn = start.beginColumn;
+    	int beginLine = start.beginLine;
+    	char lastChar = 0;
+    	for (char c : start.image.toCharArray()) {
+    		switch (c) {
+    			case '\n' : if (lastChar == '\r') break;
+    			case '\r' : beginColumn = 1; beginLine++; break;   
+    			default : ++beginColumn;
+    		}
+    		lastChar = c;
+    	}
+    	List<TextBlock> text = TextBlock.breakIntoBlocks(buf.toString(), template, beginColumn, beginLine);
+        NoParseBlock result = new NoParseBlock(start.image, end.image, text);
         result.setLocation(template, start, end);
         return result;
     }

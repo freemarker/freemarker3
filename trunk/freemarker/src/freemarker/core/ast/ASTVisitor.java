@@ -295,7 +295,10 @@ public abstract class ASTVisitor {
 		recurse(node);
 	}
 	
-	public void visit(NoParseBlock node) {}
+	public void visit(NoParseBlock node) {
+		recurse(node);
+		
+	}
 	
 	public void visit(NotExpression node) {
 		visit(node.target);
