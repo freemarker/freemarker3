@@ -79,7 +79,7 @@ public class CompressedBlock extends TemplateElement {
         return "compressed block";
     }
 
-    boolean isIgnorable() {
+    public boolean isIgnorable() {
         return nestedBlock == null || nestedBlock.isIgnorable();
     }
 }

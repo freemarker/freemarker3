@@ -81,7 +81,7 @@ public class TrimInstruction extends TemplateElement {
         return type + "trim instruction";
     }
 
-    boolean isIgnorable() {
+    public boolean isIgnorable() {
         return true;
     }
 }

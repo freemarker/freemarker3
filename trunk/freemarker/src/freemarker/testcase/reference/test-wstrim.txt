@@ -37,6 +37,5 @@ C2  ICB
 a
 bc
 ---
-foo
----
+foo---
 foo

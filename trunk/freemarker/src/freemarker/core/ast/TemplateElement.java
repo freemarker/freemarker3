@@ -145,7 +145,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     }
 
 
-    boolean isIgnorable() {
+    public boolean isIgnorable() {
         return false;
     }
     

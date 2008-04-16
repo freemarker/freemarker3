@@ -368,12 +368,17 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(TextBlock node) {
-		if (node.getType() == TextBlock.PRINTABLE_TEXT) {
+		int type = node.getType();
+		if (type == TextBlock.PRINTABLE_TEXT) {
 			for (int i = node.getBeginLine(); i<=node.getEndLine(); i++) {
 				boolean inMacro = getContainingMacro(node) != null;
-				if (i >0) //REVISIT THIS
+				if (i >0) {//REVISIT THIS 
 					template.markAsOutputtingLine(i, inMacro);
+				}
 			}
+		} else if (type == TextBlock.WHITE_SPACE) {
+			
+			
 		}
 	}
 	
@@ -496,13 +501,6 @@ public class PostParseVisitor extends ASTVisitor {
         		template.addParsingProblem(problem);
             }
     }
-	
-	protected void recurse(TemplateElement node){
-		super.recurse(node);
-		if (template.stripWhitespace) {
-			node.removeIgnorableChildren();
-		}
-	}
 	
 	private void checkLiteralInBooleanContext(Expression exp) {
 		TemplateModel value = exp.literalValue();
