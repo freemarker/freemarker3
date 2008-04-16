@@ -270,10 +270,14 @@ public class Template extends TemplateCore {
      */
     static public Template getPlainTextTemplate(String name, String content, 
             Configuration config) {
-        Template template = new Template(name, config, NULL_CODE_SOURCE);
-        TextBlock block = new TextBlock(content, true);
-        template.templateText = content.toCharArray();
-        template.setRootElement(block);
+         Template template = new Template(name, config, NULL_CODE_SOURCE);
+        final char[] text = content.toCharArray();
+        template.templateText = text;
+        template.setRootElement(new TemplateElement() {
+        	public void execute(Environment env) throws IOException {
+        		env.getOut().write(text);
+        	}
+        });
         DebuggerService.registerTemplate(template);
         return template;
     }

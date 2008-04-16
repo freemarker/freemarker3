@@ -2381,7 +2381,7 @@ Comment Comment() :
     }
 }
 
-TextBlock NoParse() :
+NoParseBlock NoParse() :
 {
    Token start, end;
    StringBuilder buf = new StringBuilder();
@@ -2390,7 +2390,7 @@ TextBlock NoParse() :
     start=<NOPARSE>
     end=UnparsedContent(buf)
     {
-        TextBlock result = new TextBlock(buf.toString(), true);
+        NoParseBlock result = new NoParseBlock(start.image, end.image, buf.toString());
         result.setLocation(template, start, end);
         return result;
     }
