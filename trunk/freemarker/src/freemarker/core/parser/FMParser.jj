@@ -275,6 +275,9 @@ TOKEN_MGR_DECLS :
  		}
  	}
   	switch(token.kind) {
+  		case FTL_HEADER : 
+          SwitchTo(EXPRESSION);
+          break;
         case GREATER_THAN_EQUALS : 
   		case GREATER_THAN:
 			if (parenthesisNesting == 0 && !altDirectiveSyntax) {
@@ -328,18 +331,55 @@ TOKEN_MGR_DECLS :
  			noparseTag = "comment"; 
  			SwitchTo(NO_PARSE); 
  			break;
+ 		case NOPARSE_END:
+ 			if (!noparseTag.equals("noparse")) {
+ 				token.kind = PRINTABLE_CHARS;
+ 				break;
+ 			} // deliberate fall-through to next case...
  		case COMMENT_END:
- 			if (noparseTag.equals("comment")) SwitchTo(DEFAULT);
- 			else token.kind = PRINTABLE_CHARS;
+ 			if (token.kind == COMMENT_END && !noparseTag.equals("comment")) {
+	 			token.kind = PRINTABLE_CHARS;
+ 			} else {
+ 				char lastChar = tokText.charAt(tokText.length() -1);
+ 				char startTagChar = lastChar == ']' ? '[' : '<';
+ 				String extraChars = tokText.substring(0, tokText.lastIndexOf(startTagChar));
+ 				if (extraChars.length() >0) {
+ 					token.image = extraChars;
+ 					input_stream.backup(tokText.length() - extraChars.length());
+ 					token.kind = PRINTABLE_CHARS;
+ 				} else {
+		 			SwitchTo(DEFAULT);
+ 				}
+ 			}
  			break;
  		case TERSE_COMMENT_END:
- 			if (noparseTag.equals("-->")) SwitchTo(DEFAULT);
- 			else token.kind = PRINTABLE_CHARS;
+ 			if (!noparseTag.equals("-->")) {
+ 				token.kind = PRINTABLE_CHARS;
+ 			}
+ 			else if (tokText.length() == 3) {
+ 				SwitchTo(DEFAULT);
+ 			}
+ 			else {
+		 		token.image = tokText.substring(0, tokText.length() -3);
+		 		input_stream.backup(3);
+	 		 	token.kind = PRINTABLE_CHARS;
+ 			}
  			break;
+/* 			
  		case NOPARSE_END:
- 			if (noparseTag.equals("noparse")) SwitchTo(DEFAULT);
- 			else token.kind = PRINTABLE_CHARS;
+ 			if (!noparseTag.equals("noparse")) {
+				token.kind = PRINTABLE_CHARS; 				
+ 			} else {
+ 				char lastChar = tokText.charAt(tokText.length() -1);
+ 				char startTagChar = lastChar == ']' ? '[' : '>';
+ 				String extraChars = tokText.substring(0, tokText.lastIndexOf(startTagChar));
+ 				if (extraChars.length() >0) {
+ 					token.image
+ 				}
+ 				SwitchTo(DEFAULT);
+ 			}
  			break;
+*/ 			
   		case FUNCTION: case MACRO: case NESTED: case TRANSFORM: case STOP: case RETURN: case CALL:
   		case IF: case ELSE_IF: 
   		case VISIT: case RECURSE: 
@@ -459,28 +499,9 @@ TOKEN:
     |
     <UNIFIED_CALL_END : ("<" | "[") "/@" ((<ID>) ("."<ID>)*)? <CLOSE_TAG1>> 
     |
-    <FTL_HEADER : ("<#ftl" | "[#ftl") <BLANK>> 
-    {
-       boolean headerUsesAlt = (matchedToken.image.charAt(0) == '[');
-       if (seenFTLHeader && headerUsesAlt != altDirectiveSyntax) {
-          matchedToken.kind = PRINTABLE_CHARS;
-       } else {
-          setAltDirectiveSyntax(headerUsesAlt);
-          SwitchTo(EXPRESSION);
-          seenFTLHeader = true;
-       }
-    }
+    <FTL_HEADER : ("<#ftl" | "[#ftl") <BLANK>>
     |
-    <TRIVIAL_FTL_HEADER : ("<#ftl" | "[#ftl") ("/")? (">" | "]")> 
-    {
-        boolean headerUsesAltSyntax = (matchedToken.image.charAt(0) == '[');
-        if (seenFTLHeader && headerUsesAltSyntax != altDirectiveSyntax) {
-           matchedToken.kind = PRINTABLE_CHARS;
-        } else {
-           setAltDirectiveSyntax(headerUsesAltSyntax);
-           seenFTLHeader = true;
-        }   
-    }
+    <TRIVIAL_FTL_HEADER : ("<#ftl" | "[#ftl") ("/")? (">" | "]")>
     |
     <UNKNOWN_DIRECTIVE : ("[#" | "[/#" | "<#" | "</#") (["a"-"z","A"-"Z", "_"])+>
 }
@@ -2368,8 +2389,6 @@ Comment TerseComment() :
 	)*
 	end=<TERSE_COMMENT_END>
 	{
-		buf.append(end.image);
-		buf.setLength(buf.length() -"-->".length());
 		Comment result = new Comment(buf.toString());
 		result.setLocation(template, start, end);
 		return result;
@@ -2388,11 +2407,6 @@ Comment Comment() :
     )*
     end=<COMMENT_END>
     {
-       String endText = end.image;
-       char lastChar = endText.charAt(endText.length() -1);
-       char startTagChar = (lastChar == ']') ? '[' : '<';
-       int indexOfEndTag = endText.lastIndexOf(startTagChar);
-       buf.append(endText.substring(0, indexOfEndTag));
        Comment result = new Comment(buf.toString());
        result.setLocation(template, start, end);
        return result;
@@ -2411,13 +2425,9 @@ NoParseBlock NoParse() :
     )*
     end=<NOPARSE_END>
     {
-    	String endText = end.image;
-    	char lastChar = endText.charAt(endText.length() -1);
-    	char startTagChar = (lastChar == ']') ? '[' : '<';
-        int indexOfEndTag = endText.lastIndexOf(startTagChar);
-        buf.append(endText.substring(0, indexOfEndTag));
     	int beginColumn = start.beginColumn;
     	int beginLine = start.beginLine;
+    	char lastChar = 0;
     	for (char c : start.image.toCharArray()) {
     		switch (c) {
     			case '\n' : if (lastChar == '\r') break;
