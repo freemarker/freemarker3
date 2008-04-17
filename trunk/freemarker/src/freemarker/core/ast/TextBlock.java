@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003 The Visigoth Software Society. All rights
+ * Copyright (C) 2003, 2008 The Visigoth Software Society. All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.*;
 import freemarker.template.Template;
-import freemarker.template.utility.StringUtil;
 import freemarker.core.Environment;
 import freemarker.core.parser.ParseException;
 
@@ -165,7 +164,27 @@ public final class TextBlock extends TemplateElement {
 		 return true;
 	 }
 	 
-	 static public boolean isWhitespace(char c) {
+	 static private String leftTrim(String s) {
+		for (int i=0; i<s.length(); i++) {
+			char c = s.charAt(i);
+			if (!Character.isWhitespace(c)) {
+				return s.substring(i);
+			}
+		}
+		return "";
+	 }
+
+	 static private String rightTrim(String s) {
+		for (int i= s.length() -1; i>=0; i--) {
+			char c = s.charAt(i);
+			if (!Character.isWhitespace(c)) {
+				return s.substring(0, i+1);
+			}
+		}
+		return "";
+	}
+
+	static private boolean isWhitespace(char c) {
 		 return c == '\n' || c == '\r' || c == '\t' || c == ' ';
 	 }
 
@@ -209,7 +228,7 @@ public final class TextBlock extends TemplateElement {
 		 boolean spansEntireLine = spansRight && spansLeft;
 		 boolean boundedBothSides = !spansRight && !spansLeft;
 		 if (spansEntireLine || boundedBothSides
-				 || (spansLeft && !Character.isWhitespace(input.charAt(0)))
+				 || (spansLeft && !isWhitespace(input.charAt(0)))
 		 ) 
 		 {
 			 TextBlock tb = new TextBlock(input);
@@ -218,7 +237,7 @@ public final class TextBlock extends TemplateElement {
 			 return result;
 		 }
 		 if (spansLeft) {
-			 String printablePart = StringUtil.leftTrim(input);
+			 String printablePart = TextBlock.leftTrim(input);
 			 String openingWS = input.substring(0, input.length() - printablePart.length());
 			 if (openingWS.length() >0) {
 				 TextBlock tb = new TextBlock(openingWS);
@@ -233,7 +252,7 @@ public final class TextBlock extends TemplateElement {
 			 return result;
 		 }
 		 // Remaining case is a line that has trailing WS.
-		 String startingPart  = StringUtil.rightTrim(input);
+		 String startingPart  = TextBlock.rightTrim(input);
 		 String trailingWS = input.substring(startingPart.length());
 		 if (startingPart.length() >0) {
 			 TextBlock tb = new TextBlock(startingPart);
@@ -263,7 +282,7 @@ public final class TextBlock extends TemplateElement {
 		 else { // Now deal with multiline case:
 // If the first line spans from column 1, we don't need to break it up. Otherwise we do.
 			 if (beginColumn > 1 ) {
-				 String firstPart = StringUtil.rightTrim(firstLine);
+				 String firstPart = TextBlock.rightTrim(firstLine);
 				 String trailingWS = firstLine.substring(firstPart.length());
 				 if (firstPart.length() >0) {
 					 TextBlock tb = new TextBlock(firstPart);
@@ -291,7 +310,7 @@ public final class TextBlock extends TemplateElement {
 // If the last line spans to the end, we're cool. Also, if the last line has no opening whitespace, we are finished.			 
 			 boolean mergeLastLine = lastLine.endsWith("\n") || 
 			                    lastLine.endsWith("\r") || 
-			                    !Character.isWhitespace(lastLine.charAt(0));
+			                    !isWhitespace(lastLine.charAt(0));
 			 if (mergeLastLine) { 
 				 middleLines.append(lastLine);
 			 }
@@ -307,7 +326,7 @@ public final class TextBlock extends TemplateElement {
 				 result.add(tb);
 			 }
 			 if (!mergeLastLine) {
-				 String printablePart = StringUtil.leftTrim(lastLine);
+				 String printablePart = TextBlock.leftTrim(lastLine);
 				 String openingWS= lastLine.substring(0, lastLine.length() - printablePart.length());
 				 if (openingWS.length() >0) {
 					 TextBlock tb = new TextBlock(openingWS);
