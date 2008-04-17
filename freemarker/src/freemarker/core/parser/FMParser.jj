@@ -328,6 +328,18 @@ TOKEN_MGR_DECLS :
  			noparseTag = "comment"; 
  			SwitchTo(NO_PARSE); 
  			break;
+ 		case COMMENT_END:
+ 			if (noparseTag.equals("comment")) SwitchTo(DEFAULT);
+ 			else token.kind = PRINTABLE_CHARS;
+ 			break;
+ 		case TERSE_COMMENT_END:
+ 			if (noparseTag.equals("-->")) SwitchTo(DEFAULT);
+ 			else token.kind = PRINTABLE_CHARS;
+ 			break;
+ 		case NOPARSE_END:
+ 			if (noparseTag.equals("noparse")) SwitchTo(DEFAULT);
+ 			else token.kind = PRINTABLE_CHARS;
+ 			break;
   		case FUNCTION: case MACRO: case NESTED: case TRANSFORM: case STOP: case RETURN: case CALL:
   		case IF: case ELSE_IF: 
   		case VISIT: case RECURSE: 
@@ -403,9 +415,9 @@ TOKEN:
     |
     <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> 
     |
-    <COMMENT : <START_TAG> "comment" <CLOSE_TAG1>>
+    <COMMENT : <START_TAG> "comment" <CLOSE_TAG1>> 
     |
-    <TERSE_COMMENT : ("<" | "[") "#--" > 
+    <TERSE_COMMENT : ("<" | "[") "#--" >
     |
     <NOPARSE : <START_TAG> "noparse" <CLOSE_TAG1>> 
     |
@@ -660,37 +672,15 @@ TOKEN:
 	<UNEXPECTED : ~[]>
 }
 
+<NO_PARSE> MORE: { <(~[])> }
+
 <NO_PARSE> TOKEN :
 {
-    <TERSE_COMMENT_END : "-->" | "--]">
-    {
-        if (noparseTag.equals("-->")) {
-	   boolean squareBracket = matchedToken.image.endsWith("]");
-	   if ((altDirectiveSyntax && squareBracket) || (!altDirectiveSyntax && !squareBracket))
-	      SwitchTo(DEFAULT);
-	}
-    }
+	<TERSE_COMMENT_END : "-->" | "--]">
+	|
+    <COMMENT_END : ("</#comment" (<BLANK>)* ">") | ("[/#comment" (<BLANK>)* "]")>
     |
-    <MAYBE_END :
-        ("<" | "[")
-        "/"
-        ("#")?
-        (["a"-"z", "A"-"Z"])+
-        ( " " | "\t" | "\n" | "\r" )*
-        (">" | "]")
-    >
-    {
-         StringTokenizer st = new StringTokenizer(image.toString(),
-                                                  " \t\n\r<>[]/#",
-                                                  false);
-         if (st.nextToken().equals(noparseTag)) {
-            SwitchTo(DEFAULT);
-         }
-    }
-    |
-    <KEEP_GOING : (~["<", "[", "-"])+>
-    |
-    <LONE_LESS_THAN_OR_DASH : ["<", "[", "-"]>
+    <NOPARSE_END : ("</#noparse" (<BLANK>)* ">") | ("[/#noparse" (<BLANK>)* "]")>
 }
 
 <PHONY> TOKEN: {<DIRECTIVE_END : ">"|"]">}
@@ -2366,19 +2356,43 @@ Map<String, Expression> NamedArgs() :
   }
 }
 
+Comment TerseComment() :
+{
+	Token start, end, t;
+	StringBuilder buf = new StringBuilder();
+}
+{
+	start=<TERSE_COMMENT>
+	(
+	   t=<PRINTABLE_CHARS> {buf.append(t.image);}
+	)*
+	end=<TERSE_COMMENT_END>
+	{
+		buf.append(end.image);
+		buf.setLength(buf.length() -"-->".length());
+		Comment result = new Comment(buf.toString());
+		result.setLocation(template, start, end);
+		return result;
+	}
+}
+
 Comment Comment() :
 {
-   Token start, end;
+   Token start, end, t;
    StringBuilder buf = new StringBuilder();
 }
 {
+    start=<COMMENT>
     (
-       start=<COMMENT>
-       |
-       start=<TERSE_COMMENT>
-    )
-    end=UnparsedContent(buf)
+       t=<PRINTABLE_CHARS> {buf.append(t.image);}
+    )*
+    end=<COMMENT_END>
     {
+       String endText = end.image;
+       char lastChar = endText.charAt(endText.length() -1);
+       char startTagChar = (lastChar == ']') ? '[' : '<';
+       int indexOfEndTag = endText.lastIndexOf(startTagChar);
+       buf.append(endText.substring(0, indexOfEndTag));
        Comment result = new Comment(buf.toString());
        result.setLocation(template, start, end);
        return result;
@@ -2387,16 +2401,23 @@ Comment Comment() :
 
 NoParseBlock NoParse() :
 {
-   Token start, end;
+   Token start, end, t;
    StringBuilder buf = new StringBuilder();
 }
 {
     start=<NOPARSE>
-    end=UnparsedContent(buf)
+    (
+       t=<PRINTABLE_CHARS> {buf.append(t.image);}
+    )*
+    end=<NOPARSE_END>
     {
+    	String endText = end.image;
+    	char lastChar = endText.charAt(endText.length() -1);
+    	char startTagChar = (lastChar == ']') ? '[' : '<';
+        int indexOfEndTag = endText.lastIndexOf(startTagChar);
+        buf.append(endText.substring(0, indexOfEndTag));
     	int beginColumn = start.beginColumn;
     	int beginLine = start.beginLine;
-    	char lastChar = 0;
     	for (char c : start.image.toCharArray()) {
     		switch (c) {
     			case '\n' : if (lastChar == '\r') break;
@@ -2682,6 +2703,8 @@ TemplateElement FreemarkerDirective() :
      |
      tp=Call()
      |
+     tp=TerseComment()
+     |
      tp=Comment()
      |
      tp=NoParse()
@@ -2757,11 +2780,6 @@ List<TextBlock> PCData() :
          }
          result = TextBlock.breakIntoBlocks(buf.toString(), template, start.beginColumn, start.beginLine);
          return result;
-/*         
-         TextBlock block = new TextBlock(buf.toString(), false);
-         block.setLocation(template, start, t);
-         result.add(block);
-         return result;*/
     }
 }
 
@@ -2771,7 +2789,7 @@ List<TextBlock> PCData() :
  * It returns the ending token. The content
  * of the tag is put in buf.
  */
-
+/*
 Token UnparsedContent(StringBuilder buf) :
 {
    Token t;
@@ -2785,7 +2803,7 @@ Token UnparsedContent(StringBuilder buf) :
       buf.setLength(buf.length() - t.image.length());
       return t;
    }
-}
+}*/
 
 TemplateElement Content() :
 {
