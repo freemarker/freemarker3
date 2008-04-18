@@ -114,11 +114,11 @@ public final class TextBlock extends TemplateElement {
 	public void setText(String text) {
 		this.text = text.toCharArray();
 	}
-	
+
 	public int getType() {
 		return type;
 	}
-	
+
 	public void setIgnore(boolean ignore) {
 		this.ignore = ignore;
 	}
@@ -127,44 +127,210 @@ public final class TextBlock extends TemplateElement {
 	 * Simply outputs the text.
 	 */
 	public void execute(Environment env) 
-  	throws IOException
+	throws IOException
 	{
-		 if (this.ignore) return;
-		 Writer out = env.getOut();
-		 if (text != null) {
-			 out.write(text);
-		 }
-		 else {
-			 template.writeTextAt(out, beginColumn, beginLine, endColumn, endLine);
-		 }
+		if (this.ignore) return;
+		Writer out = env.getOut();
+		if (text != null) {
+			out.write(text);
+		}
+		else {
+			template.writeTextAt(out, beginColumn, beginLine, endColumn, endLine);
+		}
 	}
 
-	 public String getDescription() {
-		 String s = new String(getText()).trim();
-		 if (s.length() == 0) {
-			 return "whitespace";
-		 }
-		 if (s.length() > 20) {
-			 s = s.substring(0,20) + "...";
-			 s = s.replace('\n', ' ');
-			 s = s.replace('\r', ' ');
-		 }
-		 return "text block (" + s + ")";
-	 }
+	public String getDescription() {
+		String s = new String(getText()).trim();
+		if (s.length() == 0) {
+			return "whitespace";
+		}
+		if (s.length() > 20) {
+			s = s.substring(0,20) + "...";
+			s = s.replace('\n', ' ');
+			s = s.replace('\r', ' ');
+		}
+		return "text block (" + s + ")";
+	}
 
-	 public boolean isIgnorable() {
-		 return ignore;
-	 }
+	public boolean isIgnorable() {
+		return ignore;
+	}
 
-	 public boolean isWhitespace() {
-		 if (text == null) return this.type != PRINTABLE_TEXT;
-		 for (char c : text) {
-			 if (!isWhitespace(c)) return false;
-		 }
-		 return true;
-	 }
-	 
-	 static private String leftTrim(String s) {
+	public boolean isWhitespace() {
+		if (text == null) return this.type != PRINTABLE_TEXT;
+		for (char c : text) {
+			if (!isWhitespace(c)) return false;
+		}
+		return true;
+	}
+
+
+	static private List<TextBlock> breakSingleLineIntoBlocks(String input, Template template, int column, int line) throws ParseException {
+		List<TextBlock> result = new ArrayList<TextBlock>();
+		char lastChar = input.charAt(input.length()-1);
+		boolean spansRight = (lastChar == '\r' || lastChar == '\n');
+		boolean spansLeft = (column == 1);
+		boolean spansEntireLine = spansRight && spansLeft;
+		boolean boundedBothSides = !spansRight && !spansLeft;
+		if (spansEntireLine || boundedBothSides
+				|| (spansLeft && !isWhitespace(input.charAt(0)))
+		) 
+		{
+			TextBlock tb = new TextBlock(input);
+			tb.setLocation(template, column, line, column + input.length() -1, line);
+			result.add(tb);
+			return result;
+		}
+		if (spansLeft) {
+			String printablePart = TextBlock.leftTrim(input);
+			String openingWS = input.substring(0, input.length() - printablePart.length());
+			if (openingWS.length() >0) {
+				TextBlock tb = new TextBlock(openingWS);
+				tb.setLocation(template, column, line, openingWS.length(), line);
+				result.add(tb);
+			}
+			if (printablePart.length() >0) {
+				TextBlock tb = new TextBlock(printablePart);
+				tb.setLocation(template, column + openingWS.length(), line, column + input.length() -1, line);
+				result.add(tb);
+			}
+			return result;
+		}
+		// Remaining case is a line that has trailing WS.
+		String startingPart  = TextBlock.rightTrim(input);
+		String trailingWS = input.substring(startingPart.length());
+		if (startingPart.length() >0) {
+			TextBlock tb = new TextBlock(startingPart);
+			tb.setLocation(template, column, line, column + startingPart.length() -1, line);
+			result.add(tb);
+		}
+		if (trailingWS.length()>0) {
+			TextBlock tb = new TextBlock(trailingWS);
+			tb.setLocation(template, column + startingPart.length(), line, column + input.length() -1, line);
+			result.add(tb);
+		}
+		return result;
+	}
+
+	static public List<TextBlock> breakIntoBlocks(String input, Template template, int beginColumn, int beginLine) throws ParseException {
+		int numLines = countLines(input);
+		if (numLines == 1) {
+			return breakSingleLineIntoBlocks(input, template, beginColumn, beginLine);
+		}
+		String firstLine = firstLine(input);
+		String lastLine = lastLine(input);
+		String middleLines = input.substring(firstLine.length(), input.length() - lastLine.length());
+
+		List<TextBlock> result = new ArrayList<TextBlock>();
+
+//		If the first line spans from column 1, we don't need to break it up. Otherwise we do.
+		if (beginColumn == 1) {
+			middleLines = firstLine + middleLines;
+		}
+		else {
+			String firstPart = rightTrim(firstLine);
+			String trailingWS = firstLine.substring(firstPart.length());
+			if (firstPart.length() >0) {
+				TextBlock tb = new TextBlock(firstPart);
+				int type = firstPart.trim().length() == 0 ? WHITE_SPACE : PRINTABLE_TEXT;
+				tb.setLocation(template, beginColumn, beginLine, beginColumn + firstPart.length() -1, beginLine);
+				result.add(tb);
+			}
+			if (trailingWS.length() >0) {
+				TextBlock tb = new TextBlock(trailingWS);
+				tb.setLocation(template, beginColumn + firstPart.length(), beginLine, beginColumn + firstLine.length() -1, beginLine);
+				result.add(tb);
+			}
+		}
+//		Now the middle lines, the ones in between the first and last line, are just all added as regular text
+//		If the first line spans from the left, we prepend that.
+//		If the last line spans to the end, we're cool. Also, if the last line has no opening whitespace, we are finished.			 
+		boolean mergeLastLine = lastLine.endsWith("\n") || lastLine.endsWith("\r") || !isWhitespace(lastLine.charAt(0));
+		if (mergeLastLine) { 
+			middleLines+=lastLine;
+		}
+		if (middleLines.length() > 0) {
+			TextBlock tb = new TextBlock(middleLines);
+			int startingLine = beginLine;
+			int startingColumn = 1;
+			if (beginColumn != 1) ++startingLine;
+			int endColumn = mergeLastLine ? lastLine.length() : lastLine(middleLines).length();
+			int endingLine = beginLine + numLines -1;
+			if (!mergeLastLine) endingLine--;
+			tb.setLocation(template, 1, startingLine, endColumn, endingLine);
+			result.add(tb);
+		}
+		if (!mergeLastLine) {
+			String printablePart = TextBlock.leftTrim(lastLine);
+			String openingWS= lastLine.substring(0, lastLine.length() - printablePart.length());
+			if (openingWS.length() >0) {
+				TextBlock tb = new TextBlock(openingWS);
+				tb.setLocation(template, 1, beginLine + numLines -1, openingWS.length(), beginLine + numLines -1);
+				result.add(tb);
+			}
+			if (printablePart.length()>0) {
+				TextBlock tb = new TextBlock(printablePart);
+				tb.setLocation(template, 1 + openingWS.length(), beginLine + numLines -1, lastLine.length(), beginLine + numLines -1);
+				result.add(tb);
+			}
+		} // Now we really are finished!
+		return result;
+	}
+
+	static private boolean isWhitespace(char c) {
+		return c == '\n' || c == '\r' || c == '\t' || c == ' ';
+	}
+
+	static private int countLines(String input) {
+		int result = 0;
+		char lastChar = 0;
+		for (int i=0; i<input.length();i++) {
+			char c = input.charAt(i);
+			if (c=='\r') ++result;
+			else if (c=='\n'  && lastChar != '\r') ++result;
+			lastChar = c;
+		}
+		if (lastChar != '\n' && lastChar != '\r') ++result;
+		return result;
+	}
+
+	static private String firstLine(String input) {
+		for (int i=0; i<input.length(); i++) {
+			char c = input.charAt(i);
+			if (c == '\n') {
+				return input.substring(0, i+1);
+			}
+			if (c=='\r') {
+				if (input.length() == i+1) {
+					return input;
+				}
+				int endLine = (input.charAt(i+1) == '\n') ? i+1 : i;
+				return input.substring(0, endLine +1);
+			}
+		}
+		return input;
+	}
+
+	static private String lastLine(String input) {
+		int lineLength = input.length();
+		if (lineLength <2) return input;
+		int startBackTrack = lineLength-1;
+		char lastChar = input.charAt(startBackTrack);
+		if (lastChar == '\r' || lastChar=='\n') startBackTrack--;
+		if (lastChar =='\n') {
+			if (input.charAt(startBackTrack) == '\r') startBackTrack--;
+		}
+		for (int i=startBackTrack; i>=0; i--) {
+			char c = input.charAt(i);
+			if (c == '\n' || c=='\r') {
+				return input.substring(i+1);
+			}
+		}
+		return input;
+	}
+
+
+	static private String leftTrim(String s) {
 		for (int i=0; i<s.length(); i++) {
 			char c = s.charAt(i);
 			if (!Character.isWhitespace(c)) {
@@ -172,9 +338,9 @@ public final class TextBlock extends TemplateElement {
 			}
 		}
 		return "";
-	 }
+	}
 
-	 static private String rightTrim(String s) {
+	static private String rightTrim(String s) {
 		for (int i= s.length() -1; i>=0; i--) {
 			char c = s.charAt(i);
 			if (!Character.isWhitespace(c)) {
@@ -183,163 +349,4 @@ public final class TextBlock extends TemplateElement {
 		}
 		return "";
 	}
-
-	static private boolean isWhitespace(char c) {
-		 return c == '\n' || c == '\r' || c == '\t' || c == ' ';
-	 }
-
-
-	 static private List<String> breakIntoLines(String input) {
-		 List<String> result = new ArrayList<String>();
-		 StringTokenizer st = new StringTokenizer(input, "\r\n", true);
-		 String lastToken = "";
-		 String currentLine = "";
-		 while (st.hasMoreTokens()) {
-			 String tok = st.nextToken();
-			 if (tok.equals("\r")) {
-				 currentLine += tok;
-				 result.add(currentLine);
-				 currentLine = "";
-			 } 
-			 else if (tok.equals("\n")) {
-				 if (lastToken.equals("\r")) {
-					 String line = result.get(result.size() -1) + tok;
-					 result.set(result.size() -1, line);
-				 } else {
-					 currentLine += tok;
-					 result.add(currentLine);
-				 }
-				 currentLine = "";
-			 }
-			 else {
-				 currentLine = tok;
-				 if (!st.hasMoreTokens()) result.add(currentLine);
-			 }
-			 lastToken = tok;
-		 }
-		 return result;
-	 }
-	 
-	 static private List<TextBlock> breakSingleLineIntoBlocks(String input, Template template, int column, int line) throws ParseException {
-		 List<TextBlock> result = new ArrayList<TextBlock>();
-		 char lastChar = input.charAt(input.length()-1);
-		 boolean spansRight = (lastChar == '\r' || lastChar == '\n');
-		 boolean spansLeft = (column == 1);
-		 boolean spansEntireLine = spansRight && spansLeft;
-		 boolean boundedBothSides = !spansRight && !spansLeft;
-		 if (spansEntireLine || boundedBothSides
-				 || (spansLeft && !isWhitespace(input.charAt(0)))
-		 ) 
-		 {
-			 TextBlock tb = new TextBlock(input);
-			 tb.setLocation(template, column, line, column + input.length() -1, line);
-			 result.add(tb);
-			 return result;
-		 }
-		 if (spansLeft) {
-			 String printablePart = TextBlock.leftTrim(input);
-			 String openingWS = input.substring(0, input.length() - printablePart.length());
-			 if (openingWS.length() >0) {
-				 TextBlock tb = new TextBlock(openingWS);
-				 tb.setLocation(template, column, line, openingWS.length(), line);
-				 result.add(tb);
-			 }
-			 if (printablePart.length() >0) {
-				 TextBlock tb = new TextBlock(printablePart);
-				 tb.setLocation(template, column + openingWS.length(), line, column + input.length() -1, line);
-				 result.add(tb);
-			 }
-			 return result;
-		 }
-		 // Remaining case is a line that has trailing WS.
-		 String startingPart  = TextBlock.rightTrim(input);
-		 String trailingWS = input.substring(startingPart.length());
-		 if (startingPart.length() >0) {
-			 TextBlock tb = new TextBlock(startingPart);
-			 tb.setLocation(template, column, line, column + startingPart.length() -1, line);
-			 result.add(tb);
-		 }
-		 if (trailingWS.length()>0) {
-			 TextBlock tb = new TextBlock(trailingWS);
-			 tb.setLocation(template, column + startingPart.length(), line, column + input.length() -1, line);
-			 result.add(tb);
-		 }
-		 return result;
-	 }
-
-	 static public List<TextBlock> breakIntoBlocks(String input, Template template, int beginColumn, int beginLine) throws ParseException {
-		 List<String> lines = breakIntoLines(input);
-		 int numLines = lines.size(); 
-		 String firstLine = lines.get(0);
-		 String lastLine = lines.get(numLines-1);
-
-		 List<TextBlock> result = new ArrayList<TextBlock>();
-
-		 // Deal with single line.
-		 if (numLines == 1) {
-			 return breakSingleLineIntoBlocks(firstLine, template, beginColumn, beginLine);
-		 }
-		 else { // Now deal with multiline case:
-// If the first line spans from column 1, we don't need to break it up. Otherwise we do.
-			 if (beginColumn > 1 ) {
-				 String firstPart = TextBlock.rightTrim(firstLine);
-				 String trailingWS = firstLine.substring(firstPart.length());
-				 if (firstPart.length() >0) {
-					 TextBlock tb = new TextBlock(firstPart);
-					 int type = firstPart.trim().length() == 0 ? WHITE_SPACE : PRINTABLE_TEXT;
-					 tb.setLocation(template, beginColumn, beginLine, beginColumn + firstPart.length() -1, beginLine);
-					 result.add(tb);
-				 }
-				 if (trailingWS.length() >0) {
-					 TextBlock tb = new TextBlock(trailingWS);
-					 tb.setLocation(template, beginColumn + firstPart.length(), beginLine, beginColumn + firstLine.length() -1, beginLine);
-					 result.add(tb);
-				 }
-			 }
-// Now the middle lines, the ones in between the first and last line, are just all added as regular text
-			 StringBuilder middleLines = new StringBuilder();
-// If the first line spans from the left, we prepend that.
-			 if (beginColumn == 1) {
-				 middleLines.append(firstLine);
-			 }
-// Now we append the middle lines. Of course, if numLines is 2, then this is a no-op.			 
-			 for (int i=1; i< numLines -1; i++) {
-				 middleLines.append(lines.get(i));
-			 }
-// Now the last line:
-// If the last line spans to the end, we're cool. Also, if the last line has no opening whitespace, we are finished.			 
-			 boolean mergeLastLine = lastLine.endsWith("\n") || 
-			                    lastLine.endsWith("\r") || 
-			                    !isWhitespace(lastLine.charAt(0));
-			 if (mergeLastLine) { 
-				 middleLines.append(lastLine);
-			 }
-			 if (middleLines.length() > 0) {
-				 TextBlock tb = new TextBlock(middleLines.toString());
-				 int startingLine = beginLine;
-				 int startingColumn = 1;
-				 if (beginColumn != 1) ++startingLine;
-				 int endColumn = mergeLastLine ? lastLine.length() : lines.get(lines.size() -2).length();
-				 int endingLine = beginLine + numLines -1;
-				 if (!mergeLastLine) endingLine--;
-				 tb.setLocation(template, 1, startingLine, endColumn, endingLine);
-				 result.add(tb);
-			 }
-			 if (!mergeLastLine) {
-				 String printablePart = TextBlock.leftTrim(lastLine);
-				 String openingWS= lastLine.substring(0, lastLine.length() - printablePart.length());
-				 if (openingWS.length() >0) {
-					 TextBlock tb = new TextBlock(openingWS);
-					 tb.setLocation(template, 1, beginLine + numLines -1, openingWS.length(), beginLine + numLines -1);
-					 result.add(tb);
-				 }
-				 if (printablePart.length()>0) {
-					 TextBlock tb = new TextBlock(printablePart);
-					 tb.setLocation(template, 1 + openingWS.length(), beginLine + numLines -1, lastLine.length(), beginLine + numLines -1);
-					 result.add(tb);
-				 }
-			 } // Now we really are finished!
-			 return result;
-		 }
-	 }
 }
