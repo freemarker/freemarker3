@@ -2799,21 +2799,6 @@ List<TextBlock> PCData() :
  * It returns the ending token. The content
  * of the tag is put in buf.
  */
-/*
-Token UnparsedContent(StringBuilder buf) :
-{
-   Token t;
-}
-{
-   ((t=<KEEP_GOING> | t=<MAYBE_END> | t=<TERSE_COMMENT_END> | t=<LONE_LESS_THAN_OR_DASH>)
-   {
-       buf.append(t.image);
-   })+
-   {
-      buf.setLength(buf.length() - t.image.length());
-      return t;
-   }
-}*/
 
 TemplateElement Content() :
 {
