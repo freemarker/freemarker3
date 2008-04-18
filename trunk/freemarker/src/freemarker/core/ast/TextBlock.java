@@ -182,7 +182,7 @@ public final class TextBlock extends TemplateElement {
 			return result;
 		}
 		if (spansLeft) {
-			String printablePart = TextBlock.leftTrim(input);
+			String printablePart = leftTrim(input);
 			String openingWS = input.substring(0, input.length() - printablePart.length());
 			if (openingWS.length() >0) {
 				TextBlock tb = new TextBlock(openingWS);
@@ -197,7 +197,7 @@ public final class TextBlock extends TemplateElement {
 			return result;
 		}
 		// Remaining case is a line that has trailing WS.
-		String startingPart  = TextBlock.rightTrim(input);
+		String startingPart  = rightTrim(input);
 		String trailingWS = input.substring(startingPart.length());
 		if (startingPart.length() >0) {
 			TextBlock tb = new TextBlock(startingPart);
@@ -211,7 +211,7 @@ public final class TextBlock extends TemplateElement {
 		}
 		return result;
 	}
-
+	
 	static public List<TextBlock> breakIntoBlocks(String input, Template template, int beginColumn, int beginLine) throws ParseException {
 		int numLines = countLines(input);
 		if (numLines == 1) {
@@ -225,7 +225,7 @@ public final class TextBlock extends TemplateElement {
 
 //		If the first line spans from column 1, we don't need to break it up. Otherwise we do.
 		if (beginColumn == 1) {
-			middleLines = firstLine + middleLines;
+			middleLines = input.substring(0, firstLine.length() + middleLines.length());
 		}
 		else {
 			String firstPart = rightTrim(firstLine);
@@ -246,8 +246,12 @@ public final class TextBlock extends TemplateElement {
 //		If the first line spans from the left, we prepend that.
 //		If the last line spans to the end, we're cool. Also, if the last line has no opening whitespace, we are finished.			 
 		boolean mergeLastLine = lastLine.endsWith("\n") || lastLine.endsWith("\r") || !isWhitespace(lastLine.charAt(0));
-		if (mergeLastLine) { 
-			middleLines+=lastLine;
+		if (mergeLastLine) {
+			if (beginColumn ==1) {
+				middleLines = input;
+			} else {
+				middleLines = input.substring(firstLine.length());
+			}
 		}
 		if (middleLines.length() > 0) {
 			TextBlock tb = new TextBlock(middleLines);
@@ -261,7 +265,7 @@ public final class TextBlock extends TemplateElement {
 			result.add(tb);
 		}
 		if (!mergeLastLine) {
-			String printablePart = TextBlock.leftTrim(lastLine);
+			String printablePart = leftTrim(lastLine);
 			String openingWS= lastLine.substring(0, lastLine.length() - printablePart.length());
 			if (openingWS.length() >0) {
 				TextBlock tb = new TextBlock(openingWS);
