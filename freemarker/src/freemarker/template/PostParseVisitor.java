@@ -405,6 +405,13 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(NumericalOutput node) {
 		super.visit(node);
+		try {
+			node.parseFormat();
+		} catch (Exception e) {
+			String msg = e.getMessage();
+			ParsingProblem problem = new ParsingProblem(msg, node);
+			template.addParsingProblem(problem);
+		}
 		markAsProducingOutput(node);
 		checkLiteralInNumericalContext(node.expression);
 	}

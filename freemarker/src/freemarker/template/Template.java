@@ -496,7 +496,7 @@ public class Template extends TemplateCore {
     	return !parsingProblems.isEmpty();
     }
     
-    void addParsingProblem(ParsingProblem problem) {
+    public void addParsingProblem(ParsingProblem problem) {
     	parsingProblems.add(problem);
     }
     

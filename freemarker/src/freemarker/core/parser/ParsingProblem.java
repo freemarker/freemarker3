@@ -62,6 +62,8 @@ public class ParsingProblem extends TemplateLocation {
 	
 	private String description;
 	
+	
+	
 	public ParsingProblem(String description) {
 		this.description = description;
 	}

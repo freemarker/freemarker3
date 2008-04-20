@@ -501,12 +501,10 @@ public class DefaultTreeDumper extends ASTVisitor {
 	public void visit(NumericalOutput node) {
 		buffer.append("#{");
 		visit(node.expression);
-		if (node.hasFormat) {
+		String formatString = node.getFormatString();
+		if (formatString != null) {
 			buffer.append(" ; ");
-			buffer.append("m");
-			buffer.append(node.minFracDigits);
-			buffer.append("M");
-			buffer.append(node.maxFracDigits);
+			buffer.append(formatString);
 		}
 		buffer.append("}");
 	}
