@@ -337,7 +337,7 @@ public final class TextBlock extends TemplateElement {
 	static private String leftTrim(String s) {
 		for (int i=0; i<s.length(); i++) {
 			char c = s.charAt(i);
-			if (!Character.isWhitespace(c)) {
+			if (!isWhitespace(c)) {
 				return s.substring(i);
 			}
 		}
@@ -347,7 +347,7 @@ public final class TextBlock extends TemplateElement {
 	static private String rightTrim(String s) {
 		for (int i= s.length() -1; i>=0; i--) {
 			char c = s.charAt(i);
-			if (!Character.isWhitespace(c)) {
+			if (!isWhitespace(c)) {
 				return s.substring(0, i+1);
 			}
 		}

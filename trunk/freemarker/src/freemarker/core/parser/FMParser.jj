@@ -167,8 +167,6 @@ PARSER_END(FMParser)
  * FreeMarker constructs. NO_PARSE is the simplest state.
  * We are consuming text, but ignoring FreeMarker constructs,
  * so ${x} or [#if..] are just treated as plain text.
- * There is a closing noParseTag string we are on the lookout
- * for to go back into the DEFAULT state. 
  * EXPRESSION is the state you are in
  * when the parser wants a FreeMarker expression.
  * So, for example, you enter the EXPRESSION state
@@ -202,7 +200,7 @@ TOKEN_MGR_DECLS :
 {
 
 /**
-  The noparseTag is set when we enter
+  The noparseType is set when we enter
   a block of text that the parser more or less ignores.
   These are <noparse> and <comment>. This variable
   tells us what the closing tag should be, and when
@@ -210,7 +208,7 @@ TOKEN_MGR_DECLS :
   scheme, <comment> and <noparse> tags cannot nest
   recursively, but it is not clear how important that is.
 */
-    String noparseTag;
+    private int noparseType;
 
 /**
     Keeps track of how deeply nested
@@ -223,7 +221,6 @@ TOKEN_MGR_DECLS :
  private int hashLiteralNesting;
  private int parenthesisNesting;
  private int bracketNesting;
- private boolean seenFTLHeader; // Have we already seen a header? (There can only be one.)
  boolean onlyTextOutput, 
          directiveSyntaxEstablished, 
          altDirectiveSyntax,
@@ -254,6 +251,10 @@ TOKEN_MGR_DECLS :
  	if (firstChar == '[' || firstChar=='<') {
  		String chopFirst = tokText.substring(1);
  		if (chopFirst.startsWith("#") || chopFirst.startsWith("/#")) {
+ 			if (this.onlyTextOutput) {
+ 				token.kind = PRINTABLE_CHARS;
+ 				return;
+ 			}
 	 		boolean squareBracket = firstChar == '[';
  			if (!directiveSyntaxEstablished) {
  				setAltDirectiveSyntax(squareBracket);
@@ -320,24 +321,24 @@ TOKEN_MGR_DECLS :
   			SwitchTo(NO_SPACE_EXPRESSION);
   			break;
 		case NOPARSE: 
-			noparseTag = "noparse"; 
+			noparseType = NOPARSE;
 			SwitchTo(NO_PARSE); 
 			break; 		
  		case TERSE_COMMENT: 
- 			noparseTag = "-->"; 
+ 			noparseType = TERSE_COMMENT;
  			SwitchTo(NO_PARSE); 
  			break;
  		case COMMENT: 
- 			noparseTag = "comment"; 
+ 			noparseType = COMMENT;
  			SwitchTo(NO_PARSE); 
  			break;
  		case NOPARSE_END:
- 			if (!noparseTag.equals("noparse")) {
+ 			if (noparseType != NOPARSE) {
  				token.kind = PRINTABLE_CHARS;
  				break;
  			} // deliberate fall-through to next case...
  		case COMMENT_END:
- 			if (token.kind == COMMENT_END && !noparseTag.equals("comment")) {
+ 			if (token.kind == COMMENT_END && noparseType != COMMENT) {
 	 			token.kind = PRINTABLE_CHARS;
  			} else {
  				char lastChar = tokText.charAt(tokText.length() -1);
@@ -353,7 +354,7 @@ TOKEN_MGR_DECLS :
  			}
  			break;
  		case TERSE_COMMENT_END:
- 			if (!noparseTag.equals("-->")) {
+ 			if (noparseType != TERSE_COMMENT) {
  				token.kind = PRINTABLE_CHARS;
  			}
  			else if (tokText.length() == 3) {
@@ -365,21 +366,6 @@ TOKEN_MGR_DECLS :
 	 		 	token.kind = PRINTABLE_CHARS;
  			}
  			break;
-/* 			
- 		case NOPARSE_END:
- 			if (!noparseTag.equals("noparse")) {
-				token.kind = PRINTABLE_CHARS; 				
- 			} else {
- 				char lastChar = tokText.charAt(tokText.length() -1);
- 				char startTagChar = lastChar == ']' ? '[' : '>';
- 				String extraChars = tokText.substring(0, tokText.lastIndexOf(startTagChar));
- 				if (extraChars.length() >0) {
- 					token.image
- 				}
- 				SwitchTo(DEFAULT);
- 			}
- 			break;
-*/ 			
   		case FUNCTION: case MACRO: case NESTED: case TRANSFORM: case STOP: case RETURN: case CALL:
   		case IF: case ELSE_IF: 
   		case VISIT: case RECURSE: 
@@ -510,9 +496,8 @@ TOKEN:
 {
     <WHITESPACE : (["\t", " ", "\r", "\n"])+>
     |
-    <PRINTABLE_CHARS : (~["$", "<", "#", "[", "{", "\n", "\r", "\t", " "])+>
-    |
-    <FALSE_ALERT : "$" | "#" | "<" | "[" | "{"> {matchedToken.kind = PRINTABLE_CHARS;} 
+    <PRINTABLE_CHARS : ("$" | "#" | "<" | "[" | "{") 
+                      | (~["$", "<", "#", "[", "{", "\n", "\r", "\t", " "])+>
     |
     <OUTPUT_ESCAPE : "${" > : EXPRESSION
     |
@@ -1516,76 +1501,8 @@ NumericalOutput NumericalOutput() :
    ]
    end=<CLOSE_BRACE>
    {
-      NumericalOutput result;
-      if (fmt != null) {
-         int minFrac = -1;  // -1 indicates that the value has not been set
-         int maxFrac = -1;
-
-         StringTokenizer st = new StringTokenizer(fmt.image, "mM", true);
-         char type = '-';
-         while (st.hasMoreTokens()) {
-             String token = st.nextToken();
-             try {
-                if (type != '-') {
-                    switch (type) {
-                    case 'm':
-                       if (minFrac != -1) throw new ParseException("invalid formatting string", fmt.beginLine, fmt.beginColumn);
-                       minFrac = Integer.parseInt(token);
-                       break;
-                    case 'M':
-                       if (maxFrac != -1) throw new ParseException("invalid formatting string", fmt.beginLine, fmt.beginColumn);
-                       maxFrac = Integer.parseInt(token);
-                       break;
-                    default:
-                       throw new ParseException();
-                    }
-                    type = '-';
-                } else if (token.equals("m")) {
-                   type = 'm';
-                } else if (token.equals("M")) {
-                   type = 'M';
-                } else {
-                   throw new ParseException();
-                }
-             }
-             catch (ParseException e) {
-                String msg = getErrorStart(fmt)
-                      + "\nInvalid format specifier "
-                      + fmt.image;
-                throw new ParseException(msg, fmt.beginLine, fmt.beginColumn);
-             }
-             catch (NumberFormatException e) {
-                String msg = getErrorStart(fmt)
-                      + "\nInvalid number in the format specifier "
-                      + fmt.image;
-                throw new ParseException(msg, fmt.beginLine, fmt.beginColumn);
-             }
-         }
-
-         if (maxFrac == -1) {
-            if (minFrac == -1) {
-               String msg = getErrorStart(fmt)
-                     + "\nInvalid format specification, at least one of m and M must be specified!";
-               throw new ParseException(msg, fmt.beginLine, fmt.beginColumn);
-            }
-            maxFrac = minFrac;
-         } else if (minFrac == -1) {
-            minFrac = 0;
-         }
-         if (minFrac > maxFrac) {
-            String msg = getErrorStart(fmt)
-                  + "\nInvalid format specification, min cannot be greater than max!";
-            throw new ParseException(msg, fmt.beginLine, fmt.beginColumn);
-         }
-         if (minFrac > 50 || maxFrac > 50) {// sanity check
-               String msg = getErrorStart(fmt)
-               + "\nCannot specify more than 50 fraction digits";
-             throw new ParseException(msg, fmt.beginLine, fmt.beginColumn);
-         }
-         result = new NumericalOutput(exp, minFrac, maxFrac);
-      } else {  // if format != null
-         result = new NumericalOutput(exp);
-      }
+   	  String formatString = fmt == null ? null : fmt.image;
+      NumericalOutput result = new NumericalOutput(exp, formatString);
       result.setLocation(template, begin, end);
       return result;
    }
@@ -1924,6 +1841,7 @@ TemplateElement Assign() :
    TemplateElement block;
    LinkedHashMap<String, Expression> assignments = new LinkedHashMap<String, Expression>();
    String assignmentType;
+   AssignmentInstruction result;
 }
 {
     (
@@ -1935,6 +1853,7 @@ TemplateElement Assign() :
       |
       start=<SET> {type = AssignmentInstruction.SET; assignmentType = "set";}
     )
+    {result = new AssignmentInstruction(type);}
     nameExp=IdentifierOrStringLiteral()
     {
        varName = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
@@ -1957,18 +1876,20 @@ TemplateElement Assign() :
        )*
        [
           id=<IN>
-          nsExp=Exp() {if (type != AssignmentInstruction.SET && type != AssignmentInstruction.NAMESPACE)
-          	throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.beginLine, id.beginColumn);}
+          nsExp=Exp() {if (type != AssignmentInstruction.SET && type != AssignmentInstruction.NAMESPACE) {
+          	   ParsingProblem problem = new ParsingProblem("Can only assign to namespace with #set or #assign.", result);
+          	   template.addParsingProblem(problem);
+            } 
+          }
        ]
        end=LooseDirectiveEnd()
        {
-           AssignmentInstruction ai = new AssignmentInstruction(type);
-           ai.setNamespaceExp(nsExp);
+           result.setNamespaceExp(nsExp);
 		   for (Map.Entry<String,Expression> entry : assignments.entrySet()) {
-           	    ai.addAssignment(entry.getKey(), entry.getValue());
+           	    result.addAssignment(entry.getKey(), entry.getValue());
            }
-           ai.setLocation(template, start, end);
-           return ai;
+           result.setLocation(template, start, end);
+           return result;
        }
     )
     |
@@ -2492,6 +2413,7 @@ SwitchBlock Switch() :
    start=<SWITCH>
    switchExp=Exp()
    <DIRECTIVE_END>
+   (<WHITESPACE>|Comment())*   
    {
       switchBlock = new SwitchBlock(switchExp);
    }
@@ -2510,7 +2432,6 @@ SwitchBlock Switch() :
         switchBlock.addCase(caseIns);
      }
    )*
-   [<WHITESPACE>]
    end=CloseDirectiveBlock("switch")
    {
       switchBlock.setLocation(template, start, end);
@@ -2526,7 +2447,6 @@ Case Case() :
     Token start;
 }
 {
-   [<WHITESPACE>]
    (
       start=<CASE>exp=Exp()<DIRECTIVE_END>
       |
@@ -2770,7 +2690,7 @@ List<TextBlock> PCData() :
 }
 {
     (
-      LOOKAHEAD(<WHITESPACE>|<PRINTABLE_CHARS>|<FALSE_ALERT>)
+      LOOKAHEAD(<WHITESPACE>|<PRINTABLE_CHARS>) 
       (
          {prevToken = t;}         
          t=<PRINTABLE_CHARS>

@@ -54,8 +54,6 @@ package freemarker.core.builtins;
 
 import java.io.StringReader;
 
-import sun.rmi.runtime.GetThreadPoolAction;
-
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Expression;
