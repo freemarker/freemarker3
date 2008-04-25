@@ -161,7 +161,7 @@ PARSER_END(FMParser)
 /**
  * The lexer portion defines 5 lexical states:
  * DEFAULT, NO_PARSE, EXPRESSION, EXPRESSION_COMMENT, 
- * NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION
+ * NO_SPACE_EXPRESSION
  * The lexer is in the DEFAULT state when it is 
  * just consuming regular text, but are scanning for
  * FreeMarker constructs. NO_PARSE is the simplest state.
@@ -178,22 +178,13 @@ PARSER_END(FMParser)
  * EXPRESSION statep but is passed through to the parser as PCDATA 
  * in the DEFAULT state. EXPRESSION_COMMENT is a lexical state
  * we are in if for comments within an FTL expression.
- * NO_SPACE_EXPRESSION and NAMED_PARAMETER_EXPRESSION
- * are slight variants on the EXPRESSION state. 
- * They basically exist as kludges to deal with nasty
- * little corners in FTL syntax. In NO_SPACE_EXPRESSION,
+ * NO_SPACE_EXPRESSION is a slight variant on the EXPRESSION state. 
+ * It basically exists as a kludge to deal with a nasty
+ * little corner in FTL syntax. In NO_SPACE_EXPRESSION,
  * spaces are not ignored, so a whitespace token effectively ends
  * the parsing of an expression. THus, for example, [@x (y+1)/]
  * is parsed as the macro x with the single argument (y+1) rather than
  * the macro x(y+1) with no args.
- * NAMED_PARAMETER_EXPRESSION is a special state for parsing
- * macro/function/method invocations with name=value pairs. It exists
- * basically as a kludge so that the ! for ?if_exists behaves in a 
- * not too surprising manner. [@myMacro x=y! z=t/] does not parse
- * the first name/value key as x=y!z but rather as x=y! and then the 
- * next name/value pair is z=t. This is because the ![WS] is recognized
- * as a special token that terminates the expression. All other whitespace
- * is ignored in the NAMED_PARAMETER_EXPRESSION lexical state. :-)
  */
 
 TOKEN_MGR_DECLS :
@@ -504,7 +495,7 @@ TOKEN:
     <NUMERICAL_ESCAPE : "#{" > : EXPRESSION
 }
 
-<EXPRESSION, NAMED_PARAMETER_EXPRESSION> SKIP :
+<EXPRESSION> SKIP :
 {
     < ( " " | "\t" | "\n" | "\r" )+ >
     |
@@ -513,20 +504,14 @@ TOKEN:
 
 <EXPRESSION_COMMENT> SKIP:
 {
-    < (~["-", ">", "]"])+ >
+    < ~[] >  
     |
-    < ">">
+    < "-->"> : EXPRESSION
     |
-    < "]">
-    |
-    < "-">
-    |
-    < "-->">  {if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION); else SwitchTo(EXPRESSION);} 
-    |
-    < "--]" > {if (inInvocation) SwitchTo(NAMED_PARAMETER_EXPRESSION); else SwitchTo(EXPRESSION);}
+    < "--]" > : EXPRESSION
 }
 
-<EXPRESSION, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
+<EXPRESSION, NO_SPACE_EXPRESSION> TOKEN :
 {
   <STRING_LITERAL :
       ("\"" 
@@ -668,12 +653,7 @@ TOKEN:
     <TERMINATING_WHITESPACE :  (["\n", "\r", "\t", " "])+> : EXPRESSION
 }
 
-<NAMED_PARAMETER_EXPRESSION> TOKEN :
-{
-	<TERMINATING_EXCLAM : "!" (["\n", "\r", "\t", " "])+> : EXPRESSION
-}
-
-<EXPRESSION, NO_SPACE_EXPRESSION, NAMED_PARAMETER_EXPRESSION> TOKEN :
+<EXPRESSION, NO_SPACE_EXPRESSION> TOKEN :
 {
 	<UNEXPECTED : ~[]>
 }
@@ -750,41 +730,6 @@ Token KeepGoingUntil(int type) {
 	return t;
 }
 
-Expression DefaultToExpression() :
-{
-	Token t;
-	Expression exp, prev, next=null;
-}
-{
-	exp=PrimaryExpression()
-	(
-	  LOOKAHEAD(<EXCLAM>PrimaryExpression())
-	  (
-	     <EXCLAM>
-	     next=PrimaryExpression(){
-	     	prev = exp;
-	     	exp=new DefaultToExpression(exp, next);
-	     	exp.setLocation(template, prev, next);
-	     }
-	  )
-	)*
-	[
-	    LOOKAHEAD(<EXCLAM>|<TERMINATING_EXCLAM>)
-	    (
-	       t=<EXCLAM>
-	       |
-	       t=<TERMINATING_EXCLAM>
-	    )
-	    {
-	    	prev =exp;
-	    	exp = new DefaultToExpression(prev, null);
-	    	exp.setLocation(template, prev, t);
-	    }
-	]
-	{
-		return exp;
-	}
-}
 
 /**
  * Lowest level expression, a literal, a variable,
@@ -821,8 +766,7 @@ Expression PrimaryExpression() :
                 |<OPEN_PAREN>
                 |<BUILT_IN>
                 |<EXISTS>
-                |<EXCLAM>
-                |<TERMINATING_EXCLAM>)
+                |<EXCLAM>)
       exp=AddSubExpression(exp)
   )*
   {
@@ -877,7 +821,7 @@ Expression NotExpression() :
    (
       t=<EXCLAM> {nots.add(t);}
    )+
-   exp=DefaultToExpression()
+   exp=PrimaryExpression() 
    {
       for (int i=0; i<nots.size(); i++) {
          result = new NotExpression(exp);
@@ -901,7 +845,7 @@ Expression UnaryPlusMinusExpression() :
       |
       t=<MINUS> {isMinus = true;}
    )
-   exp=DefaultToExpression()
+   exp=PrimaryExpression() 
    {
       result = new UnaryPlusMinusExpression(exp, isMinus);  
       result.setLocation(template, t, exp);
@@ -1243,15 +1187,11 @@ Expression DefaultTo(Expression exp) :
 {
    
    (
-      t=<TERMINATING_EXCLAM>
-      |
-      (
        t=<EXCLAM>
        [
-         LOOKAHEAD(PrimaryExpression())
+         LOOKAHEAD(PrimaryExpression(), {getToken(1).kind != ID || getToken(2).kind != EQUALS})
           rhs=PrimaryExpression()
        ]
-      )
    )
    {
       DefaultToExpression result = new DefaultToExpression(exp, rhs);
@@ -2143,10 +2083,6 @@ NamedArgsList NamedArgsList() :
 {
 	firstParam=<ID>
 	<EQUALS> 
-    {
-    	token_source.SwitchTo(token_source.NAMED_PARAMETER_EXPRESSION);
-    	token_source.inInvocation = true;
-    }
 	arg=Exp()  
 	{
 		result.addNamedArg(firstParam.image, arg);
@@ -2155,7 +2091,6 @@ NamedArgsList NamedArgsList() :
 	   [<COMMA>]
 	   id=<ID>
 	   <EQUALS>
-	   {token_source.SwitchTo(token_source.NAMED_PARAMETER_EXPRESSION);}
 	   arg=Exp()
 	   {result.addNamedArg(id.image, arg);}
 	)*
