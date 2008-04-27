@@ -16249,7 +16249,7 @@ etc.</programlisting>
     [#nested <emphasis>x, x/2, x==count</emphasis>]
   [/#list]
 [/#macro]
-[@repeat count=4 ; <emphasis>c halfc last</emphasis>]
+[@repeat count=4 ; <emphasis>c, halfc, last</emphasis>]
   ${<emphasis>c</emphasis>}. ${<emphasis>halfc</emphasis>}[#if <emphasis>last</emphasis>] Last![/#if]
 [/@repeat]</programlisting>
 
