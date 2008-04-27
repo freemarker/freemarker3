@@ -686,26 +686,29 @@
           </sect3>
 
           <sect3>
-            <title>The include directive</title>
+            <title>The embed directive</title>
 
-            <para>With the <literal>include</literal> directive you can insert
-            the content of another file into the template.</para>
+            <para>With the <literal>embed</literal> directive you can insert
+            the <phrase role="markedOutput">output</phrase> of another
+            template.</para>
 
             <para>Suppose you have to show the same copyright notice on
             several pages. You can create a file that contains the copyright
             notice only, and insert that file everywhere where you need that
             copyright notice. Say, you store this copyright notice in
-            <literal>copyright_footer.html</literal>:</para>
+            <literal>copyright_footer.ftl</literal> (where
+            <literal>ftl</literal> is the usual but otherwise not mandatory
+            extension for FreeMarker Templates):</para>
 
             <programlisting role="template">&lt;hr&gt;
 &lt;i&gt;
-Copyright (c) 2000 &lt;a href="http://www.acmee.com"&gt;Acmee Inc&lt;/a&gt;,
+Copyright (c) ${copyrightYear} Acmee Inc,
 &lt;br&gt;
 All Rights Reserved.
 &lt;/i&gt;</programlisting>
 
-            <para>Whenever you need that file you simply insert it with the
-            <literal>include</literal> directive:</para>
+            <para>Whenever you need that template you simply insert it with
+            the <literal>embed</literal> directive:</para>
 
             <programlisting role="template">&lt;html&gt;
 &lt;head&gt;
@@ -714,11 +717,13 @@ All Rights Reserved.
 &lt;body&gt;
   &lt;h1&gt;Test page&lt;/h1&gt;
   &lt;p&gt;Blah blah...
-<emphasis>[#include "/copyright_footer.html"]</emphasis>
+<emphasis>  [#embed "/copyright_footer.ftl"]</emphasis>
 &lt;/body&gt;
 &lt;/html&gt;</programlisting>
 
-            <para>and the output will be:</para>
+            <para>and the output will be (assuming
+            <literal>copyrightYear</literal> is 2000 in the
+            data-model):</para>
 
             <programlisting role="output">&lt;html&gt;
 &lt;head&gt;
@@ -737,8 +742,9 @@ All Rights Reserved.
 &lt;/html&gt;</programlisting>
 
             <para>If you change the <literal>copyright_footer.html</literal>,
-            then the visitor will see the new copyright notice on all
-            pages.</para>
+            then the visitor will see the new copyright notice on all pages
+            where you have used <literal>[#embed
+            "/copyright_footer.html"]</literal>.</para>
           </sect3>
         </sect2>
 
@@ -746,9 +752,9 @@ All Rights Reserved.
           <title>Using directives together</title>
 
           <para>You can use directives as many times on a page as you want,
-          and you can freely nest directives into each other. For example this
-          will list the animals and print the name of large animals with
-          bigger font:</para>
+          and you can nest directives into each other similarly as you can
+          nest HTML elements into each other. For example this will list the
+          animals and print the name of large animals with bigger font:</para>
 
           <programlisting role="template">&lt;p&gt;We have these animals:
 &lt;table border=1&gt;
@@ -1543,10 +1549,10 @@ The average of the price of a python and an elephant is:
         linkend="dgui_template_exp_stringop_interpolation">later</link>)
         only.</para>
 
-        <para>An <phrase role="markedFTLTag">FTL tag</phrase> can't be
-        inside another <phrase role="markedFTLTag">FTL tag</phrase> nor inside
-        an <phrase role="markedInterpolation">interpolation</phrase>. For
-        example this is <emphasis>WRONG</emphasis>: <literal>[#if [#include
+        <para>An <phrase role="markedFTLTag">FTL tag</phrase> can't be inside
+        another <phrase role="markedFTLTag">FTL tag</phrase> nor inside an
+        <phrase role="markedInterpolation">interpolation</phrase>. For example
+        this is <emphasis>WRONG</emphasis>: <literal>[#if [#embed
         'foo']='bar']...[/#if]</literal></para>
 
         <para><phrase role="markedComment">Comments</phrase> can be placed
@@ -1625,9 +1631,9 @@ The average of the price of a python and an elephant is:
         content (content between the start-tag and the end-tag), you must use
         the start-tag with no end-tag. For example you write <literal>[#if
         <replaceable>something</replaceable>]<replaceable>...</replaceable>[/#if]</literal>,
-        but just <literal>[#include
+        but just <literal>[#embed
         <replaceable>something</replaceable>]</literal> as FreeMarker knows
-        that the <markup>include</markup> directive can't have nested
+        that the <markup>embed</markup> directive can't have nested
         content.</para>
 
         <para>The format of the
@@ -2511,7 +2517,7 @@ ${user + user + user + user}</programlisting>
               linkend="dgui_template_overallstructure"><phrase
               role="markedText">text</phrase> sections</link> (e.g.,
               <literal>&lt;h1&gt;Hello ${name}!&lt;/h1&gt;</literal>) and in
-              string literals (e.g., <literal>[#include
+              string literals (e.g., <literal>[#embed
               "/footer/${company}.html"]</literal>). A typical bad usage is
               <literal>[#if ${isBig}]Wow![/#if]</literal>, which is
               syntactically <emphasis>WRONG</emphasis>. You should simply
@@ -3318,21 +3324,22 @@ No mouse.</programlisting>
             <literal>hits!0</literal> or <literal>colors!["red", "green",
             "blue"]</literal>. There is no restriction regarding the
             complexity of the expression that specifies the default value, for
-            example you can write: <literal>weight ! item.weight * itemCount +
-            10</literal>. (Note that the spaces around the
+            example you can write: <literal>weight!(item.weight * itemCount +
+            10)</literal>. (Note that the spaces around the
             <literal>!</literal> are used only for visual clarity; they are
             optional.)</para>
 
             <warning>
-              <para>The precedence of <literal>!</literal> (when it's used as
-              default value operator) is very low. This means that, for
-              example, <literal>${x!1 + y}</literal> means <literal>${x!(1 +
-              y)}</literal>, not <literal>${(x!1) + y}</literal>. So, like in
-              this last example, you have to use parentheses if something
-              follows the default expression that shouldn't belong there. Or
-              if you want it to belong there, then you should use spaces
-              around the <literal>!</literal> to make the intent visually more
-              clear: <literal>${weight ! 1 + y}</literal>.</para>
+              <para>Sadly, in FreeMarker 2.3.x there was a programming mistake
+              that made the precedence of <literal>!</literal> (when it's used
+              as default value operator) very low at its right side. This
+              meant that, for example, <literal>${x!1 + y}</literal> was
+              misinterpreted by FreeMarker as <literal>${x!(1 + y)}</literal>,
+              instead of the correct <literal>${(x!1) + y}</literal> meaning.
+              As starting from FreeMarker 2.4 this mistake is fixed, if you
+              have utilized this bug, now you must put the composite
+              expression after the <literal>!</literal> into parentheses, like
+              in <literal>${x!(1 + y)}</literal>.</para>
             </warning>
 
             <para>If the default value is omitted, then it will be empty
@@ -3573,20 +3580,22 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
 
               <tbody>
                 <row>
-                  <entry>postfix operators</entry>
+                  <entry>highest precedence operators</entry>
 
                   <entry><literal>[<replaceable>subvarName</replaceable>]
                   [<replaceable>subStringRange</replaceable>] . ?
                   (<replaceable>methodParams</replaceable>)
                   <replaceable>expr</replaceable>!
-                  <replaceable>expr</replaceable>??</literal></entry>
+                  <literal><replaceable>expr</replaceable>!<replaceable>default
+                  </replaceable></literal><replaceable>expr</replaceable>??</literal></entry>
                 </row>
 
                 <row>
-                  <entry>unary operators</entry>
+                  <entry>unary prefix operators</entry>
 
                   <entry><literal>+<replaceable>expr</replaceable>
-                  -<replaceable>expr</replaceable> !expr</literal></entry>
+                  -<replaceable>expr</replaceable>
+                  !<replaceable>expr</replaceable></literal></entry>
                 </row>
 
                 <row>
@@ -3633,12 +3642,6 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
 
                   <entry><literal>..</literal></entry>
                 </row>
-
-                <row>
-                  <entry>default value operator</entry>
-
-                  <entry><literal><replaceable>expr</replaceable>!<replaceable>default</replaceable></literal></entry>
-                </row>
               </tbody>
             </tgroup>
           </informaltable>
@@ -3673,7 +3676,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         role="markedText">text</phrase> sections</link> (e.g.,
         <literal>&lt;h1&gt;Hello ${name}!&lt;/h1&gt;</literal>) and <link
         linkend="dgui_template_exp_stringop_interpolation">in string literal
-        expressions</link> (e.g., <literal>[#include
+        expressions</link> (e.g., <literal>[#embed
         "/footer/${company}.html"]</literal>).</para>
 
         <important>
@@ -4390,8 +4393,9 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <listitem>
             <para><emphasis role="term">''plain'' variables</emphasis>: They
             are accessible from everywhere in the template, or from the
-            templates inserted with <literal>include</literal> directive. You
-            can create and replace these variables with the <link
+            templates inserted with <literal>include</literal> directive (but
+            not with the <literal>embed</literal> directive). You can create
+            and replace these variables with the <link
             linkend="ref.directive.set"><literal>set</literal></link> or <link
             linkend="ref.directive.macro"><literal>macro</literal>
             directives</link>.</para>
@@ -4566,24 +4570,28 @@ ${.globals.user} [#-- prints: Big Joe --]</programlisting>
           <para>Store the above in the file <literal>lib/my_test.ftl</literal>
           (in the directory where you store the templates). Assume you want to
           use this in <literal>aWebPage.ftl</literal>. If you use
-          <literal>[#include "/lib/my_test.ftl"]</literal> in the
+          <literal>[#embed "/lib/my_test.ftl"]</literal> in the
+          <literal>aWebPage.ftl</literal>, then nothing will happen, since the
+          macros and variables of an embedded template are not exposed for the
+          embedding template. (If you use <literal>[#include
+          "/lib/my_test.ftl"]</literal> in the
           <literal>aWebPage.ftl</literal>, then it will create the two
-          variables in the main namespace, and it is not good now, since you
+          variables in the main namespace, and it is not very good, since you
           want them to be in a namespace that is used exclusively by the ''My
-          Test Library''. Instead of <literal>include</literal> you have to
-          use <link linkend="ref.directive.import"><literal>import</literal>
-          directive</link>. This directive is, at the first glance, similar to
-          <literal>include</literal>, but it will create an empty namespace
-          for <literal>lib/my_test.ftl</literal> and will execute that there.
+          Test Library''.) You have to use the <link
+          linkend="ref.directive.import"><literal>import</literal>
+          directive</link> here. This directive is almost like
+          <literal>embed</literal>: it will create an empty namespace for
+          <literal>lib/my_test.ftl</literal> and will execute that there, so
           <literal>lib/my_test.ftl</literal> will find itself in an clean new
           world, where only the variables of data-model are present (since
           they are visible from everywhere), and will create the two variables
-          in this new world. That's fine for now, but you want to access the
-          two variables from <literal>aWebPage.ftl</literal>, and that uses
-          the main namespace, so it can't see the variables of the other
-          namespace. The solution is that the <literal>import</literal>
-          directive not only creates the new namespace, but a new hash
-          variable in the namespace used by the caller of
+          (<literal>copyright</literal> and <literal>mail</literal>) in this
+          new world. And that's fine, but you want to access the two variables
+          from <literal>aWebPage.ftl</literal>, and that uses the main
+          namespace, so it can't see the variables of the other namespace. To
+          solve this, the <literal>import</literal> directive creates a new
+          hash variable in the namespace used by the caller of
           <literal>import</literal> (the main namespace in this case), that
           will act as a gate into the newly created namespace. So this is how
           <literal>aWebPage.ftl</literal> will look like:</para>
@@ -4592,17 +4600,16 @@ ${.globals.user} [#-- prints: Big Joe --]</programlisting>
 [@<emphasis>my</emphasis>.copyright date="1999-2002" /]
 ${<emphasis>my</emphasis>.mail}</programlisting>
 
-          <para>Note how does it access the variables in the namespace created
-          for <literal>/lib/my_test.ftl</literal> using the newly created
-          namespace accessing hash, <literal>my</literal>. This will
-          print:</para>
+          <para>Note how it accesses the variables in the namespace created
+          for <literal>/lib/my_test.ftl</literal> using the
+          <literal>my</literal> hash. This will print:</para>
 
           <programlisting role="output">  &lt;p&gt;Copyright (C) 1999-2002 Julia Smith. All rights reserved.&lt;/p&gt;
 jsmith@acme.com</programlisting>
 
           <para>If you would have a variable called <literal>mail</literal> or
           <literal>copyright</literal> in the main namespace, that would not
-          cause any confusion. This is because the two templates use separated
+          cause any confusion, since the two templates use separated
           namespaces. For example, modify the <literal>copyright</literal>
           macro in <literal>lib/my_test.ftl</literal> to this:</para>
 
@@ -4627,10 +4634,11 @@ ${mail}</programlisting>
 jsmith@acme.com
 fred@acme.com</programlisting>
 
-          <para>This is because when you have called the
-          <literal>copyright</literal> macro, FreeMarker temporarily switched
-          to the namespace that was created by the <literal>import</literal>
-          directive for <literal>/lib/my_test.ftl</literal>. Thus, the
+          <para>This is like that because when you have called the
+          <literal>copyright</literal> macro, FreeMarker has temporarily
+          switch to the namespace that was created by the
+          <literal>import</literal> directive for
+          <literal>/lib/my_test.ftl</literal>. Thus, the
           <literal>copyright</literal> macro always sees the
           <literal>mail</literal> variable that exists there, and not the
           other <literal>mail</literal> that exists in the main
@@ -6012,8 +6020,7 @@ public class UpperDirective implements TemplateDirectiveModel {
 
           <para>It is also possible to put the directive into an FTL library
           (collection of macros and like in a template, that you
-          <literal>include</literal> or <literal>import</literal> in other
-          templates) using the <link
+          <literal>import</literal> into other templates) using the <link
           linkend="ref_builtin_new"><literal>new</literal>
           built-in</link>:</para>
 
@@ -7488,12 +7495,7 @@ c</programlisting>
           charset. This setting takes effect only when FreeMarker loads a
           template (parsed or unparsed) with the
           <literal>getTemplate</literal> method of
-          <literal>Configuration</literal>. Note that the <link
-          linkend="ref.directive.include"><literal>include</literal>
-          directive</link> uses this method internally, so the value of the
-          <literal>encoding</literal> setting is significant for an already
-          loaded template if the template contains <literal>include</literal>
-          directive call.</para>
+          <literal>Configuration</literal>.</para>
 
           <para>The getter and setter method of the
           <literal>encoding</literal> setting is special in the first
@@ -8988,8 +8990,9 @@ script.eval();</emphasis></programlisting>
           or <literal>java.io.Reader</literal> to the script engine.
           Identification (using URLs or whatever other resource identifier) is
           not addressed by the specification, so there's no way to refer back
-          to this script from another one using [#include] or
-          [#import].</para>
+          to this script from another one using the <literal>embed</literal>,
+          <literal>include</literal> or <literal>import</literal> FTL
+          directives.</para>
 
           <para>That said, if the only language you want to use is FreeMarker,
           then you'd better use it directly and not burden your software
@@ -10330,11 +10333,11 @@ Test Book</programlisting>
           <link linkend="dgui_misc_namespace">FTL namespace</link>. This means
           in practice that the prefixes you have registered in the main page
           template will be visible in all <literal>[#include ...]</literal>-d
-          templates, but not in <literal>[#imported ...]</literal>-d templates
-          (often referred as FTL libraries). Or from another point of view, an
-          FTL library can register XML namespace prefixes for it's own use,
-          without interfering with the prefix registrations of the main
-          template and other libraries.</para>
+          templates, but not in <literal>[#embed ...]</literal>-ed
+          and<literal> [#imported ...]</literal>-ed templates. Or from another
+          point of view, an FTL library can register XML namespace prefixes
+          for it's own use, without interfering with the prefix registrations
+          of the main template and other libraries.</para>
 
           <para>Note that, if an input document is dominated by a given XML
           namespace, you can set that as the default namespace for
@@ -13899,25 +13902,22 @@ Sorted by name.last:
           </indexterm>
 
           <para>This built-in interprets a string as a FTL template, and
-          returns a <literal>TemplateTransformModel</literal> that - when
-          applied to any block - executes the template just as if it was
-          included at that point. Example:</para>
+          returns an user-defined directive that executes the template just as
+          if it was <link linkend="ref.directive.include">included</link> at
+          that point. Example:</para>
 
-          <programlisting role="template">[#set x=["a", "b", "c"]]
-[#set templateSource = "[#list x as y&gt;${y}[/#list]"]
+          <programlisting role="template">[#set letters=["a", "b", "c"]]
+[#set templateSource = "[#list letters as i&gt;${i}[/#list]"]
 [#set inlineTemplate = templateSource?interpret]
-[@inlineTemplate]def[/@inlineTemplate]</programlisting>
+[@inlineTemplate /]</programlisting>
 
           <para>The output:</para>
 
-          <programlisting role="output">abcdef</programlisting>
+          <programlisting role="output">abc</programlisting>
 
           <para>As you can see, <literal>inlineTemplate</literal> is a
-          <literal>TemplateTransformModel</literal> that, when executed, runs
-          the template that was generated on-the-fly using the
-          <literal>interpret</literal>. Further, the transform will append
-          whatever its body is (in our case "def") to the output of the inline
-          template.</para>
+          directive that, when executed, runs the template that was generated
+          on-the-fly using the <literal>interpret</literal>.</para>
 
           <para>You can also apply this built-in to a two-element sequence. In
           this case the first element of the sequence is the template source,
@@ -14260,6 +14260,10 @@ Sorted by name.last:
 
         <listitem>
           <para><link linkend="ref.directive.elseif">elseif</link></para>
+        </listitem>
+
+        <listitem>
+          <para><link linkend="ref.directive.embed">embed</link></para>
         </listitem>
 
         <listitem>
@@ -14756,28 +14760,29 @@ Sorted by name.last:
         </sect2>
       </sect1>
 
-      <sect1 id="ref_directive_include">
-        <title>include</title>
+      <sect1 id="ref_directive_embed">
+        <title>embed</title>
 
-        <anchor id="ref.directive.include" />
+        <anchor id="ref.directive.embed" />
 
         <indexterm>
-          <primary>include directive</primary>
+          <primary>embed directive</primary>
         </indexterm>
 
         <sect2>
           <title>Synopsis</title>
 
-          <programlisting role="metaTemplate"><literal>[#include <replaceable>filename</replaceable>]</literal>
+          <programlisting role="metaTemplate"><literal>[#embed <replaceable>path</replaceable>]</literal>
 or
-<literal>[#include <replaceable>filename</replaceable> <replaceable>options</replaceable>]</literal></programlisting>
+<literal>[#embed <replaceable>path</replaceable> <replaceable>options</replaceable>]</literal></programlisting>
 
           <para>Where:</para>
 
           <itemizedlist spacing="compact">
             <listitem>
-              <para><literal><replaceable>filename</replaceable></literal>:
-              Expression evaluates to string</para>
+              <para><literal><replaceable>path</replaceable></literal>: The
+              path of the file to embed; must be an expression that evaluates
+              to a string</para>
             </listitem>
 
             <listitem>
@@ -14805,37 +14810,31 @@ or
         <sect2>
           <title>Description</title>
 
-          <para>You can use it to insert the contents of another file
-          (specified by the
-          <literal><replaceable>filename</replaceable></literal> parameter)
-          into your template. The output from the included file is inserted at
-          the point where the <literal>include</literal> tag occurs. The
-          <literal>include</literal> directive is not replaced by the content
-          of the included file, nor does it really insert anything into the
-          template itself. It just processes the included file. The inclusion
+          <para>You can use it to insert the output of another template file
+          (specified by the <literal><replaceable>path</replaceable></literal>
+          parameter) into your template. The output from the embedded file is
+          inserted at the point where the <literal>include</literal> tag
+          occurs. The <literal>embed</literal> directive is not replaced by
+          the content of the embedded file, nor does it really insert anything
+          into the template itself. It just processes the other file. This
           happens each times when FreeMarker reaches the
-          <literal>include</literal> directive in the course of template
-          processing. So, for example if the <literal>include</literal> is
+          <literal>embed</literal> directive in the course of template
+          processing. So, for example if the <literal>embed</literal> is
           inside a <literal>list</literal>, you can specify different
           filenames in each cycle.</para>
 
-          <para>The <literal><replaceable>filename</replaceable></literal> is
-          the path of the file to include, relative to the including template.
-          However, if you start the path with <literal>/</literal>, then the
-          path is an absolute path. Absolute path means here that it is
-          relative to a base (often referred as the ''root directory of the
-          templates'') that the programmer defines when he configures
-          FreeMarker.</para>
+          <para>The <literal><replaceable>path</replaceable></literal>
+          parameter can be a relative path like <literal>"foo.ftl"</literal>
+          and <literal>"../foo.ftl"</literal>, or an absolute like
+          <literal>"/foo.ftl"</literal>. Relative paths are relative to the
+          directory of the template that uses the <literal>import</literal>
+          directive. Absolute paths are relative to a base (often referred as
+          the ''root directory of the templates'') that the programmer defines
+          when he configures FreeMarker.</para>
 
-          <note>
-            <para>This is different than the way it worked prior FreeMarker
-            2.1, where the path was always absolute. To preserve the old
-            behavior, enable the classic compatible mode in the
-            <literal>Configuration</literal> object.</para>
-          </note>
-
-          <para>Also, always use slashes to separate path components. If you
-          are loading templates from your local file system and it uses
+          <para>Always use <literal>/</literal> (slash) to separate path
+          components, never <literal>\</literal> (backslash). If you are
+          loading templates from your local file system and it uses
           backslashes (like under. Windows), FreeMarker will convert them
           automatically.</para>
 
@@ -14848,13 +14847,13 @@ All rights reserved.</programlisting>
 
           <para>Then this:</para>
 
-          <programlisting role="template">[#set me = "Juila Smith"]
-&lt;h1&gt;Some test&lt;/h1&gt;
+          <programlisting role="template">&lt;h1&gt;Some test&lt;/h1&gt;
 &lt;p&gt;Yeah.
 &lt;hr&gt;
-<emphasis>[#include "/common/copyright.ftl"]</emphasis></programlisting>
+<emphasis>[#embed "/common/copyright.ftl"]</emphasis></programlisting>
 
-          <para>will output this:</para>
+          <para>Assuming the <literal>me</literal> variable is in the
+          data-mode, will output this:</para>
 
           <programlisting role="output">&lt;h1&gt;Some test&lt;/h1&gt;
 &lt;p&gt;Yeah.
@@ -14867,14 +14866,14 @@ All rights reserved.</emphasis></programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>parse: If it is true, then the included file will be
-              parsed as FTL, otherwise the whole file will be considered as
-              plain text. If you omit this option, then it defaults to
-              true.</para>
+              <para>parse: If it is true, then the embeded file will be parsed
+              as FTL, otherwise the whole file will be considered as plain
+              text. If you omit this option, then it defaults to
+              <literal>true</literal>.</para>
             </listitem>
 
             <listitem>
-              <para>encoding: The included file inherits the encoding (in
+              <para>encoding: The embedded file inherits the encoding (in
               practice: the charset) of the including template, unless you
               specify an encoding with this option. <phrase
               role="forProgrammers">Encoding names are the same as the ones
@@ -14887,14 +14886,9 @@ All rights reserved.</emphasis></programlisting>
 
           <para>Example:</para>
 
-          <programlisting role="template">[#include "/common/navbar.html" parse=false encoding="Shift_JIS"]</programlisting>
+          <programlisting role="template">[#embed "/common/navbar.html" parse=false encoding="Shift_JIS"]</programlisting>
 
-          <para><phrase role="forProgrammers">Note, that it is possible to
-          automatically do the commonly used inclusions for all templates,
-          with the "auto includes" setting of
-          <literal>Configuration</literal>.</phrase></para>
-
-          <sect3 id="ref_directive_include_acquisition">
+          <sect3 id="ref_directive_embed_acquisition">
             <title>Using acquisition</title>
 
             <indexterm>
@@ -14907,7 +14901,7 @@ All rights reserved.</emphasis></programlisting>
             <literal>/foo/bar/template.ftl</literal> has the following
             line:</para>
 
-            <programlisting role="template">[#include "*/footer.ftl"]</programlisting>
+            <programlisting role="template">[#embed "*/footer.ftl"]</programlisting>
 
             <para>then the engine will look for the template in following
             locations, in this order:</para>
@@ -14928,14 +14922,14 @@ All rights reserved.</emphasis></programlisting>
 
             <para>This mechanism is called <emphasis
             role="term">acquisition</emphasis> and allows the designers to
-            place commonly included files in a parent directory, and redefine
+            place commonly embedded files in a parent directory, and redefine
             them on a per-subdirectory basis as needed. We say that the
-            including template acquires the template to include from the first
+            including template acquires the template to embed from the first
             parent directory that has it. Note that you can specify not only a
             template name to the right of the asterisk, but a subpath as well.
             I.e., if the previous template instead read:</para>
 
-            <programlisting role="template">[#include "*/commons/footer.ftl"]</programlisting>
+            <programlisting role="template">[#embed "*/commons/footer.ftl"]</programlisting>
 
             <para>then the engine would look for the template in following
             locations, in this order:</para>
@@ -14957,7 +14951,7 @@ All rights reserved.</emphasis></programlisting>
             <para>Finally, the asterisk needn't be the first element of the
             path:</para>
 
-            <programlisting role="template">[#include "commons/*/footer.ftl"]</programlisting>
+            <programlisting role="template">[#embed "commons/*/footer.ftl"]</programlisting>
 
             <para>would cause the engine to look for the template in following
             locations, in this order:</para>
@@ -14985,7 +14979,7 @@ All rights reserved.</emphasis></programlisting>
             being found.</para>
           </sect3>
 
-          <sect3 id="ref_directive_include_localized">
+          <sect3 id="ref_directive_embed_localized">
             <title>Localized lookup</title>
 
             <indexterm>
@@ -15010,12 +15004,12 @@ All rights reserved.</emphasis></programlisting>
             requests the template with locale matching the language preference
             of the browser that requested the web page.</para>
 
-            <para>When a template includes another template, it attempts to
-            load a template with the same locale. Suppose your template was
-            loaded with locale <literal>en_US</literal>, which means U.S.
-            English. When you include another template:</para>
+            <para>When a template embeds another template, it attempts to load
+            a template with the same locale. Suppose your template was loaded
+            with locale <literal>en_US</literal>, which means U.S. English.
+            When you embed another template:</para>
 
-            <programlisting role="template">&lt;include "footer.ftl"&gt;</programlisting>
+            <programlisting role="template">&lt;#embed "footer.ftl"&gt;</programlisting>
 
             <para>the engine will in fact look for several templates, in this
             order:</para>
@@ -15042,10 +15036,10 @@ All rights reserved.</emphasis></programlisting>
             <para>When you use both acquisition and localized template lookup,
             the template with more specific locale in a parent directory takes
             precedence over template with less specific locale in a child
-            directory. Suppose you use the following include from
+            directory. Suppose you use the following embedding from
             <literal>/foo/bar/template.ftl</literal>:</para>
 
-            <programlisting role="template">[#include "*/footer.ftl"]</programlisting>
+            <programlisting role="template">[#embed "*/footer.ftl"]</programlisting>
 
             <para>the engine will look for these templates, in this
             order:</para>
@@ -15125,6 +15119,9 @@ All rights reserved.</emphasis></programlisting>
         <sect2>
           <title>Description</title>
 
+          <para>If you are new to namespaces, you should read: <xref
+          linkend="dgui_misc_namespace" /></para>
+
           <para>Imports a library. That is, it creates a new empty namespace,
           and then executes the template given with
           <literal><replaceable>path</replaceable></literal> parameter in that
@@ -15155,13 +15152,133 @@ All rights reserved.</emphasis></programlisting>
 
 [@my.copyright date="1999-2002"]</programlisting>
 
+          <para>The <literal><replaceable>path</replaceable></literal>
+          parameter can be a relative path like <literal>"foo.ftl"</literal>
+          and <literal>"../foo.ftl"</literal>, or an absolute like
+          <literal>"/foo.ftl"</literal>. Relative paths are relative to the
+          directory of the template that uses the <literal>import</literal>
+          directive. Absolute paths are relative to a base (often referred as
+          the ''root directory of the templates'') that the programmer defines
+          when he configures FreeMarker.</para>
+
+          <para>Always use <literal>/</literal> (slash) to separate path
+          components, never <literal>\</literal> (backslash). If you are
+          loading templates from your local file system and it uses
+          backslashes (like under. Windows), FreeMarker will convert them
+          automatically.</para>
+
+          <para>Like with the <literal>embed</literal> directive, <link
+          linkend="ref_directive_embed_acquisition">acquisition</link> and
+          <link linkend="ref_directive_embed_localized">localized
+          lookup</link> may be used for resolving the path.</para>
+
           <para><phrase role="forProgrammers">Note, that it is possible to
           automatically do the commonly used imports for all templates, with
           the "auto imports" setting of
           <literal>Configuration</literal>.</phrase></para>
+        </sect2>
+      </sect1>
 
-          <para>If you are new to namespaces, you should read: <xref
-          linkend="dgui_misc_namespace" /></para>
+      <sect1 id="ref_directive_include">
+        <title>include</title>
+
+        <anchor id="ref.directive.include" />
+
+        <indexterm>
+          <primary>include directive</primary>
+        </indexterm>
+
+        <sect2>
+          <title>Synopsis</title>
+
+          <programlisting role="metaTemplate"><literal>[#include <replaceable>path</replaceable>]</literal>
+or
+<literal>[#include <replaceable>path</replaceable> <replaceable>options</replaceable>]</literal></programlisting>
+
+          <para>Where:</para>
+
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para><literal><replaceable>path</replaceable></literal>: The
+              path of the file to include; must be an expression evaluates to
+              a string</para>
+            </listitem>
+
+            <listitem>
+              <para><literal><replaceable>options</replaceable></literal>: One
+              or more of these:
+              <literal>encoding=<replaceable>encoding</replaceable></literal>,
+              <literal>parse=<replaceable>parse</replaceable></literal></para>
+
+              <itemizedlist spacing="compact">
+                <listitem>
+                  <para><literal><replaceable>encoding</replaceable></literal>:
+                  Expression evaluates to string</para>
+                </listitem>
+
+                <listitem>
+                  <para><literal><replaceable>parse</replaceable></literal>:
+                  Expression evaluates to boolean (also accepts a few string
+                  values for backward compatibility)</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+        </sect2>
+
+        <sect2>
+          <title>Description</title>
+
+          <para>This directive is kind of deprecated. That said, we don't plan
+          to remove it, but in almost all use cases you should use the <link
+          linkend="ref.directive.import"><literal>import</literal>
+          directive</link> or the <link
+          linkend="ref.directive.embed"><literal>embed</literal>
+          directive</link> instead.</para>
+
+          <para>This directive is the same as the <link
+          linkend="ref.directive.embed"><literal>embed</literal>
+          directive</link>, except that the included template will use the
+          <link linkend="dgui_misc_namespace">namespace</link> of the
+          including template. That is, variables (like macros) created in the
+          including template will be visible for the included template, and
+          also the other way around. For example, assume
+          <literal>/common/copyright.ftl</literal> contains:</para>
+
+          <programlisting role="template">Copyright 2001-2002 ${me}&lt;br&gt;
+All rights reserved.
+<emphasis>[#set justExpreiment = "I'm polluting your namespace!"]</emphasis></programlisting>
+
+          <para>Then this:</para>
+
+          <programlisting role="template"><emphasis>[#set me = "Juila Smith"]</emphasis>
+&lt;h1&gt;Some test&lt;/h1&gt;
+&lt;p&gt;Yeah.
+&lt;hr&gt;
+<emphasis>[#include "/common/copyright.ftl"]</emphasis>
+Also: <emphasis>${justExpreiment}</emphasis></programlisting>
+
+          <para>will output this:</para>
+
+          <programlisting role="output">&lt;h1&gt;Some test&lt;/h1&gt;
+&lt;p&gt;Yeah.
+&lt;hr&gt;
+<emphasis>Copyright 2001-2002 Juila Smith
+All rights reserved.</emphasis>
+Also: <emphasis>I'm polluting your namespace!</emphasis></programlisting>
+
+          <para>So here multiple templates are using a common namespace,
+          potentially clobbering the variables of each other. This can easily
+          cause maintenance headaches, so use it only if you are sure you need
+          this feature. If you just want to share common variables and macros
+          with other templates, you should use the <link
+          linkend="ref.directive.import"><literal>import</literal>
+          directive</link>.</para>
+
+          <para role="forProgrammers"><phrase>Note, that it is possible to
+          automatically do the commonly used inclusions for all templates,
+          with the "auto includes" setting of
+          <literal>Configuration</literal>.</phrase></para>
         </sect2>
       </sect1>
 
@@ -15326,10 +15443,10 @@ I said, test only)</programlisting>
           directive - it just serves as a formal parameter to the escaping
           expression.</para>
 
-          <para>If you use <literal>include</literal> directive or macros, it
-          is important to understand that escape has effect only on
-          interpolations occur between the <literal>[#escape
-          <replaceable>...</replaceable>]</literal> and
+          <para>When you are calling macros or using the
+          <literal>include</literal> directive, it is important to understand
+          that escape has effect only on interpolations that occur between the
+          <literal>[#escape <replaceable>...</replaceable>]</literal> and
           <literal>[/#escape]</literal> <emphasis>in the template
           text</emphasis>. That is, it will not escape anything that is before
           <literal>[#escape <replaceable>...</replaceable>]</literal> in the
@@ -15417,10 +15534,11 @@ m2: &amp;lt;test&amp;gt;</programlisting>
     ${itemCodeToNameMap[itemCode3]?html}
     ${itemCodeToNameMap[itemCode4]?html}</programlisting>
 
-          <para>When you use the noescape directive in a nested escape block,
-          it undoes only a single level of escaping. Therefore, to completely
-          turn off escaping in a two-level deep escaped block, you need to use
-          two nested noescape directives as well.</para>
+          <para>When you use the <literal>noescape</literal> directive in a
+          nested escape block, it undoes only a single level of escaping.
+          Therefore, to completely turn off escaping in a two-level deep
+          escaped block, you need to use two nested
+          <literal>noescape</literal> directives as well.</para>
         </sect2>
       </sect1>
 
@@ -16096,8 +16214,9 @@ etc.</programlisting>
 [/#macro]</programlisting>
 
           <para>However, if the macro definitions are inserted with
-          <literal>include</literal> directive, they will not be available
-          until FreeMarker has executed the <literal>include</literal>
+          <literal>include</literal> directive (not recommended - use
+          <literal>import</literal> instead), they will not be available until
+          FreeMarker has executed the <literal>include</literal>
           directive.</para>
 
           <para>Example: Macro without parameters:</para>
@@ -16659,7 +16778,8 @@ or
               <literal>process</literal> Java method of class
               <literal>Template</literal> or
               <literal>Environment</literal></phrase>); (b) the template is
-              invoked directly with <literal>[#import ...]</literal>.</para>
+              invoked directly with <literal>[#import ...]</literal> or
+              <literal>[#embed ...]</literal>.</para>
             </listitem>
 
             <listitem>
@@ -16686,11 +16806,11 @@ or
           </itemizedlist>
 
           <para>This directive also determines if the template uses angle
-          bracket syntax (e.g., <literal>&lt;#include 'foo.ftl'&gt;</literal>)
+          bracket syntax (e.g., <literal>&lt;#embed 'foo.ftl'&gt;</literal>)
           or <link linkend="dgui_misc_alternativesyntax">square bracket
-          syntax</link> (e.g., <literal>[#include 'foo.ftl']</literal>).
-          Simply, the syntax used for this directive will be the syntax used
-          for the whole template, regardless of the FreeMarker configuration
+          syntax</link> (e.g., <literal>[#embed 'foo.ftl']</literal>). Simply,
+          the syntax used for this directive will be the syntax used for the
+          whole template, regardless of the FreeMarker configuration
           settings.</para>
         </sect2>
       </sect1>
@@ -17592,7 +17712,7 @@ There was no specific handler for node y
             linkend="ref.directive.set"><literal>set</literal>
             directive</link> instead combined with the <link
             linkend="ref.directive.var"><literal>var</literal>
-            directive</link>. <literal>[#assign x = y]</literal> is equivalent
+            directive</link>. <literal>[#local x = y]</literal> is equivalent
             with <literal>[#set x = y]</literal> if <literal>x</literal> was
             declared as scoped (i.e. local) variable.</para>
           </listitem>
@@ -19428,7 +19548,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
       <para>If you want to modify the source code and rebuild
       <literal>freemarker.jar</literal>, you need <ulink
-      url="http://ant.apache.org/">Ant</ulink> 1.6.1 (or newer) and JDK 5 (or
+      url="http://ant.apache.org/">Ant</ulink> 1.7.0 (or newer) and JDK 5 (or
       newer). If these are satisfied, just run Ant from the root directory of
       the distribution, and it will create the new
       <literal>freemarker.jar</literal>. Note that for the very first build
@@ -19462,6 +19582,23 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
           <itemizedlist>
             <listitem>
+              <para>New directive: <literal>embed</literal>. This meant to
+              replace <literal>include</literal> in almost all use cases. The
+              difference to <literal>include</literal> is that in the case of
+              <literal>embed</literal> the embedding and the embedded template
+              has its own namespace, so they don't overwrite or see each
+              other's variables. (In the case of <literal>include</literal>
+              the included template has used the namespace of the including
+              template, possibly causing maintenance headaches due to
+              accidental name clashes.) So, if you just want to insert the
+              output of a template into another template, you should use
+              <literal>embed</literal> from now. If you want to use the macros
+              and other variables of another template, then you should use
+              <literal>import</literal>. Using <literal>include</literal> is
+              almost always the sign of bad practice.</para>
+            </listitem>
+
+            <listitem>
               <para>Lazy evaluation of arguments for
               <literal>default</literal> and <literal>string</literal>
               built-ins:
@@ -19484,9 +19621,31 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             </listitem>
 
             <listitem>
-              <para>The <link
-              linkend="ref_builtin_use_defaults"><literal>use_defaults</literal></link>
-              built-in</para>
+              <para>New built-in: <link
+              linkend="ref_builtin_use_defaults"><literal>use_defaults</literal></link></para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>Warning, backward incompatible
+              change!</emphasis> Comma is now required between the
+              <emphasis>positional</emphasis> parameters of directive calls.
+              Earlier it was optional (although it wasn't documented). Like
+              <literal>&lt;@mymacro 1 2 3&gt;</literal> is now an error; it
+              should be <literal>&lt;@maymacro 1, 2, 3&gt;</literal>. No comma
+              is needed between named parameters, like <literal>&lt;@mymacro
+              x=1 y=2&gt;</literal> is good.</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <emphasis>Warning, backward incompatible
+              change!</emphasis> The default value operator
+              (<literal><replaceable>exp</replaceable>!<replaceable>exp</replaceable></literal>)
+              had wrong precedence at its right side, causing thing like
+              <literal>${x!y + 1}</literal> be misinterpreted as
+              <literal>${x!(y + 1)}</literal> in FreeMarker
+              2.3.<replaceable>x</replaceable>. From now, something like
+              <literal>${x!y + 1}</literal> is correctly interpreted as
+              <literal>${(x!y) + 1}</literal>.</para>
             </listitem>
           </itemizedlist>
         </sect2>
@@ -25267,7 +25426,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       <glossdef>
         <para>Directive what is defined by FreeMarker, thus always available.
         Example of predefined directives: <literal>if</literal>,
-        <literal>list</literal>, <literal>include</literal></para>
+        <literal>list</literal>, <literal>import</literal></para>
 
         <glossseealso otherterm="gloss.userDefinedDirective"></glossseealso>
       </glossdef>
@@ -25379,8 +25538,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
         template with a data-model to produce the output for a visitor. Note
         that this may includes the execution of multiple template files
         because the template file used for the Web page may invokes other
-        templates with <literal>include</literal> and
-        <literal>import</literal> directives. Each template-processing job is
+        templates with <literal>embed</literal>, <literal>import</literal> or
+        <literal>include</literal> directives. Each template-processing job is
         a separated cosmos that exists only for the short period of time while
         the given page is being rendered for the visitor, and then it vanishes
         with all the variables created in the templates (for example,
