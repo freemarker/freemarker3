@@ -54,6 +54,7 @@ package freemarker.cache;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.security.CodeSource;
@@ -721,10 +722,15 @@ public class TemplateCache
     /**
      * This class holds the cached template and associated information
      * (the source object, and the last-checked and last-modified timestamps).
-     * It is used as the value in the cached templates map.
+     * It is used as the value in the cached templates map. Note: this class
+     * is Serializable to allow custom 3rd party CacheStorage implementations 
+     * to serialize/replicate them; FreeMarker code itself doesn't rely on its
+     * serializability.
      */
-    private static final class CachedTemplate implements Cloneable
+    private static final class CachedTemplate implements Cloneable, Serializable
     {
+        private static final long serialVersionUID = 1L;
+
         Object templateOrException;
         Object source;
         long lastChecked;
