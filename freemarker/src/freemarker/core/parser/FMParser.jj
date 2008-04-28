@@ -2064,7 +2064,7 @@ PositionalArgsList PositionalArgsList() :
 {
 	firstArg=Exp() {result.addArg(firstArg); arg=firstArg;}
 	(
-	   <COMMA>
+	   [<COMMA>]
 	   arg=Exp() {result.addArg(arg);}
 	)*
 	{
