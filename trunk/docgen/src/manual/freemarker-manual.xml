@@ -19625,7 +19625,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               linkend="ref_builtin_use_defaults"><literal>use_defaults</literal></link></para>
             </listitem>
 
-            <listitem>
+            <!-- listitem>
               <para><emphasis>Warning, backward incompatible
               change!</emphasis> Comma is now required between the
               <emphasis>positional</emphasis> parameters of directive calls.
@@ -19634,7 +19634,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               should be <literal>&lt;@maymacro 1, 2, 3&gt;</literal>. No comma
               is needed between named parameters, like <literal>&lt;@mymacro
               x=1 y=2&gt;</literal> is good.</para>
-            </listitem>
+            </listitem -->
 
             <listitem>
               <para>Bug fixed: <emphasis>Warning, backward incompatible
