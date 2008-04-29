@@ -127,6 +127,7 @@ public class StringFunctions extends BuiltIn {
 	
 	
 	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+		if (builtInName == "number" && target instanceof TemplateNumberModel) return target; 
 		if (builtInName == "groups") {
             if (target instanceof RegexMatchModel) {
                 return ((RegexMatchModel) target).getGroups();
