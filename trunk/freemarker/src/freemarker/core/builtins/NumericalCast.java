@@ -77,7 +77,7 @@ public class NumericalCast extends BuiltIn {
 	
 	private Number getNumber(Number num, String builtInName) {
 		if (builtInName == "int") {
-			return Byte.valueOf(num.byteValue());
+			return Integer.valueOf(num.intValue());
 		}
 		else if (builtInName == "double") {
 			return new Double(num.doubleValue());
