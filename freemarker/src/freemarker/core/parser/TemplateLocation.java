@@ -67,7 +67,7 @@ public class TemplateLocation {
 	protected int beginLine, beginColumn, endLine, endColumn;
 	protected Template template;
 	
-	static public int tabSize = 8;
+	static public int TAB_SIZE = 8;
 	
 	public final String getDescription(Locale locale) {
 		return "";
@@ -79,7 +79,7 @@ public class TemplateLocation {
 	
 	public int getBeginColumnTabAdjusted() {
 		return (template == null) ? beginColumn 
-                : template.getTabAdjustedColumn(beginLine, beginColumn, tabSize);
+                : template.getTabAdjustedColumn(beginLine, beginColumn, TAB_SIZE);
 	}
 	
 	public int getBeginColumn() {
@@ -101,7 +101,7 @@ public class TemplateLocation {
 	
 	public int getEndColumnTabAdjusted() {
 		return template==null ? endColumn 
-            : template.getTabAdjustedColumn(beginLine, endColumn, tabSize);
+            : template.getTabAdjustedColumn(beginLine, endColumn, TAB_SIZE);
 			
 	}
 	

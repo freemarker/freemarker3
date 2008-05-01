@@ -241,7 +241,8 @@ TOKEN_MGR_DECLS :
  	}
  	if (firstChar == '[' || firstChar=='<') {
  		String chopFirst = tokText.substring(1);
- 		if (chopFirst.startsWith("#") || chopFirst.startsWith("/#")) {
+ 		if (chopFirst.startsWith("#") || chopFirst.startsWith("/#")
+ 		    || chopFirst.startsWith("@") || chopFirst.startsWith("/@")) {
  			if (this.onlyTextOutput) {
  				token.kind = PRINTABLE_CHARS;
  				return;
@@ -2628,9 +2629,9 @@ List<TextBlock> PCData() :
       LOOKAHEAD(<WHITESPACE>|<PRINTABLE_CHARS>) 
       (
          {prevToken = t;}         
-         t=<PRINTABLE_CHARS>
+         t=<PRINTABLE_CHARS> 
          |
-         t=<WHITESPACE>
+         t=<WHITESPACE> 
       )
       {
          buf.append(t.image);
@@ -2715,7 +2716,7 @@ TemplateElement FreeMarkerText() :
       )
       {
          if (begin == null) {
-            begin = elem == null ? text.get(0) : elem;
+            begin = (elem == null) ? text.get(0) : elem;
          }
          if (elem != null) {
          	nodes.addElement(elem);
