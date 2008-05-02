@@ -79,6 +79,7 @@
    <testcase name="number-literal" filename="test-numberliteral.html" >
       <config locale="fr_FR"/>
    </testcase>
+   <testcase name="numerical-cast" filename="test-numericalcast.txt" />
    <testcase name="output-encoding1" filename="test-outputencoding1.txt"/>
    <testcase name="output-encoding2" filename="test-outputencoding2.txt">
        <config output_encoding="UTF-16"/>

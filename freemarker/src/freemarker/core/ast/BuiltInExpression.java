@@ -80,6 +80,9 @@ public class BuiltInExpression extends Expression implements Cloneable {
 		knownBuiltins.put("int", numericalCast);
 		knownBuiltins.put("long", numericalCast);
 		knownBuiltins.put("short", numericalCast);
+		knownBuiltins.put("floor", numericalCast);
+		knownBuiltins.put("ceiling", numericalCast);
+		knownBuiltins.put("round", numericalCast);
 		StringTransformations stringTransformations = new StringTransformations();
 		knownBuiltins.put("capitalize", stringTransformations);
 		knownBuiltins.put("lower_case", stringTransformations);
