@@ -14805,6 +14805,8 @@ or
               </itemizedlist>
             </listitem>
           </itemizedlist>
+
+          <para>This directive is only available since FreeMarker 2.4.</para>
         </sect2>
 
         <sect2>
@@ -15610,6 +15612,12 @@ or
               Expression.</para>
             </listitem>
           </itemizedlist>
+
+          <para>These directives are available since FreeMarker 2.4. They
+          replace these FreeMarker 2.3 directives: <link
+          linkend="ref_depr_directive.html"><literal>assign</literal>,
+          <literal>local</literal> and
+          <literal>global</literal></link>.</para>
         </sect2>
 
         <sect2>
@@ -17714,7 +17722,9 @@ There was no specific handler for node y
             linkend="ref.directive.var"><literal>var</literal>
             directive</link>. <literal>[#local x = y]</literal> is equivalent
             with <literal>[#set x = y]</literal> if <literal>x</literal> was
-            declared as scoped (i.e. local) variable.</para>
+            declared as scoped (i.e. local) variable with <literal>[#var
+            x]</literal>. See more here: <xref
+            linkend="dgui_misc_var" /></para>
           </listitem>
 
           <listitem>
