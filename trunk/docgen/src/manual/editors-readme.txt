@@ -7,13 +7,13 @@ Rules and guidelines
 
 Non-technical:
 
-- Understand that the Designer's Guide is for designers. Assume that a
+- The Template Authror's Guide is for Web designers. Assume that a
   designer is not a programmer, (s)he doesn't even know what is Java.
-  Forget that FM is implemented in Java when you edit Designer's
-  Guide. Try to avoid technical writing.
+  Forget that FM is implemented in Java when you edit the Template
+  Authror's Guide. Try to avoid technical writing.
 
-- In the Guide chapters, please be careful not to mention things that
-  were not explained earlier. The Guide chapters should be understandable
+- In the Guide chapters, be careful not to mention things that were
+  not explained earlier. The Guide chapters should be understandable
   if you read them continuously.
 
 - If you add a new topic or term, don't forget to add it to the Index.
@@ -24,17 +24,18 @@ Non-technical:
 
 Technical:
 
-- For the editing please use XXE (XMLmind XML Editor), with its
-  default XML *source* formatting settings (identation, max line
-  length and like). You should install the "DocBook for Freemarker"
-  addon, which you can find somwhere in the same SVN module as this
-  file. (Tested with XXE 3.6.1.)
+- For the editing use XXE (XMLmind XML Editor), with its default XML
+  *source* formatting settings (identation, max line length and like).
+  You should install the "DocBook for Freemarker" addon, which you can
+  find somwhere in the same SVN module as this file. (Tested with XXE
+  3.6.1.)
 
-- Please understand all document conventions in the Preface chapter.
-  Read its XML source. Note that all "programlisting"-s should have
-  a "role" attribute with a value that is either: "template",
-  "dataModel", "output", "metaTemplate" or "unspecified". (If you
-  miss this, the XXE addon will show the "programlisting" in red.)
+- Understand all document conventions in the Preface chapter (look at
+  the XML source code of the examples there). Note that all
+  "programlisting"-s should have a "role" attribute with a value that
+  is either: "template", "dataModel", "output", "metaTemplate" or
+  "unspecified". (If you miss this, the XXE addon will show the
+  "programlisting" in red.)
 
 - Verbatim content in flow text:
 
