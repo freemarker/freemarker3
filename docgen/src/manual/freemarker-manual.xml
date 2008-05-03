@@ -12777,22 +12777,25 @@ rif: foo XYr baar</programlisting>
           </indexterm>
 
           <para>Converts a number to a string. It uses the default format that
-          the programmer has specified. Note also that you can also explicitly
-          specify a number or date format to use.</para>
+          the programmer has specified. You can also specify a number format
+          explicitly with this built-in, as it will be shown later.</para>
 
-          <para>Speaking first of number formatting, there are three
-          predefined number formats: <literal>number</literal>,
-          <literal>currency</literal>, and <literal>percent</literal>. In this
-          sense, you can use all of the below expressions:</para>
+          <para>There are three predefined number formats:
+          <literal>number</literal>, <literal>currency</literal>, and
+          <literal>percent</literal>. The exact meaning of these is locale
+          (nationality) specific, and is controlled by the Java platform
+          installation, rather than by FreeMarker. You can use these
+          predefined formats like this:</para>
 
-          <programlisting role="template">[#set answer=42/]
-${answer}
-${answer?string}  [#-- the same as ${answer} --]
-${answer?string.number}
-${answer?string.currency}
-${answer?string.percent}</programlisting>
+          <programlisting role="template">[#assign x=42]
+${x}
+${x?string}  [#-- the same as ${x} --]
+${x?string.number}
+${x?string.currency}
+${x?string.percent}</programlisting>
 
-          <para>If your locale is US English, this will produce:</para>
+          <para>If your locale is US English, this will certainly
+          produce:</para>
 
           <programlisting role="output">42
 42
@@ -12804,13 +12807,13 @@ $42.00
           first two expressions use the default format, which is "number"
           here. You can change this default using a setting:</para>
 
-          <programlisting role="template">[#setting number_format="currency"/]
-[#set answer=42]
-${answer}
-${answer?string}  [#-- the same as ${answer} --]
-${answer?string.number}
-${answer?string.currency}
-${answer?string.percent}</programlisting>
+          <programlisting role="template">[#setting number_format="currency"]
+[#assign x=42]
+${x}
+${x?string}  [#-- the same as ${x} --]
+${x?string.number}
+${x?string.currency}
+${x?string.percent}</programlisting>
 
           <para>Will now output:</para>
 
@@ -12825,36 +12828,158 @@ $42.00
           <para>Beside the three predefined formats, you can use arbitrary
           number format patterns written in <ulink
           url="http://java.sun.com/j2se/1.4/docs/api/java/text/DecimalFormat.html">Java
-          decimal number format syntax</ulink> both as a default setting or as
-          an explicit format selector:</para>
+          decimal number format syntax</ulink>:</para>
 
-          <programlisting role="template">[#setting number_format="0.###E0"/]
-${1234}
-${12345?string("0.####E0")}</programlisting>
+          <programlisting role="template">[#assign x = 1.234]
+${x?string("0")}
+${x?string("0.#")}
+${x?string("0.##")}
+${x?string("0.###")}
+${x?string("0.####")}
+
+${1?string("000.00")}
+${12.1?string("000.00")}
+${123.456?string("000.00")}
+
+${1.2?string("0")}
+${1.8?string("0")}
+${1.5?string("0")} &lt;-- 1.5, rounded towards even neighbor
+${2.5?string("0")} &lt;-- 2.5, rounded towards even neighbor
+
+${12345?string("0.##E0")}</programlisting>
 
           <para>outputs this:</para>
 
-          <programlisting role="output">1.234E3
-1.2345E4</programlisting>
+          <programlisting role="output">1
+1.2
+1.23
+1.234
+1.234
 
-          <para>Note that you can also write
-          <literal>${answer?string("number")}</literal> that will do the same
-          as <literal>${answer?string.number}</literal>.</para>
+001.00
+012.10
+123.46
+
+1
+2
+2 &lt;-- 1.5, rounded towards even neighbor
+2 &lt;-- 2.5, rounded towards even neighbor
+
+1.23E4</programlisting>
+
+          <para>Following the financial and statistics practice, the rounding
+          goes according the so called half-even rule, which means rounding
+          towards the nearest "neighbor", unless both neighbors are
+          equidistant, in which case, it rounds towards the even neighbor.
+          This was visible in the above example if you look at the rounding of
+          1.5 and of 2.5, as both were rounded to 2, since 2 is even, but 1
+          and 3 are odds.</para>
+
+          <para>Appart from the Java decimal syntax patterns, you can also
+          write <literal>${aNumber?string("currency")}</literal> and like,
+          that will do the same as
+          <literal>${aNumber?string.currency}</literal> and like.</para>
+
+          <para>As it was shown for the predefined formats earlier, the
+          default formatting of the numbers can be set in the template:</para>
+
+          <programlisting role="template">[#setting number_format="0.##"]
+${1.234}</programlisting>
+
+          <para>outputs this:</para>
+
+          <programlisting role="output">1.23</programlisting>
 
           <para>Note that the number formatting is locale sensitive:</para>
 
           <programlisting role="template">[#setting locale="en_US"]
-US people writes:        ${12345678?string(",##0.00")}
-[#setting locale="hu"]
-Hungarian people writes: ${12345678?string(",##0.00")}</programlisting>
+US people write:        ${12345678?string(",##0.00")}
+{#setting locale="hu"]
+Hungarian people write: ${12345678?string(",##0.00")}</programlisting>
 
           <para>outputs this:</para>
 
-          <programlisting role="output">US people writes:        12,345,678.00
-Hungarian people writes: 12 345 678,00</programlisting>
+          <programlisting role="output">US people write:        12,345,678.00
+Hungarian people write: 12 345 678,00</programlisting>
 
           <para>You can find information about the formatting of dates <link
           linkend="ref_builtin_string_for_date">here</link>.</para>
+        </simplesect>
+
+        <simplesect id="ref_builtin_rounding">
+          <title>round, floor, ceiling</title>
+
+          <indexterm>
+            <primary>rounding</primary>
+          </indexterm>
+
+          <indexterm>
+            <primary>floor built-in</primary>
+          </indexterm>
+
+          <indexterm>
+            <primary>ceiling built-in</primary>
+          </indexterm>
+
+          <indexterm>
+            <primary>round built-in</primary>
+          </indexterm>
+
+          <note>
+            <para>The rounding built-ins exist since FreeMarker 2.3.13.</para>
+          </note>
+
+          <para>Converts a number to a whole number using the specified
+          rounding rule:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para><literal>round</literal>: Rounds to the nearest whole
+              number. If the number ends with .5, then it rounds upwards
+              (i.e., towards positive infinity)</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>floor</literal>: Rounds the number downwards
+              (i.e., towards negative infinity)</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>ceiling</literal>: Rounds the number upwards
+              (i.e., towards positive infinity)</para>
+            </listitem>
+          </itemizedlist>
+
+          <para>Example:</para>
+
+          <programlisting role="template">[#assign testlist=[
+  0, 1, -1, 0.5, 1.5, -0.5,
+  -1.5, 0.25, -0.25, 1.75, -1.75]]
+[#list testlist as result]
+    ${result} floor=${result?floor} ceiling=${result?ceiling} round=${result?round}
+[/#list]</programlisting>
+
+          <para>This outputs this:</para>
+
+          <programlisting role="output">    0 floor=0 ceiling=0 round=0            
+    1 floor=1 ceiling=1 round=1        
+    -1 floor=-1 ceiling=-1 round=-1      
+    0.5 floor=0 ceiling=1 round=1      
+    1.5 floor=1 ceiling=2 round=2      
+    -0.5 floor=-1 ceiling=0 round=0     
+    -1.5 floor=-2 ceiling=-1 round=-1    
+    0.25 floor=0 ceiling=1 round=0     
+    -0.25 floor=-1 ceiling=0 round=0    
+    1.75 floor=1 ceiling=2 round=2     
+    -1.75 floor=-2 ceiling=-1 round=-2</programlisting>
+
+          <para>These built-ins may be useful in pagination operations and
+          like. If you just want to <emphasis>display</emphasis> numbers in
+          rounded form, then you should rather use the <link
+          linkend="ref_builtin_string_for_number"><literal>string</literal>
+          built-in</link> or the <link
+          linkend="ref.setting.number_format"><literal>number_format</literal>
+          setting</link>.</para>
         </simplesect>
       </sect1>
 
@@ -15615,7 +15740,7 @@ or
 
           <para>These directives are available since FreeMarker 2.4. They
           replace these FreeMarker 2.3 directives: <link
-          linkend="ref_depr_directive.html"><literal>assign</literal>,
+          linkend="ref_depr_directive"><literal>assign</literal>,
           <literal>local</literal> and
           <literal>global</literal></link>.</para>
         </sect2>
