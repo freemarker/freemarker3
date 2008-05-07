@@ -336,6 +336,11 @@ public class TemplateTestCase extends TestCase {
             NodeModel nm = NodeModel.parse(is);
             dataModel.put("doc", nm);
         }
+        else if (testName.equals("xpath1")) {
+            InputSource is = new InputSource(getClass().getResourceAsStream("test-xpath1.xml"));
+            NodeModel nm = NodeModel.parse(is);
+            dataModel.put("doc", nm);
+        }
     }
     
     public void runTest() {
