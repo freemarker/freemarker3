@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<operations>
+  <operation name="add">
+    <example>1+1=2</example>
+  </operation>
+  <operation name="subtract">
+    <example>3-2=1</example>
+  </operation>
+  <operation name="multiply">
+    <example>3*4=12</example>
+  </operation>
+  <operation name="divide">
+    <example>10/5=2</example>
+  </operation>
+</operations>

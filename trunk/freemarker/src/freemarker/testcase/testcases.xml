@@ -123,6 +123,9 @@
    <testcase name="xmlns5" filename="test-xmlns5.txt">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
    </testcase>
+   <testcase name="xpath1" filename="test-xpath1.txt">
+      <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
+   </testcase>
    <testcase name="duplicate-includeencoding" filename="test-duplicateincludeencoding.txt"
       class="freemarker.testcase.ParserTestCase" />
    <testcase name="duplicate-includeparse" filename="test-duplicateincludeparse.txt"

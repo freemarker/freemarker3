@@ -1,0 +1,8 @@
+<#ftl>
+
+<#assign operation>subtract</#assign>
+<#assign result=doc.operations["operation[@name = '${operation}'"]>
+
+<#list result.example as x>
+example=${x.@@markup}
+</#list>
