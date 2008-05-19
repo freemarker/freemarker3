@@ -55,14 +55,18 @@ package freemarker.core.builtins;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.Writer;
-import java.util.List;
 import java.util.Map;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.ast.Expression;
-import freemarker.template.*;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
+import freemarker.template.TemplateSequenceModel;
+import freemarker.template.TemplateTransformModel;
 
 /**
  * Implementation of ?new built-in 
