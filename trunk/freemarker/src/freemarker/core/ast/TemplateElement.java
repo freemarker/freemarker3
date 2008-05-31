@@ -84,7 +84,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     abstract public void execute(Environment env) throws TemplateException, IOException;
 
     public Scope createLocalScope(Scope enclosingScope) {
-    	return new BlockContext(this, enclosingScope);
+    	return new BlockScope(this, enclosingScope);
     }
     
     public TemplateElement getParent() {

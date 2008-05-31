@@ -4,12 +4,12 @@ import freemarker.core.ast.TemplateElement;
 import freemarker.template.*;
 
 
-public class BlockContext extends BaseContext {
+public class BlockScope extends BaseScope {
 	
 	
 	TemplateElement block;
 	
-	public BlockContext(TemplateElement block, Scope enclosingScope) {
+	public BlockScope(TemplateElement block, Scope enclosingScope) {
 		super(enclosingScope);
 		this.block = block;
 	}

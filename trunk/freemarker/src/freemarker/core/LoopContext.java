@@ -68,7 +68,7 @@ import freemarker.template.TemplateSequenceModel;
  * Represents the local context of an iterator block  
  */
 
-public class LoopContext extends BlockContext {
+public class LoopContext extends BlockScope {
     private boolean hasNext;
     private TemplateModel loopVar;
     private int index;

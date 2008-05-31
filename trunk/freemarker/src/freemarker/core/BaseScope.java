@@ -56,12 +56,12 @@ import java.util.*;
 
 import freemarker.template.*;
 
-abstract public class BaseContext implements Scope {
+abstract public class BaseScope implements Scope {
 	
 	private HashMap<String,TemplateModel> variables = new HashMap<String,TemplateModel>();
 	private final Scope enclosingScope;
 	
-	BaseContext(Scope enclosingScope) {
+	BaseScope(Scope enclosingScope) {
 		this.enclosingScope = enclosingScope;
 		if (enclosingScope == null) throw new IllegalArgumentException();
 	}
