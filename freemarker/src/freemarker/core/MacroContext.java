@@ -64,7 +64,7 @@ import freemarker.template.*;
  */
 
 
-public class MacroContext extends BlockContext {
+public class MacroContext extends BlockScope {
     private Macro macro;
     TemplateElement body; // REVISIT
     public ParameterList bodyParameters;

@@ -59,7 +59,7 @@ import freemarker.template.*;
  * @author Jonathan Revusky
  */
 
-public class TemplateNamespace extends BaseContext {
+public class TemplateNamespace extends BaseScope {
 	
 	Template template;
 	

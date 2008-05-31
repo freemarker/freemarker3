@@ -63,7 +63,7 @@ import freemarker.template.TemplateModel;
  * the body of a macro invocation via [#nested]
  */
 
-public class MacroInvocationBodyContext extends BlockContext {
+public class MacroInvocationBodyContext extends BlockScope {
     MacroContext invokingMacroContext;
     TemplateElement enclosingDirective;
     
