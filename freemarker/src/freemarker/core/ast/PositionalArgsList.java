@@ -59,87 +59,87 @@ import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;
 
 public class PositionalArgsList extends ArgsList {
-	
-	List<Expression> args = new ArrayList<Expression>();
-	
-	public List<Expression> getArgs() {
-		return args;
-	}
-	
-	public void addArg(Expression exp) {
-		args.add(exp);
-		exp.parent = this;
-	}
-	
-	Map<String, TemplateModel> getParameterMap(TemplateModel target, Environment env)
-    throws TemplateException {
-    	Map<String, TemplateModel> result = new HashMap<String, TemplateModel>();
-    	ParameterList annotatedParameterList = getParameterList(target);
-    	if (annotatedParameterList == null) {
-    		if (!args.isEmpty()) {
-    			throw new TemplateModelException("Cannot pass positional arguments to this TemplateTransformModel");
-    		}
-    	}
-    	else {
-    		result = annotatedParameterList.getParameterMap(this, env);
-    	}
-    	return result;
+
+    List<Expression> args = new ArrayList<Expression>();
+
+    public List<Expression> getArgs() {
+        return args;
     }
-	
-	List getParameterSequence(TemplateModel target, Environment env) throws TemplateException {
-		ParameterList annotatedParameterList = getParameterList(target);
-		if (annotatedParameterList == null) {
+
+    public void addArg(Expression exp) {
+        args.add(exp);
+        exp.parent = this;
+    }
+
+    Map<String, TemplateModel> getParameterMap(TemplateModel target, Environment env)
+    throws TemplateException {
+        Map<String, TemplateModel> result = new HashMap<String, TemplateModel>();
+        ParameterList annotatedParameterList = getParameterList(target);
+        if (annotatedParameterList == null) {
+            if (!args.isEmpty()) {
+                throw new TemplateModelException("Cannot pass positional arguments to this TemplateTransformModel");
+            }
+        }
+        else {
+            result = annotatedParameterList.getParameterMap(this, env);
+        }
+        return result;
+    }
+
+    List getParameterSequence(TemplateModel target, Environment env) throws TemplateException {
+        ParameterList annotatedParameterList = getParameterList(target);
+        if (annotatedParameterList == null) {
             return target instanceof TemplateMethodModelEx ? 
                     (target instanceof LazilyEvaluatableArguments ? 
-                           getLazyModelList(env) :
-                           getModelList(env)) :
-                    (target instanceof LazilyEvaluatableArguments ? 
-                            getLazyValueList(env) :
-                            getValueList(env));
-		}
-		// TODO: Attila's lazy evaluation machinery here as well, I guess FWIW...
-		List<TemplateModel> result = annotatedParameterList.getParameterSequence(this, env);
-		if ((target instanceof TemplateMethodModel) && !(target instanceof TemplateMethodModelEx)) {
-			List<String> strings = new ArrayList<String>();
-			for (TemplateModel value : result) {
-				try {
-					strings.add(((TemplateScalarModel) value).getAsString());
-				} catch (ClassCastException cce) {
-					String msg = "Error at: " + getStartLocation() + "\nThis method only takes strings as arguments.";
-					throw new TemplateException(msg, env);
-				}
-			}
-			return strings;
-		}
-		return result;
-	}
-	
-	public int size() {
-		return args == null ? 0 : args.size();
-	}
-	
-	public String getStartLocation() {
-		if (args != null && args.size() >0) {
-			return args.get(0).getStartLocation();
-		}
-		else {
-			return ""; // REVISIT 
-		}
-	}
-	
-	public TemplateModel getValueAt(int i, Environment env) throws TemplateException {
-		Expression exp = args.get(i);
-		TemplateModel value = exp.getAsTemplateModel(env);
-		TemplateNode.assertIsDefined(value, exp, env);
-		return value;
-	}
-	
-	
+                            getLazyModelList(env) :
+                                getModelList(env)) :
+                                    (target instanceof LazilyEvaluatableArguments ? 
+                                            getLazyValueList(env) :
+                                                getValueList(env));
+        }
+        // TODO: Attila's lazy evaluation machinery here as well, I guess FWIW...
+        List<TemplateModel> result = annotatedParameterList.getParameterSequence(this, env);
+        if ((target instanceof TemplateMethodModel) && !(target instanceof TemplateMethodModelEx)) {
+            List<String> strings = new ArrayList<String>();
+            for (TemplateModel value : result) {
+                try {
+                    strings.add(((TemplateScalarModel) value).getAsString());
+                } catch (ClassCastException cce) {
+                    String msg = "Error at: " + getStartLocation() + "\nThis method only takes strings as arguments.";
+                    throw new TemplateException(msg, env);
+                }
+            }
+            return strings;
+        }
+        return result;
+    }
+
+    public int size() {
+        return args == null ? 0 : args.size();
+    }
+
+    public String getStartLocation() {
+        if (args != null && args.size() >0) {
+            return args.get(0).getStartLocation();
+        }
+        else {
+            return ""; // REVISIT 
+        }
+    }
+
+    public TemplateModel getValueAt(int i, Environment env) throws TemplateException {
+        Expression exp = args.get(i);
+        TemplateModel value = exp.getAsTemplateModel(env);
+        TemplateNode.assertIsDefined(value, exp, env);
+        return value;
+    }
+
+
     private static abstract class ExpressionTransformator {
         abstract Object transform(Expression exp, Environment env) 
         throws TemplateException;
     }
-    
+
     private static class ToValueTransformator extends ExpressionTransformator {
         static final ExpressionTransformator INSTANCE = new ToValueTransformator(); 
 
@@ -148,7 +148,7 @@ public class PositionalArgsList extends ArgsList {
             return exp.getStringValue(env);
         }
     }
-    
+
     private static class ToModelTransformator extends ExpressionTransformator {
         static final ExpressionTransformator INSTANCE = new ToModelTransformator(); 
 
@@ -157,7 +157,7 @@ public class PositionalArgsList extends ArgsList {
             return exp.getAsTemplateModel(env);
         }
     }
-    
+
     private List getList(Environment env, ExpressionTransformator transformator)
     throws TemplateException {
         int size = args.size();
@@ -166,12 +166,12 @@ public class PositionalArgsList extends ArgsList {
                 return Collections.EMPTY_LIST;
             }
             case 1: {
-            	return Collections.singletonList(transformator.transform(args.get(0), env));
+                return Collections.singletonList(transformator.transform(args.get(0), env));
             }
             default: {
                 List result = new ArrayList(args.size());
-                for (ListIterator iterator = args.listIterator(); iterator.hasNext();) {
-                    result.add(transformator.transform((Expression)iterator.next(), env));
+                for (Expression arg : args) {
+                    result.add(transformator.transform(arg, env));
                 }
                 return result;
             }
@@ -215,20 +215,20 @@ public class PositionalArgsList extends ArgsList {
         private final Environment env;
         private final Object[] resolvedValues;
         private final boolean[] resolved;
-        
+
         LazyEvaluationList(ExpressionTransformator transformator, Environment env) {
             this.transformator = transformator;
             this.env = env;
             int size = args.size();
             resolvedValues = new Object[size];
             resolved = new boolean[size];
-            
+
         }
-        
+
         public int size() {
             return resolvedValues.length;
         }
-        
+
         public Object get(int index) {
             if(resolved[index]) {
                 return resolvedValues[index];
@@ -244,13 +244,13 @@ public class PositionalArgsList extends ArgsList {
             }
         }
     }
-    
-    
+
+
     ArgsList deepClone(String name, Expression subst) {
-    	PositionalArgsList result = new PositionalArgsList();
-    	for (Expression arg : args) {
-    		result.addArg(arg.deepClone(name, subst));
-    	}
-    	return result;
+        PositionalArgsList result = new PositionalArgsList();
+        for (Expression arg : args) {
+            result.addArg(arg.deepClone(name, subst));
+        }
+        return result;
     }
 }
