@@ -410,6 +410,10 @@ public class Configurable
         outputEncodingSet = true;
     }
     
+    public void setNumbersForComputers(boolean b) {
+    	
+    }
+    
     public String getOutputEncoding() {
         return outputEncodingSet
                 ? outputEncoding
