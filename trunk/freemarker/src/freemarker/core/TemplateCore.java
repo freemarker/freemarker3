@@ -58,12 +58,12 @@ public abstract class TemplateCore extends Configurable
      *  permission (since both the retrieved map and the macros in it are 
      *  mutable).
      */
-    public Map getMacros() {
+    public Map<String,Macro> getMacros() {
         checkModifyTemplate();
         return getMacrosNoCheck();
     }
     
-    Map getMacrosNoCheck() {
+    Map<String,Macro> getMacrosNoCheck() {
         return macros;
     }
     
