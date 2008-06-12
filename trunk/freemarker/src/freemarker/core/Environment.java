@@ -900,7 +900,7 @@ public final class Environment extends Configurable implements Scope {
         if (numberFormats == null) {
             numberFormats = new HashMap<String, NumberFormat>();
         }
-
+        
         NumberFormat format = numberFormats.get(pattern);
         if (format != null) {
             return format;
@@ -920,6 +920,8 @@ public final class Environment extends Configurable implements Scope {
                     format = NumberFormat.getCurrencyInstance(locale);
                 } else if ("percent".equals(pattern)) {
                     format = NumberFormat.getPercentInstance(locale);
+                } else if ("computer".equals(pattern)) {
+                	format = getCNumberFormat();
                 } else {
                     format = new DecimalFormat(pattern,
                             new DecimalFormatSymbols(getLocale()));
@@ -1673,6 +1675,7 @@ public final class Environment extends Configurable implements Scope {
         Scope prevScope = this.currentScope;
         if (freshNamespace) {
         	this.currentScope = new TemplateNamespace(this, includedTemplate);
+            importMacros(includedTemplate);
         } else {
         	this.currentScope = new IncludedTemplateNamespace(includedTemplate, prevScope);
             importMacros(includedTemplate);
@@ -1790,10 +1793,6 @@ public final class Environment extends Configurable implements Scope {
     }
 
     void importMacros(Template template) throws TemplateException {
-//        for (Iterator<Macro> it = ((TemplateCore)template).getMacrosNoCheck().values().iterator(); it
-//                .hasNext();) {
-//            visitMacroDef((Macro) it.next());
-//        }
           for (Macro macro : ((TemplateCore)template).getMacrosNoCheck().values()) {
         	  visitMacroDef(macro);
           }
