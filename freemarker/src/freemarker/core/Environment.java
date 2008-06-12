@@ -1675,7 +1675,7 @@ public final class Environment extends Configurable implements Scope {
         	this.currentScope = new TemplateNamespace(this, includedTemplate);
         } else {
         	this.currentScope = new IncludedTemplateNamespace(includedTemplate, prevScope);
-//            importMacros(includedTemplate);
+            importMacros(includedTemplate);
         }
         try {
             renderSecurely(includedTemplate.getRootElement(), 
@@ -1790,10 +1790,13 @@ public final class Environment extends Configurable implements Scope {
     }
 
     void importMacros(Template template) throws TemplateException {
-        for (Iterator it = ((TemplateCore)template).getMacrosNoCheck().values().iterator(); it
-                .hasNext();) {
-            visitMacroDef((Macro) it.next());
-        }
+//        for (Iterator<Macro> it = ((TemplateCore)template).getMacrosNoCheck().values().iterator(); it
+//                .hasNext();) {
+//            visitMacroDef((Macro) it.next());
+//        }
+          for (Macro macro : ((TemplateCore)template).getMacrosNoCheck().values()) {
+        	  visitMacroDef(macro);
+          }
     }
 
     /**
