@@ -59,81 +59,87 @@ import freemarker.core.parser.ParseException;
 import freemarker.template.*;
 
 public class NamedArgsList extends ArgsList {
-	
-	
-	private Map<String,Expression> namedArgs = new LinkedHashMap<String, Expression>();
-	
-	public void addNamedArg(String name, Expression exp) throws ParseException{
-		if (namedArgs.containsKey(name)) throw new ParseException("Error at: " + exp.getStartLocation() + "\nArgument " + name + " was already specified.");
-		namedArgs.put(name, exp);
-		exp.parent = this;
-	}
-	
-	public Map<String, Expression> getArgs() {
-		return namedArgs;
-	}
-	
-	Map<String,Expression> getCopyOfMap() {
-		return new LinkedHashMap<String, Expression>(namedArgs);
-	}
 
-	Map<String, TemplateModel> getParameterMap(TemplateModel tm, Environment env) throws TemplateException {
-    	Map<String, TemplateModel> result = null; 
-    	ParameterList annotatedParameterList = ArgsList.getParameterList(tm);
-    	if (annotatedParameterList == null) {
-    		result = new HashMap<String, TemplateModel>();
-   			for (String paramName : namedArgs.keySet()) {
-   				Expression exp = namedArgs.get(paramName);
-   				TemplateModel value = exp.getAsTemplateModel(env);
-   				TemplateNode.assertIsDefined(value, exp, env);
-   				result.put(paramName, value);
-   			}
-    	}
-    	else {
-    		result = annotatedParameterList.getParameterMap(this, env);
-    	}
-    	return result;
+
+    private LinkedHashMap<String,Expression> namedArgs = 
+        new LinkedHashMap<String, Expression>();
+
+    public void addNamedArg(String name, Expression exp) throws ParseException{
+        if (namedArgs.containsKey(name)) throw new ParseException(
+                "Error at: " + exp.getStartLocation() + "\nArgument " + name + " was already specified.");
+        namedArgs.put(name, exp);
+        exp.parent = this;
     }
-	
-	List getParameterSequence(TemplateModel target, Environment env) throws TemplateException {
-		ParameterList annotatedParameterList = getParameterList(target);
-		if (annotatedParameterList == null) {
-			String msg = "Error at: " + getStartLocation() 
-            + "\nCannot invoke this method with a key=value parameter list because it is not annotated.";
-			throw new TemplateException(msg, env);
-		}
-		List<TemplateModel> result = annotatedParameterList.getParameterSequence(this, env);
-		if ((target instanceof TemplateMethodModel) && !(target instanceof TemplateMethodModelEx)) {
-			List<String> strings = new ArrayList<String>();
-			for (TemplateModel value : result) {
-				try {
-					strings.add(((TemplateScalarModel) value).getAsString());
-				} catch (ClassCastException cce) {
-					String msg = "Error at: " + getStartLocation() 
-		             + "\nThis method can only be invoked with string arguments.";
-					throw new TemplateException(msg, env);
-				}
-			}
-			return strings;
-		}
-		return result;
-	}
 
-	
-	public String getStartLocation() {
-		for (Expression exp : namedArgs.values()) {
-			return exp.getStartLocation();
-		}
-		return "";
-	}
-	
-	ArgsList deepClone(String name, Expression subst) {
-		NamedArgsList result = new NamedArgsList();
-		for (Map.Entry<String, Expression> entry : namedArgs.entrySet()) {
-			try {
-				result.addNamedArg(entry.getKey(), entry.getValue());
-			} catch (ParseException pe) {} // This can't happen anyway, since we already checked for repeats
-		}
-		return result;
-	}
+    public Map<String, Expression> getArgs() {
+        return namedArgs;
+    }
+
+    public int size() {
+        return namedArgs.size();
+    }
+
+    Map<String,Expression> getCopyOfMap() {
+        return (Map<String,Expression>)namedArgs.clone();
+    }
+
+    Map<String, TemplateModel> getParameterMap(TemplateModel tm, Environment env) throws TemplateException {
+        Map<String, TemplateModel> result = null; 
+        ParameterList annotatedParameterList = ArgsList.getParameterList(tm);
+        if (annotatedParameterList == null) {
+            result = new HashMap<String, TemplateModel>();
+            for (String paramName : namedArgs.keySet()) {
+                Expression exp = namedArgs.get(paramName);
+                TemplateModel value = exp.getAsTemplateModel(env);
+                TemplateNode.assertIsDefined(value, exp, env);
+                result.put(paramName, value);
+            }
+        }
+        else {
+            result = annotatedParameterList.getParameterMap(this, env);
+        }
+        return result;
+    }
+
+    List getParameterSequence(TemplateModel target, Environment env) throws TemplateException {
+        ParameterList annotatedParameterList = getParameterList(target);
+        if (annotatedParameterList == null) {
+            String msg = "Error at: " + getStartLocation() 
+            + "\nCannot invoke this method with a key=value parameter list because it is not annotated.";
+            throw new TemplateException(msg, env);
+        }
+        List<TemplateModel> result = annotatedParameterList.getParameterSequence(this, env);
+        if ((target instanceof TemplateMethodModel) && !(target instanceof TemplateMethodModelEx)) {
+            List<String> strings = new ArrayList<String>();
+            for (TemplateModel value : result) {
+                try {
+                    strings.add(((TemplateScalarModel) value).getAsString());
+                } catch (ClassCastException cce) {
+                    String msg = "Error at: " + getStartLocation() 
+                    + "\nThis method can only be invoked with string arguments.";
+                    throw new TemplateException(msg, env);
+                }
+            }
+            return strings;
+        }
+        return result;
+    }
+
+
+    public String getStartLocation() {
+        for (Expression exp : namedArgs.values()) {
+            return exp.getStartLocation();
+        }
+        return "";
+    }
+
+    ArgsList deepClone(String name, Expression subst) {
+        NamedArgsList result = new NamedArgsList();
+        for (Map.Entry<String, Expression> entry : namedArgs.entrySet()) {
+            try {
+                result.addNamedArg(entry.getKey(), entry.getValue());
+            } catch (ParseException pe) {} // This can't happen anyway, since we already checked for repeats
+        }
+        return result;
+    }
 }

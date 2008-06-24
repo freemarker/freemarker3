@@ -617,9 +617,7 @@ public class Configurable
     }
     
     public Environment getEnvironment() {
-        return this instanceof Environment
-            ? (Environment) this
-            : Environment.getCurrentEnvironment();
+        return Environment.getCurrentEnvironment();
     }
     
     protected TemplateException unknownSettingException(String name) {
