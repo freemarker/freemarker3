@@ -389,9 +389,7 @@ public abstract class ASTVisitor {
 	public void visit(TrimBlock node) {
 		visit(node.nestedBlock);
 	}
-	
-	
-	
+
 	public void visit(TrimInstruction node) {}
 	
 	public void visit(UnaryPlusMinusExpression node) {

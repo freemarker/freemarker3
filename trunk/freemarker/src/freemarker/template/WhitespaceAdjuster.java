@@ -108,11 +108,15 @@ public class WhitespaceAdjuster extends ASTVisitor {
 
 	public void visit(TextBlock node) {
 		int nodeType = node.getType();
-		if (nodeType !=  TextBlock.OPENING_WS && nodeType != TextBlock.TRAILING_WS) return;
+		if (nodeType !=  TextBlock.OPENING_WS && nodeType != TextBlock.TRAILING_WS) {
+			return;
+		}
 		int lineNumber = node.getBeginLine();
-		boolean noTrim = template.lineSaysNoTrim(lineNumber);
+		if (template.lineSaysNoTrim(lineNumber)) {
+			return;
+		}
 		boolean inMacro = PostParseVisitor.getContainingMacro(node) != null;
-		boolean ignorable = template.stripWhitespace && !template.isOutputtingLine(lineNumber, inMacro) && !noTrim; 
+		boolean ignorable = template.stripWhitespace && !template.isOutputtingLine(lineNumber, inMacro);
 		if (nodeType == TextBlock.OPENING_WS) {
 			boolean deliberateLeftTrim = template.lineSaysLeftTrim(lineNumber);
 			if (ignorable || deliberateLeftTrim) {

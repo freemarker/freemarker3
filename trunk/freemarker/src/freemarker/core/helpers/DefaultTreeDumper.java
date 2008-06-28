@@ -699,6 +699,20 @@ public class DefaultTreeDumper extends ASTVisitor {
 		buffer.append(CLOSE_BRACKET);
 	}
 	
+	public void visit(TrimBlock node) {
+		String tagName = "notrim";
+		if (node.left && node.right) {
+			tagName = "trim";
+		} else if (node.left) {
+			tagName = "ltrim";
+		} else if (node.right) {
+			tagName = "rtrim";
+		}
+		openDirective(tagName);
+		visit(node.getNestedBlock());
+		closeDirective(tagName);
+	}
+	
 	
 	public void visit(UnaryPlusMinusExpression node) {
 		String op = node.isMinus ? "-" : "+";

@@ -495,11 +495,22 @@ public class PostParseVisitor extends ASTVisitor {
 	public void visit(TrimBlock node) {
 		int beginLine = node.getBeginLine();
 		int endLine = node.getEndLine();
-		template.setLineSaysRightTrim(beginLine++);
-		template.setLineSaysLeftTrim(endLine--);
+		if (node.right) {
+			template.setLineSaysRightTrim(beginLine++); 
+		}
+		if (node.left) {
+			template.setLineSaysLeftTrim(endLine--);
+		}
 		for (int i= beginLine; i<=endLine; i++) {
-			template.lineSaysLeftTrim(i);
-			template.setLineSaysRightTrim(i);
+			if (node.left) {
+				template.setLineSaysLeftTrim(i);
+			}
+			if (node.right) {
+				template.setLineSaysRightTrim(i);
+			}
+			if (!node.left && !node.right) {
+				template.setLineSaysNoTrim(i);
+			}
 		}
 		super.visit(node);
 	}
