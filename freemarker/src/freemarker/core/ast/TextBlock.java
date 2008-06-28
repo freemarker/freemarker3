@@ -68,6 +68,16 @@ public final class TextBlock extends TemplateElement {
 	static {
 		EMPTY_BLOCK.ignore = true;
 	}
+	static private String rightTrim(String s) {
+		for (int i= s.length() -1; i>=0; i--) {
+			char c = s.charAt(i);
+			if (!isWhitespace(c)) {
+				return s.substring(0, i+1);
+			}
+		}
+		return "";
+	}
+
 	// We're using char[] instead of String for storing the text block because
 	// Writer.write(String) involves copying the String contents to a char[] 
 	// using String.getChars(), and then calling Writer.write(char[]). By
@@ -165,7 +175,7 @@ public final class TextBlock extends TemplateElement {
 	}
 
 
-	static private List<TextBlock> breakSingleLineIntoBlocks(String input, Template template, int column, int line) throws ParseException {
+	static private List<TextBlock> breakSingleLineIntoBlocks(String input, Template template, int column, int line) {
 		List<TextBlock> result = new ArrayList<TextBlock>();
 		char lastChar = input.charAt(input.length()-1);
 		boolean spansRight = (lastChar == '\r' || lastChar == '\n');
@@ -212,7 +222,42 @@ public final class TextBlock extends TemplateElement {
 		return result;
 	}
 	
-	static public List<TextBlock> breakIntoBlocks(String input, Template template, int beginColumn, int beginLine) throws ParseException {
+	static public List<TextBlock> breakIntoBlocksLineByLine(String input, Template template, int beginColumn, int beginLine) throws ParseException {
+		List<String> lines = lines(input);
+		List<TextBlock> result = new ArrayList<TextBlock>();
+		for (String line : lines) {
+			String ltrim = leftTrim(line);
+			int initWSLength = line.length() - ltrim.length();
+			TextBlock tb = new TextBlock(line.substring(0, initWSLength));
+			tb.setLocation(template, beginColumn, beginLine, beginColumn+initWSLength-1, beginLine);
+			beginColumn += initWSLength;
+			tb.type = TextBlock.OPENING_WS;
+			result.add(tb);
+			if (ltrim.length() >0) {
+				String trimmed = rightTrim(ltrim);
+				int trailingWSLength = ltrim.length() - trimmed.length();
+				if (trimmed.length() >0) {
+					tb = new TextBlock(trimmed);
+					tb.setLocation(template, beginColumn, beginLine, beginColumn + trimmed.length() -1, beginLine);
+					tb.type = TextBlock.PRINTABLE_TEXT;
+					result.add(tb);
+					beginColumn += trimmed.length();
+				}
+				if (trailingWSLength>0) {
+					String trailingWS = ltrim.substring(trimmed.length());
+					tb = new TextBlock(trailingWS);
+					tb.setLocation(template, beginColumn, beginLine, beginColumn + trailingWSLength-1, beginLine); 
+					tb.type = TextBlock.TRAILING_WS;
+					result.add(tb);
+				}
+			}
+			beginColumn = 1;
+			beginLine++;
+		}
+		return result;
+	}
+	
+	static public List<TextBlock> breakIntoBlocks(String input, Template template, int beginColumn, int beginLine) {
 		int numLines = countLines(input);
 		if (numLines == 1) {
 			return breakSingleLineIntoBlocks(input, template, beginColumn, beginLine);
@@ -332,6 +377,16 @@ public final class TextBlock extends TemplateElement {
 		}
 		return input;
 	}
+	
+	static private List<String> lines(String input) {
+		List<String> result = new ArrayList<String>();
+		while (input.length() >0) {
+			String line = firstLine(input);
+			result.add(line);
+			input = input.substring(line.length());
+		}
+		return result;
+	}
 
 
 	static private String leftTrim(String s) {
@@ -339,16 +394,6 @@ public final class TextBlock extends TemplateElement {
 			char c = s.charAt(i);
 			if (!isWhitespace(c)) {
 				return s.substring(i);
-			}
-		}
-		return "";
-	}
-
-	static private String rightTrim(String s) {
-		for (int i= s.length() -1; i>=0; i--) {
-			char c = s.charAt(i);
-			if (!isWhitespace(c)) {
-				return s.substring(0, i+1);
 			}
 		}
 		return "";

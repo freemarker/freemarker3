@@ -386,6 +386,12 @@ public abstract class ASTVisitor {
 		recurse(node);
 	}
 	
+	public void visit(TrimBlock node) {
+		visit(node.nestedBlock);
+	}
+	
+	
+	
 	public void visit(TrimInstruction node) {}
 	
 	public void visit(UnaryPlusMinusExpression node) {
