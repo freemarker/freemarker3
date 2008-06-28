@@ -58,8 +58,12 @@ import freemarker.core.Environment;
 import freemarker.template.*;
 
 public class TrimBlock extends TemplateElement {
+	
+	public final boolean left, right;
     
-    public TrimBlock(TemplateElement block) {
+    public TrimBlock(TemplateElement block, boolean left, boolean right) {
+    	this.left = left;
+    	this.right = right;
         this.nestedBlock = block;
     }
 

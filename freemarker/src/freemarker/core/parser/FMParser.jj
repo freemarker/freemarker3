@@ -390,6 +390,12 @@ TOKEN:
     |
     <BLOCKTRIM : <START_TAG> "trim" <CLOSE_TAG1>>
     |
+    <BLOCKTRIML : <START_TAG> "ltrim" <CLOSE_TAG2>>
+    |
+    <BLOCKTRIMR : <START_TAG> "rtrim" <CLOSE_TAG1>>
+    |
+    <BLOCKNOTRIM : <START_TAG> "notrim" <CLOSE_TAG1>>
+    |
     <IF : <START_TAG> "if" <BLANK>> 
     |
     <ELSE_IF : <START_TAG> "elseif" <BLANK>>
@@ -2403,13 +2409,24 @@ TrimBlock TrimBlock() :
 {
 	Token start, end;
 	TemplateElement content;
+	boolean left = false, right = false;
+	String closeTag = null;
 }
 {
-	start=<BLOCKTRIM> {trimBlockNesting++;}
+	(
+	   start=<BLOCKTRIM> {closeTag = "trim"; left = right = true;}
+	   |
+	   start=<BLOCKTRIML> {closeTag = "ltrim"; left = true;}
+	   |
+	   start=<BLOCKTRIMR> {closeTag = "rtrim"; right = true;}
+	   |
+	   start=<BLOCKNOTRIM> {closeTag = "notrim";}
+	) 
+	{trimBlockNesting++;}
 	content=OptionalBlock()
-	end=CloseDirectiveBlock("trim")
+	end=CloseDirectiveBlock(closeTag)
 	{
-		TrimBlock result = new TrimBlock(content);
+		TrimBlock result = new TrimBlock(content, left, right);
 		result.setLocation(template, start, end);
 		trimBlockNesting--;
 		return result;
