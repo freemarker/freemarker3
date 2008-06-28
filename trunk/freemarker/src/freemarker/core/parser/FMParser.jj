@@ -82,6 +82,7 @@ public class FMParser {
   private boolean stripText;
 // variables that keep track of whether we are in a loop or a switch.
   private int contentNesting; // for stripText
+  private int trimBlockNesting;
   
   /**
    * Create an FM expression parser using a string.
@@ -387,6 +388,8 @@ TOKEN:
     |
     <RECOVER : <START_TAG> "recover" <CLOSE_TAG1>>
     |
+    <BLOCKTRIM : <START_TAG> "trim" <CLOSE_TAG1>>
+    |
     <IF : <START_TAG> "if" <BLANK>> 
     |
     <ELSE_IF : <START_TAG> "elseif" <BLANK>>
@@ -395,7 +398,7 @@ TOKEN:
     |
     <FOREACH : <START_TAG> "foreach" <BLANK>> 
     |
-    <SWITCH : <START_TAG> "switch" <BLANK>> 
+    <SWITCH : <START_TAG> "switch" <BLANK>>
     |
     <CASE : <START_TAG> "case" <BLANK>> 
     |
@@ -522,7 +525,7 @@ TOKEN:
       ("'"
           ((~["\\", "'"]) | ("\\" ~[]))*            
       "'")
-  >
+  > 
   |
   <RAW_STRING : "r" (("\"" (~["\""])* "\"") | ("'" (~["'"])* "'"))>
   |
@@ -2293,7 +2296,7 @@ NoParseBlock NoParse() :
     		}
     		lastChar = c;
     	}
-    	List<TextBlock> text = TextBlock.breakIntoBlocks(buf.toString(), template, beginColumn, beginLine);
+       	List<TextBlock> text = TextBlock.breakIntoBlocks(buf.toString(), template, beginColumn, beginLine);
         NoParseBlock result = new NoParseBlock(start.image, end.image, text);
         result.setLocation(template, start, end);
         return result;
@@ -2395,6 +2398,24 @@ Case Case() :
        return result;
    }
 }
+
+TrimBlock TrimBlock() :
+{
+	Token start, end;
+	TemplateElement content;
+}
+{
+	start=<BLOCKTRIM> {trimBlockNesting++;}
+	content=OptionalBlock()
+	end=CloseDirectiveBlock("trim")
+	{
+		TrimBlock result = new TrimBlock(content);
+		result.setLocation(template, start, end);
+		trimBlockNesting--;
+		return result;
+	}
+}
+	
 
 EscapeBlock Escape() :
 {
@@ -2599,6 +2620,8 @@ TemplateElement FreemarkerDirective() :
      |
      tp=NoEscape()
      |
+     tp=TrimBlock()
+     |
      tp=Visit()
      |
      tp=Recurse()
@@ -2644,7 +2667,11 @@ List<TextBlock> PCData() :
              result.add(TextBlock.EMPTY_BLOCK);
              return result;
          }
-         result = TextBlock.breakIntoBlocks(buf.toString(), template, start.beginColumn, start.beginLine);
+    	 if (trimBlockNesting>0) {
+    		result = TextBlock.breakIntoBlocksLineByLine(buf.toString(), template, start.beginColumn, start.beginLine); 
+    	 } else {
+            result = TextBlock.breakIntoBlocks(buf.toString(), template, start.beginColumn, start.beginLine);
+    	 }
          return result;
     }
 }
