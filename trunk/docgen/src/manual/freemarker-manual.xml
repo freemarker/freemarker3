@@ -809,16 +809,20 @@ All Rights Reserved.
           <programlisting role="template">[#if <emphasis>user??</emphasis>]&lt;h1&gt;Welcome ${user}!&lt;/h1&gt;[/#if]</programlisting>
 
           <para>Regarding variable accessing with multiple steps, like
-          <literal>animals.python.price</literal>; writing
+          <literal>animals.python.price</literal>, writing
           <literal>animals.python.price!0</literal> is correct only if
           <literal>animals.python</literal> is never missing and only the last
           subvariable, <literal>price</literal>, is possibly missing (in which
           case here we assume it's <literal>0</literal>). If
-          <literal>animals</literal> or the <literal>python</literal> within
-          it is possibly missing as well, then you have to write
-          <literal>(animals.python.price)!0</literal>. Same logic goes for
-          <literal>??</literal>; <literal>animals.python.price??</literal>
-          versus <literal>(animals.python.price)??</literal>.</para>
+          <literal>animals</literal> or <literal>python</literal> is missing,
+          the template processing will stop with an "undefined variable"
+          error. To prevent this, you have to write
+          <literal>(animals.python.price)!0</literal>. In that case the
+          expression will be <literal>0</literal> even if
+          <literal>animals</literal> or <literal>python</literal> is missing.
+          Same logic goes for <literal>??</literal>;
+          <literal>animals.python.price??</literal> versus
+          <literal>(animals.python.price)??</literal>.</para>
         </sect2>
       </sect1>
     </chapter>
@@ -1251,7 +1255,7 @@ brown</programlisting>
           collection) as well. This way you can build arbitrarily deep
           structures.</para>
 
-          <para>The data-model itself (or better said the root if it) is a
+          <para>The data-model itself (or better said the root of it) is a
           hash.</para>
         </sect2>
 
