@@ -248,7 +248,7 @@ public class PostParseVisitor extends ASTVisitor {
 			TemplateElement parent=node.getParent();
 			while (parent != null) {
 				parent = parent.getParent();
-				if (parent != null && !(parent instanceof EscapeBlock) && !(parent instanceof NoEscapeBlock)) {
+				if (parent != null && !(parent instanceof EscapeBlock) && !(parent instanceof NoEscapeBlock) && !(parent instanceof MixedContent)) {
 					ParsingProblem problem = new ParsingProblem("Macro " + macroName + " is within a " + parent.getDescription() + ". It must be a top-level element.");
 					template.addParsingProblem(problem);
 				}
@@ -490,6 +490,18 @@ public class PostParseVisitor extends ASTVisitor {
 			if (!(node.left || node.right)) 
 				template.setLineSaysNoTrim(i);
 		}
+	}
+	
+	public void visit(TrimBlock node) {
+		int beginLine = node.getBeginLine();
+		int endLine = node.getEndLine();
+		template.setLineSaysRightTrim(beginLine++);
+		template.setLineSaysLeftTrim(endLine--);
+		for (int i= beginLine; i<=endLine; i++) {
+			template.lineSaysLeftTrim(i);
+			template.setLineSaysRightTrim(i);
+		}
+		super.visit(node);
 	}
 	
     public void visit(PropertySetting node) {
