@@ -1,25 +1,25 @@
- Hello  [#trim] foo bar  
+ Hello  [#t_lines] foo bar  
    x
 y
      z
-[/#trim]
+[/#t_lines]
 ---
 
-[#ltrim]
+[#lt_lines]
     Hello,
      World
 
     Hello[#nt]
-    [#notrim]
+    [#nt_lines]
    World
-   Kilroy [/#notrim]
+   Kilroy [/#nt_lines]
 
    was 
        here
-[/#ltrim]
+[/#lt_lines]
 
-[#rtrim]
+[#rt_lines]
  Hello,
  World
-  [#notrim] of mine[/#notrim]
-[/#rtrim]
+  [#nt_lines] of mine[/#nt_lines]
+[/#rt_lines]

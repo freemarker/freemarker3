@@ -700,13 +700,13 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(TrimBlock node) {
-		String tagName = "notrim";
+		String tagName = "nt_lines";
 		if (node.left && node.right) {
-			tagName = "trim";
+			tagName = "t_lines";
 		} else if (node.left) {
-			tagName = "ltrim";
+			tagName = "lt_lines";
 		} else if (node.right) {
-			tagName = "rtrim";
+			tagName = "rt_lines";
 		}
 		openDirective(tagName);
 		visit(node.getNestedBlock());

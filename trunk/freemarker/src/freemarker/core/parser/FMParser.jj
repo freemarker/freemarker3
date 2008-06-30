@@ -388,13 +388,13 @@ TOKEN:
     |
     <RECOVER : <START_TAG> "recover" <CLOSE_TAG1>>
     |
-    <BLOCKTRIM : <START_TAG> "trim" <CLOSE_TAG1>>
+    <BLOCKTRIM : <START_TAG> "t_lines" <CLOSE_TAG1>>
     |
-    <BLOCKTRIML : <START_TAG> "ltrim" <CLOSE_TAG2>>
+    <BLOCKTRIML : <START_TAG> "lt_lines" <CLOSE_TAG2>>
     |
-    <BLOCKTRIMR : <START_TAG> "rtrim" <CLOSE_TAG1>>
+    <BLOCKTRIMR : <START_TAG> "rt_lines" <CLOSE_TAG1>>
     |
-    <BLOCKNOTRIM : <START_TAG> "notrim" <CLOSE_TAG1>>
+    <BLOCKNOTRIM : <START_TAG> "nt_lines" <CLOSE_TAG1>>
     |
     <IF : <START_TAG> "if" <BLANK>> 
     |
@@ -2414,13 +2414,13 @@ TrimBlock TrimBlock() :
 }
 {
 	(
-	   start=<BLOCKTRIM> {closeTag = "trim"; left = right = true;}
+	   start=<BLOCKTRIM> {closeTag = "t_lines"; left = right = true;}
 	   |
-	   start=<BLOCKTRIML> {closeTag = "ltrim"; left = true;}
+	   start=<BLOCKTRIML> {closeTag = "lt_lines"; left = true;}
 	   |
-	   start=<BLOCKTRIMR> {closeTag = "rtrim"; right = true;}
+	   start=<BLOCKTRIMR> {closeTag = "rt_lines"; right = true;}
 	   |
-	   start=<BLOCKNOTRIM> {closeTag = "notrim";}
+	   start=<BLOCKNOTRIM> {closeTag = "nt_lines";}
 	) 
 	{trimBlockNesting++;}
 	content=OptionalBlock()
