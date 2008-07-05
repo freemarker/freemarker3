@@ -75,40 +75,7 @@ public class StringUtil {
      *  Replaces all '&gt;' '&lt;' '&amp;' and '"' with entity reference
      */
     public static String HTMLEnc(String s) {
-        int ln = s.length();
-        for (int i = 0; i < ln; i++) {
-            char c = s.charAt(i);
-            if (c == '<' || c == '>' || c == '&' || c == '"') {
-                StringBuilder b =
-                        new StringBuilder(s.substring(0, i));
-                switch (c) {
-                    case '<': b.append("&lt;"); break;
-                    case '>': b.append("&gt;"); break;
-                    case '&': b.append("&amp;"); break;
-                    case '"': b.append("&quot;"); break;
-                }
-                i++;
-                int next = i;
-                while (i < ln) {
-                    c = s.charAt(i);
-                    if (c == '<' || c == '>' || c == '&' || c == '"') {
-                        b.append(s.substring(next, i));
-                        switch (c) {
-                            case '<': b.append("&lt;"); break;
-                            case '>': b.append("&gt;"); break;
-                            case '&': b.append("&amp;"); break;
-                            case '"': b.append("&quot;"); break;
-                        }
-                        next = i + 1;
-                    }
-                    i++;
-                }
-                if (next < ln) b.append(s.substring(next));
-                s = b.toString();
-                break;
-            } // if c ==
-        } // for
-        return s;
+        return XMLEncNA(s);
     }
 
     /**
@@ -116,6 +83,21 @@ public class StringUtil {
      *  Replaces all '&gt;' '&lt;' '&amp;', "'" and '"' with entity reference
      */
     public static String XMLEnc(String s) {
+        return XMLOrXHTMLEnc(s, "&apos;");
+    }
+
+    /**
+     *  XHTML Encoding.
+     *  Replaces all '&gt;' '&lt;' '&amp;', "'" and '"' with entity reference
+     *  suitable for XHTML decoding in common user agents (including legacy
+     *  user agents, which do not decode "&apos;" to "'", so "&#39;" is used
+     *  instead [see http://www.w3.org/TR/xhtml1/#C_16])
+     */
+    public static String XHTMLEnc(String s) {
+        return XMLOrXHTMLEnc(s, "&#39;");
+    }
+    
+    private static String XMLOrXHTMLEnc(String s, String aposReplacement) {
         int ln = s.length();
         for (int i = 0; i < ln; i++) {
             char c = s.charAt(i);
@@ -127,7 +109,7 @@ public class StringUtil {
                     case '>': b.append("&gt;"); break;
                     case '&': b.append("&amp;"); break;
                     case '"': b.append("&quot;"); break;
-                    case '\'': b.append("&apos;"); break;
+                    case '\'': b.append(aposReplacement); break;
                 }
                 i++;
                 int next = i;
@@ -140,7 +122,7 @@ public class StringUtil {
                             case '>': b.append("&gt;"); break;
                             case '&': b.append("&amp;"); break;
                             case '"': b.append("&quot;"); break;
-                            case '\'': b.append("&apos;"); break;
+                            case '\'': b.append(aposReplacement); break;
                         }
                         next = i + 1;
                     }
@@ -153,7 +135,7 @@ public class StringUtil {
         } // for
         return s;
     }
-
+    
     /**
      *  XML encoding without replacing apostrophes.
      *  @see #XMLEnc(String)
@@ -273,53 +255,6 @@ public class StringUtil {
         } // for
         return s;
     }
-    
-    /**
-     *  XHTML Encoding.
-     *  Replaces all '&gt;' '&lt;' '&amp;', "'" and '"' with entity reference
-     *  suitable for XHTML decoding in common user agents (including legacy
-     *  user agents, which do not decode "&apos;" to "'", so "&#39;" is used
-     *  instead [see http://www.w3.org/TR/xhtml1/#C_16])
-     */
-    public static String XHTMLEnc(String s) {
-        int ln = s.length();
-        for (int i = 0; i < ln; i++) {
-            char c = s.charAt(i);
-            if (c == '<' || c == '>' || c == '&' || c == '"' || c == '\'') {
-                StringBuilder b =
-                        new StringBuilder(s.substring(0, i));
-                switch (c) {
-                    case '<': b.append("&lt;"); break;
-                    case '>': b.append("&gt;"); break;
-                    case '&': b.append("&amp;"); break;
-                    case '"': b.append("&quot;"); break;
-                    case '\'': b.append("&#39;"); break;
-                }
-                i++;
-                int next = i;
-                while (i < ln) {
-                    c = s.charAt(i);
-                    if (c == '<' || c == '>' || c == '&' || c == '"' || c == '\'') {
-                        b.append(s.substring(next, i));
-                        switch (c) {
-                            case '<': b.append("&lt;"); break;
-                            case '>': b.append("&gt;"); break;
-                            case '&': b.append("&amp;"); break;
-                            case '"': b.append("&quot;"); break;
-                            case '\'': b.append("&#39;"); break;
-                        }
-                        next = i + 1;
-                    }
-                    i++;
-                }
-                if (next < ln) b.append(s.substring(next));
-                s = b.toString();
-                break;
-            } // if c ==
-        } // for
-        return s;
-    }
-    
     /**
      *  Rich Text Format encoding (does not replace line breaks).
      *  Escapes all '\' '{' '}' and '"'
