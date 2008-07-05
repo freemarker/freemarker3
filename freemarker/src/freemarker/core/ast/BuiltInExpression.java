@@ -96,6 +96,7 @@ public class BuiltInExpression extends Expression implements Cloneable {
 		knownBuiltins.put("html", stringTransformations);
 		knownBuiltins.put("rtf", stringTransformations);
 		knownBuiltins.put("xml", stringTransformations);
+		knownBuiltins.put("xhtml", stringTransformations);
 		knownBuiltins.put("web_safe", stringTransformations);
 		TypeChecks typeChecks = new TypeChecks();
 		knownBuiltins.put("is_boolean", typeChecks);

@@ -15,6 +15,7 @@ trim3:      foo bar
 trim4:      foo bar
 upper_case:   DIEBUGSDIE! * VAZZZE 123456 --CDC-- --<<--@ X ${"KIGYO"?UPPER_CASE}  
 xml:          dieBugsDie! * vazzZE 123456 --cdc-- --&lt;&lt;--@ x ${&quot;kigyo&quot;?upper_case}  
+xhtml:      &quot;Blah&#39;s is &gt; 1 &amp; &lt; 2&quot;
 
 word_list:
 - dieBugsDie!

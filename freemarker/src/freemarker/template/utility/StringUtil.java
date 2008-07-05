@@ -275,6 +275,52 @@ public class StringUtil {
     }
     
     /**
+     *  XHTML Encoding.
+     *  Replaces all '&gt;' '&lt;' '&amp;', "'" and '"' with entity reference
+     *  suitable for XHTML decoding in common user agents (including legacy
+     *  user agents, which do not decode "&apos;" to "'", so "&#39;" is used
+     *  instead [see http://www.w3.org/TR/xhtml1/#C_16])
+     */
+    public static String XHTMLEnc(String s) {
+        int ln = s.length();
+        for (int i = 0; i < ln; i++) {
+            char c = s.charAt(i);
+            if (c == '<' || c == '>' || c == '&' || c == '"' || c == '\'') {
+                StringBuilder b =
+                        new StringBuilder(s.substring(0, i));
+                switch (c) {
+                    case '<': b.append("&lt;"); break;
+                    case '>': b.append("&gt;"); break;
+                    case '&': b.append("&amp;"); break;
+                    case '"': b.append("&quot;"); break;
+                    case '\'': b.append("&#39;"); break;
+                }
+                i++;
+                int next = i;
+                while (i < ln) {
+                    c = s.charAt(i);
+                    if (c == '<' || c == '>' || c == '&' || c == '"' || c == '\'') {
+                        b.append(s.substring(next, i));
+                        switch (c) {
+                            case '<': b.append("&lt;"); break;
+                            case '>': b.append("&gt;"); break;
+                            case '&': b.append("&amp;"); break;
+                            case '"': b.append("&quot;"); break;
+                            case '\'': b.append("&#39;"); break;
+                        }
+                        next = i + 1;
+                    }
+                    i++;
+                }
+                if (next < ln) b.append(s.substring(next));
+                s = b.toString();
+                break;
+            } // if c ==
+        } // for
+        return s;
+    }
+    
+    /**
      *  Rich Text Format encoding (does not replace line breaks).
      *  Escapes all '\' '{' '}' and '"'
      */
