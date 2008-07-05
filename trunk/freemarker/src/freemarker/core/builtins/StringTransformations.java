@@ -89,6 +89,9 @@ public class StringTransformations extends BuiltIn {
 		if (builtInName == "xml") {
 			return StringUtil.XMLEnc(string);
 		}
+		if (builtInName == "xhtml") {
+			return StringUtil.XHTMLEnc(string);
+		}
 		if (builtInName == "rtf") {
 			return StringUtil.RTFEnc(string);
 		}

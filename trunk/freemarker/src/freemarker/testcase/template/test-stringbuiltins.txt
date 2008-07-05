@@ -16,6 +16,7 @@ trim3:      ${" foo bar"?trim}
 trim4:      ${"foo bar "?trim}
 upper_case: ${x?upper_case}
 xml:        ${x?xml}
+xhtml:      ${('"' + "Blah's is > 1 & < 2" + '"')?xhtml}
 
 word_list:
 <#global words = x?word_list>

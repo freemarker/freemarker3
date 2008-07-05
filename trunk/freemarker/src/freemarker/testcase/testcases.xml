@@ -68,6 +68,7 @@
    </testcase>
    <testcase name="loopvariable" filename="test-loopvar.txt" />
    <testcase name="macros" filename="test-function.html"/>
+   <!-- <testcase name="macros2" filename="test-macro.html"/> -->
    <testcase name="multimodels" filename="test-models.html"/>
    <testcase name="nested" filename="test-nested1.txt" />
    <testcase name="newlines1" filename="test-newlines1.html" />
