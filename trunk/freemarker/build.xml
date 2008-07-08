@@ -67,6 +67,7 @@
             <!--available file="lib/dom4j.jar"/-->
             <available file="lib/emma.jar"/>
             <available file="lib/emma_ant.jar"/>
+  	    <available file="lib/freemarker-bootstrap.jar"/>
             <available file="lib/javacc.jar"/>
             <available file="lib/jaxen.jar"/>
             <!--available file="lib/jdom.jar"/-->
@@ -76,6 +77,7 @@
             <available file="lib/jsp-api-2.1.jar"/>
             <available file="lib/junit.jar"/>
             <available file="lib/jython-2.2.1.jar"/>
+	    <available file="lib/kawadd.jar"/>
             <available file="lib/log4j.jar"/>
             <available file="lib/retrotranslator-transformer-1.2.3.jar"/>
             <available file="lib/retrotranslator-runtime-1.2.3.jar"/>
@@ -88,6 +90,10 @@
          </and>
        </condition>
        <antcall target="fetchlibs"/>
+	<uptodate property="parser.gen"
+                 targetfile="src/freemarker/core/parser/FMParser.jj">
+	            <srcfiles dir="src/freemarker/core/parser" includes="FMParser.java"/>
+	</uptodate>
    </target>
    
    <target name="javacc" depends="init"
@@ -99,7 +105,18 @@
         />
    </target>
    
-   <target name="compile" depends="javacc">
+   
+   <target name="kawadd" depends="init" if="parser.gen" description="Build the parser from its grammar file">
+        <java classname="kawadd.parser.Main" classpath="lib/kawadd.jar:lib/freemarker-bootstrap.jar"
+              failonerror="true" fork="true">
+ 		<arg value="-OUTPUT_DIRECTORY=src/freemarker/core/parser"/>
+		<arg file="src/freemarker/core/parser/FMParser.jj"/>
+		<assertions><enable/></assertions>
+ 	</java>
+   </target>
+   
+   
+   <target name="compile" depends="kawadd">
    	<mkdir dir="${classes.dir}"/>
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
                debug="on" optimize="off" target="1.5" source="1.5"
