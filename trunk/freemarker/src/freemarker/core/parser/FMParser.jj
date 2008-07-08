@@ -359,7 +359,7 @@ TOKEN_MGR_DECLS :
 	 		 	token.kind = PRINTABLE_CHARS;
  			}
  			break;
-  		case FUNCTION: case MACRO: case NESTED: case TRANSFORM: case STOP: case RETURN: case CALL:
+  		case FUNCTION: case MACRO: case PARAM: case NESTED: case TRANSFORM: case STOP: case RETURN: case CALL:
   		case IF: case ELSE_IF: 
   		case VISIT: case RECURSE: 
  		case VAR: case SET: case ASSIGN: case LOCALASSIGN: case GLOBALASSIGN:
@@ -422,7 +422,9 @@ TOKEN:
     |
     <FUNCTION : <START_TAG> "function" <BLANK>> 
     |
-    <MACRO : <START_TAG> "macro" <BLANK>> 
+    <MACRO : <START_TAG> "macro" <BLANK>>
+    |
+    <PARAM : <START_TAG> "param" <BLANK>> 
     |
     <TRANSFORM : <START_TAG> "transform" <BLANK>> 
     |
@@ -2008,6 +2010,38 @@ ParameterList ParameterList() :
 			result.setLocation(template, firstArg, arg);
 		}
 		return result;
+	}
+}
+
+Param Param() :
+{
+	Token start, end;
+	Expression nameExp;
+	String name;
+	ParameterList params;
+	TemplateElement block;
+}
+{
+	start=<PARAM>
+	nameExp=IdentifierOrStringLiteral()
+	 
+	{
+       name = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
+	}
+    [<OPEN_PAREN>]
+    params=ParameterList() 
+    [<CLOSE_PAREN>]
+    (
+      end=<EMPTY_DIRECTIVE_END>
+      |
+      (
+         <DIRECTIVE_END>
+         block=OptionalBlock()
+         end=CloseDirectiveBlock("param")
+      )
+    )
+	{
+		return null;
 	}
 }
 
