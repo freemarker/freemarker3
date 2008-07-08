@@ -914,15 +914,12 @@ Expression MultiplicativeExpression() :
 {
    lhs=UnaryExpression() {result = lhs;}
    (
-      LOOKAHEAD(<TIMES>|<DIVIDE>|<PERCENT>)
       (
-        (
          <TIMES> {operation = ArithmeticExpression.MULTIPLICATION;}
          |
          <DIVIDE> {operation = ArithmeticExpression.DIVISION;}
          |
          <PERCENT>{operation = ArithmeticExpression.MODULUS;}
-        )
       )
       rhs=UnaryExpression()
       {
@@ -945,7 +942,6 @@ Expression EqualityExpression() :
 {
    lhs=RelationalExpression() {result = lhs;}
    [
-     LOOKAHEAD(<NOT_EQUALS>|<EQUALS>|<DOUBLE_EQUALS>)
      (
       t=<NOT_EQUALS> 
       |
@@ -972,7 +968,6 @@ Expression RelationalExpression() :
 {
    lhs=RangeExpression() {result = lhs;}
    [
-     LOOKAHEAD(<GREATER_THAN_EQUALS>|<ESCAPED_GTE>|<GREATER_THAN>|<ESCAPED_GT>|<LESS_THAN_EQUALS>|<LESS_THAN_EQUALS>|<LESS_THAN>)
      (
       t=<GREATER_THAN_EQUALS>
       |
@@ -1004,10 +999,9 @@ Expression RangeExpression() :
 {
     lhs=AdditiveExpression() {result = lhs;}
     [
-      LOOKAHEAD(<DOT_DOT>)
       <DOT_DOT>
        [
-        LOOKAHEAD(Expression())
+        LOOKAHEAD(AdditiveExpression())
         rhs=AdditiveExpression()
        ]
        {
@@ -1035,7 +1029,6 @@ Expression AndExpression() :
 {
    lhs=EqualityExpression() {result = lhs;}
    (
-      LOOKAHEAD(<AND>)
       <AND>
       rhs=EqualityExpression()
       {
@@ -1056,7 +1049,6 @@ Expression OrExpression() :
 {
    lhs=AndExpression() {result = lhs;}
    (
-     LOOKAHEAD(<OR>)
       <OR>
       rhs=AndExpression()
       {
@@ -2239,7 +2231,7 @@ TemplateElement Call() :
     start=<CALL>
     id=Identifier() {result.setNameExp(id);}
     [
-	    LOOKAHEAD(<OPEN_PAREN>)
+	    LOOKAHEAD(1)
 	    <OPEN_PAREN>
 	]
     args=ArgsList() {result.setArgs(args);}

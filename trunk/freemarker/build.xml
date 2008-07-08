@@ -112,6 +112,7 @@
         <java classname="kawadd.parser.Main" classpath="lib/kawadd.jar:lib/freemarker-bootstrap.jar"
               failonerror="true" fork="true">
  		<arg value="-OUTPUT_DIRECTORY=src/freemarker/core/parser"/>
+		<arg value="-JDK_VERSION=1.5"/>
 		<arg file="src/freemarker/core/parser/FMParser.jj"/>
 		<assertions><enable/></assertions>
  	</java>
