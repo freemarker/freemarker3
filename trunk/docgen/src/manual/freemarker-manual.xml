@@ -4,7 +4,7 @@
 <book conformance="freemarker-documentation-conventions" lang="en">
   <title>FreeMarker Manual</title>
 
-  <subtitle>For FreeMarker 2.4pre1</subtitle>
+  <subtitle>For FreeMarker 2.4pre1 - INCOMPLETE/OUTDATED!</subtitle>
 
   <preface id="preface">
     <title>Preface</title>
@@ -10217,9 +10217,10 @@ Test Book</programlisting>
             url="http://jaxen.org/">Jaxen</ulink> (recommended, but use at
             least Jaxen 1.1-beta-8, not older) or <ulink
             url="http://xml.apache.org/xalan/">Apache Xalan</ulink> classes
-            are available. (Apache Xalan classes are included in Sun J2SE 1.4,
+            are available. Apache Xalan classes are included in Sun J2SE 1.4,
             1.5 and 1.6 (and maybe later too); no separate Xalan jar is
-            needed.)</para>
+            needed. By default, Jaxen will be used if its classes are found
+            (since FreeMarker 2.4), otherwise Xalan is used.</para>
           </note>
 
           <para>If a hash key used with a node variable can't be interpreted
@@ -10573,9 +10574,9 @@ Test Book</programlisting>
             keys hide the XPath expressions of the same meaning, those XPath
             expressions will work even if there is no XPath implementation
             available. <phrase role="forProgrammers">If both Xalan and Jaxen
-            is available, FreeMarker will use Xalan, unless you choose Jaxen
-            by calling
-            <literal>freemarker.ext.dom.NodeModel.useJaxenXPathSupport()</literal>
+            is available, FreeMarker will use Jaxen (since FreeMarker 2.4),
+            unless you choose Xalan by calling
+            <literal>freemarker.ext.dom.NodeModel.useXalanXPathSupport()</literal>
             from Java.</phrase></para>
           </listitem>
 
@@ -11489,6 +11490,10 @@ End book</programlisting>
 
         <listitem>
           <para><link linkend="ref_builtin_word_list">word_list</link></para>
+        </listitem>
+
+        <listitem>
+          <para><link linkend="ref_builtin_xhtml">xhtml</link></para>
         </listitem>
 
         <listitem>
@@ -12499,6 +12504,56 @@ ${x?url}</programlisting>
           <para>will output:</para>
 
           <programlisting role="output">[a][bcd,][.][1-2-3]</programlisting>
+        </simplesect>
+
+        <simplesect id="ref_builtin_xhtml">
+          <title>xhtml</title>
+
+          <indexterm>
+            <primary>xhtml built-in</primary>
+          </indexterm>
+
+          <indexterm>
+            <primary>escaping</primary>
+
+            <secondary>output</secondary>
+          </indexterm>
+
+          <para>The string as XHTML text. That is, the string with all:</para>
+
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para><markup>&lt;</markup> replaced with
+              <markup>&amp;lt;</markup></para>
+            </listitem>
+
+            <listitem>
+              <para><markup>&gt;</markup> replaced with
+              <markup>&amp;gt;</markup></para>
+            </listitem>
+
+            <listitem>
+              <para><markup>&amp;</markup> replaced with
+              <markup>&amp;amp;</markup></para>
+            </listitem>
+
+            <listitem>
+              <para><markup>"</markup> replaced with
+              <markup>&amp;quot;</markup></para>
+            </listitem>
+
+            <listitem>
+              <para><markup>'</markup> replaced with
+              <markup>&amp;#39;</markup></para>
+            </listitem>
+          </itemizedlist>
+
+          <para>The only difference between this built-in and the
+          <literal>xml</literal> built-in is that the <literal>xhtml</literal>
+          built-in escapes <markup>'</markup> as <markup>&amp;#39;</markup>
+          instead of as <markup>&amp;apos;</markup>, because some older
+          browsers don't interpret <markup>&amp;apos;</markup>
+          correctly.</para>
         </simplesect>
 
         <simplesect id="ref_builtin_xml">
@@ -16282,7 +16337,9 @@ etc.</programlisting>
               name of the <link linkend="dgui_misc_var">local variables</link>
               store the parameter values (not expression), optionally followed
               by <literal>=</literal> and the default value (that's an
-              expression).</para>
+              expression). The default value is allowed to be any other
+              parameter, for example<literal>[#macro section title
+              label=title]</literal> is valid.</para>
             </listitem>
 
             <listitem>
@@ -19714,7 +19771,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       <sect1 id="versions_2_4pre1">
         <title>2.4 Preview 1</title>
 
-        <para>Date of release: Not yet released</para>
+        <para>Date of release: 2008-06-13</para>
 
         <sect2>
           <title>Changes on the FTL side</title>
@@ -19843,6 +19900,399 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               which case the templates will be loaded from the Web application
               root directory, or if the template is not found there, then from
               the <literal>com.example.templates</literal> package.</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: Now you can use the values of parameters as the
+              defaults of other parameters, for example <literal>[#macro
+              section title label=title]</literal>. In earlier versions it was
+              worked unreliably. There are no restriction regarding the order
+              of parameters, like <literal>[#macro section label=title
+              title]</literal> works too.</para>
+            </listitem>
+
+            <listitem>
+              <para>Not backward compatible change: The default XPath engine
+              is Jaxen from now. That is, if Jaxen is found in the class path,
+              it will be used instead of Xalan. Be sure that if Jaxen is
+              present, it is at least Jaxen 1.1.</para>
+            </listitem>
+          </itemizedlist>
+        </sect2>
+      </sect1>
+
+      <sect1 id="versions_2_3_14">
+        <title>2.3.14</title>
+
+        <para>Date of release: 2008-??-?? (Not released yet!)</para>
+
+        <sect2>
+          <title>Changes on the FTL side</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>New built-in: <literal>xhtml</literal>. See more <link
+              linkend="ref_builtin_xhtml">here...</link></para>
+            </listitem>
+          </itemizedlist>
+        </sect2>
+
+        <sect2>
+          <title>Changes on the Java side</title>
+
+          <itemizedlist>
+            <listitem>
+              <para><ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1898300&amp;group_id=794&amp;atid=350794">[1898300]</ulink>,
+              <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1818742&amp;group_id=794&amp;atid=350794">[1818742]</ulink>,
+              <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1780882&amp;group_id=794&amp;atid=350794">[1780882]</ulink>:
+              Reworked template caching mechanism for radically improved
+              concurrent performance, with help from Azul Systems engineers.
+              (Achieved 20x speedup with Struts2 webapps on a 128-CPU Azul
+              device compared to 2.3.12.) Also, template loading (including
+              parsing) errors are now cached, improving performance in
+              applications that often try to get missing templates.</para>
+            </listitem>
+
+            <listitem>
+              <para><ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1892546&amp;group_id=794&amp;atid=100794">[1892546]</ulink>
+              Allow for custom <literal>TemplateLoader</literal> in
+              <literal>FreemarkerServlet</literal>.</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1725107&amp;group_id=794&amp;atid=100794">[1725107]</ulink>
+              Using the FreeMarker JSP taglib support with Servlet 2.4 may
+              generates XML validation warnings.</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1939742&amp;group_id=794&amp;atid=100794">[1939742]</ulink>
+              <literal>ConcurrentModificationException</literal> on accessing
+              nonexistent <literal>SimpleHash</literal> entries in a
+              loop</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1902012&amp;group_id=794&amp;atid=100794">[1902012]</ulink>
+              <literal>IteratorModel</literal> eats exception causes</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <literal>&lt;#assign
+              x&gt;&lt;/#assign&gt;</literal> (empty nested content) has
+              caused <literal>NullPointerException</literal></para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1926150&amp;group_id=794&amp;atid=100794">[1926150]</ulink>
+              <literal>CachedTemplate</literal> should be serializable</para>
+            </listitem>
+          </itemizedlist>
+        </sect2>
+      </sect1>
+
+      <sect1 id="versions_2_3_13">
+        <title>2.3.13</title>
+
+        <para>Date of release: 2008-05-05</para>
+
+        <sect2>
+          <title>Changes on the FTL side</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>New built-ins for rounding numbers:
+              <literal>round</literal>, <literal>floor</literal>,
+              <literal>ceiling</literal>. See more <link
+              linkend="ref_builtin_rounding">here...</link></para>
+            </listitem>
+          </itemizedlist>
+        </sect2>
+
+        <sect2>
+          <title>Changes on the Java side</title>
+
+          <itemizedlist>
+            <listitem>
+              <para><ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1898300&amp;group_id=794&amp;atid=350794">[1898300]</ulink>,
+              <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1818742&amp;group_id=794&amp;atid=350794">[1818742]</ulink>,
+              <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1780882&amp;group_id=794&amp;atid=350794">[1780882]</ulink>:
+              Reworked template caching mechanism for radically improved
+              concurrent performance, with help from Azul Systems engineers.
+              (Achieved 20x speedup with Struts2 webapps on a 128-CPU Azul
+              device compared to 2.3.12.) Also, template loading (including
+              parsing) errors are now cached, improving performance in
+              applications that often try to get missing templates.</para>
+            </listitem>
+
+            <listitem>
+              <para><ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1892546&amp;group_id=794&amp;atid=100794">[1892546]</ulink>
+              Allow for custom <literal>TemplateLoader</literal> in
+              <literal>FreemarkerServlet</literal>.</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1725107&amp;group_id=794&amp;atid=100794">[1725107]</ulink>
+              Using the FreeMarker JSP taglib support with Servlet 2.4 may
+              generates XML validation warnings.</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1939742&amp;group_id=794&amp;atid=100794">[1939742]</ulink>
+              <literal>ConcurrentModificationException</literal> on accessing
+              nonexistent <literal>SimpleHash</literal> entries in a
+              loop</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1902012&amp;group_id=794&amp;atid=100794">[1902012]</ulink>
+              <literal>IteratorModel</literal> eats exception causes</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <literal>&lt;#assign
+              x&gt;&lt;/#assign&gt;</literal> (empty nested content) has
+              caused <literal>NullPointerException</literal></para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1926150&amp;group_id=794&amp;atid=100794">[1926150]</ulink>
+              <literal>CachedTemplate</literal> should be serializable</para>
+            </listitem>
+          </itemizedlist>
+        </sect2>
+      </sect1>
+
+      <sect1 id="versions_2_3_12">
+        <title>2.3.12</title>
+
+        <para>Date of release: 2008-02-03</para>
+
+        <sect2>
+          <title>Changes on the Java side</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1857161&amp;group_id=794&amp;atid=100794">[1857161]</ulink>
+              JSP <literal>SimpleTag</literal> support was broken in
+              2.3.11.</para>
+            </listitem>
+
+            <listitem>
+              <para>In the templates, now you can conveniently call Java
+              methods that use the Java 5 varargs feature (variable-length
+              argument lists). Also the overloaded-method chooser logic now
+              considers vararg methods more intelligently.</para>
+            </listitem>
+
+            <listitem>
+              <para>Enum constants are now identified by their
+              <literal>name()</literal> instead of by their
+              <literal>toString()</literal> (because the latter can be
+              overridden in subclasses). This doesn't affect the way enum
+              constants are printed; of course that still uses
+              <literal>toString()</literal>.</para>
+            </listitem>
+
+            <listitem>
+              <para>Messages in parser exceptions now display the name of the
+              template.</para>
+            </listitem>
+          </itemizedlist>
+        </sect2>
+      </sect1>
+
+      <sect1 id="versions_2_3_11">
+        <title>2.3.11</title>
+
+        <!--=================================-->
+
+        <para>Date of release: 2007-12-04</para>
+
+        <para>This release contains several performance and usability
+        improvements.</para>
+
+        <sect2>
+          <title>Changes on the FTL side</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1687248&amp;group_id=794&amp;atid=100794">[1687248]</ulink>
+              <emphasis role="bold">Warning! This bugfix may breaks some
+              templates!</emphasis> Fixed the bugs of the <link
+              linkend="ref_builtin_c"><literal>c</literal> built-in</link>
+              (<literal>?c</literal>) that sometimes caused whole numbers to
+              be formatted with ".0" at the end (like: 1.0), and caused
+              numbers sometimes formatted to exponential form (like 4E-20).
+              From now whole numbers will never use decimal dot (not even if
+              the wrapped number is a <literal>double</literal>; remember, the
+              template language knows only a single numerical type), and
+              exponential form will never be used either. Also, the maximum
+              number of digits after the decimal dot was limited to 16, so
+              numbers smaller than 1E-16 will be shown as 0.</para>
+            </listitem>
+          </itemizedlist>
+        </sect2>
+
+        <sect2>
+          <title>Changes on the Java side</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>FreeMarker now has much better JSP 2.0 and JSP 2.1
+              compliance. Most notably, the JSP 2.0
+              <literal>SimpleTag</literal> interface is now supported.
+              Additionally, even when run in an environment that doesn't have
+              its own JSP implementation, the FreeMarker JSP runtime will make
+              available its own implementation of
+              <literal>JspFactory</literal> and
+              <literal>JspEngineInfo</literal> to tags when JSP 2.0 API JAR is
+              available in classpath, as well as an implementation of
+              <literal>JspApplicationContext</literal> when JSP 2.1 API JAR is
+              available in classpath.</para>
+            </listitem>
+
+            <listitem>
+              <para>A new model interface,
+              <literal>TemplateDirectiveModel</literal> provides an easier
+              paradigm for implementing user-defined directives than
+              <literal>TemplateTransformModel</literal> did previously.
+              <literal>TemplateTransformModel</literal> will be
+              deprecated.</para>
+            </listitem>
+
+            <listitem>
+              <para>FreeMarker now finds the Xalan-based XPath support
+              included in Sun JRE/JDK 5 and 6, so no separate Xalan jar is
+              required for the XPath support to work. (However, we recommend
+              Jaxen over Xalan, as the FreeMarker XPath support is more
+              complete with that. Of course for that the Jaxen jar is still
+              needed.)</para>
+            </listitem>
+
+            <listitem>
+              <para>Wrapping performance of <literal>BeansWrapper</literal>
+              has been significantly improved by eliminating repetitive
+              execution of various class tests.</para>
+
+              <para><emphasis role="bold">Note for
+              <literal>BeansWrapper</literal> customizers:</emphasis>
+              subclasses of <literal>BeansWrapper</literal> that previously
+              overrode <literal>getInstance(Object, ModelFactory)</literal>
+              method should now instead override
+              <literal>getModelFactory(Class)</literal> to take advantage of
+              this improvement. Overriding the old method still works, but it
+              will not take advantage of the performance improvement.</para>
+            </listitem>
+
+            <listitem>
+              <para>Memory footprint of a wrapper created by
+              <literal>BeansWrapper</literal> has been reduced (by a size of
+              one default-sized <literal>HashMap</literal>) until methods or
+              indexed properties are accessed on it (simple properties can be
+              accessed without increasing memory footprint).</para>
+            </listitem>
+
+            <listitem>
+              <para>Rhino objects can be used in templates as scalars,
+              numbers, and booleans, following the JavaScript conversion
+              semantics for these types.</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>.data_model</literal> is now a
+              <literal>TemplatHashModelEx</literal> when possible. This means
+              that the list of the data-model variable names usually can be
+              get with <literal>.data_model?keys</literal>.</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>FileTemplateLoader</literal> can now optionally
+              allow following symlinks that point out of the base directory.
+              It is disabled by default for backward compatibility.</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1670887&amp;group_id=794&amp;atid=100794">[1670887]</ulink>
+              <literal>TaglibFactory</literal> taglib matching did not follow
+              JSP 1.2 FCS.</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1754320&amp;group_id=794&amp;atid=100794">[1754320]</ulink>
+              Bug in <literal>setXPathSupportClass</literal> prevented
+              plugging in a user-supplied <literal>XPathSupport</literal>
+              implementation.</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1803298&amp;group_id=794&amp;atid=100794">[1803298]</ulink>
+              Parser error while parsing macro with loop variables</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1824122&amp;group_id=794&amp;atid=100794">[1824122]</ulink>
+              Loading templates from JAR files could lead to leaking of file
+              handles (due to a bug in the Java API implementation of
+              Sun).</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: Cached template is now removed from the cache
+              if the re-loading of the modified template file fails, so no
+              staled template is served.</para>
+            </listitem>
+          </itemizedlist>
+        </sect2>
+
+        <sect2>
+          <title>Documentation changes</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>Substantial reworkings in the Template Authors's Guide
+              (which was previously called Designer's Guide), especially in
+              the Getting Started section.</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>#{...}</literal> is documented as deprected
+              construct from now.</para>
+            </listitem>
+
+            <listitem>
+              <para>The "transform" term is now removed from the
+              documentation. Instead the more general "user-defined directive"
+              term is used, which encompasses macros,
+              <literal>TemplateTransformModel</literal>-s and the new
+              <literal>TemplateDirectiveModel</literal>-s, which are just
+              different ways of implementing user-defined directives.</para>
+            </listitem>
+
+            <listitem>
+              <para>Some more minor improvements in the Manual.</para>
             </listitem>
           </itemizedlist>
         </sect2>
