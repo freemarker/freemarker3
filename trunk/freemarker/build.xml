@@ -394,6 +394,8 @@
         </copy>
         
         <!-- Package the distro -->
+        <property name="freemarker.tar" value="build/freemarker-${version}.tar" />
+        <property name="freemarker.gzip" value="${freemarker.tar}.gz" />
         <delete file="${freemarker.tar}" />
         <tar tarfile="${freemarker.tar}" basedir="${dist.dir}" />
         <delete file="${freemarker.gzip}" />
