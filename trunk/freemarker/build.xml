@@ -272,7 +272,7 @@
           embed="freemarker.retrosupport"
           uptodatecheck="false"
        />
-       <!-- Note: uptodatecheck="false" has randombly created empty jar-s -->
+       <!-- Note: uptodatecheck="true" has randombly created empty jar-s -->
        
        <copy file="retrobuild/freemarker/core/SecureRendererImpl.class" tofile="retrobuild/freemarker/core/SecureRendererImpl.clazz"/>
    </target>
