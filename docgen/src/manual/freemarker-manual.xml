@@ -20090,7 +20090,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               replace <literal>include</literal> in almost all use cases. The
               difference to <literal>include</literal> is that in the case of
               <literal>embed</literal> the embedding and the embedded template
-              has their own namespaces, so they don't overwrite or see each
+              have their own namespaces, so they don't overwrite or see each
               other's variables. (In the case of <literal>include</literal>
               the included template has used the namespace of the including
               template, possibly causing maintenance headaches due to
