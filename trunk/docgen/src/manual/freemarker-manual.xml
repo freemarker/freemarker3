@@ -995,7 +995,7 @@ brown</programlisting>
         </sect2>
       </sect1>
 
-      <sect1>
+      <sect1 id="dgui_datamodel_types">
         <title>The types</title>
 
         <para>The suppored types are:</para>
