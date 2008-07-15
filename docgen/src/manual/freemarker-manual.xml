@@ -19913,6 +19913,12 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
           </listitem>
 
           <listitem>
+            <para>This change log is relative to the yet unreleased 2.3.14 (as
+            of this writing). <link linkend="versions_2_3_14">See the 2.3.14
+            change log here</link>.</para>
+          </listitem>
+
+          <listitem>
             <para>A conversion utility exists to convert older FreeMarker
             templates to use the new 2.4 constructs and recommendations. See
             the class <literal>freemarker.core.helpers.Canonicalize</literal>.
@@ -19941,8 +19947,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>set</literal>: These directives deprecate the
               <literal>assign</literal>, <literal>local</literal> and
               <literal>global</literal> directives, and allow all kind of
-              bocks having own "local variables", not just macros. See more
-              <link linkend="dgui_misc_var_24pre">here...</link></para>
+              bocks having own "local variables", not just macros. <link
+              linkend="dgui_misc_var_24pre">See more details and examples
+              here...</link></para>
             </listitem>
 
             <listitem>
@@ -20278,16 +20285,6 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>${(x!y) + 1}</literal>. If you want the old meaning,
               use parentheses.</para>
             </listitem>
-
-            <listitem>
-              <para>Bug fixed: Now you can use the values of parameters as the
-              defaults of other parameters, for example <literal>[#macro
-              section title label=title]</literal>. In earlier versions it was
-              worked unreliably. There are no restriction regarding the order
-              of parameters, like <literal>[#macro section label=title
-              title]</literal> works too; the parameters will be evaluated in
-              an order that the dependencies allow.</para>
-            </listitem>
           </itemizedlist>
         </sect2>
 
@@ -20484,6 +20481,16 @@ ${obj.myMethod("foo")}</programlisting>
             <listitem>
               <para>New built-in: <literal>xhtml</literal>. See more <link
               linkend="ref_builtin_xhtml">here...</link></para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: Now you can use the values of parameters as the
+              defaults of other parameters, for example <literal>[#macro
+              section title label=title]</literal>. In earlier versions it was
+              worked unreliably. There are no restriction regarding the order
+              of parameters, like <literal>[#macro section label=title
+              title]</literal> works too; the parameters will be evaluated in
+              an order that the dependencies allow.</para>
             </listitem>
           </itemizedlist>
         </sect2>
