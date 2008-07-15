@@ -2,102 +2,108 @@
 
 <project basedir="." default="jar" name="freemarker">
 
-   <property name="libs.location" value="http://freemarker.sourceforge.net/jarsforbuild"/>
-   <property name="build.dir" location="build"/>
-   <property name="classes.dir" location="${build.dir}/classes"/>
-   <property file="src/freemarker/version.properties" />
+    <property name="libs.location" value="http://freemarker.sourceforge.net/jarsforbuild"/>
+    <property name="build.dir" location="build"/>
+    <property name="classes.dir" location="${build.dir}/classes"/>
+    <property file="src/freemarker/version.properties" />
+    <property name="dist.dir" value="build/dist/freemarker-${version}"/>
+    <property name="site.dir" value="../../site"/>
 
-   <path id="build.class.path">
-     <pathelement path="src"/>
-     <fileset dir="lib">
-       <include name="*.jar"/>
-        <exclude name="jsp-api-1.2.jar"/>
-        <exclude name="jsp-api-2.0.jar"/>
-    </fileset>
-   </path>
+    <path id="build.class.path">
+        <pathelement path="src"/>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+            <exclude name="jsp-api-1.2.jar"/>
+            <exclude name="jsp-api-2.0.jar"/>
+        </fileset>
+    </path>
 
-   <target name="fetchlibs" unless="all.libs.present" description="fetch build dependencies and put them in lib directory">
-      <mkdir dir="lib"/>
-      <echo>Fetching libraries from server.</echo>
-      <get src="${libs.location}/README.txt" dest="lib/README.txt" usetimestamp="true"/>
-      <get src="${libs.location}/ant.jar" dest="lib/ant.jar" usetimestamp="true"/>
-      <get src="${libs.location}/backport-util-concurrent-3.1.jar" dest="lib/backport-util-concurrent-3.1.jar" usetimestamp="true"/>
-      <get src="${libs.location}/cavalry.jar" dest="lib/cavalry.jar" usetimestamp="true"/>
-      <!-- get src="${libs.location}/dom4j.jar" dest="lib/dom4j.jar" usetimestamp="true"/ -->
-      <get src="${libs.location}/emma.jar" dest="lib/emma.jar" usetimestamp="true"/>
-      <get src="${libs.location}/emma_ant.jar" dest="lib/emma_ant.jar" usetimestamp="true"/>
-      <get src="${libs.location}/freemarker-bootstrap.jar" dest="lib/freemarker-bootstrap.jar" usetimestamp="true"/>
-      <get src="${libs.location}/javacc.jar" dest="lib/javacc.jar" usetimestamp="true"/>
-      <get src="${libs.location}/jaxen.jar" dest="lib/jaxen.jar" usetimestamp="true"/>
-      <!-- get src="${libs.location}/jdom.jar" dest="lib/jdom.jar" usetimestamp="true"/ -->
-      <get src="${libs.location}/jruby.jar" dest="lib/jruby.jar" usetimestamp="true"/>
-      <get src="${libs.location}/js.jar" dest="lib/js.jar" usetimestamp="true"/>
-      <get src="${libs.location}/jsp-api-1.2.jar" dest="lib/jsp-api-1.2.jar" usetimestamp="true"/>
-      <get src="${libs.location}/jsp-api-2.0.jar" dest="lib/jsp-api-2.0.jar" usetimestamp="true"/>
-      <get src="${libs.location}/jsp-api-2.1.jar" dest="lib/jsp-api-2.1.jar" usetimestamp="true"/>
-      <get src="${libs.location}/junit.jar" dest="lib/junit.jar" usetimestamp="true"/>
-      <get src="${libs.location}/jython-2.2.1.jar" dest="lib/jython-2.2.1.jar" usetimestamp="true"/>
-      <get src="${libs.location}/kawadd.jar" dest="lib/kawadd.jar" usetimestamp="true"/>
-      <get src="${libs.location}/log4j.jar" dest="lib/log4j.jar" usetimestamp="true"/>
-      <get src="${libs.location}/retrotranslator-transformer-1.2.3.jar" dest="lib/retrotranslator-transformer-1.2.3.jar" usetimestamp="true"/>
-      <get src="${libs.location}/retrotranslator-runtime-1.2.3.jar" dest="lib/retrotranslator-runtime-1.2.3.jar" usetimestamp="true"/>
-      <get src="${libs.location}/saxpath.jar" dest="lib/saxpath.jar" usetimestamp="true"/>
-      <get src="${libs.location}/script.jar" dest="lib/script.jar" usetimestamp="true"/>
-      <get src="${libs.location}/servlet.jar" dest="lib/servlet.jar" usetimestamp="true"/>
-      <get src="${libs.location}/struts.jar" dest="lib/struts.jar" usetimestamp="true"/>
-      <get src="${libs.location}/xalan.jar" dest="lib/xalan.jar" usetimestamp="true"/>
-   </target>
+    <target name="fetchlibs" unless="all.libs.present" description="fetch build dependencies and put them in lib directory">
+        <mkdir dir="lib"/>
+        <echo>Fetching libraries from server.</echo>
+        <get src="${libs.location}/README.txt" dest="lib/README.txt" usetimestamp="true"/>
+        <get src="${libs.location}/ant.jar" dest="lib/ant.jar" usetimestamp="true"/>
+        <get src="${libs.location}/backport-util-concurrent-3.1.jar" dest="lib/backport-util-concurrent-3.1.jar" usetimestamp="true"/>
+        <get src="${libs.location}/cavalry.jar" dest="lib/cavalry.jar" usetimestamp="true"/>
+        <!-- get src="${libs.location}/dom4j.jar" dest="lib/dom4j.jar" usetimestamp="true"/ -->
+        <get src="${libs.location}/emma.jar" dest="lib/emma.jar" usetimestamp="true"/>
+        <get src="${libs.location}/emma_ant.jar" dest="lib/emma_ant.jar" usetimestamp="true"/>
+        <get src="${libs.location}/freemarker-bootstrap.jar" dest="lib/freemarker-bootstrap.jar" usetimestamp="true"/>
+        <get src="${libs.location}/javacc.jar" dest="lib/javacc.jar" usetimestamp="true"/>
+        <get src="${libs.location}/jaxen.jar" dest="lib/jaxen.jar" usetimestamp="true"/>
+        <!-- get src="${libs.location}/jdom.jar" dest="lib/jdom.jar" usetimestamp="true"/ -->
+        <get src="${libs.location}/jruby.jar" dest="lib/jruby.jar" usetimestamp="true"/>
+        <get src="${libs.location}/js.jar" dest="lib/js.jar" usetimestamp="true"/>
+        <get src="${libs.location}/jsp-api-1.2.jar" dest="lib/jsp-api-1.2.jar" usetimestamp="true"/>
+        <get src="${libs.location}/jsp-api-2.0.jar" dest="lib/jsp-api-2.0.jar" usetimestamp="true"/>
+        <get src="${libs.location}/jsp-api-2.1.jar" dest="lib/jsp-api-2.1.jar" usetimestamp="true"/>
+        <get src="${libs.location}/junit.jar" dest="lib/junit.jar" usetimestamp="true"/>
+        <get src="${libs.location}/jython-2.2.1.jar" dest="lib/jython-2.2.1.jar" usetimestamp="true"/>
+        <get src="${libs.location}/kawadd.jar" dest="lib/kawadd.jar" usetimestamp="true"/>
+        <get src="${libs.location}/log4j.jar" dest="lib/log4j.jar" usetimestamp="true"/>
+        <get src="${libs.location}/retrotranslator-transformer-1.2.3.jar" dest="lib/retrotranslator-transformer-1.2.3.jar" usetimestamp="true"/>
+        <get src="${libs.location}/retrotranslator-runtime-1.2.3.jar" dest="lib/retrotranslator-runtime-1.2.3.jar" usetimestamp="true"/>
+        <get src="${libs.location}/saxpath.jar" dest="lib/saxpath.jar" usetimestamp="true"/>
+        <get src="${libs.location}/script.jar" dest="lib/script.jar" usetimestamp="true"/>
+        <get src="${libs.location}/servlet.jar" dest="lib/servlet.jar" usetimestamp="true"/>
+        <get src="${libs.location}/struts.jar" dest="lib/struts.jar" usetimestamp="true"/>
+        <get src="${libs.location}/xalan.jar" dest="lib/xalan.jar" usetimestamp="true"/>
+    </target>
    
-   <target name="clean" description="get rid of all generated files">
-       <delete dir="build"/>
-       <delete dir="docs"/>
-       <delete dir="retrobuild"/>
-       <delete file="src/freemarker/core/parser/FMParser.java" />
-       <delete file="src/freemarker/core/parser/FMParserConstants.java" />
-       <delete file="src/freemarker/core/parser/FMParserTokenManager.java" />
-       <delete file="src/freemarker/core/parser/SimpleCharStream.java" />
-       <delete file="src/freemarker/core/parser/Token.java" />
-       <delete file="src/freemarker/core/parser/TokenMgrError.java" />
-   </target>
+    <target name="clean" description="get rid of all generated files">
+        <delete dir="build"/>
+        <delete dir="docs"/>
+        <delete dir="retrobuild"/>
+        <delete file="src/freemarker/core/parser/FMParser.java" />
+        <delete file="src/freemarker/core/parser/FMParserConstants.java" />
+        <delete file="src/freemarker/core/parser/FMParserTokenManager.java" />
+        <delete file="src/freemarker/core/parser/SimpleCharStream.java" />
+        <delete file="src/freemarker/core/parser/Token.java" />
+        <delete file="src/freemarker/core/parser/TokenMgrError.java" />
+    </target>
    
-   <target name="init" description="fetch dependencies if any are missing and create the build directory if necessary">
-       <mkdir dir="build"/>
-       <condition property="all.libs.present">
-         <and>
-            <available file="lib/ant.jar"/>
-            <available file="lib/cavalry.jar"/>
-            <!--available file="lib/dom4j.jar"/-->
-            <available file="lib/emma.jar"/>
-            <available file="lib/emma_ant.jar"/>
-  	    <available file="lib/freemarker-bootstrap.jar"/>
-            <available file="lib/javacc.jar"/>
-            <available file="lib/jaxen.jar"/>
-            <!--available file="lib/jdom.jar"/-->
-            <available file="lib/js.jar"/>
-            <available file="lib/jsp-api-1.2.jar"/>
-            <available file="lib/jsp-api-2.0.jar"/>
-            <available file="lib/jsp-api-2.1.jar"/>
-            <available file="lib/junit.jar"/>
-            <available file="lib/jython-2.2.1.jar"/>
-	    <available file="lib/kawadd.jar"/>
-            <available file="lib/log4j.jar"/>
-            <available file="lib/retrotranslator-transformer-1.2.3.jar"/>
-            <available file="lib/retrotranslator-runtime-1.2.3.jar"/>
-            <available file="lib/backport-util-concurrent-3.1.jar"/>
-            <available file="lib/saxpath.jar"/>
-            <available file="lib/script.jar"/>
-            <available file="lib/servlet.jar"/>
-            <available file="lib/struts.jar"/>
-            <available file="lib/xalan.jar"/>
-         </and>
-       </condition>
-       <antcall target="fetchlibs"/>
+    <target name="init" description="fetch dependencies if any are missing and create the build directory if necessary">
+        <mkdir dir="build"/>
+        <condition property="all.libs.present">
+            <and>
+                <available file="lib/ant.jar"/>
+                <available file="lib/cavalry.jar"/>
+                <!--available file="lib/dom4j.jar"/-->
+                <available file="lib/emma.jar"/>
+                <available file="lib/emma_ant.jar"/>
+                <available file="lib/freemarker-bootstrap.jar"/>
+                <available file="lib/javacc.jar"/>
+                <available file="lib/jaxen.jar"/>
+                <!--available file="lib/jdom.jar"/-->
+                <available file="lib/js.jar"/>
+                <available file="lib/jsp-api-1.2.jar"/>
+                <available file="lib/jsp-api-2.0.jar"/>
+                <available file="lib/jsp-api-2.1.jar"/>
+                <available file="lib/junit.jar"/>
+                <available file="lib/jython-2.2.1.jar"/>
+                <available file="lib/kawadd.jar"/>
+                <available file="lib/log4j.jar"/>
+                <available file="lib/retrotranslator-transformer-1.2.3.jar"/>
+                <available file="lib/retrotranslator-runtime-1.2.3.jar"/>
+                <available file="lib/backport-util-concurrent-3.1.jar"/>
+                <available file="lib/saxpath.jar"/>
+                <available file="lib/script.jar"/>
+                <available file="lib/servlet.jar"/>
+                <available file="lib/struts.jar"/>
+                <available file="lib/xalan.jar"/>
+            </and>
+        </condition>
+        <antcall target="fetchlibs"/>
 	<uptodate property="parser.gen"
-                 targetfile="src/freemarker/core/parser/FMParser.jj">
-	            <srcfiles dir="src/freemarker/core/parser" includes="FMParser.java"/>
+                targetfile="src/freemarker/core/parser/FMParser.jj">
+	    <srcfiles dir="src/freemarker/core/parser" includes="FMParser.java"/>
 	</uptodate>
    </target>
-   
+
+    <!-- ================================================================= -->
+    <!-- Compilation                                                       -->
+    <!-- ================================================================= -->
+
    <target name="javacc" depends="init"
         description="Build the JavaCC parser from its grammar file">
         <javacc
@@ -107,51 +113,60 @@
         />
    </target>
    
-   
    <target name="kawadd" depends="init" if="parser.gen" description="Build the parser from its grammar file">
-        <java classname="kawadd.parser.Main" classpath="lib/kawadd.jar:lib/freemarker-bootstrap.jar"
-              failonerror="true" fork="true">
- 		<arg value="-OUTPUT_DIRECTORY=src/freemarker/core/parser"/>
-		<arg value="-JDK_VERSION=1.5"/>
-		<arg file="src/freemarker/core/parser/FMParser.jj"/>
-		<assertions><enable/></assertions>
+        <java classname="kawadd.parser.Main"
+                classpath="lib/kawadd.jar:lib/freemarker-bootstrap.jar"
+                failonerror="true" fork="true"
+        >
+            <arg value="-OUTPUT_DIRECTORY=src/freemarker/core/parser"/>
+            <arg value="-JDK_VERSION=1.5"/>
+            <arg file="src/freemarker/core/parser/FMParser.jj"/>
+            <assertions><enable/></assertions>
  	</java>
    </target>
-   
    
    <target name="compile" depends="kawadd">
    	<mkdir dir="${classes.dir}"/>
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
-               debug="on" optimize="off" target="1.5" source="1.5"
-               classpathref="build.class.path"
-               excludes="
-                   freemarker/ext/jsp/FreeMarkerPageContext1.java, 
-        	   freemarker/ext/jsp/FreeMarkerPageContext2.java,
-     	           freemarker/ext/jsp/FreeMarkerJspFactory2.java"/>
+                debug="on" optimize="off" target="1.5" source="1.5"
+                classpathref="build.class.path"
+                excludes="
+                        freemarker/ext/jsp/FreeMarkerPageContext1.java, 
+                        freemarker/ext/jsp/FreeMarkerPageContext2.java,
+                        freemarker/ext/jsp/FreeMarkerJspFactory2.java"
+        />
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
-               debug="on" optimize="off" target="1.5" source="1.5"
-               includes="freemarker/ext/jsp/FreeMarkerPageContext1.java">
-        	<classpath>
-        		<pathelement location="lib/jsp-api-1.2.jar"/>
-        		<path refid="build.class.path"/>
-        	</classpath>
+                debug="on" optimize="off" target="1.5" source="1.5"
+                includes="freemarker/ext/jsp/FreeMarkerPageContext1.java">
+            <classpath>
+                <pathelement location="lib/jsp-api-1.2.jar"/>
+                <path refid="build.class.path"/>
+            </classpath>
         </javac>
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
-               debug="on" optimize="off" target="1.5" source="1.5"
-               includes="
-                   freemarker/ext/jsp/FreeMarkerPageContext2.java,
-  	           freemarker/ext/jsp/FreeMarkerJspFactory2.java">
-                <classpath>
-        		<pathelement location="lib/jsp-api-2.0.jar"/>
-        		<path refid="build.class.path"/>
-        	</classpath>
+                   debug="on" optimize="off" target="1.5" source="1.5"
+                   includes="
+                       freemarker/ext/jsp/FreeMarkerPageContext2.java,
+                       freemarker/ext/jsp/FreeMarkerJspFactory2.java"
+        >
+            <classpath>
+                <pathelement location="lib/jsp-api-2.0.jar"/>
+                <path refid="build.class.path"/>
+            </classpath>
         </javac>
         <rmic base="${classes.dir}" classpathref="build.class.path"
-          includes="freemarker/debug/impl/Rmi*Impl.class" verify="yes" stubversion="1.2"/>
-   	<copy file="${classes.dir}/freemarker/core/SecureRendererImpl.class" tofile="${classes.dir}/freemarker/core/SecureRendererImpl.clazz"/>
+                includes="freemarker/debug/impl/Rmi*Impl.class"
+                verify="yes" stubversion="1.2"
+        />
+   	<copy
+                file="${classes.dir}/freemarker/core/SecureRendererImpl.class"
+                tofile="${classes.dir}/freemarker/core/SecureRendererImpl.clazz"
+        />
         <copy toDir="${classes.dir}">
-          <fileset dir="src"
-            excludes="**/CVS/**,**/*.bak,**/*.java,**/*.jj,**/package.html,freemarker/testcase/**"/>
+            <fileset dir="src"
+                excludes="**/CVS/**, **/*.bak, **/*.java, **/*.jj,
+                        **/package.html, freemarker/testcase/**"
+            />
         </copy>
    </target>
    
@@ -159,7 +174,7 @@
         <jar 
             basedir="${classes.dir}" jarfile="freemarker.jar" 
             includes="freemarker/** META-INF/**" 
-            excludes="freemarker/testcase/**,freemarker/core/SecureRendererImpl.class"
+            excludes="freemarker/testcase/**, freemarker/core/SecureRendererImpl.class"
         >
             <manifest>
                 <attribute name="Main-Class" value="freemarker.core.CommandLine" />
@@ -173,6 +188,10 @@
             </manifest>
        </jar>
    </target>
+
+    <!-- ================================================================= -->
+    <!-- Testing                                                           -->
+    <!-- ================================================================= -->
 
    <target name="test" depends="compile" description="Run test cases">
        <copy todir="${classes.dir}/freemarker/testcase">
@@ -240,7 +259,11 @@
             </report>
         </emma>
    </target>
-   
+
+    <!-- ================================================================= -->
+    <!-- Retro stuff                                                       -->
+    <!-- ================================================================= -->
+
    <target name="retrotest" description="Test against older JDK">
    	<echo message="You are testing against JDK version ${java.version}."/>
 	<echo message="Note that this test only makes sense against a JDK version inferior to 1.5"/>
@@ -277,7 +300,7 @@
        <copy file="retrobuild/freemarker/core/SecureRendererImpl.class" tofile="retrobuild/freemarker/core/SecureRendererImpl.clazz"/>
    </target>
    
-   <target name="retrojar" depends="retrotrans" description="Build a .jar file that can be run under 1.4">
+    <target name="retrojar" depends="retrotrans" description="Build a .jar file that can be run under 1.4">
         <copy toDir="retrobuild">
           <fileset dir="src"
             excludes="**/CVS/**,**/*.bak,**/*.java,**/*.jj,**/package.html,freemarker/testcase/**"/>
@@ -293,10 +316,15 @@
                 <attribute name="Implementation-Version" value="${versionForMf}" />
                 <attribute name="Implementation-Vendor" value="freemarker.org" />
             </manifest>
-       </jar>
-   </target>
-   
-    <target depends="" name="javadoc" description="Build the JavaDoc documentation" >
+        </jar>
+    </target>
+
+
+    <!-- ================================================================= -->
+    <!-- JavaDoc                                                           -->
+    <!-- ================================================================= -->
+
+    <target depends="" name="javadoc" description="Build the JavaDocs" >
         <mkdir dir="${build.dir}/api"/>
         <delete includeEmptyDirs="yes">
             <fileset dir="${build.dir}/api" includes="**/*" />
@@ -304,7 +332,10 @@
         <javadoc author="true"
                 destdir="${build.dir}/api"
                 doctitle="FreeMarker ${version}"
-                packagenames="freemarker.debug, freemarker.template.*, freemarker.core.*, freemarker.ext.*, freemarker.cache.*, freemarker.log.*"
+                packagenames="
+                        freemarker.debug, freemarker.template.*,
+                        freemarker.core.*, freemarker.ext.*,
+                        freemarker.cache.*, freemarker.log.*"
                 sourcepath="src"
                 version="true"
                 windowtitle="FreeMarker ${version} API"
@@ -312,5 +343,68 @@
                 use="true">
         </javadoc>
     </target>
-   
+
+
+    <!-- ====================== -->
+    <!-- Distributuion building -->
+    <!-- ====================== -->
+
+    <target
+            name="dist"
+            depends="jar, retrojar"
+            description="Build the FreeMarker distribution files">
+        <!-- Copy jars and sources and such into the distro -->
+        <delete dir="${dist.dir}" />
+        <mkdir dir="${dist.dir}" />
+        <copy todir="${dist.dir}" includeEmptyDirs="no">
+            <fileset dir=".">
+                <include name="examples/**"/>
+                <include name="src/**"/>
+                <include name="src/**"/>
+                <include name="examples/**"/>
+                <exclude name="**/.*/**"/>
+                <exclude name="**/.*"/>
+                <exclude name="**/*.bak"/>
+                <exclude name="**/*.~*"/>
+                <include name="build.xml"/>
+                <include name="*.txt"/>
+                <include name="*.jar"/>
+            </fileset>
+        </copy>
+        <replace
+                file="${dist.dir}/README.txt"
+                token="{version}"
+                value="${version}"
+        />
+
+        <!-- Generate website pages and copy them into distro -->
+        <ant dir="${site.dir}" target="all">
+            <property name="site.offline" value="yes"/>
+        </ant>
+        <copy todir="${dist.dir}/docs" includeEmptyDirs="no">
+            <fileset dir="${site.dir}/build/site"/>
+        </copy>
+        
+        <!-- Generate manual pages and copy them into distro -->
+        <ant dir="../docgen" target="all">
+            <property name="docgen.offline" value="yes"/>
+        </ant>
+        <copy todir="${dist.dir}/docs/docs" includeEmptyDirs="no">
+            <fileset dir="../docgen/build/docs"/>
+        </copy>
+        
+        <!-- Package the distro -->
+        <delete file="${freemarker.tar}" />
+        <tar tarfile="${freemarker.tar}" basedir="${dist.dir}" />
+        <delete file="${freemarker.gzip}" />
+        <gzip zipfile="${freemarker.gzip}" src="${freemarker.tar}" />
+        <delete file="${freemarker.tar}" />
+    </target>
+
+    <!-- ================================================================= -->
+    <!-- Miscelaneous                                                      -->
+    <!-- ================================================================= -->
+    
+    <!-- Nothing here yet... -->
+
  </project>

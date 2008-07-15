@@ -43,6 +43,13 @@ example, if you use FreeMarker in a web application, you probably want
 to put freemarker.jar into the WEB-INF/lib directory of your web
 application.
 
+Required dependencies:
+- For the freemarker.jar: Java SE 5 JRE, or later compatible
+- For the freemarker-14compat.jar: Java SE 1.4.x JRE
+
+Use ONLY ONE of the above jar-s, depending on the Java platform
+version! Do NOT copy both into the classpath or lib directory!
+
 
 History
 -------
