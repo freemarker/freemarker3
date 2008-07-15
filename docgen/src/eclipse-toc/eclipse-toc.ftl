@@ -1,4 +1,3 @@
-<#ftl strict_syntax="true" >
 <?xml version="1.0" encoding="iso-8859-1"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
 
