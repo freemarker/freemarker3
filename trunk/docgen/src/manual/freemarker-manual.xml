@@ -13976,18 +13976,21 @@ Sorted by name.last:
 
           <para>[TODO: document some border cases]</para>
 
-          <para>This built in allows you to read and write the <link
+          <para>This built-in let you to read and write the <link
           linkend="dgui_misc_var">local variables</link> of another macro that
-          is executing its nested content. The typical application is that a
-          macro calls <literal>[#nested]</literal>, and then in its nested
-          content another macro is called that want to communicate with
-          previously mentioned macro.</para>
+          is executing its nested content. That is, if we have something like
+          <literal>[@theParent]<replaceable>...</replaceable>[@theChild
+          /]<replaceable>...</replaceable>[/@theParent]</literal> then the
+          <literal>theChild</literal> macro can communicate with the enclosing
+          <literal>theParent</literal> macro by reading and writing the local
+          variables of the <literal>theParent</literal> macro call.</para>
 
           <para>The usage is
-          <literal><replaceable>theMacro</replaceable>?<replaceable>scope</replaceable></literal>,
-          which returns the hash of the local variables. The hash can be read
-          and enumerated as usual hashes, but it also can be modified with
-          <literal>[#set <replaceable>theLocalVariable</replaceable> =
+          <literal><replaceable>theParentMacro</replaceable>?<replaceable>scope</replaceable></literal>,
+          which returns a hash that corresponds to the local variables. The
+          hash can be read and enumerated as usual hashes, and in additional
+          it can be modified with <literal>[#set
+          <replaceable>theLocalVariable</replaceable> =
           <replaceable>newValue</replaceable> in
           <replaceable>theHash</replaceable>]</literal>. Hence the
           communication between the two macros can be two way.</para>
@@ -19641,8 +19644,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
             <para>You maybe interested in that starting from FreeMarker 2.4
             you should use <literal>[</literal> and <literal>]</literal>
-            instead of <literal>&lt;</literal> and <literal>&gt;</literal>.
-            </para>
+            instead of <literal>&lt;</literal> and
+            <literal>&gt;</literal>.</para>
           </answer>
         </qandaentry>
 
@@ -19893,7 +19896,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
         <itemizedlist>
           <listitem>
-            <para>This release may not by compatible with the later 2.4
+            <para>This release may be incompatible with the later 2.4
             releases, as it's only a preview release. Depending on user
             feedback and on our realizations it can still change
             considerably.</para>
@@ -19918,25 +19921,16 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
           </listitem>
 
           <listitem>
-            <para>FreeMarker 2.4 is developed for J2SE 5. However, we still
-            release a <emphasis>separate</emphasis> 1.4 compatible jar
-            (included in the standard distribution tar.gz), that is created
-            with the help of Retrotranslator. So you will be able to use
-            FreeMarker 2.4 on J2SE 1.4, or at least we don't know about
-            problems with that yet.</para>
-          </listitem>
-
-          <listitem>
             <para>This documentation is only partially updated for 2.4 (except
             the version history of course), so some parts are possibly
             inaccurate, also some new features are not documented yet.</para>
           </listitem>
         </itemizedlist>
 
-        <para>Feedback is welcome! Preferably on the <ulink
+        <para>Feedback is welcome! Preferably use the <ulink
         url="https://lists.sourceforge.net/lists/listinfo/freemarker-devel">freemarker-devel
-        mailing list</ulink> (subscription is optional, but recommended if you
-        don't want to miss some answers).</para>
+        mailing list</ulink> for that (subscription is optional, but
+        recommended if you don't want to miss some answers).</para>
 
         <sect2>
           <title>Changes on the FTL side</title>
@@ -19946,122 +19940,141 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <para>New directives <literal>var</literal>,
               <literal>set</literal>: These directives deprecate the
               <literal>assign</literal>, <literal>local</literal> and
-              <literal>global</literal> directives. See more <link
-              linkend="dgui_misc_var_24pre">here...</link> </para>
+              <literal>global</literal> directives, and allow all kind of
+              bocks having own "local variables", not just macros. See more
+              <link linkend="dgui_misc_var_24pre">here...</link></para>
             </listitem>
 
             <listitem>
-              <para><emphasis>Warning, backward incompatible
-              change!</emphasis> The template language is now
-              <literal>null</literal>-aware. Thus, <literal>null</literal> is
-              now a keyword (so if you used it as a variable name, there could
-              be problems). Variables that store <literal>null</literal>
-              values pretty much behave as if the variable is missing, except
-              that:</para>
+              <para>Changes regarding <literal>null</literal>-s:</para>
 
               <itemizedlist>
                 <listitem>
-                  <para>They can be assigned to other variables, e.g.,
-                  <literal>[#set x = null]</literal> (or <literal>[#set x =
-                  aVariableThatIsNull]</literal>)</para>
+                  <para><emphasis>Warning, backward incompatible
+                  change!</emphasis> The template language is now
+                  <literal>null</literal>-aware. Thus, <literal>null</literal>
+                  is now a keyword (so if you used it as a variable name,
+                  there could be problems now). In FreeMarker
+                  2.3.<replaceable>x</replaceable>, variables (Java Bean
+                  properties, list and map items, etc.) that exist but store
+                  <literal>null</literal> were undistinguishable from
+                  variables that don't exist at all. That said, as far as the
+                  template language is concerned, there was no such thing as
+                  <literal>null</literal> at all. Starting from 2.4,
+                  <literal>null</literal> still pretty much behaves as a
+                  variable is doesn't exist, except that:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para>It can be assigned to other variables, e.g.,
+                      <literal>[#set x = null]</literal>, or <literal>[#set x
+                      = aVariableThatIsNull]</literal>, where
+                      <literal>aVariableThatIsNull</literal> still must exist,
+                      only its value can be <literal>null</literal>.</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>It can be passed as parameter to directive/method
+                      (aka. macro/function) calls, e.g.,
+                      <literal>${aJavaMethod(null)}</literal> or
+                      <literal>${aJavaMethod(<literal>aVariableThatIsNull</literal>)}</literal>,
+                      where, again, <literal>aVariableThatIsNull</literal>
+                      must exist. Even if the parameter is mandatory, it will
+                      not treat the parameter as missing, so there will not be
+                      missing parameter error.</para>
+                    </listitem>
+                  </itemizedlist>
+
+                  <para>Otherwise a <literal>null</literal> value behaves
+                  exactly like a missing variable, so, logically:</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para>The
+                      <literal><replaceable>exp</replaceable>!<replaceable>defaultExp</replaceable></literal>,
+                      <literal><replaceable>exp</replaceable>!</literal>, and
+                      <literal><replaceable>exp</replaceable>??</literal>
+                      operators treat <literal>null</literal> values like
+                      missing variables. For example,
+                      <literal>x!"N/A"</literal> will evaluate to
+                      <literal>"N/A"</literal> both if the
+                      <literal>x</literal> variable doesn't exists and if it
+                      exists but stores <literal>null</literal>.</para>
+                    </listitem>
+
+                    <listitem>
+                      <para>You can't have a <literal>null</literal> in
+                      additions, multiplications, divisions, comparisons(!),
+                      etc., exactly like you couldn't have missing variables
+                      there (unless you specify a default value, of course).
+                      To test if something is <literal>null</literal>, write
+                      <literal>theVariable?is_null</literal>, not
+                      <literal>theVariable == null</literal>.</para>
+                    </listitem>
+
+                    <listitem>
+                      <para><literal>null</literal> is not converted to string
+                      automatically, so for example to print a possibly
+                      <literal>null</literal> variable you should still write
+                      something like:
+                      <literal>${possiblyNull!"N/A"}</literal></para>
+                    </listitem>
+
+                    <listitem>
+                      <para>If you pass a <literal>null</literal> to a
+                      directive/method (aka. macro/function), then although it
+                      will not treat the parameter as omitted, if the
+                      parameter has a default value, it will still replace the
+                      <literal>null</literal> with that.</para>
+                    </listitem>
+                  </itemizedlist>
+
+                  <para>See also: <link
+                  linkend="dgui_template_exp_missing">about
+                  <literal>null</literal> in the Template Author's
+                  Guide</link></para>
                 </listitem>
 
                 <listitem>
-                  <para>They can be passed as parameter to directive/method
-                  (aka. macro/function) calls, e.g.,
-                  <literal>${aJavaMethod(null)}</literal>.</para>
+                  <para>Two new built-ins: <literal>is_null</literal>,
+                  <literal>is_defined</literal> (used like
+                  <literal><replaceable>expression</replaceable>?is_null</literal>,
+                  <literal><replaceable>expression</replaceable>?is_defined</literal>):
+                  The first simply checks if a value is
+                  <literal>null</literal> or not; it will die with error if
+                  the examined variable doesn't exist. The second tests if a
+                  variable exists, but it doesn't care if it stores a
+                  <literal>null</literal> value or not. Comparing these with
+                  the <literal>??</literal> operator,
+                  <literal><replaceable>var</replaceable>??</literal> returns
+                  <literal>true</literal> if the variable exists and is
+                  non-<literal>null</literal>, and returns
+                  <literal>false</literal> otherwise (i.e., if the variable
+                  doesn't exist or exists but it's value is
+                  <literal>null</literal>). So in almost all cases you will
+                  want to use <literal>??</literal>; the
+                  <literal>is_null</literal> and <literal>is_defined</literal>
+                  built-ins are pretty much only for advanced users.</para>
                 </listitem>
 
                 <listitem>
-                  <para>If you pass a <literal>null</literal> to a
-                  directive/method (aka. macro/function) as a parameter, and
-                  the parameter is mandatory, then it will not treat the
-                  parameter as missing (hence triggering a missing parameter
-                  error).</para>
+                  <para><emphasis>Warning, backward incompatible
+                  change!</emphasis> Bug fixed: Passing undefined variable to
+                  a directive/macro/function/method is now always an error,
+                  not even parameter default values can suppress that. Thus,
+                  <literal>${anObject.aMethod(possiblyUndefined)}</literal> is
+                  wrong, use
+                  <literal>${anObject.aMethod(possiblyUndefined!null)}</literal>
+                  instead. <literal>[@macroWithDefautlParam possiblyUndefined
+                  /]</literal> is wrong, use <literal>[@macroWithDefautlParam
+                  possiblyUndefined!null /]</literal> instead. The lenience of
+                  FTL in these cases was a bug that was unfortunately exposed
+                  by many for emulating <literal>null</literal>/omitted
+                  parameters. (Note that now <literal>null</literal> is a
+                  keyword, but earlier it wasn't, as FTL wasn't
+                  <literal>null</literal>-aware.)</para>
                 </listitem>
               </itemizedlist>
-
-              <para>Otherwise it behaves exactly like a missing
-              variable:</para>
-
-              <itemizedlist>
-                <listitem>
-                  <para>You can't have a <literal>null</literal> in additions,
-                  multiplications, divisions, comparisons(!), etc., exactly
-                  like you couldn't have missing variables there (unless you
-                  specify a default value, of course). To test if something is
-                  <literal>null</literal>, write
-                  <literal>theVariable?is_null</literal>, not
-                  <literal>theVariable == null</literal>.</para>
-                </listitem>
-
-                <listitem>
-                  <para> The
-                  <literal><replaceable>exp</replaceable>!<replaceable>defaultExp</replaceable></literal>,
-                  <literal><replaceable>exp</replaceable>!</literal>, and
-                  <literal><replaceable>exp</replaceable>??</literal>
-                  operators treat <literal>null</literal> values as missing
-                  variables.</para>
-                </listitem>
-
-                <listitem>
-                  <para><literal>null</literal> is not converted to string
-                  automatically, so for example to print a possibly
-                  <literal>null</literal> variable you should write something
-                  like: <literal>${possiblyNull!"N/A"}</literal></para>
-                </listitem>
-
-                <listitem>
-                  <para>If you pass a <literal>null</literal> to a
-                  directive/method (aka. macro/function), then although it
-                  will not treat the parameter missing, if the parameter has a
-                  default value, it will still replace the
-                  <literal>null</literal> with that.</para>
-                </listitem>
-              </itemizedlist>
-
-              <para>See also: <link linkend="dgui_template_exp_missing">about
-              <literal>null</literal> in the Template Author's
-              Guide</link></para>
-            </listitem>
-
-            <listitem>
-              <para>Bug fixed: <emphasis>Warning, backward incompatible
-              change!</emphasis> Passing undefined variable to a
-              directive/macro/function/method is now always an error, not even
-              parameter default values can suppress it. Thus,
-              <literal>${anObject.aMethod(possiblyUndefined)}</literal> is
-              wrong, use
-              <literal>${anObject.aMethod(possiblyUndefined!null)}</literal>
-              instead. <literal>[@macroWithDefautlParam possiblyUndefined
-              /]</literal> is wrong, use <literal>[@macroWithDefautlParam
-              possiblyUndefined!null /]</literal> instead. The lenience of FTL
-              in these cases was a bug that was unfortunately exposed by many
-              for emulating <literal>null</literal> parameters. (Note that now
-              <literal>null</literal> is a keyword, but earlier it wasn't, as
-              FTL wasn't <literal>null</literal>-aware.)</para>
-            </listitem>
-
-            <listitem>
-              <para>Also related to the new <literal>null</literal> handling,
-              two new built-ins: <literal>is_null</literal>,
-              <literal>is_defined</literal> (used like
-              <literal><replaceable>expression</replaceable>?is_null</literal>,
-              <literal><replaceable>expression</replaceable>?is_defined</literal>):
-              The first simply checks if a value is <literal>null</literal> or
-              not; it will die with error if the examined variable doesn't
-              exist. The second tests if a variable exists, but it doesn't
-              care if it stores a <literal>null</literal> value or not.
-              Comparing these with the <literal>??</literal> operator,
-              <literal><replaceable>var</replaceable>??</literal> returns
-              <literal>true</literal> if the variable exists and is
-              non-<literal>null</literal>, and returns
-              <literal>false</literal> otherwise (i.e., if the variable
-              doesn't exist or exists but it's value is
-              <literal>null</literal>). So in almost all cases you will want
-              to use <literal>??</literal>; the <literal>is_null</literal> and
-              <literal>is_defined</literal> built-ins are pretty much only for
-              advanced users.</para>
             </listitem>
 
             <listitem>
@@ -20110,16 +20123,17 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             </listitem>
 
             <listitem>
-              <para>New built-in to allow reading and writing the local
-              variables of enclosing macro calls: <literal>scope</literal>.
-              For reading a local variable it is used as
-              <literal><replaceable>theParentMacro</replaceable>?scope.<replaceable>theLocalVar</replaceable></literal>.
-              For writing a local variable it is used as <literal>[#set
-              <replaceable>theLocalVar</replaceable> =
-              <replaceable>newValue</replaceable> in
-              <replaceable>theParentMacro</replaceable>?scope]</literal>. More
-              info and examples <link linkend="ref_builtin_scope">read the
-              reference</link>. </para>
+              <para>New built-in: <literal>scope</literal>. It let you read
+              and modify the local variables of enclosing macro calls, that
+              is, in the case of
+              <literal>[@theParent]<replaceable>...</replaceable>[@theChild
+              /]<replaceable>...</replaceable>[/@theParent]</literal> the
+              <literal>theChild</literal> macro can communicate with the
+              enclosing <literal>theParent</literal> macro without using
+              global variables, through the local variables of the
+              <literal>theParent</literal> macro call. For more details and
+              examples <link linkend="ref_builtin_scope">see the related
+              reference section</link>.</para>
             </listitem>
 
             <listitem>
@@ -20139,9 +20153,9 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal><replaceable>falseExpr</replaceable></literal>
               depending on the value of
               <literal><replaceable>booleanExpr</replaceable></literal> but
-              never both. This will cause backward compatibility problems if
-              the parameter expression evaluations had side-effects that you
-              have relied on. More info: <link
+              never both. This will cause backward compatibility problems in
+              the unlikely case when the parameter expression evaluations had
+              side-effects that you have relied on. More info: <link
               linkend="ref_builtin_default">the <literal>default</literal>
               built-in</link>, <link linkend="ref_builtins_boolean">the
               <literal>string</literal> built-in for booleans</link>.</para>
@@ -20174,19 +20188,23 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               (like of a macro) that is the same as the original except that
               some of its originally required parameters have default value,
               or some of the optional parameters has different default values.
-              <link linkend="ref_builtin_use_defaults">See more in the
+              (Some may know this trick as "currying".) <link
+              linkend="ref_builtin_use_defaults">See more in the
               reference...</link></para>
             </listitem>
 
             <listitem>
               <para>New directives: <literal>lt_lines</literal>,
-              <literal>rt_lines</literal>, <literal>t_lines</literal>. These
-              have nested content (i.e., you use them as
+              <literal>rt_lines</literal>, <literal>t_lines</literal>, for
+              trimming many lines without repeatedly using the
+              <literal>lt</literal>, <literal>rt</literal> or
+              <literal>t</literal> directive. These new directives has nested
+              content (i.e., you use them as
               <literal>[#t_lines]<replaceable>...</replaceable>[/#t_lines]</literal>),
-              and they will apply the corresponding directive
+              and they will apply the corresponding single-line directive
               (<literal>lt</literal>, <literal>rt</literal> or
               <literal>t</literal>, respectively) on all lines in it. [TODO:
-              document these in the reference, link it from here]</para>
+              document in the reference, link it here]</para>
             </listitem>
 
             <listitem>
@@ -20194,24 +20212,40 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               ...]</literal>) now support named parameters when calling the
               function, like <literal>myFunction(x = 1, y = 2)</literal>
               works; earlier only thing like <literal>myFunction(1,
-              2)</literal> did. <phrase role="forProgrammers">(Note that it
-              also stands for directives/method implemented in Java, but fort
-              that see the "Java side" part of this change
-              log.)</phrase></para>
+              2)</literal> did. Methods also support calling by named
+              parameters now, although only those that the Java programmers
+              has specifically prepared for that <phrase
+              role="forProgrammers">(with Java 5 annotations; see
+              later)</phrase>.</para>
             </listitem>
 
             <listitem>
               <para><literal>[/#]</literal> now works (similarly to
               <literal>[/@]</literal>), but use it only when it doesn't
               decrease the understandability of the template, i.e., when the
-              start-tag and the end-tag are close and easy to pair
-              visually.</para>
+              start-tag and the end-tag are close to each other and easy to
+              pair visually.</para>
             </listitem>
 
             <listitem>
-              <para>Added a new number format specifier,
-              <literal>"computer"</literal>. This uses the same formatting as
+              <para>Added a new <link
+              linkend="ref_builtin_string_for_number">number format
+              specifier</link>, <literal>"computer"</literal>. This uses the
+              same formatting as
               <literal><replaceable>exp</replaceable>?c</literal>.</para>
+            </listitem>
+
+            <listitem>
+              <para>XML processing (assuming you are using the standard XML
+              wrapper): To test if a node exists, from now it's enough to
+              write something like <literal>[#if employee.degress]</literal>
+              instead of <literal>[#if employee.degress[0]??]</literal>.
+              That's because now the query result is a boolean as well, which
+              is <literal>false</literal> if the node list is empty, and
+              <literal>true</literal> otherwise. <phrase
+              role="forProgrammers">(Yes, this is actually not a change on the
+              FTL side, but primarily template authors are
+              affected.)</phrase></para>
             </listitem>
 
             <listitem>
@@ -20219,9 +20253,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               text of the expression it is applied to, e.g.,
               <literal>a.b.c[0]?source</literal> will be the string
               <literal>"a.b.c[0]"</literal>. This can be used for tricks like,
-              combined with the <literal>escape</literal> directive, it can
-              print the expression that contain undefined variable errors.
-              [TODO: document it in the reference, link it from here]</para>
+              combined with the <literal>escape</literal> directive
+              (<literal>[#escape x as x!(x?source)]</literal>), it can print
+              the expression that contain undefined variable errors. [TODO:
+              document it in the reference, link it]</para>
             </listitem>
 
             <listitem>
@@ -20235,13 +20270,23 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <para>Bug fixed: <emphasis>Warning, backward incompatible
               change!</emphasis> The default value operator
               (<literal><replaceable>exp</replaceable>!<replaceable>exp</replaceable></literal>)
-              had wrong precedence at its right side, causing thing like
+              had wrong precedence at its right side, causing things like
               <literal>${x!y + 1}</literal> be misinterpreted as
               <literal>${x!(y + 1)}</literal> in FreeMarker
               2.3.<replaceable>x</replaceable>. From now, something like
               <literal>${x!y + 1}</literal> is correctly interpreted as
               <literal>${(x!y) + 1}</literal>. If you want the old meaning,
               use parentheses.</para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: Now you can use the values of parameters as the
+              defaults of other parameters, for example <literal>[#macro
+              section title label=title]</literal>. In earlier versions it was
+              worked unreliably. There are no restriction regarding the order
+              of parameters, like <literal>[#macro section label=title
+              title]</literal> works too; the parameters will be evaluated in
+              an order that the dependencies allow.</para>
             </listitem>
           </itemizedlist>
         </sect2>
@@ -20250,6 +20295,17 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
           <title>Changes on the Java side</title>
 
           <itemizedlist>
+            <listitem>
+              <para><emphasis>Warning, backward incompatible
+              change!</emphasis> FreeMarker 2.4 is developed for J2SE 5.
+              However, we still release a <emphasis>separate</emphasis> 1.4
+              compatible jar (included in the standard distribution tar.gz),
+              that is created with the help of Retrotranslator. So you will be
+              able to use FreeMarker 2.4 on J2SE 1.4 (or at least we don't
+              know about problems with that yet). J2SE 1.3 and earlier is not
+              supported anymore.</para>
+            </listitem>
+
             <listitem>
               <para>Directives (transforms) and methods implemented in Java
               now support calling by named parameters (like
@@ -20299,25 +20355,25 @@ ${obj.myMethod("foo")}</programlisting>
             <listitem>
               <para>New marker interface,
               <literal>freemarker.template.LazilyEvaluatableArguments</literal>
-              can be implemented by custom method models to have their
-              argument lists lazily evaluated (each argument evaluated only
-              when first used by the method during the call, instead of
-              evaluating all arguments in left-to-right order before the
-              call). <link linkend="lazily_evaluated_arguments">More
-              info...</link></para>
+              can be implemented by custom
+              <literal>TemplateMethodModel</literal>-s to have their argument
+              lists lazily evaluated (each argument evaluated only when first
+              used by the method during the call, instead of evaluating all
+              arguments in left-to-right order before the call). <link
+              linkend="lazily_evaluated_arguments">More info...</link></para>
             </listitem>
 
             <listitem>
               <para>Public tree-walker API for tools that walk the FreeMarker
               AST (Abstract Syntax Tree). This can be used by tool writers to
-              walk the FreeMarker AST using the visitor pattern. See
+              walk the FreeMarker AST using visitor pattern. See
               <literal>freemakrer.core.ast.ASTVisitor</literal>. For examples
               of usage, you can refer to where it is used internally, for
               example, in
               <literal>freemarker.template.PostParseVisitor</literal> and
               <literal>freemarker.template.WhitespaceAdjuster</literal>. Also,
-              the template converter tool mentioned earlier is an
-              implementation of the <literal>ASTVisitor</literal> API too; see
+              the template converter utility is an implementation of the
+              <literal>ASTVisitor</literal> API too; see
               <literal>freemarker.core.helpers.DefaultTreeDumper</literal> and
               <literal>freemarker.core.helpers.CanonicalizingTreeDumper</literal>.</para>
             </listitem>
@@ -20334,11 +20390,11 @@ ${obj.myMethod("foo")}</programlisting>
               specify multiple paths in the <literal>TemplatePath</literal>
               servlet init-param, separated with commas. In that case a
               <literal>MultiTemplateLoader</literal> will be created. For
-              example you can specify <literal>&lt;param-value&gt;/,
-              class://com/example/templates/&lt;param-value&gt;</literal>, in
-              which case the templates will be loaded from the Web application
-              root directory, or if the template is not found there, then from
-              the <literal>com.example.templates</literal> package.</para>
+              example you can specify <literal>"/,
+              class://com/example/templates"</literal>, in which case the
+              templates will be loaded from the Web application root
+              directory, or if the template is not found there, then from the
+              <literal>com.example.templates</literal> package.</para>
             </listitem>
 
             <listitem>
@@ -20361,7 +20417,7 @@ ${obj.myMethod("foo")}</programlisting>
               were removed: non-strict syntax (like <literal>&lt;if
               x&gt;<replaceable>...</replaceable>&lt;/if&gt;</literal>),
               classic compatibility mode (i.e., FreeMarker 1.x expression
-              language semantic simulation).</para>
+              semantic simulation).</para>
             </listitem>
 
             <listitem>
@@ -20371,17 +20427,19 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>FreeMarker is now JSR-223 (javax.script) aware</para>
+              <para>FreeMarker is now JSR-223
+              (<literal>javax.script</literal>) aware.</para>
             </listitem>
 
             <listitem>
-              <para><literal>TemplateCache</literal> is now a setting, and can
-              be extended.</para>
+              <para><literal>TemplateCache</literal> now can be extended, and
+              the custom implementation plugged in as a configuration
+              setting.</para>
             </listitem>
 
             <listitem>
-              <para>XML wrapping: <literal>NodeListModel</literal> implements
-              <literal>TemplateBooleanModel</literal>. It will be
+              <para>XML wrapping: <literal>NodeListModel</literal> now
+              implements <literal>TemplateBooleanModel</literal>. It will be
               <literal>false</literal> if the node list contains no nodes,
               <literal>true</literal> otherwise.</para>
             </listitem>
@@ -20409,15 +20467,6 @@ ${obj.myMethod("foo")}</programlisting>
               <para><emphasis>Warning, slightly backward incompatible
               change!</emphasis> At least Jython 2.2 is required for the
               Jython support to work.</para>
-            </listitem>
-
-            <listitem>
-              <para>Bug fixed: Now you can use the values of parameters as the
-              defaults of other parameters, for example <literal>[#macro
-              section title label=title]</literal>. In earlier versions it was
-              worked unreliably. There are no restriction regarding the order
-              of parameters, like <literal>[#macro section label=title
-              title]</literal> works too.</para>
             </listitem>
           </itemizedlist>
         </sect2>
