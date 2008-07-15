@@ -266,7 +266,14 @@
        <taskdef name="retrotranslator" classpathref="build.class.path"
            classname="net.sf.retrotranslator.transformer.RetrotranslatorTask" />
        <copy file="${classes.dir}/freemarker/core/SecureRendererImpl.clazz" tofile="retrobuild/freemarker/core/SecureRendererImpl.class"/>
-       <retrotranslator srcdir="build/classes" destdir="retrobuild" embed="freemarker.retrosupport" uptodatecheck="true"/>
+       
+       <retrotranslator
+          srcdir="build/classes" destdir="retrobuild"
+          embed="freemarker.retrosupport"
+          uptodatecheck="false"
+       />
+       <!-- Note: uptodatecheck="false" has randombly created empty jar-s -->
+       
        <copy file="retrobuild/freemarker/core/SecureRendererImpl.class" tofile="retrobuild/freemarker/core/SecureRendererImpl.clazz"/>
    </target>
    
