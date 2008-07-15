@@ -13976,9 +13976,10 @@ Sorted by name.last:
 
           <para>[TODO: document some border cases]</para>
 
-          <para>This built-in let you to read and write the <link
-          linkend="dgui_misc_var">local variables</link> of another macro that
-          is executing its nested content. That is, if we have something like
+          <para>With the help of this built-in you can read and write the
+          <link linkend="dgui_misc_var">local variables</link> of another
+          macro that is just executing its nested content. That is, if we have
+          something like
           <literal>[@theParent]<replaceable>...</replaceable>[@theChild
           /]<replaceable>...</replaceable>[/@theParent]</literal> then the
           <literal>theChild</literal> macro can communicate with the enclosing
@@ -20089,7 +20090,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               replace <literal>include</literal> in almost all use cases. The
               difference to <literal>include</literal> is that in the case of
               <literal>embed</literal> the embedding and the embedded template
-              has its own namespace, so they don't overwrite or see each
+              has their own namespaces, so they don't overwrite or see each
               other's variables. (In the case of <literal>include</literal>
               the included template has used the namespace of the including
               template, possibly causing maintenance headaches due to
