@@ -1710,10 +1710,11 @@ The average of the price of a python and an elephant is:
           <literal>]</literal> in the FTL tags and FTL comments, like
           <literal>&lt;#if user == "Big
           Joe"&gt;<replaceable>...</replaceable>&lt;/#if&gt;</literal>. For
-          more information read: <xref
-          linkend="dgui_misc_alternativesyntax" />. FreeMarker can be further
-          configured so that it also understands predefined directives without
-          <literal>#</literal> (like <literal>&lt;if user == "Big
+          more information <link lang=""
+          linkend="ref_depr_angle_bracket_syntax">read this.</link> FreeMarker
+          can be further configured so that it also understands predefined
+          directives without <literal>#</literal> (like <literal>&lt;if user
+          == "Big
           Joe"&gt;<replaceable>...</replaceable>&lt;/if&gt;</literal>).
           However we don't recommend the usage of this mode. For more
           information read: <xref linkend="ref_depr_oldsyntax" /></para>
@@ -4370,6 +4371,13 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <primary>temporary variable</primary>
         </indexterm>
 
+        <indexterm>
+          <primary>global variable</primary>
+        </indexterm>
+
+        <para>[TODO: This section is under rewriting and is
+        incomplete!]</para>
+
         <para>As we have described, a template can use the variables defined
         in the data-model. A template can also define variables outside the
         data-model for its own use. These temporary variables can be created
@@ -4390,138 +4398,199 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         <literal>${foo}</literal> will print the value of the variable created
         in the template.</para>
 
-        <para>There are 3 kind of variables that are defined in a
-        template:</para>
+        <para>For information about syntax of variable references please read:
+        <xref linkend="dgui_template_exp" /></para>
 
-        <itemizedlist>
-          <listitem>
-            <para><emphasis role="term">''plain'' variables</emphasis>: They
-            are accessible from everywhere in the template, or from the
-            templates inserted with <literal>include</literal> directive (but
-            not with the <literal>embed</literal> directive). You can create
-            and replace these variables with the <link
-            linkend="ref.directive.set"><literal>set</literal></link> or <link
-            linkend="ref.directive.macro"><literal>macro</literal>
-            directives</link>.</para>
-          </listitem>
+        <sect2 id="dgui_misc_var_24pre">
+          <title>Quick introduction for 2.4 preview testers</title>
 
-          <listitem>
-            <para><emphasis role="term">Local variables</emphasis>: They can
-            only be set inside a <link
-            linkend="gloss.macroDefinitionBody">macro definition body</link>,
-            and are only visible from there. A local variable only exists for
-            the duration of a macro call. You can create local variables
-            inside macro definition bodies with the <link
-            linkend="ref.directive.var"><literal>var</literal>
-            directive</link>.</para>
-          </listitem>
+          <para>We have two new directives, <literal>set</literal> and
+          <literal>var</literal>, which deprecate
+          <literal>assing</literal>/<literal>local</literal>/<literal>global</literal>.
+          At the first glance the <literal>set</literal> directive is the same
+          as <literal>assign</literal>; <literal>[#set x = 1]</literal> has
+          the same effect as <literal>[#assign x = 1]</literal>. But, with the
+          <literal>var</literal> directive you can declare a variable in the
+          lexical scope of the block where it occurs, and
+          <literal>set</literal> will set the variable in the innermost scope
+          that declared the variable (while <literal>assign</literal> always
+          created/modified the variable on the top-level, i.e., in the "main
+          namespace"). This for example can be utilized to create local
+          variables in macros (hence the <literal>local</literal> directive is
+          now deprecated):</para>
 
-          <listitem>
-            <para><emphasis role="term">Loop variables</emphasis>: Loop
-            variables are created automatically by directives like <link
-            linkend="ref.directive.list"><literal>list</literal></link>, and
-            they only exist between the start-tag and end-tag of the
-            directive. <link linkend="ref.directive.macro">Macro</link>
-            parameters are local variables, not loop variables.</para>
-          </listitem>
-        </itemizedlist>
+          <programlisting role="template">[#macro myMacro]
+  [#var x] [#-- x is a local variable --]
+  [#set x = "Set in myMacro"]
+  [#set y = "Set in myMacro too"] [#-- y is not a local variable --]
+  x: ${x}
+  y: ${y}
+[/#macro]
 
-        <para>Example: Create and replace variables with
-        <literal>set</literal>:</para>
+[#set x = "On the top level"]
+[#set y = "On the top level too"]
+x: ${x}
+y: ${y}
+[@myMacro /]
+x: ${x}
+y: ${y}</programlisting>
 
-        <programlisting role="template">[#set x = 1]  [#-- create variable x --]
+          <para>which will print:</para>
+
+          <programlisting role="output">x: On the top level
+y: On the top level too
+  x: Set in myMacro
+  y: Set in myMacro too
+x: On the top level
+y: Set in myMacro too</programlisting>
+
+          <para>Note that the <literal>var</literal> directive can also
+          specify the initial value, so earlier we could write just:</para>
+
+          <programlisting role="template">[#macro myMacro]
+  [#var x = "In myMacro"]
+  ${x}
+[/#macro]
+<replaceable>...</replaceable></programlisting>
+
+          <para>The <literal>var</literal> directive can declare variables in
+          arbitrary blocks, not only in macros. This was no possible at all in
+          2.3. Example:</para>
+
+          <programlisting role="template">[#set x = "Top level"]
 ${x}
-[#set x = x + 3] [#-- replace variable x --]
+[#if true]
+  [#var x = "Inner 1"]
+  ${x}
+  [#if true]
+    [#var x = "Inner 2"]
+    ${x}
+  [/#if]
+  ${x}
+[/#if]
 ${x}</programlisting>
 
-        <para>Output:</para>
+          <para>This prints:</para>
 
-        <programlisting role="output">1
-4</programlisting>
+          <programlisting role="output">Top level
+  Inner 1
+    Inner 2
+  Inner 1
+Top level</programlisting>
 
-        <para>Scoped variables hide (but do not overwrite) ''plain'' variables
-        of the same name in an enclosing scope. For example:</para>
+          <para>Of course instead of <literal>if</literal> directive we could
+          use <literal>list</literal> as well, or even user-defined
+          directives. It works with all. But of course it doesn't consider
+          HTML tags, since that's just static text for FreeMarker, not
+          tags.</para>
 
-        <programlisting role="template">[#set x = "plain"]
-1. ${x}  [#-- we see the plain var. here --]
-[@test/]
-6. ${x}  [#-- the value of plain var. was not changed --]
-[#list ["loop"] as x]
-    7. ${x}  [#-- now the loop var. hides the plain var. --]
-    [#set x = "plain2" in .namespace] [#-- replace the variable at the namespace level --]
-    8. ${x}  [#-- it still hides the plain var. --]
-[/#list]
-9. ${x}  [#-- the new value of plain var. --]
+          <para>Now a few example to explain some marginal cases and answer
+          common questions and misunderstandings:</para>
 
-[#macro test]
-  2. ${x}  [#-- we still see the plain var. here --]
-  [#var x = "local"]
-  3. ${x}  [#-- now the scoped var. hides it --]
-  [#list ["loop"] as x&gt;
-    4. ${x}  [#-- now the loop var. hides variable in the enclosing scope. --]
-  [/#list]
-  5. ${x}  [#-- now we see the first scoped var. again --]
-[/#macro]</programlisting>
+          <itemizedlist>
+            <listitem>
+              <para>Variables created with <literal>var</literal> will be
+              visible only from the places that are inside the relevant block
+              <emphasis>in the template file</emphasis>. If it sounds heavy,
+              it's just the same thing as with local variables in virtually
+              all languages. Example:</para>
 
-        <para>the output:</para>
+              <programlisting role="template">[#macro myMacro]
+  In myMacro: ${x}
+  [#set x = "Outer modified"]
+[/#macro]
 
-        <programlisting role="output">1. plain
-  2. plain
-  3. local
-    4. loop
-  5. local
-6. plain
-    7. loop
-    8. loop
-9. plain2
-
-
-</programlisting>
-
-        <para>An inner loop variable can hide an outer loop variable:</para>
-
-        <programlisting role="template">[#list ["loop 1"] as x&gt;
+[#set x = "Outer"]
+${x}
+[#if true]
+  [#var x = "Inner"]
   ${x}
-  [#list ["loop 2"] as x&gt;
-    ${x}
-    [#list ["loop 3"] as x&gt;
-      ${x}
-    [/#list]
-    ${x}
-  [/#list]
+  [@myMacro /]
+  ${x}
+[/#if]
+${x}</programlisting>
+
+              <para>Output:</para>
+
+              <programlisting role="output">Outer
+  Inner
+  In myMacro: Outer
+  Inner
+Outer modified</programlisting>
+
+              <para>A marginal rule regarding lexical scoping is that the
+              variables are, in fact, visible only between the part of the
+              template file that's between the <literal>var</literal> and the
+              block closing FTL tag:</para>
+
+              <programlisting role="template">[#set x = '*']
+[#list 1..3 as i]  [#-- loops three times --]
+  ${x}
+  [#set x = x + '*']
+  
+  [#var x = "Inner"]
   ${x}
 [/#list]</programlisting>
 
-        <para>the output:</para>
+              <para>Output:</para>
 
-        <programlisting role="output">  loop 1
-    loop 2
-      loop 3
-    loop 2
-  loop 1</programlisting>
+              <programlisting role="output">  *
+  Inner
+  **
+  Inner
+  ***
+  Inner</programlisting>
+            </listitem>
 
-        <para>Note that the value of a loop variable is set by the directive
-        invocation that has created it (the <literal>&lt;list
-        <replaceable>...</replaceable>&gt;</literal> tags in this case). There
-        is no other way to change the value of a loop variable (say, you can't
-        change its value with some kind of assignment directive). You can hide
-        temporarily a loop variable with another loop variable though, as you
-        have seen above.</para>
+            <listitem>
+              <para>If you don't specify the initial value in
+              <literal>var</literal>, that's the same as writing
+              <literal>[#var x = null]</literal> (note: supporting
+              <literal>null</literal> is a new feature in 2.4). Reading the
+              <literal>null</literal> will not cause fall-back to higher
+              scopes because the variable exists, only it stores a
+              <literal>null</literal> as its value. For example:</para>
 
-        <para>Sometimes it happens that a variable hides the variable in the
-        data-model with the same name, but you want to read the variable of
-        the data-model. In this case you can use the
-        <literal>.globals</literal> <link
-        linkend="dgui_template_exp_var_special">special variable</link>. For
-        example, assume we have a variable called <literal>user</literal> in
-        the data-model with value ''Big Joe'':</para>
+              <programlisting role="template">${x!'Missing'}
+[#set x = "Top level"]
+${x!'Missing'}
+[#if true]
+  [#var x]
+  ${x!'Missing'}  [#-- Here! --]
+  [#set x = "Inner"]
+  ${x!'Missing'}
+[/#if]
+${x!'Missing'}</programlisting>
 
-        <programlisting role="template">[#set user = "Joe Hider"]
-${user}          [#-- prints: Joe Hider --]
-${.globals.user} [#-- prints: Big Joe --]</programlisting>
+              <para>Output:</para>
 
-        <para>For information about syntax of variables please read: <xref
-        linkend="dgui_template_exp" /></para>
+              <programlisting role="output">Missing
+Top level
+  Missing
+  Inner
+Top level</programlisting>
+            </listitem>
+
+            <listitem>
+              <para>The <literal>var</literal> directive can be used on the
+              top level, i.e., outside all bocks. In that case it behaves as
+              if the whole template were in an imaginary block. This has
+              importance only when you <literal>include</literal> that
+              template in another template, since then the variable will not
+              be visible from the including template.</para>
+            </listitem>
+
+            <listitem>
+              <para>To achieve the same effect as <literal>[#global x =
+              1]</literal>, you can write <literal>[#set x = 1 in
+              .globals]</literal>. Sure, the old way was much nicer, so if you
+              set globals a lot, you may should stick with the old way of
+              doing it. (But we think using globals at many places is a bad
+              practice usually, so we don't want to encourage new users to do
+              it.)</para>
+            </listitem>
+          </itemizedlist>
+        </sect2>
       </sect1>
 
       <sect1 id="dgui_misc_namespace"
@@ -5093,95 +5162,6 @@ That's all.</programlisting>
 
           <programlisting role="output">List of users: - Joe - Julia That's all.</programlisting>
         </sect2>
-      </sect1>
-
-      <sect1 id="dgui_misc_alternativesyntax"
-             xreflabel="Template Author's Guide/Miscellaneous/Alternative syntax">
-        <title>Alternative (square bracket) syntax</title>
-
-        <indexterm>
-          <primary>alternative syntax</primary>
-        </indexterm>
-
-        <indexterm>
-          <primary>square bracket syntax</primary>
-        </indexterm>
-
-        <para>FreeMarker supports an alternative syntax, where
-        <literal>[</literal> and <literal>]</literal> is used instead of
-        <literal>&lt;</literal> and <literal>&gt;</literal> in FreeMarker
-        directives and comments, for example:</para>
-
-        <itemizedlist spacing="compact">
-          <listitem>
-            <para>Calling predefined directive: <literal>[#list animals as
-            being]<replaceable>...</replaceable>[/#list]</literal></para>
-          </listitem>
-
-          <listitem>
-            <para>Calling user-defined directive: <literal>[@myMacro
-            /]</literal></para>
-          </listitem>
-
-          <listitem>
-            <para>Comment: <literal>[#-- the comment --]</literal></para>
-          </listitem>
-        </itemizedlist>
-
-        <para>To use the alternative syntax instead of the default one, start
-        the template with the <link
-        linkend="ref_directive_ftl"><literal>ftl</literal> directive</link>
-        using the alternative syntax. If you don't know what is the
-        <literal>ftl</literal> directive, just start the template with
-        <literal>[#ftl]</literal>, and remember that it should be the very
-        first thing in the file (except that <link
-        linkend="gloss.whiteSpace">white-space</link> can precede it). For
-        example, this is how the last example of the <link
-        linkend="dgui_quickstart_template">Getting Started</link> looks with
-        the alternative syntax (assuming it's a complete template, not just a
-        fragment):</para>
-
-        <programlisting role="template"><emphasis>[#ftl]</emphasis>
-&lt;p&gt;We have these animals:
-&lt;table border=1&gt;
-  &lt;tr&gt;&lt;th&gt;Name&lt;th&gt;Price
-  <emphasis>[#list animals as being]</emphasis>
-  &lt;tr&gt;
-    &lt;td&gt;
-      <emphasis>[#if being.size = "large"]</emphasis>&lt;b&gt;<emphasis>[/#if]</emphasis>
-      ${being.name}
-      <emphasis>[#if being.size = "large"]</emphasis>&lt;/b&gt;<emphasis>[/#if]</emphasis>
-    &lt;td&gt;${being.price} Euros
-  <emphasis>[/#list]</emphasis>
-&lt;/table&gt;</programlisting>
-
-        <para>The default (square bracket) and older (angle bracket) syntax
-        are mutually exclusive within a template. That is, either the whole
-        template uses square bracket syntax, or the whole template uses the
-        angle bracket syntax. If the template uses the older syntax, things
-        like <literal>[#if <replaceable>...</replaceable>]</literal> count as
-        static text, not as FTL tags. Similarly, if the template uses the
-        older angle bracket syntax, things like <literal>&lt;#if
-        <replaceable>...</replaceable>]</literal> count as static text, not as
-        FTL tags.</para>
-
-        <para>If you start the file with <literal>[#ftl
-        <replaceable>...</replaceable>]</literal> (where the
-        <literal><replaceable>...</replaceable></literal> stands for the
-        optional parameters; of course <literal>[#ftl]</literal> works too)
-        the file will surely use the alternative (square bracket) syntax. If
-        you start the file with <literal>&lt;#ftl
-        <replaceable>...</replaceable>&gt;</literal> the file will surely use
-        the normal (angle bracket) syntax. If there is no
-        <literal>ftl</literal> directive in the file, then the programmer
-        decides what the syntax will be by configuring FreeMarker <phrase
-        role="forProgrammers">(programmers see
-        <literal>Configuration.setTagSyntax(int)</literal> in the API
-        javadocs)</phrase>. Most probably the programmers use the factory
-        default however. The factory default in 2.3.x is using the normal
-        syntax. The factory default in 2.4.x will be auto-detection, which
-        means that the first FreeMarker tag determines the syntax (it can be
-        anything, not just <literal>ftl</literal>).</para>
       </sect1>
     </chapter>
   </part>
@@ -12839,19 +12819,23 @@ rif: foo XYr baar</programlisting>
           the programmer has specified. You can also specify a number format
           explicitly with this built-in, as it will be shown later.</para>
 
-          <para>There are three predefined number formats:
-          <literal>number</literal>, <literal>currency</literal>, and
-          <literal>percent</literal>. The exact meaning of these is locale
-          (nationality) specific, and is controlled by the Java platform
-          installation, rather than by FreeMarker. You can use these
-          predefined formats like this:</para>
+          <para>There are predefined number formats are:
+          <literal>number</literal>, <literal>currency</literal>,
+          <literal>percent</literal> and <literal>computer</literal>. The
+          exact meaning of these is locale (nationality) specific, and is
+          controlled by the Java platform installation, rather than by
+          FreeMarker, except for <literal>computer</literal>, which uses the
+          same formatting as <link linkend="ref_builtin_c">the
+          <literal>c</literal> built-in</link>. You can use these predefined
+          formats like this:</para>
 
           <programlisting role="template">[#assign x=42]
 ${x}
 ${x?string}  [#-- the same as ${x} --]
 ${x?string.number}
 ${x?string.currency}
-${x?string.percent}</programlisting>
+${x?string.percent}
+${x?string.computer}</programlisting>
 
           <para>If your locale is US English, this will certainly
           produce:</para>
@@ -12860,7 +12844,8 @@ ${x?string.percent}</programlisting>
 42
 42
 $42.00
-4,200%</programlisting>
+4,200%
+42</programlisting>
 
           <para>The output of first three expressions is identical because the
           first two expressions use the default format, which is "number"
@@ -12872,7 +12857,8 @@ ${x}
 ${x?string}  [#-- the same as ${x} --]
 ${x?string.number}
 ${x?string.currency}
-${x?string.percent}</programlisting>
+${x?string.percent}
+${x?string.computer}</programlisting>
 
           <para>Will now output:</para>
 
@@ -12880,7 +12866,8 @@ ${x?string.percent}</programlisting>
 $42.00
 42
 $42.00
-4,200%</programlisting>
+4,200%
+42</programlisting>
 
           <para>since the default number format was set to "currency".</para>
 
@@ -12934,7 +12921,7 @@ ${12345?string("0.##E0")}</programlisting>
           1.5 and of 2.5, as both were rounded to 2, since 2 is even, but 1
           and 3 are odds.</para>
 
-          <para>Appart from the Java decimal syntax patterns, you can also
+          <para>Apart from the Java decimal syntax patterns, you can also
           write <literal>${aNumber?string("currency")}</literal> and like,
           that will do the same as
           <literal>${aNumber?string.currency}</literal> and like.</para>
@@ -13983,6 +13970,110 @@ Sorted by name.last:
         exceptional situations (debugging, advanced macros) they can be
         useful. If you need to use these in your normal page templates, you
         may revisit the data-model so you don't need to use these.</para>
+
+        <simplesect id="ref_builtin_scope">
+          <title>scope</title>
+
+          <para>[TODO: document some border cases]</para>
+
+          <para>This built in allows you to read and write the <link
+          linkend="dgui_misc_var">local variables</link> of another macro that
+          is executing its nested content. The typical application is that a
+          macro calls <literal>[#nested]</literal>, and then in its nested
+          content another macro is called that want to communicate with
+          previously mentioned macro.</para>
+
+          <para>The usage is
+          <literal><replaceable>theMacro</replaceable>?<replaceable>scope</replaceable></literal>,
+          which returns the hash of the local variables. The hash can be read
+          and enumerated as usual hashes, but it also can be modified with
+          <literal>[#set <replaceable>theLocalVariable</replaceable> =
+          <replaceable>newValue</replaceable> in
+          <replaceable>theHash</replaceable>]</literal>. Hence the
+          communication between the two macros can be two way.</para>
+
+          <para>Example 1: Assume you have two macros, that fulfill similar
+          role as <literal>UL</literal> and <literal>LI</literal> in HTML. The
+          problem is, for generating its own output, the
+          <literal>LI</literal>-like macro should know what bullet you have
+          specified in the <literal>UL</literal>-like macro.</para>
+
+          <programlisting role="template">[#macro myUL bullet]
+  /--------\
+  [#nested]
+  \--------/
+[/#macro]
+
+[#macro myLI]
+  ${<emphasis>myUL?scope.bullet</emphasis>} [#nested]
+[/#macro]
+
+
+[@myUL "*"]
+  [@myLI]Red[/@myLI]
+  [@myLI]Green[/@myLI]
+  [@myLI]Blue[/@myLI]
+[/@myUL]
+
+[@myUL "O"]
+  [@myLI]Red[/@myLI]
+  [@myLI]Blue[/@myLI]
+[/@myUL]</programlisting>
+
+          <para>The output will be (apart from some needless
+          whitespace):</para>
+
+          <programlisting role="output">  /--------\
+    * Red
+    * Green
+    * Blue
+  \--------/
+
+  /--------\
+    O Red
+    O Blue
+  \--------/</programlisting>
+
+          <para>Example 2: We want to number items in an arbitrary section of
+          the template.</para>
+
+          <programlisting role="template">[#macro counterSection]
+  [#var counter = 0]
+  [#nested]
+[/#macro]
+
+[#macro counter]
+  [#var s = <emphasis>counterSection?scope</emphasis>]
+  [#set counter = <emphasis>s.</emphasis>counter + 1 <emphasis>in s</emphasis>]
+  ${<emphasis>s.</emphasis>counter}
+[/#macro]
+
+
+[@counterSection]
+  a [@counter /]
+  b [@counter /]
+  [@counterSection]
+    c [@counter /]
+    d [@counter /]
+    e [@counter /]
+    g [@counter /]
+  [/@counterSection]
+  h [@counter /]
+  i [@counter /]
+[/@counterSection]</programlisting>
+
+          <para>The output will be (after removing some needless
+          whitespace):</para>
+
+          <programlisting role="output">  a 1
+  b 2
+    c 1
+    d 2
+    e 3
+    g 4
+  h 3
+  i 4</programlisting>
+        </simplesect>
 
         <simplesect id="ref_builtin_numType">
           <title>byte, double, float, int, long, short</title>
@@ -15954,8 +16045,9 @@ ${x}</programlisting>
               format that is used to convert numbers to strings when no
               explicit format is specified. Can be one of predefined values
               <literal>number</literal> (the default),
-              <literal>currency</literal>, or <literal>percent</literal>.
-              Additionally, arbitrary format pattern written in <ulink
+              <literal>currency</literal>, <literal>percent</literal>, or
+              <literal>computer</literal>. Additionally, arbitrary format
+              pattern written in <ulink
               url="http://java.sun.com/j2se/1.4/docs/api/java/text/DecimalFormat.html">Java
               decimal number format syntax</ulink> can also be specified. More
               information about format patterns:<link
@@ -16998,14 +17090,6 @@ or
               <literal>java.util.List</literal>.</phrase></para>
             </listitem>
           </itemizedlist>
-
-          <para>This directive also determines if the template uses angle
-          bracket syntax (e.g., <literal>&lt;#embed 'foo.ftl'&gt;</literal>)
-          or <link linkend="dgui_misc_alternativesyntax">square bracket
-          syntax</link> (e.g., <literal>[#embed 'foo.ftl']</literal>). Simply,
-          the syntax used for this directive will be the syntax used for the
-          whole template, regardless of the FreeMarker configuration
-          settings.</para>
         </sect2>
       </sect1>
 
@@ -17165,7 +17249,7 @@ or
           <para>''No Trim''. This directive disables <link
           linkend="dgui_misc_whitespace_stripping">white-space
           stripping</link> in the line where it occurs. It also disables the
-          effect of other trim directives occuring in the same line (the
+          effect of other trim directives occurring in the same line (the
           effect of <literal>t</literal>, <literal>rt</literal>,
           <literal>lt</literal>).</para>
         </sect2>
@@ -18244,7 +18328,7 @@ some test
 
       <sect1 id="ref_depr_oldsyntax"
              xreflabel="Reference/Deprecated FTL constructs/Old FTL syntax">
-        <title>Old FTL syntax</title>
+        <title>FreeMarker 1-style tag syntax</title>
 
         <indexterm>
           <primary>strict syntax</primary>
@@ -18345,6 +18429,36 @@ some test
             <literal>include</literal> element in the generated XML).</para>
           </listitem>
         </itemizedlist>
+      </sect1>
+
+      <sect1 id="ref_depr_angle_bracket_syntax">
+        <title>Angle bracket syntax</title>
+
+        <para>In FreeMarker 2.3.<emphasis>x</emphasis>, the recommended syntax
+        has used <literal>&lt;</literal> and <literal>&gt;</literal> instead
+        of <literal>[</literal> and <literal>]</literal>. For example,
+        <literal>&lt;#list xs as
+        x&gt;<replaceable>...</replaceable>&lt;/#list&gt;</literal> and
+        <literal>&lt;#-- a comment --&gt;</literal>. This syntax is still
+        supported, and due to the syntax auto-detection you can just use it
+        without configuring anything. You can't use both square bracket syntax
+        and angle bracket syntax in the same template file however, as the
+        syntax is detected for the whole template at the first
+        <literal>[#</literal> or <literal>&lt;#</literal> that is followed by
+        letter or underscore, or at the first <literal>[@</literal> or
+        <literal>&lt;@</literal> (followed by anything) that occurs in the
+        file. For example, if your first FTL tag uses
+        <literal>&lt;#</literal>, then any <literal>[#</literal> and
+        <literal>[@</literal> in the later parts of the template will be just
+        static text. You can still
+        <literal>include</literal>/<literal>embed</literal>/<literal>import</literal>
+        templates that use a different syntax, since the syntax detection of
+        the two templates are independent.</para>
+
+        <para>Note that the behaviour of the auto-detection can be influenced
+        with the <literal>tag_syntax</literal> setting, i.e., with
+        <literal>freemarker.template.Configuration.setTagSyntax(int
+        tagSyntax)</literal>.</para>
       </sect1>
 
       <sect1 id="ref_depr_numerical_interpolation">
@@ -18596,6 +18710,9 @@ or
           </question>
 
           <answer>
+            <para>[TODO: Outdated since 2.4! <literal>null</literal>-s and
+            missing variables are now different.]</para>
+
             <para>To recapitulate what's this entry is about: FreeMarker by
             default treats an attempt to access a non-existent variable or a
             <literal>null</literal> value (<link linkend="faq_null">this two
@@ -18808,11 +18925,11 @@ or
           </question>
 
           <answer>
-            <para>Starting from FreeMarker 2.3.4 you can use
+            <para>Starting from FreeMarker 2.4 the default is using
             <literal>[</literal> and <literal>]</literal> instead of
-            <literal>&lt;</literal> and <literal>&gt;</literal>. For more
-            details <link linkend="dgui_misc_alternativesyntax">read
-            this...</link></para>
+            <literal>&lt;</literal> and <literal>&gt;</literal>. (This was
+            also possible in 2.3.<replaceable>x</replaceable>, by configuring
+            FreeMarker properly.)</para>
           </answer>
         </qandaentry>
 
@@ -19522,11 +19639,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             themselves broken. A good editor should ignore, not mangle, what
             it doesn't understand.</para>
 
-            <para>You maybe interested in that starting from FreeMarker 2.3.4
-            you can use <literal>[</literal> and <literal>]</literal> instead
-            of <literal>&lt;</literal> and <literal>&gt;</literal>. For more
-            details <link linkend="dgui_misc_alternativesyntax">read
-            this...</link></para>
+            <para>You maybe interested in that starting from FreeMarker 2.4
+            you should use <literal>[</literal> and <literal>]</literal>
+            instead of <literal>&lt;</literal> and <literal>&gt;</literal>.
+            </para>
           </answer>
         </qandaentry>
 
@@ -19768,15 +19884,186 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
     <appendix id="app_versions">
       <title>Versions</title>
 
-      <sect1 id="versions_2_4pre1">
+      <sect1 id="versions_2_4_pre1">
         <title>2.4 Preview 1</title>
 
-        <para>Date of release: 2008-06-13</para>
+        <para>Date of release: 2008-06-15</para>
+
+        <para>Notes:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>This release may not by compatible with the later 2.4
+            releases, as it's only a preview release. Depending on user
+            feedback and on our realizations it can still change
+            considerably.</para>
+          </listitem>
+
+          <listitem>
+            <para>Since 2.4 is a full decimal point move in version number,
+            there are backward incompatible changes in it. Look for the
+            "<emphasis>Warning</emphasis>"-s below, as some may affects you.
+            (Note that we don't plan to stop the basic maintenance of the
+            2.3.<emphasis>x</emphasis> branch after the final release of 2.4,
+            so you definitely will not <emphasis>have</emphasis> to upgrade in
+            older projects.)</para>
+          </listitem>
+
+          <listitem>
+            <para>A conversion utility exists to convert older FreeMarker
+            templates to use the new 2.4 constructs and recommendations. See
+            the class <literal>freemarker.core.helpers.Canonicalize</literal>.
+            You can run it from the command line with no arguments to get a
+            list of options.</para>
+          </listitem>
+
+          <listitem>
+            <para>FreeMarker 2.4 is developed for J2SE 5. However, we still
+            release a <emphasis>separate</emphasis> 1.4 compatible jar
+            (included in the standard distribution tar.gz), that is created
+            with the help of Retrotranslator. So you will be able to use
+            FreeMarker 2.4 on J2SE 1.4, or at least we don't know about
+            problems with that yet.</para>
+          </listitem>
+
+          <listitem>
+            <para>This documentation is only partially updated for 2.4 (except
+            the version history of course), so some parts are possibly
+            inaccurate, also some new features are not documented yet.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Feedback is welcome! Preferably on the <ulink
+        url="https://lists.sourceforge.net/lists/listinfo/freemarker-devel">freemarker-devel
+        mailing list</ulink> (subscription is optional, but recommended if you
+        don't want to miss some answers).</para>
 
         <sect2>
           <title>Changes on the FTL side</title>
 
           <itemizedlist>
+            <listitem>
+              <para>New directives <literal>var</literal>,
+              <literal>set</literal>: These directives deprecate the
+              <literal>assign</literal>, <literal>local</literal> and
+              <literal>global</literal> directives. See more <link
+              linkend="dgui_misc_var_24pre">here...</link> </para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>Warning, backward incompatible
+              change!</emphasis> The template language is now
+              <literal>null</literal>-aware. Thus, <literal>null</literal> is
+              now a keyword (so if you used it as a variable name, there could
+              be problems). Variables that store <literal>null</literal>
+              values pretty much behave as if the variable is missing, except
+              that:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>They can be assigned to other variables, e.g.,
+                  <literal>[#set x = null]</literal> (or <literal>[#set x =
+                  aVariableThatIsNull]</literal>)</para>
+                </listitem>
+
+                <listitem>
+                  <para>They can be passed as parameter to directive/method
+                  (aka. macro/function) calls, e.g.,
+                  <literal>${aJavaMethod(null)}</literal>.</para>
+                </listitem>
+
+                <listitem>
+                  <para>If you pass a <literal>null</literal> to a
+                  directive/method (aka. macro/function) as a parameter, and
+                  the parameter is mandatory, then it will not treat the
+                  parameter as missing (hence triggering a missing parameter
+                  error).</para>
+                </listitem>
+              </itemizedlist>
+
+              <para>Otherwise it behaves exactly like a missing
+              variable:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>You can't have a <literal>null</literal> in additions,
+                  multiplications, divisions, comparisons(!), etc., exactly
+                  like you couldn't have missing variables there (unless you
+                  specify a default value, of course). To test if something is
+                  <literal>null</literal>, write
+                  <literal>theVariable?is_null</literal>, not
+                  <literal>theVariable == null</literal>.</para>
+                </listitem>
+
+                <listitem>
+                  <para> The
+                  <literal><replaceable>exp</replaceable>!<replaceable>defaultExp</replaceable></literal>,
+                  <literal><replaceable>exp</replaceable>!</literal>, and
+                  <literal><replaceable>exp</replaceable>??</literal>
+                  operators treat <literal>null</literal> values as missing
+                  variables.</para>
+                </listitem>
+
+                <listitem>
+                  <para><literal>null</literal> is not converted to string
+                  automatically, so for example to print a possibly
+                  <literal>null</literal> variable you should write something
+                  like: <literal>${possiblyNull!"N/A"}</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para>If you pass a <literal>null</literal> to a
+                  directive/method (aka. macro/function), then although it
+                  will not treat the parameter missing, if the parameter has a
+                  default value, it will still replace the
+                  <literal>null</literal> with that.</para>
+                </listitem>
+              </itemizedlist>
+
+              <para>See also: <link linkend="dgui_template_exp_missing">about
+              <literal>null</literal> in the Template Author's
+              Guide</link></para>
+            </listitem>
+
+            <listitem>
+              <para>Bug fixed: <emphasis>Warning, backward incompatible
+              change!</emphasis> Passing undefined variable to a
+              directive/macro/function/method is now always an error, not even
+              parameter default values can suppress it. Thus,
+              <literal>${anObject.aMethod(possiblyUndefined)}</literal> is
+              wrong, use
+              <literal>${anObject.aMethod(possiblyUndefined!null)}</literal>
+              instead. <literal>[@macroWithDefautlParam possiblyUndefined
+              /]</literal> is wrong, use <literal>[@macroWithDefautlParam
+              possiblyUndefined!null /]</literal> instead. The lenience of FTL
+              in these cases was a bug that was unfortunately exposed by many
+              for emulating <literal>null</literal> parameters. (Note that now
+              <literal>null</literal> is a keyword, but earlier it wasn't, as
+              FTL wasn't <literal>null</literal>-aware.)</para>
+            </listitem>
+
+            <listitem>
+              <para>Also related to the new <literal>null</literal> handling,
+              two new built-ins: <literal>is_null</literal>,
+              <literal>is_defined</literal> (used like
+              <literal><replaceable>expression</replaceable>?is_null</literal>,
+              <literal><replaceable>expression</replaceable>?is_defined</literal>):
+              The first simply checks if a value is <literal>null</literal> or
+              not; it will die with error if the examined variable doesn't
+              exist. The second tests if a variable exists, but it doesn't
+              care if it stores a <literal>null</literal> value or not.
+              Comparing these with the <literal>??</literal> operator,
+              <literal><replaceable>var</replaceable>??</literal> returns
+              <literal>true</literal> if the variable exists and is
+              non-<literal>null</literal>, and returns
+              <literal>false</literal> otherwise (i.e., if the variable
+              doesn't exist or exists but it's value is
+              <literal>null</literal>). So in almost all cases you will want
+              to use <literal>??</literal>; the <literal>is_null</literal> and
+              <literal>is_defined</literal> built-ins are pretty much only for
+              advanced users.</para>
+            </listitem>
+
             <listitem>
               <para>New directive: <literal>embed</literal>. This meant to
               replace <literal>include</literal> in almost all use cases. The
@@ -19791,11 +20078,53 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>embed</literal> from now. If you want to use the macros
               and other variables of another template, then you should use
               <literal>import</literal>. Using <literal>include</literal> is
-              almost always the sign of bad practice.</para>
+              almost always a bad practice. (See: <link
+              linkend="ref_directive_embed"><literal>embed</literal> in the
+              reference</link>.)</para>
             </listitem>
 
             <listitem>
-              <para>Lazy evaluation of arguments for
+              <para><emphasis>Warning, slightly backward incompatible
+              change!</emphasis> The recommended syntax is from now is the
+              square bracket syntax, for example: <literal>[#list xs as
+              x]<replaceable>...</replaceable>[/#list]</literal> and
+              <literal>[@myMacro /]</literal>. Unlike in
+              2.3.<emphasis>x</emphasis>, you do not need to start the file
+              with <literal>[#ftl]</literal> for this to work. Templates with
+              angle bracket syntax will still work (without configuring
+              anything), because the template syntax is now auto-detected
+              based on the first thing in the template that looks like the
+              beginning of an FTL tag. In principle it's still not a 100%
+              backward compatible change, as if your template starts with
+              static text that contains <literal>&lt;#</literal> or
+              <literal>[#</literal> followed by a valid directive name
+              character, or <literal>&lt;@</literal> or <literal>[@</literal>
+              (followed by anything), the syntax will be detected falsely. If
+              you have this problem, use
+              <literal>Configuration.setTagSyntax(int)</literal> to force
+              angle bracket syntax, or start the template with a
+              <literal>&lt;#ftl&gt;</literal> or a comment to ensure proper
+              syntax detection. (See: <link
+              linkend="ref_depr_angle_bracket_syntax">appendix about angle
+              bracket syntax in 2.4</link>)</para>
+            </listitem>
+
+            <listitem>
+              <para>New built-in to allow reading and writing the local
+              variables of enclosing macro calls: <literal>scope</literal>.
+              For reading a local variable it is used as
+              <literal><replaceable>theParentMacro</replaceable>?scope.<replaceable>theLocalVar</replaceable></literal>.
+              For writing a local variable it is used as <literal>[#set
+              <replaceable>theLocalVar</replaceable> =
+              <replaceable>newValue</replaceable> in
+              <replaceable>theParentMacro</replaceable>?scope]</literal>. More
+              info and examples <link linkend="ref_builtin_scope">read the
+              reference</link>. </para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>Warning, slightly backward incompatible
+              change!</emphasis> Lazy evaluation of arguments for
               <literal>default</literal> and <literal>string</literal>
               built-ins:
               <literal><replaceable>expr1</replaceable>?default(<replaceable>expr2</replaceable>)</literal>
@@ -19810,27 +20139,97 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal><replaceable>falseExpr</replaceable></literal>
               depending on the value of
               <literal><replaceable>booleanExpr</replaceable></literal> but
-              never both. More info: <link linkend="ref_builtin_default">the
-              <literal>default</literal> built-in</link>, <link
-              linkend="ref_builtins_boolean">the <literal>string</literal>
-              built-in for booleans</link>.</para>
+              never both. This will cause backward compatibility problems if
+              the parameter expression evaluations had side-effects that you
+              have relied on. More info: <link
+              linkend="ref_builtin_default">the <literal>default</literal>
+              built-in</link>, <link linkend="ref_builtins_boolean">the
+              <literal>string</literal> built-in for booleans</link>.</para>
+            </listitem>
+
+            <listitem>
+              <para>New parameter to the <literal>ftl</literal> directive:
+              <literal>strict_vars</literal> (boolean). If this parameter is
+              set to true, the <literal>set</literal> directive will set only
+              already existing variables; if the target variable is missing,
+              the template processing will be aborted with error. That said,
+              the variable must be already created with
+              <literal>var</literal>, as the <literal>set</literal> directive
+              will never create a variable, only modify it. Thus, a typo in
+              the target variable name will cause an error, rather than
+              silently creating a new variable. Also, in templates where
+              <literal>strict_vars</literal> is <literal>true</literal>, it's
+              not allowed to use the following directives:
+              <literal>assign</literal>, <literal>local</literal>,
+              <literal>global</literal>, <literal>include</literal>(!).
+              Instead of these you must use the new <literal>set</literal>,
+              <literal>var</literal> and <literal>embed</literal>
+              directives.</para>
             </listitem>
 
             <listitem>
               <para>New built-in: <link
-              linkend="ref_builtin_use_defaults"><literal>use_defaults</literal></link></para>
+              linkend="ref_builtin_use_defaults"><literal>use_defaults</literal></link>.
+              This can be used to create a variation of a callable object
+              (like of a macro) that is the same as the original except that
+              some of its originally required parameters have default value,
+              or some of the optional parameters has different default values.
+              <link linkend="ref_builtin_use_defaults">See more in the
+              reference...</link></para>
             </listitem>
 
-            <!-- listitem>
-              <para><emphasis>Warning, backward incompatible
-              change!</emphasis> Comma is now required between the
-              <emphasis>positional</emphasis> parameters of directive calls.
-              Earlier it was optional (although it wasn't documented). Like
-              <literal>&lt;@mymacro 1 2 3&gt;</literal> is now an error; it
-              should be <literal>&lt;@maymacro 1, 2, 3&gt;</literal>. No comma
-              is needed between named parameters, like <literal>&lt;@mymacro
-              x=1 y=2&gt;</literal> is good.</para>
-            </listitem -->
+            <listitem>
+              <para>New directives: <literal>lt_lines</literal>,
+              <literal>rt_lines</literal>, <literal>t_lines</literal>. These
+              have nested content (i.e., you use them as
+              <literal>[#t_lines]<replaceable>...</replaceable>[/#t_lines]</literal>),
+              and they will apply the corresponding directive
+              (<literal>lt</literal>, <literal>rt</literal> or
+              <literal>t</literal>, respectively) on all lines in it. [TODO:
+              document these in the reference, link it from here]</para>
+            </listitem>
+
+            <listitem>
+              <para>Functions (the things defined with <literal>[#function
+              ...]</literal>) now support named parameters when calling the
+              function, like <literal>myFunction(x = 1, y = 2)</literal>
+              works; earlier only thing like <literal>myFunction(1,
+              2)</literal> did. <phrase role="forProgrammers">(Note that it
+              also stands for directives/method implemented in Java, but fort
+              that see the "Java side" part of this change
+              log.)</phrase></para>
+            </listitem>
+
+            <listitem>
+              <para><literal>[/#]</literal> now works (similarly to
+              <literal>[/@]</literal>), but use it only when it doesn't
+              decrease the understandability of the template, i.e., when the
+              start-tag and the end-tag are close and easy to pair
+              visually.</para>
+            </listitem>
+
+            <listitem>
+              <para>Added a new number format specifier,
+              <literal>"computer"</literal>. This uses the same formatting as
+              <literal><replaceable>exp</replaceable>?c</literal>.</para>
+            </listitem>
+
+            <listitem>
+              <para>New built-in: <literal>source</literal>. This returns the
+              text of the expression it is applied to, e.g.,
+              <literal>a.b.c[0]?source</literal> will be the string
+              <literal>"a.b.c[0]"</literal>. This can be used for tricks like,
+              combined with the <literal>escape</literal> directive, it can
+              print the expression that contain undefined variable errors.
+              [TODO: document it in the reference, link it from here]</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>Warning, slightly backward incompatible
+              change!</emphasis> The superfluous whitespace removal algorithm
+              was slightly reworked, to remove more typical superfluous
+              whitespace. [TODO: document details]</para>
+            </listitem>
 
             <listitem>
               <para>Bug fixed: <emphasis>Warning, backward incompatible
@@ -19841,7 +20240,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>${x!(y + 1)}</literal> in FreeMarker
               2.3.<replaceable>x</replaceable>. From now, something like
               <literal>${x!y + 1}</literal> is correctly interpreted as
-              <literal>${(x!y) + 1}</literal>.</para>
+              <literal>${(x!y) + 1}</literal>. If you want the old meaning,
+              use parentheses.</para>
             </listitem>
           </itemizedlist>
         </sect2>
@@ -19851,9 +20251,49 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para><literal>freemarker.ext.jdom.NodeListModel</literal>
-              finally works with JDOM 1.0. It no longer works with
-              JDOM-b8.</para>
+              <para>Directives (transforms) and methods implemented in Java
+              now support calling by named parameters (like
+              <literal>[@myDirective width=50 color="red"]</literal> and
+              <literal>myMethod(from=10, to=20)</literal>). This applies both
+              to methods/directives implemented directly by using the
+              <literal>TemplateMethodModel</literal> and
+              <literal>TemplateDirectiveModel</literal> (and
+              <literal>TemplateTransformModel</literal>) interfaces, and to
+              Java methods exposed by the object wrapper. The names of the
+              parameters can be specified using the newly introduced
+              <literal>freemarker.template.Parameters</literal> annotation.
+              Also, with the same annotation the default value of the
+              parameters can be specified as well.</para>
+
+              <para>For example, here we specify that the name of the first
+              parameter is <literal>"title"</literal>, and the name of the
+              second parameter is <literal>"score"</literal>, also that if the
+              <literal>score</literal> parameter is missing or
+              <literal>null</literal>, then it defaults to
+              <literal>50</literal>:</para>
+
+              <para><programlisting role="unspecified">@freemarker.template.Parameters("title, score=50")
+public String myMethod(String t, int sc) {
+  ...
+}</programlisting></para>
+
+              <para>Assuming we access this method from the template as
+              <literal>obj.myMethod</literal>, these are all legal calls to
+              it:</para>
+
+              <programlisting role="template">${obj.myMethod(title="foo", score=100)}
+${obj.myMethod(title="foo")}
+${obj.myMethod("foo", 100)}
+${obj.myMethod("foo")}</programlisting>
+
+              <para>The annotation value uses exactly the same syntax as the
+              template language inside the <literal>[#macro
+              <replaceable>name</replaceable>
+              <replaceable>parameterList</replaceable>]</literal> or
+              <literal>[#function <replaceable>name</replaceable>
+              <replaceable>parameterList</replaceable>]</literal> tag as the
+              <literal><replaceable>parameterList</replaceable></literal>
+              part.</para>
             </listitem>
 
             <listitem>
@@ -19868,19 +20308,18 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             </listitem>
 
             <listitem>
-              <para>Support for JDK 1.5 enums in
-              <literal>BeansWrapper</literal>,
-              <literal>DefaultObjectWrapper</literal> and in
-              <literal>SimpleObjectWrapper</literal>. By calling the
-              <literal>getEnumModels()</literal> method, you can retrieve a
-              hash model that is keyed by class names and allows access to
-              enumerated values. I.e., if you bind this hash model under name
-              <literal>enums</literal> in the data-model, you can write
-              expressions like
-              <literal>enums["java.math.RoundingMode"].UP</literal> in the
-              template. The enum values can be used as scalars and support
-              equality and inequality comparisons. <link
-              linkend="jdk_15_enums">More info...</link></para>
+              <para>Public tree-walker API for tools that walk the FreeMarker
+              AST (Abstract Syntax Tree). This can be used by tool writers to
+              walk the FreeMarker AST using the visitor pattern. See
+              <literal>freemakrer.core.ast.ASTVisitor</literal>. For examples
+              of usage, you can refer to where it is used internally, for
+              example, in
+              <literal>freemarker.template.PostParseVisitor</literal> and
+              <literal>freemarker.template.WhitespaceAdjuster</literal>. Also,
+              the template converter tool mentioned earlier is an
+              implementation of the <literal>ASTVisitor</literal> API too; see
+              <literal>freemarker.core.helpers.DefaultTreeDumper</literal> and
+              <literal>freemarker.core.helpers.CanonicalizingTreeDumper</literal>.</para>
             </listitem>
 
             <listitem>
@@ -19903,19 +20342,82 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             </listitem>
 
             <listitem>
+              <para><emphasis>Warning, backward incompatible
+              change!</emphasis> The default of
+              <literal>simpleMapWrapper</literal> property of
+              <literal>BeansWrapper</literal> is <literal>true</literal> now.
+              This means that the methods and fields of
+              <literal>Map</literal>-s will not be exposed by default, only
+              the pure key-set will define the subvariables of the templates.
+              Note that the default object wrapper of FreeMarker always had
+              <literal>simpleMapWrapper</literal> set to
+              <literal>true</literal>, so if you have used only the default
+              object wrapper, then there is no change for you.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>Warning, backward incompatible
+              change!</emphasis> Some very old backward compatibility options
+              were removed: non-strict syntax (like <literal>&lt;if
+              x&gt;<replaceable>...</replaceable>&lt;/if&gt;</literal>),
+              classic compatibility mode (i.e., FreeMarker 1.x expression
+              language semantic simulation).</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>TemplateTransformModel</literal> is now
+              deprecated, <literal>TemplateDirectiveModel</literal> is
+              recommended instead.</para>
+            </listitem>
+
+            <listitem>
+              <para>FreeMarker is now JSR-223 (javax.script) aware</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>TemplateCache</literal> is now a setting, and can
+              be extended.</para>
+            </listitem>
+
+            <listitem>
+              <para>XML wrapping: <literal>NodeListModel</literal> implements
+              <literal>TemplateBooleanModel</literal>. It will be
+              <literal>false</literal> if the node list contains no nodes,
+              <literal>true</literal> otherwise.</para>
+            </listitem>
+
+            <listitem>
+              <para><literal>TemplateModel.JAVA_NULL</literal> was added that
+              corresponds to the new <literal>null</literal> value of the
+              template language.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>Warning, backward incompatible
+              change!</emphasis> JDOM support was removed.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>Warning, slightly backward incompatible
+              change!</emphasis> The default XPath engine is Jaxen from now.
+              That is, if Jaxen is found in the class path, it will be used
+              instead of Xalan. Be sure that if Jaxen is present, it is at
+              least Jaxen 1.1 beta 8.</para>
+            </listitem>
+
+            <listitem>
+              <para><emphasis>Warning, slightly backward incompatible
+              change!</emphasis> At least Jython 2.2 is required for the
+              Jython support to work.</para>
+            </listitem>
+
+            <listitem>
               <para>Bug fixed: Now you can use the values of parameters as the
               defaults of other parameters, for example <literal>[#macro
               section title label=title]</literal>. In earlier versions it was
               worked unreliably. There are no restriction regarding the order
               of parameters, like <literal>[#macro section label=title
               title]</literal> works too.</para>
-            </listitem>
-
-            <listitem>
-              <para>Not backward compatible change: The default XPath engine
-              is Jaxen from now. That is, if Jaxen is found in the class path,
-              it will be used instead of Xalan. Be sure that if Jaxen is
-              present, it is at least Jaxen 1.1.</para>
             </listitem>
           </itemizedlist>
         </sect2>
@@ -20121,8 +20623,6 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
       <sect1 id="versions_2_3_11">
         <title>2.3.11</title>
-
-        <!--=================================-->
 
         <para>Date of release: 2007-12-04</para>
 
@@ -20767,11 +21267,12 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             <listitem>
               <para>A new <literal>Configuration</literal> level setting,
               <literal>tagSyntax</literal> was added. This determines the
-              syntax of the templates (angle bracket syntax VS <link
-              linkend="dgui_misc_alternativesyntax">square bracket
-              syntax</link>) that has no <literal>ftl</literal> directive in
-              it. So now you can choose to use the new square bracket syntax
-              by default. However, the recommended is to use auto-detection
+              syntax of the templates (<link
+              linkend="ref_depr_angle_bracket_syntax">angle bracket
+              syntax</link> VS square bracket syntax) that has no
+              <literal>ftl</literal> directive in it. So now you can choose to
+              use the new square bracket syntax by default. However, the
+              recommended is to use auto-detection
               (<literal>yourConfig.setTagSyntax(Configuration.AUTO_DETECT_TAG_SYNTAX)</literal>),
               because that will be the default starting from 2.4.
               Auto-detection chooses syntax based on the syntax of the first
@@ -20852,8 +21353,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>&gt;</literal> for the FreeMarker tags. For example you
               can write <literal>[#if
               loggedIn]<replaceable>...</replaceable>[/#if]</literal> and
-              <literal>[@myMacro /]</literal>. <link
-              linkend="dgui_misc_alternativesyntax">More info...</link></para>
+              <literal>[@myMacro /]</literal>. Prior to FreeMarker 2.4 this
+              will, however, require starting the template with <literal>[#ftl
+              <replaceable>...</replaceable>]</literal> or to configure
+              FreeMarker.</para>
             </listitem>
 
             <listitem>
@@ -22053,7 +22556,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
                 the exception, errors occurring in interpolations inside FTL
                 tags (e.g., <literal>[#if "foo${badVar}" !=
                 "foobar"]</literal>) were handled in the same way as errors
-                occuring in interpolations outside FTL tags. Thus, the
+                occurring in interpolations outside FTL tags. Thus, the
                 directive call was not skipped, and the problematic
                 interpolation was replaced with an empty string. (This was
                 inconsistent with the behavior of <literal>[#if "foo"+badVar
