@@ -50,6 +50,8 @@ Required dependencies:
 Use ONLY ONE of the above jar-s, depending on the Java platform
 version! Do NOT copy both into the classpath or lib directory!
 
+Java 1.3 and earlier is not supported.
+
 
 History
 -------
