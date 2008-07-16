@@ -1705,19 +1705,16 @@ The average of the price of a python and an elephant is:
         look at the chapter about expressions first).</para>
 
         <note>
-          <para>FreeMarker can be configured to use <literal>&lt;</literal>
-          and <literal>&gt;</literal> instead of <literal>[</literal> and
+          <para>FreeMarker can use <literal>&lt;</literal> and
+          <literal>&gt;</literal> instead of <literal>[</literal> and
           <literal>]</literal> in the FTL tags and FTL comments, like
           <literal>&lt;#if user == "Big
-          Joe"&gt;<replaceable>...</replaceable>&lt;/#if&gt;</literal>. For
-          more information <link lang=""
-          linkend="ref_depr_angle_bracket_syntax">read this.</link> FreeMarker
-          can be further configured so that it also understands predefined
-          directives without <literal>#</literal> (like <literal>&lt;if user
-          == "Big
-          Joe"&gt;<replaceable>...</replaceable>&lt;/if&gt;</literal>).
-          However we don't recommend the usage of this mode. For more
-          information read: <xref linkend="ref_depr_oldsyntax" /></para>
+          Joe"&gt;<replaceable>...</replaceable>&lt;/#if&gt;</literal>. Either
+          the whole template must use <literal>&lt;</literal> and
+          <literal>&gt;</literal>, or the whole template must
+          <literal>[</literal> and <literal>]</literal>; you can;t mix the two
+          syntax within the same template. For more information <link lang=""
+          linkend="ref_depr_angle_bracket_syntax">read this.</link></para>
         </note>
       </sect1>
 
@@ -6008,13 +6005,13 @@ public class UpperDirective implements TemplateDirectiveModel {
           linkend="ref_builtin_new"><literal>new</literal>
           built-in</link>:</para>
 
-          <programlisting role="template">&lt;#-- Maybe you have directives that you have implemented in FTL --&gt;
-&lt;#macro something&gt;
+          <programlisting role="template">[#-- Maybe you have directives that you have implemented in FTL --]
+[#macro something]
   ...
-&lt;/#macro&gt;
+[/#macro]
 
-&lt;#-- Now you can't use &lt;#macro upper&gt;, but instead you can: --&gt;
-&lt;#assign upper = "com.example.UpperDirective"?new()&gt;</programlisting>
+[#-- Now you can't use &lt;#macro upper&gt;, but instead you can: --]
+[#assign upper = "com.example.UpperDirective"?new()]</programlisting>
         </sect2>
 
         <sect2>
@@ -15577,7 +15574,7 @@ Also: <emphasis>I'm polluting your namespace!</emphasis></programlisting>
 
           <programlisting role="metaTemplate"><literal>[#noparse]
   <replaceable>...</replaceable>
-&lt;/#noparse&gt;</literal></programlisting>
+[/#noparse]</literal></programlisting>
         </sect2>
 
         <sect2>
@@ -15596,7 +15593,7 @@ Also: <emphasis>I'm polluting your namespace!</emphasis></programlisting>
   [#list animals as being]
   &lt;tr&gt;&lt;td&gt;${being.name}&lt;td&gt;${being.price} Euros
   [/#list]
-<emphasis>&lt;/#noparse&gt;</emphasis></programlisting>
+<emphasis>[/#noparse]</emphasis></programlisting>
 
           <para>will output:</para>
 
@@ -17015,20 +17012,9 @@ or
             </listitem>
 
             <listitem>
-              <para><literal>strict_syntax</literal>: This turns on/off
-              ''strict syntax''. Valid values are the boolean constants
-              <literal>true</literal> and <literal>false</literal>. (And for
-              backward compatibility, strings <literal>"yes"</literal>,
-              <literal>"no"</literal>, <literal>"true"</literal>,
-              <literal>"false"</literal>). The default value (i.e., when you
-              don't use this parameter) depends on the FreeMarker
-              configuration set by the programmers, but it should be
-              <literal>true</literal> for new projects. <phrase
-              role="forProgrammers">(Programmers: you must set explicitly this
-              setting to <literal>true</literal> for this:
-              <literal>config.setStrictSyntaxMode(true);</literal>)</phrase>
-              For more information read: <xref
-              linkend="ref_depr_oldsyntax" /></para>
+              <para><literal>strict_syntax</literal>: If used, this must be
+              <literal>"true"</literal>, because starting from FreeMarker 2.4
+              the old non-strict syntax is not supported anymore.</para>
             </listitem>
 
             <listitem>
@@ -17292,7 +17278,7 @@ or
   <replaceable>attempt block</replaceable>
 [#recover]
   <replaceable>recover block</replaceable>
-&lt;/#attempt&gt;
+[/#attempt]
 </literal></programlisting>
 
           <para>Where:</para>
@@ -17968,7 +17954,7 @@ There was no specific handler for node y
             <para><literal>comment</literal>: This is the old format of
             <literal>[#--<replaceable>...</replaceable>--]</literal>. Anything
             between the <literal>[#comment]</literal> and
-            <literal>&lt;/#comment&gt;</literal> will be ignored.</para>
+            <literal>[/#comment]</literal> will be ignored.</para>
           </listitem>
 
           <listitem>
@@ -18328,111 +18314,6 @@ some test
           information see: <xref
           linkend="pgui_config_sharedvariables" /></phrase></para>
         </sect2>
-      </sect1>
-
-      <sect1 id="ref_depr_oldsyntax"
-             xreflabel="Reference/Deprecated FTL constructs/Old FTL syntax">
-        <title>FreeMarker 1-style tag syntax</title>
-
-        <indexterm>
-          <primary>strict syntax</primary>
-        </indexterm>
-
-        <indexterm>
-          <primary>old FTL syntax</primary>
-        </indexterm>
-
-        <indexterm>
-          <primary>new FTL syntax</primary>
-        </indexterm>
-
-        <para>With the old FTL syntax the <literal>#</literal> was not
-        required (prior 2.1 not even allowed) in the FTL tags. For example,
-        you could write this:</para>
-
-        <programlisting role="template">&lt;html&gt;
-&lt;head&gt;
-  &lt;title&gt;Welcome!&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-  &lt;h1&gt;Welcome ${user}!&lt;/h1&gt;
-  &lt;p&gt;We have there animals:
-  &lt;ul&gt;
-  <emphasis>&lt;list animals as being&gt;</emphasis>
-    &lt;li&gt;${being.name} for ${being.price} Euros
-  <emphasis>&lt;/list&gt;</emphasis>
-  &lt;/ul&gt;
-  <emphasis>&lt;include "common_footer.html"&gt;</emphasis>
-&lt;/body&gt;
-&lt;/html&gt;</programlisting>
-
-        <para>While the <literal>#</literal>-less syntax was more natural for
-        HTML authors, it had too many drawbacks, so finally we have decided to
-        deprecate it. With the newer syntax (a.k.a ''strict syntax''), the
-        <literal>#</literal> is strictly required. That is, things like
-        <literal>&lt;include "common_footer.html"&gt;</literal> will go to the
-        output as is, since they are not considered as FTL tags. Note that
-        user-defined directives use <literal>@</literal> <emphasis>instead
-        of</emphasis> <literal>#</literal>.</para>
-
-        <para>However, to give users time to prepare for this change, in
-        FreeMarker 2.1 and 2.2 the usage of <literal>#</literal> is optional,
-        unless the programmer enables strict syntax mode in the FreeMarker
-        configuration by calling <literal>setStrictSyntaxMode(true)</literal>
-        on <literal>Configuration</literal>. In fact, we strongly recommend
-        this to programmers. Starting from some later release this setting
-        will be initially set to <literal>true</literal>. Also, you can
-        specify if you want to use strict syntax or old syntax in the template
-        files with the <link
-        linkend="ref.directive.ftl"><literal>ftl</literal>
-        directive</link>.</para>
-
-        <para>The advantages of ''strict syntax'' over the legacy FTL syntax
-        are:</para>
-
-        <itemizedlist>
-          <listitem>
-            <para>Since all
-            <literal>[#<replaceable>...</replaceable>]</literal> and
-            <literal>[/#<replaceable>...</replaceable>]</literal> are reserved
-            for FTL:</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>We can introduce new directives without breaking
-                backward compatibility.</para>
-              </listitem>
-
-              <listitem>
-                <para>We can detect if you made a typo, i.e.,
-                <literal>[#inculde <replaceable>...</replaceable>]</literal>
-                is treated as parse-time error, rather than silently treated
-                as simple text.</para>
-              </listitem>
-
-              <listitem>
-                <para>It is easier for third-party tools to handle templates
-                (e.g., do syntax highlighting), especially since they don't
-                have to know about the new directives introduced with new
-                releases.</para>
-              </listitem>
-
-              <listitem>
-                <para>Templates are more readable, since it is easier to spot
-                <literal>[#...]</literal> tags embedded into HTML or other
-                markup.</para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para><literal>[&lt;#</literal> and <literal>&lt;/#</literal> is
-            illegal XML (except in CDATA sections), and illegal in almost all
-            other SGML applications, so they can't interfere with the tags
-            used in the static text parts (e.g., if you have
-            <literal>include</literal> element in the generated XML).</para>
-          </listitem>
-        </itemizedlist>
       </sect1>
 
       <sect1 id="ref_depr_angle_bracket_syntax">
@@ -19891,7 +19772,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       <sect1 id="versions_2_4_pre1">
         <title>2.4 Preview 1</title>
 
-        <para>Date of release: 2008-06-15</para>
+        <para>Date of release: 2008-06-16</para>
 
         <para>Notes:</para>
 
@@ -22023,9 +21904,9 @@ ${obj.myMethod("foo")}</programlisting>
               <literal>cfg.setStrictSyntaxMode(false)</literal>. Also, for
               individual templates you can force the old behavior by starting
               the template with <literal>&lt;#ftl
-              strict_syntax=false&gt;</literal>. (For more information about
-              why strict syntax is better than old syntax <link
-              linkend="ref_depr_oldsyntax">read this...</link>)</para>
+              strict_syntax=false&gt;</literal>. (Not anymore starting from
+              FreeMarker 2.4, which doesn't support the non-strict syntax
+              anymore.)</para>
             </listitem>
 
             <listitem>
@@ -22426,9 +22307,9 @@ ${obj.myMethod("foo")}</programlisting>
               <literal>cfg.setStrictSyntaxMode(false)</literal>. Also, for
               individual templates you can force the old behavior by starting
               the template with <literal>&lt;#ftl
-              strict_syntax=false&gt;</literal>. (For more information about
-              why strict syntax is better than old syntax <link
-              linkend="ref_depr_oldsyntax">read this...</link>)</para>
+              strict_syntax=false&gt;</literal>. (Not starting from FreeMarker
+              2.4, which doesn't support the non-strict syntax
+              anymore.)</para>
             </listitem>
 
             <listitem>
@@ -22696,9 +22577,9 @@ ${obj.myMethod("foo")}</programlisting>
                 <literal>cfg.setStrictSyntaxMode(false)</literal>. Also, for
                 individual templates you can force the old behavior by
                 starting the template with <literal>&lt;#ftl
-                strict_syntax=false&gt;</literal>. (For more information about
-                why strict syntax is better than old syntax <link
-                linkend="ref_depr_oldsyntax">read this...</link>)</para>
+                strict_syntax=false&gt;</literal>. (Not starting from
+                FreeMarker 2.4, which doesn't support the non-strict syntax
+                anymore.)</para>
               </listitem>
 
               <listitem>
@@ -23953,8 +23834,7 @@ ${obj.myMethod("foo")}</programlisting>
               syntax to the new syntax (''strict syntax''). The strict syntax
               will be the the default syntax starting from some of the later
               releases anyway. We plan to release a conversion tool for
-              converting old templates. For more information please read:
-              <xref linkend="ref_depr_oldsyntax" /></para>
+              converting old templates. </para>
             </listitem>
 
             <listitem>
@@ -24214,8 +24094,8 @@ ${obj.myMethod("foo")}</programlisting>
               <literal>&lt;/#<replaceable>directive
               ...</replaceable>&gt;</literal> instead of
               <literal>&lt;/<replaceable>directive
-              ...</replaceable>&gt;</literal>. For more info read: <xref
-              linkend="ref_depr_oldsyntax" /></para>
+              ...</replaceable>&gt;</literal>. The support of the old syntax
+              stops with FreeMarker 2.4. </para>
             </listitem>
 
             <listitem>
@@ -25238,8 +25118,9 @@ ${obj.myMethod("foo")}</programlisting>
             <listitem>
               <para>Strict syntax mode: Allows you to generate arbitrary SGML
               (XML) without worrying about clashes with FreeMarker directives.
-              For more information read: <xref
-              linkend="ref_depr_oldsyntax" /></para>
+              In strict syntax mode you put a <literal>#</literal> in front of
+              the directive names, hence they will be invalid SGML tags, and
+              thus can't clash with SGML tags. </para>
             </listitem>
 
             <listitem>
