@@ -112,7 +112,7 @@ abstract public class Expression extends TemplateNode {
     	     || tm instanceof TemplateDateModel;
     }
     
-    static String getStringValue(TemplateModel referentModel, Expression exp, Environment env)
+    static public String getStringValue(TemplateModel referentModel, Expression exp, Environment env)
     throws
         TemplateException
     {
