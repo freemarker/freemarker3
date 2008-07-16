@@ -253,4 +253,8 @@ public class PositionalArgsList extends ArgsList {
         }
         return result;
     }
+    
+    void addParamArg(Param param) {
+    	addArg(param.new Expr());
+    }
 }

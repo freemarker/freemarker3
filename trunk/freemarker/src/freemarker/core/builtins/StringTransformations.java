@@ -54,6 +54,7 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
+import freemarker.core.ast.Expression;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
@@ -66,14 +67,18 @@ import freemarker.template.utility.StringUtil;
 public class StringTransformations extends BuiltIn {
 	
 	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		try {
-			String string = ((TemplateScalarModel) target).getAsString();
-			return new SimpleScalar(convertString(string, builtInName));
-		} catch (ClassCastException cce) {
-			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "string");
-		} catch (NullPointerException npe) {
+		String string = null;
+		if (target instanceof TemplateScalarModel) {
+			string = ((TemplateScalarModel) target).getAsString();
+		}
+		else {
+//			string = callingExpression.getTarget().getStringValue(env);
+			string = Expression.getStringValue(target, callingExpression.getTarget(), env);
+		}
+		if (string == null) {
 			throw new InvalidReferenceException("String is undefined", env);
 		}
+		return new SimpleScalar(convertString(string, builtInName));
 	}
 	
 	private String convertString(String string, String builtInName) {
