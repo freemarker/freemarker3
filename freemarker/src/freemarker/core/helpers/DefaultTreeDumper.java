@@ -138,7 +138,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	public void visit(ArithmeticExpression node) {
 		String opString = null;
 		switch (node.operation) {
-		   case ArithmeticExpression.DIVISION : opString = "#"; break;  
+		   case ArithmeticExpression.DIVISION : opString = "/"; break;  
 		   case ArithmeticExpression.MODULUS : opString = "%"; break;
 		   case ArithmeticExpression.MULTIPLICATION : opString = "*"; break;
 		   case ArithmeticExpression.SUBSTRACTION : opString = "-"; break;

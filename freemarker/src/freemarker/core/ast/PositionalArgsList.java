@@ -254,7 +254,7 @@ public class PositionalArgsList extends ArgsList {
         return result;
     }
     
-    void addParamArg(Param param) {
-    	addArg(param.new Expr());
+    void addOOParamArg(OOParamElement param) {
+    	addArg(param.asExp());
     }
 }

@@ -30,7 +30,9 @@
  *    nor may "FreeMarker" or "Visigoth" appear in their names
  *    without prior written permission of the Visigoth Software Society.
  *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIEDù
+ * m,jo soy mimi la mas guapa
+ * º		
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
  * DISCLAIMED.  IN NO EVENT SHALL THE VISIGOTH  SOFTWARE SOCIETY OR
@@ -57,14 +59,16 @@ import java.util.*;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
+import freemarker.core.ooparam.*;
 
-public class Param extends TemplateElement {
+public class OOParamElement extends TemplateElement {
 	
     private String name;
     private ParameterList params;
-    private List<Param> subParams;
+    private List<OOParamElement> subParams;
+    private Expression exp;
     
- 	public Param(String name, ParameterList params, TemplateElement block) {
+ 	public OOParamElement(String name, ParameterList params, TemplateElement block) {
  		this.name = name;
  		this.params = params;
  		this.nestedBlock = block;
@@ -76,10 +80,23 @@ public class Param extends TemplateElement {
 
 	@Override
 	public void execute(Environment env) throws TemplateException, IOException {
-		env.unqualifiedSet(name, new Model());
+		env.unqualifiedSet(name, new OOParamModel(this));
+	}
+	
+	public Expression asExp() {
+		if (exp == null) {
+			exp = new Expr();
+		}
+		return exp;
 	}
 	
 	class Expr extends Expression {
+		
+		public Expr() {
+			this.copyLocationFrom(OOParamElement.this);
+		}
+		
+		
 		public Expression _deepClone(String s, Expression e){
 			return this;
 		}
@@ -89,16 +106,14 @@ public class Param extends TemplateElement {
 		}
 		
 		public TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
-			return Param.this.new Model();
+			return new OOParamModel(OOParamElement.this);
 		}
 		
 	}
 	
-	public class Model implements TemplateModel {}
-	
 	static class MultiParam extends Expression {
 		
-		List<Param> params = new ArrayList<Param>();
+		List<OOParamElement> params = new ArrayList<OOParamElement>();
 		
 		public Expression _deepClone(String s, Expression e) {
 			return this;
@@ -110,8 +125,8 @@ public class Param extends TemplateElement {
 		
 		public TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
 			SimpleSequence result = new SimpleSequence();
-			for (Param param : params) {
-				result.add(param.new Model());
+			for (OOParamElement param : params) {
+				result.add(new OOParamModel(param));
 			}
 			return result;
 		}
