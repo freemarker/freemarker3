@@ -30,9 +30,7 @@
  *    nor may "FreeMarker" or "Visigoth" appear in their names
  *    without prior written permission of the Visigoth Software Society.
  *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIEDù
- * m,jo soy mimi la mas guapa
- * º		
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  
  * DISCLAIMED.  IN NO EVENT SHALL THE VISIGOTH  SOFTWARE SOCIETY OR
