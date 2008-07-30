@@ -170,5 +170,5 @@ abstract public class ArgsList extends TemplateNode {
 	
 	abstract ArgsList deepClone(String name, Expression subst);
 	
-	abstract void addParamArg(Param param) throws ParseException;
+	abstract void addOOParamArg(OOParamElement param) throws ParseException;
 }
