@@ -52,7 +52,6 @@
 
 package freemarker.ext.beans;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
