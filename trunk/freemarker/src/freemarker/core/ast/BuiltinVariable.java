@@ -55,13 +55,13 @@ package freemarker.core.ast;
 import freemarker.template.*;
 import freemarker.core.Environment;
 import freemarker.core.parser.ParseException;
-import freemarker.core.Scope;
 
 /**
  * A reference to a built-in identifier, such as .root
  */
 public class BuiltinVariable extends Expression {
 
+    static final String TEMPLATE_NAME = "template_name";
     static final String NAMESPACE = "namespace";
     static final String MAIN = "main";
     static final String GLOBALS = "globals";
@@ -85,6 +85,7 @@ public class BuiltinVariable extends Expression {
         name = name.intern();
         this.name = name;
         if (name != NAMESPACE
+            && name != TEMPLATE_NAME
             && name != MAIN
             && name != GLOBALS
             && name != LOCALS
@@ -139,6 +140,9 @@ public class BuiltinVariable extends Expression {
         }
         if (name == PASS) {
             return Macro.DO_NOTHING_MACRO;
+        }
+        if (name == TEMPLATE_NAME) {
+            return new SimpleScalar(env.getTemplate().getName());
         }
         if (name == VERSION) {
             return new SimpleScalar(Configuration.getVersionNumber());
