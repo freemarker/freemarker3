@@ -448,7 +448,7 @@ public final class Environment extends Configurable implements Scope {
             setParent(getCurrentNamespace().getTemplate());
             currentScope = bctxt;
             try {
-                render(body);
+                renderSecurely(body, body.getTemplate().getCodeSource());
             } finally {
                 currentScope = prevScope;
                 this.currentMacroContext = invokingMacroContext;
