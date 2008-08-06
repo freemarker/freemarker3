@@ -105,7 +105,7 @@ public class NamedArgsList extends ArgsList {
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             String msg = "Error at: " + getStartLocation() 
-            + "\nCannot invoke this method with a key=value parameter list because it is not annotated.";
+            + "\nCannot invoke method " + target + " with a key=value parameter list because it is not annotated.";
             throw new TemplateException(msg, env);
         }
         List<TemplateModel> result = annotatedParameterList.getParameterSequence(this, env);
