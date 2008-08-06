@@ -76,8 +76,8 @@ public class ParameterList extends TemplateNode {
         return curryGenerated;
     }
 
-    public boolean hasDefaultExpressions() {
-        return !(defaults == null || defaults.isEmpty());
+    private boolean hasDefaultExpressions() {
+        return defaults != null && !defaults.isEmpty();
     }
     
     public Expression getDefaultExpression(String paramName) {
@@ -248,7 +248,7 @@ public class ParameterList extends TemplateNode {
         for (int i=0; i < min; i++) {
             result.put(params.get(i), args.getValueAt(i, env));
         }
-        if(defaults != null && !defaults.isEmpty() && argsSize < paramsSize) {
+        if(hasDefaultExpressions() && argsSize < paramsSize) {
             // Create a scope that provides live access to the parameter list
             // so we can reference already defined parameters
             Scope scope = new NamedParameterMapScope(env.getCurrentScope(), 

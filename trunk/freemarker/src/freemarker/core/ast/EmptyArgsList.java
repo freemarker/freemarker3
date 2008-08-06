@@ -83,7 +83,7 @@ public class EmptyArgsList extends ArgsList {
             Environment env) throws TemplateException
     {
         ParameterList annotatedParameterList = ArgsList.getParameterList(tm);
-        if (annotatedParameterList == null || !annotatedParameterList.hasDefaultExpressions()) {
+        if (annotatedParameterList == null) {
             return new HashMap<String, TemplateModel>();
         }
         else {
