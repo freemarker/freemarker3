@@ -49,46 +49,59 @@
  * information on the Visigoth Software Society, please see
  * http://www.visigoths.org/
  */
+package freemarker.core.helpers;
 
-package freemarker.core;
+import java.util.Collection;
+import java.util.Map;
 
-import java.io.IOException;
-import java.util.*;
-
-import freemarker.core.ast.*;
-import freemarker.template.*;
+import freemarker.core.AbstractScope;
+import freemarker.core.Scope;
+import freemarker.template.SimpleCollection;
+import freemarker.template.TemplateCollectionModel;
+import freemarker.template.TemplateModel;
 
 /**
- * Represents the context or scope of the 
- * execution of an FTL macro. 
+ * @author Attila Szegedi
+ * @version $Id: $
  */
-
-
-public class MacroContext extends BlockScope {
-    private Macro macro;
-    TemplateElement body; // REVISIT
-    public ParameterList bodyParameters;
-    MacroContext invokingMacroContext;
-    Scope invokingScope;
+public class NamedParameterMapScope extends AbstractScope {
+    private final Map<String, TemplateModel> parameters;
     
-    public MacroContext(Macro macro,
-    		Environment env,
-            TemplateElement body,
-            ParameterList bodyParameters)
-    {
-    	super(macro, env.getMacroNamespace(macro)); // REVISIT
-    	this.macro = macro;
-        this.invokingMacroContext = env.getCurrentMacroContext();
-        this.invokingScope = env.getCurrentScope();
-        this.body = body;
-        this.bodyParameters = bodyParameters;
+    public NamedParameterMapScope(Scope enclosingScope, 
+            Map<String, TemplateModel> parameters) {
+        super(enclosingScope);
+        this.parameters = parameters;
+    }
+
+    public boolean definesVariable(String name) {
+        return parameters.containsKey(name);
+    }
+
+    public Collection<String> getDirectVariableNames() {
+        return parameters.keySet();
+    }
+
+    public void put(String key, TemplateModel value) {
+        parameters.put(key, value);
+    }
+
+    public TemplateModel remove(String key) {
+        return parameters.remove(key);
+    }
+
+    public TemplateCollectionModel keys() {
+        return new SimpleCollection(parameters.keySet());
     }
     
-    void runMacro() throws TemplateException, IOException { 
-        TemplateElement nestedBlock = macro.getNestedBlock();
-        if (nestedBlock != null) {
-            getEnvironment().renderSecurely(nestedBlock, macro.getCodeSource());
-        }
+    public int size() {
+        return parameters.size();
+    }
+
+    public TemplateCollectionModel values()  {
+        return new SimpleCollection(parameters.values());
+    }
+
+    public TemplateModel get(String key) {
+        return parameters.get(key);
     }
 }
-

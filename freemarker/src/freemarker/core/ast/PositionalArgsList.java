@@ -81,7 +81,7 @@ public class PositionalArgsList extends ArgsList {
             }
         }
         else {
-            result = annotatedParameterList.getParameterMap(this, env);
+            result = annotatedParameterList.getParameterMap(this, env, false);
         }
         return result;
     }

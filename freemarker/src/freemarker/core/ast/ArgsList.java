@@ -106,13 +106,18 @@ abstract public class ArgsList extends TemplateNode {
             Parameters params = getAnnotatedParameters(target);
             if (params != null) {
                 String paramString = params.value();
-                try {
-                    result = getParameterList(paramString);
-                    parameterListCache.put(keyName, result);
-                    return result;
-                } catch (ParseException pe) {
-                    throw new TemplateException(pe, Environment.getCurrentEnvironment());
+                if("".equals(paramString)) {
+                    result = new ParameterList();
                 }
+                else {
+                    try {
+                        result = getParameterList(paramString);
+                    } catch (Exception pe) {
+                        throw new TemplateException("Can't parse parameter list [" + paramString + "] on " + target, pe, Environment.getCurrentEnvironment());
+                    }
+                }
+                parameterListCache.put(keyName, result);
+                return result;
             } else {
                 parameterListCache.put(keyName, NO_PARAM_LIST);
                 return null;
@@ -171,4 +176,6 @@ abstract public class ArgsList extends TemplateNode {
 	abstract ArgsList deepClone(String name, Expression subst);
 	
 	abstract void addOOParamArg(OOParamElement param) throws ParseException;
+	
+	abstract int size();
 }
