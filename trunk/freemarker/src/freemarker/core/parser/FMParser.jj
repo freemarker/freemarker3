@@ -1290,7 +1290,7 @@ MethodCall MethodArgs(Expression exp) :
      {
         MethodCall result = new MethodCall(exp, args);
         result.setLocation(template, exp, end);
-		args.setLocationInfoIfAbsent(result);        
+	args.setLocationInfoIfAbsent(result);        
         return result;
      }
 }
@@ -2179,7 +2179,14 @@ TemplateElement UnifiedMacroTransform() :
 	    result.setNameExp(exp);
     }
     [<TERMINATING_WHITESPACE>]
-    [args=ArgsList() {result.setArgs(args);}]
+    [args=ArgsList()]
+    {
+        if(args == null)
+        {
+            args = new EmptyArgsList();
+        }
+        result.setArgs(args);
+    }
     [
        <SEMICOLON>[<TERMINATING_WHITESPACE>]
        bodyParameters=ParameterList()
