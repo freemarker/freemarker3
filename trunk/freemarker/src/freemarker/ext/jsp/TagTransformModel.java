@@ -73,7 +73,6 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateTransformModel;
 import freemarker.template.TransformControl;
-import freemarker.template.utility.SecurityUtilities;
 
 /**
  * @version $Id: TagTransformModel.java,v 1.17 2005/06/11 12:13:39 szegedia Exp $

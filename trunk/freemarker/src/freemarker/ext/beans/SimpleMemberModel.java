@@ -53,20 +53,14 @@ package freemarker.ext.beans;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import freemarker.template.Parameters;
-import freemarker.template.SimpleNumber;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateSequenceModel;
 
 /**
  * This class is used for constructors and as a base for non-overloaded methods

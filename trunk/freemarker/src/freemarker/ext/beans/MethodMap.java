@@ -55,16 +55,7 @@ package freemarker.ext.beans;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;

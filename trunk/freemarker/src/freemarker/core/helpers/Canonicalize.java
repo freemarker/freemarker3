@@ -146,7 +146,7 @@ public class Canonicalize {
     }
     
     static public String canonicalizeTemplate(String filename, boolean angleBrackets) 
-    throws IOException, TemplateException {
+    throws IOException {
         File file = new File(filename).getCanonicalFile();
         Configuration conf = new Configuration();
         conf.setWhitespaceStripping(false);

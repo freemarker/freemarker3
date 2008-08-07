@@ -52,10 +52,7 @@
 
 package freemarker.template;
 
-import java.io.BufferedReader;
 import java.io.CharArrayReader;
-import java.io.CharArrayWriter;
-import java.io.FilterReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
@@ -73,7 +70,6 @@ import freemarker.core.ast.ASTVisitor;
 import freemarker.core.ast.LibraryLoad;
 import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.TemplateHeaderElement;
-import freemarker.core.ast.TextBlock;
 import freemarker.core.parser.*;
 import freemarker.debug.impl.DebuggerService;
 

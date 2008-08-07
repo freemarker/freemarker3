@@ -68,7 +68,6 @@ import org.apache.tools.ant.taskdefs.MatchingTask;
 //import freemarker.ext.xml.NodeListModel;
 import freemarker.ext.dom.NodeModel;
 import freemarker.template.utility.ClassUtil;
-import freemarker.template.utility.SecurityUtilities;
 import freemarker.template.*;
 
 

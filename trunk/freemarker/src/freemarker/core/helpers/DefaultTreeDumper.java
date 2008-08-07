@@ -54,7 +54,6 @@ package freemarker.core.helpers;
 
 import freemarker.core.ast.*;
 
-import java.lang.reflect.*;
 import java.util.*;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
@@ -372,7 +371,6 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(IfBlock node) {
-		List<TemplateElement> subBlocks = node.getSubBlocks();
 		for (TemplateNode block : node.getSubBlocks()) {
 			visit(block);
 			
