@@ -55,25 +55,18 @@ package freemarker.ext.jython;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.python.core.Py;
 import org.python.core.PyDictionary;
 import org.python.core.PyFloat;
 import org.python.core.PyInteger;
-import org.python.core.PyJavaInstance;
 import org.python.core.PyLong;
-import org.python.core.PyNone;
 import org.python.core.PyObject;
 import org.python.core.PySequence;
 import org.python.core.PyString;
 import org.python.core.PyStringMap;
 
-import freemarker.ext.beans.BeansWrapper;
-import freemarker.ext.beans.DateModel;
 import freemarker.ext.util.ModelCache;
 import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.template.AdapterTemplateModel;

@@ -83,7 +83,6 @@ import freemarker.template.utility.CaptureOutput;
 import freemarker.template.utility.ClassUtil;
 import freemarker.template.utility.HtmlEscape;
 import freemarker.template.utility.NormalizeNewlines;
-import freemarker.template.utility.SecurityUtilities;
 import freemarker.template.utility.StandardCompress;
 import freemarker.template.utility.StringUtil;
 import freemarker.template.utility.XmlEscape;

@@ -8,11 +8,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.jsp.tagext.JspTag;
-import javax.servlet.jsp.tagext.Tag;
 
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.ObjectWrapper;

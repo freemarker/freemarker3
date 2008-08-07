@@ -56,11 +56,9 @@ import freemarker.core.Configurable;
 import freemarker.core.ast.*;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
-import freemarker.template.*;
 import freemarker.template.utility.DeepUnwrap;
 
 
-import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -264,7 +262,6 @@ public class PostParseVisitor extends ASTVisitor {
 			parent = parent.getParent();
 		}
 		if (parent == null) {
-			String msg = "\n" + node.getStartLocation();
 			template.addParsingProblem(new ParsingProblem("The noescape directive only makes sense inside an escape block.", node));
 		}
 		EscapeBlock last = escapes.remove(escapes.size() -1);

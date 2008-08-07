@@ -11,8 +11,6 @@ import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspFactory;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.ServletException;
-import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
