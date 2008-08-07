@@ -66,6 +66,7 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.NonNumericalException;
+import freemarker.core.ast.TemplateNode;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
 
@@ -136,14 +137,14 @@ public class StringFunctions extends BuiltIn {
                 return ((RegexMatchModel.Match) target).subs;
             }
             else {
-    			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "regular expression matcher");
+    			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "regular expression matcher");
             }
 		}
 		else try {
 			String string = ((TemplateScalarModel) target).getAsString();
 			return getStringFunction(string, builtInName, env, callingExpression);
 		} catch (ClassCastException cce) {
-			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "string");
+			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "string");
 		} catch (NullPointerException npe) {
 			throw new InvalidReferenceException("String is undefined", env);
 		}
@@ -177,7 +178,7 @@ public class StringFunctions extends BuiltIn {
 			return new SplitMethod(string);
 		}
 		if (builtInName == "matches") {
-			return new MatcherBuilder(string, callingExpression);
+			return new MatcherBuilder(string);
 		}
 		if (builtInName == "index_of" || builtInName == "last_index_of")  {
 			return new IndexOfMethod(string, callingExpression);
@@ -302,7 +303,7 @@ public class StringFunctions extends BuiltIn {
         
         String matchString;
         
-        MatcherBuilder(String matchString, BuiltInExpression callingExpression) {
+        MatcherBuilder(String matchString) {
             this.matchString = matchString;
         }
         
@@ -418,7 +419,6 @@ public class StringFunctions extends BuiltIn {
     
     static class LeftPadMethod implements TemplateMethodModelEx {
         private String string;
-        private BuiltInExpression callingExpression;
 
         LeftPadMethod(String s) {
             this.string = s;

@@ -52,7 +52,6 @@
 
 package freemarker.core.ast;
 
-import java.util.Locale;
 import freemarker.core.Environment;
 
 /**

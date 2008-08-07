@@ -52,13 +52,11 @@
 
 package freemarker.core.builtins;
 
-import java.io.StringReader;
 import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.ast.Expression;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.*;
 import freemarker.template.utility.ClassUtil;

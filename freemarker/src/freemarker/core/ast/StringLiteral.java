@@ -56,7 +56,6 @@ import freemarker.template.*;
 import freemarker.core.Environment;
 import freemarker.core.parser.*;
 import java.io.*;
-import freemarker.template.utility.StringUtil;
 
 public class StringLiteral extends Expression implements TemplateScalarModel {
     

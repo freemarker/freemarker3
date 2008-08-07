@@ -53,11 +53,10 @@
 package freemarker.core.builtins;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Macro;
+import freemarker.core.ast.TemplateNode;
 import freemarker.template.*;
-import freemarker.template.utility.StringUtil;
 
 /**
  * Implementations of ?scope and ?namespace built-ins
@@ -68,7 +67,7 @@ public class MacroBuiltins extends BuiltIn {
 	
 	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
 		if (!(target instanceof Macro)) {
-			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "macro");
+			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "macro");
 		}
 		Macro macro = (Macro) target;
 		if (builtInName == "namespace") {

@@ -58,7 +58,6 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 
 import freemarker.core.Environment;
-import freemarker.core.parser.ParseException;
 import freemarker.template.*;
 
 /**

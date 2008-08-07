@@ -55,6 +55,7 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.ast.TemplateNode;
 import freemarker.template.*;
 
 import java.math.BigDecimal;
@@ -75,7 +76,7 @@ public class NumericalCast extends BuiltIn {
 			Number num = ((TemplateNumberModel) target).getAsNumber();
 			return new SimpleNumber(getNumber(num, builtInName));
 		} catch (ClassCastException cce) {
-			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "number");
+			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "number");
 		} catch (NullPointerException npe) {
 			throw new InvalidReferenceException("Undefined number", env);
 		}

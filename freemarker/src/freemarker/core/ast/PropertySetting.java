@@ -53,9 +53,7 @@
 package freemarker.core.ast;
 
 import freemarker.template.*;
-import freemarker.core.Configurable;
 import freemarker.core.Environment;
-import freemarker.core.parser.ParseException;
 
 
 /**

@@ -57,18 +57,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.ArithmeticEngine;
 import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.ast.TemplateNode;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
 
@@ -91,7 +85,7 @@ public class SequenceFunctions extends BuiltIn {
 				// Hacky special case
 				return new SequenceContainsFunction(target, env, callingExpression); 
 			}
-			throw callingExpression.invalidTypeException(target,
+			throw TemplateNode.invalidTypeException(target,
 					callingExpression.getTarget(), env, "sequence");
 		}
 		TemplateSequenceModel sequence = (TemplateSequenceModel) target;

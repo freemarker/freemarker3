@@ -55,8 +55,6 @@ package freemarker.core.ast;
 import freemarker.template.*;
 import freemarker.ext.beans.BeanModel;
 import freemarker.core.Environment;
-import freemarker.core.parser.ParseException;
-
 
 /**
  * An abstract class for nodes in the parse tree 

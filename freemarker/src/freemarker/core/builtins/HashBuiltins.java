@@ -52,12 +52,10 @@
 
 package freemarker.core.builtins;
 
-import java.util.List;
-
-import freemarker.core.Scope;
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.CollectionAndSequence;
+import freemarker.core.ast.TemplateNode;
 import freemarker.template.*;
 
 /**
@@ -68,7 +66,7 @@ public class HashBuiltins extends BuiltIn {
 	
 	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
 		if (!(target instanceof TemplateHashModelEx)) {
-			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "extended hash");
+			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "extended hash");
 		}
 		TemplateHashModelEx hash = (TemplateHashModelEx) target;
 		TemplateCollectionModel result = null;

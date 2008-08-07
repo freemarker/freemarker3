@@ -57,7 +57,6 @@ import java.io.Writer;
 import java.util.*;
 import freemarker.template.Template;
 import freemarker.core.Environment;
-import freemarker.core.parser.ParseException;
 
 /**
  * A TemplateElement representing a block of plain text.
@@ -222,7 +221,7 @@ public final class TextBlock extends TemplateElement {
 		return result;
 	}
 	
-	static public List<TextBlock> breakIntoBlocksLineByLine(String input, Template template, int beginColumn, int beginLine) throws ParseException {
+	static public List<TextBlock> breakIntoBlocksLineByLine(String input, Template template, int beginColumn, int beginLine) {
 		List<String> lines = lines(input);
 		List<TextBlock> result = new ArrayList<TextBlock>();
 		for (String line : lines) {

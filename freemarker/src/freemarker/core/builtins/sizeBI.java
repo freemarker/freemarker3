@@ -53,8 +53,8 @@
 package freemarker.core.builtins;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.ast.TemplateNode;
 import freemarker.template.*;
 
 /**
@@ -72,7 +72,7 @@ public class sizeBI extends BuiltIn {
 			size = ((TemplateHashModelEx) target).size();
 		}
 		else {
-			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "a sequence or extended hash");
+			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "a sequence or extended hash");
 		}
 		return new SimpleNumber(Integer.valueOf(size));
 	}

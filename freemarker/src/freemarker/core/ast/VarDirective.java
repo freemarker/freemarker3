@@ -55,7 +55,6 @@ package freemarker.core.ast;
 import java.util.*;
 import freemarker.template.*;
 import freemarker.core.*;
-import freemarker.core.parser.ParseException;
 
 /**
  * @author Jonathan Revusky
