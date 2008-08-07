@@ -60,7 +60,13 @@ package freemarker.template;
  * argument list by the model. While this interface extends 
  * {@link TemplateMethodModel} to reinforce the notion that it is to be applied
  * to method models, it can naturally be implemented by classes that implement
- * {@link TemplateMethodModelEx}.
+ * {@link TemplateMethodModelEx}. 
+ * Note that for the time being, there is a limitation in the FreeMarker 
+ * implementation that prevents lazy evaluation of arguments of method models
+ * that have a {@link Parameters} annotation on them. If your class 
+ * implementing {@link LazilyEvaluatableArguments} also has a 
+ * {@link Parameters} annotation, its arguments will be eagerly evaluated. This
+ * limitation may be lifted in a future version of FreeMarker. 
  * @author Attila Szegedi
  * @version $Id: LazilyEvaluatableArguments.java,v 1.2 2005/11/03 08:45:08 szegedia Exp $
  */
