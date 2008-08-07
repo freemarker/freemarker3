@@ -111,14 +111,16 @@ public class NamedArgsList extends ArgsList {
         List<TemplateModel> result = annotatedParameterList.getParameterSequence(this, env);
         if ((target instanceof TemplateMethodModel) && !(target instanceof TemplateMethodModelEx)) {
             List<String> strings = new ArrayList<String>();
-            for (TemplateModel value : result) {
-                try {
-                    strings.add(((TemplateScalarModel) value).getAsString());
-                } catch (ClassCastException cce) {
-                    String msg = "Error at: " + getStartLocation() 
-                    + "\nThis method can only be invoked with string arguments.";
-                    throw new TemplateException(msg, env);
+            List<String> paramNames = annotatedParameterList.getParamNames();
+            for(int i = 0; i < result.size(); ++i) {
+                TemplateModel value = result.get(i);
+                Expression exp;
+                String paramName = paramNames.get(i);
+                exp = namedArgs.get(paramName);
+                if(exp == null) {
+                    exp = annotatedParameterList.getDefaultExpression(paramName);
                 }
+                strings.add(Expression.getStringValue(value, exp, env));
             }
             return strings;
         }
