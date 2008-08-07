@@ -57,7 +57,6 @@ import java.util.*;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import freemarker.core.*;
-import freemarker.core.parser.ParseException;
 
 /**
  * An instruction that contains one or more assignments

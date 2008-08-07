@@ -56,7 +56,6 @@ import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Macro;
 import freemarker.template.*;
-import freemarker.template.utility.StringUtil;
 
 /**
  * Implementation of ?is_XXXX built-ins

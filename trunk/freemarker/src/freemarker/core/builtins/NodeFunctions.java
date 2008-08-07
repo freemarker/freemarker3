@@ -52,18 +52,11 @@
 
 package freemarker.core.builtins;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.ast.TemplateNode;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
 
@@ -77,14 +70,14 @@ public class NodeFunctions extends BuiltIn {
 
 	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
 		if (!(target instanceof TemplateNodeModel)) {
-			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "node");
+			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "node");
 		}
 		TemplateNodeModel node = (TemplateNodeModel) target;
-		return getNodeFunction(node, builtInName, env, callingExpression);
+		return getNodeFunction(node, builtInName, env);
 	}
 	
 	private TemplateModel getNodeFunction(TemplateNodeModel node, String builtInName, 
-			Environment env, BuiltInExpression callingExpression) throws TemplateException 
+			Environment env) throws TemplateException 
 	{
 		if (builtInName == "parent") {
 			return node.getParentNode();

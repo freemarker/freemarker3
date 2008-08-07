@@ -61,7 +61,6 @@ import freemarker.template.TemplateModel;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.Scope;
-import freemarker.core.parser.ParseException;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateTransformModel;

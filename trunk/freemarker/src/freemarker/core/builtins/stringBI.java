@@ -58,9 +58,9 @@ import java.util.Date;
 import java.util.List;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.EvaluationUtil;
+import freemarker.core.ast.TemplateNode;
 import freemarker.template.*;
 
 /**
@@ -87,7 +87,7 @@ public class stringBI extends BuiltIn {
         if (target instanceof TemplateScalarModel) {
             return new SimpleScalar(((TemplateScalarModel) target).getAsString());
         } 
-      	throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "number, date, or string");
+      	throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "number, date, or string");
 	}
 	
 	

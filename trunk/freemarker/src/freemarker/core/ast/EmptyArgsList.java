@@ -53,13 +53,8 @@
 package freemarker.core.ast;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.io.StringReader;
-import java.lang.reflect.*;
 import freemarker.core.Environment;
 import freemarker.template.*;
-import freemarker.core.parser.*;
-import freemarker.ext.beans.SimpleMethodModel;
 
 /**
  * The abstract base class of both {@link NamedArgsList} and {@link PositionalArgsList}

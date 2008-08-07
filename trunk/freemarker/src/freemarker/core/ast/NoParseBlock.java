@@ -52,13 +52,7 @@
 
 package freemarker.core.ast;
 
-import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
-
-import freemarker.core.Environment;
-import freemarker.template.TemplateException;
-import freemarker.template.Template;
 
 public class NoParseBlock extends MixedContent {
 	

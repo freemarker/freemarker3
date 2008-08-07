@@ -55,8 +55,6 @@ package freemarker.core.ast;
 import freemarker.template.*;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.core.parser.ParseException;
-import freemarker.core.parser.Token;
 import freemarker.core.parser.TemplateLocation;
 import freemarker.core.helpers.DefaultReferenceChecker;
 import freemarker.core.helpers.DefaultTreeDumper;

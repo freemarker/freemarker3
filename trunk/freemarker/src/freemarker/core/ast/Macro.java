@@ -57,7 +57,6 @@ import java.util.*;
 import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;
 import freemarker.core.Environment;
-import freemarker.core.parser.ParseException;
 
 
 /**

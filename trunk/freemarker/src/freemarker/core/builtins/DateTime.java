@@ -53,21 +53,13 @@
 package freemarker.core.builtins;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.ast.TemplateNode;
 import freemarker.template.*;
-import freemarker.template.utility.StringUtil;
 
 /**
  * Implementations of builtins for standard functions
@@ -104,7 +96,7 @@ public class DateTime extends BuiltIn {
 			return new DateParser(((TemplateScalarModel) target).getAsString(), dateType, callingExpression,  env);
 		}
 		else {
-			throw callingExpression.invalidTypeException(target, callingExpression.getTarget(), env, "time/date or string");
+			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "time/date or string");
 		}
 	}
 	

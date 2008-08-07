@@ -56,8 +56,6 @@ import java.io.IOException;
 
 import freemarker.template.*;
 import freemarker.core.*;
-import freemarker.core.parser.ParseException;
-
 
 /**
  * An instruction that processes a list or foreach block
