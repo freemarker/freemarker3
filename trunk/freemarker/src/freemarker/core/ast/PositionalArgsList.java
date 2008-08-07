@@ -101,13 +101,16 @@ public class PositionalArgsList extends ArgsList {
         List<TemplateModel> result = annotatedParameterList.getParameterSequence(this, env);
         if ((target instanceof TemplateMethodModel) && !(target instanceof TemplateMethodModelEx)) {
             List<String> strings = new ArrayList<String>();
-            for (TemplateModel value : result) {
-                try {
-                    strings.add(((TemplateScalarModel) value).getAsString());
-                } catch (ClassCastException cce) {
-                    String msg = "Error at: " + getStartLocation() + "\nThis method only takes strings as arguments.";
-                    throw new TemplateException(msg, env);
+            for(int i = 0; i < result.size(); ++i) {
+                TemplateModel value = result.get(i);
+                Expression exp;
+                if(i < args.size()) {
+                    exp = args.get(i);
                 }
+                else {
+                    exp = annotatedParameterList.getDefaultExpression(i);
+                }
+                strings.add(Expression.getStringValue(value, exp, env));
             }
             return strings;
         }

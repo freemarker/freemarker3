@@ -84,6 +84,13 @@ public class ParameterList extends TemplateNode {
         return defaults == null ? null : defaults.get(paramName);
     }
 
+    public Expression getDefaultExpression(int paramIndex) {
+        if(params == null || paramIndex >= params.size()) {
+            return null;
+        }
+        return getDefaultExpression(params.get(paramIndex));
+    }
+
     private void fillInDefaults(final Environment env, final Scope scope, final Collection<String> paramNames) 
     throws TemplateException {
         try {
