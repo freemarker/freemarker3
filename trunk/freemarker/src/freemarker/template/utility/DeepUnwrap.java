@@ -100,7 +100,7 @@ public class DeepUnwrap
      *       <code>java.util.HashMap</code> is constructed from the subvariables, and each
      *       subvariable is unwrapped with the rules described here (recursive unwrapping).
      *   <li>Throw a <code>TemplateModelException</code>, because it doesn't know how to
-     *       unwrapp the object.
+     *       unwrap the object.
      * </ol>
      */
     public static Object unwrap(TemplateModel model) throws TemplateModelException {
@@ -108,9 +108,17 @@ public class DeepUnwrap
     }
 
     /**
-     * Same as {@link #unwrap(TemplateModel)}, but it doesn't throw exception if
-     * it doesn't know how to unwrap
-     * the object, but returns it as is.
+     * Same as {@link #unwrap(TemplateModel)}, but it doesn't throw exception 
+     * if it doesn't know how to unwrap the model, but rather returns it as-is.
+     * @since 2.3.14
+     */
+    public static Object permissiveUnwrap(TemplateModel model) throws TemplateModelException {
+        return unwrap(model, true);
+    }
+    
+    /**
+     * @deprecated the name of this method is mistyped. Use 
+     * {@link #permissiveUnwrap(TemplateModel)} instead.
      */
     public static Object premissiveUnwrap(TemplateModel model) throws TemplateModelException {
         return unwrap(model, true);
