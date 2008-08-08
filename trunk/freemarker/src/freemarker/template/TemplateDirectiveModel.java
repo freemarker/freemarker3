@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import freemarker.core.Environment;
+import freemarker.template.utility.DeepUnwrap;
 
 /**
  * Objects that implement this interface can be used as user-defined directives 
@@ -24,8 +25,10 @@ public interface TemplateDirectiveModel extends TemplateModel
      * @param env the current processing environment. Note that you can access
      * the output {@link java.io.Writer Writer} by {@link Environment#getOut()}.
      * @param params the parameters (if any) passed to the directive as a 
-     * map of key/value pairs where the keys are {@link String}-s and the values are
-     * {@link TemplateModel} instances. This is never <code>null</code>.
+     * map of key/value pairs where the keys are {@link String}-s and the 
+     * values are {@link TemplateModel} instances. This is never 
+     * <code>null</code>. If you need to convert the template models to POJOs,
+     * you can use the utility methods in the {@link DeepUnwrap} class.
      * @param loopVars an array that corresponds to the "loop variables", in
      * the order as they appear in the directive call. ("Loop variables" are out-parameters
      * that are available to the nested body of the directive; see in the Manual.)

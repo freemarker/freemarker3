@@ -56,6 +56,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
+import freemarker.template.utility.DeepUnwrap;
+
 /**
  * Objects that implement this interface can be used as user-defined directives 
  * (much like macros).
@@ -93,10 +95,8 @@ import java.util.Map;
  * 
  * </PRE>
  * 
- * <P>Implementions of <tt>TemplateTransformModel</tt> should be thread-safe.
- *
  * @deprecated Use {@link TemplateDirectiveModel} instead.
- *
+ * @author Attila Szegedi
  * @version $Id: TemplateTransformModel.java,v 1.36 2003/04/11 20:57:32 revusky Exp $
  */
 public interface TemplateTransformModel extends TemplateModel {
@@ -109,7 +109,9 @@ public interface TemplateTransformModel extends TemplateModel {
       * @param out the character stream to which to write the transformed output
       * @param args the arguments (if any) passed to the transformation as a 
       * map of key/value pairs where the keys are strings and the arguments are
-      * TemplateModel instances. This is never null.
+      * TemplateModel instances. This is never null. If you need to convert the
+      * template models to POJOs, you can use the utility methods in the 
+      * {@link DeepUnwrap} class.
       * @return a writer to which the engine will feed the transformation 
       * input, or null if the transform does not support nested content (body).
       * The returned writer can implement the {@link TransformControl}
