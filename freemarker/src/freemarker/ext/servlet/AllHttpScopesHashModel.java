@@ -87,7 +87,15 @@ public class AllHttpScopesHashModel extends SimpleHash
     private final HttpServletRequest request;
     private final Map unlistedModels = new HashMap();
      
-    AllHttpScopesHashModel(ObjectWrapper wrapper, ServletContext context, HttpServletRequest request) {
+    /**
+     * Creates a new instance of AllHttpScopesHashModel for handling a single 
+     * HTTP servlet request.
+     * @param wrapper the object wrapper to use
+     * @param context the servlet context of the web application
+     * @param request the HTTP servlet request being processed
+     */
+    public AllHttpScopesHashModel(ObjectWrapper wrapper, 
+            ServletContext context, HttpServletRequest request) {
         this.wrapper = wrapper;
         this.context = context;
         this.request = request;
