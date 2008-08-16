@@ -98,18 +98,18 @@ WrapperTemplateModel
     }
 
     public TemplateModel get(String key) throws TemplateModelException {
-    	Object value = map.get(key);
-    	if (value == null) {
-    		return map.containsKey(key) ? JAVA_NULL : null;
-    	}
-        return wrap(value);
+        return getObjKey(key);
     }
     
     public Object exec(List args) throws TemplateModelException {
-        Object key = ((BeansWrapper)getObjectWrapper()).unwrap((TemplateModel)args.get(0));
+        return getObjKey(((BeansWrapper)getObjectWrapper()).unwrap((TemplateModel)args.get(0)));
+    }
+
+    private TemplateModel getObjKey(Object key) throws TemplateModelException
+    {
         Object value = map.get(key);
-    	if (value == null) {
-    		return map.containsKey(key) ? JAVA_NULL : null;
+    	if (value == null && !map.containsKey(key)) {
+    	    return null;
     	}
         return wrap(value);
     }
