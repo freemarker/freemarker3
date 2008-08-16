@@ -113,9 +113,7 @@ implements
         {
             try
             {
-            	Object obj = ((List)object).get(index);
-            	if (obj == null) return JAVA_NULL;
-                return wrap(obj);
+                return wrap(((List)object).get(index));
             }
             catch(IndexOutOfBoundsException e)
             {
