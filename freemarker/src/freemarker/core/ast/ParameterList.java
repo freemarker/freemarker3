@@ -116,12 +116,12 @@ public class ParameterList extends TemplateNode {
             resolvedAnArg = hasUnresolvedArg = false;
             for (String paramName : paramNames) {
                 TemplateModel arg = scope.get(paramName);
-                if (arg == null || arg == TemplateModel.JAVA_NULL) {
+                if (arg == null) {
                     Expression defaultExp = getDefaultExpression(paramName);
                     if (defaultExp != null) {
                         try {
                             TemplateModel value = defaultExp.getAsTemplateModel(env);
-                            if(value == null || value == TemplateModel.JAVA_NULL) {
+                            if(value == null) {
                                 if(!hasUnresolvedArg) {
                                     firstUnresolvedExpression = defaultExp;
                                     hasUnresolvedArg = true;
