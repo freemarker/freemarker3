@@ -52,6 +52,8 @@
 
 package freemarker.template;
 
+import java.io.Serializable;
+
 /**
  * <p>This is a marker interface that indicates that an object
  * can be put in a template's data model.
@@ -95,12 +97,19 @@ public interface TemplateModel {    /**
      * The type of the {@link TemplateModel#JAVA_NULL} object. Using a named 
      * class instead of an anonymous one, as it is easier to figure out what's 
      * wrong from an error message when the reported class name is 
-     * "TemplateModel$JavaNull" than when it is "TemplateModel$1".
+     * "TemplateModel$JavaNull" than when it is "TemplateModel$1", also 
+     * implements serialization singleton.
      * @author Attila Szegedi
      * @version $Id: $
      */
-    static class JavaNull implements TemplateModel {
+    static class JavaNull implements TemplateModel, Serializable {
+        private static final long serialVersionUID = 1L;
+
         JavaNull() {}
+        
+        private Object readResolve() {
+            return JAVA_NULL;
+        }
     };
     
     static class InvalidExpressionModel implements TemplateModel {
