@@ -128,19 +128,21 @@ implements
     protected TemplateModel invokeGenericGet(Map keyMap, String key)
     throws TemplateModelException
     {
-		Map map = (Map) object;
-		Object val = map.get(key);
-		if (val == null && key.length()==1) {
-			// just check for Character key if this is a single-character string
-			Character charKey = Character.valueOf(key.charAt(0));
-            val = map.get(charKey);
-            if (val == null) {
-            	return (map.containsKey(key) || map.containsKey(charKey)) ? JAVA_NULL : null;
+        Map map = (Map) object;
+        Object val = map.get(key);
+        if(val == null) {
+            if(key.length() == 1) {
+                // just check for Character key if this is a single-character string
+                Character charKey = Character.valueOf(key.charAt(0));
+                val = map.get(charKey);
+                if (val == null) {
+                    return (map.containsKey(key) || map.containsKey(charKey)) ? JAVA_NULL : null;
+                }
+            }
+            else {
+                return map.containsKey(key) ? JAVA_NULL : null;
             }
         }
-		if (val == null) {
-			return map.containsKey(key) ? JAVA_NULL : null;
-		}
         return wrap(val);
     }
 
