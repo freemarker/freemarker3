@@ -91,15 +91,16 @@ public class EvaluationUtil
     throws
         TemplateException
     {
-        if(model instanceof TemplateNumberModel)
-        {
+        if(model instanceof TemplateNumberModel) {
             return getNumber((TemplateNumberModel)model, expr, env);
         }
-        else if(model == null || model == TemplateModel.JAVA_NULL) {
+        else if(model == null) {
             throw new InvalidReferenceException(expr + " is undefined.", env);
         }
-        else
-        {
+        else if(model == TemplateModel.JAVA_NULL) {
+            throw new InvalidReferenceException(expr + " is null.", env);
+        }
+        else {
             throw new NonNumericalException(expr + " is not a number, it is " + model.getClass().getName(), env);
         }
     }
