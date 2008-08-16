@@ -118,9 +118,7 @@ implements
     {
         try
         {
-       	    Object obj = Array.get(object, index);
-            if (obj == null) return JAVA_NULL;
-            return wrap(obj);
+            return wrap(Array.get(object, index));
         }
         catch(IndexOutOfBoundsException e)
         {
