@@ -98,19 +98,29 @@ WrapperTemplateModel
     }
 
     public TemplateModel get(String key) throws TemplateModelException {
-        return getObjKey(key);
+        Object val = map.get(key);
+        if(val == null) {
+            if(key.length() == 1) {
+                // just check for Character key if this is a single-character string
+                Character charKey = Character.valueOf(key.charAt(0));
+                val = map.get(charKey);
+                if (val == null) {
+                    return (map.containsKey(key) || map.containsKey(charKey)) ? JAVA_NULL : null;
+                }
+            }
+            else {
+                return map.containsKey(key) ? JAVA_NULL : null;
+            }
+        }
+        return wrap(val);
     }
     
     public Object exec(List args) throws TemplateModelException {
-        return getObjKey(((BeansWrapper)getObjectWrapper()).unwrap((TemplateModel)args.get(0)));
-    }
-
-    private TemplateModel getObjKey(Object key) throws TemplateModelException
-    {
+        Object key = ((BeansWrapper)getObjectWrapper()).unwrap((TemplateModel)args.get(0));
         Object value = map.get(key);
-    	if (value == null && !map.containsKey(key)) {
-    	    return null;
-    	}
+        if (value == null && !map.containsKey(key)) {
+            return null;
+        }
         return wrap(value);
     }
 
