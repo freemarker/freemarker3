@@ -67,6 +67,7 @@ import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
+import freemarker.template.utility.DeepUnwrap;
 import freemarker.template.utility.UndeclaredThrowableException;
 
 import javax.servlet.GenericServlet;
@@ -215,26 +216,8 @@ abstract class FreeMarkerPageContext extends PageContext implements TemplateMode
         switch (scope) {
             case PAGE_SCOPE: {
                 try {
-                    TemplateModel m = environment.getGlobalNamespace().get(name);
-                    if (m instanceof AdapterTemplateModel) {
-                        return ((AdapterTemplateModel) m).getAdaptedObject(OBJECT_CLASS);
-                    }
-                    if (m instanceof WrapperTemplateModel) {
-                        return ((WrapperTemplateModel)m).getWrappedObject();
-                    }
-                    if (m instanceof TemplateScalarModel) {
-                        return ((TemplateScalarModel) m).getAsString();
-                    }
-                    if (m instanceof TemplateNumberModel) {
-                        return ((TemplateNumberModel) m).getAsNumber();
-                    }
-                    if (m instanceof TemplateBooleanModel) {
-                        return ((TemplateBooleanModel) m).getAsBoolean() ? Boolean.TRUE : Boolean.FALSE;
-                    }
-                    if (m == TemplateModel.JAVA_NULL) {
-                    	m = null;
-                    }
-                    return m;
+                    return DeepUnwrap.permissiveUnwrap(
+                            environment.getGlobalNamespace().get(name));
                 }
                 catch (TemplateModelException e) {
                     throw new UndeclaredThrowableException(e);
