@@ -99,6 +99,7 @@ public class DeepUnwrap
      *   <li>If the object implements {@link TemplateHashModelEx}, then a
      *       <code>java.util.HashMap</code> is constructed from the subvariables, and each
      *       subvariable is unwrapped with the rules described here (recursive unwrapping).
+     *   <li>If the object is {@link TemplateModel#JAVA_NULL}, then null is returned.
      *   <li>Throw a <code>TemplateModelException</code>, because it doesn't know how to
      *       unwrap the object.
      * </ol>
