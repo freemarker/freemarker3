@@ -170,6 +170,9 @@ public class DeepUnwrap
             }
             return map;
         }
+        if(model == TemplateModel.JAVA_NULL) {
+            return null;
+        }
         if (permissive) {
             return model;
         }
