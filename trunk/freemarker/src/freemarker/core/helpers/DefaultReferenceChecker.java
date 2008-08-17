@@ -14,11 +14,7 @@ public class DefaultReferenceChecker {
 	private Locale locale;
 	
     public void assertNonNull(TemplateModel model, Expression exp, Environment env) throws InvalidReferenceException {
-        if (model == null) {
-            throw new InvalidReferenceException(
-                "Expression " + exp + " is undefined " +
-                exp.getStartLocation() + ".", env);
-        }
+        assertIsDefined(model, exp, env);
         if (model == TemplateModel.JAVA_NULL) {
             throw new InvalidReferenceException(
                 "Expression " + exp + " is null " +
@@ -27,9 +23,11 @@ public class DefaultReferenceChecker {
     }
     
     public void assertIsDefined(TemplateModel model, Expression exp, Environment env) throws InvalidReferenceException {
-    	if (model == null) {
-    		assertNonNull(null, exp, env);
-    	}
+        if (model == null) {
+            throw new InvalidReferenceException(
+                "Expression " + exp + " is undefined " +
+                exp.getStartLocation() + ".", env);
+        }
     }
     
     public void setLocale(Locale locale) {
