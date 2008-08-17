@@ -77,6 +77,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -1052,11 +1053,13 @@ public class BeansWrapper implements ObjectWrapper
                 }
             }
         }
-        Map<MethodSignature, Method> accessibleMethods = discoverAccessibleMethods(clazz);
-        Method genericGet = accessibleMethods.get(MethodSignature.GET_STRING_SIGNATURE);
+        Map<MethodSignature, List<Method>> accessibleMethods = discoverAccessibleMethods(clazz);
+        Method genericGet = getFirstAccessibleMethod(
+                MethodSignature.GET_STRING_SIGNATURE, accessibleMethods);
         if(genericGet == null)
         {
-            genericGet = accessibleMethods.get(MethodSignature.GET_OBJECT_SIGNATURE);
+            genericGet = getFirstAccessibleMethod(
+                    MethodSignature.GET_STRING_SIGNATURE, accessibleMethods);
         }
         if(genericGet != null)
         {
@@ -1179,9 +1182,31 @@ public class BeansWrapper implements ObjectWrapper
         return ((Map<AccessibleObject, Class[]>)classMap.get(ARGTYPES)).get(methodOrCtor);
     }
 
-    private static Method getAccessibleMethod(Method m, Map<MethodSignature, Method> accessibles)
+    private static Method getFirstAccessibleMethod(MethodSignature sig, Map<MethodSignature, List<Method>> accessibles)
     {
-        return m == null ? null : accessibles.get(new MethodSignature(m));
+        List<Method> l = accessibles.get(sig);
+        if(l == null || l.isEmpty()) {
+            return null;
+        }
+        return l.iterator().next();
+    }
+
+    private static Method getAccessibleMethod(Method m, Map<MethodSignature, List<Method>> accessibles)
+    {
+        if(m == null) {
+            return null;
+        }
+        MethodSignature sig = new MethodSignature(m);
+        List<Method> l = accessibles.get(sig);
+        if(l == null) {
+            return null;
+        }
+        for (Method am : l) {
+            if(am.getReturnType() == m.getReturnType()) {
+                return am;
+            }
+        }
+        return null;
     }
     
     boolean isSafeMethod(Method method)
@@ -1196,14 +1221,14 @@ public class BeansWrapper implements ObjectWrapper
      * interfaces (if they exist). Basically upcasts every method to the 
      * nearest accessible method.
      */
-    private static Map<MethodSignature, Method> discoverAccessibleMethods(Class clazz)
+    private static Map<MethodSignature, List<Method>> discoverAccessibleMethods(Class clazz)
     {
-        Map<MethodSignature, Method> map = new HashMap<MethodSignature, Method>();
+        Map<MethodSignature, List<Method>> map = new HashMap<MethodSignature, List<Method>>();
         discoverAccessibleMethods(clazz, map);
         return map;
     }
     
-    private static void discoverAccessibleMethods(Class clazz, Map<MethodSignature, Method> map)
+    private static void discoverAccessibleMethods(Class clazz, Map<MethodSignature, List<Method>> map)
     {
         if(Modifier.isPublic(clazz.getModifiers()))
         {
@@ -1214,7 +1239,23 @@ public class BeansWrapper implements ObjectWrapper
                 {
                     Method method = methods[i];
                     MethodSignature sig = new MethodSignature(method);
-                    map.put(sig, method);
+                    // Contrary to intuition, a class can actually have several 
+                    // different methods with same signature *but* different
+                    // return types. These can't be constructed using Java the
+                    // language, as this is illegal on source code level, but 
+                    // the compiler can emit synthetic methods as part of 
+                    // generic type reification that will have same signature 
+                    // yet different return type than an existing explicitly
+                    // declared method. Consider:
+                    // public interface I<T> { T m(); }
+                    // public class C implements I<Integer> { Integer m() { return 42; } }
+                    // C.class will have both "Object m()" and "Integer m()" methods.
+                    List<Method> methodList = map.get(sig);
+                    if(methodList == null) {
+                        methodList = new LinkedList<Method>();
+                        map.put(sig, methodList);
+                    }
+                    methodList.add(method);
                 }
                 return;
             }
