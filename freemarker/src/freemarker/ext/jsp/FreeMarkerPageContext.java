@@ -208,20 +208,20 @@ abstract class FreeMarkerPageContext extends PageContext implements TemplateMode
 
     public Object getAttribute(String name)
     {
-        return getAttribute(name, PAGE_SCOPE);
+        try {
+            return DeepUnwrap.permissiveUnwrap(
+                    environment.getGlobalNamespace().get(name));
+        }
+        catch (TemplateModelException e) {
+            throw new UndeclaredThrowableException(e);
+        }
     }
 
     public Object getAttribute(String name, int scope)
     {
         switch (scope) {
             case PAGE_SCOPE: {
-                try {
-                    return DeepUnwrap.permissiveUnwrap(
-                            environment.getGlobalNamespace().get(name));
-                }
-                catch (TemplateModelException e) {
-                    throw new UndeclaredThrowableException(e);
-                }
+                return getAttribute(name);
             }
             case REQUEST_SCOPE: {
                 return getRequest().getAttribute(name);
