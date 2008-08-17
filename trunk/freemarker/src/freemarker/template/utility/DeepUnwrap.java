@@ -148,7 +148,7 @@ public class DeepUnwrap
             TemplateSequenceModel seq = (TemplateSequenceModel)model;
             ArrayList<Object> list = new ArrayList<Object>(seq.size());
             for(int i = 0; i < seq.size(); ++i) {
-                list.add(unwrap(seq.get(i)));
+                list.add(unwrap(seq.get(i), permissive));
             }
             return list;
         }
@@ -157,7 +157,7 @@ public class DeepUnwrap
             ArrayList<Object> list = new ArrayList<Object>();
             TemplateModelIterator it = coll.iterator();            
             while(it.hasNext()) {
-                list.add(unwrap(it.next()));
+                list.add(unwrap(it.next(), permissive));
             }
             return list;
         }
@@ -166,8 +166,8 @@ public class DeepUnwrap
             HashMap map = new HashMap();
             TemplateModelIterator keys = hash.keys().iterator();
             while(keys.hasNext()) {
-                String key = (String)unwrap(keys.next()); 
-                map.put(key, unwrap(hash.get(key)));
+                String key = (String)unwrap(keys.next(), permissive); 
+                map.put(key, unwrap(hash.get(key), permissive));
             }
             return map;
         }
