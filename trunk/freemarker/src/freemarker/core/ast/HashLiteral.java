@@ -128,9 +128,7 @@ public class HashLiteral extends Expression {
                 Expression valExp = values.get(i);
                 String key = keyExp.getStringValue(env);
                 TemplateModel value = valExp.getAsTemplateModel(env);
-                if (value != TemplateModel.JAVA_NULL) {
-                	assertNonNull(value, valExp, env);
-                }
+                assertIsDefined(value, valExp, env);
                 keyMap.put(key, value);
                 keyList.add(key);
                 valueList.add(value);
