@@ -193,6 +193,12 @@ implements TemplateHashModelEx, Serializable {
 
     public TemplateModel get(String key) throws TemplateModelException {
         Object result = map.get(key);
+        // The key to use for putting -- it is the key that already exists in
+        // the map (either key or charKey below). This way, we'll never put a 
+        // new key in the map, avoiding spurious ConcurrentModificationException
+        // from another thread iterating over the map, see bug #1939742 in 
+        // SourceForge tracker.
+        final Object putKey;
         if (result == null) {
             if(key.length() == 1) {
                 // just check for Character key if this is a single-character string
@@ -201,17 +207,23 @@ implements TemplateHashModelEx, Serializable {
                 if (result == null) {
                     return map.containsKey(key) || map.containsKey(charKey) ? JAVA_NULL : null;
                 }
+                else {
+                    putKey = charKey;
+                }
             }
             else {
                 return map.containsKey(key) ? JAVA_NULL : null;
             }
+        }
+        else {
+            putKey = key;
         }
         if (result instanceof TemplateModel) {
             return (TemplateModel) result;
         }
         TemplateModel tm = wrap(result);
         if (!putFailed) try {
-            if (tm != null) map.put(key, tm);
+            if (tm != null) map.put(putKey, tm);
         } catch (Exception e) {
             // If it's immutable or something, we just keep going.
             putFailed = true;
