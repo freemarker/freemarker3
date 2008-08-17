@@ -58,7 +58,7 @@ import junit.framework.AssertionFailedError;
  * @author Attila Szegedi, szegedia at freemail dot hu
  * @version $Id: BeanTestClass.java,v 1.6 2003/01/12 23:40:25 revusky Exp $
  */
-public class BeanTestClass
+public class BeanTestClass extends BeanTestSuperclass implements BeanTestInterface<Integer>
 {
     public static final String STATIC_FINAL_FIELD = "static-final-field";
     public static String STATIC_FIELD = "static-field";
