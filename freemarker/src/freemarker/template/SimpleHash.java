@@ -193,18 +193,18 @@ implements TemplateHashModelEx, Serializable {
 
     public TemplateModel get(String key) throws TemplateModelException {
         Object result = map.get(key);
-        if (result == null && key.length() == 1) {
-        // just check for Character key if this is a single-character string
-            try {
-            	Character charKey = Character.valueOf(key.charAt(0));
-  	            result = map.get(charKey);
-  	            if (result == null && map.containsKey(charKey)) {
-  	            	result = JAVA_NULL;
-  	            }
-            } catch (Exception e) {}
-        }
         if (result == null) {
-        	return map.containsKey(key) ? JAVA_NULL : null;
+            if(key.length() == 1) {
+                // just check for Character key if this is a single-character string
+                Character charKey = Character.valueOf(key.charAt(0));
+                result = map.get(charKey);
+                if (result == null) {
+                    return map.containsKey(key) || map.containsKey(charKey) ? JAVA_NULL : null;
+                }
+            }
+            else {
+                return map.containsKey(key) ? JAVA_NULL : null;
+            }
         }
         if (result instanceof TemplateModel) {
             return (TemplateModel) result;
