@@ -78,7 +78,7 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
     }
     
 	public void visit(MethodCall node) {
-		if (node.target instanceof BuiltInExpression) {
+		if (convertExistence && (node.target instanceof BuiltInExpression)) {
 			BuiltInExpression bi = (BuiltInExpression) node.target;
 			if (bi.getName().equals("default")) { // convert ?default to newer syntax
 				Expression lhs = bi.getTarget();
@@ -91,8 +91,9 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
 						visit(arg);
 					}
 				}
+				return;
 			}
-		}
+		} 
 		super.visit(node);
 	}
 	
