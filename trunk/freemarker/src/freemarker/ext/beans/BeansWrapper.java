@@ -800,8 +800,14 @@ public class BeansWrapper implements ObjectWrapper
     {
         Object retval = method.invoke(object, args);
         return 
-            method.getReturnType() == Void.TYPE 
-            ? null // (This seems like more rigorous semantics to me.) TemplateModel.NOTHING 
+            method.getReturnType() == Void.TYPE
+            // We're returning TemplateModel.NOTHING for convenience of 
+            // template authors who want to invoke a method for its side effect
+            // i.e. ${session.invalidate()}. Returning null would be more
+            // intuitive (as return value of a void method is undefined), but
+            // this way we don't force people to write an additional ! operator
+            // i.e. ${session.invalidate()!}
+            ? TemplateModel.NOTHING 
             : getOuterIdentity().wrap(retval); 
     }
 
