@@ -20117,14 +20117,6 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             </listitem>
 
             <listitem>
-              <para>Added a new <link
-              linkend="ref_builtin_string_for_number">number format
-              specifier</link>, <literal>"computer"</literal>. This uses the
-              same formatting as
-              <literal><replaceable>exp</replaceable>?c</literal>.</para>
-            </listitem>
-
-            <listitem>
               <para>XML processing (assuming you are using the standard XML
               wrapper): To test if a node exists, from now it's enough to
               write something like <literal>[#if employee.degress]</literal>
