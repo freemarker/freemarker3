@@ -6677,26 +6677,24 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         you set <literal>"en_US"</literal> for the <literal>locale</literal>
         setting in the configuration, then the <literal>locale</literal> in
         all templates that use this configuration will be
-        <literal>"en_US"</literal>, except in templates where you have
-        overridden that with the <literal>setLocale</literal> method of
-        <literal>Template</literal>. Thus, values in a configuration serve as
-        defaults that can be overridden in a per template manner. The value
-        comes from <literal>Configuration</literal> instance or
+        <literal>"en_US"</literal>, except in templates where the locale was
+        explicitly specified differently (see <link
+        linkend="ref_directive_embed_localized">localization</link>). Thus,
+        values in a <literal>Configuration</literal> serve as defaults that
+        can be overridden in a per template manner. The value comes from
+        <literal>Configuration</literal> instance or
         <literal>Template</literal> instance can be further overridden for a
-        single <literal>Template.process</literal> call in the
-        <literal>freemarker.core.Environment</literal> object, or in the
-        template with the <link
-        linkend="ref.directive.setting"><literal>setting</literal>
-        directive</link>. The thing that stores the state of single a
-        <literal>Template.process</literal> call is called the runtime
-        environment of the process call; setting values that override the
-        values comes from <literal>Template</literal> instance or
-        <literal>Configuration</literal> instance are stored there.</para>
+        single <literal>Template.process</literal> call. For each such call a
+        <literal>freemarker.core.Environment</literal> object is created
+        internally that holds the runtime environment of the template
+        processing, including the setting values that were overridden on that
+        level.</para>
 
-        <para>This can be imagined as 3 layers (configuration, template,
-        runtime environment) of settings, where the topmost layer that
-        contains the value for a certain setting provides the effective value
-        of that setting. For example (settings A to F are just imaginary
+        <para>This can be imagined as 3 layers
+        (<literal>Configuration</literal>, <literal>Template</literal>,
+        <literal>Environment</literal>) of settings, where the topmost layer
+        that contains the value for a certain setting provides the effective
+        value of that setting. For example (settings A to F are just imaginary
         settings for this example):</para>
 
         <informaltable frame="all">
@@ -6721,7 +6719,8 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
 
             <tbody>
               <row>
-                <entry align="left">Layer 3: Runtime environment</entry>
+                <entry align="left">Layer 3:
+                <literal>Environment</literal></entry>
 
                 <entry>1</entry>
 
@@ -6737,7 +6736,8 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
               </row>
 
               <row>
-                <entry align="left">Layer 2: Template</entry>
+                <entry align="left">Layer 2:
+                <literal>Template</literal></entry>
 
                 <entry>2</entry>
 
@@ -6753,7 +6753,8 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
               </row>
 
               <row>
-                <entry align="left">Layer 1: Configuration</entry>
+                <entry align="left">Layer 1:
+                <literal>Configuration</literal></entry>
 
                 <entry>3</entry>
 
@@ -6772,21 +6773,129 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         </informaltable>
 
         <para>The effective value of settings will be: A = 1, B = 2, C = 3, D
-        = 1, E = 2. The F setting is probably Java null, or it throws
-        exception when you try to get it.</para>
+        = 1, E = 2. The F setting is probably <literal>null</literal>, or it
+        throws exception when you try to get it.</para>
+
+        <para>Let's see exactly how to set settings:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para><literal>Configuration</literal> layer: In principle you set
+            the settings with the setter methods of the
+            <literal>Configuration</literal> object, fore example:</para>
+
+            <programlisting role="unspecified">Configuration myCfg = new Configuration();
+myCfg.setLocale(java.util.Locale.ITALY);
+myCfg.setNumberFormat("0.####");</programlisting>
+
+            <para>You do it before you start to actually use the
+            <literal>Configuration</literal> object (typically, when you
+            initialize the application); you should treat the object as
+            read-only after that.</para>
+
+            <para>In practice, in most Web application frameworks you have to
+            specify the setting in a framework-specific configuration file
+            that require specifying setting as <literal>String</literal>
+            name-value pairs (like in a <literal>.properties</literal> file).
+            In that case the authors of the frameworks most probably use the
+            <literal>setSetting(String name, String value)</literal> method of
+            <literal>Configuration</literal>; see available setting names and
+            the format of the values in the API doc of
+            <literal>setSetting</literal>. Example for Spring
+            Framework:</para>
+
+            <programlisting role="unspecified">&lt;bean id="freemarkerConfig"
+    class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer"&gt;
+  &lt;property name="freemarkerSettings"&gt;
+    &lt;props&gt;
+      &lt;prop key="locale"&gt;it_IT&lt;/prop&gt;
+      &lt;prop key="number_format"&gt;0.####&lt;/prop&gt;
+    &lt;/props&gt;
+  &lt;/property&gt;
+&lt;/bean&gt;</programlisting>
+
+            <para>Note that this kind of configuring
+            (<literal>String</literal> key-value pairs) is unfortunately
+            limited compared to directly using the API of
+            <literal>Configuration</literal>.</para>
+          </listitem>
+
+          <listitem>
+            <para><literal>Template</literal> layer: You shouldn't set
+            settings here (unless you manage the <literal>Template</literal>
+            objects instead of a
+            <literal>freemarker.cache.TemplateCache</literal>, in which case
+            you should set the setting before the <literal>Template</literal>
+            object is first used, and then treat the
+            <literal>Template</literal> object as read-only).</para>
+          </listitem>
+
+          <listitem>
+            <para><literal>Environment </literal>layer: There are two ways
+            doing it:</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>With Java API: Use the setter methods of the
+                <literal>Environment</literal> object. Certainly you want to
+                do that just before the processing of the template is started,
+                and then you run into the problem that when you call
+                <literal>myTemplate.process(...)</literal> it creates the
+                <literal>Environment</literal> object internally and the
+                immediately processes the template, so you had no chance. The
+                solution is that this two steps can be separated like
+                this:</para>
+
+                <programlisting role="unspecified">Environment env = myTemplate.createProcessingEnvironment(root, out);
+env.setLocale(java.util.Locale.ITALY);
+env.setNumberFormat("0.####");
+env.process();  // process the template</programlisting>
+              </listitem>
+
+              <listitem>
+                <para>Directly in the Template: Use the <link
+                linkend="ref.directive.setting"><literal>setting</literal>
+                directive</link>, for example:</para>
+
+                <programlisting role="template">[#setting locale="it_IT"]
+[#setting number_format="0.####"]</programlisting>
+              </listitem>
+            </itemizedlist>
+
+            <para>There are no restriction regarding when can you change the
+            settings in this layer.</para>
+          </listitem>
+        </itemizedlist>
 
         <para>To see the list of supported settings, please read the following
         parts of the FreeMarker Java API documentation:</para>
 
         <itemizedlist>
           <listitem>
+            <para>Setter methods of
+            <literal>freemarker.core.Configurable</literal> for the settings
+            that are in all three layers</para>
+          </listitem>
+
+          <listitem>
+            <para>Setter methods of
+            <literal>freemarker.template.Configuration</literal> for the
+            settings that are available only in the
+            <literal>Configuration</literal> layer</para>
+          </listitem>
+
+          <listitem>
             <para><literal>freemarker.core.Configurable.setSetting(String,
-            String)</literal>: Settings that live in all layers.</para>
+            String)</literal> for settings that are available in all three
+            layers and are writable with <literal>String</literal> key-value
+            pairs.</para>
           </listitem>
 
           <listitem>
             <para><literal>freemarker.template.Configuration.setSetting(String,
-            String)</literal>: Coniguration layer settings.</para>
+            String)</literal> for settings that are available only in the
+            <literal>Configuration</literal> layer and are writable with
+            <literal>String</literal> key-value pairs.</para>
           </listitem>
         </itemizedlist>
       </sect1>
@@ -8574,6 +8683,32 @@ TemplateHashModel roundingModeEnums =
   &lt;/body&gt;
 &lt;/html&gt;</programlisting>
 
+            <warning>
+              <para>In FreeMarker <literal>&lt;html:form
+              action="/query"&gt;<replaceable>...</replaceable>&lt;/html:form&gt;</literal>
+              is just static text, so it is printed to the output as is, like
+              any other XML or HTML markup. JSP tags are just FreeMarker
+              directives, nothing special, so you <emphasis>use FreeMarker
+              syntax</emphasis> for calling them, not JSP syntax:
+              <literal>[@html.form
+              action="/query"]<replaceable>...</replaceable>[/@html.form]</literal>.
+              Note that in the FreeMarker syntax you <emphasis>don't use
+              <literal>${<replaceable>...</replaceable>}</literal> in
+              parameters</emphasis> as in JSP, and you <emphasis>don't quote
+              the parameter values</emphasis>. So this is
+              <emphasis>WRONG</emphasis>:</para>
+
+              <programlisting role="template">[#-- WRONG: --]
+[@my.jspTag color="${aVarialbe}" name="aStringLiteral"
+            width="100" height=${a+b} /]</programlisting>
+
+              <para>and this is good:</para>
+
+              <programlisting role="template">[#-- Good: --]
+[@my.jspTag color=theColor name="aStringLiteral"
+            width=100 height=a+b /]</programlisting>
+            </warning>
+
             <para>Since JSP custom tags are written to operate in JSP
             environment, they assume that variables (often referred as
             "attributes" in JSP world) are stored in 4 scopes: page scope,
@@ -8652,6 +8787,12 @@ TemplateHashModel roundingModeEnums =
             earlier Serlvet versions than 2.3, event listeners will not be
             supported, and thus JSP 1.2 taglibs that register event listeners
             will not work properly.</para>
+
+            <para>As of this writing, JSP features up to JSP 2.1 are
+            implemented, except the "tag files" feature of JSP 2 (i.e., custom
+            JSP tags <emphasis>implemented</emphasis> in JSP language). The
+            tag files had to be compiled to Java classes to be usable under
+            FreeMarker.</para>
           </sect3>
         </sect2>
 
@@ -10032,7 +10173,10 @@ root.put(
           <para>This XML is the same as the original, except that it uses
           attributes for the titles, instead of elements:</para>
 
-          <programlisting role="unspecified">&lt;book title="Test"&gt;
+          <programlisting role="unspecified">&lt;!-- THIS XML IS USED FOR THE "Accessing attributes" CHAPTER ONLY! --&gt;
+&lt;!-- Outside this chapter examples use the XML from earlier.       --&gt;
+
+&lt;book title="Test"&gt;
   &lt;chapter title="Ch1"&gt;
     &lt;para&gt;p1.1&lt;/para&gt;
     &lt;para&gt;p1.2&lt;/para&gt;
@@ -19094,7 +19238,7 @@ or
             <para>Certainly you are using <literal>BeansWrapper</literal> as
             your object wrapper, or a custom subclass of it, and the
             <literal>simpleMapWrapper</literal> property of that is left to
-            <literal>false</literal>. Unfortunatelly, it's the default (for
+            <literal>false</literal>. Unfortunately, it's the default (for
             backward compatibility), so you have to explicitly set it to
             <literal>true</literal> where you create the object
             wrapper.</para>
@@ -20346,7 +20490,7 @@ ${obj.myMethod("foo")}</programlisting>
       <sect1 id="versions_2_3_14">
         <title>2.3.14</title>
 
-        <para>Date of release: 2008-??-?? (Not released yet!)</para>
+        <para>Date of release: 2008-09-01</para>
 
         <sect2>
           <title>Changes on the FTL side</title>
@@ -20358,13 +20502,25 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Bug fixed: Now you can use the values of parameters as the
-              defaults of other parameters, for example <literal>[#macro
-              section title label=title]</literal>. In earlier versions it was
-              worked unreliably. There are no restriction regarding the order
-              of parameters, like <literal>[#macro section label=title
-              title]</literal> works too; the parameters will be evaluated in
-              an order that the dependencies allow.</para>
+              <para>New special variable: <literal>template_name</literal>.
+              See more <link linkend="ref_specvar">here...</link></para>
+            </listitem>
+
+            <listitem>
+              <para>Now you can use the values of parameters as the defaults
+              of other parameters, for example <literal>&lt;#macro section
+              title label=title&gt;</literal>. In earlier versions it worked
+              unreliably. There are no restriction regarding the order of
+              parameters, like <literal>&lt;#macro section label=title
+              title&gt;</literal> works too.</para>
+            </listitem>
+
+            <listitem>
+              <para>Added a new <link
+              linkend="ref_builtin_string_for_number">number format
+              specifier</link>, <literal>computer</literal>. This uses the
+              same formatting as
+              <literal><replaceable>exp</replaceable>?c</literal>.</para>
             </listitem>
           </itemizedlist>
         </sect2>
@@ -20374,58 +20530,43 @@ ${obj.myMethod("foo")}</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para><ulink
-              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1898300&amp;group_id=794&amp;atid=350794">[1898300]</ulink>,
-              <ulink
-              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1818742&amp;group_id=794&amp;atid=350794">[1818742]</ulink>,
-              <ulink
-              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1780882&amp;group_id=794&amp;atid=350794">[1780882]</ulink>:
-              Reworked template caching mechanism for radically improved
-              concurrent performance, with help from Azul Systems engineers.
-              (Achieved 20x speedup with Struts2 webapps on a 128-CPU Azul
-              device compared to 2.3.12.) Also, template loading (including
-              parsing) errors are now cached, improving performance in
-              applications that often try to get missing templates.</para>
+              <para>The constructor to
+              <literal>freemarker.ext.servlet.AllHttpScopesHashModel</literal>
+              is now public, allowing it to be reused in 3rd party web
+              frameworks.</para>
             </listitem>
 
             <listitem>
-              <para><ulink
-              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1892546&amp;group_id=794&amp;atid=100794">[1892546]</ulink>
-              Allow for custom <literal>TemplateLoader</literal> in
-              <literal>FreemarkerServlet</literal>.</para>
+              <para>Bugfix:
+              <literal>freemarker.ext.beans.SimpleMapModel</literal> (unlike
+              either <literal>freemarker.ext.beans.MapModel</literal> or
+              <literal>freemarker.template.SimpleHash</literal>) didn't allow
+              lookup by <literal>java.lang.Character</literal> key when passed
+              a single-character string as a key.</para>
             </listitem>
 
             <listitem>
-              <para>Bug fixed: <ulink
-              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1725107&amp;group_id=794&amp;atid=100794">[1725107]</ulink>
-              Using the FreeMarker JSP taglib support with Servlet 2.4 may
-              generates XML validation warnings.</para>
+              <para>Bugfix: permissive unwrapping in
+              <literal>freemarker.template.utility.DeepUnwrap</literal> class
+              was not recursively permissive with elements of sequences and
+              hashes.</para>
             </listitem>
 
             <listitem>
-              <para>Bug fixed: <ulink
-              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1939742&amp;group_id=794&amp;atid=100794">[1939742]</ulink>
-              <literal>ConcurrentModificationException</literal> on accessing
-              nonexistent <literal>SimpleHash</literal> entries in a
-              loop</para>
+              <para>Bugfix: <literal>freemarker.ext.beans.MapModel</literal>
+              returns <literal>BeansWrapper.wrap(null)</literal> instead of
+              <literal>null</literal> for <literal>null</literal> values
+              explicitly bound into the map.</para>
             </listitem>
 
             <listitem>
-              <para>Bug fixed: <ulink
-              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1902012&amp;group_id=794&amp;atid=100794">[1902012]</ulink>
-              <literal>IteratorModel</literal> eats exception causes</para>
+              <para>Bugfix: Fixed a subtle bug with property getters of
+              classes implementing a type-parametrized interface.</para>
             </listitem>
 
             <listitem>
-              <para>Bug fixed: <literal>&lt;#assign
-              x&gt;&lt;/#assign&gt;</literal> (empty nested content) has
-              caused <literal>NullPointerException</literal></para>
-            </listitem>
-
-            <listitem>
-              <para>Bug fixed: <ulink
-              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1926150&amp;group_id=794&amp;atid=100794">[1926150]</ulink>
-              <literal>CachedTemplate</literal> should be serializable</para>
+              <para>Bug fixed: A further corner case of <ulink
+              url="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=1939742&amp;group_id=794&amp;atid=100794">[1939742]</ulink>.</para>
             </listitem>
           </itemizedlist>
         </sect2>
