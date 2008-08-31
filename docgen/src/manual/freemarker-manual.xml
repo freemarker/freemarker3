@@ -16430,9 +16430,9 @@ etc.</programlisting>
               name of the <link linkend="dgui_misc_var">local variables</link>
               store the parameter values (not expression), optionally followed
               by <literal>=</literal> and the default value (that's an
-              expression). The default value is allowed to be any other
-              parameter, for example<literal>[#macro section title
-              label=title]</literal> is valid.</para>
+              expression). The default value can even be another parameter,
+              for example<literal>[#macro section title
+              label=title]</literal>.</para>
             </listitem>
 
             <listitem>
@@ -23826,7 +23826,7 @@ ${obj.myMethod("foo")}</programlisting>
               syntax to the new syntax (''strict syntax''). The strict syntax
               will be the the default syntax starting from some of the later
               releases anyway. We plan to release a conversion tool for
-              converting old templates. </para>
+              converting old templates.</para>
             </listitem>
 
             <listitem>
@@ -24087,7 +24087,7 @@ ${obj.myMethod("foo")}</programlisting>
               ...</replaceable>&gt;</literal> instead of
               <literal>&lt;/<replaceable>directive
               ...</replaceable>&gt;</literal>. The support of the old syntax
-              stops with FreeMarker 2.4. </para>
+              stops with FreeMarker 2.4.</para>
             </listitem>
 
             <listitem>
@@ -25112,7 +25112,7 @@ ${obj.myMethod("foo")}</programlisting>
               (XML) without worrying about clashes with FreeMarker directives.
               In strict syntax mode you put a <literal>#</literal> in front of
               the directive names, hence they will be invalid SGML tags, and
-              thus can't clash with SGML tags. </para>
+              thus can't clash with SGML tags.</para>
             </listitem>
 
             <listitem>
