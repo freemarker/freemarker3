@@ -14327,7 +14327,8 @@ Sorted by name.last:
           that point. Example:</para>
 
           <programlisting role="template">[#set letters=["a", "b", "c"]]
-[#set templateSource = "[#list letters as i&gt;${i}[/#list]"]
+[#set templateSource = r"[#list letters as i&gt;${i}[/#list]"]
+[#-- Note: That r was needed so that the ${y} is not interpreted above --]
 [#set inlineTemplate = templateSource?interpret]
 [@inlineTemplate /]</programlisting>
 
