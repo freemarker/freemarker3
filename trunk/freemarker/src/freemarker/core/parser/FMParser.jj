@@ -54,7 +54,8 @@ options
 {
    STATIC=false;
    UNICODE_INPUT=true;
-   COMMON_TOKEN_ACTION=true;   
+   COMMON_TOKEN_ACTION=true;  
+//   TREE_BUILDING_ENABLED=true;
 //   DEBUG_TOKEN_MANAGER=true;
 //   DEBUG_PARSER=true;
 }
