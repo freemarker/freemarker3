@@ -50,7 +50,7 @@
         <get src="${libs.location}/jsp-api-2.1.jar" dest="lib/jsp-api-2.1.jar" usetimestamp="true" />
         <get src="${libs.location}/junit.jar" dest="lib/junit.jar" usetimestamp="true" />
         <get src="${libs.location}/jython-2.2.1.jar" dest="lib/jython-2.2.1.jar" usetimestamp="true" />
-        <get src="${libs.location}/kawadd.jar" dest="lib/kawadd.jar" usetimestamp="true" />
+        <get src="${libs.location}/freecc.jar" dest="lib/freecc.jar" usetimestamp="true" />
         <get src="${libs.location}/log4j.jar" dest="lib/log4j.jar" usetimestamp="true" />
         <get src="${libs.location}/retrotranslator-transformer-1.2.3.jar" dest="lib/retrotranslator-transformer-1.2.3.jar" usetimestamp="true" />
         <get src="${libs.location}/retrotranslator-runtime-1.2.3.jar" dest="lib/retrotranslator-runtime-1.2.3.jar" usetimestamp="true" />
@@ -71,6 +71,8 @@
         <delete file="src/freemarker/core/parser/SimpleCharStream.java" />
         <delete file="src/freemarker/core/parser/Token.java" />
         <delete file="src/freemarker/core/parser/TokenMgrError.java" />
+        <delete file="src/freemarker/core/parser/Node.java.java" />
+        <delete file="src/freemarker/core/parser/SimpleNode.java" />
         <delete file="freemarker.jar" />
         <delete file="freemarker-14compat.jar" />
     </target>
@@ -96,7 +98,7 @@
                 <available file="lib/jsp-api-2.1.jar" />
                 <available file="lib/junit.jar" />
                 <available file="lib/jython-2.2.1.jar" />
-                <available file="lib/kawadd.jar" />
+                <available file="lib/freecc.jar" />
                 <available file="lib/log4j.jar" />
                 <available file="lib/retrotranslator-transformer-1.2.3.jar" />
                 <available file="lib/retrotranslator-runtime-1.2.3.jar" />
@@ -129,11 +131,11 @@
         />
    </target>
    
-   <target name="kawadd" depends="init" if="parser.gen"
+   <target name="freecc" depends="init" if="parser.gen"
             description="Build the parser from its grammar file"
     >
-        <java classname="kawadd.parser.Main"
-                classpath="lib/kawadd.jar:lib/freemarker-bootstrap.jar"
+        <java classname="org.visigoths.freecc.Main"
+                classpath="lib/freecc.jar:lib/freemarker-bootstrap.jar"
                 failonerror="true" fork="true"
         >
             <arg value="-OUTPUT_DIRECTORY=src/freemarker/core/parser" />
@@ -143,7 +145,7 @@
  	</java>
    </target>
    
-   <target name="compile" depends="kawadd">
+   <target name="compile" depends="freecc">
    	<mkdir dir="${classes.dir}" />
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
                 debug="on" optimize="off" target="1.5" source="1.5"
