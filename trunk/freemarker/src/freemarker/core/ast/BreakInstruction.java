@@ -62,7 +62,7 @@ import freemarker.core.BreakException;
 public class BreakInstruction extends TemplateElement {
 
     public void execute(Environment env) {
-        throw new BreakException();
+        throw BreakException.INSTANCE;
     }
 
     public String getDescription() {
