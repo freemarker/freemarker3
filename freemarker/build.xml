@@ -495,7 +495,7 @@
                addproperty="mavenUpload.password"
        />
    
-        <artifact:deploy file="${dist.dir.versioned}/freemarker.jar">
+        <artifact:deploy file="${dist.dir}/freemarker.jar">
             <remoteRepository url="sftp://web.sourceforge.net/home/groups/f/fr/freemarker/htdocs/maven2">
                 <authentication
                       username="${mavenUpload.user},freemarker"
