@@ -429,6 +429,86 @@
         <gzip zipfile="${freemarker.gzip}" src="${freemarker.tar}" />
         <delete file="${freemarker.tar}" />
     </target>
+    
+    <!--
+      Uploads the freemarker.jar that is in the current DISTRIBUTION DIRECTORY
+      into the place that the central Maven2 repository syncs itself with
+      periodically. Of course it also uploads the Maven-specific metadata files.
+  
+      Note: maven-ant-tasks-x.x.x.jar must be added to ${ANT_HOME}/lib for
+            this to work. Get it here: http://maven.apache.org/download.html
+    -->
+    <target name="maven-upload" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+        <echo file="build/pom.xml"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+            <project xmlns="http://maven.apache.org/POM/4.0.0"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+              <modelVersion>4.0.0</modelVersion>
+              <groupId>org.freemarker</groupId>
+              <artifactId>freemarker</artifactId>
+              <version>${version}</version>
+              <packaging>jar</packaging>
+              <name>FreeMarker</name>
+              <description>
+                FreeMarker is a "template engine"; a generic tool to generate text output based on templates.
+              </description>
+              <url>http://www.freemarker.org</url>
+              <licenses>
+                <license>
+                  <name>BSD-style license</name>
+                  <url>http://www.freemarker.org/LICENSE.txt</url>
+                </license>
+              </licenses>
+              <scm>
+                <url>http://freemarker.svn.sourceforge.net/viewvc/freemarker/</url>
+                <connection>scm:svn:https://freemarker.svn.sourceforge.net/svnroot/freemarker</connection>
+              </scm>
+              <dependencies>
+                <!-- no required dependencies -->
+              </dependencies>
+            </project>
+        ]]></echo>
+   
+        <artifact:install-provider artifactId="wagon-ssh" version="1.0-beta-2"/>
+   
+        <input
+             validargs="y,n"
+             addproperty="mavenUpload.answer"
+        >
+   You are about uploading
+   ${dist.dir.versioned}/freemarker.jar
+   into the Maven central repostiry sync. directory.
+   Be sure that's the final (released) variation there,
+   and that the version number is correct.
+   Proceed? </input>
+        <condition property="mavenUpload.yes">
+            <equals arg1="y" arg2="${mavenUpload.answer}"/>
+        </condition>
+        <fail unless="mavenUpload.yes" message="Task aborted by user." />
+   
+        <input
+               message="Enter your SourceForge.net user name: "
+               addproperty="mavenUpload.user"
+       />
+        <input
+               message="Enter your SourceForge.net password (WILL BE DISPLAYED AS YOU TYPE IT!): "
+               addproperty="mavenUpload.password"
+       />
+   
+        <artifact:deploy file="${dist.dir.versioned}/freemarker.jar">
+            <remoteRepository url="sftp://web.sourceforge.net/home/groups/f/fr/freemarker/htdocs/maven2">
+                <authentication
+                      username="${mavenUpload.user},freemarker"
+                      password="${mavenUpload.password}"
+               />
+            </remoteRepository>
+            <pom file="build/pom.xml" />
+        </artifact:deploy>
+        
+        <echo>**********************************************</echo>
+        <echo>CLEAR THE SCREEN, NOW! Your password is on it!</echo>
+        <echo>**********************************************</echo>
+    </target>
 
     <!-- ================================================================= -->
     <!-- [Add new section title here]                                      -->
