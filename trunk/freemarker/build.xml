@@ -452,11 +452,11 @@
               <description>
                 FreeMarker is a "template engine"; a generic tool to generate text output based on templates.
               </description>
-              <url>http://www.freemarker.org</url>
+              <url>http://freemarker.org</url>
               <licenses>
                 <license>
                   <name>BSD-style license</name>
-                  <url>http://www.freemarker.org/LICENSE.txt</url>
+                  <url>http://freemarker.org/LICENSE.txt</url>
                 </license>
               </licenses>
               <scm>
