@@ -475,12 +475,12 @@
              validargs="y,n"
              addproperty="mavenUpload.answer"
         >
-   You are about uploading
-   ${dist.dir.versioned}/freemarker.jar
-   into the Maven central repostiry sync. directory.
-   Be sure that's the final (released) variation there,
-   and that the version number is correct.
-   Proceed? </input>
+You are about uploading
+${dist.dir.versioned}/freemarker.jar
+into the Maven central repostiry sync. directory.
+Be sure that's the final (released) variation there,
+and that the version number is correct.
+Proceed? </input>
         <condition property="mavenUpload.yes">
             <equals arg1="y" arg2="${mavenUpload.answer}"/>
         </condition>
