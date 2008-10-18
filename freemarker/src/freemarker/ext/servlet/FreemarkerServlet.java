@@ -61,6 +61,7 @@ import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletContext;
@@ -76,15 +77,19 @@ import freemarker.cache.MultiTemplateLoader;
 import freemarker.cache.TemplateLoader;
 import freemarker.cache.WebappTemplateLoader;
 import freemarker.core.Configurable;
+import freemarker.core.Environment;
 import freemarker.ext.jsp.TaglibFactory;
 import freemarker.log.Logger;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateExceptionHandler;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
 import freemarker.template.utility.StringUtil;
 import java.util.Locale;
 
@@ -111,6 +116,10 @@ import java.util.Locale;
  * to load JSP taglibs. For example:<br>
  * <code>&lt;#assign tiles=JspTaglibs["/WEB-INF/struts-tiles.tld"]></code>
  * 
+ * <li>A custom directive named <code>servlet_include</code> allows you to 
+ * include the output of another servlet resource from your servlet container,
+ * just as if you used <code>ServletRequest.getRequestDispatcher(path).include()</code>:<br>
+ * <code>&lt;@servlet_include path="/myWebapp/somePage.jsp"/></code>
  * </ul>
  * 
  * <p>The servlet will rethrow the errors occurring during template processing,
@@ -197,6 +206,7 @@ public class FreemarkerServlet extends HttpServlet
     public static final String KEY_REQUEST = "Request";
     public static final String KEY_REQUEST_PRIVATE = "__FreeMarkerServlet.Request__";
     public static final String KEY_REQUEST_PARAMETERS = "RequestParameters";
+    public static final String KEY_INCLUDE = "servlet_include";
     public static final String KEY_SESSION = "Session";
     public static final String KEY_APPLICATION = "Application";
     public static final String KEY_APPLICATION_PRIVATE = "__FreeMarkerServlet.Application__";
@@ -503,8 +513,8 @@ public class FreemarkerServlet extends HttpServlet
 
     protected TemplateModel createModel(ObjectWrapper wrapper,
                                         ServletContext servletContext,
-                                        HttpServletRequest request,
-                                        HttpServletResponse response) throws TemplateModelException {
+                                        final HttpServletRequest request,
+                                        final HttpServletResponse response) throws TemplateModelException {
         try {
             AllHttpScopesHashModel params = new AllHttpScopesHashModel(wrapper, servletContext, request);
     
@@ -558,6 +568,36 @@ public class FreemarkerServlet extends HttpServlet
             }
             params.putUnlistedModel(KEY_REQUEST, requestModel);
             params.putUnlistedModel(KEY_REQUEST_PRIVATE, requestModel);
+            params.putUnlistedModel(KEY_INCLUDE, new TemplateDirectiveModel()
+            {
+                public void execute(Environment env, 
+                        Map<String, TemplateModel> params, 
+                        TemplateModel[] loopVars, TemplateDirectiveBody body)
+                throws TemplateException, IOException
+                {
+                    TemplateModel path = params.get("path");
+                    if(path == null) {
+                        throw new TemplateException(
+                                "Missing required parameter 'path'", env);
+                    }
+                    if(path instanceof TemplateScalarModel) {
+                        try {
+                            String strPath = 
+                                ((TemplateScalarModel)path).getAsString(); 
+                            request.getRequestDispatcher(strPath).include(
+                                    request, response);
+                        }
+                        catch(ServletException e) {
+                            throw new TemplateException(e, env);
+                        }
+                    }
+                    else {
+                        throw new TemplateException(
+                                "Expected a scalar model. 'path' is instead " + 
+                                path.getClass().getName(), env);
+                    }
+                }
+            });
     
             // Create hash model wrapper for request parameters
             HttpRequestParametersHashModel requestParametersModel =
