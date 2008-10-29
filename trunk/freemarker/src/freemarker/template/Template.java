@@ -407,10 +407,9 @@ public class Template extends TemplateCore {
     * @param out the writer to output the text to.
     * @return the {@link freemarker.core.Environment Environment} object created for processing
     * @throws TemplateException if an exception occurs while setting up the Environment object.
-    * @throws IOException if an exception occurs doing any auto-imports
     */
     public Environment createProcessingEnvironment(Object rootMap, Writer out, ObjectWrapper wrapper)
-    throws TemplateException, IOException
+    throws TemplateException
     {
         TemplateHashModel root = null;
         if(rootMap instanceof TemplateHashModel) {
@@ -433,10 +432,7 @@ public class Template extends TemplateCore {
                 throw new IllegalArgumentException(wrapper.getClass().getName() + " could not convert " + (rootMap == null ? "null" : rootMap.getClass().getName()) + " to a TemplateHashModel.");
             }
         }
-        Environment env = new Environment(this, root, out);
-        getConfiguration().doAutoImports(env);
-        getConfiguration().doAutoIncludes(env);
-        return env;
+        return new Environment(this, root, out);
     }
 
     /**
