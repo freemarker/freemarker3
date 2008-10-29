@@ -907,10 +907,16 @@ public class Configuration extends Configurable implements Cloneable, Scope {
        	autoImportMap = new HashMap<String, String>(map);
     }
     
-    void doAutoImports(Environment env) throws TemplateException, IOException {
+    @Override
+    protected void doAutoImportsAndIncludes(Environment env)
+    throws TemplateException, IOException
+    {
     	for (String namespace : autoImports) {
             String templateName = autoImportMap.get(namespace);
             env.importLib(templateName, namespace);
+        }
+    	for(String templateName: autoIncludes) {
+            env.include(getTemplate(templateName, env.getLocale()), false);
         }
     }
     
@@ -1054,14 +1060,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
             return cachedVersion;
         } catch (IOException e) {
             throw new RuntimeException("Failed to load version file: " + e);
-        }
-    }
-    
-    void doAutoIncludes(Environment env) throws TemplateException, IOException {
-        for (int i = 0; i < autoIncludes.size(); i++) {
-            String templateName = autoIncludes.get(i);
-            Template template = getTemplate(templateName, env.getLocale());
-            env.include(template, false);
         }
     }
     

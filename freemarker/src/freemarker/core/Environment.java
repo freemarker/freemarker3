@@ -228,6 +228,7 @@ public final class Environment extends Configurable implements Scope {
             // Cached values from a previous execution are possibly outdated.
             clearCachedValues();
             try {
+                doAutoImportsAndIncludes(this);
                 Template template = getTemplate();
                 renderSecurely(template.getRootElement(), template.getCodeSource());
                 // Do not flush if there was an exception.

@@ -766,4 +766,10 @@ public class Configurable
         }
         return retval;
     }
+    
+    protected void doAutoImportsAndIncludes(Environment env)
+    throws TemplateException, IOException
+    {
+        if(parent != null) parent.doAutoImportsAndIncludes(env);
+    }
 }
