@@ -11,6 +11,10 @@ import org.zeroturnaround.javarebel.ReloaderFactory;
  */
 class JavaRebelIntegration
 {
+    static void testAvailability() {
+        ReloaderFactory.getInstance();
+    }
+    
     /**
      * Adds a JavaRebel class reloading listener for a that will invalidate 
      * cached information for that class in the specified BeansWrapper when the
