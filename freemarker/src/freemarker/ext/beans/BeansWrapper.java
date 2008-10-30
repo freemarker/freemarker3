@@ -84,7 +84,6 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.CountDownLatch;
 
 import freemarker.ext.util.ModelCache;
 import freemarker.ext.util.ModelFactory;
@@ -1084,7 +1083,7 @@ public class BeansWrapper implements ObjectWrapper
         if(genericGet == null)
         {
             genericGet = getFirstAccessibleMethod(
-                    MethodSignature.GET_STRING_SIGNATURE, accessibleMethods);
+                    MethodSignature.GET_OBJECT_SIGNATURE, accessibleMethods);
         }
         if(genericGet != null)
         {
