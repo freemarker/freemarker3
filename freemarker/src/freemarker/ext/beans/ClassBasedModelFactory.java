@@ -99,6 +99,12 @@ abstract class ClassBasedModelFactory implements TemplateHashModel {
         }
     }
 
+    void removeIntrospectionInfo(Class clazz) {
+        synchronized(cache) {
+            cache.remove(clazz.getName());
+        }
+    }
+
     public boolean isEmpty() {
         return false;
     }
