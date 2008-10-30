@@ -41,6 +41,7 @@
         <get src="${libs.location}/emma_ant.jar" dest="lib/emma_ant.jar" usetimestamp="true" />
         <get src="${libs.location}/freemarker-bootstrap.jar" dest="lib/freemarker-bootstrap.jar" usetimestamp="true" />
         <get src="${libs.location}/javacc.jar" dest="lib/javacc.jar" usetimestamp="true" />
+        <get src="${libs.location}/javarebel-sdk.jar" dest="lib/javarebel-sdk.jar" usetimestamp="true"/>
         <get src="${libs.location}/jaxen.jar" dest="lib/jaxen.jar" usetimestamp="true" />
         <!-- get src="${libs.location}/jdom.jar" dest="lib/jdom.jar" usetimestamp="true"/ -->
         <get src="${libs.location}/jruby.jar" dest="lib/jruby.jar" usetimestamp="true" />
@@ -90,6 +91,7 @@
                 <available file="lib/emma_ant.jar" />
                 <available file="lib/freemarker-bootstrap.jar" />
                 <available file="lib/javacc.jar" />
+                <available file="lib/javarebel-sdk.jar"/>
                 <available file="lib/jaxen.jar" />
                 <!--available file="lib/jdom.jar"/-->
                 <available file="lib/js.jar" />

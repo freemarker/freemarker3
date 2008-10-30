@@ -84,6 +84,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.CountDownLatch;
 
 import freemarker.ext.util.ModelCache;
 import freemarker.ext.util.ModelFactory;
@@ -144,6 +145,8 @@ public class BeansWrapper implements ObjectWrapper
     static final Object GENERIC_GET_KEY = new Object();
     private static final Object CONSTRUCTORS = new Object();
     private static final Object ARGTYPES = new Object();
+
+    private static volatile boolean javaRebelAvailable = true;
     
     /**
      * The default instance of BeansWrapper
@@ -217,10 +220,16 @@ public class BeansWrapper implements ObjectWrapper
      * {@link #EXPOSE_SAFE} method exposure level, and will not cache
      * model instances.
      */
-    public BeansWrapper()
-    {
+    public BeansWrapper() {
+        if(javaRebelAvailable) {
+            try {
+                JavaRebelIntegration.registerWrapper(this);
+            }
+            catch(NoClassDefFoundError e) {
+                javaRebelAvailable = false;
+            }
+        }
     }
-    
     /**
      * @see #setStrict(boolean)
      */
@@ -906,6 +915,20 @@ public class BeansWrapper implements ObjectWrapper
             if(!classCache.containsKey(clazz))
             {
                 introspectClassInternal(clazz);
+            }
+        }
+    }
+
+    void removeIntrospectionInfo(Class clazz) {
+        synchronized(classCache) {
+            classCache.remove(clazz);
+            staticModels.removeIntrospectionInfo(clazz);
+            if(enumModels != null) {
+                enumModels.removeIntrospectionInfo(clazz);
+            }
+            cachedClassNames.remove(clazz.getName());
+            synchronized(this) {
+                modelCache.clearCache();
             }
         }
     }
