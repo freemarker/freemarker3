@@ -146,7 +146,7 @@ public class BeansWrapper implements ObjectWrapper
     private static final Object CONSTRUCTORS = new Object();
     private static final Object ARGTYPES = new Object();
 
-    private static volatile boolean javaRebelAvailable = true;
+    private static final boolean javaRebelAvailable = isJavaRebelAvailable();
     
     /**
      * The default instance of BeansWrapper
@@ -222,14 +222,10 @@ public class BeansWrapper implements ObjectWrapper
      */
     public BeansWrapper() {
         if(javaRebelAvailable) {
-            try {
-                JavaRebelIntegration.registerWrapper(this);
-            }
-            catch(NoClassDefFoundError e) {
-                javaRebelAvailable = false;
-            }
+            JavaRebelIntegration.registerWrapper(this);
         }
     }
+    
     /**
      * @see #setStrict(boolean)
      */
@@ -1510,6 +1506,16 @@ public class BeansWrapper implements ObjectWrapper
         catch(Exception e) {
             // Otherwise, return null
             return null;
+        }
+    }
+    
+    private static boolean isJavaRebelAvailable() {
+        try {
+            JavaRebelIntegration.testAvailability();
+            return true;
+        }
+        catch(NoClassDefFoundError e) {
+            return false;
         }
     }
 }
