@@ -53,7 +53,8 @@
 package freemarker.template.utility;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.template.AdapterTemplateModel;
@@ -163,7 +164,7 @@ public class DeepUnwrap
         }
         if(model instanceof TemplateHashModelEx) {
             TemplateHashModelEx hash = (TemplateHashModelEx)model;
-            HashMap map = new HashMap();
+            Map map = new LinkedHashMap();
             TemplateModelIterator keys = hash.keys().iterator();
             while(keys.hasNext()) {
                 String key = (String)unwrap(keys.next(), permissive); 
