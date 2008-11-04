@@ -111,10 +111,16 @@ import freemarker.template.utility.StringUtil;
  * to load JSP taglibs. For example:<br>
  * <code>&lt;#assign tiles=JspTaglibs["/WEB-INF/struts-tiles.tld"]></code>
  * 
- * <li>A custom directive named <code>servlet_include</code> allows you to 
+ * <li>A custom directive named <code>include_page</code> allows you to 
  * include the output of another servlet resource from your servlet container,
  * just as if you used <code>ServletRequest.getRequestDispatcher(path).include()</code>:<br>
- * <code>&lt;@servlet_include path="/myWebapp/somePage.jsp"/></code>
+ * <code>&lt;@include_page path="/myWebapp/somePage.jsp"/></code>. You can also
+ * pass parameters to the newly included page by passing a hash named 'params':
+ * <code>&lt;@include_page path="/myWebapp/somePage.jsp" params={lang: "en", q="5"}/></code>.
+ * By default, the request parameters of the original request (the one being
+ * processed by FreemarkerServlet) are also inherited by the include. You can
+ * explicitly control this inheritance using the 'inherit_params' parameter:
+ * <code>&lt;@include_page path="/myWebapp/somePage.jsp" params={lang: "en", q="5"} inherit_params=false/></code>.
  * </ul>
  * 
  * <p>The servlet will rethrow the errors occurring during template processing,
@@ -201,7 +207,7 @@ public class FreemarkerServlet extends HttpServlet
     public static final String KEY_REQUEST = "Request";
     public static final String KEY_REQUEST_PRIVATE = "__FreeMarkerServlet.Request__";
     public static final String KEY_REQUEST_PARAMETERS = "RequestParameters";
-    public static final String KEY_INCLUDE = "servlet_include";
+    public static final String KEY_INCLUDE = "include_page";
     public static final String KEY_SESSION = "Session";
     public static final String KEY_APPLICATION = "Application";
     public static final String KEY_APPLICATION_PRIVATE = "__FreeMarkerServlet.Application__";
@@ -563,7 +569,7 @@ public class FreemarkerServlet extends HttpServlet
             }
             params.putUnlistedModel(KEY_REQUEST, requestModel);
             params.putUnlistedModel(KEY_REQUEST_PRIVATE, requestModel);
-            params.putUnlistedModel(KEY_INCLUDE, new ServletInclude(request, response));
+            params.putUnlistedModel(KEY_INCLUDE, new IncludePage(request, response));
     
             // Create hash model wrapper for request parameters
             HttpRequestParametersHashModel requestParametersModel =
