@@ -53,6 +53,7 @@
 options
 {
    UNICODE_INPUT=true;
+   BASE_SRC_DIR="..";
    PARSER_PACKAGE="freemarker.core.parser";
 //   TREE_BUILDING_ENABLED=true;
 //   DEBUG_TOKEN_MANAGER=true;
@@ -260,7 +261,7 @@ INJECT(LEXER_CLASS) :
                         + " on line: " + token.beginLine
                         + ", column: " + token.beginColumn +1
                         + ", in template: " + templateName;
-          	  throw new TokenMgrError(msg, TokenMgrError.LEXICAL_ERROR);
+          	  throw new LexicalException(msg, LexicalException.LEXICAL_ERROR);
  			}
  		}
  	}
@@ -1508,7 +1509,7 @@ AttemptBlock Attempt() :
    } catch (ParseException pe) {
    	   recoverToToken(RECOVER, false);
    	   problem = pe;
-   } catch (TokenMgrError tme) {
+   } catch (LexicalException tme) {
    	   recoverToToken(RECOVER, false);
    	   problem = new ParseException(tme.getMessage());
    }*/

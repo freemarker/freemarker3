@@ -40,7 +40,6 @@
         <get src="${libs.location}/emma.jar" dest="lib/emma.jar" usetimestamp="true" />
         <get src="${libs.location}/emma_ant.jar" dest="lib/emma_ant.jar" usetimestamp="true" />
         <get src="${libs.location}/freemarker-bootstrap.jar" dest="lib/freemarker-bootstrap.jar" usetimestamp="true" />
-        <get src="${libs.location}/javacc.jar" dest="lib/javacc.jar" usetimestamp="true" />
         <get src="${libs.location}/javarebel-sdk.jar" dest="lib/javarebel-sdk.jar" usetimestamp="true"/>
         <get src="${libs.location}/jaxen.jar" dest="lib/jaxen.jar" usetimestamp="true" />
         <!-- get src="${libs.location}/jdom.jar" dest="lib/jdom.jar" usetimestamp="true"/ -->
@@ -90,7 +89,6 @@
                 <available file="lib/emma.jar" />
                 <available file="lib/emma_ant.jar" />
                 <available file="lib/freemarker-bootstrap.jar" />
-                <available file="lib/javacc.jar" />
                 <available file="lib/javarebel-sdk.jar"/>
                 <available file="lib/jaxen.jar" />
                 <!--available file="lib/jdom.jar"/-->
@@ -113,9 +111,9 @@
             </and>
         </condition>
         <antcall target="fetchlibs" />
-	<uptodate property="parser.gen"
-                targetfile="src/freemarker/core/parser/FMParser.jj">
-	    <srcfiles dir="src/freemarker/core/parser" includes="FMParser.java" />
+	<uptodate property="parser.uptodate"
+                targetfile="src/freemarker/core/parser/FM.freecc">
+	    <srcfiles dir="src/parser" includes="*.jj" />
 	</uptodate>
     </target>
 
@@ -123,17 +121,7 @@
     <!-- Compilation                                                       -->
     <!-- ================================================================= -->
 
-   <target name="javacc" depends="init"
-            description="Build the JavaCC parser from its grammar file"
-    >
-        <javacc
-                target="src/freemarker/core/parser/FMParser.jj"
-                outputdirectory="src/freemarker/core/parser"
-                javacchome="lib" jdkversion="1.5"
-        />
-   </target>
-   
-   <target name="freecc" depends="init" if="parser.gen"
+   <target name="freecc" depends="init" unless="parser.uptodate"
             description="Build the parser from its grammar file"
     >
         <java classname="org.visigoths.freecc.Main"
@@ -142,7 +130,7 @@
         >
             <arg value="-OUTPUT_DIRECTORY=src/freemarker/core/parser" />
             <arg value="-JDK_VERSION=1.5" />
-            <arg file="src/freemarker/core/parser/FMParser.jj" />
+            <arg file="src/parser/FM.freecc" />
             <assertions><enable/></assertions>
  	</java>
    </target>
