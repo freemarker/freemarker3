@@ -126,7 +126,8 @@ abstract public class ArgsList extends TemplateNode {
 	
 	private static ParameterList getParameterList(String s) throws ParseException {
 		SimpleCharStream scs = new SimpleCharStream(new StringReader(s), 1, 1, s.length());
-		FMParserTokenManager token_source = new FMParserTokenManager(scs);
+		FMLexer token_source = new FMLexer(scs);
+//		FMLexer token_source = new FMLexer(scs);
 		token_source.SwitchTo(FMParserConstants.EXPRESSION);
 		FMParser parser = new FMParser(token_source);
 		return parser.ParameterList();

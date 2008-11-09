@@ -59,7 +59,8 @@ import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Expression;
 import freemarker.core.parser.FMParser;
 import freemarker.core.parser.FMParserConstants;
-import freemarker.core.parser.FMParserTokenManager;
+//import freemarker.core.parser.FMLexer;
+import freemarker.core.parser.FMLexer;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.SimpleCharStream;
 import freemarker.template.*;
@@ -87,7 +88,8 @@ public class evalBI extends BuiltIn {
         SimpleCharStream scs = new SimpleCharStream(
                 new StringReader("(" + s + ")"), callingExpression.getBeginLine(),
                 callingExpression.getBeginColumn(), s.length() + 2);
-        FMParserTokenManager token_source = new FMParserTokenManager(scs);
+//        FMLexer token_source = new FMLexer(scs);
+        FMLexer token_source = new FMLexer(scs);
         token_source.SwitchTo(FMParserConstants.EXPRESSION);
         FMParser parser = new FMParser(token_source);
         parser.setTemplate(callingExpression.getTemplate());
