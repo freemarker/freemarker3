@@ -58,7 +58,7 @@ import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Expression;
 import freemarker.core.parser.FMParser;
-import freemarker.core.parser.FMParserConstants;
+import freemarker.core.parser.FMConstants;
 //import freemarker.core.parser.FMLexer;
 import freemarker.core.parser.FMLexer;
 import freemarker.core.parser.ParseException;
@@ -90,7 +90,7 @@ public class evalBI extends BuiltIn {
                 callingExpression.getBeginColumn(), s.length() + 2);
 //        FMLexer token_source = new FMLexer(scs);
         FMLexer token_source = new FMLexer(scs);
-        token_source.SwitchTo(FMParserConstants.EXPRESSION);
+        token_source.SwitchTo(FMConstants.EXPRESSION);
         FMParser parser = new FMParser(token_source);
         parser.setTemplate(callingExpression.getTemplate());
         Expression exp = null;
