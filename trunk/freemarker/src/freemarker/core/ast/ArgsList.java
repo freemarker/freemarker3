@@ -128,7 +128,7 @@ abstract public class ArgsList extends TemplateNode {
 		SimpleCharStream scs = new SimpleCharStream(new StringReader(s), 1, 1, s.length());
 		FMLexer token_source = new FMLexer(scs);
 //		FMLexer token_source = new FMLexer(scs);
-		token_source.SwitchTo(FMParserConstants.EXPRESSION);
+		token_source.SwitchTo(FMConstants.EXPRESSION);
 		FMParser parser = new FMParser(token_source);
 		return parser.ParameterList();
 	}
