@@ -194,8 +194,8 @@ public class Template extends TemplateCore {
                 	visitor.visit(this);
                 }
             }
-            catch (TokenMgrError exc) {
-                throw new ParseException("Token manager error: " + exc, 0, 0);
+            catch (LexicalException exc) {
+                throw new ParseException("Lexical error: " + exc, 0, 0);
             }
         }
         catch(ParseException e) {
