@@ -55,9 +55,6 @@ options
    UNICODE_INPUT=true;
    BASE_SRC_DIR="..";
    PARSER_PACKAGE="freemarker.core.parser";
-//   TREE_BUILDING_ENABLED=true;
-//   DEBUG_TOKEN_MANAGER=true;
-//   DEBUG_PARSER=true;
 }
 
 INJECT(PARSER_CLASS) : 
@@ -85,10 +82,9 @@ INJECT(PARSER_CLASS) :
    */
   static public FMParser createExpressionParser(String s) {
       SimpleCharStream scs = new SimpleCharStream(new StringReader(s), 1, 1, s.length());
-//      FMParserTokenManager token_source = new FMParserTokenManager(scs);
-      FMLexer token_source = new FMLexer(scs);
-      token_source.SwitchTo(FMParserConstants.EXPRESSION);
-      return new FMParser(token_source);
+      FMLexer lexer = new FMLexer(scs);
+      lexer.SwitchTo(FMConstants.EXPRESSION);
+      return new FMParser(lexer);
   }
   
   /**
