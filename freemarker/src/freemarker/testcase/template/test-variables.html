@@ -6,7 +6,7 @@
 <#assign list = ["one", "two", "three", "four", "five"]>
 <#assign hash = {"output" : "My message.", "key" : list}>
 <#assign hash2 = {"value" : hash}>
-<#assign items = {"mykey" : "key", "_test", "out"}>
+<#assign items = {"mykey" : "key", "_test": "out"}>
 
 <p>A simple test follows:</p>
 
@@ -18,9 +18,9 @@
 <p>${hash["output"]}</p>
 <p>${hash. output}</p>
 <p>${hash .output}</p>
-<p>${hash 
+<p>${hash
     .output}</p>
-<p>${hash 
+<p>${hash
     . output}</p>
 <p>${hash ["output"]}</p>
 <p>${hash
