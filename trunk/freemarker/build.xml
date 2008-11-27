@@ -417,6 +417,8 @@
       Uploads the freemarker.jar that is in the current DISTRIBUTION DIRECTORY
       into the place that the central Maven2 repository syncs itself with
       periodically. Of course it also uploads the Maven-specific metadata files.
+      
+      Use this after "dist" (without interleaving "clean").
   
       Note: maven-ant-tasks-x.x.x.jar must be added to ${ANT_HOME}/lib for
             this to work. Get it here: http://maven.apache.org/download.html
@@ -451,6 +453,10 @@
               </dependencies>
             </project>
         ]]></echo>
+        
+        <jar destfile="build/maven-source-attachment.jar"
+               basedir="src" excludes="freemarker/testcase/**"
+        />
    
         <artifact:install-provider artifactId="wagon-ssh" version="1.0-beta-2"/>
    
@@ -486,6 +492,7 @@ Proceed? </input>
                />
             </remoteRepository>
             <pom file="build/pom.xml" />
+            <attach file="build/maven-source-attachment.jar" classifier="sources" />
         </artifact:deploy>
         
         <echo>**********************************************</echo>
