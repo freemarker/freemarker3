@@ -135,7 +135,11 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     }
 
     public String getDescription() {
-        return "macro " + name;
+        if (isFunction()) {
+            return "function " + name;
+        } else {
+            return "macro " + name;
+        }
     }
     
     public void canonicalizeAssignments() {
