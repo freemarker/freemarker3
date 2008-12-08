@@ -35,8 +35,8 @@ import freemarker.template.utility.DeepUnwrap;
  * parameters). A third optional parameter 'inherit_params' should be a boolean
  * when specified, and it defaults to true when not specified. A value of true
  * means that the include inherits the request parameters from the current 
- * request. In this case 'params' will selectively override the existing 
- * parameters.
+ * request. In this case values in 'params' will get prepended to the existing
+ * values of parameters.
  * @author Attila Szegedi
  * @version $Id: $
  */
@@ -197,7 +197,23 @@ public class IncludePage implements TemplateDirectiveModel
                     // the value.
                     valueArray = new String[] { String.valueOf(value) };
                 }
-                paramsMap.put(name, valueArray);
+                String[] existingParams = paramsMap.get(name);
+                int el = existingParams == null ? 0 : existingParams.length;
+                if(el == 0)
+                {
+                    paramsMap.put(name, valueArray);
+                }
+                else
+                {
+                    int vl = valueArray.length;
+                    if(vl > 0)
+                    {
+                        String[] newValueArray = new String[el + vl];
+                        System.arraycopy(valueArray, 0, newValueArray, 0, vl);
+                        System.arraycopy(existingParams, 0, newValueArray, vl, el);
+                        paramsMap.put(name, newValueArray);
+                    }
+                }
             }
         }
 
