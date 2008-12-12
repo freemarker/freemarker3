@@ -14,23 +14,23 @@ import java.util.Locale;
  *            if "fr".equals(lang)
  *               return "oui";
  *            else if "de".equals(lang)
- *               return "sí";
+ *               return "s\u00ED";
  *            else
  *               return "yes";
- *        }  
+ *        }
  *    };
  * </code>
  * @author Jonathan Revusky
  */
 
 abstract public class LocalizedString implements TemplateScalarModel {
-	
-	
-	public String getAsString() throws TemplateModelException {
-		Environment env = Environment.getCurrentEnvironment();
-		Locale locale = env.getLocale();
-		return getLocalizedString(locale);
-	}
-	
-	abstract public String getLocalizedString(Locale locale) throws TemplateModelException;
+
+
+        public String getAsString() throws TemplateModelException {
+                Environment env = Environment.getCurrentEnvironment();
+                Locale locale = env.getLocale();
+                return getLocalizedString(locale);
+        }
+
+        abstract public String getLocalizedString(Locale locale) throws TemplateModelException;
 }
