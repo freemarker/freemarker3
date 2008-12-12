@@ -93,7 +93,7 @@ public interface TemplateNodeModel extends TemplateModel {
      * @return a String describing the <em>type</em> of node this is.
      * In the W3C DOM, this should be "element", "text", "attribute", etc.
      * A TemplateNodeModel implementation that models other kinds of
-     * trees could return whatever it appropriate for that application. It
+     * trees could return whatever is appropriate for that application. It
      * can be null, if you don't want to use node-types.
      */
     String getNodeType() throws TemplateModelException;

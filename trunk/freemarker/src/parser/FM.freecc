@@ -52,7 +52,6 @@
 
 options
 {
-   UNICODE_INPUT=true;
    BASE_SRC_DIR="..";
    PARSER_PACKAGE="freemarker.core.parser";
 }
@@ -136,13 +135,13 @@ INJECT(PARSER_CLASS) :
    */
   
   private Token recoverToToken(int kind, boolean consume) {
-  	  Token t = this.token, prevToken;
+  	  Token t = this.current_token, prevToken;
   	  do {
   	  	prevToken = t;
   	  	t = getNextToken();
   	  } while (t.kind != kind && t.kind != EOF);
   	  if (!consume) {
-  	  	this.token = prevToken;
+  	  	this.current_token = prevToken;
   	  }
 	  return prevToken;
   }
@@ -699,13 +698,13 @@ Expression Expression(Token start, int recoverToType, boolean consumeToken) :
 	   exp=OrExpression()
    } catch (ParseException pe) {
    	   String msg = "invalid expression";
-       Token t = this.token, prevToken;
+       Token t = this.current_token, prevToken;
        do {
   	  	   prevToken = t;
 		   t = getNextToken();
  	   } while (t.kind != recoverToType && t.kind != EOF);
        if (!consumeToken) {
-  	  	   this.token = prevToken;
+  	  	   this.current_token = prevToken;
   	   }
   	   exp = new InvalidExpression(msg);
   	   exp.setLocation(template, start.next, prevToken);
@@ -730,7 +729,7 @@ Token KeepGoingUntil(int type) {
 		t = getNextToken();
 	} while (t.kind != type && t.kind != EOF);
 	if (t.kind == type) {
-		this.token = t;
+		this.current_token = t;
 	}
 	return t;
 }
