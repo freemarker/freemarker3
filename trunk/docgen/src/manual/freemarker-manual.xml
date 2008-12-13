@@ -8628,6 +8628,46 @@ TemplateHashModel roundingModeEnums =
           the class.</para>
 
           <sect3>
+            <title>Including content from other web application
+            resources</title>
+
+            <indexterm>
+              <primary>include</primary>
+
+              <secondary>servlet</secondary>
+            </indexterm>
+
+            <para>You can use the <markup>&lt;@servlet_include
+            path="..."/&gt;</markup> custom directive provided by the
+            <markup>FreemarkerServlet</markup> to include the contents of
+            another web application resource into the output; this is often
+            useful to integrate output of JSP pages (living alongside the
+            FreeMarker templates in the same web server) into the FreeMarker
+            template output. Using:</para>
+
+            <programlisting role="template">
+          &lt;@servlet_include path="path/to/some.jsp"/&gt;
+        </programlisting>
+
+            <para>is identical to using the following expression in a Java
+            servlet:</para>
+
+            <programlisting role="controller">
+        request.getRequestDispatcher("path/to/some.jsp").include(request, response);
+        </programlisting>
+
+            <para>You will most likely want to use the <link
+            linkend="ref_directive_flush">flush</link> directive before a
+            servlet nclude, to make sure FreeMarker's output is fully written
+            into the response before you do an include:</para>
+
+            <programlisting role="template">
+          &lt;#flush/&gt;
+          &lt;@servlet_include path="path/to/some.jsp"/&gt;
+        </programlisting>
+          </sect3>
+
+          <sect3>
             <title>Using JSP custom tags in FTL</title>
 
             <indexterm>
@@ -20421,10 +20461,10 @@ ${obj.myMethod("foo")}</programlisting>
               This means that the methods and fields of
               <literal>Map</literal>-s will not be exposed by default, only
               the pure key-set will define the subvariables of the templates.
-              Note that the default object wrapper of FreeMarker always had
-              <literal>simpleMapWrapper</literal> set to
-              <literal>true</literal>, so if you have used only the default
-              object wrapper, then there is no change for you.</para>
+              Note that the default object wrapper of FreeMarker is not
+              affected (so most users are not affected by this change), as it
+              didn't expose the methods and fields in the earlier versions
+              either.</para>
             </listitem>
 
             <listitem>
