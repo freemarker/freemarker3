@@ -56,8 +56,7 @@ import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateModel;
 
 /**
- * Internal interface used to create various wrapper models in the
- * {@link ModelCache}.
+ * Interface used to create various wrapper models in the {@link ModelCache}.
  * @version $Id: ModelFactory.java,v 1.6 2003/01/12 23:40:16 revusky Exp $
  * @author Attila Szegedi, szegedia at freemail dot hu
  */
