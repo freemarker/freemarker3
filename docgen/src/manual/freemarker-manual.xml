@@ -582,9 +582,9 @@
 
             <para>Similarly as earlier when a string was specified directly,
             here a number is specified directly (<literal>0</literal>). Note
-            that the number is <emphasis>not</emphasis> quoted. If you were
-            quote it (<literal>"0"</literal>), FreeMarker were misinterpret it
-            as a string literal.</para>
+            that the number is <emphasis>not</emphasis> quoted. If you quoted
+            it (<literal>"0"</literal>), FreeMarker were misinterpret it as a
+            string literal.</para>
 
             <para>This will print "Pythons are not free today!" if their price
             is not 0:</para>
@@ -593,7 +593,7 @@
   Pythons are not free today!
 [/#if]</programlisting>
 
-            <para>As you may guessed, <literal>!=</literal> means not
+            <para>As you may have guessed, <literal>!=</literal> means not
             equivalent.</para>
 
             <para>You can write things like this too (using <link
@@ -1395,7 +1395,7 @@ The average of the price of a python and an elephant is:
 
             <para>The Java methods of FreeMarker-unaware Java objects are
             normally visible as methods in templates, regardless of the nature
-            of the Java method. That said, you have no chocice there.</para>
+            of the Java method. That said, you have no choice there.</para>
           </sect3>
         </sect2>
 
@@ -1434,7 +1434,7 @@ The average of the price of a python and an elephant is:
             metainformations have, and if they are used at all. The way of
             retrieving the topological and metainformations is described <link
             linkend="ref_builtins_node">in a later chapter</link> (that you
-            doesn't have to understand at this point).</para>
+            don't have to understand at this point).</para>
           </sect3>
         </sect2>
       </sect1>
@@ -1575,7 +1575,7 @@ The average of the price of a python and an elephant is:
 <replaceable>...</replaceable></programlisting>
 
         <note>
-          <para>For those of you who has tried the above examples: You may
+          <para>For those of you who have tried the above examples: You may
           notice that some of spaces, tabs and line breaks are missing from
           the template output, even though we said that <phrase
           role="markedText">text</phrase> is printed as is. Don't bother with
@@ -1670,13 +1670,13 @@ The average of the price of a python and an elephant is:
   &lt;li&gt;${being.name} for ${being.price} Euros
   <emphasis>[#if user == "Big Joe"]</emphasis>
      (except for you)
-<emphasis>[/#list]</emphasis> [#-- WRONG! The "if" jas to be closed first. --]
+<emphasis>[/#list]</emphasis> [#-- WRONG! The "if" has to be closed first. --]
 <emphasis>[/#if]</emphasis>
 &lt;/ul&gt;</programlisting>
 
         <para>Note that FreeMarker doesn't care about the nesting of HTML
         tags, only about the nesting of FTL tags. It just sees HTML as flat
-        text, it doesn't interpret it on any way.</para>
+        text, it doesn't interpret it in any way.</para>
 
         <para>If you try to use a non-existing directive (e.g., you mistype
         the directive name), FreeMarker will decline to use the template and
@@ -6661,7 +6661,8 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         </informaltable>
       </sect1>
 
-      <sect1 id="pgui_config_settings">
+      <sect1 id="pgui_config_settings"
+             xreflabel="xreflabel=&quot;Programmer's Guide/The Configuration/Settings&quot;">
         <title>Settings</title>
 
         <indexterm>
@@ -6688,7 +6689,9 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         <literal>freemarker.core.Environment</literal> object is created
         internally that holds the runtime environment of the template
         processing, including the setting values that were overridden on that
-        level.</para>
+        level. The values stored there can even be changed during the template
+        processing, so a template can set settings itself, like switching
+        <literal>locale</literal> at the middle of the output.</para>
 
         <para>This can be imagined as 3 layers
         (<literal>Configuration</literal>, <literal>Template</literal>,
@@ -6822,12 +6825,12 @@ myCfg.setNumberFormat("0.####");</programlisting>
 
           <listitem>
             <para><literal>Template</literal> layer: You shouldn't set
-            settings here (unless you manage the <literal>Template</literal>
+            settings here, unless you manage the <literal>Template</literal>
             objects instead of a
             <literal>freemarker.cache.TemplateCache</literal>, in which case
             you should set the setting before the <literal>Template</literal>
             object is first used, and then treat the
-            <literal>Template</literal> object as read-only).</para>
+            <literal>Template</literal> object as read-only.</para>
           </listitem>
 
           <listitem>
@@ -8626,71 +8629,144 @@ TemplateHashModel roundingModeEnums =
 
           <para>For more information please read the Java API documentation of
           the class.</para>
+        </sect2>
 
-          <sect3>
-            <title>Including content from other web application
-            resources</title>
+        <sect2>
+          <title id="pgui_misc_servlet_include">Including content from other
+          web application resources</title>
 
-            <indexterm>
-              <primary>include</primary>
+          <indexterm>
+            <primary>include</primary>
 
-              <secondary>servlet</secondary>
-            </indexterm>
+            <secondary>servlet</secondary>
+          </indexterm>
 
-            <para>You can use the <markup>&lt;@servlet_include
-            path="..."/&gt;</markup> custom directive provided by the
-            <markup>FreemarkerServlet</markup> to include the contents of
-            another web application resource into the output; this is often
-            useful to integrate output of JSP pages (living alongside the
-            FreeMarker templates in the same web server) into the FreeMarker
-            template output. Using:</para>
+          <indexterm>
+            <primary>include</primary>
 
-            <programlisting role="template">
-          &lt;@servlet_include path="path/to/some.jsp"/&gt;
-        </programlisting>
+            <secondary>JSP</secondary>
+          </indexterm>
 
-            <para>is identical to using the following expression in a Java
-            servlet:</para>
+          <indexterm>
+            <primary>servlet</primary>
 
-            <programlisting role="controller">
-        request.getRequestDispatcher("path/to/some.jsp").include(request, response);
-        </programlisting>
+            <secondary>include</secondary>
+          </indexterm>
 
-            <para>You will most likely want to use the <link
-            linkend="ref_directive_flush">flush</link> directive before a
-            servlet nclude, to make sure FreeMarker's output is fully written
-            into the response before you do an include:</para>
+          <indexterm>
+            <primary>JSP</primary>
 
-            <programlisting role="template">
-          &lt;#flush/&gt;
-          &lt;@servlet_include path="path/to/some.jsp"/&gt;
-        </programlisting>
-          </sect3>
+            <secondary>include</secondary>
+          </indexterm>
 
-          <sect3>
-            <title>Using JSP custom tags in FTL</title>
+          <para>You can use the <literal>[@include_page path="..."/]</literal>
+          custom directive provided by the
+          <literal>FreemarkerServlet</literal> (since 2.3.15) to include the
+          contents of another web application resource into the output; this
+          is often useful to integrate output of JSP pages (living alongside
+          the FreeMarker templates in the same web server) into the FreeMarker
+          template output. Using:</para>
 
-            <indexterm>
-              <primary>JSP</primary>
+          <programlisting role="template">[@include_page path="path/to/some.jsp"/]</programlisting>
 
-              <secondary>taglib</secondary>
-            </indexterm>
+          <para>is identical to using this tag in JSP:</para>
 
-            <indexterm>
-              <primary>custom tags</primary>
-            </indexterm>
+          <programlisting role="template">&lt;jsp:include page="path/to/some.jsp"&gt;</programlisting>
 
-            <indexterm>
-              <primary>taglib</primary>
-            </indexterm>
+          <note>
+            <para><literal>[@include_page ...]</literal> is not to be confused
+            with <literal>[#include ...]</literal>, as the last is for
+            including FreeMarker templates without involving the Servlet
+            container. An <literal>[#include ...]</literal>-ed template shares
+            the template processing state with the including template, such as
+            the data-model and the template-language variables, while
+            <literal>[@include_page ...]</literal> starts an independent HTTP
+            request processing.</para>
+          </note>
 
-            <para><literal>FreemarkerServlet</literal> puts a hash
-            <literal>JspTaglibs</literal> into the data-model, what you can
-            use to access JSP taglibs. The JSP custom tags will be accessible
-            as plain user-defined directives. For example, this is a JSP file
-            that uses some Struts tags:</para>
+          <note>
+            <para>Some Web Application Frameworks provide their own solution
+            for this, in which case you possibly should use that instead. Also
+            some Web Application Frameworks don't use
+            <literal>FreemarkerServlet</literal>, so
+            <literal>include_page</literal> is not available.</para>
+          </note>
 
-            <programlisting role="template">&lt;%@page contentType="text/html;charset=ISO-8859-2" language="java"%&gt;
+          <para>The path can be relative or absolute. Relative paths are
+          interpreted relative to the URL of the current HTTP request (one
+          that triggered the template processing), while absolute paths are
+          absolute in the current servlet context (current web application).
+          You can not include pages from outside the current web application.
+          Note that you can include any page, not just a JSP page; we just
+          used page with path ending in <literal>.jsp</literal> as an
+          illustration.</para>
+
+          <para>In addition to the <literal>path</literal> parameter, you can
+          also specify an optional parameter named
+          <literal>inherit_params</literal> with a boolean value (defaults to
+          true when not specified) that specifies whether the included page
+          will see the HTTP request parameters of the current request or
+          not.</para>
+
+          <para>Finally, you can specify an optional parameter named
+          <literal>params</literal> that specifies new request parameters that
+          the included page will see. In case inherited parameters are passed
+          too, the values of specified parameters will get prepended to the
+          values of inherited parameters of the same name. The value of
+          <literal>params</literal> must be a hash, with each value in it
+          being either a string, or a sequence of strings (if you need
+          multivalued parameters). Here's a full example:</para>
+
+          <programlisting role="template">
+[@include_page path="path/to/some.jsp" inherit_params=true params={"foo": "99", "bar": ["a", "b"]}/]
+</programlisting>
+
+          <para>This will include the page
+          <literal>path/to/some.jsp</literal>, pass it all request parameters
+          of the current request, except for "foo" and "bar", which will be
+          set to "99" and multi-value of "a", "b", respectively. In case the
+          original request already had values for these parameters, the new
+          values will be prepended to the existing values. I.e. if "foo" had
+          values "111" and "123", then it will now have values "99", "111",
+          "123".</para>
+
+          <para><phrase role="forProgrammers">It is in fact possible to pass
+          non-string values for parameter values within
+          <literal>params</literal>. Such a value will be converted to a
+          suitable Java object first (i.e. a Number, a Boolean, a Date, etc.),
+          and then its Java <literal>toString()</literal> method will be used
+          to obtain the string value. It is better to not rely on this
+          mechanism, though, and instead explicitly ensure that parameter
+          values that aren't strings are converted to strings on the template
+          level where you have control over formatting using the
+          <literal>?string</literal> and <literal>?c</literal> built-ins.
+          </phrase></para>
+        </sect2>
+
+        <sect2>
+          <title>Using JSP custom tags in FTL</title>
+
+          <indexterm>
+            <primary>JSP</primary>
+
+            <secondary>taglib</secondary>
+          </indexterm>
+
+          <indexterm>
+            <primary>custom tags</primary>
+          </indexterm>
+
+          <indexterm>
+            <primary>taglib</primary>
+          </indexterm>
+
+          <para><literal>FreemarkerServlet</literal> puts a hash
+          <literal>JspTaglibs</literal> into the data-model, what you can use
+          to access JSP taglibs. The JSP custom tags will be accessible as
+          plain user-defined directives. For example, this is a JSP file that
+          uses some Struts tags:</para>
+
+          <programlisting role="template">&lt;%@page contentType="text/html;charset=ISO-8859-2" language="java"%&gt;
 &lt;%@taglib uri="/WEB-INF/struts-html.tld" prefix="html"%&gt;
 &lt;%@taglib uri="/WEB-INF/struts-bean.tld" prefix="bean"%&gt;
 
@@ -8706,9 +8782,9 @@ TemplateHashModel roundingModeEnums =
   &lt;/body&gt;
 &lt;/html&gt;</programlisting>
 
-            <para>And this is the (near) equivalent FTL:</para>
+          <para>And this is the (near) equivalent FTL:</para>
 
-            <programlisting role="template">[#set html=JspTaglibs["/WEB-INF/struts-html.tld"]]
+          <programlisting role="template">[#set html=JspTaglibs["/WEB-INF/struts-html.tld"]]
 [#set bean=JspTaglibs["/WEB-INF/struts-bean.tld"]]
 
 &lt;html&gt;
@@ -8723,117 +8799,111 @@ TemplateHashModel roundingModeEnums =
   &lt;/body&gt;
 &lt;/html&gt;</programlisting>
 
-            <warning>
-              <para>In FreeMarker <literal>&lt;html:form
-              action="/query"&gt;<replaceable>...</replaceable>&lt;/html:form&gt;</literal>
-              is just static text, so it is printed to the output as is, like
-              any other XML or HTML markup. JSP tags are just FreeMarker
-              directives, nothing special, so you <emphasis>use FreeMarker
-              syntax</emphasis> for calling them, not JSP syntax:
-              <literal>[@html.form
-              action="/query"]<replaceable>...</replaceable>[/@html.form]</literal>.
-              Note that in the FreeMarker syntax you <emphasis>don't use
-              <literal>${<replaceable>...</replaceable>}</literal> in
-              parameters</emphasis> as in JSP, and you <emphasis>don't quote
-              the parameter values</emphasis>. So this is
-              <emphasis>WRONG</emphasis>:</para>
+          <warning>
+            <para>In FreeMarker <literal>&lt;html:form
+            action="/query"&gt;<replaceable>...</replaceable>&lt;/html:form&gt;</literal>
+            is just static text, so it is printed to the output as is, like
+            any other XML or HTML markup. JSP tags are just FreeMarker
+            directives, nothing special, so you <emphasis>use FreeMarker
+            syntax</emphasis> for calling them, not JSP syntax:
+            <literal>[@html.form
+            action="/query"]<replaceable>...</replaceable>[/@html.form]</literal>.
+            Note that in the FreeMarker syntax you <emphasis>don't use
+            <literal>${<replaceable>...</replaceable>}</literal> in
+            parameters</emphasis> as in JSP, and you <emphasis>don't quote the
+            parameter values</emphasis>. So this is
+            <emphasis>WRONG</emphasis>:</para>
 
-              <programlisting role="template">[#-- WRONG: --]
+            <programlisting role="template">[#-- WRONG: --]
 [@my.jspTag color="${aVarialbe}" name="aStringLiteral"
             width="100" height=${a+b} /]</programlisting>
 
-              <para>and this is good:</para>
+            <para>and this is good:</para>
 
-              <programlisting role="template">[#-- Good: --]
+            <programlisting role="template">[#-- Good: --]
 [@my.jspTag color=theColor name="aStringLiteral"
             width=100 height=a+b /]</programlisting>
-            </warning>
+          </warning>
 
-            <para>Since JSP custom tags are written to operate in JSP
-            environment, they assume that variables (often referred as
-            "attributes" in JSP world) are stored in 4 scopes: page scope,
-            request scope, session scope and application scope. FTL has no
-            such notation (the 4 scopes), but
-            <literal>FreemarkerServlet</literal> provides emulated JSP
-            environment for the custom JSP tags, which maintains
-            correspondence between the "attributes" of JSP scopes and FTL
-            variables. For the custom JSP tags, the request, session and
-            application scopes are exactly the same as with real JSP: the
-            attributes of the <literal>javax.servlet.ServletContext</literal>,
-            <literal>HttpSession</literal> and
-            <literal>ServerRequest</literal> objects. From the FTL side you
-            see these 3 scopes together as the data-model, as it was explained
-            earlier. The page scope corresponds to the FTL global variables
-            (about variable scopes see more <link
-            linkend="dgui_misc_var">here...</link>). That is, if you create a
-            variable with <literal>[#set <replaceable>var</replaceable> =
-            <replaceable>expr</replaceable> in .globals]</literal> then it
-            will be visible for the custom JSP tags as page scope variable.
-            Also, if a JSP tag creates a new page scope variable, it creates a
-            FreeMarker global variable. Note that the variables in the data
-            model are not visible as page-scope attributes for the JSP tags
-            (despite that they are globally visible in FreeMarker) since the
-            data-model corresponds to the JSP request, session and application
-            scopes, not the JSP page-scope.</para>
+          <para>Since JSP custom tags are written to operate in JSP
+          environment, they assume that variables (often referred as
+          "attributes" in JSP world) are stored in 4 scopes: page scope,
+          request scope, session scope and application scope. FTL has no such
+          notation (the 4 scopes), but <literal>FreemarkerServlet</literal>
+          provides emulated JSP environment for the custom JSP tags, which
+          maintains correspondence between the "attributes" of JSP scopes and
+          FTL variables. For the custom JSP tags, the request, session and
+          application scopes are exactly the same as with real JSP: the
+          attributes of the <literal>javax.servlet.ServletContext</literal>,
+          <literal>HttpSession</literal> and <literal>ServerRequest</literal>
+          objects. From the FTL side you see these 3 scopes together as the
+          data-model, as it was explained earlier. The page scope corresponds
+          to the FTL global variables (about variable scopes see more <link
+          linkend="dgui_misc_var">here...</link>). That is, if you create a
+          variable with <literal>[#set <replaceable>var</replaceable> =
+          <replaceable>expr</replaceable> in .globals]</literal> then it will
+          be visible for the custom JSP tags as page scope variable. Also, if
+          a JSP tag creates a new page scope variable, it creates a FreeMarker
+          global variable. Note that the variables in the data model are not
+          visible as page-scope attributes for the JSP tags (despite that they
+          are globally visible in FreeMarker) since the data-model corresponds
+          to the JSP request, session and application scopes, not the JSP
+          page-scope.</para>
 
-            <para>On JSP pages you quote all attribute values, it does not
-            mater if the type of the parameter is string or boolean or number.
-            But since custom tags are accessible in FTL templates as
-            user-defined FTL directives, you have to use the FTL syntax rules
-            inside the custom tags, not the JSP rules. So when you specify the
-            value of an ''attribute'', then on the right side of the
-            <literal>=</literal> there is an <link
-            linkend="dgui_template_exp">FTL expression</link>. Thus,
-            <emphasis>you must not quote boolean and numerical parameter
-            values</emphasis> (e.g., <literal>[@tiles.insert
-            page="/layout.ftl" flush=true/]</literal>), or they are
-            interpreted as string values, and this will cause a type mismatch
-            error when FreeMarker tries to pass the value to the custom tag
-            that expects non-string value. Also note, that naturally, you can
-            use any FTL expression as attribute value, such as variables,
-            calculated values, etc. (e.g., <literal>[@tiles.insert
-            page=layoutName flush=foo &amp;&amp; bar/]</literal>).</para>
+          <para>On JSP pages you quote all attribute values, it does not mater
+          if the type of the parameter is string or boolean or number. But
+          since custom tags are accessible in FTL templates as user-defined
+          FTL directives, you have to use the FTL syntax rules inside the
+          custom tags, not the JSP rules. So when you specify the value of an
+          ''attribute'', then on the right side of the <literal>=</literal>
+          there is an <link linkend="dgui_template_exp">FTL expression</link>.
+          Thus, <emphasis>you must not quote boolean and numerical parameter
+          values</emphasis> (e.g., <literal>[@tiles.insert page="/layout.ftl"
+          flush=true/]</literal>), or they are interpreted as string values,
+          and this will cause a type mismatch error when FreeMarker tries to
+          pass the value to the custom tag that expects non-string value. Also
+          note, that naturally, you can use any FTL expression as attribute
+          value, such as variables, calculated values, etc. (e.g.,
+          <literal>[@tiles.insert page=layoutName flush=foo &amp;&amp;
+          bar/]</literal>).</para>
 
-            <para>FreeMarker does not rely on the JSP support of the servlet
-            container in which it is run when it uses JSP taglibs since it
-            implements its own lightweight JSP runtime environment. There is
-            only one small detail to pay attention to: to enable the
-            FreeMarker JSP runtime environment to dispatch events to JSP
-            taglibs that register event listeners in their TLD files, you
-            should add this to the <literal>WEB-INF/web.xml</literal> of your
-            Web application:</para>
+          <para>FreeMarker does not rely on the JSP support of the servlet
+          container in which it is run when it uses JSP taglibs since it
+          implements its own lightweight JSP runtime environment. There is
+          only one small detail to pay attention to: to enable the FreeMarker
+          JSP runtime environment to dispatch events to JSP taglibs that
+          register event listeners in their TLD files, you should add this to
+          the <literal>WEB-INF/web.xml</literal> of your Web
+          application:</para>
 
-            <programlisting role="unspecified">&lt;listener&gt;
+          <programlisting role="unspecified">&lt;listener&gt;
   &lt;listener-class&gt;freemarker.ext.jsp.EventForwarding&lt;/listener-class&gt;
 &lt;/listener&gt;</programlisting>
 
-            <para>Note that you can use JSP taglibs with FreeMarker even if
-            the servlet container has no native JSP support, just make sure
-            that the <literal>javax.servlet.jsp.*</literal> packages for JSP
-            1.2 (or later) are available to your Web application. If your
-            servlet container comes with JSP 1.1, then you have to obtain the
-            following six classes (for example you can extract them from the
-            jar-s of Tomcat 5.x or Tomcat 4.x), and copy them into your
-            webapp's
-            <literal>WEB-INF/classes/<replaceable>...</replaceable></literal>
-            directory:
-            <literal>javax.servlet.jsp.tagext.IterationTag</literal>,
-            <literal>javax.servlet.jsp.tagext.TryCatchFinally</literal>,
-            <literal>javax.servlet.ServletContextListener</literal>,
-            <literal>javax.servlet.ServletContextAttributeListener</literal>,
-            <literal>javax.servlet.http.HttpSessionAttributeListener</literal>,
-            <literal>javax.servlet.http.HttpSessionListener</literal>. But
-            beware, since containers that come with JSP 1.1 usually use
-            earlier Serlvet versions than 2.3, event listeners will not be
-            supported, and thus JSP 1.2 taglibs that register event listeners
-            will not work properly.</para>
+          <para>Note that you can use JSP taglibs with FreeMarker even if the
+          servlet container has no native JSP support, just make sure that the
+          <literal>javax.servlet.jsp.*</literal> packages for JSP 1.2 (or
+          later) are available to your Web application. If your servlet
+          container comes with JSP 1.1, then you have to obtain the following
+          six classes (for example you can extract them from the jar-s of
+          Tomcat 5.x or Tomcat 4.x), and copy them into your webapp's
+          <literal>WEB-INF/classes/<replaceable>...</replaceable></literal>
+          directory: <literal>javax.servlet.jsp.tagext.IterationTag</literal>,
+          <literal>javax.servlet.jsp.tagext.TryCatchFinally</literal>,
+          <literal>javax.servlet.ServletContextListener</literal>,
+          <literal>javax.servlet.ServletContextAttributeListener</literal>,
+          <literal>javax.servlet.http.HttpSessionAttributeListener</literal>,
+          <literal>javax.servlet.http.HttpSessionListener</literal>. But
+          beware, since containers that come with JSP 1.1 usually use earlier
+          Serlvet versions than 2.3, event listeners will not be supported,
+          and thus JSP 1.2 taglibs that register event listeners will not work
+          properly.</para>
 
-            <para>As of this writing, JSP features up to JSP 2.1 are
-            implemented, except the "tag files" feature of JSP 2 (i.e., custom
-            JSP tags <emphasis>implemented</emphasis> in JSP language). The
-            tag files had to be compiled to Java classes to be usable under
-            FreeMarker.</para>
-          </sect3>
+          <para>As of this writing, JSP features up to JSP 2.1 are
+          implemented, except the "tag files" feature of JSP 2 (i.e., custom
+          JSP tags <emphasis>implemented</emphasis> in JSP language). The tag
+          files had to be compiled to Java classes to be usable under
+          FreeMarker.</para>
         </sect2>
 
         <sect2>
@@ -15278,13 +15348,19 @@ or
           parameter) into your template. The output from the embedded file is
           inserted at the point where the <literal>include</literal> tag
           occurs. The <literal>embed</literal> directive is not replaced by
-          the content of the embedded file, nor does it really insert anything
-          into the template itself. It just processes the other file. This
-          happens each times when FreeMarker reaches the
-          <literal>embed</literal> directive in the course of template
-          processing. So, for example if the <literal>embed</literal> is
-          inside a <literal>list</literal>, you can specify different
-          filenames in each cycle.</para>
+          the content of the embedded file, it just processes the other file
+          each time when FreeMarker reaches the <literal>embed</literal>
+          directive in the course of template processing. So, for example if
+          the <literal>embed</literal> is inside a <literal>list</literal>
+          loop, you can specify different filenames in each cycle.</para>
+
+          <note>
+            <para>This directive is not be confused with the JSP (Servlet)
+            include, as it doesn't involve the Servlet container at all, just
+            processes another FreeMarker template. Regarding how to do a "JSP
+            include" <link linkend="faq_servlet_include">read
+            this...</link></para>
+          </note>
 
           <para>The <literal><replaceable>path</replaceable></literal>
           parameter can be a relative path like <literal>"foo.ftl"</literal>
@@ -15698,6 +15774,14 @@ or
           directive</link> or the <link
           linkend="ref.directive.embed"><literal>embed</literal>
           directive</link> instead.</para>
+
+          <note>
+            <para>This directive is not be confused with the JSP (Servlet)
+            include, as it doesn't involve the Servlet container at all, just
+            processes another FreeMarker template, without "leaving"
+            FreeMarker.. Regarding how to do a "JSP include" <link
+            linkend="faq_servlet_include">read this...</link></para>
+          </note>
 
           <para>This directive is the same as the <link
           linkend="ref.directive.embed"><literal>embed</literal>
@@ -16195,7 +16279,9 @@ ${x}</programlisting>
           are values that influence the behavior of FreeMarker. The new value
           will be present only in the template processing where it was set,
           and does not touch the template itself. The initial value of
-          settings is set by the programmer.</para>
+          settings is set by the programmer <phrase
+          role="forProgrammers">(see: <xref
+          linkend="pgui_config_settings" />)</phrase>.</para>
 
           <para>The supported settings are:</para>
 
@@ -18724,9 +18810,9 @@ or
               <listitem>
                 <para>Not a ''standard''. There are fewer tools and IDE
                 integrations, fewer developers knows it and there's much less
-                industry support in general. (However, JSP 1.2 compatible tag
-                libraries work without modification in FreeMarker
-                templates.)</para>
+                industry support in general. (However, JSP tag libraries work
+                without modification in FreeMarker templates, if they are not
+                using <literal>.tag</literal> files.)</para>
               </listitem>
 
               <listitem>
@@ -18923,10 +19009,12 @@ or
             capability of the Java platform. The default number format for
             your locale may uses grouping or other unwanted formatting. To
             prevent this, you have to override the number format suggested by
-            the Java platform in the FreeMarker configuration. For
+            the Java platform with the <literal>number_format</literal> <link
+            linkend="pgui_config_settings">FreeMarker setting</link>. For
             example:</para>
 
-            <programlisting role="unspecified">cfg.setNumberFormat("0.######");  // now it will print 1000000</programlisting>
+            <programlisting role="unspecified">cfg.setNumberFormat("0.######");  // now it will print 1000000
+// where cfg is a freemarker.template.Configuration object</programlisting>
 
             <para>Note however than humans often find it hard to read big
             numbers without grouping separator. So in general it is
@@ -18935,7 +19023,7 @@ or
             use the <link linkend="ref_builtin_c"><literal>c</literal>
             built-in</link>. For example:</para>
 
-            <programlisting role="template">&lt;a href="/shop/productdetails?id=${product.id?c}"&gt;Details...&lt;/a&gt;</programlisting>
+            <programlisting role="template">&lt;a href="/shop/productdetails?id=${<emphasis>product.id?c</emphasis>}"&gt;Details...&lt;/a&gt;</programlisting>
           </answer>
         </qandaentry>
 
@@ -18949,16 +19037,21 @@ or
             <para>Different countries use different decimal/grouping separator
             symbols. If you see incorrect symbols, then probably your locale
             is not set properly. Set the default locale of the JVM or override
-            the default locale in the FreeMarker configuration:</para>
+            the default locale with the <literal>locale</literal> <link
+            linkend="pgui_config_settings">FreeMarker setting</link>. For
+            example:</para>
 
-            <programlisting role="unspecified">cfg.setLocale(java.util.Locale.ITALY);</programlisting>
+            <programlisting role="unspecified">cfg.setLocale(java.util.Locale.ITALY);
+// where cfg is a freemarker.template.Configuration object</programlisting>
 
             <para>However, sometimes you want to output a number not for human
             audience, but for ''computer audience'' (like you want to print a
             size in CSS), in which case you must use dot as decimal separator,
             regardless of the locale (language) of the page. For that use the
-            <link linkend="ref_builtin_c"><literal>c</literal> built-in</link>
-            (like <literal>${x?c}</literal>).</para>
+            <link linkend="ref_builtin_c"><literal>c</literal>
+            built-in</link>, for example:</para>
+
+            <para><programlisting role="template">font-size: ${<emphasis>fontSize?c</emphasis>}pt;</programlisting></para>
           </answer>
         </qandaentry>
 
@@ -19115,6 +19208,41 @@ or
 <replaceable>...</replaceable></programlisting>
 
             <para>(Not <literal>flush=${needFlushing}</literal>!)</para>
+          </answer>
+        </qandaentry>
+
+        <qandaentry id="faq_servlet_include">
+          <question>
+            <para>How to include other resources in a way as
+            <literal>jsp:include</literal> does it?</para>
+          </question>
+
+          <answer>
+            <para>Not with <literal>[#include ...]</literal>, as that just
+            includes another FreeMarker template without involving the Servlet
+            container.</para>
+
+            <para>Since the inclusion method you look for is Servlet-related,
+            and pure FreeMarker is unaware of Servlets or even HTTP, it's the
+            Web Application Framework that decides if you can do this and if
+            so how. For example, in Struts 2 you can do this like this:</para>
+
+            <programlisting role="template">[@s.include value="/WEB-INF/just-an-example.jspf" /]</programlisting>
+
+            <para> If the FreeMarker support of the Web Application Framework
+            is based on
+            <literal>freemarker.ext.servlet.FreemarkerServlet</literal>, then
+            you can also do this (since FreeMarker 2.3.15):</para>
+
+            <programlisting role="template">[@include_page path="/WEB-INF/just-an-example.jspf" /]</programlisting>
+
+            <para>but if the Web Application Framework provides its own
+            solution, then you may prefer that, after all it may does
+            something special.</para>
+
+            <para>For more information about <literal>include_page</literal>
+            <link linkend="pgui_misc_servlet_include">read
+            this...</link></para>
           </answer>
         </qandaentry>
 
