@@ -70,7 +70,7 @@ $Id: build.xml,v 1.51 2004/03/13 21:08:19 ddekany Exp $
     </taskdef>
     <transform
             templateDir="${docgen.transformsrc.dir}/ftl"
-            srcFile="${docgen.manualsrc.dir}/freemarker-manual.xml"
+            srcFile="${docgen.manualsrc.dir}/freemarker-manual-db5.xml"
             outputDir="${docgen.output.dir}"
             showEditorNotes="${docgen.transform.showEditorNotes}"
             stopOnValidationError="${docgen.transform.stopOnValidationError}"
