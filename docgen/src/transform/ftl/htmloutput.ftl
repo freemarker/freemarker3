@@ -130,6 +130,8 @@
   <img src="${.node.@fileref}" alt="${alt?html}">[#t]
 [/#macro]
 
+[#assign imagedata=graphic]
+
 [#macro indexterm]
   [@Anchor/]
 [/#macro]
@@ -170,7 +172,11 @@
 [/#macro]
 
 [#macro link]
-   <a href="${CreateLinkFromID(.node.@linkend)?html}">[#recurse ]</a>[#t]
+   [#if .node.@linkend?has_content]
+      <a href="${CreateLinkFromID(.node.@linkend)?html}">[#recurse ]</a>[#t]
+   [#else]
+      <a href="${.node["@xlink:href"]}">[#recurse]</a>[#t]
+   [/#if]
 [/#macro]
 
 [#macro listitem]

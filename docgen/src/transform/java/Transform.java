@@ -116,7 +116,7 @@ public class Transform {
         fmConfig.setSharedVariable("transformStartTime", new Date());
         
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setValidating(true);
+        dbf.setValidating(false);
         DocumentBuilder db = dbf.newDocumentBuilder();
         //db.setEntityResolver(createCatalogResolver(properties.getProperty(PROP_CATALOG_FILES)));
         db.setErrorHandler(errorHandler);
@@ -146,9 +146,12 @@ public class Transform {
     
     static void addIdAttributes(Node node, int[] id) {
         if (node instanceof Element) {
+            Element e = (Element) node;
+	    if (e.hasAttribute("xml:id")) {
+		e.setAttribute("id", e.getAttribute("xml:id"));
+	    }
             String name = node.getNodeName();
             if (idAttrElements.contains(name)) {
-                Element e = (Element) node;
                 if (!e.hasAttribute("id")) {
                     id[0]++;
                     e.setAttribute("id", "autoid_" + id[0]);
