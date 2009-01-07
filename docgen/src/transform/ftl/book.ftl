@@ -1,10 +1,13 @@
 [#import "htmloutput.ftl" as htmloutput]
 [#import "toc.ftl" as toc]
 [#import "docbook-html.ftl" as default]
-[#-- assign namespaces = ['toc.ftl', 'htmloutput.ftl', 'docbook-html.ftl'] --] [#-- This should work really... --]
 [#set namespaces = [toc, htmloutput, default]]
 [#set titleElement = .node.title]
+[#if !titleElement?has_content][#set titleElement = .node.info.title][/#if]
+[#if !titleElement?has_content][#set titleElement = null!][/#if] 
 [#set subTitleElement = .node.subtitle]
+[#if !subTitleElement?has_content][#set subTitleElement = .node.info.subtitle][/#if]
+[#if !subTitleElement?has_content][#set subTitleElement = null!][/#if]
 [@htmloutput.Html titleElement]
 
 <div class="book">

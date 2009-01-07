@@ -27,8 +27,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
   <link rel="stylesheet" href="fmdoc.css" type="text/css">
   <meta name="generator" content="FreeMarker-based XDocBook Stylesheet">
-  [#var bookTitle=.node?root.book.title]
-  <title>[#if bookTitle != title]${bookTitle?html} - [/#if]${title?html}</title>
+  [#var bookTitle=getTitle(.node?root)]
+  <title>[#if bookTitle?has_content && bookTitle != title]${bookTitle?html} - [/#if]${title?html}</title>
 </head>
 <body>
 [#include "nav.ftl"]
@@ -43,13 +43,20 @@
         Page generated: ${transformStartTime?string("yyyy-MM-dd HH:mm:ss z")}
     </span></td>
     <td align="right" valign="top"><span class="footnote">
-        ${.node?root.book.title?html}[#if .node?root.book.subtitle?size != 0] -- ${.node?root.book.subtitle?html}[/#if]
+        ${bookTitle?html}[#if .node?root.book.subtitle?size != 0] -- ${.node?root.book.subtitle?html}[/#if]
     </span></td>
   </tr>
 </table>
 </body>
 </html>
 [/#macro]
+
+[#function getTitle node]
+   [#var result = node.title]
+   [#if !result?has_content][#set result = node.info.title][/#if]
+   [#if !result?has_content][#set result = null!][/#if]
+   [#return result]
+[/#function]
 
 [#macro anchor]
   [@Anchor/]

@@ -22,7 +22,7 @@ $Id: build.xml,v 1.51 2004/03/13 21:08:19 ddekany Exp $
 
 <!-- default properties for transform task -->
 <property name='docgen.transform.showEditorNotes' value='false'/>
-<property name='docgen.transform.stopOnValidationError' value='true'/>
+<!--property name='docgen.transform.stopOnValidationError' value='true'/-->
 <property name='docgen.transform.outputWarnings' value='false'/>
 
 <path id='docgen.classpath'>
@@ -33,13 +33,6 @@ $Id: build.xml,v 1.51 2004/03/13 21:08:19 ddekany Exp $
 <target name="init">
     <tstamp/>
     <mkdir dir='${docgen.class.dir}'/>
-    <javac
-            srcdir="${docgen.transformsrc.dir}/java"
-            destdir="${docgen.class.dir}"
-            classpathref="docgen.classpath"
-            deprecation="off"
-            debug="on"
-    />
 </target>
 
 <target name='all-but-javadoc' depends='init'>
@@ -65,7 +58,7 @@ $Id: build.xml,v 1.51 2004/03/13 21:08:19 ddekany Exp $
 
 <!-- Tramsforms DocBook XML to HTML -->
 <target name='transform' depends='init'>
-    <taskdef name="transform" classname="DocgenTransformTask">
+    <taskdef name="transform" classname="freemarker.docgen.DocgenTransformTask">
         <classpath refid="docgen.classpath"/>
     </taskdef>
     <transform
@@ -73,7 +66,6 @@ $Id: build.xml,v 1.51 2004/03/13 21:08:19 ddekany Exp $
             srcFile="${docgen.manualsrc.dir}/freemarker-manual-db5.xml"
             outputDir="${docgen.output.dir}"
             showEditorNotes="${docgen.transform.showEditorNotes}"
-            stopOnValidationError="${docgen.transform.stopOnValidationError}"
             outputWarnings="${docgen.transform.outputWarnings}"
     />
 </target>
