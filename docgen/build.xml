@@ -67,6 +67,7 @@ $Id: build.xml,v 1.51 2004/03/13 21:08:19 ddekany Exp $
             outputDir="${docgen.output.dir}"
             showEditorNotes="${docgen.transform.showEditorNotes}"
             outputWarnings="${docgen.transform.outputWarnings}"
+            olinksFile = "links.properties"
     />
 </target>
 
