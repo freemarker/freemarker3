@@ -52,6 +52,15 @@ public class DocgenTransformTask extends Task
      		throw new BuildException(e);
      	}
     }
+    
+    public void setLocale(String locString) {
+    	myProperties.setProperty("locale", locString);
+    	
+    }
+    
+    public void setTimeZone(String timeZone) {
+    	myProperties.setProperty("timeZone", timeZone);
+    }
 
     // just start the transformation
     public void execute() throws BuildException {

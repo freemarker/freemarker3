@@ -54,6 +54,7 @@ options
 {
    BASE_SRC_DIR="..";
    PARSER_PACKAGE="freemarker.core.parser";
+   TREE_BUILDING_ENABLED=false;
 }
 
 INJECT(PARSER_CLASS) : 

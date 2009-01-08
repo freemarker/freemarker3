@@ -1,9 +1,11 @@
 package freemarker.docgen;
 
 import freemarker.template.*;
+import freemarker.cache.*;
 import freemarker.core.Environment;
 import freemarker.ext.dom.NodeModel;
 import freemarker.template.utility.*;
+import freemarker.log.Logger;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -41,7 +43,6 @@ public class Transform {
     static {
 //        olinks.put("api", "api/index.html");
 //        olinks.put("homepage", "http://freemarker.org/");
-
         fileElements.add("appendix");
         fileElements.add("book");
         fileElements.add("chapter");
@@ -83,8 +84,10 @@ public class Transform {
     }
     
     static void startTransformation(Properties properties) throws Exception {
+        Logger.selectLoggerLibrary(Logger.LIBRARY_NONE);
         File srcFile = new File(properties.getProperty(PROP_SRC_FILE));
         File templateDir = new File(properties.getProperty(PROP_TEMPLATE_DIR));
+
         outputDir = new File(properties.getProperty(PROP_OUTPUT_DIR));
         String showNotes = properties.getProperty(PROP_SHOW_EDITOR_NOTES, "false");
         TemplateBooleanModel showEditorNotes = StringUtil.getYesNo(showNotes)
@@ -92,24 +95,54 @@ public class Transform {
                 : TemplateBooleanModel.FALSE;
         outputWarnings = StringUtil.getYesNo(properties.getProperty(PROP_OUTPUT_WARNINGS, "false"));
         fmConfig.setSharedVariable(PROP_SHOW_EDITOR_NOTES, showEditorNotes);
-        fmConfig.setDirectoryForTemplateLoading(templateDir);
-
-        fmConfig.setLocale(Locale.US);
-        fmConfig.setTimeZone(TimeZone.getTimeZone("GMT"));
+        TemplateLoader templateLoader;
+        if (templateDir == null) {
+            templateLoader = new MultiTemplateLoader(new FileTemplateLoader(srcFile.getParentFile()), 
+        		                                                new ClassTemplateLoader(Transform.class, ""));
+        } else {
+            templateLoader = new MultiTemplateLoader(new FileTemplateLoader(srcFile.getParentFile()),
+            		new FileTemplateLoader(templateDir), 
+                    new ClassTemplateLoader(Transform.class, ""));
+        	
+        }
+        fmConfig.setTemplateLoader(templateLoader);
         fmConfig.setSharedVariable("transformStartTime", new Date());
         
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
         	String key = (String) entry.getKey();
-        	String value = (String) entry.getValue();
         	if (key.startsWith("link.")) {
-        		olinks.put(key.substring(5), value);
+        		olinks.put(key.substring(5), entry.getValue().toString());
         	}
         }
+        String locString = properties.getProperty("locale");
+        if (locString == null) {
+        	fmConfig.setLocale(Locale.US);
+        }
+        else {
+        	String lang = "";
+        	String country = "";
+        	String variant = "";
+        	StringTokenizer st = new StringTokenizer(locString);
+        	if (st.hasMoreTokens()) {
+        		lang = st.nextToken();
+        		if (st.hasMoreTokens()) {
+        			country = st.nextToken();
+        			if (st.hasMoreTokens()) {
+        				variant = st.nextToken();
+        			}
+        		}
+        	}
+        	fmConfig.setLocale(new Locale(lang, country, variant));
+        }
+        String timeZone = properties.getProperty("timeZone");
+        if (timeZone == null) {
+        	timeZone = "GMT";
+        } 
+        fmConfig.setTimeZone(TimeZone.getTimeZone(timeZone));
         
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setValidating(false);
         DocumentBuilder db = dbf.newDocumentBuilder();
-        //db.setEntityResolver(createCatalogResolver(properties.getProperty(PROP_CATALOG_FILES)));
         db.setErrorHandler(errorHandler);
         Document docNode = db.parse(srcFile);
         NodeModel.simplify(docNode);
