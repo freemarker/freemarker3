@@ -83,7 +83,7 @@ implements StatefulTemplateLoader, SecureTemplateLoader
      * Creates a new multi template Loader that will use the specified loaders.
      * @param loaders the loaders that are used to load templates. 
      */
-    public MultiTemplateLoader(TemplateLoader[] loaders)
+    public MultiTemplateLoader(TemplateLoader... loaders)
     {
         this.loaders = loaders.clone();
     }
