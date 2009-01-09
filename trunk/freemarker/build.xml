@@ -209,7 +209,7 @@
        <property name="coverage.classes.dir" location="${build.dir}/coverage/classes" />
        <mkdir dir="${coverage.classes.dir}" />
        <property name="coverage.instrumentationfile" location="${coverage.dir}/instrumentation" />
-       <emma enabled="false">
+       <emma enabled="true">
            <instr 
                instrpath="${classes.dir}" outdir="${coverage.classes.dir}" 
                outfile="${coverage.instrumentationfile}" mode="copy">
