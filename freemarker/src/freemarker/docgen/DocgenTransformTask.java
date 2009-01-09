@@ -68,6 +68,7 @@ public class DocgenTransformTask extends Task
             Transform.startTransformation(myProperties);
         }
         catch (Exception e) {
+        	e.printStackTrace();
             throw new BuildException(e);
         }
     }

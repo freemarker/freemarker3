@@ -86,7 +86,8 @@ public class Transform {
     static void startTransformation(Properties properties) throws Exception {
         Logger.selectLoggerLibrary(Logger.LIBRARY_NONE);
         File srcFile = new File(properties.getProperty(PROP_SRC_FILE));
-        File templateDir = new File(properties.getProperty(PROP_TEMPLATE_DIR));
+        String templateDirName = properties.getProperty(PROP_TEMPLATE_DIR);
+        File templateDir = templateDirName == null ? null : new File(templateDirName);
 
         outputDir = new File(properties.getProperty(PROP_OUTPUT_DIR));
         String showNotes = properties.getProperty(PROP_SHOW_EDITOR_NOTES, "false");
