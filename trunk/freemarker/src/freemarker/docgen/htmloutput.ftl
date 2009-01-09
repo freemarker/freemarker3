@@ -1,8 +1,10 @@
+[#ftl strict_vars = false]
 [#set romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]]
 [#set capitalLetters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]]
 [#set inHtmlP = false, compactPara = false, disableA = false]
 
 [#set forProgrammersStyle = "color:#333399; font-style:italic"]
+ 
 
 [#-- 
    A set of routines used for outputting docbook elements as html
@@ -64,14 +66,14 @@
 
 [#macro answer]
 <div class="answer">
-  [#recurse ]
+  [#recurse]
 </div>
 [/#macro]
 
 [#macro emphasis]
     [#var role=.node.@role[0]!"none"]
     [#if role = "term" || role = "bold" || .node?ancestors("programlisting")?has_content]
-      <b>[#recurse ]</b>[#t]
+      <b>[#recurse]</b>[#t]
     [#else]
       [#fallback] 
     [/#if]
@@ -81,21 +83,21 @@
     [#if .node?parent?parent?node_name = "thead"]
 [#-- TODO: align should be parametrized, of course. --]    
        <th align="left">[#t]
-          [#recurse ][#t]
+          [#recurse][#t]
        </th>[#lt]
     [#else]
        <td align="left">[#t]
-          [#recurse ][#t]
+          [#recurse][#t]
        </td>[#lt]
     [/#if]
 [/#macro]
 
 [#macro glossentry]
-   [#recurse ]
+   [#recurse]
 [/#macro]
 
 [#macro glossdef]
-   <dd>[#recurse ]
+   <dd>[#recurse]
    [#var seealsos=.node.glossseealso]
    [#if seealsos?has_content]
     <p>See Also
@@ -124,7 +126,7 @@
 [/#macro]
 
 [#macro glossterm]
-   <dt>[@Anchor .node?parent/][#recurse ]</dt>
+   <dt>[@Anchor .node?parent/][#recurse]</dt>
 [/#macro]
 
 [#macro graphic]
@@ -146,7 +148,7 @@
 [#macro informaltable]
    <div class="informaltable">
       <table border="1" cellpadding="4">
-         [#recurse ]
+         [#recurse]
       </table>
    </div>
 [/#macro]
@@ -171,7 +173,7 @@
         [#else]
             <ul type="${mark?html}">[#t]
         [/#if]
-        [#recurse ]
+        [#recurse]
         </ul>[#t]
     </div>
     [/@CantNestedIntoP]
@@ -180,7 +182,7 @@
 
 [#macro link]
    [#if .node.@linkend?has_content]
-      <a href="${CreateLinkFromID(.node.@linkend)?html}">[#recurse ]</a>[#t]
+      <a href="${CreateLinkFromID(.node.@linkend)?html}">[#recurse]</a>[#t]
    [#else]
       <a href="${.node["@xlink:href"]}">[#recurse]</a>[#t]
    [/#if]
@@ -193,7 +195,7 @@
    [#else]
        <li>[#t]
    [/#if]
-   [#recurse ]
+   [#recurse]
    </li>[#t]
 [/#macro]
 
@@ -201,59 +203,61 @@
     [#var moreStyle="" color="#A03D10"]
     [#if .node?ancestors("link")?has_content]
         [#-- If we are within a link, we don't change color, just use the regular link color --]   
-        <tt>[#recurse ]</tt>[#t]
+        <tt>[#recurse]</tt>[#t]
     [#else]
         [#if fontBgColor! != ""]
             [#set moreStyle = "; background-color:${fontBgColor}"]
         [/#if]
-        <tt style="color: #A03D10${moreStyle}">[#recurse ]</tt>[#t]
+        <tt style="color: #A03D10${moreStyle}">[#recurse]</tt>[#t]
     [/#if]
 [/#macro]
 
-[#set uri = _inline_monospaced]
+[#set classname = _inline_monospaced]
 [#set code = _inline_monospaced]
+[#set command=_inline_monospaced]
 [#set constant = _inline_monospaced]
 [#set envar = _inline_monospaced]
-[#set markup = _inline_monospaced]
-[#set prompt = _inline_monospaced]
-[#set property = _inline_monospaced]
-[#set sgmltag = _inline_monospaced]
-[#set token = _inline_monospaced]
-[#set type = _inline_monospaced]
-[#set function = _inline_monospaced]
-[#set parameter = _inline_monospaced]
-[#set varname = _inline_monospaced]
-[#set returnvalue = _inline_monospaced]
 [#set errorcode = _inline_monospaced]
 [#set errorname = _inline_monospaced]
 [#set errortext = _inline_monospaced]
 [#set errortype = _inline_monospaced]
 [#set exceptionname = _inline_monospaced]
+[#set filename = _inline_monospaced]
+[#set function = _inline_monospaced]
 [#set interfacename = _inline_monospaced]
+[#set literal = _inline_monospaced]
+[#set markup = _inline_monospaced]
+[#set methodname = _inline_monospaced]
+[#set package = _inline_monospaced]
+[#set parameter = _inline_monospaced]
+[#set prompt = _inline_monospaced]
+[#set property = _inline_monospaced]
+[#set returnvalue = _inline_monospaced]
+[#set sgmltag = _inline_monospaced]
 [#set structfield = _inline_monospaced]
 [#set structname = _inline_monospaced]
 [#set symbol = _inline_monospaced]
-[#set classname = _inline_monospaced]
-[#set methodname = _inline_monospaced]
-[#set package = _inline_monospaced]
-[#set literal = _inline_monospaced]
+[#set token = _inline_monospaced]
+[#set type = _inline_monospaced]
+[#set uri = _inline_monospaced]
+[#set varname = _inline_monospaced]
 
 [#macro note]
 <div style="margin-left: 0.5in; margin-right: 0.5in;">
    <h3>Note</h3>
-   [#recurse ]
+   [#recurse]
 </div>
 [/#macro]  
 
 [#macro caution]
 <div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;">
    <h3>Caution</h3>
-   [#recurse ]
+   [#recurse]
 </div>
 [/#macro]  
 
 [#macro olink]
-    <a href="${olinks[.node.@targetdoc]}">[#recurse ]</a>[#t]
+    <a href="${olinks[.node.@targetdoc]}">[#recurse]</a>[#t]
 [/#macro]
 
 [#macro orderedlist]
@@ -263,7 +267,7 @@
        [#set compactPara = true]
     [/#if]
     [@CantNestedIntoP]
-    <div class="orderedlist"><ol type="1">[#recurse ]</ol></div>[#t]
+    <div class="orderedlist"><ol type="1">[#recurse]</ol></div>[#t]
     [/@CantNestedIntoP]
     [#set compactPara = prevCompactPara]
 [/#macro]
@@ -277,7 +281,7 @@
     [#if style??]
       <span style="${style}">[#t]
     [/#if]
-    [#recurse ]
+    [#recurse]
     [#if style??]
       </span>[#t]
     [/#if]
@@ -285,7 +289,7 @@
     [#var content]
     [#set inHtmlP = true]
     <p[#if style??] style="${style}"[/#if]>[#t]
-    [#set content][#recurse ][/#set][#t]
+    [#set content][#recurse][/#set][#t]
     [#-- Avoid empty p element when closing para directly after orderedlist or itemizedlist. --]
     [#if !content?matches(r".*<p>\s*$", "s")]
         ${content}</p>[#t]
@@ -320,19 +324,19 @@
       [#if fontBgColor! != ""]
         [#set moreStyle = ";background-color:${fontBgColor}"]
       [/#if]
-      <i><span style="color: #999999 ${moreStyle}">[#recurse ]</span></i>[#t]
+      <i><span style="color: #999999 ${moreStyle}">[#recurse]</span></i>[#t]
     [#elseif role = "forProgrammers"]
       [#if fontBgColor! != ""]
         [#set moreStyle = ";background-color:${fontBgColor}"]
       [/#if]
-      <span style="${forProgrammersStyle}${moreStyle}">[#recurse ]</span>[#t]
+      <span style="${forProgrammersStyle}${moreStyle}">[#recurse]</span>[#t]
     [#else]
       [#set lastFontBgColor = fontBgColor!]
       [#if !bgcolors[role]??]
         [#stop "Invalid role attribute value, \"" + role + "\""]
       [/#if]
       [#set fontBgColor = bgcolors[role]]
-      <span style="background-color:${bgcolors[role]}">[#recurse ]</span>[#t]
+      <span style="background-color:${bgcolors[role]}">[#recurse]</span>[#t]
       [#set fontBgColor = lastFontBgColor]
     [/#if]
   [/#if]
@@ -360,7 +364,7 @@
          [#break]
       [#case "metaTemplate"]
          <pre class="metaTemplate">[#t]
-             [#recurse ]
+             [#recurse]
          </pre>[#lt]
          [#return]
       [#default]
@@ -379,7 +383,7 @@
         <td>[#t]
           <table bgcolor="${bgcolor}" cellspacing="0" cellpadding="4" border="0" width="100%" style="margin: 0px">[#t]
             <tr><td><pre style="margin: 0px">[#t]
-            [#local content][#recurse ][/#local]
+            [#local content][#recurse][/#local]
             ${content?chop_linebreak}&nbsp;<span style="font-size: 1pt"> </span></pre></td></tr>[#t]
           </table>[#t]
         </td>[#t]
@@ -435,7 +439,7 @@
 
 [#macro remark]
   [#if showEditorNotes]
-    <p style="background-color:#FFFF00">[[#recurse ]]</p>[#t]
+    <p style="background-color:#FFFF00">[[#recurse]]</p>[#t]
   [/#if]
 [/#macro] 
 
@@ -445,9 +449,9 @@
     [#if fontBgColor! != ""]
       [#set moreStyle = ";background-color:${fontBgColor}"]
     [/#if]
-    <i style="color: #DD4400 ${moreStyle}">[#recurse ]</i>[#t]
+    <i style="color: #DD4400 ${moreStyle}">[#recurse]</i>[#t]
   [#else]
-    <i>[#recurse ]</i>[#t]
+    <i>[#recurse]</i>[#t]
   [/#if]
 [/#macro]
 
@@ -456,8 +460,11 @@
 [/#macro]
 
 [#macro simplesect]
-  <div class="simplesect">[#recurse ]</div>[#t]
+  <div class="simplesect">[#recurse]</div>[#t]
 [/#macro]
+
+[#set partintro = simplesect]
+
 
 [#macro title]
     [#var headingSize]
@@ -472,12 +479,13 @@
        [#set titleInitial = "Part "+romanNumerals[partNumber-1]+". "]
     [/#if]
     [#if !headingSizeMap[type]??]
-       [#stop "Don't know how to render title of: "+type]
+       [#--stop "Don't know how to render title of: "+type--]
+       [#set headingSize = 2]
     [#else]
        [#set headingSize = headingSizeMap[type]]
 <div class="titlepage">
    <div>
-     <h${headingSize}>[@Anchor .node?parent/]${titleInitial}[#recurse ]</h${headingSize}>
+     <h${headingSize}>[@Anchor .node?parent/]${titleInitial}[#recurse]</h${headingSize}>
    </div>
         [#var subtitle=.node?parent.subtitle]
         [#if subtitle?has_content]
@@ -491,13 +499,13 @@
 [/#macro]
 
 [#macro ulink]
-    <a href="${.node.@url?html}">[#recurse ]</a>[#t]
+    <a href="${.node.@url?html}">[#recurse]</a>[#t]
 [/#macro]
 
 [#macro warning]
 <div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;">
 <h3>Warning!</h3>
-[#recurse ]
+[#recurse]
 </div>            
 [/#macro]
 
