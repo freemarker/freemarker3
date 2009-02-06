@@ -15313,7 +15313,9 @@ or
             <listitem>
               <para><literal><replaceable>path</replaceable></literal>: The
               path of the file to embed; must be an expression that evaluates
-              to a string</para>
+              to a string. (With other words, it doesn't have to be a fixed
+              string, it can also be something like, for example,
+              <literal>profile.baseDir + "/menu.ftl"</literal>.)</para>
             </listitem>
 
             <listitem>
@@ -15644,7 +15646,9 @@ All rights reserved.</emphasis></programlisting>
             <listitem>
               <para><literal><replaceable>path</replaceable></literal>: The
               path of a template. This is an expression that evaluates to a
-              string.</para>
+              string. (With other words, it doesn't have to be a fixed string,
+              it can also be something like, for example,
+              <literal>profile.baseDir + "/menu.ftl"</literal>.)</para>
             </listitem>
 
             <listitem>
@@ -15740,7 +15744,9 @@ or
             <listitem>
               <para><literal><replaceable>path</replaceable></literal>: The
               path of the file to include; must be an expression evaluates to
-              a string</para>
+              a string. (With other words, it doesn't have to be a fixed
+              string, it can also be something like, for example,
+              <literal>profile.baseDir + "/menu.ftl"</literal>.)</para>
             </listitem>
 
             <listitem>
@@ -19229,7 +19235,7 @@ or
 
             <programlisting role="template">[@s.include value="/WEB-INF/just-an-example.jspf" /]</programlisting>
 
-            <para> If the FreeMarker support of the Web Application Framework
+            <para>If the FreeMarker support of the Web Application Framework
             is based on
             <literal>freemarker.ext.servlet.FreemarkerServlet</literal>, then
             you can also do this (since FreeMarker 2.3.15):</para>
