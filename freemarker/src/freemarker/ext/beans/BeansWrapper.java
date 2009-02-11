@@ -739,12 +739,12 @@ public class BeansWrapper implements ObjectWrapper
         }
         if(hint == Float.TYPE || hint == Float.class) {
             return number instanceof Float ? (Float)number : 
-                new Float(number.longValue());
+                Float.valueOf(number.floatValue());
         }
         if(hint == Double.TYPE 
                 || hint == Double.class) {
             return number instanceof Double ? (Double)number : 
-                new Double(number.longValue());
+                Double.valueOf(number.doubleValue());
         }
         if(hint == Byte.TYPE || hint == Byte.class) {
             return number instanceof Byte ? (Byte)number : 
