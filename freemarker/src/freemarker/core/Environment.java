@@ -688,7 +688,7 @@ public final class Environment extends Configurable implements Scope {
 
         // Log the exception
         if (logger.isErrorEnabled()) {
-            logger.error("", te);
+            logger.error(te.getMessage(), te);
         }
 
         // Stop exception is not passed to the handler, but
