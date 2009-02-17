@@ -58,4 +58,8 @@ package freemarker.core;
 
 public class ReturnException extends RuntimeException {
     private static final long serialVersionUID = 7681800136354585466L;
+
+    public static final ReturnException INSTANCE = new ReturnException();
+    private ReturnException() {
+    }
 }

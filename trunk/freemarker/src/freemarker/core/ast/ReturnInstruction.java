@@ -74,11 +74,11 @@ public class ReturnInstruction extends TemplateElement {
         }
         if (nextSibling() != null) {
             // We need to jump out using an exception.
-            throw new ReturnException();
+            throw ReturnException.INSTANCE;
         }
         if (!(getParent() instanceof Macro || getParent().getParent() instanceof Macro)) {
             // Here also, we need to jump out using an exception.
-            throw new ReturnException();
+            throw ReturnException.INSTANCE;
         }
     }
 
