@@ -1123,7 +1123,12 @@ public class BeansWrapper implements ObjectWrapper
                                             publicIndexedReadMethod.isVarArgs()));
                         }
                         catch(IntrospectionException e) {
-                            logger.warn("Couldn't properly perform introspection", e);
+                            logger.warn("Failed creating a publicly-accessible " +
+                                    "property descriptor for " + clazz.getName() + 
+                                    " indexed property " + pd.getName() + 
+                                    ", read method " + publicIndexedReadMethod + 
+                                    ", write method " + ipd.getIndexedWriteMethod(), 
+                                    e);
                         }
                     }
                 }
@@ -1139,9 +1144,12 @@ public class BeansWrapper implements ObjectWrapper
                             }
                             classMap.put(pd.getName(), pd);
                         }
-                        catch(IntrospectionException e)
-                        {
-                            logger.warn("Couldn't properly perform introspection", e);
+                        catch(IntrospectionException e) {
+                            logger.warn("Failed creating a publicly-accessible " +
+                                    "property descriptor for " + clazz.getName() + 
+                                    " property " + pd.getName() + ", read method " + 
+                                    publicReadMethod + ", write method " + 
+                                    pd.getWriteMethod(), e);
                         }
                     }
                 }
@@ -1188,7 +1196,8 @@ public class BeansWrapper implements ObjectWrapper
         }
         catch(IntrospectionException e)
         {
-            logger.warn("Couldn't properly perform introspection", e);
+            logger.warn("Couldn't properly perform introspection for class " + 
+                    clazz, e);
             return new HashMap<Object, Object>();
         }
     }
