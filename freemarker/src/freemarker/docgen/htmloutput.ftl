@@ -478,11 +478,7 @@
     [#elseif .node?parent?node_name = "part"]
        [#set titleInitial = "Part "+romanNumerals[partNumber-1]+". "]
     [/#if]
-    [#if !headingSizeMap[type]??]
-       [#--stop "Don't know how to render title of: "+type--]
-       [#set headingSize = 2]
-    [#else]
-       [#set headingSize = headingSizeMap[type]]
+    [#set headingSize = headingSizeMap[type]!2]
 <div class="titlepage">
    <div>
      <h${headingSize}>[@Anchor .node?parent/]${titleInitial}[#recurse]</h${headingSize}>
@@ -495,7 +491,6 @@
            </div>            
         [/#if]
 </div>        
-    [/#if]
 [/#macro]
 
 [#macro ulink]

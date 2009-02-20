@@ -41,18 +41,18 @@ public class Transform {
     static int outputNodeIndex;
     
     static {
-//        olinks.put("api", "api/index.html");
-//        olinks.put("homepage", "http://freemarker.org/");
         fileElements.add("appendix");
         fileElements.add("book");
         fileElements.add("chapter");
         fileElements.add("glossary");
         fileElements.add("index");
         fileElements.add("part");
+        fileElements.add("partintro");
         fileElements.add("preface");
         fileElements.add("sect1");
 
         idAttrElements.add("part");
+        idAttrElements.add("partintro");
         idAttrElements.add("chapter");
         idAttrElements.add("sect1");
         idAttrElements.add("sect2");
@@ -270,7 +270,9 @@ public class Transform {
     void process() throws IOException, TemplateException {
         setFilenames();
         exposeVariables();
-        Template template = fmConfig.getTemplate(outputNode.getNodeName() + ".ftl");
+        String nodeName = outputNode.getNodeName();
+        String templateName = nodeName.equals("partintro") ? "chapter.ftl" : nodeName + ".ftl";
+        Template template = fmConfig.getTemplate(templateName);
         File outputFile = new File(outputDir, currentFilename);
 //        System.out.println("outputting: " + outputFile);
 	FileOutputStream fos = new FileOutputStream(outputFile);

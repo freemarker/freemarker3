@@ -1,5 +1,4 @@
 [#import "htmloutput.ftl" as htmloutput]
-[@htmloutput.Html "Index"]
 
 [#macro entryText node]
    [#list 1..100 as i]
@@ -18,6 +17,8 @@
    [/#list]
    No title[#t]
 [/#macro]
+
+[@htmloutput.Html "Index"]
 
 <div class="index">
    <div class="titlepage">
