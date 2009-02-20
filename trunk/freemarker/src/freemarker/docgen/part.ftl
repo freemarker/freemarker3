@@ -12,6 +12,9 @@
   <div class="toc">
    <p><b>Part Contents</b></p>
     <dl>
+       [#if .node.partintro?has_content]
+         [#visit .node.partintro using namespaces]
+       [/#if]
        [#list .node.chapter as chapter]
          <dt>${chapter_index+1}. [#visit chapter using namespaces]
        [/#list]
@@ -22,7 +25,7 @@
   </div>
   
   [#list .node?children as child]
-     [#if child?node_name != "title"&&child?node_name != "chapter"&&child?node_name != "appendix"]
+     [#if child?node_name != "title"&&child?node_name != "chapter"&&child?node_name != "appendix" && child?node_name != "partintro"]
          [#visit child using namespaces]
      [/#if]
   [/#list]

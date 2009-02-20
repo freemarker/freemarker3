@@ -10,8 +10,11 @@
    [#var appendices=.node.appendix]
    [#if chapters?has_content]
    <dd><dl>
+     [#if .node.partintro?has_content]
+         [#visit .node.partintro][#t]     
+     [/#if]
      [#list chapters as chapter]
-         <dt>${chapter_index+1}. [#visit chapter][#--/dt--][#t]
+         <dt>${chapter_index+1}. [#visit chapter][#t]
      [/#list]
    </dl></dd>
    [/#if]
@@ -54,7 +57,8 @@
    <a href="${CreateLinkFromID(.node.@id)}">[#visit titleElement]</a>[#t]
 [/#macro]
 
-[#set chapter = chapterOrAppendix, appendix = chapterOrAppendix, preface = specialPart, glossary = specialPart, index = specialPart]
+[#set chapter = chapterOrAppendix, appendix = chapterOrAppendix, 
+       preface = specialPart, glossary = specialPart, index = specialPart, partintro = specialPart]
 
 [#set partIndex = 0]
 [#set chapterIndex = 0]
