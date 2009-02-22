@@ -44,6 +44,7 @@
         <!-- get src="${libs.location}/dom4j.jar" dest="lib/dom4j.jar" usetimestamp="true"/ -->
         <get src="${libs.location}/emma.jar" dest="lib/emma.jar" usetimestamp="true" />
         <get src="${libs.location}/emma_ant.jar" dest="lib/emma_ant.jar" usetimestamp="true" />
+    	<get src="${libs.location}/freecc.jar" dest="lib/freecc.jar" usetimestamp="true" />
         <get src="${libs.location}/freemarker-bootstrap.jar" dest="lib/freemarker-bootstrap.jar" usetimestamp="true" />
         <get src="${libs.location}/javarebel-sdk.jar" dest="lib/javarebel-sdk.jar" usetimestamp="true"/>
         <get src="${libs.location}/jaxen.jar" dest="lib/jaxen.jar" usetimestamp="true" />
@@ -55,7 +56,6 @@
         <get src="${libs.location}/jsp-api-2.1.jar" dest="lib/jsp-api-2.1.jar" usetimestamp="true" />
         <get src="${libs.location}/junit.jar" dest="lib/junit.jar" usetimestamp="true" />
         <get src="${libs.location}/jython-2.2.1.jar" dest="lib/jython-2.2.1.jar" usetimestamp="true" />
-        <get src="${libs.location}/freecc.jar" dest="lib/freecc.jar" usetimestamp="true" />
         <get src="${libs.location}/log4j.jar" dest="lib/log4j.jar" usetimestamp="true" />
         <get src="${libs.location}/retrotranslator-transformer-1.2.3.jar" dest="lib/retrotranslator-transformer-1.2.3.jar" usetimestamp="true" />
         <get src="${libs.location}/retrotranslator-runtime-1.2.3.jar" dest="lib/retrotranslator-runtime-1.2.3.jar" usetimestamp="true" />
@@ -122,7 +122,7 @@
     </target>
     
     <!-- ================================================================= -->
-    <!-- Task definitnios                                                  -->
+    <!-- Task definitions                                                  -->
     <!-- ================================================================= -->
     
     <taskdef resource="org/freemarker/docgen/antlib.properties"
@@ -325,7 +325,7 @@
           <fileset dir="src"
             excludes="**/CVS/**,**/*.bak,**/*.java,**/*.jj,**/package.html,freemarker/testcase/**" />
         </copy>
-        <jar basedir="retrobuild" jarfile="freemarker-14compat.jar" excludes="eclipse/**,freemarker/testcase/**,TEST*,freemarker/core/SecureRendererImpl.class">
+        <jar basedir="retrobuild" jarfile="freemarker-14compat.jar" excludes="eclipse/**,freemarker/testcase/**,TEST*,freemarker/core/SecureRendererImpl.class,manual/**,parser/**">
             <manifest>
                 <attribute name="Main-Class" value="freemarker.core.CommandLine" />
                 <attribute name="Extension-name" value="FreeMarker" />
