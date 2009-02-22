@@ -1,7 +1,0 @@
-##
-##  Propertyes for the "docs" task, which generates HTML documentation from DocBook
-##
-
-docgen.transform.showEditorNotes=false
-docgen.transform.stopOnValidationError=true
-docgen.transform.outputWarnings=false
