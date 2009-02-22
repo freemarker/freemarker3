@@ -2,7 +2,8 @@
 
 <project basedir="." default="jar" name="freemarker"
         xmlns:freecc="http://visigoths.org/freecc"
-        xmlns:docgen="http://freemarker.org/docgen">
+        xmlns:docgen="http://freemarker.org/docgen"
+>
 
     <!-- ================================================================== -->
     <!-- Properties and paths                                               -->
