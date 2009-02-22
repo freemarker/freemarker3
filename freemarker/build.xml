@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project basedir="." default="jar" name="freemarker"
-  xmlns:f="http://freemarker.org/ant-build-tasks-xmlns">
+        xmlns:freecc="http://visigoths.org/freecc"
+        xmlns:docgen="http://freemarker.org/docgen">
 
     <!-- ================================================================== -->
     <!-- Properties and paths                                               -->
     <!-- ================================================================== -->
+
+    <property file="build.properties"/>
 
     <property name="libs.location" value="http://freemarker.sourceforge.net/jarsforbuild" />
     <property name="build.dir" location="build" />
@@ -13,6 +16,7 @@
     <property file="src/freemarker/version.properties" />
     <property name="dist.dir" value="build/dist/freemarker-${version}" />
     <property name="site.dir" value="../../site" />
+    <property name="docgen.dir" value="../../docgen" />
 
     <path id="build.class.path">
         <pathelement path="src" />
@@ -115,7 +119,21 @@
 	    <srcfiles dir="src/parser" includes="*.freecc" />
 	</uptodate>
     </target>
+    
+    <!-- ================================================================= -->
+    <!-- Task definitnios                                                  -->
+    <!-- ================================================================= -->
+    
+    <taskdef resource="org/freemarker/docgen/antlib.properties"
+            uri="http://freemarker.org/docgen"
+            classpath="${docgen.dir}/lib/docgen.jar"
+    />
 
+    <taskdef name="generate" classname="org.visigoths.freecc.FreeCCAntTask"
+            uri="http://visigoths.org/freecc"
+            classpath="lib/freecc.jar:lib/freemarker-bootstrap.jar"
+    />
+    
     <!-- ================================================================= -->
     <!-- Compilation                                                       -->
     <!-- ================================================================= -->
@@ -123,9 +141,7 @@
    <target name="freecc" depends="init" unless="parser.uptodate"
             description="Build the parser from its grammar file"
     >
-        <taskdef name="freecc" classname="org.visigoths.freecc.FreeCCAntTask"
-                       classpath="lib/freecc.jar:lib/freemarker-bootstrap.jar"/>
-        <freecc src="src/parser/FM.freecc"/> 
+        <freecc:generate src="src/parser/FM.freecc"/> 
    </target>
    
    <target name="compile" depends="freecc">
@@ -360,7 +376,7 @@
     </target>
 
     <target name="_dist"
-            depends="jar, retrojar"
+            depends="jar, retrojar, javadoc"
             description="(Used internally; don't call it)"
     >
         <!-- Copy jars and sources and such into the distro -->
@@ -395,12 +411,16 @@
             <fileset dir="${site.dir}/build/site" />
         </copy>
         
-        <!-- Generate manual pages and copy them into distro -->
-        <ant dir="../docgen" target="all">
-            <property name="docgen.offline" value="yes" />
-        </ant>
-        <copy todir="${dist.dir}/docs/docs" includeEmptyDirs="no">
-            <fileset dir="../docgen/build/docs" />
+        <!-- Generate Manual -->
+        <docgen:transform
+            srcdir="src/manual" destdir="${dist.dir}/docs/docs"
+            generateEclipseToC="true"
+            showXXELogo="true"
+        />
+        
+        <!-- Copy javadocs -->
+        <copy todir="${dist.dir}/docs/docs/api" includeEmptyDirs="no">
+            <fileset dir="${build.dir}/api" />
         </copy>
         
         <!-- Package the distro -->
