@@ -340,7 +340,7 @@
 
 
     <!-- ================================================================= -->
-    <!-- JavaDoc                                                           -->
+    <!-- Generate docs                                                     -->
     <!-- ================================================================= -->
 
     <target depends="" name="javadoc" description="Build the JavaDocs" >
@@ -364,7 +364,6 @@
     </target>
 
     <target depends="" name="manual" description="Build the Manual" >
-        <!-- Generate Manual -->
         <docgen:transform
             srcdir="src/manual" destdir="${build.dir}/manual"
             generateEclipseToC="true"
