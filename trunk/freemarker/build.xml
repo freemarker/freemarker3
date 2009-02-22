@@ -44,7 +44,7 @@
         <!-- get src="${libs.location}/dom4j.jar" dest="lib/dom4j.jar" usetimestamp="true"/ -->
         <get src="${libs.location}/emma.jar" dest="lib/emma.jar" usetimestamp="true" />
         <get src="${libs.location}/emma_ant.jar" dest="lib/emma_ant.jar" usetimestamp="true" />
-    	<get src="${libs.location}/freecc.jar" dest="lib/freecc.jar" usetimestamp="true" />
+        <get src="${libs.location}/freecc.jar" dest="lib/freecc.jar" usetimestamp="true" />
         <get src="${libs.location}/freemarker-bootstrap.jar" dest="lib/freemarker-bootstrap.jar" usetimestamp="true" />
         <get src="${libs.location}/javarebel-sdk.jar" dest="lib/javarebel-sdk.jar" usetimestamp="true"/>
         <get src="${libs.location}/jaxen.jar" dest="lib/jaxen.jar" usetimestamp="true" />
