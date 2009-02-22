@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="freemarker/ext/jsp/FreeMarkerJspFactory2.java|freemarker/ext/jsp/FreeMarkerPageContext1.java|freemarker/ext/jsp/FreeMarkerPageContext2.java" kind="src" path="src"/>
+	<classpathentry excluding="freemarker/ext/jsp/FreeMarkerJspFactory2.java|freemarker/ext/jsp/FreeMarkerPageContext1.java|freemarker/ext/jsp/FreeMarkerPageContext2.java|freemarker/ext/dom/SunInternalXalanXPathSupport.java" kind="src" path="src"/>
 	<classpathentry kind="lib" path="lib/xalan.jar"/>
 	<classpathentry kind="lib" path="lib/servlet.jar"/>
 	<classpathentry kind="lib" path="lib/script.jar"/>
