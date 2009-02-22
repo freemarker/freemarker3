@@ -20169,7 +20169,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>set</literal>: These directives deprecate the
               <literal>assign</literal>, <literal>local</literal> and
               <literal>global</literal> directives, and allow all kind of
-              bocks having own "local variables", not just macros. <link
+              blocks having own "local variables", not just macros. <link
               linkend="dgui_misc_var_24pre">See more details and examples
               here...</link></para>
             </listitem>
