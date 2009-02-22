@@ -363,6 +363,14 @@
         </javadoc>
     </target>
 
+    <target depends="" name="manual" description="Build the Manual" >
+        <!-- Generate Manual -->
+        <docgen:transform
+            srcdir="src/manual" destdir="${build.dir}/manual"
+            generateEclipseToC="true"
+            showXXELogo="true"
+        />
+    </target>
 
     <!-- ====================== -->
     <!-- Distributuion building -->
@@ -376,7 +384,7 @@
     </target>
 
     <target name="_dist"
-            depends="jar, retrojar, javadoc"
+            depends="jar, retrojar, javadoc, manual"
             description="(Used internally; don't call it)"
     >
         <!-- Copy jars and sources and such into the distro -->
@@ -410,13 +418,11 @@
         <copy todir="${dist.dir}/docs" includeEmptyDirs="no">
             <fileset dir="${site.dir}/build/site" />
         </copy>
-        
-        <!-- Generate Manual -->
-        <docgen:transform
-            srcdir="src/manual" destdir="${dist.dir}/docs/docs"
-            generateEclipseToC="true"
-            showXXELogo="true"
-        />
+
+        <!-- Copy Manual -->
+        <copy todir="${dist.dir}/docs/docs" includeEmptyDirs="no">
+            <fileset dir="${build.dir}/manual" />
+        </copy>
         
         <!-- Copy javadocs -->
         <copy todir="${dist.dir}/docs/docs/api" includeEmptyDirs="no">
