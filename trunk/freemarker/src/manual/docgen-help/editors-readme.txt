@@ -26,9 +26,8 @@ Technical:
 
 - For the editing use XXE (XMLmind XML Editor), with its default XML
   *source* formatting settings (identation, max line length and like).
-  You should install the "DocBook for Freemarker" addon, which you can
-  find somwhere in the same SVN module as this file. (Tested with XXE
-  3.6.1.)
+  You should install the "DocBook 5 for Freemarker" addon, which you can
+  find in the "docgen" top-level SVN module.
 
 - Understand all document conventions in the Preface chapter (look at
   the XML source code of the examples there). Note that all
@@ -48,7 +47,8 @@ Technical:
     <literal&lt;if <replaceable>condition</replaceable>></literal>
     <literal><replaceable>templateDir</replaceable>/copyright.fm</literal>
 
-- Don't use deeper sectX than sect3.
+- Don't use deeper "sect1", "sect2", etc., use the "section" element instead.
+  Don't nest them deeper then 3 levels, however.
 
 - Lists:
   * When you have list where the list items are short (a few words),
