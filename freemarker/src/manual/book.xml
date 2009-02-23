@@ -267,7 +267,7 @@
         (like folders and files on your hard disk), that in this case could be
         visualized as:</para>
 
-        <para><programlisting role="dataModel">(root)
+        <programlisting role="dataModel">(root)
   |
   +- <emphasis>user</emphasis> = "Big Joe"
   |
@@ -275,7 +275,7 @@
       |
       +- <emphasis>url</emphasis> = "products/greenmouse.html"
       |
-      +- <emphasis>name</emphasis> = "green mouse"</programlisting></para>
+      +- <emphasis>name</emphasis> = "green mouse"</programlisting>
 
         <para>(To prevent misunderstandings: The data-model is not a text
         file, the above is just a visualization of a data-model for you. It's
@@ -915,7 +915,7 @@ All Rights Reserved.
           value need not be stored in a variable to be called a value, for
           example we have the value 100 here:</para>
 
-          <para><programlisting role="template">[#if cargo.weight &gt; <emphasis>100</emphasis>]Warning, heavy cargo![/#if]</programlisting></para>
+          <programlisting role="template">[#if cargo.weight &gt; <emphasis>100</emphasis>]Warning, heavy cargo![/#if]</programlisting>
 
           <para>Or the temporaly result of a calculations are also called
           values, like 20 and 120 when this template is executed (it will
@@ -19077,7 +19077,7 @@ or
             <link linkend="ref_builtin_c"><literal>c</literal>
             built-in</link>, for example:</para>
 
-            <para><programlisting role="template">font-size: ${<emphasis>fontSize?c</emphasis>}pt;</programlisting></para>
+            <programlisting role="template">font-size: ${<emphasis>fontSize?c</emphasis>}pt;</programlisting>
           </answer>
         </qandaentry>
 
@@ -20539,10 +20539,10 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
               <literal>null</literal>, then it defaults to
               <literal>50</literal>:</para>
 
-              <para><programlisting role="unspecified">@freemarker.template.Parameters("title, score=50")
+              <programlisting role="unspecified">@freemarker.template.Parameters("title, score=50")
 public String myMethod(String t, int sc) {
   ...
-}</programlisting></para>
+}</programlisting>
 
               <para>Assuming we access this method from the template as
               <literal>obj.myMethod</literal>, these are all legal calls to
@@ -26264,9 +26264,9 @@ ${obj.myMethod("foo")}</programlisting>
               number of digits to show after the decimal point. The following
               code specifies to show at least 3 digits after the decimal point
               but not more than 6. This is optional. This option is only
-              available if you use the #{...} syntax. <programlisting
+              available if you use the #{...} syntax.</para><programlisting
               role="template">  #{foo + bar ; m3M6}
-  </programlisting> (Note that the above is something of a stopgap measure.
+  </programlisting><para>(Note that the above is something of a stopgap measure.
               Future releases will move toward supporting fully
               internationalization and localization of number and currency
               formatting.</para>
@@ -26287,17 +26287,17 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Numerical ranges are supported. <programlisting
+              <para>Numerical ranges are supported.</para><programlisting
               role="template">   [#list 1990..2001 as year]
   blah blah in the year ${year} blah
-   [/#list]  </programlisting> The left hand and right hand sides of the
+   [/#list]  </programlisting><para>The left hand and right hand sides of the
               <literal>..</literal> operator must be numerical, or an
               exception is thrown. They also need not be literal numbers, but
               can be more complex expressions that evaluate to a numerical
               scalar value. Note that it is also possible to write a range
-              that descends in value: <programlisting role="template">  [#list 2001..1990 as year]
+              that descends in value:</para><programlisting role="template">  [#list 2001..1990 as year]
   blah blah in the year ${year} blah blah
-  [/#list]  </programlisting></para>
+  [/#list]  </programlisting>
             </listitem>
           </itemizedlist>
         </section>
@@ -26379,10 +26379,10 @@ ${obj.myMethod("foo")}</programlisting>
               in a &lt;list...&gt; or &lt;#foreach...&gt; block. If you have
               code that relied on this feature, there is an easy workaround,
               since you can simply define a list literal with exactly one
-              item. <programlisting role="template"> &lt;assign y=[x]&gt;
+              item.</para><programlisting role="template"> &lt;assign y=[x]&gt;
  <emphasis>and then...</emphasis>
  &lt;list y as item&gt;...&lt;/list&gt;
- </programlisting></para>
+ </programlisting>
             </listitem>
           </itemizedlist>
         </section>
