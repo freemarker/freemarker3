@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<book conformance="freemarker-documentation-conventions" version="5.0"
+<book conformance="docgen" version="5.0"
       xml:lang="en" xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns:ns5="http://www.w3.org/1999/xhtml"
@@ -1248,7 +1248,7 @@ brown</programlisting>
               the template author, is a restricted sequence. You cannot access
               its size or retrieve its subvariables by index, but they can be
               still listed with the <link
-              linkend="ref.directive.list"><markup>list</markup>
+              linkend="ref.directive.list"><literal>list</literal>
               directive</link>.</para>
             </listitem>
           </itemizedlist>
@@ -1646,7 +1646,7 @@ The average of the price of a python and an elephant is:
         <replaceable>something</replaceable>]<replaceable>...</replaceable>[/#if]</literal>,
         but just <literal>[#embed
         <replaceable>something</replaceable>]</literal> as FreeMarker knows
-        that the <markup>embed</markup> directive can't have nested
+        that the <literal>embed</literal> directive can't have nested
         content.</para>
 
         <para>The format of the
@@ -12772,36 +12772,36 @@ ${x?url}</programlisting>
 
           <itemizedlist spacing="compact">
             <listitem>
-              <para><markup>&lt;</markup> replaced with
-              <markup>&amp;lt;</markup></para>
+              <para><literal>&lt;</literal> replaced with
+              <literal>&amp;lt;</literal></para>
             </listitem>
 
             <listitem>
-              <para><markup>&gt;</markup> replaced with
-              <markup>&amp;gt;</markup></para>
+              <para><literal>&gt;</literal> replaced with
+              <literal>&amp;gt;</literal></para>
             </listitem>
 
             <listitem>
-              <para><markup>&amp;</markup> replaced with
-              <markup>&amp;amp;</markup></para>
+              <para><literal>&amp;</literal> replaced with
+              <literal>&amp;amp;</literal></para>
             </listitem>
 
             <listitem>
-              <para><markup>"</markup> replaced with
-              <markup>&amp;quot;</markup></para>
+              <para><literal>"</literal> replaced with
+              <literal>&amp;quot;</literal></para>
             </listitem>
 
             <listitem>
-              <para><markup>'</markup> replaced with
-              <markup>&amp;#39;</markup></para>
+              <para><literal>'</literal> replaced with
+              <literal>&amp;#39;</literal></para>
             </listitem>
           </itemizedlist>
 
           <para>The only difference between this built-in and the
           <literal>xml</literal> built-in is that the <literal>xhtml</literal>
-          built-in escapes <markup>'</markup> as <markup>&amp;#39;</markup>
-          instead of as <markup>&amp;apos;</markup>, because some older
-          browsers don't interpret <markup>&amp;apos;</markup>
+          built-in escapes <literal>'</literal> as <literal>&amp;#39;</literal>
+          instead of as <literal>&amp;apos;</literal>, because some older
+          browsers don't interpret <literal>&amp;apos;</literal>
           correctly.</para>
         </simplesect>
 
@@ -19084,7 +19084,7 @@ or
         <qandaentry xml:id="faq_number_boolean_formatting">
           <question>
             <para>Why does FreeMarker give an error when I try to print a
-            boolean like <markup>${aBoolean}</markup>, and how to fix
+            boolean like <literal>${aBoolean}</literal>, and how to fix
             it?</para>
           </question>
 
