@@ -194,9 +194,8 @@ public class AddConcatExpression extends Expression {
     extends ConcatenatedHash
     implements TemplateHashModelEx
     {
-        private Set<String> keySet;
-        private TemplateCollectionModel keys;
-        private TemplateCollectionModel values;
+        private CollectionAndSequence keys;
+        private CollectionAndSequence values;
         private int size;
 
         ConcatenatedHashEx(TemplateHashModelEx left, TemplateHashModelEx right)
@@ -228,20 +227,26 @@ public class AddConcatExpression extends Expression {
         throws TemplateModelException
         {
             if (keys == null) {
-                keySet = new HashSet<String>();
-                addKeys(keySet, (TemplateHashModelEx)this.left);
-                addKeys(keySet, (TemplateHashModelEx)this.right);
+                HashSet<String> keySet = new HashSet<String>();
+                SimpleSequence keySeq = new SimpleSequence(32);
+                addKeys(keySet, keySeq, (TemplateHashModelEx)this.left);
+                addKeys(keySet, keySeq, (TemplateHashModelEx)this.right);
                 size = keySet.size();
-                keys = new CollectionAndSequence(new SimpleSequence(keySet));
+                keys = new CollectionAndSequence(keySeq);
             }
         }
 
-        private static void addKeys(Set<String> set, TemplateHashModelEx hash)
+        private static void addKeys(Set<String> set, SimpleSequence keySeq, TemplateHashModelEx hash)
         throws TemplateModelException
         {
             TemplateModelIterator it = hash.keys().iterator();
             while (it.hasNext()) {
-                set.add(((TemplateScalarModel)it.next()).getAsString());
+                TemplateScalarModel tsm = (TemplateScalarModel)it.next();
+                if (set.add(tsm.getAsString())) {
+                    // The first occurence of the key decides the index;
+                    // this is consisten with stuff like java.util.LinkedHashSet.
+                    keySeq.add(tsm);
+                }
             }
         }        
 
@@ -249,11 +254,14 @@ public class AddConcatExpression extends Expression {
         throws TemplateModelException
         {
             if (values == null) {
-                List<String> list = new ArrayList<String>(size());
-                for (String s : keySet) {
-                	list.add(s);
+                SimpleSequence seq = new SimpleSequence(size());
+                // Note: size() invokes initKeys() if needed.
+            
+                int ln = keys.size();
+                for (int i  = 0; i < ln; i++) {
+                    seq.add(get(((TemplateScalarModel)keys.get(i)).getAsString()));
                 }
-                values = new CollectionAndSequence(new SimpleSequence(list));
+                values = new CollectionAndSequence(seq);
             }
         }
     }
