@@ -140,4 +140,5 @@
    <testcase name="curry" filename="test-curry.txt" />
    <testcase name="curry-import" filename="test-curry-import.ftl" />
    <testcase name="upvalue" filename="test-upvalue.ftl"/>
+   <testcase name="hashconcat" filename="test-hashconcat.ftl"/>
 </testcases>
