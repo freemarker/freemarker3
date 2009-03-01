@@ -3,6 +3,7 @@
 <project basedir="." default="jar" name="freemarker"
         xmlns:freecc="http://visigoths.org/freecc"
         xmlns:docgen="http://freemarker.org/docgen"
+        xmlns:ivy="antlib:org.apache.ivy.ant"
 >
 
     <!-- ================================================================== -->
@@ -31,40 +32,6 @@
     <!-- ================================================================== -->
     <!-- Initialization                                                     -->
     <!-- ================================================================== -->
-
-    <target name="fetchlibs" unless="all.libs.present"
-            description="fetch build dependencies and put them in lib directory"
-    >
-        <mkdir dir="lib" />
-        <echo>Fetching libraries from server.</echo>
-        <get src="${libs.location}/README.txt" dest="lib/README.txt" usetimestamp="true" />
-        <get src="${libs.location}/ant.jar" dest="lib/ant.jar" usetimestamp="true" />
-        <get src="${libs.location}/backport-util-concurrent-3.1.jar" dest="lib/backport-util-concurrent-3.1.jar" usetimestamp="true" />
-        <get src="${libs.location}/cavalry.jar" dest="lib/cavalry.jar" usetimestamp="true" />
-        <!-- get src="${libs.location}/dom4j.jar" dest="lib/dom4j.jar" usetimestamp="true"/ -->
-        <get src="${libs.location}/emma.jar" dest="lib/emma.jar" usetimestamp="true" />
-        <get src="${libs.location}/emma_ant.jar" dest="lib/emma_ant.jar" usetimestamp="true" />
-        <get src="${libs.location}/freecc.jar" dest="lib/freecc.jar" usetimestamp="true" />
-        <get src="${libs.location}/freemarker-bootstrap.jar" dest="lib/freemarker-bootstrap.jar" usetimestamp="true" />
-        <get src="${libs.location}/javarebel-sdk.jar" dest="lib/javarebel-sdk.jar" usetimestamp="true"/>
-        <get src="${libs.location}/jaxen.jar" dest="lib/jaxen.jar" usetimestamp="true" />
-        <!-- get src="${libs.location}/jdom.jar" dest="lib/jdom.jar" usetimestamp="true"/ -->
-        <get src="${libs.location}/jruby.jar" dest="lib/jruby.jar" usetimestamp="true" />
-        <get src="${libs.location}/js.jar" dest="lib/js.jar" usetimestamp="true" />
-        <get src="${libs.location}/jsp-api-1.2.jar" dest="lib/jsp-api-1.2.jar" usetimestamp="true" />
-        <get src="${libs.location}/jsp-api-2.0.jar" dest="lib/jsp-api-2.0.jar" usetimestamp="true" />
-        <get src="${libs.location}/jsp-api-2.1.jar" dest="lib/jsp-api-2.1.jar" usetimestamp="true" />
-        <get src="${libs.location}/junit.jar" dest="lib/junit.jar" usetimestamp="true" />
-        <get src="${libs.location}/jython-2.2.1.jar" dest="lib/jython-2.2.1.jar" usetimestamp="true" />
-        <get src="${libs.location}/log4j.jar" dest="lib/log4j.jar" usetimestamp="true" />
-        <get src="${libs.location}/retrotranslator-transformer-1.2.3.jar" dest="lib/retrotranslator-transformer-1.2.3.jar" usetimestamp="true" />
-        <get src="${libs.location}/retrotranslator-runtime-1.2.3.jar" dest="lib/retrotranslator-runtime-1.2.3.jar" usetimestamp="true" />
-        <get src="${libs.location}/saxpath.jar" dest="lib/saxpath.jar" usetimestamp="true" />
-        <get src="${libs.location}/script.jar" dest="lib/script.jar" usetimestamp="true" />
-        <get src="${libs.location}/servlet.jar" dest="lib/servlet.jar" usetimestamp="true" />
-        <get src="${libs.location}/struts.jar" dest="lib/struts.jar" usetimestamp="true" />
-        <get src="${libs.location}/xalan.jar" dest="lib/xalan.jar" usetimestamp="true" />
-    </target>
    
     <target name="clean" description="get rid of all generated files">
         <delete dir="build" />
@@ -79,76 +46,35 @@
         <delete file="src/freemarker/core/parser/Node.java" />
         <delete file="freemarker.jar" />
         <delete file="freemarker-14compat.jar" />
-        
-        <!-- Forces up-to-date check (task.@unless is ignored by "antcall"): -->
-        <antcall target="fetchlibs" />
     </target>
 
     <target name="init"
             description="fetch dependencies if any are missing and create the build directory if necessary"
     >
-        <mkdir dir="build" />
-        <condition property="all.libs.present">
-            <and>
-                <available file="lib/ant.jar" />
-                <available file="lib/cavalry.jar" />
-                <!--available file="lib/dom4j.jar"/-->
-                <available file="lib/emma.jar" />
-                <available file="lib/emma_ant.jar" />
-                <available file="lib/freemarker-bootstrap.jar" />
-                <available file="lib/javarebel-sdk.jar"/>
-                <available file="lib/jaxen.jar" />
-                <!--available file="lib/jdom.jar"/-->
-                <available file="lib/js.jar" />
-                <available file="lib/jsp-api-1.2.jar" />
-                <available file="lib/jsp-api-2.0.jar" />
-                <available file="lib/jsp-api-2.1.jar" />
-                <available file="lib/junit.jar" />
-                <available file="lib/jython-2.2.1.jar" />
-                <available file="lib/freecc.jar" />
-                <available file="lib/log4j.jar" />
-                <available file="lib/retrotranslator-transformer-1.2.3.jar" />
-                <available file="lib/retrotranslator-runtime-1.2.3.jar" />
-                <available file="lib/backport-util-concurrent-3.1.jar" />
-                <available file="lib/saxpath.jar" />
-                <available file="lib/script.jar" />
-                <available file="lib/servlet.jar" />
-                <available file="lib/struts.jar" />
-                <available file="lib/xalan.jar" />
-            </and>
-        </condition>
-        <antcall target="fetchlibs" />
-	<uptodate property="parser.uptodate"
+        <mkdir dir="build"/>
+        <uptodate property="parser.uptodate"
                 targetfile="src/freemarker/core/parser/FMParser.java">
-	    <srcfiles dir="src/parser" includes="*.freecc" />
-	</uptodate>
+	        <srcfiles dir="src/parser" includes="*.freecc" />
+        </uptodate>
+    	<ivy:settings url="http://freemarker.org/repos/ivy/fm-ivysettings.xml" id="fm.instance" />
     </target>
-    
-    <!-- ================================================================= -->
-    <!-- Task definitions                                                  -->
-    <!-- ================================================================= -->
-    
-    <taskdef resource="org/freemarker/docgen/antlib.properties"
-            uri="http://freemarker.org/docgen"
-            classpath="${docgen.dir}/lib/docgen.jar"
-    />
 
-    <taskdef name="generate" classname="org.visigoths.freecc.FreeCCAntTask"
-            uri="http://visigoths.org/freecc"
-            classpath="lib/freecc.jar:lib/freemarker-bootstrap.jar"
-    />
-    
     <!-- ================================================================= -->
     <!-- Compilation                                                       -->
     <!-- ================================================================= -->
-
    <target name="freecc" depends="init" unless="parser.uptodate"
             description="Build the parser from its grammar file"
     >
+   	    <ivy:retrieve settingsRef="fm.instance" conf="parser" pattern="lib/[artifact].[ext]"/>
+   	    <taskdef name="generate" classname="org.visigoths.freecc.FreeCCAntTask"
+   	            uri="http://visigoths.org/freecc"
+   	            classpath="lib/freecc.jar:lib/freemarker-bootstrap.jar"
+   	    />
         <freecc:generate src="src/parser/FM.freecc"/> 
    </target>
    
    <target name="compile" depends="freecc">
+   	<ivy:retrieve settingsRef="fm.instance" conf="build"/>
    	<mkdir dir="${classes.dir}" />
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
                 debug="on" optimize="off" target="1.5" source="1.5"
@@ -220,6 +146,7 @@
        <copy todir="${classes.dir}/freemarker/testcase">
            <fileset dir="src/freemarker/testcase" />
        </copy>
+   	   <ivy:retrieve settingsRef="fm.instance" conf="emma" pattern="lib/[artifact].[ext]"/>
        <path id="emma.lib" >
            <pathelement location="lib/emma.jar" />
            <pathelement location="lib/emma_ant.jar" />
@@ -306,9 +233,11 @@
              todir="retrobuild" />
        </junit>
    </target>
-   
+
    <target name="retrotrans" depends="compile" description="Run Retrotranslator over the .class files">
+   	   <ivy:retrieve settingsRef="fm.instance" conf="build1.4"/>
        <mkdir dir="retrobuild" />
+
        <taskdef name="retrotranslator" classpathref="build.class.path"
            classname="net.sf.retrotranslator.transformer.RetrotranslatorTask" />
        <copy file="${classes.dir}/freemarker/core/SecureRendererImpl.clazz" tofile="retrobuild/freemarker/core/SecureRendererImpl.class" />
@@ -322,7 +251,6 @@
        
        <copy file="retrobuild/freemarker/core/SecureRendererImpl.class" tofile="retrobuild/freemarker/core/SecureRendererImpl.clazz" />
    </target>
-   
     <target name="retrojar" depends="retrotrans" description="Build a .jar file that can be run under 1.4">
         <copy toDir="retrobuild">
           <fileset dir="src"
@@ -368,6 +296,11 @@
     </target>
 
     <target depends="" name="manual" description="Build the Manual" >
+    	<ivy:retrieve settingsRef="fm.instance" conf="manual" pattern="lib/[artifact].[ext]"/>
+    	<taskdef resource="org/freemarker/docgen/antlib.properties"
+    	            uri="http://freemarker.org/docgen"
+    	            classpath="lib/docgen.jar:freemarker.jar"
+    	    />
         <docgen:transform
             srcdir="src/manual" destdir="${build.dir}/manual"
             generateEclipseToC="true"
@@ -415,12 +348,8 @@
         />
 
         <!-- Generate website pages and copy them into distro -->
-        <ant dir="${site.dir}" target="all">
-            <property name="site.offline" value="yes" />
-        </ant>
-        <copy todir="${dist.dir}/docs" includeEmptyDirs="no">
-            <fileset dir="${site.dir}/build/site" />
-        </copy>
+    	<ivy:retrieve conf="site" pattern="build/[artifact].[ext]" />
+    	<untar compression="gzip" src="build/site.tar.gz" dest="${dist.dir}/docs" />
 
         <!-- Copy Manual -->
         <copy todir="${dist.dir}/docs/docs" includeEmptyDirs="no">
