@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<book conformance="docgen" version="5.0"
-      xml:lang="en" xmlns="http://docbook.org/ns/docbook"
+<book conformance="docgen" version="5.0" xml:lang="en"
+      xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       xmlns:ns5="http://www.w3.org/1999/xhtml"
       xmlns:ns4="http://www.w3.org/2000/svg"
@@ -2036,93 +2036,90 @@ this is a backslash: \</programlisting>
             other usage of backlash in string literals is an error and any
             attempt to use the template will fail.</para>
 
-            <informaltable frame="all">
-              <tgroup align="left" cols="2" colsep="1" rowsep="1">
-                <thead>
-                  <row>
-                    <entry>Escape sequence</entry>
+            <informaltable border="1">
+              <thead>
+                <tr>
+                  <th>Escape sequence</th>
 
-                    <entry>Meaning</entry>
-                  </row>
-                </thead>
+                  <th>Meaning</th>
+                </tr>
+              </thead>
 
-                <tbody>
-                  <row>
-                    <entry><literal>\"</literal></entry>
+              <tbody>
+                <tr>
+                  <td><literal>\"</literal></td>
 
-                    <entry>Quotation mark (u0022)</entry>
-                  </row>
+                  <td>Quotation mark (u0022)</td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\'</literal></entry>
+                <tr>
+                  <td><literal>\'</literal></td>
 
-                    <entry>Apostrophe (a.k.a. apostrophe-quote)
-                    (u0027)</entry>
-                  </row>
+                  <td>Apostrophe (a.k.a. apostrophe-quote) (u0027)</td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\\</literal></entry>
+                <tr>
+                  <td><literal>\\</literal></td>
 
-                    <entry>Back slash (u005C)</entry>
-                  </row>
+                  <td>Back slash (u005C)</td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\n</literal></entry>
+                <tr>
+                  <td><literal>\n</literal></td>
 
-                    <entry>Line feed (u000A)</entry>
-                  </row>
+                  <td>Line feed (u000A)</td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\r</literal></entry>
+                <tr>
+                  <td><literal>\r</literal></td>
 
-                    <entry>Carriage return (u000D)</entry>
-                  </row>
+                  <td>Carriage return (u000D)</td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\t</literal></entry>
+                <tr>
+                  <td><literal>\t</literal></td>
 
-                    <entry>Horizontal tabulation (a.k.a. tab) (u0009)</entry>
-                  </row>
+                  <td>Horizontal tabulation (a.k.a. tab) (u0009)</td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\b</literal></entry>
+                <tr>
+                  <td><literal>\b</literal></td>
 
-                    <entry>Backspace (u0008)</entry>
-                  </row>
+                  <td>Backspace (u0008)</td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\f</literal></entry>
+                <tr>
+                  <td><literal>\f</literal></td>
 
-                    <entry>Form feed (u000C)</entry>
-                  </row>
+                  <td>Form feed (u000C)</td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\l</literal></entry>
+                <tr>
+                  <td><literal>\l</literal></td>
 
-                    <entry>Less-than sign: <literal>&lt;</literal></entry>
-                  </row>
+                  <td>Less-than sign: <literal>&lt;</literal></td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\g</literal></entry>
+                <tr>
+                  <td><literal>\g</literal></td>
 
-                    <entry>Greater-than sign: <literal>&gt;</literal></entry>
-                  </row>
+                  <td>Greater-than sign: <literal>&gt;</literal></td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\a</literal></entry>
+                <tr>
+                  <td><literal>\a</literal></td>
 
-                    <entry>Ampersand: <literal>&amp;</literal></entry>
-                  </row>
+                  <td>Ampersand: <literal>&amp;</literal></td>
+                </tr>
 
-                  <row>
-                    <entry><literal>\x<replaceable>Code</replaceable></literal></entry>
+                <tr>
+                  <td><literal>\x<replaceable>Code</replaceable></literal></td>
 
-                    <entry>Character given with its hexadecimal <link
-                    linkend="gloss.unicode">Unicode</link> code (<link
-                    linkend="gloss.UCS">UCS</link> code)</entry>
-                  </row>
-                </tbody>
-              </tgroup>
+                  <td>Character given with its hexadecimal <link
+                  linkend="gloss.unicode">Unicode</link> code (<link
+                  linkend="gloss.UCS">UCS</link> code)</td>
+                </tr>
+              </tbody>
             </informaltable>
 
             <para>The <literal><replaceable>Code</replaceable></literal> after
@@ -3580,82 +3577,79 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
           <literal>-</literal>) of equal precedence appear next to each other,
           they are evaluated in left-to-right order.</para>
 
-          <informaltable frame="all">
-            <tgroup align="left" cols="2" colsep="1" rowsep="1">
-              <thead>
-                <row>
-                  <entry>Operator group</entry>
+          <informaltable border="1">
+            <thead>
+              <tr>
+                <th>Operator group</th>
 
-                  <entry>Operators</entry>
-                </row>
-              </thead>
+                <th>Operators</th>
+              </tr>
+            </thead>
 
-              <tbody>
-                <row>
-                  <entry>highest precedence operators</entry>
+            <tbody>
+              <tr>
+                <td>highest precedence operators</td>
 
-                  <entry><literal>[<replaceable>subvarName</replaceable>]
-                  [<replaceable>subStringRange</replaceable>] . ?
-                  (<replaceable>methodParams</replaceable>)
-                  <replaceable>expr</replaceable>!
-                  <replaceable>expr</replaceable>!<replaceable>default
-                  </replaceable><replaceable>expr</replaceable>??</literal></entry>
-                </row>
+                <td><literal>[<replaceable>subvarName</replaceable>]
+                [<replaceable>subStringRange</replaceable>] . ?
+                (<replaceable>methodParams</replaceable>)
+                <replaceable>expr</replaceable>!
+                <replaceable>expr</replaceable>!<replaceable>default
+                </replaceable><replaceable>expr</replaceable>??</literal></td>
+              </tr>
 
-                <row>
-                  <entry>unary prefix operators</entry>
+              <tr>
+                <td>unary prefix operators</td>
 
-                  <entry><literal>+<replaceable>expr</replaceable>
-                  -<replaceable>expr</replaceable>
-                  !<replaceable>expr</replaceable></literal></entry>
-                </row>
+                <td><literal>+<replaceable>expr</replaceable>
+                -<replaceable>expr</replaceable>
+                !<replaceable>expr</replaceable></literal></td>
+              </tr>
 
-                <row>
-                  <entry>multiplicative</entry>
+              <tr>
+                <td>multiplicative</td>
 
-                  <entry><literal>* / %</literal></entry>
-                </row>
+                <td><literal>* / %</literal></td>
+              </tr>
 
-                <row>
-                  <entry>additive</entry>
+              <tr>
+                <td>additive</td>
 
-                  <entry><literal>+ -</literal></entry>
-                </row>
+                <td><literal>+ -</literal></td>
+              </tr>
 
-                <row>
-                  <entry>relational</entry>
+              <tr>
+                <td>relational</td>
 
-                  <entry><literal>&lt; &gt; &lt;= &gt;=</literal> (and
-                  quivalents: <literal>gt</literal>, <literal>lt</literal>,
-                  etc.)</entry>
-                </row>
+                <td><literal>&lt; &gt; &lt;= &gt;=</literal> (and quivalents:
+                <literal>gt</literal>, <literal>lt</literal>, etc.)</td>
+              </tr>
 
-                <row>
-                  <entry>equality</entry>
+              <tr>
+                <td>equality</td>
 
-                  <entry><literal>== !=</literal> (and equivalents:
-                  <literal>=</literal>)</entry>
-                </row>
+                <td><literal>== !=</literal> (and equivalents:
+                <literal>=</literal>)</td>
+              </tr>
 
-                <row>
-                  <entry>logical AND</entry>
+              <tr>
+                <td>logical AND</td>
 
-                  <entry><literal>&amp;&amp;</literal></entry>
-                </row>
+                <td><literal>&amp;&amp;</literal></td>
+              </tr>
 
-                <row>
-                  <entry>logical OR</entry>
+              <tr>
+                <td>logical OR</td>
 
-                  <entry><literal>||</literal></entry>
-                </row>
+                <td><literal>||</literal></td>
+              </tr>
 
-                <row>
-                  <entry>numerical range</entry>
+              <tr>
+                <td>numerical range</td>
 
-                  <entry><literal>..</literal></entry>
-                </row>
-              </tbody>
-            </tgroup>
+                <td><literal>..</literal></td>
+              </tr>
+            </tbody>
           </informaltable>
 
           <para>For those of you who master C, Java language or JavaScript,
@@ -6630,48 +6624,46 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         sense that you use <literal>@</literal> to call them instead of
         <literal>#</literal>):</para>
 
-        <informaltable frame="all">
-          <tgroup align="left" cols="2" colsep="1" rowsep="1">
-            <thead>
-              <row>
-                <entry>name</entry>
+        <informaltable border="1">
+          <thead>
+            <tr>
+              <th>name</th>
 
-                <entry>class</entry>
-              </row>
-            </thead>
+              <th>class</th>
+            </tr>
+          </thead>
 
-            <tbody>
-              <row>
-                <entry><literal>capture_output</literal></entry>
+          <tbody>
+            <tr>
+              <td><literal>capture_output</literal></td>
 
-                <entry><literal>freemarker.template.utility.CaptureOutput</literal></entry>
-              </row>
+              <td><literal>freemarker.template.utility.CaptureOutput</literal></td>
+            </tr>
 
-              <row>
-                <entry><literal>compress</literal></entry>
+            <tr>
+              <td><literal>compress</literal></td>
 
-                <entry><literal>freemarker.template.utility.StandardCompress</literal></entry>
-              </row>
+              <td><literal>freemarker.template.utility.StandardCompress</literal></td>
+            </tr>
 
-              <row>
-                <entry><literal>html_escape</literal></entry>
+            <tr>
+              <td><literal>html_escape</literal></td>
 
-                <entry><literal>freemarker.template.utility.HtmlEscape</literal></entry>
-              </row>
+              <td><literal>freemarker.template.utility.HtmlEscape</literal></td>
+            </tr>
 
-              <row>
-                <entry><literal>normalize_newlines</literal></entry>
+            <tr>
+              <td><literal>normalize_newlines</literal></td>
 
-                <entry><literal>freemarker.template.utility.NormalizeNewlines</literal></entry>
-              </row>
+              <td><literal>freemarker.template.utility.NormalizeNewlines</literal></td>
+            </tr>
 
-              <row>
-                <entry><literal>xml_escape</literal></entry>
+            <tr>
+              <td><literal>xml_escape</literal></td>
 
-                <entry><literal>freemarker.template.utility.XmlEscape</literal></entry>
-              </row>
-            </tbody>
-          </tgroup>
+              <td><literal>freemarker.template.utility.XmlEscape</literal></td>
+            </tr>
+          </tbody>
         </informaltable>
       </section>
 
@@ -6714,79 +6706,74 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         value of that setting. For example (settings A to F are just imaginary
         settings for this example):</para>
 
-        <informaltable frame="all">
-          <tgroup align="center" cols="7" colsep="1" rowsep="1">
-            <thead>
-              <row>
-                <entry></entry>
+        <informaltable border="1">
+          <thead>
+            <tr>
+              <th></th>
 
-                <entry>Setting A</entry>
+              <th>Setting A</th>
 
-                <entry>Setting B</entry>
+              <th>Setting B</th>
 
-                <entry>Setting C</entry>
+              <th>Setting C</th>
 
-                <entry>Setting D</entry>
+              <th>Setting D</th>
 
-                <entry>Setting E</entry>
+              <th>Setting E</th>
 
-                <entry>Setting F</entry>
-              </row>
-            </thead>
+              <th>Setting F</th>
+            </tr>
+          </thead>
 
-            <tbody>
-              <row>
-                <entry align="left">Layer 3:
-                <literal>Environment</literal></entry>
+          <tbody>
+            <tr>
+              <td>Layer 3: <literal>Environment</literal></td>
 
-                <entry>1</entry>
+              <td>1</td>
 
-                <entry>-</entry>
+              <td>-</td>
 
-                <entry>-</entry>
+              <td>-</td>
 
-                <entry>1</entry>
+              <td>1</td>
 
-                <entry>-</entry>
+              <td>-</td>
 
-                <entry>-</entry>
-              </row>
+              <td>-</td>
+            </tr>
 
-              <row>
-                <entry align="left">Layer 2:
-                <literal>Template</literal></entry>
+            <tr>
+              <td>Layer 2: <literal>Template</literal></td>
 
-                <entry>2</entry>
+              <td>2</td>
 
-                <entry>2</entry>
+              <td>2</td>
 
-                <entry>-</entry>
+              <td>-</td>
 
-                <entry>-</entry>
+              <td>-</td>
 
-                <entry>2</entry>
+              <td>2</td>
 
-                <entry>-</entry>
-              </row>
+              <td>-</td>
+            </tr>
 
-              <row>
-                <entry align="left">Layer 1:
-                <literal>Configuration</literal></entry>
+            <tr>
+              <td>Layer 1: <literal>Configuration</literal></td>
 
-                <entry>3</entry>
+              <td>3</td>
 
-                <entry>3</entry>
+              <td>3</td>
 
-                <entry>3</entry>
+              <td>3</td>
 
-                <entry>3</entry>
+              <td>3</td>
 
-                <entry>-</entry>
+              <td>-</td>
 
-                <entry>-</entry>
-              </row>
-            </tbody>
-          </tgroup>
+              <td>-</td>
+            </tr>
+          </tbody>
         </informaltable>
 
         <para>The effective value of settings will be: A = 1, B = 2, C = 3, D
@@ -8358,44 +8345,41 @@ TemplateHashModel roundingModeEnums =
         the logger hierarchy whose top-level logger is named
         <literal>freemarker</literal>. Currently used loggers are:</para>
 
-        <informaltable frame="all">
-          <tgroup align="left" cols="2" colsep="1" rowsep="1">
-            <thead>
-              <row>
-                <entry>Logger name</entry>
+        <informaltable border="1">
+          <thead>
+            <tr>
+              <th>Logger name</th>
 
-                <entry>Purpose</entry>
-              </row>
-            </thead>
+              <th>Purpose</th>
+            </tr>
+          </thead>
 
-            <tbody>
-              <row>
-                <entry><literal>freemarker.beans</literal></entry>
+          <tbody>
+            <tr>
+              <td><literal>freemarker.beans</literal></td>
 
-                <entry>Logs messages of the Beans wrapper module.</entry>
-              </row>
+              <td>Logs messages of the Beans wrapper module.</td>
+            </tr>
 
-              <row>
-                <entry><literal>freemarker.cache</literal></entry>
+            <tr>
+              <td><literal>freemarker.cache</literal></td>
 
-                <entry>Logs messages related to template loading and
-                caching.</entry>
-              </row>
+              <td>Logs messages related to template loading and caching.</td>
+            </tr>
 
-              <row>
-                <entry><literal>freemarker.runtime</literal></entry>
+            <tr>
+              <td><literal>freemarker.runtime</literal></td>
 
-                <entry>Logs template exceptions thrown during template
-                processing.</entry>
-              </row>
+              <td>Logs template exceptions thrown during template
+              processing.</td>
+            </tr>
 
-              <row>
-                <entry><literal>freemarker.servlet</literal></entry>
+            <tr>
+              <td><literal>freemarker.servlet</literal></td>
 
-                <entry>Logs messages of the FreemarkerServlet class.</entry>
-              </row>
-            </tbody>
-          </tgroup>
+              <td>Logs messages of the FreemarkerServlet class.</td>
+            </tr>
+          </tbody>
         </informaltable>
 
         <para>FreeMarker will look for the logging packages in this order, and
@@ -9429,236 +9413,227 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
           all attributes of the elements in the node list. There are many more
           such keys; here's a detailed summary of all the hash keys:</para>
 
-          <informaltable frame="all">
-            <tgroup align="left" cols="2" colsep="1" rowsep="1">
-              <thead>
-                <row>
-                  <entry>Key name</entry>
+          <informaltable border="1">
+            <thead>
+              <tr>
+                <th>Key name</th>
 
-                  <entry>Evaluates to</entry>
-                </row>
-              </thead>
+                <th>Evaluates to</th>
+              </tr>
+            </thead>
 
-              <tbody>
-                <row>
-                  <entry><literal>*</literal> or
-                  <literal>_children</literal></entry>
+            <tbody>
+              <tr>
+                <td><literal>*</literal> or <literal>_children</literal></td>
 
-                  <entry>all direct element children of current nodes
-                  (non-recursive). Applicable to element and document
-                  nodes.</entry>
-                </row>
+                <td>all direct element children of current nodes
+                (non-recursive). Applicable to element and document
+                nodes.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>@*</literal> or
-                  <literal>_attributes</literal></entry>
+              <tr>
+                <td><literal>@*</literal> or
+                <literal>_attributes</literal></td>
 
-                  <entry>all attributes of current nodes. Applicable to
-                  elements only.</entry>
-                </row>
+                <td>all attributes of current nodes. Applicable to elements
+                only.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>@<replaceable>attributeName</replaceable></literal></entry>
+              <tr>
+                <td><literal>@<replaceable>attributeName</replaceable></literal></td>
 
-                  <entry>named attributes of current nodes. Applicable to
-                  elements, doctypes and processing instructions. On doctypes
-                  it supports attributes <literal>publicId</literal>,
-                  <literal>systemId</literal> and
-                  <literal>elementName</literal>. On processing instructions,
-                  it supports attributes <literal>target</literal> and
-                  <literal>data</literal>, as well as any other attribute name
-                  specified in data as <literal>name="value"</literal> pair.
-                  The attribute nodes for doctype and processing instruction
-                  are synthetic, and as such have no parent. Note, however
-                  that <literal>@*</literal> does NOT operate on doctypes or
-                  processing instructions.</entry>
-                </row>
+                <td>named attributes of current nodes. Applicable to elements,
+                doctypes and processing instructions. On doctypes it supports
+                attributes <literal>publicId</literal>,
+                <literal>systemId</literal> and
+                <literal>elementName</literal>. On processing instructions, it
+                supports attributes <literal>target</literal> and
+                <literal>data</literal>, as well as any other attribute name
+                specified in data as <literal>name="value"</literal> pair. The
+                attribute nodes for doctype and processing instruction are
+                synthetic, and as such have no parent. Note, however that
+                <literal>@*</literal> does NOT operate on doctypes or
+                processing instructions.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_ancestor</literal></entry>
+              <tr>
+                <td><literal>_ancestor</literal></td>
 
-                  <entry>all ancestors up to root element (recursive) of
-                  current nodes. Applicable to same node types as
-                  <literal>_parent</literal>.</entry>
-                </row>
+                <td>all ancestors up to root element (recursive) of current
+                nodes. Applicable to same node types as
+                <literal>_parent</literal>.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_ancestorOrSelf</literal></entry>
+              <tr>
+                <td><literal>_ancestorOrSelf</literal></td>
 
-                  <entry>all ancestors of current nodes plus current nodes.
-                  Applicable to same node types as
-                  <literal>_parent</literal>.</entry>
-                </row>
+                <td>all ancestors of current nodes plus current nodes.
+                Applicable to same node types as
+                <literal>_parent</literal>.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_cname</literal></entry>
+              <tr>
+                <td><literal>_cname</literal></td>
 
-                  <entry>the canonical names of current nodes (namespace URI +
-                  local name), one string per node (non-recursive). Applicable
-                  to elements and attributes</entry>
-                </row>
+                <td>the canonical names of current nodes (namespace URI +
+                local name), one string per node (non-recursive). Applicable
+                to elements and attributes</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_content</literal></entry>
+              <tr>
+                <td><literal>_content</literal></td>
 
-                  <entry>the complete content of current nodes, including
-                  children elements, text, entity references, and processing
-                  instructions (non-recursive). Applicable to elements and
-                  documents.</entry>
-                </row>
+                <td>the complete content of current nodes, including children
+                elements, text, entity references, and processing instructions
+                (non-recursive). Applicable to elements and documents.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_descendant</literal></entry>
+              <tr>
+                <td><literal>_descendant</literal></td>
 
-                  <entry>all recursive descendant element children of current
-                  nodes. Applicable to document and element nodes.</entry>
-                </row>
+                <td>all recursive descendant element children of current
+                nodes. Applicable to document and element nodes.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_descendantOrSelf</literal></entry>
+              <tr>
+                <td><literal>_descendantOrSelf</literal></td>
 
-                  <entry>all recursive descendant element children of current
-                  nodes plus current nodes. Applicable to document and element
-                  nodes.</entry>
-                </row>
+                <td>all recursive descendant element children of current nodes
+                plus current nodes. Applicable to document and element
+                nodes.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_document</literal></entry>
+              <tr>
+                <td><literal>_document</literal></td>
 
-                  <entry>all documents the current nodes belong to. Applicable
-                  to all nodes except text.</entry>
-                </row>
+                <td>all documents the current nodes belong to. Applicable to
+                all nodes except text.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_doctype</literal></entry>
+              <tr>
+                <td><literal>_doctype</literal></td>
 
-                  <entry>doctypes of the current nodes. Applicable to document
-                  nodes only.</entry>
-                </row>
+                <td>doctypes of the current nodes. Applicable to document
+                nodes only.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_filterType</literal></entry>
+              <tr>
+                <td><literal>_filterType</literal></td>
 
-                  <entry>is a filter-by-type template method model. When
-                  called, it will yield a node list that contains only those
-                  current nodes whose type matches one of types passed as
-                  argument. You should pass arbitrary number of strings to
-                  this method containing the names of types to keep. Valid
-                  type names are: "attribute", "cdata", "comment", "document",
-                  "documentType", "element", "entity", "entityReference",
-                  "processingInstruction", "text".</entry>
-                </row>
+                <td>is a filter-by-type template method model. When called, it
+                will yield a node list that contains only those current nodes
+                whose type matches one of types passed as argument. You should
+                pass arbitrary number of strings to this method containing the
+                names of types to keep. Valid type names are: "attribute",
+                "cdata", "comment", "document", "documentType", "element",
+                "entity", "entityReference", "processingInstruction",
+                "text".</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_name</literal></entry>
+              <tr>
+                <td><literal>_name</literal></td>
 
-                  <entry>the names of current nodes, one string per node
-                  (non-recursive). Applicable to elements and attributes
-                  (returns their local names), entities, processing
-                  instructions (returns its target), doctypes (returns its
-                  public ID)</entry>
-                </row>
+                <td>the names of current nodes, one string per node
+                (non-recursive). Applicable to elements and attributes
+                (returns their local names), entities, processing instructions
+                (returns its target), doctypes (returns its public ID)</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_nsprefix</literal></entry>
+              <tr>
+                <td><literal>_nsprefix</literal></td>
 
-                  <entry>the namespace prefixes of current nodes, one string
-                  per node (non-recursive). Applicable to elements and
-                  attributes</entry>
-                </row>
+                <td>the namespace prefixes of current nodes, one string per
+                node (non-recursive). Applicable to elements and
+                attributes</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_nsuri</literal></entry>
+              <tr>
+                <td><literal>_nsuri</literal></td>
 
-                  <entry>the namespace URIs of current nodes, one string per
-                  node (non-recursive). Applicable to elements and
-                  attributes</entry>
-                </row>
+                <td>the namespace URIs of current nodes, one string per node
+                (non-recursive). Applicable to elements and attributes</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_parent</literal></entry>
+              <tr>
+                <td><literal>_parent</literal></td>
 
-                  <entry>parent elements of current nodes. Applicable to
-                  element, attribute, comment, entity, processing
-                  instruction.</entry>
-                </row>
+                <td>parent elements of current nodes. Applicable to element,
+                attribute, comment, entity, processing instruction.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_qname</literal></entry>
+              <tr>
+                <td><literal>_qname</literal></td>
 
-                  <entry>the qualified names of current nodes in
-                  <literal>[namespacePrefix:]localName</literal> form, one
-                  string per node (non-recursive). Applicable to elements and
-                  attributes</entry>
-                </row>
+                <td>the qualified names of current nodes in
+                <literal>[namespacePrefix:]localName</literal> form, one
+                string per node (non-recursive). Applicable to elements and
+                attributes</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_registerNamespace(prefix,
-                  uri)</literal></entry>
+              <tr>
+                <td><literal>_registerNamespace(prefix, uri)</literal></td>
 
-                  <entry>register a XML namespace with the specified prefix
-                  and URI for the current node list and all node lists that
-                  are derived from the current node list. After registering,
-                  you can use the
-                  <literal>nodelist["prefix:localname"]</literal> or
-                  <literal>nodelist["@prefix:localname"]</literal> syntaxes to
-                  reach elements and attributes whose names are
-                  namespace-scoped. Note that the namespace prefix need not
-                  match the actual prefix used by the XML document itself
-                  since namespaces are compared solely by their URI.</entry>
-                </row>
+                <td>register a XML namespace with the specified prefix and URI
+                for the current node list and all node lists that are derived
+                from the current node list. After registering, you can use the
+                <literal>nodelist["prefix:localname"]</literal> or
+                <literal>nodelist["@prefix:localname"]</literal> syntaxes to
+                reach elements and attributes whose names are
+                namespace-scoped. Note that the namespace prefix need not
+                match the actual prefix used by the XML document itself since
+                namespaces are compared solely by their URI.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_text</literal></entry>
+              <tr>
+                <td><literal>_text</literal></td>
 
-                  <entry>the text of current nodes, one string per node
-                  (non-recursive). Applicable to elements, attributes,
-                  comments, processing instructions (returns its data) and
-                  CDATA sections. The reserved XML characters ('&lt;' and
-                  '&amp;') are not escaped.</entry>
-                </row>
+                <td>the text of current nodes, one string per node
+                (non-recursive). Applicable to elements, attributes, comments,
+                processing instructions (returns its data) and CDATA sections.
+                The reserved XML characters ('&lt;' and '&amp;') are not
+                escaped.</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_type</literal></entry>
+              <tr>
+                <td><literal>_type</literal></td>
 
-                  <entry>Returns a node list containing one string per node
-                  describing the type of the node. Possible node type names
-                  are: Valid type names are: "attribute", "cdata", "comment",
-                  "document", "documentType", "element", "entity",
-                  "entityReference", "processingInstruction", "text". If the
-                  type of the node is unknown, returns "unknown".</entry>
-                </row>
+                <td>Returns a node list containing one string per node
+                describing the type of the node. Possible node type names are:
+                Valid type names are: "attribute", "cdata", "comment",
+                "document", "documentType", "element", "entity",
+                "entityReference", "processingInstruction", "text". If the
+                type of the node is unknown, returns "unknown".</td>
+              </tr>
 
-                <row>
-                  <entry><literal>_unique</literal></entry>
+              <tr>
+                <td><literal>_unique</literal></td>
 
-                  <entry>a copy of the current nodes that keeps only the first
-                  occurrence of every node, eliminating duplicates. Duplicates
-                  can occur in the node list by applying uptree-traversals
-                  <literal>_parent</literal>, <literal>_ancestor</literal>,
-                  <literal>_ancestorOrSelf</literal>, and
-                  <literal>_document</literal>. I.e.,
-                  <literal>foo._children._parent</literal> will return a node
-                  list that has duplicates of nodes in foo - each node will
-                  have the number of occurrences equal to the number of its
-                  children. In these cases, use
-                  <literal>foo._children._parent._unique</literal> to
-                  eliminate duplicates. Applicable to all node types.</entry>
-                </row>
+                <td>a copy of the current nodes that keeps only the first
+                occurrence of every node, eliminating duplicates. Duplicates
+                can occur in the node list by applying uptree-traversals
+                <literal>_parent</literal>, <literal>_ancestor</literal>,
+                <literal>_ancestorOrSelf</literal>, and
+                <literal>_document</literal>. I.e.,
+                <literal>foo._children._parent</literal> will return a node
+                list that has duplicates of nodes in foo - each node will have
+                the number of occurrences equal to the number of its children.
+                In these cases, use
+                <literal>foo._children._parent._unique</literal> to eliminate
+                duplicates. Applicable to all node types.</td>
+              </tr>
 
-                <row>
-                  <entry>any other key</entry>
+              <tr>
+                <td>any other key</td>
 
-                  <entry>element children of current nodes with name matching
-                  the key. This allows for convenience child traversal in
-                  <literal>book.chapter.title</literal> style syntax. Note
-                  that <literal>nodeset.childname</literal> is technically
-                  equivalent to <literal>nodeset("childname")</literal>, but
-                  is both shorter to write and evaluates faster. Applicable to
-                  document and element nodes.</entry>
-                </row>
-              </tbody>
-            </tgroup>
+                <td>element children of current nodes with name matching the
+                key. This allows for convenience child traversal in
+                <literal>book.chapter.title</literal> style syntax. Note that
+                <literal>nodeset.childname</literal> is technically equivalent
+                to <literal>nodeset("childname")</literal>, but is both
+                shorter to write and evaluates faster. Applicable to document
+                and element nodes.</td>
+              </tr>
+            </tbody>
           </informaltable>
         </section>
 
@@ -10665,134 +10640,129 @@ Test Book</programlisting>
 
         <anchor xml:id="misc.xguiTable" />
 
-        <informaltable frame="all">
-          <tgroup align="left" cols="4" colsep="1" rowsep="1">
-            <thead>
-              <row>
-                <entry>Node type (<literal>?node_type</literal>)</entry>
+        <informaltable border="1">
+          <thead>
+            <tr>
+              <th>Node type (<literal>?node_type</literal>)</th>
 
-                <entry>Node name (<literal>?node_name</literal>)</entry>
+              <th>Node name (<literal>?node_name</literal>)</th>
 
-                <entry>String value
-                (e.g., <literal>&lt;p&gt;${node}</literal>)</entry>
+              <th>String value
+              (e.g., <literal>&lt;p&gt;${node}</literal>)</th>
 
-                <entry>Special hash keys</entry>
-              </row>
-            </thead>
+              <th>Special hash keys</th>
+            </tr>
+          </thead>
 
-            <tbody>
-              <row>
-                <entry><literal>"document"</literal></entry>
+          <tbody>
+            <tr>
+              <td><literal>"document"</literal></td>
 
-                <entry><literal>"@document"</literal></entry>
+              <td><literal>"@document"</literal></td>
 
-                <entry>No string value. (Error when you try to use it as
-                string.)</entry>
+              <td>No string value. (Error when you try to use it as
+              string.)</td>
 
-                <entry><literal>"<replaceable>elementName</replaceable>"</literal>,
-                <literal>"<replaceable>prefix</replaceable>:<replaceable>elementName</replaceable>"</literal>,
-                <literal>"*"</literal>, <literal>"**"</literal>,
-                <literal>"@@markup"</literal>,
-                <literal>"@@nested_markup"</literal>,
-                <literal>"@@text"</literal></entry>
-              </row>
+              <td><literal>"<replaceable>elementName</replaceable>"</literal>,
+              <literal>"<replaceable>prefix</replaceable>:<replaceable>elementName</replaceable>"</literal>,
+              <literal>"*"</literal>, <literal>"**"</literal>,
+              <literal>"@@markup"</literal>,
+              <literal>"@@nested_markup"</literal>,
+              <literal>"@@text"</literal></td>
+            </tr>
 
-              <row>
-                <entry><literal>"element"</literal></entry>
+            <tr>
+              <td><literal>"element"</literal></td>
 
-                <entry><literal>"<replaceable>name</replaceable>"</literal>:
-                the name of the element. This is the local name (i.e., name
-                without namespace prefix).</entry>
+              <td><literal>"<replaceable>name</replaceable>"</literal>: the
+              name of the element. This is the local name (i.e., name without
+              namespace prefix).</td>
 
-                <entry>If it has no element children, the text of all text
-                node children concatenated together. Error otherwise, when you
-                try to use it as string.</entry>
+              <td>If it has no element children, the text of all text node
+              children concatenated together. Error otherwise, when you try to
+              use it as string.</td>
 
-                <entry><literal>"<replaceable>elementName</replaceable>"</literal>,
-                <literal>"<replaceable>prefix</replaceable>:<replaceable>elementName</replaceable>"</literal>,
-                <literal>"*"</literal>, <literal>"**"</literal>,
-                <literal>"@<replaceable>attrName</replaceable>"</literal>,
-                <literal>"@<replaceable>prefix</replaceable>:<replaceable>attrName</replaceable>"</literal>,
-                <literal>"@@"</literal>, <literal>"@*"</literal>,
-                <literal>"@@start_tag"</literal>,
-                <literal>"@@end_tag"</literal>,
-                <literal>"@@attributes_markup"</literal>,
-                <literal>"@@markup"</literal>,
-                <literal>"@@nested_markup"</literal>,
-                <literal>"@@text"</literal>,
-                <literal>"@@qname"</literal></entry>
-              </row>
+              <td><literal>"<replaceable>elementName</replaceable>"</literal>,
+              <literal>"<replaceable>prefix</replaceable>:<replaceable>elementName</replaceable>"</literal>,
+              <literal>"*"</literal>, <literal>"**"</literal>,
+              <literal>"@<replaceable>attrName</replaceable>"</literal>,
+              <literal>"@<replaceable>prefix</replaceable>:<replaceable>attrName</replaceable>"</literal>,
+              <literal>"@@"</literal>, <literal>"@*"</literal>,
+              <literal>"@@start_tag"</literal>,
+              <literal>"@@end_tag"</literal>,
+              <literal>"@@attributes_markup"</literal>,
+              <literal>"@@markup"</literal>,
+              <literal>"@@nested_markup"</literal>,
+              <literal>"@@text"</literal>, <literal>"@@qname"</literal></td>
+            </tr>
 
-              <row>
-                <entry><literal>"text"</literal></entry>
+            <tr>
+              <td><literal>"text"</literal></td>
 
-                <entry><literal>"@text"</literal></entry>
+              <td><literal>"@text"</literal></td>
 
-                <entry>The text itself.</entry>
+              <td>The text itself.</td>
 
-                <entry><literal>"@@markup"</literal>,
-                <literal>"@@nested_markup"</literal>,
-                <literal>"@@text"</literal></entry>
-              </row>
+              <td><literal>"@@markup"</literal>,
+              <literal>"@@nested_markup"</literal>,
+              <literal>"@@text"</literal></td>
+            </tr>
 
-              <row>
-                <entry><literal>"pi"</literal></entry>
+            <tr>
+              <td><literal>"pi"</literal></td>
 
-                <entry><literal>"@pi$<replaceable>target</replaceable>"</literal></entry>
+              <td><literal>"@pi$<replaceable>target</replaceable>"</literal></td>
 
-                <entry>The part between the target name and the
-                <literal>?&gt;</literal>.</entry>
+              <td>The part between the target name and the
+              <literal>?&gt;</literal>.</td>
 
-                <entry><literal>"@@markup"</literal>,
-                <literal>"@@nested_markup"</literal>,
-                <literal>"@@text"</literal></entry>
-              </row>
+              <td><literal>"@@markup"</literal>,
+              <literal>"@@nested_markup"</literal>,
+              <literal>"@@text"</literal></td>
+            </tr>
 
-              <row>
-                <entry><literal>"comment"</literal></entry>
+            <tr>
+              <td><literal>"comment"</literal></td>
 
-                <entry><literal>"@comment"</literal></entry>
+              <td><literal>"@comment"</literal></td>
 
-                <entry>The text of the comment, without the delimiters
-                <literal>&lt;!--</literal> and
-                <literal>--&gt;</literal>.</entry>
+              <td>The text of the comment, without the delimiters
+              <literal>&lt;!--</literal> and <literal>--&gt;</literal>.</td>
 
-                <entry><literal>"@@markup"</literal>,
-                <literal>"@@nested_markup"</literal>,
-                <literal>"@@text"</literal></entry>
-              </row>
+              <td><literal>"@@markup"</literal>,
+              <literal>"@@nested_markup"</literal>,
+              <literal>"@@text"</literal></td>
+            </tr>
 
-              <row>
-                <entry><literal>"attribute"</literal></entry>
+            <tr>
+              <td><literal>"attribute"</literal></td>
 
-                <entry><literal>"<replaceable>name</replaceable>"</literal>:
-                the name of the attribute. This is the local name (i.e., name
-                without namespace prefix).</entry>
+              <td><literal>"<replaceable>name</replaceable>"</literal>: the
+              name of the attribute. This is the local name (i.e., name
+              without namespace prefix).</td>
 
-                <entry>The value of the attribute.</entry>
+              <td>The value of the attribute.</td>
 
-                <entry><literal>"@@markup"</literal>,
-                <literal>"@@nested_markup"</literal>,
-                <literal>"@@text"</literal>,
-                <literal>"@@qname"</literal></entry>
-              </row>
+              <td><literal>"@@markup"</literal>,
+              <literal>"@@nested_markup"</literal>,
+              <literal>"@@text"</literal>, <literal>"@@qname"</literal></td>
+            </tr>
 
-              <row>
-                <entry><literal>"document_type"</literal></entry>
+            <tr>
+              <td><literal>"document_type"</literal></td>
 
-                <entry><literal>"@document_type$<replaceable>name</replaceable>"</literal>:
-                <literal><replaceable>name</replaceable></literal> is the name
-                of the document element.</entry>
+              <td><literal>"@document_type$<replaceable>name</replaceable>"</literal>:
+              <literal><replaceable>name</replaceable></literal> is the name
+              of the document element.</td>
 
-                <entry>No string value. (Error when you try to use it as
-                string.)</entry>
+              <td>No string value. (Error when you try to use it as
+              string.)</td>
 
-                <entry><literal>"@@markup"</literal>,
-                <literal>"@@nested_markup"</literal>,
-                <literal>"@@text"</literal></entry>
-              </row>
-            </tbody>
-          </tgroup>
+              <td><literal>"@@markup"</literal>,
+              <literal>"@@nested_markup"</literal>,
+              <literal>"@@text"</literal></td>
+            </tr>
+          </tbody>
         </informaltable>
 
         <para>Notes:</para>
@@ -12799,10 +12769,10 @@ ${x?url}</programlisting>
 
           <para>The only difference between this built-in and the
           <literal>xml</literal> built-in is that the <literal>xhtml</literal>
-          built-in escapes <literal>'</literal> as <literal>&amp;#39;</literal>
-          instead of as <literal>&amp;apos;</literal>, because some older
-          browsers don't interpret <literal>&amp;apos;</literal>
-          correctly.</para>
+          built-in escapes <literal>'</literal> as
+          <literal>&amp;#39;</literal> instead of as
+          <literal>&amp;apos;</literal>, because some older browsers don't
+          interpret <literal>&amp;apos;</literal> correctly.</para>
         </simplesect>
 
         <simplesect xml:id="ref_builtin_xml">
@@ -12933,76 +12903,74 @@ rif: foo XYr baar</programlisting>
           <para>This is the table of built-ins that use these common flags,
           and which supports which flags:</para>
 
-          <informaltable frame="all">
-            <tgroup align="left" cols="7" colsep="1" rowsep="1">
-              <thead>
-                <row>
-                  <entry>Built-in</entry>
+          <informaltable border="1">
+            <thead>
+              <tr>
+                <th>Built-in</th>
 
-                  <entry><literal>i</literal></entry>
+                <th><literal>i</literal></th>
 
-                  <entry><literal>r</literal></entry>
+                <th><literal>r</literal></th>
 
-                  <entry><literal>m</literal></entry>
+                <th><literal>m</literal></th>
 
-                  <entry><literal>s</literal></entry>
+                <th><literal>s</literal></th>
 
-                  <entry><literal>c</literal></entry>
+                <th><literal>c</literal></th>
 
-                  <entry><literal>f</literal></entry>
-                </row>
-              </thead>
+                <th><literal>f</literal></th>
+              </tr>
+            </thead>
 
-              <tbody>
-                <row>
-                  <entry><literal>replace</literal></entry>
+            <tbody>
+              <tr>
+                <td><literal>replace</literal></td>
 
-                  <entry>Yes</entry>
+                <td>Yes</td>
 
-                  <entry>Yes</entry>
+                <td>Yes</td>
 
-                  <entry>Only with <literal>r</literal></entry>
+                <td>Only with <literal>r</literal></td>
 
-                  <entry>Only with <literal>r</literal></entry>
+                <td>Only with <literal>r</literal></td>
 
-                  <entry>Only with <literal>r</literal></entry>
+                <td>Only with <literal>r</literal></td>
 
-                  <entry>Yes</entry>
-                </row>
+                <td>Yes</td>
+              </tr>
 
-                <row>
-                  <entry><literal>split</literal></entry>
+              <tr>
+                <td><literal>split</literal></td>
 
-                  <entry>Yes</entry>
+                <td>Yes</td>
 
-                  <entry>Yes</entry>
+                <td>Yes</td>
 
-                  <entry>Only with <literal>r</literal></entry>
+                <td>Only with <literal>r</literal></td>
 
-                  <entry>Only with <literal>r</literal></entry>
+                <td>Only with <literal>r</literal></td>
 
-                  <entry>Only with <literal>r</literal></entry>
+                <td>Only with <literal>r</literal></td>
 
-                  <entry>No</entry>
-                </row>
+                <td>No</td>
+              </tr>
 
-                <row>
-                  <entry><literal>match</literal></entry>
+              <tr>
+                <td><literal>match</literal></td>
 
-                  <entry>Yes</entry>
+                <td>Yes</td>
 
-                  <entry>No</entry>
+                <td>No</td>
 
-                  <entry>Yes</entry>
+                <td>Yes</td>
 
-                  <entry>Yes</entry>
+                <td>Yes</td>
 
-                  <entry>Yes</entry>
+                <td>Yes</td>
 
-                  <entry>No</entry>
-                </row>
-              </tbody>
-            </tgroup>
+                <td>No</td>
+              </tr>
+            </tbody>
           </informaltable>
         </simplesect>
       </section>
@@ -14543,116 +14511,110 @@ Sorted by name.last:
           <literal>is_<replaceable>...</replaceable></literal>
           built-ins:</para>
 
-          <informaltable frame="all">
-            <tgroup align="left" cols="2" colsep="1" rowsep="1">
-              <thead>
-                <row>
-                  <entry>Built-in</entry>
+          <informaltable border="1">
+            <thead>
+              <tr>
+                <th>Built-in</th>
 
-                  <entry>Returns <literal>true</literal> if the value is a
-                  ...</entry>
-                </row>
-              </thead>
+                <th>Returns <literal>true</literal> if the value is a ...</th>
+              </tr>
+            </thead>
 
-              <tbody>
-                <row>
-                  <entry><literal>is_string</literal></entry>
+            <tbody>
+              <tr>
+                <td><literal>is_string</literal></td>
 
-                  <entry>string</entry>
-                </row>
+                <td>string</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_number</literal></entry>
+              <tr>
+                <td><literal>is_number</literal></td>
 
-                  <entry>number</entry>
-                </row>
+                <td>number</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_boolean</literal></entry>
+              <tr>
+                <td><literal>is_boolean</literal></td>
 
-                  <entry>boolean</entry>
-                </row>
+                <td>boolean</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_date</literal></entry>
+              <tr>
+                <td><literal>is_date</literal></td>
 
-                  <entry>date (all types: date-only, time-only and
-                  date-time)</entry>
-                </row>
+                <td>date (all types: date-only, time-only and date-time)</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_method</literal></entry>
+              <tr>
+                <td><literal>is_method</literal></td>
 
-                  <entry>method</entry>
-                </row>
+                <td>method</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_transform</literal></entry>
+              <tr>
+                <td><literal>is_transform</literal></td>
 
-                  <entry>transform</entry>
-                </row>
+                <td>transform</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_macro</literal></entry>
+              <tr>
+                <td><literal>is_macro</literal></td>
 
-                  <entry>macro</entry>
-                </row>
+                <td>macro</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_hash</literal></entry>
+              <tr>
+                <td><literal>is_hash</literal></td>
 
-                  <entry>hash</entry>
-                </row>
+                <td>hash</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_hash_ex</literal></entry>
+              <tr>
+                <td><literal>is_hash_ex</literal></td>
 
-                  <entry>extended hash (i.e., supports
-                  <literal>?keys</literal> and
-                  <literal>?values</literal>)</entry>
-                </row>
+                <td>extended hash (i.e., supports <literal>?keys</literal> and
+                <literal>?values</literal>)</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_sequence</literal></entry>
+              <tr>
+                <td><literal>is_sequence</literal></td>
 
-                  <entry>sequence</entry>
-                </row>
+                <td>sequence</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_collection</literal></entry>
+              <tr>
+                <td><literal>is_collection</literal></td>
 
-                  <entry>collection</entry>
-                </row>
+                <td>collection</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_enumerable</literal></entry>
+              <tr>
+                <td><literal>is_enumerable</literal></td>
 
-                  <entry>sequence or collection</entry>
-                </row>
+                <td>sequence or collection</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_indexable</literal></entry>
+              <tr>
+                <td><literal>is_indexable</literal></td>
 
-                  <entry>sequence</entry>
-                </row>
+                <td>sequence</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_directive</literal></entry>
+              <tr>
+                <td><literal>is_directive</literal></td>
 
-                  <entry>Whatever kind of directive (for example a macro,
-                  <phrase role="forProgrammers">or
-                  <literal>TemplateDirectiveModel</literal>,
-                  <literal>TemplateTransformModel</literal>,
-                  etc.</phrase>)</entry>
-                </row>
+                <td>Whatever kind of directive (for example a macro, <phrase
+                role="forProgrammers">or
+                <literal>TemplateDirectiveModel</literal>,
+                <literal>TemplateTransformModel</literal>, etc.</phrase>)</td>
+              </tr>
 
-                <row>
-                  <entry><literal>is_node</literal></entry>
+              <tr>
+                <td><literal>is_node</literal></td>
 
-                  <entry>node</entry>
-                </row>
-              </tbody>
-            </tgroup>
+                <td>node</td>
+              </tr>
+            </tbody>
           </informaltable>
         </simplesect>
 
@@ -14703,6 +14665,10 @@ Sorted by name.last:
 
           <indexterm>
             <primary>macro</primary>
+          </indexterm>
+
+          <indexterm>
+            <primary>use_defaults built-in</primary>
           </indexterm>
 
           <para>If you have an existing macro, you can define a new macro that
@@ -26264,9 +26230,12 @@ ${obj.myMethod("foo")}</programlisting>
               number of digits to show after the decimal point. The following
               code specifies to show at least 3 digits after the decimal point
               but not more than 6. This is optional. This option is only
-              available if you use the #{...} syntax.</para><programlisting
-              role="template">  #{foo + bar ; m3M6}
-  </programlisting><para>(Note that the above is something of a stopgap measure.
+              available if you use the #{...} syntax.</para>
+
+              <programlisting role="template">  #{foo + bar ; m3M6}
+  </programlisting>
+
+              <para>(Note that the above is something of a stopgap measure.
               Future releases will move toward supporting fully
               internationalization and localization of number and currency
               formatting.</para>
@@ -26287,15 +26256,20 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Numerical ranges are supported.</para><programlisting
-              role="template">   [#list 1990..2001 as year]
+              <para>Numerical ranges are supported.</para>
+
+              <programlisting role="template">   [#list 1990..2001 as year]
   blah blah in the year ${year} blah
-   [/#list]  </programlisting><para>The left hand and right hand sides of the
+   [/#list]  </programlisting>
+
+              <para>The left hand and right hand sides of the
               <literal>..</literal> operator must be numerical, or an
               exception is thrown. They also need not be literal numbers, but
               can be more complex expressions that evaluate to a numerical
               scalar value. Note that it is also possible to write a range
-              that descends in value:</para><programlisting role="template">  [#list 2001..1990 as year]
+              that descends in value:</para>
+
+              <programlisting role="template">  [#list 2001..1990 as year]
   blah blah in the year ${year} blah blah
   [/#list]  </programlisting>
             </listitem>
@@ -26379,7 +26353,9 @@ ${obj.myMethod("foo")}</programlisting>
               in a &lt;list...&gt; or &lt;#foreach...&gt; block. If you have
               code that relied on this feature, there is an easy workaround,
               since you can simply define a list literal with exactly one
-              item.</para><programlisting role="template"> &lt;assign y=[x]&gt;
+              item.</para>
+
+              <programlisting role="template"> &lt;assign y=[x]&gt;
  <emphasis>and then...</emphasis>
  &lt;list y as item&gt;...&lt;/list&gt;
  </programlisting>
