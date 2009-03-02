@@ -75,15 +75,15 @@
         <listitem>
           <para>Web page designer, then you should read the <xref
           linkend="dgui" /> and then you can look into the <xref
-          linkend="ref" /> section on an as-needed basis for more specific
+          linkend="ref" /> on an as-needed basis for more specific
           details.</para>
         </listitem>
 
         <listitem>
           <para>programmer, then you should read the <xref linkend="dgui" />
           guide first, then the <xref linkend="pgui" /> and then you can look
-          into the <xref linkend="ref" /> section on an as-needed basis for
-          more specific details.</para>
+          into the <xref linkend="ref" /> on an as-needed basis for more
+          specific details.</para>
         </listitem>
       </itemizedlist>
     </simplesect>
@@ -171,11 +171,10 @@
     </simplesect>
   </preface>
 
-  <part xreflabel="Template Author's Guide" xml:id="dgui">
+  <part xml:id="dgui">
     <title>Template Author's Guide</title>
 
-    <chapter xreflabel="Template Author's Guide/Getting Started"
-             xml:id="dgui_quickstart">
+    <chapter xml:id="dgui_quickstart">
       <title>Getting Started</title>
 
       <para>This chapter is a very rough introduction to FreeMarker. The
@@ -835,12 +834,10 @@ All Rights Reserved.
       </section>
     </chapter>
 
-    <chapter xreflabel="Template Author's Guide/Values, Types"
-             xml:id="dgui_datamodel">
+    <chapter xml:id="dgui_datamodel">
       <title>Values, Types</title>
 
-      <section xreflabel="Template Author's Guide/The Data Model/Basics"
-               xml:id="dgui_datamodel_basics">
+      <section xml:id="dgui_datamodel_basics">
         <title>Basics</title>
 
         <note>
@@ -852,10 +849,10 @@ All Rights Reserved.
         understanding of data-models. However, the concept of values and types
         is not confined to data-models, as you will see.</para>
 
-        <section>
+        <section xml:id="topic.value">
           <title>What is a value?</title>
 
-          <indexterm xml:id="topic.value">
+          <indexterm>
             <primary>value</primary>
           </indexterm>
 
@@ -955,7 +952,7 @@ All Rights Reserved.
             value" or "a value of type boolean" are all the same.</para>
           </note>
 
-          <para><indexterm xml:id="topic.multitype">
+          <para xml:id="topic.multitype"><indexterm>
               <primary>Multi-typed value</primary>
             </indexterm>A value can have multiple types at the same time,
           although it's rarely utilized. For example in the data-model below
@@ -1078,8 +1075,7 @@ brown</programlisting>
           </listitem>
         </itemizedlist>
 
-        <section xreflabel="Template Author's Guide/The Data Model/Scalar variables"
-                 xml:id="dgui_datamodel_scalar">
+        <section xml:id="dgui_datamodel_scalar">
           <title>Scalars</title>
 
           <anchor xml:id="topic.designer.scalarVariable" />
@@ -1449,8 +1445,7 @@ The average of the price of a python and an elephant is:
       </section>
     </chapter>
 
-    <chapter xreflabel="Template Author's Guide/The Template"
-             xml:id="dgui_template">
+    <chapter xml:id="dgui_template">
       <title>The Template</title>
 
       <indexterm>
@@ -1728,8 +1723,7 @@ The average of the price of a python and an elephant is:
         </note>
       </section>
 
-      <section xreflabel="Template Author's Guide/Expressions"
-               xml:id="dgui_template_exp">
+      <section xml:id="dgui_template_exp">
         <title>Expressions</title>
 
         <para>Table of Contents and quick reminder:</para>
@@ -3180,8 +3174,7 @@ Horse</programlisting>
           <programlisting role="output">xxxxxxWHATWHATWHATWHAT</programlisting>
         </section>
 
-        <section xreflabel="Template Author's Guide/The Template/Expressions/Handling missing values (including null-s)"
-                 xml:id="dgui_template_exp_missing">
+        <section xml:id="dgui_template_exp_missing">
           <title>Treating undefined variables and null values</title>
 
           <indexterm>
@@ -3878,12 +3871,10 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
       </section>
     </chapter>
 
-    <chapter xreflabel="Template Author's Guide/Miscellaneous"
-             xml:id="dgui_misc">
+    <chapter xml:id="dgui_misc">
       <title>Miscellaneous</title>
 
-      <section xreflabel="Template Author's Guide/Miscellaneous/Defining your own directives"
-               xml:id="dgui_misc_userdefdir">
+      <section xml:id="dgui_misc_userdefdir">
         <title>Defining your own directives</title>
 
         <indexterm>
@@ -4353,8 +4344,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         </section>
       </section>
 
-      <section xreflabel="Template Author's Guide/Miscellaneous/Defining variables in the template"
-               xml:id="dgui_misc_var">
+      <section xml:id="dgui_misc_var">
         <title>Defining variables in the template</title>
 
         <indexterm>
@@ -4595,8 +4585,7 @@ Top level</programlisting>
         </section>
       </section>
 
-      <section xreflabel="Template Author's Guide/Miscellaneous/Namespaces"
-               xml:id="dgui_misc_namespace">
+      <section xml:id="dgui_misc_namespace">
         <title>Namespaces</title>
 
         <indexterm>
@@ -4874,8 +4863,7 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
         </section>
       </section>
 
-      <section xreflabel="Template Author's Guide/Miscellaneous/White-space handling"
-               xml:id="dgui_misc_whitespace">
+      <section xml:id="dgui_misc_whitespace">
         <title>White-space handling</title>
 
         <indexterm>
@@ -4997,8 +4985,7 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
           </listitem>
         </itemizedlist>
 
-        <section xreflabel="Template Author's Guide/Miscellaneous/White-space handling/White-space stripping"
-                 xml:id="dgui_misc_whitespace_stripping">
+        <section xml:id="dgui_misc_whitespace_stripping">
           <title>White-space stripping</title>
 
           <indexterm>
@@ -5168,11 +5155,10 @@ That's all.</programlisting>
     </chapter>
   </part>
 
-  <part xreflabel="Programmer's Guide" xml:id="pgui">
+  <part xml:id="pgui">
     <title>Programmer's Guide</title>
 
-    <chapter xreflabel="Programmer's Guide/Quick Start"
-             xml:id="pgui_quickstart">
+    <chapter xml:id="pgui_quickstart">
       <title>Getting Started</title>
 
       <para>Note that, if you are new to FreeMarker, you should read at least
@@ -5418,8 +5404,7 @@ public class Test {
       </section>
     </chapter>
 
-    <chapter xreflabel="Programmer's Guide/The Data Model"
-             xml:id="pgui_datamodel">
+    <chapter xml:id="pgui_datamodel">
       <title>The Data Model</title>
 
       <para>This is just an introductory explanation. See the <olink
@@ -5508,8 +5493,7 @@ public class Test {
         object.)</para>
       </section>
 
-      <section xreflabel="Template Author's Guide/The Data Model/Scalars"
-               xml:id="pgui_datamodel_scalar">
+      <section xml:id="pgui_datamodel_scalar">
         <title>Scalars</title>
 
         <indexterm>
@@ -5860,8 +5844,7 @@ ${indexOf("foo", x)}</programlisting>
         </section>
       </section>
 
-      <section xreflabel="Programmer's Guide/The Data Model/Directive"
-               xml:id="pgui_datamodel_directive">
+      <section xml:id="pgui_datamodel_directive">
         <title>Directives</title>
 
         <indexterm>
@@ -6546,8 +6529,7 @@ ${theObject.sin(123)}</programlisting>
       </section>
     </chapter>
 
-    <chapter xreflabel="Programmer's Guide/The Configuration"
-             xml:id="pgui_config">
+    <chapter xml:id="pgui_config">
       <title>The Configuration</title>
 
       <indexterm>
@@ -6584,8 +6566,7 @@ ${theObject.sin(123)}</programlisting>
         whose <literal>getTemplate</literal> method has been called.</para>
       </section>
 
-      <section xreflabel="Programmer's Guide/Configuration/Shared variables"
-               xml:id="pgui_config_sharedvariables">
+      <section xml:id="pgui_config_sharedvariables">
         <title>Shared variables</title>
 
         <indexterm>
@@ -6667,8 +6648,7 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         </informaltable>
       </section>
 
-      <section xreflabel="xreflabel=&quot;Programmer's Guide/The Configuration/Settings&quot;"
-               xml:id="pgui_config_settings">
+      <section xml:id="pgui_config_settings">
         <title>Settings</title>
 
         <indexterm>
@@ -6904,8 +6884,7 @@ env.process();  // process the template</programlisting>
         </itemizedlist>
       </section>
 
-      <section xreflabel="Programmer's Guide/Configuration/Template loading"
-               xml:id="pgui_config_templateloading">
+      <section xml:id="pgui_config_templateloading">
         <title>Template loading</title>
 
         <indexterm>
@@ -7472,15 +7451,14 @@ c</programlisting>
       </section>
     </chapter>
 
-    <chapter xreflabel="Miscellaneous" xml:id="pgui_misc">
+    <chapter xml:id="pgui_misc">
       <title>Miscellaneous</title>
 
       <para>This is just an introductory guide. See the <olink
       targetdoc="api">FreeMarker Java API documentation</olink> for the
       details.</para>
 
-      <section xreflabel="Programmer's Guide/Miscellaneous/Variables"
-               xml:id="pgui_misc_var">
+      <section xml:id="pgui_misc_var">
         <title>Variables</title>
 
         <indexterm>
@@ -7694,8 +7672,7 @@ env.process();</programlisting>
         </section>
       </section>
 
-      <section xreflabel="Programmer's Guide/Miscellaneous/Multithreading"
-               xml:id="pgui_misc_multithreading">
+      <section xml:id="pgui_misc_multithreading">
         <title>Multithreading</title>
 
         <indexterm>
@@ -7736,8 +7713,7 @@ env.process();</programlisting>
         linkend="pgui_misc_var" /></para>
       </section>
 
-      <section xreflabel="Programmer's Guide/Miscellaneous/Bean wrapper"
-               xml:id="pgui_misc_beanwrapper">
+      <section xml:id="pgui_misc_beanwrapper">
         <title>Bean wrapper</title>
 
         <indexterm>
@@ -8325,8 +8301,7 @@ TemplateHashModel roundingModeEnums =
         </section>
       </section>
 
-      <section xreflabel="Programmer's Guide/Miscellaneous/Logging"
-               xml:id="pgui_misc_logging">
+      <section xml:id="pgui_misc_logging">
         <title>Logging</title>
 
         <indexterm>
@@ -8397,8 +8372,7 @@ TemplateHashModel roundingModeEnums =
         basis.</para>
       </section>
 
-      <section xreflabel="Programmer's Guide/Miscellaneous/Using FreeMarker with servlets"
-               xml:id="pgui_misc_servlet">
+      <section xml:id="pgui_misc_servlet">
         <title>Using FreeMarker with servlets</title>
 
         <anchor xml:id="topic.servlet" />
@@ -8446,8 +8420,7 @@ TemplateHashModel roundingModeEnums =
         then read on. For other frameworks please refer to the documentation
         of the framework.</para>
 
-        <section xreflabel="Programmer's Guide/Using FreeMarker with servlets/Using FreeMarker for ''Model 2''"
-                 xml:id="pgui_misc_servlet_model2">
+        <section xml:id="pgui_misc_servlet_model2">
           <title>Using FreeMarker for ''Model 2''</title>
 
           <para>Many frameworks follow the strategy that the HTTP request is
@@ -8633,9 +8606,9 @@ TemplateHashModel roundingModeEnums =
           the class.</para>
         </section>
 
-        <section>
-          <title xml:id="pgui_misc_servlet_include">Including content from
-          other web application resources</title>
+        <section xml:id="pgui_misc_servlet_include">
+          <title>Including content from other web application
+          resources</title>
 
           <indexterm>
             <primary>include</primary>
@@ -8924,8 +8897,7 @@ TemplateHashModel roundingModeEnums =
         </section>
       </section>
 
-      <section xreflabel="Programmer's Guide/Miscellaneous/FreeMarker and Java security"
-               xml:id="pgui_misc_secureenv">
+      <section xml:id="pgui_misc_secureenv">
         <title>FreeMarker and Java security</title>
 
         <indexterm>
@@ -9145,8 +9117,7 @@ TemplateHashModel roundingModeEnums =
         </section>
       </section>
 
-      <section xreflabel="Programmer's Guide/Miscellaneous/JSR-223 scripting support"
-               xml:id="pgui_misc_jsr223">
+      <section xml:id="pgui_misc_jsr223">
         <title>JSR-223 scripting support</title>
 
         <indexterm>
@@ -9852,10 +9823,10 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
     </chapter>
   </part>
 
-  <part xreflabel="XML Processing Guide" xml:id="xgui">
+  <part xml:id="xgui">
     <title>XML Processing Guide</title>
 
-    <chapter xreflabel="XML Processing Guide/Preface" xml:id="xgui_preface">
+    <chapter xml:id="xgui_preface">
       <title>Preface</title>
 
       <para>Although FreeMarker was originally designed as a web page template
@@ -9887,8 +9858,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
       can use XSLT.</para>
     </chapter>
 
-    <chapter xreflabel="XML Processing Guide/Exposing XML documents"
-             xml:id="xgui_expose">
+    <chapter xml:id="xgui_expose">
       <title>Exposing XML documents</title>
 
       <indexterm>
@@ -9897,8 +9867,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         <secondary>exposing</secondary>
       </indexterm>
 
-      <section xreflabel="XML Processing Guide/Exposing XML documents/The DOM tree"
-               xml:id="xgui_expose_dom">
+      <section xml:id="xgui_expose_dom">
         <title>The DOM tree</title>
 
         <para>We will use this XML document for the examples:</para>
@@ -10045,8 +10014,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         chapters.</para>
       </section>
 
-      <section xreflabel="XML Processing Guide/Exposing XML documents/Putting then XML into the data-model"
-               xml:id="xgui_expose_put">
+      <section xml:id="xgui_expose_put">
         <title>Putting the XML into the data-model</title>
 
         <note>
@@ -10092,8 +10060,7 @@ root.put(
       </section>
     </chapter>
 
-    <chapter xreflabel="XML Processing Guide/Imperative XML processing"
-             xml:id="xgui_imperative">
+    <chapter xml:id="xgui_imperative">
       <title>Imperative XML processing</title>
 
       <indexterm>
@@ -10102,8 +10069,7 @@ root.put(
         <secondary>imperative processing</secondary>
       </indexterm>
 
-      <section xreflabel="XML Processing Guide/Imperative XML processing/Learning by example"
-               xml:id="xgui_imperative_learn">
+      <section xml:id="xgui_imperative_learn">
         <title>Learning by example</title>
 
         <note>
@@ -10624,8 +10590,7 @@ Test Book</programlisting>
         </section>
       </section>
 
-      <section xreflabel="XML Processing Guide/Imperative XML processing/Formal description"
-               xml:id="xgui_imperative_formal">
+      <section xml:id="xgui_imperative_formal">
         <title>Formal description</title>
 
         <para>Every variable that corresponds to a single node in the DOM tree
@@ -11057,8 +11022,7 @@ Test Book</programlisting>
       </section>
     </chapter>
 
-    <chapter xreflabel="XML Processing Guide/Declarative XML Processing"
-             xml:id="xgui_declarative">
+    <chapter xml:id="xgui_declarative">
       <title>Declarative XML Processing</title>
 
       <indexterm>
@@ -11251,8 +11215,7 @@ End book</programlisting>
         imperative approach to process the contents of that element.</para>
       </section>
 
-      <section xreflabel="XML Processing Guide/Declarative XML Processing/Details"
-               xml:id="xgui_declarative_details">
+      <section xml:id="xgui_declarative_details">
         <title>Details</title>
 
         <section>
@@ -11414,10 +11377,10 @@ End book</programlisting>
     </chapter>
   </part>
 
-  <part xreflabel="Reference" xml:id="ref">
+  <part xml:id="ref">
     <title>Reference</title>
 
-    <chapter xreflabel="Built-in Reference" xml:id="ref_builtins">
+    <chapter xml:id="ref_builtins">
       <title>Built-in Reference</title>
 
       <indexterm>
@@ -14199,8 +14162,7 @@ Sorted by name.last:
         </simplesect>
       </section>
 
-      <section xreflabel="Reference/Built-ins/Seldom used and expert built-ins"
-               xml:id="ref_builtins_expert">
+      <section xml:id="ref_builtins_expert">
         <title>Seldom used and expert built-ins</title>
 
         <para>These are the built-ins that normally you should not use, but in
@@ -14738,7 +14700,7 @@ Sorted by name.last:
       </section>
     </chapter>
 
-    <chapter xreflabel="Directive Reference" xml:id="ref_directives">
+    <chapter xml:id="ref_directives">
       <title>Directive Reference</title>
 
       <indexterm>
@@ -17507,7 +17469,7 @@ or
         </section>
       </section>
 
-      <section xreflabel="attempt, recover" xml:id="ref_directive_attempt">
+      <section xml:id="ref_directive_attempt">
         <title>attempt, recover</title>
 
         <anchor xml:id="ref.directive.attempt" />
@@ -17972,7 +17934,7 @@ There was no specific handler for node y
       </section>
     </chapter>
 
-    <chapter xreflabel="Special Variable Reference" xml:id="ref_specvar">
+    <chapter xml:id="ref_specvar">
       <title>Special Variable Reference</title>
 
       <indexterm>
@@ -18127,7 +18089,7 @@ There was no specific handler for node y
       </itemizedlist>
     </chapter>
 
-    <chapter xreflabel="Reserved names in FTL" xml:id="ref_reservednames">
+    <chapter xml:id="ref_reservednames">
       <title>Reserved names in FTL</title>
 
       <indexterm>
@@ -18181,8 +18143,7 @@ There was no specific handler for node y
       </itemizedlist>
     </chapter>
 
-    <chapter xreflabel="References/Deprecated FTL constructs"
-             xml:id="ref_deprecated">
+    <chapter xml:id="ref_deprecated">
       <title>Deprecated FTL constructs</title>
 
       <indexterm>
@@ -18864,8 +18825,8 @@ or
             <para>To recapitulate what's this entry is about: FreeMarker by
             default treats an attempt to access a non-existent variable or a
             <literal>null</literal> value (<link linkend="faq_null">this two
-            is the same for FreeMarker</link>) as error, which aborts the
-            template execution.</para>
+            is practically the same for FreeMarker</link>) as error, which
+            aborts the template execution.</para>
 
             <para>First of all, you should understand the reason of being
             picky. Most scripting languages and template languages are rather
@@ -19553,8 +19514,7 @@ or
           </answer>
         </qandaentry>
 
-        <qandaentry xreflabel="question about null in the FAQ"
-                    xml:id="faq_null">
+        <qandaentry xml:id="faq_null">
           <question>
             <para>What about <literal>null</literal> and the FreeMarker
             template language? <indexterm>
@@ -26636,8 +26596,8 @@ ${obj.myMethod("foo")}</programlisting>
       <glosssee otherterm="gloss.FTL"></glosssee>
     </glossentry>
 
-    <glossentry>
-      <glossterm xml:id="gloss.FTLTag">FTL tag</glossterm>
+    <glossentry xml:id="gloss.FTLTag">
+      <glossterm>FTL tag</glossterm>
 
       <glossdef>
         <para><link linkend="gloss.tag">Tag</link>-like text fragment used to
