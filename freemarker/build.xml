@@ -301,11 +301,13 @@
     	            uri="http://freemarker.org/docgen"
     	            classpath="lib/docgen.jar:freemarker.jar"
     	    />
-        <docgen:transform
+        <echo message="Disabled until the Ivy problem is fixed!" />
+        <mkdir dir="${build.dir}/manual" /> <!-- Remove this line when fixed! -->
+        <!--docgen:transform
             srcdir="src/manual" destdir="${build.dir}/manual"
             generateEclipseToC="true"
             showXXELogo="true"
-        />
+        /-->
     </target>
 
     <!-- ====================== -->
