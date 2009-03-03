@@ -40,7 +40,7 @@
         <delete file="src/freemarker/core/parser/FMParser.java" />
         <delete file="src/freemarker/core/parser/FMConstants.java" />
         <delete file="src/freemarker/core/parser/FMLexer.java" />
-    	<delete file="src/freemarker/core/parser/LexicalException.java"/>
+        <delete file="src/freemarker/core/parser/LexicalException.java"/>
         <delete file="src/freemarker/core/parser/SimpleCharStream.java" />
         <delete file="src/freemarker/core/parser/Token.java" />
         <delete file="src/freemarker/core/parser/Node.java" />
@@ -54,9 +54,9 @@
         <mkdir dir="build"/>
         <uptodate property="parser.uptodate"
                 targetfile="src/freemarker/core/parser/FMParser.java">
-	        <srcfiles dir="src/parser" includes="*.freecc" />
+            <srcfiles dir="src/parser" includes="*.freecc" />
         </uptodate>
-    	<ivy:settings url="http://freemarker.org/repos/ivy/fm-ivysettings.xml" id="fm.instance" />
+        <ivy:settings url="http://freemarker.org/repos/ivy/fm-ivysettings.xml" id="fm.instance" />
     </target>
 
     <!-- ================================================================= -->
@@ -65,17 +65,17 @@
    <target name="freecc" depends="init" unless="parser.uptodate"
             description="Build the parser from its grammar file"
     >
-   	    <ivy:retrieve settingsRef="fm.instance" conf="parser" pattern="lib/[artifact].[ext]"/>
-   	    <taskdef name="generate" classname="org.visigoths.freecc.FreeCCAntTask"
-   	            uri="http://visigoths.org/freecc"
-   	            classpath="lib/freecc.jar:lib/freemarker-bootstrap.jar"
-   	    />
+           <ivy:retrieve settingsRef="fm.instance" conf="parser" pattern="lib/[artifact].[ext]"/>
+           <taskdef name="generate" classname="org.visigoths.freecc.FreeCCAntTask"
+                   uri="http://visigoths.org/freecc"
+                   classpath="lib/freecc.jar:lib/freemarker-bootstrap.jar"
+           />
         <freecc:generate src="src/parser/FM.freecc"/> 
    </target>
    
    <target name="compile" depends="freecc">
-   	<ivy:retrieve settingsRef="fm.instance" conf="build"/>
-   	<mkdir dir="${classes.dir}" />
+       <ivy:retrieve settingsRef="fm.instance" conf="build"/>
+       <mkdir dir="${classes.dir}" />
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
                 debug="on" optimize="off" target="1.5" source="1.5"
                 classpathref="build.class.path"
@@ -107,7 +107,7 @@
                 includes="freemarker/debug/impl/Rmi*Impl.class"
                 verify="yes" stubversion="1.2"
         />
-   	<copy
+       <copy
                 file="${classes.dir}/freemarker/core/SecureRendererImpl.class"
                 tofile="${classes.dir}/freemarker/core/SecureRendererImpl.clazz"
         />
@@ -146,7 +146,7 @@
        <copy todir="${classes.dir}/freemarker/testcase">
            <fileset dir="src/freemarker/testcase" />
        </copy>
-   	   <ivy:retrieve settingsRef="fm.instance" conf="emma" pattern="lib/[artifact].[ext]"/>
+          <ivy:retrieve settingsRef="fm.instance" conf="emma" pattern="lib/[artifact].[ext]"/>
        <path id="emma.lib" >
            <pathelement location="lib/emma.jar" />
            <pathelement location="lib/emma_ant.jar" />
@@ -161,7 +161,7 @@
                instrpath="${classes.dir}" outdir="${coverage.classes.dir}" 
                outfile="${coverage.instrumentationfile}" mode="copy">
                <filter excludes="*_Stub" />
-       	   </instr>
+              </instr>
        </emma>
        <copy todir="${coverage.classes.dir}">
            <fileset dir="src" excludes="**/*.java" />
@@ -171,9 +171,9 @@
        </copy>
        <property name="coverage.outfile" location="${coverage.dir}/coverage" />
 
-   	<junit haltonfailure="off" fork="true">
+       <junit haltonfailure="off" fork="true">
            <sysproperty key="emma.coverage.out.file" value="${coverage.outfile}" />
-       	   <classpath>
+              <classpath>
                <pathelement path="${coverage.classes.dir}" />
                <pathelement path="lib/emma.jar" />
                <path refid="build.class.path" />
@@ -185,7 +185,7 @@
              todir="build" />
        </junit>
    </target>
-	
+    
    <target name="test-coverage-report" depends="test">
        <property name="coverage.report.dir" location="${build.dir}/coverage/report" />
        <mkdir dir="${coverage.report.dir}" />
@@ -193,7 +193,7 @@
        <mkdir dir="${coverage.report.dir}" />
         <echo message="${coverage.outfile}" />
         <echo message="${coverage.instrumentationfile}" />
-   	<emma enabled="true">
+       <emma enabled="true">
             <report>
                 <fileset dir="${basedir}">
                     <include name="build/coverage/instrumentation" />
@@ -204,8 +204,8 @@
                         <include name="src" />
                     </dirset>
                 </sourcepath>
-		<html outfile="${coverage.report.dir}/index.html" />
-		<xml outfile="${coverage.report.dir}/report.xml" />
+        <html outfile="${coverage.report.dir}/index.html" />
+        <xml outfile="${coverage.report.dir}/report.xml" />
             </report>
         </emma>
    </target>
@@ -215,9 +215,9 @@
     <!-- ================================================================= -->
 
    <target name="retrotest" description="Test against older JDK">
-   	<echo message="You are testing against JDK version ${java.version}." />
-	<echo message="Note that this test only makes sense against a JDK version inferior to 1.5" />
-	<echo message="The error log will be put in the retrobuild directory." />
+       <echo message="You are testing against JDK version ${java.version}." />
+    <echo message="Note that this test only makes sense against a JDK version inferior to 1.5" />
+    <echo message="The error log will be put in the retrobuild directory." />
        <mkdir dir="retrobuild" />
        <copy todir="retrobuild/freemarker/testcase">
           <fileset dir="src/freemarker/testcase" excludes="*.class" />
@@ -235,7 +235,7 @@
    </target>
 
    <target name="retrotrans" depends="compile" description="Run Retrotranslator over the .class files">
-   	   <ivy:retrieve settingsRef="fm.instance" conf="build1.4"/>
+       <ivy:retrieve settingsRef="fm.instance" conf="build1.4"/>
        <mkdir dir="retrobuild" />
 
        <taskdef name="retrotranslator" classpathref="build.class.path"
@@ -296,18 +296,16 @@
     </target>
 
     <target depends="" name="manual" description="Build the Manual" >
-    	<ivy:retrieve settingsRef="fm.instance" conf="manual" pattern="lib/[artifact].[ext]"/>
-    	<taskdef resource="org/freemarker/docgen/antlib.properties"
-    	            uri="http://freemarker.org/docgen"
-    	            classpath="lib/docgen.jar:freemarker.jar"
-    	    />
-        <echo message="Disabled until the Ivy problem is fixed!" />
-        <mkdir dir="${build.dir}/manual" /> <!-- Remove this line when fixed! -->
-        <!--docgen:transform
+        <ivy:retrieve settingsRef="fm.instance" conf="manual" pattern="lib/[artifact].[ext]"/>
+        <taskdef resource="org/freemarker/docgen/antlib.properties"
+                    uri="http://freemarker.org/docgen"
+                    classpath="lib/docgen.jar:freemarker.jar"
+        />
+        <docgen:transform
             srcdir="src/manual" destdir="${build.dir}/manual"
             generateEclipseToC="true"
             showXXELogo="true"
-        /-->
+        />
     </target>
 
     <!-- ====================== -->
@@ -350,8 +348,8 @@
         />
 
         <!-- Generate website pages and copy them into distro -->
-    	<ivy:retrieve conf="site" pattern="build/[artifact].[ext]" />
-    	<untar compression="gzip" src="build/site.tar.gz" dest="${dist.dir}/docs" />
+        <ivy:retrieve conf="site" pattern="build/[artifact].[ext]" />
+        <untar compression="gzip" src="build/site.tar.gz" dest="${dist.dir}/docs" />
 
         <!-- Copy Manual -->
         <copy todir="${dist.dir}/docs/docs" includeEmptyDirs="no">
