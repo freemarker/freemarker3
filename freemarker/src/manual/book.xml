@@ -8350,6 +8350,14 @@ TemplateHashModel roundingModeEnums =
             </tr>
 
             <tr>
+              <td><literal>freemarker.runtime.attempt</literal></td>
+
+              <td>Logs template exceptions thrown during template processing,
+              but caught by attempt/recover. Enable DEBUG severity to see the
+              exceptions.</td>
+            </tr>
+
+            <tr>
               <td><literal>freemarker.servlet</literal></td>
 
               <td>Logs messages of the FreemarkerServlet class.</td>
