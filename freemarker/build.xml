@@ -304,7 +304,6 @@
         <docgen:transform
             srcdir="src/manual" destdir="${build.dir}/manual"
             generateEclipseToC="true"
-            showXXELogo="true"
         />
     </target>
 

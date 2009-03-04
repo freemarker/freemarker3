@@ -59,7 +59,7 @@ Technical
     Instead of chapter you may have "preface" or "appendix".
     
   * Don't use "sect1", "sect2", etc. Instead nest "section"-s into each other,
-    but not deeper than 4 levels.
+    but not deeper than 3 levels.
   
   * Use "simplesect" if you want to divide up something visually, but
     you don't want those sections to appear in the ToC, or go into theor own
@@ -99,7 +99,7 @@ Technical
     - misc: Anything doesn't fit in the above cathegories
     
   * When you refer to a part, chapter or section, often you should use
-    xref, not link. The xreflabel attribute of the link-end must be
-    set.
+    xref, not link. The xreflabel attribute of the link-end should not be set;
+    then it's deduced from the titles.
 
 - The "book" element must have this attribute: conformance="docgen"
