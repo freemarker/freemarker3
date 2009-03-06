@@ -8353,8 +8353,9 @@ TemplateHashModel roundingModeEnums =
               <td><literal>freemarker.runtime.attempt</literal></td>
 
               <td>Logs template exceptions thrown during template processing,
-              but caught by attempt/recover. Enable DEBUG severity to see the
-              exceptions.</td>
+              but caught by
+              <literal>attempt</literal>/<literal>recover</literal>
+              directives. Enable DEBUG severity to see the exceptions.</td>
             </tr>
 
             <tr>
