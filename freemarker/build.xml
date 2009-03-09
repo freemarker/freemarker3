@@ -86,7 +86,8 @@
             excludes="
                 freemarker/ext/jsp/,
                 freemarker/ext/servlet/,
-                freemarker/testcase/"
+                freemarker/testcase/,
+                freemarker/ext/script"
         />
         <!--
             When Attila has fixed the JSP support:
@@ -98,6 +99,7 @@
                 freemarker/ext/jsp/FreeMarkerJspFactory21.java,
                 freemarker/ext/jsp/FreeMarkerJspApplicationContext.java,
                 freemarker/testcase/"
+            BUT, where did we get the javax.script classes? That's J2SE 1.6 only.
         -->
         
         <!--
