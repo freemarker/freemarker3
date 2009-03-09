@@ -276,7 +276,7 @@ public abstract class Logger
                     ;//Intentionally ignored
                 }
             }
-            System.err.println("*** WARNING: FreeMarker logging suppressed.");
+            System.err.println("*** WARNING: FreeMarker logging suppressed! ***");
             return new NullLoggerFactory();
         }
         else
