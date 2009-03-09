@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project basedir="." default="jar" name="freemarker"
+        xmlns:ivy="antlib:org.apache.ivy.ant"
         xmlns:freecc="http://visigoths.org/freecc"
         xmlns:docgen="http://freemarker.org/docgen"
-        xmlns:ivy="antlib:org.apache.ivy.ant"
+        xmlns:emma="http://emma.sourceforge.net/emma"
+        xmlns:retrotranslator="http://retrotranslator.sf.net/retrotranslator"
 >
 
     <!-- ================================================================== -->
-    <!-- Properties and paths                                               -->
+    <!-- Properties                                                         -->
     <!-- ================================================================== -->
+
+    <property name="moduleOrg" value="org.freemarker" />
+    <property name="moduleName" value="freemarker" />
+    <property name="moduleBranch" value="2.4" />
 
     <property file="build.properties"/>
 
-    <property name="libs.location" value="http://freemarker.sourceforge.net/jarsforbuild" />
-    <property name="build.dir" location="build" />
-    <property name="classes.dir" location="${build.dir}/classes" />
+    <property name="branch" value="2.4" />
+    
+    <property name="classes.dir" location="build/classes" />
     <property file="src/freemarker/version.properties" />
     <property name="dist.dir" value="build/dist/freemarker-${version}" />
     <property name="site.dir" value="../../site" />
     <property name="docgen.dir" value="../../docgen" />
-
-    <path id="build.class.path">
-        <pathelement path="src" />
-        <fileset dir="lib">
-            <include name="*.jar" />
-            <exclude name="jsp-api-1.2.jar" />
-            <exclude name="jsp-api-2.0.jar" />
-        </fileset>
-    </path>
-
+    
     <!-- ================================================================== -->
     <!-- Initialization                                                     -->
     <!-- ================================================================== -->
@@ -51,70 +48,121 @@
     <target name="init"
             description="fetch dependencies if any are missing and create the build directory if necessary"
     >
+        <condition property="deps.available">
+            <available file=".ivy" />
+        </condition>
+        <antcall target="_autoget-deps" />
+        
         <mkdir dir="build"/>
         <uptodate property="parser.uptodate"
                 targetfile="src/freemarker/core/parser/FMParser.java">
             <srcfiles dir="src/parser" includes="*.freecc" />
         </uptodate>
-        <ivy:settings url="http://freemarker.org/repos/ivy/fm-ivysettings.xml" id="fm.instance" />
     </target>
 
     <!-- ================================================================= -->
     <!-- Compilation                                                       -->
     <!-- ================================================================= -->
+    
    <target name="freecc" depends="init" unless="parser.uptodate"
             description="Build the parser from its grammar file"
     >
-           <ivy:retrieve settingsRef="fm.instance" conf="parser" pattern="lib/[artifact].[ext]"/>
-           <taskdef name="generate" classname="org.visigoths.freecc.FreeCCAntTask"
-                   uri="http://visigoths.org/freecc"
-                   classpath="lib/freecc.jar:lib/freemarker-bootstrap.jar"
-           />
+        <ivy:cachepath conf="parser" pathid="ivy.dep" />
+        <taskdef
+            name="generate" classname="org.visigoths.freecc.FreeCCAntTask"
+            uri="http://visigoths.org/freecc" classpathref="ivy.dep"
+        />
+
         <freecc:generate src="src/parser/FM.freecc"/> 
    </target>
    
    <target name="compile" depends="freecc">
-       <ivy:retrieve settingsRef="fm.instance" conf="build"/>
-       <mkdir dir="${classes.dir}" />
+        <mkdir dir="${classes.dir}" />
+        
+        <ivy:cachepath conf="build" pathid="ivy.dep" />
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
-                debug="on" optimize="off" target="1.5" source="1.5"
-                classpathref="build.class.path"
-                excludes="
-                        freemarker/ext/jsp/FreeMarkerPageContext1.java, 
-                        freemarker/ext/jsp/FreeMarkerPageContext2.java,
-                        freemarker/ext/jsp/FreeMarkerJspFactory2.java"
+            debug="on" optimize="off" target="1.5" source="1.5"
+            classpathref="ivy.dep"
+            excludes="
+                freemarker/ext/jsp/,
+                freemarker/ext/servlet/,
+                freemarker/testcase/"
         />
+        <!--
+            When Attila has fixed the JSP support:
+            excludes="
+                freemarker/ext/jsp/FreeMarkerPageContext2.java,
+                freemarker/ext/jsp/FreeMarkerJspFactory2.java,
+                freemarker/ext/jsp/SimpleTagDirectiveModel.java,
+                freemarker/ext/jsp/FreeMarkerPageContext21.java,
+                freemarker/ext/jsp/FreeMarkerJspFactory21.java,
+                freemarker/ext/jsp/FreeMarkerJspApplicationContext.java,
+                freemarker/testcase/"
+        -->
+        
+        <!--
+        <ivy:cachepath conf="build.jsp2.0" pathid="ivy.dep.jsp2.0" />
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
-                debug="on" optimize="off" target="1.5" source="1.5"
-                includes="freemarker/ext/jsp/FreeMarkerPageContext1.java">
-            <classpath>
-                <pathelement location="lib/jsp-api-1.2.jar" />
-                <path refid="build.class.path" />
-            </classpath>
-        </javac>
+            debug="on" optimize="off" target="1.5" source="1.5"
+            classpathref="ivy.dep.jsp2.0"
+            includes="
+                freemarker/ext/servlet/,
+                freemarker/ext/jsp/"
+            excludes="
+                freemarker/ext/jsp/FreeMarkerPageContext21.java,
+                freemarker/ext/jsp/FreeMarkerJspFactory21.java,
+                freemarker/ext/jsp/FreeMarkerJspApplicationContext.java"
+        />
+        -->
+        <!--
+            When Attila has fixed the JSP support:
+            includes="
+                freemarker/ext/jsp/SimpleTagDirectiveModel.java,
+                freemarker/ext/jsp/FreeMarkerPageContext2.java,
+                freemarker/ext/jsp/FreeMarkerJspFactory2.java"
+        -->
+        
+        <ivy:cachepath conf="build.jsp2.1" pathid="ivy.dep.jsp2.1" />
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
-                   debug="on" optimize="off" target="1.5" source="1.5"
-                   includes="
-                       freemarker/ext/jsp/FreeMarkerPageContext2.java,
-                       freemarker/ext/jsp/FreeMarkerJspFactory2.java"
-        >
-            <classpath>
-                <pathelement location="lib/jsp-api-2.0.jar" />
-                <path refid="build.class.path" />
-            </classpath>
-        </javac>
-        <rmic base="${classes.dir}" classpathref="build.class.path"
+            debug="on" optimize="off" target="1.5" source="1.5"
+            classpathref="ivy.dep.jsp2.1"
+            includes="
+                freemarker/ext/jsp/,
+                freemarker/ext/servlet/"
+            excludes="
+                freemarker/ext/jsp/FreeMarkerPageContext1.java,
+                freemarker/ext/jsp/FreeMarkerPageContext2.java,
+                freemarker/ext/jsp/FreeMarkerJspFactory2.java"
+        />
+        <!--
+            When Attila has fixed the JSP support:
+            includes="
+                freemarker/ext/jsp/FreeMarkerPageContext21.java,
+                freemarker/ext/jsp/FreeMarkerJspFactory21.java,
+                freemarker/ext/jsp/FreeMarkerJspApplicationContext.java"
+        -->
+        
+        <ivy:cachepath conf="build.test" pathid="ivy.dep.test" />
+        <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
+            debug="on" optimize="off" target="1.5" source="1.5"
+            classpathref="ivy.dep.test"
+            includes="
+                freemarker/testcase/"
+        />
+        
+        <rmic base="${classes.dir}" classpathref="ivy.dep"
                 includes="freemarker/debug/impl/Rmi*Impl.class"
                 verify="yes" stubversion="1.2"
         />
-       <copy
+        <copy
                 file="${classes.dir}/freemarker/core/SecureRendererImpl.class"
                 tofile="${classes.dir}/freemarker/core/SecureRendererImpl.clazz"
         />
         <copy toDir="${classes.dir}">
             <fileset dir="src"
-                excludes="**/CVS/**, **/*.bak, **/*.java, **/*.jj,
-                        **/package.html, freemarker/testcase/**"
+                excludes="
+                    **/CVS/**, **/*.bak, **/*.java, **/*.jj,
+                    **/package.html, freemarker/testcase/**"
             />
         </copy>
    </target>
@@ -136,6 +184,13 @@
                 <attribute name="Implementation-Vendor" value="freemarker.org" />
             </manifest>
        </jar>
+       
+       <!-- Needed for Ivy publish (it would overwrite the ivy.xml in the project root otherwise) -->
+       <copy todir="build/artifacts">
+            <fileset dir=".">
+                <include name="*.jar" />
+            </fileset>
+       </copy>
    </target>
 
     <!-- ================================================================= -->
@@ -143,57 +198,65 @@
     <!-- ================================================================= -->
 
    <target name="test" depends="compile" description="Run test cases">
-       <copy todir="${classes.dir}/freemarker/testcase">
-           <fileset dir="src/freemarker/testcase" />
-       </copy>
-          <ivy:retrieve settingsRef="fm.instance" conf="emma" pattern="lib/[artifact].[ext]"/>
-       <path id="emma.lib" >
-           <pathelement location="lib/emma.jar" />
-           <pathelement location="lib/emma_ant.jar" />
-       </path>
-       <taskdef resource="emma_ant.properties" classpathref="emma.lib" />
-       <property name="coverage.dir" location="${build.dir}/coverage" />
-       <property name="coverage.classes.dir" location="${build.dir}/coverage/classes" />
-       <mkdir dir="${coverage.classes.dir}" />
-       <property name="coverage.instrumentationfile" location="${coverage.dir}/instrumentation" />
-       <emma enabled="true">
-           <instr 
-               instrpath="${classes.dir}" outdir="${coverage.classes.dir}" 
-               outfile="${coverage.instrumentationfile}" mode="copy">
-               <filter excludes="*_Stub" />
-              </instr>
-       </emma>
-       <copy todir="${coverage.classes.dir}">
-           <fileset dir="src" excludes="**/*.java" />
-       </copy>
-       <copy todir="${coverage.classes.dir}">
-           <fileset dir="${classes.dir}" />
-       </copy>
-       <property name="coverage.outfile" location="${coverage.dir}/coverage" />
-
-       <junit haltonfailure="off" fork="true">
-           <sysproperty key="emma.coverage.out.file" value="${coverage.outfile}" />
-              <classpath>
-               <pathelement path="${coverage.classes.dir}" />
-               <pathelement path="lib/emma.jar" />
-               <path refid="build.class.path" />
-           </classpath>
-           <formatter type="plain" />
-           <formatter type="xml" />
-           <test
-             name="freemarker.testcase.TemplateTestSuite"
-             todir="build" />
-       </junit>
+        <ivy:cachepath conf="emma" pathid="ivy.dep.emma" />
+        <taskdef
+            resource="emma_ant.properties" classpathref="ivy.dep.emma"
+            uri="http://emma.sourceforge.net/emma" 
+        />
+        
+        <copy todir="${classes.dir}/freemarker/testcase">
+            <fileset dir="src/freemarker/testcase" />
+        </copy>
+        <property name="coverage.dir" location="build/coverage" />
+        <property name="coverage.classes.dir" location="build/coverage/classes" />
+        <mkdir dir="${coverage.classes.dir}" />
+        <property name="coverage.instrumentationfile" location="${coverage.dir}/instrumentation" />
+        <emma:emma enabled="true">
+            <instr 
+                instrpath="${classes.dir}" outdir="${coverage.classes.dir}" 
+                outfile="${coverage.instrumentationfile}" mode="copy">
+                <filter excludes="*_Stub" />
+            </instr>
+        </emma:emma>
+        <copy todir="${coverage.classes.dir}">
+            <fileset dir="src" excludes="**/*.java" />
+        </copy>
+        <copy todir="${coverage.classes.dir}">
+            <fileset dir="${classes.dir}" />
+        </copy>
+        <property name="coverage.outfile" location="${coverage.dir}/coverage" />
+   
+        <ivy:cachepath conf="test" pathid="ivy.dep.test" />
+        <junit haltonfailure="off" fork="true">
+            <sysproperty key="emma.coverage.out.file" value="${coverage.outfile}" />
+            <classpath>
+                <pathelement path="${coverage.classes.dir}" />
+                <path refid="ivy.dep.emma" />
+                <path refid="ivy.dep.test" />
+            </classpath>
+            <formatter type="plain" />
+            <formatter type="xml" />
+            <test
+                name="freemarker.testcase.TemplateTestSuite"
+                todir="build"
+            />
+        </junit>
    </target>
     
    <target name="test-coverage-report" depends="test">
-       <property name="coverage.report.dir" location="${build.dir}/coverage/report" />
-       <mkdir dir="${coverage.report.dir}" />
-       <delete dir="${coverage.report.dir}" />
-       <mkdir dir="${coverage.report.dir}" />
+        <ivy:cachepath conf="emma" pathid="ivy.dep.emma" />
+        <taskdef
+            resource="emma_ant.properties" classpathref="ivy.dep.emma"
+            uri="http://emma.sourceforge.net/emma" 
+        />
+        
+        <property name="coverage.report.dir" location="build/coverage/report" />
+        <mkdir dir="${coverage.report.dir}" />
+        <delete dir="${coverage.report.dir}" />
+        <mkdir dir="${coverage.report.dir}" />
         <echo message="${coverage.outfile}" />
         <echo message="${coverage.instrumentationfile}" />
-       <emma enabled="true">
+        <emma:emma enabled="true">
             <report>
                 <fileset dir="${basedir}">
                     <include name="build/coverage/instrumentation" />
@@ -207,50 +270,55 @@
         <html outfile="${coverage.report.dir}/index.html" />
         <xml outfile="${coverage.report.dir}/report.xml" />
             </report>
-        </emma>
+        </emma:emma>
    </target>
 
     <!-- ================================================================= -->
     <!-- Retro stuff                                                       -->
     <!-- ================================================================= -->
 
-   <target name="retrotest" description="Test against older JDK">
-       <echo message="You are testing against JDK version ${java.version}." />
-    <echo message="Note that this test only makes sense against a JDK version inferior to 1.5" />
-    <echo message="The error log will be put in the retrobuild directory." />
-       <mkdir dir="retrobuild" />
-       <copy todir="retrobuild/freemarker/testcase">
-          <fileset dir="src/freemarker/testcase" excludes="*.class" />
-       </copy>
-       <junit haltonfailure="off" fork="true">
-           <classpath>
-             <pathelement path="retrobuild" />
-             <path refid="build.class.path" />
-           </classpath>
-           <formatter type="plain" />
-           <test
-             name="freemarker.testcase.TemplateTestSuite"
-             todir="retrobuild" />
-       </junit>
-   </target>
+    <target name="retrotest" description="Test against older JDK">
+        <echo message="You are testing against JDK version ${java.version}." />
+        <echo message="Note that this test only makes sense against a JDK version inferior to 1.5" />
+        <echo message="The error log will be put in the retrobuild directory." />
+        <mkdir dir="retrobuild" />
+        <copy todir="retrobuild/freemarker/testcase">
+            <fileset dir="src/freemarker/testcase" excludes="*.class" />
+        </copy>
+        <ivy:cachepath conf="test" pathid="ivy.dep" />
+        <junit haltonfailure="off" fork="true">
+            <classpath>
+                <pathelement path="retrobuild" />
+                <path refid="ivy.dep" />
+            </classpath>
+            <formatter type="plain" />
+            <test
+                name="freemarker.testcase.TemplateTestSuite"
+                todir="retrobuild"
+            />
+        </junit>
+    </target>
 
-   <target name="retrotrans" depends="compile" description="Run Retrotranslator over the .class files">
-       <ivy:retrieve settingsRef="fm.instance" conf="build1.4"/>
-       <mkdir dir="retrobuild" />
-
-       <taskdef name="retrotranslator" classpathref="build.class.path"
-           classname="net.sf.retrotranslator.transformer.RetrotranslatorTask" />
-       <copy file="${classes.dir}/freemarker/core/SecureRendererImpl.clazz" tofile="retrobuild/freemarker/core/SecureRendererImpl.class" />
-       
-       <retrotranslator
-          srcdir="build/classes" destdir="retrobuild"
-          embed="freemarker.retrosupport"
-          uptodatecheck="false"
-       />
-       <!-- Note: uptodatecheck="true" has randombly created empty jar-s -->
-       
-       <copy file="retrobuild/freemarker/core/SecureRendererImpl.class" tofile="retrobuild/freemarker/core/SecureRendererImpl.clazz" />
-   </target>
+    <target name="retrotrans" depends="compile" description="Run Retrotranslator over the .class files">
+        <ivy:cachepath conf="retrotranslate" pathid="ivy.dep" />
+        <taskdef name="translate" classpathref="ivy.dep"
+            classname="net.sf.retrotranslator.transformer.RetrotranslatorTask"
+            uri="http://retrotranslator.sf.net/retrotranslator"
+        />
+            
+        <mkdir dir="retrobuild" />
+   
+        <copy file="${classes.dir}/freemarker/core/SecureRendererImpl.clazz" tofile="retrobuild/freemarker/core/SecureRendererImpl.class" />
+        
+        <retrotranslator:translate
+            srcdir="build/classes" destdir="retrobuild"
+            embed="freemarker.retrosupport"
+            uptodatecheck="false"
+        />
+        <!-- Note: uptodatecheck="true" has randombly created empty jar-s -->
+        
+        <copy file="retrobuild/freemarker/core/SecureRendererImpl.class" tofile="retrobuild/freemarker/core/SecureRendererImpl.clazz" />
+    </target>
     <target name="retrojar" depends="retrotrans" description="Build a .jar file that can be run under 1.4">
         <copy toDir="retrobuild">
           <fileset dir="src"
@@ -275,38 +343,43 @@
     <!-- Generate docs                                                     -->
     <!-- ================================================================= -->
 
-    <target depends="" name="javadoc" description="Build the JavaDocs" >
-        <mkdir dir="${build.dir}/api" />
+    <target depends="freecc" name="javadoc" description="Build the JavaDocs" >
+        <!-- depends="freecc" is needed as its output is referred in the docs. -->
+        <mkdir dir="build/api" />
         <delete includeEmptyDirs="yes">
-            <fileset dir="${build.dir}/api" includes="**/*" />
+            <fileset dir="build/api" includes="**/*" />
         </delete>
-        <javadoc author="true"
-                destdir="${build.dir}/api"
-                doctitle="FreeMarker ${version}"
-                packagenames="
-                        freemarker.debug, freemarker.template.*,
-                        freemarker.core.*, freemarker.ext.*,
-                        freemarker.cache.*, freemarker.log.*"
-                sourcepath="src"
-                version="true"
-                windowtitle="FreeMarker ${version} API"
-                classpathref="build.class.path"
-                use="true">
-        </javadoc>
+        <ivy:cachepath conf="build.jsp2.1" pathid="ivy.dep" />
+        <javadoc
+            sourcepath="src"
+            destdir="build/api"
+            doctitle="FreeMarker ${version}"
+            packagenames="
+                freemarker.debug, freemarker.template.*,
+                freemarker.core.*, freemarker.ext.*,
+                freemarker.cache.*, freemarker.log.*"
+            use="true"
+            version="true"
+            author="true"
+            windowtitle="FreeMarker ${version} API"
+            classpathref="ivy.dep"
+        />
     </target>
 
-    <target depends="" name="manual" description="Build the Manual" >
-        <ivy:retrieve settingsRef="fm.instance" conf="manual" pattern="lib/[artifact].[ext]"/>
+    <target name="manual" depends="init" description="Build the Manual" >
+        <ivy:cachepath conf="manual" pathid="ivy.dep" />
         <taskdef resource="org/freemarker/docgen/antlib.properties"
                     uri="http://freemarker.org/docgen"
-                    classpath="lib/docgen.jar:freemarker.jar"
+                    classpathref="ivy.dep"
         />
+        
         <docgen:transform
-            srcdir="src/manual" destdir="${build.dir}/manual"
+            srcdir="src/manual" destdir="build/manual"
             generateEclipseToC="true"
         />
     </target>
 
+    
     <!-- ====================== -->
     <!-- Distributuion building -->
     <!-- ====================== -->
@@ -336,6 +409,8 @@
                 <exclude name="**/*.bak" />
                 <exclude name="**/*.~*" />
                 <include name="build.xml" />
+                <include name="ivy.xml" />
+                <include name="ivysettings.xml" />
                 <include name="*.txt" />
                 <include name="*.jar" />
             </fileset>
@@ -352,12 +427,12 @@
 
         <!-- Copy Manual -->
         <copy todir="${dist.dir}/docs/docs" includeEmptyDirs="no">
-            <fileset dir="${build.dir}/manual" />
+            <fileset dir="build/manual" />
         </copy>
         
         <!-- Copy javadocs -->
         <copy todir="${dist.dir}/docs/docs/api" includeEmptyDirs="no">
-            <fileset dir="${build.dir}/api" />
+            <fileset dir="build/api" />
         </copy>
         
         <!-- Package the distro -->
@@ -457,8 +532,100 @@ Proceed? </input>
         <echo>**********************************************</echo>
     </target>
 
-    <!-- ================================================================= -->
-    <!-- [Add new section title here]                                      -->
-    <!-- ================================================================= -->
+    
+    <!-- ====================== -->
+    <!-- Dependency management  -->
+    <!-- ====================== -->
+
+    <target name="_autoget-deps" unless="deps.available">
+        <antcall target="update-deps" />
+    </target>
+    
+    <target name="update-deps"
+            description="Gets the latest version of the dependencies from the Web"
+    >
+        <echo>Getting dependencies...</echo>
+        <echo>----------------------------------------------------</echo>
+        <ivy:settings id="remote" url="http://freemarker.org/repos/ivy/ivysettings-remote.xml" />
+        <!-- Build an own repository that will serve us even offline: -->
+        <ivy:retrieve settingsRef="remote" sync="true"
+            ivypattern=".ivy.part/repo/[organisation]/[module]/ivy-[revision].xml"
+            pattern=".ivy.part/repo/[organisation]/[module]/[artifact]-[revision].[ext]"
+        />
+        <echo>------------------------------------------------------</echo>
+        <echo>*** Successfull (ignore "unknown resolver" errors) ***</echo>
+        <!-- Only after we got all the dependencies we delete what we had. -->
+        <!-- Thus a repo outage doesn't left us without the dependencies. -->
+        <delete dir=".ivy" />
+        <move todir=".ivy">
+            <fileset dir=".ivy.part" />
+        </move>
+    </target>
+
+    <!-- Do NOT call this from 'clean'; offline guys would stuck after that. -->
+    <target name="clean-deps"
+            description="Deletes all dependencies"
+    >
+        <delete dir=".ivy" />
+    </target>
+    
+    <target name="publish-override" depends="jar"
+            description="Ivy-publishes THIS project locally as an override"
+    >
+        <ivy:resolve />
+        <ivy:publish
+                pubrevision="${moduleBranch}-branch-head"
+                overwrite="true" forcedeliver="true"
+                resolver="freemarker-devel-local-override"
+        >
+            <artifacts pattern="build/artifacts/[artifact].[ext]" />
+        </ivy:publish>
+        <echo>-------------------------------------------------------</echo>
+        <echo>*** Don't forget to `ant unpublish-override` later! ***</echo>
+    </target>
+
+    <target name="unpublish-override"
+            description="Undoes publish-override (made in THIS project)">
+        <delete dir="${user.home}/.ivy2/freemarker-devel-local-override/${moduleOrg}/${moduleName}" />
+        <delete dir=".ivy/cache-shared/${moduleOrg}/${moduleName}" />
+    </target>  
+
+    <target name="unpublish-override-all"
+            description="Undoes publish-override-s made in ALL projects">
+        <delete dir="${user.home}/.ivy2/freemarker-devel-local-override" />
+        <delete dir=".ivy/cache-shared" />
+    </target>  
+
+    <target name="uninstall"
+            description="Deletes external files created by FreeMarker developement">
+        <delete dir="${user.home}/.ivy2/freemarker-devel-cache" />
+        <delete dir="${user.home}/.ivy2/freemarker-devel-local-override" />
+    </target>
+
+    <target name="report-deps"
+            description="Creates a HTML document that summarizes the dependencies.">
+        <mkdir dir="build/deps-report" />
+        <ivy:resolve />
+        <ivy:report todir="build/deps-report" />
+    </target>
+
+    <!--
+      This meant to be called on the Continuous Integration server, so the
+      integration builds appear in the freemarker.org public Ivy repository.
+      The artifacts must be already built.
+    -->
+    <target name="prepare-integration-publishing"
+            description="(For the Continuous Integration server only)"
+    >
+        <delete dir="build/prepared-integration-publication" />
+        <ivy:resolve />
+        <ivy:publish
+                pubrevision="${moduleBranch}-branch-head"
+                overwrite="true" forcedeliver="true"
+                resolver="prepared-integration-publication"
+        >
+            <artifacts pattern="build/artifacts/[artifact].[ext]" />
+        </ivy:publish>
+    </target>
 
  </project>

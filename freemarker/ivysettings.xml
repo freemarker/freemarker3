@@ -1,0 +1,30 @@
+<ivysettings>
+    <caches>
+        <cache name="cacheForPrivate" basedir="${ivy.project.dir}/.ivy/cache-private" useOrigin="true" defaultTTL="1s" />
+        
+        <!--
+          This cache can't use useOrigin, as other projects may delete from the cached repositry,
+          hence making the cache broken:
+        -->
+        <cache name="cacheForShared" basedir="${ivy.project.dir}/.ivy/cache-shared" defaultTTL="1s" />
+    </caches>
+    <resolvers>
+        <chain name="freemarker-devel-local" returnFirst="true">
+            <filesystem name="freemarker-devel-local-override" cache="cacheForShared">
+                <ivy pattern="${user.home}/.ivy2/freemarker-devel-local-override/[organisation]/[module]/ivy-[revision].xml" />
+                <artifact pattern="${user.home}/.ivy2/freemarker-devel-local-override/[organisation]/[module]/[artifact]-[revision].[ext]" />
+            </filesystem>
+            <filesystem name="freemarker-project-private" cache="cacheForPrivate">
+                <ivy pattern="${ivy.project.dir}/.ivy/repo/[organisation]/[module]/ivy-[revision].xml" />
+                <artifact pattern="${ivy.project.dir}/.ivy/repo/[organisation]/[module]/[artifact]-[revision].[ext]" />
+            </filesystem>
+        </chain>
+        <filesystem name="prepared-integration-publication">
+            <ivy pattern="${ivy.project.dir}/build/prepared-integration-publication/[organisation]/[module]/ivy-[revision].xml" />
+            <artifact pattern="${ivy.project.dir}/build/prepared-integration-publication/[organisation]/[module]/[artifact]-[revision].[ext]" />
+        </filesystem>
+    </resolvers>
+    <modules>
+        <module organisation="*" resolver="freemarker-devel-local" />
+    </modules>
+</ivysettings>
