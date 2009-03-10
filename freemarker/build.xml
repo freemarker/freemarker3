@@ -571,8 +571,7 @@ Proceed? </input>
     </target>
     
     <target name="publish-override" depends="jar"
-            description="Ivy-publishes THIS project locally as an override"
-    >
+            description="Ivy-publishes THIS project locally as an override">
         <ivy:resolve />
         <ivy:publish
                 pubrevision="${moduleBranch}-branch-head"
@@ -588,19 +587,20 @@ Proceed? </input>
     <target name="unpublish-override"
             description="Undoes publish-override (made in THIS project)">
         <delete dir="${user.home}/.ivy2/freemarker-devel-local-override/${moduleOrg}/${moduleName}" />
-        <delete dir=".ivy/cache-shared/${moduleOrg}/${moduleName}" />
+        <delete dir="${user.home}/.ivy2/freemarker-devel-local-override-cache/${moduleOrg}/${moduleName}" />
     </target>  
 
     <target name="unpublish-override-all"
             description="Undoes publish-override-s made in ALL projects">
         <delete dir="${user.home}/.ivy2/freemarker-devel-local-override" />
-        <delete dir=".ivy/cache-shared" />
+        <delete dir="${user.home}/.ivy2/freemarker-devel-local-override-cache" />
     </target>  
 
     <target name="uninstall"
             description="Deletes external files created by FreeMarker developement">
         <delete dir="${user.home}/.ivy2/freemarker-devel-cache" />
         <delete dir="${user.home}/.ivy2/freemarker-devel-local-override" />
+        <delete dir="${user.home}/.ivy2/freemarker-devel-local-override-cache " />
     </target>
 
     <target name="report-deps"
@@ -628,5 +628,5 @@ Proceed? </input>
             <artifacts pattern="build/artifacts/[artifact].[ext]" />
         </ivy:publish>
     </target>
-
- </project>
+    
+</project>

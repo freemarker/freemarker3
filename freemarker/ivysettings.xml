@@ -1,16 +1,15 @@
 <ivysettings>
     <caches>
-        <cache name="cacheForPrivate" basedir="${ivy.project.dir}/.ivy/cache-private" useOrigin="true" defaultTTL="1s" />
+        <cache name="cacheForPrivate" basedir="${ivy.project.dir}/.ivy/cache" useOrigin="true" defaultTTL="1s" />
         
         <!--
-          This cache can't use useOrigin, as other projects may delete from the cached repositry,
-          hence making the cache broken:
+          Rather don't use useOrigin="true" here, as deleting from the target repo break the cache then.
         -->
-        <cache name="cacheForShared" basedir="${ivy.project.dir}/.ivy/cache-shared" defaultTTL="1s" />
+        <cache name="cacheForLocalOverride" basedir="${user.home}/.ivy2/freemarker-devel-local-override-cache" defaultTTL="1s" />
     </caches>
     <resolvers>
         <chain name="freemarker-devel-local" returnFirst="true">
-            <filesystem name="freemarker-devel-local-override" cache="cacheForShared">
+            <filesystem name="freemarker-devel-local-override" cache="cacheForLocalOverride">
                 <ivy pattern="${user.home}/.ivy2/freemarker-devel-local-override/[organisation]/[module]/ivy-[revision].xml" />
                 <artifact pattern="${user.home}/.ivy2/freemarker-devel-local-override/[organisation]/[module]/[artifact]-[revision].[ext]" />
             </filesystem>
