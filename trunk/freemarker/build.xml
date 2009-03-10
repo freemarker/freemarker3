@@ -79,6 +79,7 @@
    <target name="compile" depends="freecc">
         <mkdir dir="${classes.dir}" />
         
+        <!-- Note: the "build" conf includes JSP 1.2 and Servlet 2.3 API-s -->
         <ivy:cachepath conf="build" pathid="ivy.dep" />
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
             debug="on" optimize="off" target="1.5" source="1.5"
