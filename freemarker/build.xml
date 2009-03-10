@@ -43,6 +43,7 @@
         <delete file="src/freemarker/core/parser/Node.java" />
         <delete file="freemarker.jar" />
         <delete file="freemarker-14compat.jar" />
+        <antcall target="clean-deps" />
     </target>
 
     <target name="init"
