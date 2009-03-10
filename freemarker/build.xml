@@ -12,10 +12,14 @@
     <!-- Properties                                                         -->
     <!-- ================================================================== -->
 
+    <!-- Ivy project coordinates: -->
     <property name="moduleOrg" value="org.freemarker" />
     <property name="moduleName" value="freemarker" />
     <property name="moduleBranch" value="2.4" />
 
+    <!-- Will be overidden on the server: -->
+    <property name="server.ivy.repo.root" value="${basedir}/build/dummy-server-ivy-repo" />
+    
     <property file="build.properties"/>
 
     <property name="branch" value="2.4" />
@@ -615,15 +619,15 @@ Proceed? </input>
       integration builds appear in the freemarker.org public Ivy repository.
       The artifacts must be already built.
     -->
-    <target name="prepare-integration-publishing"
+    <target name="server-publish-last-build"
             description="(For the Continuous Integration server only)"
     >
-        <delete dir="build/prepared-integration-publication" />
+        <delete dir="build/dummy-server-ivy-repo" />
         <ivy:resolve />
         <ivy:publish
                 pubrevision="${moduleBranch}-branch-head"
                 overwrite="true" forcedeliver="true"
-                resolver="prepared-integration-publication"
+                resolver="server-publishing-target"
         >
             <artifacts pattern="build/artifacts/[artifact].[ext]" />
         </ivy:publish>

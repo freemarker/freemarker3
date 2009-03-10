@@ -18,9 +18,9 @@
                 <artifact pattern="${ivy.project.dir}/.ivy/repo/[organisation]/[module]/[artifact]-[revision].[ext]" />
             </filesystem>
         </chain>
-        <filesystem name="prepared-integration-publication">
-            <ivy pattern="${ivy.project.dir}/build/prepared-integration-publication/[organisation]/[module]/ivy-[revision].xml" />
-            <artifact pattern="${ivy.project.dir}/build/prepared-integration-publication/[organisation]/[module]/[artifact]-[revision].[ext]" />
+        <filesystem name="server-publishing-target">
+            <ivy pattern="${server.ivy.repo.root}/[organisation]/[module]/ivy-[revision].xml" />
+            <artifact pattern="${server.ivy.repo.root}/[organisation]/[module]/[artifact]-[revision].[ext]" />
         </filesystem>
     </resolvers>
     <modules>
