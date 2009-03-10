@@ -86,8 +86,7 @@
             excludes="
                 freemarker/ext/jsp/,
                 freemarker/ext/servlet/,
-                freemarker/testcase/,
-                freemarker/ext/script/"
+                freemarker/testcase/"
         />
         <!--
             When Attila has fixed the JSP support:
