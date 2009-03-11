@@ -22,7 +22,12 @@
     
     <property file="build.properties"/>
 
-    <property name="branch" value="2.4" />
+    <!-- When boot.classpath is missing, this is the default: -->
+    <property name="boot.classpath" value="${sun.boot.class.path}" />
+    <!-- For checking the correctness of the boot.classpath -->
+    <available classpath="${boot.classpath}"
+            classname="java.lang.Object" ignoresystemclasses="true" 
+            property="boot.classpath.correct" />
     
     <property name="classes.dir" location="build/classes" />
     <property file="src/freemarker/version.properties" />
@@ -81,6 +86,14 @@
    </target>
    
    <target name="compile" depends="freecc">
+        <fail unless="boot.classpath.correct"><!--
+            -->The "boot.classpath" property value (${boot.classpath}) <!--
+            -->seems to be an incorrect boot classpath. Please fix it in <!--
+            -->the &lt;projectDir>/build.properties file, or wherever you <!--
+            -->set it.<!--
+        --></fail>
+        <echo level="info">Using boot classpath: ${boot.classpath}</echo>
+
         <mkdir dir="${classes.dir}" />
         
         <!-- Note: the "build" conf includes JSP 1.2 and Servlet 2.3 API-s -->
@@ -88,6 +101,7 @@
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
             debug="on" optimize="off" target="1.5" source="1.5"
             classpathref="ivy.dep"
+            bootclasspath="${boot.classpath}"
             excludes="
                 freemarker/ext/jsp/,
                 freemarker/ext/servlet/,
@@ -110,6 +124,7 @@
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
             debug="on" optimize="off" target="1.5" source="1.5"
             classpathref="ivy.dep.jsp2.0"
+            bootclasspath="${boot.classpath}"
             includes="
                 freemarker/ext/servlet/,
                 freemarker/ext/jsp/"
@@ -131,6 +146,7 @@
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
             debug="on" optimize="off" target="1.5" source="1.5"
             classpathref="ivy.dep.jsp2.1"
+            bootclasspath="${boot.classpath}"
             includes="
                 freemarker/ext/jsp/,
                 freemarker/ext/servlet/"
@@ -151,6 +167,7 @@
         <javac srcdir="src" destdir="${classes.dir}" deprecation="off" 
             debug="on" optimize="off" target="1.5" source="1.5"
             classpathref="ivy.dep.test"
+            bootclasspath="${boot.classpath}"
             includes="
                 freemarker/testcase/"
         />
