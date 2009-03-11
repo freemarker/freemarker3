@@ -2,13 +2,13 @@
     <!-- Prevent IvyDE error: -->
     <property name="server.ivy.repo.root" value="${ivy.project.dir}/NOT_SET" override="false" />
     
-    <caches>
-        <cache name="cacheForPrivate" basedir="${ivy.project.dir}/.ivy/cache" useOrigin="true" defaultTTL="1s" />
+    <caches defaultCacheDir="${ivy.project.dir}/.ivy/cache">
+        <cache name="cacheForPrivate" useOrigin="true" defaultTTL="1s" />
         
         <!--
           Rather don't use useOrigin="true" here, as deleting from the target repo break the cache then.
         -->
-        <cache name="cacheForLocalOverride" basedir="${user.home}/.ivy2/freemarker-devel-local-override-cache" defaultTTL="1s" />
+        <cache name="cacheForLocalOverride" basedir="${user.home}/.ivy2/freemarker-devel-local-override-cache" defaultTTL="1s" lockStrategy="artifact-lock" />
     </caches>
     <resolvers>
         <chain name="freemarker-devel-local" returnFirst="true">
@@ -16,7 +16,7 @@
                 <ivy pattern="${user.home}/.ivy2/freemarker-devel-local-override/[organisation]/[module]/ivy-[revision].xml" />
                 <artifact pattern="${user.home}/.ivy2/freemarker-devel-local-override/[organisation]/[module]/[artifact]-[revision].[ext]" />
             </filesystem>
-            <filesystem name="freemarker-project-private" cache="cacheForPrivate">
+            <filesystem name="project-private" cache="cacheForPrivate">
                 <ivy pattern="${ivy.project.dir}/.ivy/repo/[organisation]/[module]/ivy-[revision].xml" />
                 <artifact pattern="${ivy.project.dir}/.ivy/repo/[organisation]/[module]/[artifact]-[revision].[ext]" />
             </filesystem>

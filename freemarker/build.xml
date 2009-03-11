@@ -556,11 +556,15 @@ Proceed? </input>
     <echo>**********************************************</echo>
   </target>
 
+  <target name="artifacts" depends="jar"
+    description="Creates the artifacts for Ivy."
+  />
   
-  <!-- ====================== -->
-  <!-- Dependency management  -->
-  <!-- ====================== -->
-
+  
+  <!-- ================================================================== -->
+  <!-- Dependency management (keep it exactly identical for all projects) -->
+  <!-- ================================================================== -->
+  
   <target name="_autoget-deps" unless="deps.available">
     <antcall target="update-deps" />
   </target>
@@ -576,11 +580,18 @@ Proceed? </input>
       ivypattern=".ivy.part/repo/[organisation]/[module]/ivy-[revision].xml"
       pattern=".ivy.part/repo/[organisation]/[module]/[artifact]-[revision].[ext]"
     />
-    <echo>------------------------------------------------------</echo>
-    <echo>*** Successfull (ignore "unknown resolver" errors) ***</echo>
-    <!-- Only after we got all the dependencies we delete what we had. -->
-    <!-- Thus a repo outage doesn't left us without the dependencies. -->
+    <echo>----------------------------------------------------</echo>
+    <echo>*** Successfull ***</echo>
+    <!-- Only now that we got all the dependencies will we delete anything. -->
+    <!-- Thus a net or repo outage doesn't left us without the dependencies. -->
+
+    <!-- Save the resolution cache from the soon coming <delete>: -->
+    <move todir=".ivy.part/update-deps-reso-cache">
+      <fileset dir=".ivy/update-deps-reso-cache" />
+    </move>
+    <!-- Drop all the old stuff: -->
     <delete dir=".ivy" />
+    <!-- And use the new stuff instead: -->
     <move todir=".ivy">
       <fileset dir=".ivy.part" />
     </move>
@@ -592,8 +603,8 @@ Proceed? </input>
   >
     <delete dir=".ivy" />
   </target>
-  
-  <target name="publish-override" depends="jar"
+
+  <target name="publish-override" depends="artifacts"
     description="Ivy-publishes THIS project locally as an override"
   >
     <ivy:resolve />
@@ -623,7 +634,8 @@ Proceed? </input>
   </target>  
 
   <target name="uninstall"
-      description="Deletes external files created by FreeMarker developement">
+    description="Deletes external files created by FreeMarker developement"
+  >
     <delete dir="${user.home}/.ivy2/freemarker-devel-cache" />
     <delete dir="${user.home}/.ivy2/freemarker-devel-local-override" />
     <delete dir="${user.home}/.ivy2/freemarker-devel-local-override-cache " />
@@ -636,7 +648,7 @@ Proceed? </input>
     <ivy:resolve />
     <ivy:report todir="build/deps-report" />
   </target>
-
+  
   <!--
     This meant to be called on the Continuous Integration server, so the
     integration builds appear in the freemarker.org public Ivy repository.
