@@ -1,4 +1,7 @@
 <ivysettings>
+    <!-- Prevent IvyDE error: -->
+    <property name="server.ivy.repo.root" value="${ivy.project.dir}/NOT_SET" override="false" />
+    
     <caches>
         <cache name="cacheForPrivate" basedir="${ivy.project.dir}/.ivy/cache" useOrigin="true" defaultTTL="1s" />
         
