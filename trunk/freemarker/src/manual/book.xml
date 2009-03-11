@@ -20021,24 +20021,26 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       <para>If you want to modify the source code and rebuild
       <literal>freemarker.jar</literal>, you need <link
       xlink:href="http://ant.apache.org/">Ant</link> 1.7.0 (or newer) and JDK
-      5 (or newer). If these are satisfied, just run Ant from the root
-      directory of the distribution, and it will create the new
+      5 (or newer), and Ivy 2.0.0 or never installed on Ant. If these are
+      satisfied, just run <literal>ant</literal> in the root directory of the
+      distribution and it should build the new
       <literal>freemarker.jar</literal>. Note that for the very first build
       you must be on-line, because the build task will download a lot of
-      required dependencies (about 20 MB) into the <literal>lib</literal>
+      required dependencies (about 20 MB) into the <literal>.ivy</literal>
       subdirectory of distribution root directory.</para>
 
       <para>Maybe you should check the new jar file against our test suite.
-      This is done by running Ant with <literal>test</literal> target (go to
-      the root directory of the distribution, and issue "ant test"). If the
-      test fails, read the resulting <literal>.txt</literal> file in the
+      This is done by running <literal>ant test</literal>. If the test fails,
+      read the resulting <literal>.txt</literal> file in the
       <literal>build/testcase</literal> directory for more details.</para>
 
-      <para>Note that building a full distribution, which includes the
-      FreeMarker Manual and the off-line Web site, is not possible purely from
-      the source code that is included with the distribution. You will have to
-      check out the "docgen" and "site" sub-projects from the SVN repository
-      of FreeMarker for that.</para>
+      <para>To build a full distribution package, which includes the
+      FreeMarker Manual and the off-line Web site, issue <literal>ant
+      dist</literal>.</para>
+
+      <para>To update the dependencies (as some of them are snapshot
+      releases), issue <literal>ant update-deps</literal>. This is also needed
+      if you have added new dependencies to <literal>ivy.xml</literal>.</para>
     </appendix>
 
     <appendix xml:id="app_versions">
