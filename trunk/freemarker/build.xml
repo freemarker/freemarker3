@@ -208,12 +208,8 @@
       </manifest>
      </jar>
      
-     <!-- Needed for Ivy publish (it would overwrite the ivy.xml in the project root otherwise) -->
-     <copy todir="build/artifacts">
-      <fileset dir=".">
-        <include name="*.jar" />
-      </fileset>
-     </copy>
+     <!-- Needed for Ivy publishing -->
+     <copy todir="build/artifacts" file="freemarker.jar" />
    </target>
 
   <!-- ================================================================= -->
@@ -360,6 +356,9 @@
         <attribute name="Implementation-Vendor" value="freemarker.org" />
       </manifest>
     </jar>
+    
+     <!-- Needed for Ivy publishing -->
+     <copy todir="build/artifacts" file="freemarker-14compat.jar" />
   </target>
 
 
@@ -556,7 +555,7 @@ Proceed? </input>
     <echo>**********************************************</echo>
   </target>
 
-  <target name="artifacts" depends="jar"
+  <target name="artifacts" depends="jar, retrojar"
     description="Creates the artifacts for Ivy."
   />
   
