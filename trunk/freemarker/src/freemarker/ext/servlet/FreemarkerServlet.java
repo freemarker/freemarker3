@@ -624,6 +624,8 @@ public class FreemarkerServlet extends HttpServlet
      * @param response the HTTP response
      * @return true to indicate this method has processed the request entirely,
      * and that the further request processing should not take place.
+     * @throws ServletException 
+     * @throws IOException 
      */
     protected boolean preprocessRequest(
         HttpServletRequest request,
@@ -721,6 +723,8 @@ public class FreemarkerServlet extends HttpServlet
      * action on first request in the context. By default it does nothing.
      * @param request the actual HTTP request
      * @param response the actual HTTP response
+     * @throws ServletException 
+     * @throws IOException 
      */
     protected void initializeServletContext(
         HttpServletRequest request,
@@ -738,6 +742,8 @@ public class FreemarkerServlet extends HttpServlet
      * 
      * @param request the actual HTTP request
      * @param response the actual HTTP response
+     * @throws ServletException 
+     * @throws IOException 
      */
     protected void initializeSession(
         HttpServletRequest request,
@@ -768,6 +774,8 @@ public class FreemarkerServlet extends HttpServlet
      *        Thus, you can add new variables to the data-model with the
      *        {@link freemarker.template.SimpleHash#put(String, Object)} subclass) method.
      * @return true to process the template, false to suppress template processing.
+     * @throws ServletException 
+     * @throws IOException 
      */
     protected boolean preTemplateProcess(
         HttpServletRequest request,
@@ -788,6 +796,8 @@ public class FreemarkerServlet extends HttpServlet
      * @param response the actual HTTP response
      * @param template the template that was executed
      * @param data the data that was passed to the template
+     * @throws ServletException 
+     * @throws IOException 
      */
     protected void postTemplateProcess(
         HttpServletRequest request,

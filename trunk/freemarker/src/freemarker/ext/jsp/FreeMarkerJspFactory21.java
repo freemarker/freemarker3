@@ -1,11 +1,7 @@
 package freemarker.ext.jsp;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.jsp.JspApplicationContext;
-import javax.servlet.jsp.PageContext;
 
 /**
  * @author Attila Szegedi

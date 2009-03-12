@@ -1,8 +1,5 @@
 package freemarker.ext.jsp;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.el.ArrayELResolver;

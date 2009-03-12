@@ -248,7 +248,7 @@ public class Template extends TemplateCore {
      * as the cfg parameter.
      * 
      * @deprecated This constructor uses the "default" {@link Configuration}
-     * instance, which can easily lead to erroneous, unpredictable behaviour.
+     * instance, which can easily lead to erroneous, unpredictable behaviuour.
      * See more {@link Configuration#getDefaultConfiguration() here...}.
      */
     public Template(String name, Reader reader) throws IOException {
@@ -437,6 +437,7 @@ public class Template extends TemplateCore {
 
     /**
      * Same as <code>createProcessingEnvironment(rootMap, out, null)</code>.
+     * @throws IOException 
      * @see #createProcessingEnvironment(Object rootMap, Writer out, ObjectWrapper wrapper)
      */
     public Environment createProcessingEnvironment(Object rootMap, Writer out)

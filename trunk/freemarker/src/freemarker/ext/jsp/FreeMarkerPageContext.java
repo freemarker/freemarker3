@@ -53,22 +53,12 @@
 
 package freemarker.ext.jsp;
 
-import freemarker.core.Environment;
-import freemarker.ext.servlet.FreemarkerServlet;
-import freemarker.ext.servlet.HttpRequestHashModel;
-import freemarker.ext.servlet.ServletContextHashModel;
-import freemarker.ext.util.WrapperTemplateModel;
-import freemarker.template.AdapterTemplateModel;
-import freemarker.template.ObjectWrapper;
-import freemarker.template.TemplateBooleanModel;
-import freemarker.template.TemplateHashModelEx;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
-import freemarker.template.TemplateNumberModel;
-import freemarker.template.TemplateScalarModel;
-import freemarker.template.utility.DeepUnwrap;
-import freemarker.template.utility.UndeclaredThrowableException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.ListIterator;
 
 import javax.servlet.GenericServlet;
 import javax.servlet.Servlet;
@@ -83,12 +73,19 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyContent;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.ListIterator;
+
+import freemarker.core.Environment;
+import freemarker.ext.servlet.FreemarkerServlet;
+import freemarker.ext.servlet.HttpRequestHashModel;
+import freemarker.ext.servlet.ServletContextHashModel;
+import freemarker.template.ObjectWrapper;
+import freemarker.template.TemplateHashModelEx;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateModelIterator;
+import freemarker.template.TemplateScalarModel;
+import freemarker.template.utility.DeepUnwrap;
+import freemarker.template.utility.UndeclaredThrowableException;
 
 /**
  * @version $Id: FreeMarkerPageContext.java,v 1.27 2005/10/26 17:57:03 revusky Exp $
