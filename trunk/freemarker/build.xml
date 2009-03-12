@@ -573,15 +573,17 @@ Proceed? </input>
     description="Gets the latest version of the dependencies from the Web"
   >
     <echo>Getting dependencies...</echo>
-    <echo>----------------------------------------------------</echo>
+    <echo>-------------------------------------------------------</echo>
     <ivy:settings id="remote" url="http://freemarker.org/repos/ivy/ivysettings-remote.xml" />
     <!-- Build an own repository that will serve us even offline: -->
     <ivy:retrieve settingsRef="remote" sync="true"
       ivypattern=".ivy.part/repo/[organisation]/[module]/ivy-[revision].xml"
       pattern=".ivy.part/repo/[organisation]/[module]/[artifact]-[revision].[ext]"
     />
-    <echo>----------------------------------------------------</echo>
-    <echo>*** Successfull ***</echo>
+    <echo>-------------------------------------------------------</echo>
+    <echo>*** Successfully acquired dependencies from the Web ***</echo>
+    <echo>Eclipse users: Now right-click on ivy.xml and Resolve! </echo>
+    <echo>-------------------------------------------------------</echo>
     <!-- Only now that we got all the dependencies will we delete anything. -->
     <!-- Thus a net or repo outage doesn't left us without the dependencies. -->
 
