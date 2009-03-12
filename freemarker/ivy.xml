@@ -11,10 +11,16 @@
         </description>
     </info>
     <configurations>
-        <conf name="default"
-                description="for using FreeMarker (no optional dependecies included)"
-        />
+        <conf name="default" extends="runtime" />
         
+        <conf name="runtime"
+                description="for using FreeMarker under J2SE 1.5+ (no optional dependecies included)"
+        />
+
+        <conf name="runtime.j2se1.4"
+                description="for using FreeMarker under J2SE 1.4 (no optional dependecies included)"
+        />
+
         <conf name="build.base" extends="default" visibility="private"
                 description="for building FreeMarker without dependencies that has multiple versions"
         />
@@ -53,7 +59,8 @@
         <conf name="emma" description="for generating EMMA reports" />
     </configurations>
     <publications>
-        <artifact name="freemarker" type="jar" conf="default" ext="jar" />
+        <artifact name="freemarker" type="jar" conf="runtime" ext="jar" />
+        <artifact name="freemarker-14compat" type="jar" conf="runtime.j2se1.4" ext="jar" />
     </publications>
     <dependencies>
         <!-- build -->
