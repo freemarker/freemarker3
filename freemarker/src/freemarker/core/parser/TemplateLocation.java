@@ -52,9 +52,9 @@
 
 package freemarker.core.parser;
 
-import freemarker.core.ast.TemplateNode;
+import java.util.Locale;
+
 import freemarker.template.Template;
-import java.util.*;
 
 /**
  * A base class for all objects that encapsulate 
