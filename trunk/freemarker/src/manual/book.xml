@@ -20021,7 +20021,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       <para>If you want to modify the source code and rebuild
       <literal>freemarker.jar</literal>, you need <link
       xlink:href="http://ant.apache.org/">Ant</link> 1.7.0 (or newer) and JDK
-      5 (or newer), and Ivy 2.0.0 or never installed on Ant. If these are
+      5 (or newer), and Ivy 2.0.0 or newer installed on Ant. If these are
       satisfied, just run <literal>ant</literal> in the root directory of the
       distribution and it should build the new
       <literal>freemarker.jar</literal>. Note that for the very first build
