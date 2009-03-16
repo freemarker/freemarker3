@@ -20041,6 +20041,11 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       <para>To update the dependencies (as some of them are snapshot
       releases), issue <literal>ant update-deps</literal>. This is also needed
       if you have added new dependencies to <literal>ivy.xml</literal>.</para>
+
+      <para>For more information, like about setting up IDE-s for FreeMarker
+      development, see <link
+      xlink:href="http://freemarker.org/wiki/display/FM/Home">our
+      wiki</link>.</para>
     </appendix>
 
     <appendix xml:id="app_versions">
