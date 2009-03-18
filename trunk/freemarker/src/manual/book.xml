@@ -42,13 +42,11 @@
       queries), and FreeMarker just generates textual pages that display the
       prepared data using templates.</para>
 
-      <informalfigure>
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="figures/overview.png"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </informalfigure>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="figures/overview.png"></imagedata>
+        </imageobject>
+      </mediaobject>
 
       <para>FreeMarker is <emphasis>not</emphasis> a Web application
       framework. It is suitable as a component in a Web application framework,
@@ -5974,8 +5972,7 @@ public class UpperDirective implements TemplateDirectiveModel {
         }
     }
 
-}
-</programlisting>
+}</programlisting>
 
           <para>Now we still need to create an instance of this class, and
           make this directive available to the template with the name "upper"
@@ -6026,8 +6023,7 @@ public class UpperDirective implements TemplateDirectiveModel {
 
 <emphasis>[@repeat count=3; cnt]</emphasis>
   ${cnt}. Test
-<emphasis>[/@repeat]</emphasis>
-</programlisting>
+<emphasis>[/@repeat]</emphasis></programlisting>
 
           <para>Output:</para>
 
@@ -6043,8 +6039,7 @@ public class UpperDirective implements TemplateDirectiveModel {
   1. Test
   2. Test
   3. Test
-
-</programlisting>
+ </programlisting>
 
           <para>The class:</para>
 
@@ -6174,8 +6169,7 @@ public class RepeatDirective implements TemplateDirectiveModel {
         }
     }
 
-}
-</programlisting>
+}</programlisting>
         </section>
 
         <section>
@@ -6687,6 +6681,10 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         settings for this example):</para>
 
         <informaltable border="1">
+          <col align="left" />
+
+          <col align="center" span="6" />
+
           <thead>
             <tr>
               <th></th>
@@ -8440,13 +8438,11 @@ TemplateHashModel roundingModeEnums =
           view) that will generate the HTML page using the data sent with the
           attributes. This is often referred as Model 2.</para>
 
-          <informalfigure>
-            <mediaobject>
-              <imageobject>
-                <imagedata fileref="figures/model2sketch.png"></imagedata>
-              </imageobject>
-            </mediaobject>
-          </informalfigure>
+          <mediaobject>
+            <imageobject>
+              <imagedata fileref="figures/model2sketch.png"></imagedata>
+            </imageobject>
+          </mediaobject>
 
           <para>With these frameworks you can simply use FTL files instead of
           JSP files. But, since your servlet container (Web application
@@ -8949,7 +8945,7 @@ TemplateHashModel roundingModeEnums =
   ...
 };</programlisting>
 
-          <para>Additionaly, if you are loading templates from a directory,
+          <para>Additionally, if you are loading templates from a directory,
           you need to give FreeMarker permissions to read the directory itself
           as well as the files from that directory using the following
           permissions:</para>
