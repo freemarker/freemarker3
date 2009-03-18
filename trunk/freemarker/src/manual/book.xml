@@ -9831,7 +9831,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
   <part xml:id="xgui">
     <title>XML Processing Guide</title>
 
-    <chapter xml:id="xgui_preface">
+    <preface xml:id="xgui_preface">
       <title>Preface</title>
 
       <para>Although FreeMarker was originally designed as a web page template
@@ -9861,7 +9861,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
       is that FTL "transforms" the node tree to text, while XSLT transforms
       the tree to another tree. So you cannot always use FreeMarker where you
       can use XSLT.</para>
-    </chapter>
+    </preface>
 
     <chapter xml:id="xgui_expose">
       <title>Exposing XML documents</title>
