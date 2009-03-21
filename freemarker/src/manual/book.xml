@@ -11701,7 +11701,7 @@ End book</programlisting>
           <secondary>built-ins</secondary>
         </indexterm>
 
-        <simplesect xml:id="ref_builtin_substring">
+        <section xml:id="ref_builtin_substring">
           <title>substring</title>
 
           <indexterm>
@@ -11761,9 +11761,9 @@ End book</programlisting>
 - a
 - b
 - c</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_cap_first">
+        <section xml:id="ref_builtin_cap_first">
           <title>cap_first</title>
 
           <indexterm>
@@ -11787,9 +11787,9 @@ GreEN mouse
 
           <para>In the case of <literal>"- green mouse"</literal>, the first
           word is the <literal>-</literal>.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_uncap_first">
+        <section xml:id="ref_builtin_uncap_first">
           <title>uncap_first</title>
 
           <indexterm>
@@ -11800,9 +11800,9 @@ GreEN mouse
           linkend="ref_builtin_cap_first"><literal>cap_first</literal></link>.
           The string with the very first word of the string
           un-capitalized.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_capitalize">
+        <section xml:id="ref_builtin_capitalize">
           <title>capitalize</title>
 
           <indexterm>
@@ -11820,9 +11820,9 @@ ${"GreEN mouse"?capitalize}</programlisting>
 
           <programlisting role="output">  Green Mouse
 Green Mouse</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_chop_linebreak">
+        <section xml:id="ref_builtin_chop_linebreak">
           <title>chop_linebreak</title>
 
           <indexterm>
@@ -11832,9 +11832,9 @@ Green Mouse</programlisting>
           <para>The string without the <link
           linkend="gloss.lineBreak">line-break</link> at its very end if there
           was a line-break, otherwise the unchanged string.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_string_date">
+        <section xml:id="ref_builtin_string_date">
           <title>date, time, datetime</title>
 
           <indexterm>
@@ -11899,9 +11899,9 @@ ${test3}</programlisting>
           <para>If the string is not in the appropriate format, an error will
           abort template processing when you try to access this
           built-in.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_ends_with">
+        <section xml:id="ref_builtin_ends_with">
           <title>ends_with</title>
 
           <indexterm>
@@ -11912,9 +11912,9 @@ ${test3}</programlisting>
           example <literal>"redhead"?ends_with("head")</literal> returns
           boolean true. Also, <literal>"head"?ends_with("head")</literal> will
           return true.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_html">
+        <section xml:id="ref_builtin_html">
           <title>html</title>
 
           <indexterm>
@@ -11964,9 +11964,9 @@ ${test3}</programlisting>
           the chances of accidental mistakes by using the <link
           linkend="ref_directive_escape"><literal>escape</literal>
           directive</link>.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_groups">
+        <section xml:id="ref_builtin_groups">
           <title>groups</title>
 
           <indexterm>
@@ -11976,9 +11976,9 @@ ${test3}</programlisting>
           <para>This is used only with the result of the
           <literal>matches</literal> built-in. See <link
           linkend="ref_builtin_matches">there...</link></para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_index_of">
+        <section xml:id="ref_builtin_index_of">
           <title>index_of</title>
 
           <indexterm>
@@ -12000,9 +12000,9 @@ ${test3}</programlisting>
           <para>If the 1st parameter does not occur as a substring in this
           string (starting from the given index, if you use the second
           parameter), then it returns -1.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_j_string">
+        <section xml:id="ref_builtin_j_string">
           <title>j_string</title>
 
           <indexterm>
@@ -12025,9 +12025,9 @@ String BEAN_NAME = "${beanName?j_string}";</programlisting>
           <para>will output:</para>
 
           <programlisting role="output">String BEAN_NAME = "The \"foo\" bean.";</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_js_string">
+        <section xml:id="ref_builtin_js_string">
           <title>js_string</title>
 
           <indexterm>
@@ -12061,9 +12061,9 @@ String BEAN_NAME = "${beanName?j_string}";</programlisting>
           <programlisting role="output">&lt;script&gt;
   alert("Welcome Big Joe\'s \"right hand\"!");
 &lt;/script&gt;</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_last_index_of">
+        <section xml:id="ref_builtin_last_index_of">
           <title>last_index_of</title>
 
           <indexterm>
@@ -12087,9 +12087,9 @@ String BEAN_NAME = "${beanName?j_string}";</programlisting>
           <para>If the 1st parameter does not occur as a substring in this
           string (before the given index, if you use the second parameter),
           then it returns -1.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_length">
+        <section xml:id="ref_builtin_length">
           <title>length</title>
 
           <indexterm>
@@ -12097,9 +12097,9 @@ String BEAN_NAME = "${beanName?j_string}";</programlisting>
           </indexterm>
 
           <para>The number of characters in the string.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_lower_case">
+        <section xml:id="ref_builtin_lower_case">
           <title>lower_case</title>
 
           <indexterm>
@@ -12109,9 +12109,9 @@ String BEAN_NAME = "${beanName?j_string}";</programlisting>
           <para>The lower case version of the string. For example
           <literal>"GrEeN MoUsE"</literal> will be <literal>"green
           mouse"</literal>.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_left_pad">
+        <section xml:id="ref_builtin_left_pad">
           <title>left_pad</title>
 
           <indexterm>
@@ -12196,9 +12196,9 @@ String BEAN_NAME = "${beanName?j_string}";</programlisting>
 
           <para>The 2nd parameter must be a string value, and it must be at
           least 1 character long.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_right_pad">
+        <section xml:id="ref_builtin_right_pad">
           <title>right_pad</title>
 
           <indexterm>
@@ -12254,9 +12254,9 @@ String BEAN_NAME = "${beanName?j_string}";</programlisting>
 [abO.oO.o]
 [abc.oO.o]
 [abcdoO.o]</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_contains">
+        <section xml:id="ref_builtin_contains">
           <title>contains</title>
 
           <indexterm>
@@ -12276,9 +12276,9 @@ String BEAN_NAME = "${beanName?j_string}";</programlisting>
           <para>This will output:</para>
 
           <programlisting role="output">It contains "ice"</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_matches">
+        <section xml:id="ref_builtin_matches">
           <title>matches</title>
 
           <indexterm>
@@ -12353,9 +12353,9 @@ Matching sub-strings:
           the <link linkend="ref_builtin_string_flags">flags</link>. Note that
           it does not support flag <literal>r</literal>, because it always
           uses regular expressions.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_number">
+        <section xml:id="ref_builtin_number">
           <title>number</title>
 
           <indexterm>
@@ -12384,9 +12384,9 @@ Matching sub-strings:
           <para>Known problem: If you use earlier Java2 platform than v1.3,
           the built-ins will not recognize + prefix and scientific
           notation.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_replace">
+        <section xml:id="ref_builtin_replace">
           <title>replace</title>
 
           <indexterm>
@@ -12420,9 +12420,9 @@ Matching sub-strings:
           <para><literal>replace</literal> accepts an optional <link
           linkend="ref_builtin_string_flags">flags parameter</link>, as its
           3rd parameter.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_rtf">
+        <section xml:id="ref_builtin_rtf">
           <title>rtf</title>
 
           <indexterm>
@@ -12454,9 +12454,9 @@ Matching sub-strings:
               <literal>\}</literal></para>
             </listitem>
           </itemizedlist>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_url">
+        <section xml:id="ref_builtin_url">
           <title>url</title>
 
           <indexterm>
@@ -12579,9 +12579,9 @@ ${x?url}</programlisting>
           <literal>setting</literal> directive, so that's surely the task of
           the enclosing software. You may find more information regarding this
           <link linkend="pgui_misc_charset">here...</link></phrase></para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_split">
+        <section xml:id="ref_builtin_split">
           <title>split</title>
 
           <indexterm>
@@ -12619,9 +12619,9 @@ ${x?url}</programlisting>
           <para><literal>split</literal> accepts an optional <link
           linkend="ref_builtin_string_flags">flags parameter</link>, as its
           2nd parameter.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_starts_with">
+        <section xml:id="ref_builtin_starts_with">
           <title>starts_with</title>
 
           <indexterm>
@@ -12632,9 +12632,9 @@ ${x?url}</programlisting>
           For example <literal>"redhead"?starts_with("red")</literal> returns
           boolean true. Also, <literal>"red"?starts_with("red")</literal> will
           return true.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_string_for_string">
+        <section xml:id="ref_builtin_string_for_string">
           <title>string (when used with a string value)</title>
 
           <para>Does nothing, just returns the string as-is. The exception is
@@ -12642,9 +12642,9 @@ ${x?url}</programlisting>
           sequence at the same time), then the resulting value will be only a
           simple string, not a multi-type value. This can be utilized to
           prevent the artifacts of multi-typing.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_trim">
+        <section xml:id="ref_builtin_trim">
           <title>trim</title>
 
           <indexterm>
@@ -12659,9 +12659,9 @@ ${x?url}</programlisting>
           <para>The output:</para>
 
           <programlisting role="output">(green mouse)</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_upper_case">
+        <section xml:id="ref_builtin_upper_case">
           <title>upper_case</title>
 
           <indexterm>
@@ -12671,9 +12671,9 @@ ${x?url}</programlisting>
           <para>The upper case version of the string. For example
           <literal>"GrEeN MoUsE"</literal> will be <literal>"GREEN
           MOUSE"</literal>.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_word_list">
+        <section xml:id="ref_builtin_word_list">
           <title>word_list</title>
 
           <indexterm>
@@ -12691,9 +12691,9 @@ ${x?url}</programlisting>
           <para>will output:</para>
 
           <programlisting role="output">[a][bcd,][.][1-2-3]</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_xhtml">
+        <section xml:id="ref_builtin_xhtml">
           <title>xhtml</title>
 
           <indexterm>
@@ -12741,9 +12741,9 @@ ${x?url}</programlisting>
           <literal>&amp;#39;</literal> instead of as
           <literal>&amp;apos;</literal>, because some older browsers don't
           interpret <literal>&amp;apos;</literal> correctly.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_xml">
+        <section xml:id="ref_builtin_xml">
           <title>xml</title>
 
           <indexterm>
@@ -12784,9 +12784,9 @@ ${x?url}</programlisting>
               <literal>&amp;apos;</literal></para>
             </listitem>
           </itemizedlist>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_string_flags">
+        <section xml:id="ref_builtin_string_flags">
           <title>Common flags</title>
 
           <para>Many string built-ins accept an optional string parameter, the
@@ -12940,7 +12940,7 @@ rif: foo XYr baar</programlisting>
               </tr>
             </tbody>
           </informaltable>
-        </simplesect>
+        </section>
       </section>
 
       <section xml:id="ref_builtins_number">
@@ -12958,7 +12958,7 @@ rif: foo XYr baar</programlisting>
         linkend="faq_number_decimal_point">this</link> FAQ entry, also note
         the <literal>c</literal> built-in above.</para>
 
-        <simplesect xml:id="ref_builtin_c">
+        <section xml:id="ref_builtin_c">
           <title>c</title>
 
           <indexterm>
@@ -12997,9 +12997,9 @@ rif: foo XYr baar</programlisting>
           number formatting settings and locale (like the decimal point is not
           dot, but comma in many countries) and the value of the number (like
           big numbers are possibly "damaged" by grouping separators).</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_string_for_number">
+        <section xml:id="ref_builtin_string_for_number">
           <title>string (when used with a numerical value)</title>
 
           <indexterm>
@@ -13155,9 +13155,9 @@ Hungarian people write: 12 345 678,00</programlisting>
 
           <para>You can find information about the formatting of dates <link
           linkend="ref_builtin_string_for_date">here</link>.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_rounding">
+        <section xml:id="ref_builtin_rounding">
           <title>round, floor, ceiling</title>
 
           <indexterm>
@@ -13231,7 +13231,7 @@ Hungarian people write: 12 345 678,00</programlisting>
           built-in</link> or the <link
           linkend="ref.setting.number_format"><literal>number_format</literal>
           setting</link>.</para>
-        </simplesect>
+        </section>
       </section>
 
       <section xml:id="ref_builtins_date">
@@ -13249,7 +13249,7 @@ Hungarian people write: 12 345 678,00</programlisting>
           <secondary>built-ins</secondary>
         </indexterm>
 
-        <simplesect xml:id="ref_builtin_string_for_date">
+        <section xml:id="ref_builtin_string_for_date">
           <title>string (when used with a date value)</title>
 
           <indexterm>
@@ -13399,9 +13399,9 @@ Tuesday, April 08, 2003, 09:24:44 PM (PDT)</programlisting>
           <para>See also: <link
           linkend="dgui_template_valueinserion_universal_date">the
           interpolation of dates</link></para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_date_datetype">
+        <section xml:id="ref_builtin_date_datetype">
           <title>date, time, datetime</title>
 
           <indexterm>
@@ -13478,7 +13478,7 @@ Last updated time: 08:00:54 PM</programlisting>
           <para>If the left side of the <literal>?</literal> is string, then
           these built-ins <link linkend="ref_builtin_string_date">convert
           strings to date variable</link>.</para>
-        </simplesect>
+        </section>
       </section>
 
       <section xml:id="ref_builtins_boolean">
@@ -13490,7 +13490,7 @@ Last updated time: 08:00:54 PM</programlisting>
           <secondary>built-ins</secondary>
         </indexterm>
 
-        <simplesect xml:id="ref_builtin_string_for_boolean">
+        <section xml:id="ref_builtin_string_for_boolean">
           <title>string (when used with a boolean value)</title>
 
           <indexterm>
@@ -13548,7 +13548,7 @@ Last updated time: 08:00:54 PM</programlisting>
               for a side effect of the parameter expressions.</para>
             </listitem>
           </itemizedlist>
-        </simplesect>
+        </section>
       </section>
 
       <section xml:id="ref_builtins_sequence">
@@ -13560,7 +13560,7 @@ Last updated time: 08:00:54 PM</programlisting>
           <secondary>built-ins</secondary>
         </indexterm>
 
-        <simplesect xml:id="ref_builtin_first">
+        <section xml:id="ref_builtin_first">
           <title>first</title>
 
           <indexterm>
@@ -13569,9 +13569,9 @@ Last updated time: 08:00:54 PM</programlisting>
 
           <para>The first subvariable of the sequence. Template processing
           will die with error if the sequence is empty.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_last">
+        <section xml:id="ref_builtin_last">
           <title>last</title>
 
           <indexterm>
@@ -13580,9 +13580,9 @@ Last updated time: 08:00:54 PM</programlisting>
 
           <para>The last subvariable of the sequence. Template processing will
           die with error if the sequence is empty.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_seq_contains">
+        <section xml:id="ref_builtin_seq_contains">
           <title>seq_contains</title>
 
           <indexterm>
@@ -13630,9 +13630,9 @@ Last updated time: 08:00:54 PM</programlisting>
 
           <para>For fault tolerance, this built-in also works with
           collections.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_seq_index_of">
+        <section xml:id="ref_builtin_seq_index_of">
           <title>seq_index_of</title>
 
           <indexterm>
@@ -13707,9 +13707,9 @@ No 2nd param: ${names?seq_index_of("Joe")}
  2: 2
  3: -1
  4: -1</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_seq_last_index_of">
+        <section xml:id="ref_builtin_seq_last_index_of">
           <title>seq_last_index_of</title>
 
           <indexterm>
@@ -13757,9 +13757,9 @@ No 2nd param: ${names?seq_last_index_of("Joe")}
  2: 2
  3: 2
  4: 2</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_reverse">
+        <section xml:id="ref_builtin_reverse">
           <title>reverse</title>
 
           <indexterm>
@@ -13767,9 +13767,9 @@ No 2nd param: ${names?seq_last_index_of("Joe")}
           </indexterm>
 
           <para>The sequence with reversed order.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_size">
+        <section xml:id="ref_builtin_size">
           <title>size</title>
 
           <indexterm>
@@ -13781,9 +13781,9 @@ No 2nd param: ${names?seq_last_index_of("Joe")}
           <literal>s?size - 1</literal> (since the index of the first
           subvariable is 0) assuming that the sequence has at least one
           subvariable.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_sort">
+        <section xml:id="ref_builtin_sort">
           <title>sort</title>
 
           <indexterm>
@@ -13809,9 +13809,9 @@ No 2nd param: ${names?seq_last_index_of("Joe")}
           <para>will print (with US locale at least):</para>
 
           <programlisting role="output">aardvark Barbara beetroot whale zeppelin</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_sort_by">
+        <section xml:id="ref_builtin_sort_by">
           <title>sort_by</title>
 
           <indexterm>
@@ -13884,9 +13884,9 @@ Sorted by name.last:
 - Crooger, Fred: 35 years old
 - Fox, Amanda: 25 years old
 - Smith, Joe: 40 years old</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_chunk">
+        <section xml:id="ref_builtin_chunk">
           <title>chunk</title>
 
           <indexterm>
@@ -13943,7 +13943,7 @@ Sorted by name.last:
           number is not integer, it will be silently rounded down to integer
           (i.e., both 3.1 and 3.9 will be rounded to 3). The 2nd parameter can
           be of any type and value.</para>
-        </simplesect>
+        </section>
       </section>
 
       <section xml:id="ref_builtins_hash">
@@ -13955,7 +13955,7 @@ Sorted by name.last:
           <secondary>built-ins</secondary>
         </indexterm>
 
-        <simplesect xml:id="ref_builtin_keys">
+        <section xml:id="ref_builtin_keys">
           <title>keys</title>
 
           <indexterm>
@@ -13981,9 +13981,9 @@ Sorted by name.last:
           with the above <literal>{<replaceable>...</replaceable>}</literal>
           syntax preserve the same order as you have specified the
           subvariables.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_values">
+        <section xml:id="ref_builtin_values">
           <title>values</title>
 
           <indexterm>
@@ -13997,7 +13997,7 @@ Sorted by name.last:
           <para>As of the order in which the values are returned, the same
           applies as with the <literal>keys</literal> built-in; see
           there.</para>
-        </simplesect>
+        </section>
       </section>
 
       <section xml:id="ref_builtins_node">
@@ -14018,7 +14018,7 @@ Sorted by name.last:
         maybe as string, as it is described in the <link linkend="xgui">part
         about XML processing</link>.</para>
 
-        <simplesect xml:id="ref_builtin_children">
+        <section xml:id="ref_builtin_children">
           <title>children</title>
 
           <indexterm>
@@ -14034,9 +14034,9 @@ Sorted by name.last:
           comment nodes, processing instruction nodes, etc., but
           <emphasis>not</emphasis> attribute nodes. Attribute nodes are
           excluded from the sequence.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_parent">
+        <section xml:id="ref_builtin_parent">
           <title>parent</title>
 
           <indexterm>
@@ -14055,9 +14055,9 @@ Sorted by name.last:
           <literal>someNode[".."]</literal>). Also note that for attribute
           nodes, it returns the element the attribute belongs to, despite that
           attribute nodes are not counted as children of the element.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_root">
+        <section xml:id="ref_builtin_root">
           <title>root</title>
 
           <indexterm>
@@ -14076,9 +14076,9 @@ Sorted by name.last:
           <literal>someNode?root.foo</literal>. If you write just
           <literal>someNode?root</literal>, then you get the document itself,
           and not the document element.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_ancestors">
+        <section xml:id="ref_builtin_ancestors">
           <title>ancestors</title>
 
           <indexterm>
@@ -14093,9 +14093,9 @@ Sorted by name.last:
           node. For example as <literal>node?ancestors("section")</literal> to
           get the sequence of all ancestors with name
           <literal>section</literal>.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_node_name">
+        <section xml:id="ref_builtin_node_name">
           <title>node_name</title>
 
           <indexterm>
@@ -14115,9 +14115,9 @@ Sorted by name.last:
           name returned in the DOM API; the goal of FreeMarker node names is
           to give the name of the user-defined directive that will process the
           node.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_node_type">
+        <section xml:id="ref_builtin_node_type">
           <title>node_type</title>
 
           <indexterm>
@@ -14141,9 +14141,9 @@ Sorted by name.last:
           <literal>"notation"</literal>, <literal>"pi"</literal>. Note that a
           there is no <literal>"cdata"</literal> type, because CDATA is
           considered as plain text node.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_node_namespace">
+        <section xml:id="ref_builtin_node_namespace">
           <title>node_namespace</title>
 
           <indexterm>
@@ -14164,7 +14164,7 @@ Sorted by name.last:
           attribute node does not use XML namespace, then this built-in
           evaluates to an empty string. For other XML nodes this built-in
           always return undefined variable.</para>
-        </simplesect>
+        </section>
       </section>
 
       <section xml:id="ref_builtins_expert">
@@ -14175,7 +14175,7 @@ Sorted by name.last:
         useful. If you need to use these in your normal page templates, you
         may revisit the data-model so you don't need to use these.</para>
 
-        <simplesect xml:id="ref_builtin_scope">
+        <section xml:id="ref_builtin_scope">
           <title>scope</title>
 
           <para>[TODO: document some border cases]</para>
@@ -14281,9 +14281,9 @@ Sorted by name.last:
     g 4
   h 3
   i 4</programlisting>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_numType">
+        <section xml:id="ref_builtin_numType">
           <title>byte, double, float, int, long, short</title>
 
           <indexterm>
@@ -14328,9 +14328,9 @@ Sorted by name.last:
           the unwrapper has been improved substantially, so you will hardly
           ever need to use these built-ins, except for resolving ambiguity in
           overloaded method invocation.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_eval">
+        <section xml:id="ref_builtin_eval">
           <title>eval</title>
 
           <indexterm>
@@ -14343,9 +14343,9 @@ Sorted by name.last:
 
           <para>This built-in evaluates a string as an FTL expression. For
           example <literal>"1+2"?eval</literal> returns number 3.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_has_content">
+        <section xml:id="ref_builtin_has_content">
           <title>has_content</title>
 
           <indexterm>
@@ -14375,9 +14375,9 @@ Sorted by name.last:
           <literal>(product.color)?has_content</literal>. The first doesn't
           handle the case when <literal>product</literal> is missing, the last
           does.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_interpret">
+        <section xml:id="ref_builtin_interpret">
           <title>interpret</title>
 
           <indexterm>
@@ -14414,9 +14414,9 @@ Sorted by name.last:
           <para>as well in the above template. Note that giving the inline
           template a name has no immediate effect - it is only useful as an
           extra bit of information if you get an error report.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_is_null">
+        <section xml:id="ref_builtin_is_null">
           <title>is_null</title>
 
           <para>To find out if an existing variable is
@@ -14459,9 +14459,9 @@ Sorted by name.last:
           sense to ask "Is this text the same as another text that I don't
           know about?". That question can't be safely answered, and thus
           FreeMarker stops with error.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_isType">
+        <section xml:id="ref_builtin_isType">
           <title>is_&lt;type&gt;</title>
 
           <indexterm>
@@ -14583,9 +14583,9 @@ Sorted by name.last:
               </tr>
             </tbody>
           </informaltable>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_namespace">
+        <section xml:id="ref_builtin_namespace">
           <title>namespace</title>
 
           <indexterm>
@@ -14594,9 +14594,9 @@ Sorted by name.last:
 
           <para>This built-in returns the namespace (a hash) associated with a
           macro variable. You can use it with macros only.</para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_new">
+        <section xml:id="ref_builtin_new">
           <title>new</title>
 
           <indexterm>
@@ -14625,9 +14625,9 @@ Sorted by name.last:
           <para>For more information about how the constructor parameters are
           unwrapped and how overloaded constructor is chosen, read: <xref
           linkend="pgui_misc_beanwrapper" /></para>
-        </simplesect>
+        </section>
 
-        <simplesect xml:id="ref_builtin_use_defaults">
+        <section xml:id="ref_builtin_use_defaults">
           <title>use_defaults</title>
 
           <indexterm>
@@ -14701,7 +14701,7 @@ Sorted by name.last:
           it to specify default values using either positional or named
           arguments syntax, although use with positional arguments tends to be
           awkward.</para>
-        </simplesect>
+        </section>
       </section>
     </chapter>
 
