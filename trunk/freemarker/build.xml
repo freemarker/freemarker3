@@ -398,7 +398,6 @@
     
     <docgen:transform
       srcdir="src/manual" destdir="build/manual"
-      generateEclipseToC="true"
     />
   </target>
 
