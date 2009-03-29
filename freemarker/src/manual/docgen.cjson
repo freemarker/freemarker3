@@ -11,8 +11,8 @@ internalBookmarks: {
 }
 
 externalBookmarks: {
-  "API": "api/index.html"
-  "Home": "../index.html"
+  "Java API": "api/index.html"
+  "FreeMarker Home": "../index.html"
 }
 
 validation: {
