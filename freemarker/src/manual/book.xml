@@ -13,7 +13,7 @@
   <preface xml:id="preface">
     <title>Preface</title>
 
-    <simplesect>
+    <section>
       <title>What is FreeMarker?</title>
 
       <para>FreeMarker is a <emphasis>template engine</emphasis>: a generic
@@ -62,9 +62,9 @@
       xlink:href="http://www.opensource.org/">OSI Certified Open Source
       Software</link>. OSI Certified is a certification mark of the Open
       Source Initiative.</para>
-    </simplesect>
+    </section>
 
-    <simplesect>
+    <section>
       <title>What should I read?</title>
 
       <para>If you are a ...</para>
@@ -84,9 +84,9 @@
           specific details.</para>
         </listitem>
       </itemizedlist>
-    </simplesect>
+    </section>
 
-    <simplesect>
+    <section>
       <title>Document conventions</title>
 
       <para>Variable names, template fragments, Java class names, etc., are
@@ -122,9 +122,9 @@
 
       <para>New terms are emphasized like this: <emphasis role="term">some new
       term</emphasis></para>
-    </simplesect>
+    </section>
 
-    <simplesect>
+    <section>
       <title>Contact</title>
 
       <indexterm>
@@ -156,9 +156,9 @@
       targetdoc="homepage"><phrase role="homepage"></phrase></olink>. Also,
       note that we have a <link linkend="app_faq">FAQ</link> and <link
       linkend="alphaidx">index</link>; use them.</para>
-    </simplesect>
+    </section>
 
-    <simplesect>
+    <section>
       <title>About this document</title>
 
       <para>If you find <emphasis>any mistakes</emphasis> (including
@@ -166,7 +166,7 @@
       typographical mistakes) or you find something <emphasis>misleading or
       confusing</emphasis> in the documentation, or you have other
       suggestions, please let me know! Email: ddekany at freemail.hu</para>
-    </simplesect>
+    </section>
   </preface>
 
   <part xml:id="dgui">
@@ -1724,211 +1724,6 @@ The average of the price of a python and an elephant is:
       <section xml:id="dgui_template_exp">
         <title>Expressions</title>
 
-        <para>Table of Contents and quick reminder:</para>
-
-        <itemizedlist spacing="compact">
-          <listitem>
-            <para><link linkend="dgui_template_exp_direct">Specify values
-            directly</link></para>
-
-            <itemizedlist spacing="compact">
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_direct_string">Strings</link>:
-                <literal>"Foo"</literal> or <literal>'Foo'</literal> or
-                <literal>"It's \"quoted\""</literal> or
-                <literal>r"C:\raw\string"</literal></para>
-              </listitem>
-
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_direct_number">Numbers</link>:
-                <literal>123.45</literal></para>
-              </listitem>
-
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_direct_boolean">Booleans</link>:
-                <literal>true</literal>, <literal>false</literal></para>
-              </listitem>
-
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_direct_seuqence">Sequences</link>:
-                <literal>["foo", "bar", 123.45]</literal>,
-                <literal>1..100</literal></para>
-              </listitem>
-
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_direct_hash">Hashes</link>:
-                <literal>{"name": "green mouse", "price":
-                150}</literal></para>
-              </listitem>
-
-              <listitem>
-                <para><link linkend="dgui_template_exp_direct_null" remap=""
-                xml:lang="">Null:</link> <literal>null</literal></para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_var">Retrieving
-            variables</link></para>
-
-            <itemizedlist spacing="compact">
-              <listitem>
-                <para><link linkend="dgui_template_exp_var_toplevel">Top-level
-                variables</link>: <literal>user</literal></para>
-              </listitem>
-
-              <listitem>
-                <para><link linkend="dgui_template_exp_var_hash">Retrieving
-                data from a hash</link>: <literal>user.name</literal> or
-                <literal>user["name"]</literal></para>
-              </listitem>
-
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_var_sequence">Retrieving data from
-                a sequence</link>: <literal>products[5]</literal></para>
-              </listitem>
-
-              <listitem>
-                <para><link linkend="dgui_template_exp_var_special">Special
-                variables</link>: <literal>.language</literal>,
-                <literal>.version</literal>, etc.</para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_stringop">String
-            operations</link></para>
-
-            <itemizedlist spacing="compact">
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_stringop_interpolation">Interpolation
-                (or concatenation)</link>: <literal>"Hello ${user}!"</literal>
-                or <literal>"Hello " + user + "!"</literal>)</para>
-              </listitem>
-
-              <listitem>
-                <para><link linkend="dgui_template_exp_get_character">Getting
-                a character</link>: <literal>name[0]</literal></para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_sequenceop">Sequence
-            operations</link></para>
-
-            <itemizedlist spacing="compact">
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_sequenceop_cat">Concatenation</link>:
-                <literal>users + ["guest"]</literal></para>
-              </listitem>
-
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_seqenceop_slice">Sequence
-                slice</link>: <literal>products[10..19]</literal> or
-                <literal>products[5..]</literal></para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_hashop">Hash
-            operations</link></para>
-
-            <itemizedlist spacing="compact">
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_hashop_cat">Concatenation</link>:
-                <literal>passwords + {"joe": "secret42"}</literal></para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_arit">Arithmetical
-            calculations</link>: <literal>(x * 1.5 + 10) / 2 - y %
-            100</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><link
-            linkend="dgui_template_exp_comparison">Comparison</link>:
-            <literal>x == y</literal>, <literal>x != y</literal>,
-            <literal>x &lt; y</literal>, <literal>x &gt; y</literal>,
-            <literal>x &gt;= y</literal>, <literal>x &lt;= y</literal>,
-            <literal>x &amp;lt; y</literal>, etc.</para>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_logicalop">Logical
-            operations</link>: <literal>!registered &amp;&amp; (firstVisit ||
-            fromEurope)</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_builtin">Built-ins</link>:
-            <literal>name?upper_case</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_methodcall">Method
-            call</link>: <literal>repeat("What", 3)</literal></para>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_missing">Treating undefined
-            variables and null values</link>:</para>
-
-            <itemizedlist spacing="compact">
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_missing_overview">Overview</link></para>
-              </listitem>
-
-              <listitem>
-                <para><link
-                linkend="dgui_template_exp_missing_default">Default
-                value</link>: <literal>name!"unknown"</literal> or
-                <literal>(user.name)!"unknown"</literal> or
-                <literal>name!</literal> or
-                <literal>(user.name)!</literal></para>
-              </listitem>
-
-              <listitem>
-                <para><link linkend="dgui_template_exp_missing_test">Missing
-                value test</link>: <literal>name??</literal> or
-                <literal>(user.name)??</literal></para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para><link
-            linkend="dgui_template_exp_parentheses">Parentheses</link></para>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_whitespace">White-space in
-            expressions</link></para>
-          </listitem>
-
-          <listitem>
-            <para><link linkend="dgui_template_exp_precedence">Operator
-            precedence</link></para>
-          </listitem>
-        </itemizedlist>
-
         <para><indexterm>
             <primary>expression</primary>
           </indexterm>When you supply <link
@@ -1962,6 +1757,210 @@ The average of the price of a python and an elephant is:
             <literal>true</literal>.</para>
           </listitem>
         </itemizedlist>
+
+        <section xml:id="exp_cheatsheet">
+          <title>Quick overview (cheat sheet)</title>
+
+          <para>This is a reminder for those of you who already know
+          FreeMarker or are just experienced programmers:</para>
+
+          <itemizedlist spacing="compact">
+            <listitem>
+              <para><link linkend="dgui_template_exp_direct">Specify values
+              directly</link></para>
+
+              <itemizedlist spacing="compact">
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_direct_string">Strings</link>:
+                  <literal>"Foo"</literal> or <literal>'Foo'</literal> or
+                  <literal>"It's \"quoted\""</literal> or
+                  <literal>r"C:\raw\string"</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_direct_number">Numbers</link>:
+                  <literal>123.45</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_direct_boolean">Booleans</link>:
+                  <literal>true</literal>, <literal>false</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_direct_seuqence">Sequences</link>:
+                  <literal>["foo", "bar", 123.45]</literal>,
+                  <literal>1..100</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_direct_hash">Hashes</link>:
+                  <literal>{"name": "green mouse", "price":
+                  150}</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="dgui_template_exp_direct_null" remap=""
+                  xml:lang="">Null:</link> <literal>null</literal></para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para><link linkend="dgui_template_exp_var">Retrieving
+              variables</link></para>
+
+              <itemizedlist spacing="compact">
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_var_toplevel">Top-level
+                  variables</link>: <literal>user</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="dgui_template_exp_var_hash">Retrieving
+                  data from a hash</link>: <literal>user.name</literal> or
+                  <literal>user["name"]</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_var_sequence">Retrieving data
+                  from a sequence</link>:
+                  <literal>products[5]</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="dgui_template_exp_var_special">Special
+                  variables</link>: <literal>.language</literal>,
+                  <literal>.version</literal>, etc.</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para><link linkend="dgui_template_exp_stringop">String
+              operations</link></para>
+
+              <itemizedlist spacing="compact">
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_stringop_interpolation">Interpolation
+                  (or concatenation)</link>:
+                  <literal>"Hello ${user}!"</literal> or <literal>"Hello " +
+                  user + "!"</literal>)</para>
+                </listitem>
+
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_get_character">Getting a
+                  character</link>: <literal>name[0]</literal></para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para><link linkend="dgui_template_exp_sequenceop">Sequence
+              operations</link></para>
+
+              <itemizedlist spacing="compact">
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_sequenceop_cat">Concatenation</link>:
+                  <literal>users + ["guest"]</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_seqenceop_slice">Sequence
+                  slice</link>: <literal>products[10..19]</literal> or
+                  <literal>products[5..]</literal></para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para><link linkend="dgui_template_exp_hashop">Hash
+              operations</link></para>
+
+              <itemizedlist spacing="compact">
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_hashop_cat">Concatenation</link>:
+                  <literal>passwords + {"joe": "secret42"}</literal></para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para><link linkend="dgui_template_exp_arit">Arithmetical
+              calculations</link>: <literal>(x * 1.5 + 10) / 2 - y %
+              100</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><link
+              linkend="dgui_template_exp_comparison">Comparison</link>:
+              <literal>x == y</literal>, <literal>x != y</literal>,
+              <literal>x &lt; y</literal>, <literal>x &gt; y</literal>,
+              <literal>x &gt;= y</literal>, <literal>x &lt;= y</literal>,
+              <literal>x &amp;lt; y</literal>, etc.</para>
+            </listitem>
+
+            <listitem>
+              <para><link linkend="dgui_template_exp_logicalop">Logical
+              operations</link>: <literal>!registered &amp;&amp; (firstVisit
+              || fromEurope)</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><link
+              linkend="dgui_template_exp_builtin">Built-ins</link>:
+              <literal>name?upper_case</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><link linkend="dgui_template_exp_methodcall">Method
+              call</link>: <literal>repeat("What", 3)</literal></para>
+            </listitem>
+
+            <listitem>
+              <para><link linkend="dgui_template_exp_missing">Treating
+              undefined variables and null values</link>:</para>
+
+              <itemizedlist spacing="compact">
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_missing_overview">Overview</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link
+                  linkend="dgui_template_exp_missing_default">Default
+                  value</link>: <literal>name!"unknown"</literal> or
+                  <literal>(user.name)!"unknown"</literal> or
+                  <literal>name!</literal> or
+                  <literal>(user.name)!</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="dgui_template_exp_missing_test">Missing
+                  value test</link>: <literal>name??</literal> or
+                  <literal>(user.name)??</literal></para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+
+          <para>See also: <link
+          linkend="dgui_template_exp_precedence">Operator
+          precedence</link></para>
+        </section>
 
         <section xml:id="dgui_template_exp_direct">
           <title>Specify values directly</title>
@@ -27006,5 +27005,7 @@ ${obj.myMethod("foo")}</programlisting>
     </glossentry>
   </glossary>
 
-  <index xml:id="alphaidx"></index>
+  <index xml:id="alphaidx">
+    <title>Alphabetical Index</title>
+  </index>
 </book>

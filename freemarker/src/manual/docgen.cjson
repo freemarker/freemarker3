@@ -4,7 +4,7 @@
 }
 
 internalBookmarks: {
-  "Index": alphaidx
+  "Alphabetical Index": alphaidx
   "Glossary": gloss
   "Reference": ref
   "FAQ": app_faq
