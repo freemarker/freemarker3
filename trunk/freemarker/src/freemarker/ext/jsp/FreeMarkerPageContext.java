@@ -93,8 +93,6 @@ import freemarker.template.utility.UndeclaredThrowableException;
  */
 abstract class FreeMarkerPageContext extends PageContext implements TemplateModel
 {
-    private static final Class OBJECT_CLASS = Object.class;
-        
     private final Environment environment;
     private List tags = new ArrayList();
     private List outs = new ArrayList();
