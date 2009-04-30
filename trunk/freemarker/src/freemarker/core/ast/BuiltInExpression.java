@@ -83,7 +83,7 @@ import freemarker.template.TemplateModel;
 
 
 
-public class BuiltInExpression extends Expression implements Cloneable {
+public class BuiltInExpression extends Expression {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();
     {
         knownBuiltins.put("c", new cBI());
