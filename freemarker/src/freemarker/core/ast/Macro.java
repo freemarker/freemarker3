@@ -72,7 +72,6 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     	DO_NOTHING_MACRO.setNestedBlock(TextBlock.EMPTY_BLOCK);
     }
     
-    private Map<String, Macro> nestedMacros;
     private final CodeSource codeSource;
     
     public Macro() {
