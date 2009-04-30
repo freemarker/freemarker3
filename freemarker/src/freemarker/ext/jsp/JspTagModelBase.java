@@ -71,7 +71,7 @@ class JspTagModelBase<T extends JspTag>
                 if (m == null) {
                     if (dynaSetter == null) {
                         throw new TemplateModelException("Unknown property "
-                                + StringUtil.jQuote(entry.getKey().toString())
+                                + StringUtil.jQuote(entry.getKey())
                                 + " on instance of " + tagClass.getName());
                     }
                     else {
