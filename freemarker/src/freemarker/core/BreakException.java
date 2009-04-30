@@ -57,5 +57,5 @@ package freemarker.core;
  */
 public class BreakException extends RuntimeException {
     private static final long serialVersionUID = -3716099923723830891L;
-    public static BreakException INSTANCE = new BreakException();
+    public static final BreakException INSTANCE = new BreakException();
 }
