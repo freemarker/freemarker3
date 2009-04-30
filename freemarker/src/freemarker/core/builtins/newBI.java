@@ -65,8 +65,8 @@ import freemarker.template.utility.ClassUtil;
  * Implementation of ?new built-in 
  */
 
-public class newBI extends BuiltIn {
-	
+public class newBI extends ExpressionEvaluatingBuiltIn {
+
     static final Class<TemplateModel> TM_CLASS = TemplateModel.class;
     static final Class<freemarker.ext.beans.BeanModel> BEAN_MODEL_CLASS = freemarker.ext.beans.BeanModel.class;
     static Class<?> JYTHON_MODEL_CLASS;
@@ -77,25 +77,31 @@ public class newBI extends BuiltIn {
             JYTHON_MODEL_CLASS = null;
         }
     }
-    
-	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		try {
-			String classString = ((TemplateScalarModel) target).getAsString();
-			return new ConstructorFunction(classString, env);
-		} catch (ClassCastException cce) {
-			throw new TemplateModelException("Expecting string on left of ?new built-in");
-			
-		} catch (NullPointerException npe) {
-			throw new InvalidReferenceException("undefined string on left of ?new built-in", env);
-		}
-	}
-	
+
+    @Override
+    public boolean isSideEffectFree() {
+        return false;
+    }
+
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) throws TemplateException {
+        try {
+            String classString = ((TemplateScalarModel) model).getAsString();
+            return new ConstructorFunction(classString, env);
+        } catch (ClassCastException cce) {
+            throw new TemplateModelException("Expecting string on left of ?new built-in");
+
+        } catch (NullPointerException npe) {
+            throw new InvalidReferenceException("undefined string on left of ?new built-in", env);
+        }
+    }
+
     static class ConstructorFunction implements TemplateMethodModelEx {
 
         private final Class<?> cl;
         private final Environment env;
-        
+
         public ConstructorFunction(String classname, Environment env) throws TemplateException {
             this.env = env;
             try {
@@ -121,8 +127,8 @@ public class newBI extends BuiltIn {
             BeansWrapper bw = 
                 ow instanceof BeansWrapper 
                 ? (BeansWrapper)ow
-                : BeansWrapper.getDefaultInstance();
-            return bw.newInstance(cl, arguments);
+                        : BeansWrapper.getDefaultInstance();
+                return bw.newInstance(cl, arguments);
         }
     }
 }

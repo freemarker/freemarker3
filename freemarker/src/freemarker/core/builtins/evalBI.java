@@ -57,47 +57,56 @@ import java.io.StringReader;
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Expression;
-import freemarker.core.parser.FMParser;
 import freemarker.core.parser.FMConstants;
-//import freemarker.core.parser.FMLexer;
 import freemarker.core.parser.FMLexer;
+import freemarker.core.parser.FMParser;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.SimpleCharStream;
-import freemarker.template.*;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * Implementation of ?eval built-in 
  */
 
-public class evalBI extends BuiltIn {
-	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		try {
-			String evalString = ((TemplateScalarModel) target).getAsString();
-			return eval(evalString, env, callingExpression);
-		} catch (ClassCastException cce) {
-			throw new TemplateModelException("Expecting string on left of ?eval built-in");
-			
-		} catch (NullPointerException npe) {
-			throw new TemplateModelException(npe);
-		}
-	}
-	
-    TemplateModel eval(String s, Environment env, BuiltInExpression callingExpression) throws TemplateException 
-    {
+public class evalBI extends ExpressionEvaluatingBuiltIn {
+
+    @Override
+    public boolean isSideEffectFree() {
+        return false;
+    }
+
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) 
+    throws TemplateException {
+        try {
+            return eval(((TemplateScalarModel) model).getAsString(), env, caller);
+        } catch (ClassCastException cce) {
+            throw new TemplateModelException("Expecting string on left of ?eval built-in");
+
+        } catch (NullPointerException npe) {
+            throw new TemplateModelException(npe);
+        }
+    }
+
+    TemplateModel eval(String s, Environment env, BuiltInExpression caller) 
+    throws TemplateException {
         SimpleCharStream scs = new SimpleCharStream(
-                new StringReader("(" + s + ")"), callingExpression.getBeginLine(),
-                callingExpression.getBeginColumn(), s.length() + 2);
-//        FMLexer token_source = new FMLexer(scs);
+                new StringReader("(" + s + ")"), caller.getBeginLine(),
+                caller.getBeginColumn(), s.length() + 2);
+        //        FMLexer token_source = new FMLexer(scs);
         FMLexer token_source = new FMLexer(scs);
         token_source.SwitchTo(FMConstants.EXPRESSION);
         FMParser parser = new FMParser(token_source);
-        parser.setTemplate(callingExpression.getTemplate());
+        parser.setTemplate(caller.getTemplate());
         Expression exp = null;
         try {
             exp = parser.Exp();
         } catch (ParseException pe) {
-            pe.setTemplateName(callingExpression.getTemplate().getName());
+            pe.setTemplateName(caller.getTemplate().getName());
             throw new TemplateException(pe, env);
         }
         return exp.getAsTemplateModel(env);

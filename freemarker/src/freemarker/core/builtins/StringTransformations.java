@@ -64,72 +64,124 @@ import freemarker.template.utility.StringUtil;
  * built-ins that change a string into another string
  */
 
-public class StringTransformations extends BuiltIn {
-	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		String string = null;
-		if (target instanceof TemplateScalarModel) {
-			string = ((TemplateScalarModel) target).getAsString();
-		}
-		else {
-//			string = callingExpression.getTarget().getStringValue(env);
-			string = Expression.getStringValue(target, callingExpression.getTarget(), env);
-		}
-		if (string == null) {
-			throw new InvalidReferenceException("String is undefined", env);
-		}
-		return new SimpleScalar(convertString(string, builtInName));
-	}
-	
-	private String convertString(String string, String builtInName) {
-		if (builtInName == "upper_case") {
-			return string.toUpperCase();
-		} 
-		if (builtInName == "lower_case") {
-			return string.toLowerCase();
-		}
-		if (builtInName == "html" || builtInName == "web_safe") {
-			return StringUtil.HTMLEnc(string);
-		}
-		if (builtInName == "xml") {
-			return StringUtil.XMLEnc(string);
-		}
-		if (builtInName == "xhtml") {
-			return StringUtil.XHTMLEnc(string);
-		}
-		if (builtInName == "rtf") {
-			return StringUtil.RTFEnc(string);
-		}
-		if (builtInName == "cap_first" || builtInName == "uncap_first") {
-			char[] chars = string.toCharArray();
-			for (int i=0; i<chars.length; i++) {
-				char ch = chars[i];
-				if (!Character.isWhitespace(ch)) {
-					if (builtInName == "cap_first") {
-						chars[i] = Character.toUpperCase(ch);
-					} else {
-						chars[i] = Character.toLowerCase(ch);
-					}
-					break;
-				}
-			}
-			return new String(chars);
-		}
-		if (builtInName == "trim") {
-			return string.trim();
-		}
-		if (builtInName == "j_string") {
-			return StringUtil.javaStringEnc(string);
-		}
-		if (builtInName == "js_string") {
-			return StringUtil.javaScriptStringEnc(string);
-		}
-		if (builtInName == "capitalize") {
-			return StringUtil.capitalize(string);
-		}
-		if (builtInName == "chop_linebreak") {
-			return StringUtil.chomp(string);
-		}
-		throw new InternalError("Cannot deal with built-in ?" + builtInName);
-	}
+public abstract class StringTransformations extends ExpressionEvaluatingBuiltIn {
+
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) throws TemplateException {
+        String string = null;
+        if (model instanceof TemplateScalarModel) {
+            string = ((TemplateScalarModel) model).getAsString();
+        }
+        else {
+            string = Expression.getStringValue(model, caller.getTarget(), env);
+        }
+        if (string == null) {
+            throw new InvalidReferenceException("String is undefined", env);
+        }
+        return new SimpleScalar(apply(string));
+    }
+
+    public abstract String apply(String string);
+    
+    public static class UpperCase extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return string.toUpperCase();
+        }
+    }
+    
+    public static class LowerCase extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return string.toLowerCase();
+        }
+    }
+
+    public static class Html extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return StringUtil.HTMLEnc(string);
+        }
+    }
+
+    public static class Xhtml extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return StringUtil.XHTMLEnc(string);
+        }
+    }
+
+    public static class Xml extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return StringUtil.XMLEnc(string);
+        }
+    }
+
+    public static class Rtf extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return StringUtil.RTFEnc(string);
+        }
+    }
+
+    public static class CapFirst extends StringTransformations {
+        private final boolean cap;
+        
+        public CapFirst(boolean cap) {
+            this.cap = cap;
+        }
+        
+        @Override
+        public String apply(String string) {
+            for (int i=0; i<string.length(); i++) {
+                final char ch = string.charAt(i);
+                if (!Character.isWhitespace(ch)) {
+                    if ((cap && Character.isUpperCase(ch)) || (!cap && Character.isLowerCase(ch))) {
+                        return string;
+                    }
+                    final char[] chars = string.toCharArray();
+                    chars[i] = cap ? Character.toUpperCase(ch) : Character.toLowerCase(ch);
+                    return new String(chars);
+                }
+            }
+            return string;
+        }
+    }
+
+    public static class Trim extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return string.trim();
+        }
+    }
+    
+    public static class Java extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return StringUtil.javaStringEnc(string);
+        }
+    }
+
+    public static class JavaScript extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return StringUtil.javaScriptStringEnc(string);
+        }
+    }
+
+    public static class Capitalize extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return StringUtil.capitalize(string);
+        }
+    }
+
+    public static class Chomp extends StringTransformations {
+        @Override
+        public String apply(String string) {
+            return StringUtil.chomp(string);
+        }
+    }
 }

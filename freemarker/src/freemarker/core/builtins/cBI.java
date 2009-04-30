@@ -55,18 +55,23 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.template.*;
+import freemarker.template.SimpleScalar;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateNumberModel;
 
 /**
  * Implementation of ?c built-in 
  */
-
-public class cBI extends BuiltIn {
+public class cBI extends ExpressionEvaluatingBuiltIn {
     
-    public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-        Number num;
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) 
+    throws TemplateException {
+        final Number num;
         try {
-            num = ((TemplateNumberModel) target).getAsNumber();
+            num = ((TemplateNumberModel) model).getAsNumber();
         } catch (ClassCastException e) {
             throw new TemplateException(
                     "Expecting a number on the left side of ?c", env);
@@ -77,7 +82,7 @@ public class cBI extends BuiltIn {
             // We accelerate this fairly common case
             return new SimpleScalar(num.toString());
         } else {
-            return new SimpleScalar(env.getCNumberFormat().format(num));
+            return new SimpleScalar((env == null ? Environment.getNewCNumberFormat() : env.getCNumberFormat()).format(num));
         }
     }
 }

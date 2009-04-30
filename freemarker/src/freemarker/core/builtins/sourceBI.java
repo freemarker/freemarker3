@@ -61,8 +61,10 @@ import freemarker.template.*;
  */
 
 public class sourceBI extends BuiltIn {
-	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		return new SimpleScalar(callingExpression.getTarget().getCanonicalForm());
-	}
+
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller)
+    throws TemplateException {
+        return new SimpleScalar(caller.getTarget().getCanonicalForm());
+    }
 }

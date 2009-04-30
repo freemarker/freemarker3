@@ -53,73 +53,48 @@
 package freemarker.core.builtins;
 
 import freemarker.core.Environment;
-import freemarker.core.ast.Expression;
 import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.ast.CollectionAndSequence;
+import freemarker.core.ast.TemplateNode;
 import freemarker.template.*;
-import java.util.List;
 
 /**
- * Implementation of ?default and other existence built-ins 
+ * Implementation of ?resolve built-in 
  */
 
-public class ExistenceBIs extends BuiltIn {
-	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		if (target == TemplateModel.JAVA_NULL) {
-			if (builtInName == "exists" || builtInName == "has_content") {
-				return TemplateBooleanModel.FALSE;
-			}
-			if (builtInName == "if_exists") {
-				return TemplateModel.NOTHING;
-			}
-			if (builtInName == "is_defined") {
-				return TemplateBooleanModel.TRUE;
-			}
-			if (builtInName == "default") return FIRST_NON_NULL;
-		}
-		
-		if (target == null) {
-			if (builtInName == "exists" || builtInName == "has_content") {
-				return TemplateBooleanModel.FALSE;
-			}
-			if (builtInName == "if_exists") {
-				return TemplateModel.NOTHING;
-			}
-			if (builtInName == "is_defined") {
-				return TemplateBooleanModel.FALSE;
-			}
-			if (builtInName == "default") return FIRST_NON_NULL;
-		}
-		if (builtInName == "default") {
-			return new IdentityFunction(target);
-		}
-		if (builtInName == "if_exists") {
-			return target;
-		}
-		if (builtInName == "has_content") {
-			return Expression.isEmpty(target) ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
-		}
-		return TemplateBooleanModel.TRUE;
-	}
-	
-	static class IdentityFunction implements TemplateMethodModelEx {
-		TemplateModel target;
-		IdentityFunction(TemplateModel target){
-			this.target = target;
-		}
-		
-		public TemplateModel exec(List args) {return target;}
-	}
-	
-	static TemplateMethodModelEx FIRST_NON_NULL = new TemplateMethodModelEx() {
-		
-		public TemplateModel exec(List args) {
-			for (Object arg : args) {
-				if (arg != null && arg != TemplateModel.JAVA_NULL) {
-					return (TemplateModel) arg;
-				}
-			}
-			return null;
-		}
-	};
+public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
+
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) 
+    throws TemplateException {
+        if (!(model instanceof TemplateHashModelEx)) {
+            throw TemplateNode.invalidTypeException(model, 
+                    caller.getTarget(), env, "extended hash");
+        }
+        final TemplateCollectionModel result = apply((TemplateHashModelEx) model);
+        if (!(result instanceof TemplateSequenceModel)) {
+            return new CollectionAndSequence(result);
+        } 
+        return result;
+    }
+    
+    public abstract TemplateCollectionModel apply(TemplateHashModelEx hash) 
+    throws TemplateModelException;
+    
+    public static class Keys extends HashBuiltin {
+        @Override
+        public TemplateCollectionModel apply(TemplateHashModelEx hash)
+        throws TemplateModelException {
+            return hash.keys();
+        }
+    }
+
+    public static class Values extends HashBuiltin {
+        @Override
+        public TemplateCollectionModel apply(TemplateHashModelEx hash)
+        throws TemplateModelException {
+            return hash.values();
+        }
+    }
 }

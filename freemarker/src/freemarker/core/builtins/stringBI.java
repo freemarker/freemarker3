@@ -67,28 +67,37 @@ import freemarker.template.*;
  * Implementation of ?string built-in 
  */
 
-public class stringBI extends BuiltIn {
+public class stringBI extends ExpressionEvaluatingBuiltIn {
 	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-        if (target instanceof TemplateNumberModel) {
-            return new NumberFormatter(EvaluationUtil.getNumber(target, callingExpression.getTarget(), env), env);
+    @Override
+    public boolean isSideEffectFree() {
+        // For numbers, booleans, and dates, depends on actual format which can change. 
+        return false;
+    }
+    
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+        TemplateModel model) 
+    throws TemplateException {
+        if (model instanceof TemplateNumberModel) {
+            return new NumberFormatter(EvaluationUtil.getNumber(model, caller.getTarget(), env), env);
         }
-        if (target instanceof TemplateDateModel) {
-            TemplateDateModel dm = (TemplateDateModel) target;
+        if (model instanceof TemplateDateModel) {
+            TemplateDateModel dm = (TemplateDateModel) model;
             int dateType = dm.getDateType();
-            return new DateFormatter(EvaluationUtil.getDate(dm, callingExpression.getTarget(), env), dateType, env);
+            return new DateFormatter(EvaluationUtil.getDate(dm, caller.getTarget(), env), dateType, env);
         }
-        if (target instanceof SimpleScalar) {
-            return target;
+        if (model instanceof SimpleScalar) {
+            return model;
         }
-        if (target instanceof TemplateBooleanModel) {
-            return new BooleanFormatter((TemplateBooleanModel) target, env);
+        if (model instanceof TemplateBooleanModel) {
+            return new BooleanFormatter((TemplateBooleanModel) model, env);
         }
-        if (target instanceof TemplateScalarModel) {
-            return new SimpleScalar(((TemplateScalarModel) target).getAsString());
+        if (model instanceof TemplateScalarModel) {
+            return new SimpleScalar(((TemplateScalarModel) model).getAsString());
         } 
-      	throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "number, date, or string");
-	}
+      	throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number, date, or string");
+    }
 	
 	
     static class BooleanFormatter

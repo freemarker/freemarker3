@@ -100,6 +100,7 @@ public final class Environment extends Configurable implements Scope {
     private static final ThreadLocal<Environment> threadEnv = new ThreadLocal<Environment>();
 
     static final Logger logger = Logger.getLogger("freemarker.runtime");
+    private static final Logger attemptLogger = Logger.getLogger("freemarker.runtime.attempt");
 
     private static final Map<NumberFormatKey, NumberFormat> localizedNumberFormats = new HashMap<NumberFormatKey, NumberFormat>();
 
@@ -413,10 +414,9 @@ public final class Environment extends Configurable implements Scope {
             this.out = prevOut;
         }
         if (thrownException != null) {
-            if (logger.isErrorEnabled()) {
-                String msg = "Error in attempt block "
-                    + attemptBlock.getStartLocation();
-                logger.error(msg, thrownException);
+            if (attemptLogger.isDebugEnabled()) {
+                logger.debug("Error in attempt block " + 
+                        attemptBlock.getStartLocation(), thrownException);
             }
             try {
                 recoveredErrorStack.add(thrownException.getMessage());
@@ -1001,11 +1001,15 @@ public final class Environment extends Configurable implements Scope {
         // It can't be cached in a static field, because DecimalFormat-s aren't
         // thread-safe.
         if (cNumberFormat == null) {
-            cNumberFormat = (DecimalFormat) C_NUMBER_FORMAT.clone();
+            cNumberFormat = getNewCNumberFormat();
         }
         return cNumberFormat;
     }
 
+    public static NumberFormat getNewCNumberFormat() {
+        return (NumberFormat) C_NUMBER_FORMAT.clone();
+    }
+    
     public TemplateTransformModel getTransform(Expression exp)
     throws TemplateException {
         TemplateTransformModel ttm = null;

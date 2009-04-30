@@ -63,20 +63,41 @@ import freemarker.template.*;
  * that expect  macro on the lhs.
  */
 
-public class MacroBuiltins extends BuiltIn {
-	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		if (!(target instanceof Macro)) {
-			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "macro");
-		}
-		Macro macro = (Macro) target;
-		if (builtInName == "namespace") {
-			return env.getMacroNamespace(macro);
-		}
-		if (builtInName == "scope") {
-			TemplateModel result = env.getMacroContext(macro);
-			return result == null ? TemplateModel.JAVA_NULL : result;
-		}
-		throw new InternalError("Don't know how to deal with ?" + builtInName);
-	}
+public abstract class MacroBuiltins extends ExpressionEvaluatingBuiltIn {
+
+    @Override
+    public boolean isSideEffectFree() {
+        return false;
+    }
+    
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) throws TemplateException {
+        if (!(model instanceof Macro)) {
+            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "macro");
+        }
+        return apply(env, (Macro)model);
+    }
+    
+    public abstract TemplateModel apply(Environment env, Macro macro) 
+    throws TemplateModelException;
+
+    public static class Namespace extends MacroBuiltins {
+        @Override
+        public TemplateModel apply(Environment env, Macro macro)
+                throws TemplateModelException
+        {
+            return env.getMacroNamespace(macro);
+        }
+    }
+
+    public static class Scope extends MacroBuiltins {
+        @Override
+        public TemplateModel apply(Environment env, Macro macro)
+                throws TemplateModelException
+        {
+            TemplateModel result = env.getMacroContext(macro);
+            return result == null ? TemplateModel.JAVA_NULL : result;
+        }
+    }
 }

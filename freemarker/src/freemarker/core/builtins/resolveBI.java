@@ -63,18 +63,21 @@ import freemarker.template.*;
  * Implementation of ?resolve built-in 
  */
 
-public class resolveBI extends BuiltIn {
-	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		if (!(target instanceof Scope)) {
-			throw new TemplateException("Expecting scope on left of ?resolve built-in", env);
-		}
-		final Scope scope = (Scope) target;
-		return new TemplateMethodModel() {
-    		@Parameters("key")
-			public Object exec(List args) throws TemplateModelException {
-				return scope.resolveVariable((String) args.get(0)); 
-			}
-		};
-	}
+public class resolveBI extends ExpressionEvaluatingBuiltIn {
+
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) 
+    throws TemplateException {
+        if (!(model instanceof Scope)) {
+            throw new TemplateException("Expecting scope on left of ?resolve built-in", env);
+        }
+        final Scope scope = (Scope) model;
+        return new TemplateMethodModel() {
+            @Parameters("key")
+            public Object exec(List args) throws TemplateModelException {
+                return scope.resolveVariable((String) args.get(0)); 
+            }
+        };
+    }
 }

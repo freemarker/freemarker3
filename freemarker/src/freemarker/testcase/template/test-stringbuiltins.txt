@@ -24,7 +24,7 @@ word_list:
 </#foreach>
 
 <#global canufeelitbabe = x?interpret>
-interpret: <#transform canufeelitbabe></#transform>
+interpret: <@canufeelitbabe/>
 <#setting locale="es_ES">number: ${"-123.45"?number + 1.1}
 
 ${"freemarker.testcase.models.NewTestModel"?new()}

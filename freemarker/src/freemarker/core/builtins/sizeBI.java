@@ -61,19 +61,22 @@ import freemarker.template.*;
  * Implementation of ?c built-in 
  */
 
-public class sizeBI extends BuiltIn {
-	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		int size = -1;
-		if (target instanceof TemplateSequenceModel) {
-			size = ((TemplateSequenceModel) target).size();
-		}
-		else if (target instanceof TemplateHashModelEx) {
-			size = ((TemplateHashModelEx) target).size();
-		}
-		else {
-			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "a sequence or extended hash");
-		}
-		return new SimpleNumber(Integer.valueOf(size));
-	}
+public class sizeBI extends ExpressionEvaluatingBuiltIn {
+
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) 
+    throws TemplateException {
+        int size = -1;
+        if (model instanceof TemplateSequenceModel) {
+            size = ((TemplateSequenceModel) model).size();
+        }
+        else if (model instanceof TemplateHashModelEx) {
+            size = ((TemplateHashModelEx) model).size();
+        }
+        else {
+            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "a sequence or extended hash");
+        }
+        return new SimpleNumber(Integer.valueOf(size));
+    }
 }
