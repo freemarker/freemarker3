@@ -201,7 +201,7 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(BuiltInExpression node) {
 		super.visit(node);
-		if (node.findImplementation()==null) {
+		if (node.getBuiltIn() == null) {
 			ParsingProblem problem = new ParsingProblem("Unknown builtin: " + node.getName(), node);
 			template.addParsingProblem(problem);
 		}

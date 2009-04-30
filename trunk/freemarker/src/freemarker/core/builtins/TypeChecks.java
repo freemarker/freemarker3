@@ -59,57 +59,61 @@ import freemarker.template.*;
 
 /**
  * Implementation of ?is_XXXX built-ins
+ * TODO: refactor into subclasses
  */
 
-public class TypeChecks extends BuiltIn {
+public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 	
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+        TemplateModel model) throws TemplateException {
 		boolean result = false;
+		final String builtInName = caller.getName(); 
 		if (builtInName == "is_string") {
-			result = target instanceof TemplateScalarModel;
+			result = model instanceof TemplateScalarModel;
 		}
 		else if (builtInName == "is_number") {
-			result = target instanceof TemplateNumberModel;
+			result = model instanceof TemplateNumberModel;
 		}
 		else if (builtInName == "is_date") {
-			result = target instanceof TemplateDateModel;
+			result = model instanceof TemplateDateModel;
 		}
 		else if (builtInName == "is_enumerable") {
-			result = target instanceof TemplateSequenceModel || target instanceof TemplateCollectionModel;
+			result = model instanceof TemplateSequenceModel || model instanceof TemplateCollectionModel;
 		}
 		else if (builtInName == "is_sequence" || builtInName == "is_indexable") {
-			result = target instanceof TemplateSequenceModel;
+			result = model instanceof TemplateSequenceModel;
 		}
 		else if (builtInName == "is_macro") {
-			result = (target instanceof Macro) && !((Macro) target).isFunction();
+			result = (model instanceof Macro) && !((Macro) model).isFunction();
 		}
 		else if (builtInName == "is_directive") {
-			result = target instanceof Macro || target instanceof TemplateTransformModel
-                                 || target instanceof TemplateDirectiveModel;
+			result = model instanceof Macro || model instanceof TemplateTransformModel
+                                 || model instanceof TemplateDirectiveModel;
 		}
 		else if (builtInName == "is_boolean") {
-			result = target instanceof TemplateBooleanModel;
+			result = model instanceof TemplateBooleanModel;
 		}
 		else if (builtInName == "is_hash") {
-			result = target instanceof TemplateHashModel;
+			result = model instanceof TemplateHashModel;
 		}
 		else if (builtInName == "is_hash_ex") {
-			result = target instanceof TemplateHashModelEx;
+			result = model instanceof TemplateHashModelEx;
 		}
 		else if (builtInName == "is_method") {
-			result = target instanceof TemplateMethodModel;
+			result = model instanceof TemplateMethodModel;
 		}
 		else if (builtInName == "is_node") {
-			result = target instanceof TemplateNodeModel;
+			result = model instanceof TemplateNodeModel;
 		}
 		else if (builtInName == "is_null") {
-			result = target == TemplateModel.JAVA_NULL;
+			result = model == TemplateModel.JAVA_NULL;
 		}
 		else if (builtInName == "is_transform") {
-			result = target instanceof TemplateTransformModel;
+			result = model instanceof TemplateTransformModel;
 		}
 		else if (builtInName == "is_collection") {
-			result = target instanceof TemplateCollectionModel;
+			result = model instanceof TemplateCollectionModel;
 		}
 		return result ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
 	}

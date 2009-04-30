@@ -63,407 +63,461 @@ import freemarker.core.Environment;
 import freemarker.core.ast.ArithmeticEngine;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.TemplateNode;
-import freemarker.template.*;
+import freemarker.template.SimpleNumber;
+import freemarker.template.TemplateDateModel;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateHashModel;
+import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateModelListSequence;
+import freemarker.template.TemplateNumberModel;
+import freemarker.template.TemplateScalarModel;
+import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
 
 /**
  * Implementations of builtins for standard functions that operate on sequences
+ * TODO: refactor properly into subclasses
+ * TODO: see whether various result models really need env field
  */
 
-public class SequenceFunctions extends BuiltIn {
-	
+public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
+
     static final int KEY_TYPE_STRING = 1;
     static final int KEY_TYPE_NUMBER = 2;
     static final int KEY_TYPE_DATE = 3;
-	
 
-	public TemplateModel get(TemplateModel target, String builtInName,
-			Environment env, BuiltInExpression callingExpression)
-			throws TemplateException {
-		if (!(target instanceof TemplateSequenceModel)) {
-			if (builtInName == "seq_contains" && target instanceof TemplateCollectionModel) {
-				// Hacky special case
-				return new SequenceContainsFunction(target, env, callingExpression); 
-			}
-			throw TemplateNode.invalidTypeException(target,
-					callingExpression.getTarget(), env, "sequence");
-		}
-		TemplateSequenceModel sequence = (TemplateSequenceModel) target;
-		return getSequenceFunction(sequence, builtInName, env,
-				callingExpression);
-	}
 
-	private TemplateModel getSequenceFunction(TemplateSequenceModel sequence,
-			String builtInName, Environment env,
-			BuiltInExpression callingExpression) throws TemplateException {
-		if (builtInName == "first") {
-			return sequence.size() > 0 ? sequence.get(0) : null;
-		}
-		if (builtInName == "last") {
-			return sequence.size() > 0 ? sequence.get(sequence.size() - 1)
-					: null;
-		}
-		if (builtInName == "reverse") {
-			return new ReverseSequence(sequence);
-		}
-		if (builtInName == "sort") {
-			return sort(sequence, null);
-		}
-		if (builtInName == "sort_by") {
-			return new SortByMethod(sequence);
-		}
-		if (builtInName == "chunk") {
-			return new ChunkFunction(sequence);
-		}
-		if (builtInName == "seq_contains") {
-			return new SequenceContainsFunction(sequence, env, callingExpression);
-		}
-		if (builtInName == "seq_index_of" || builtInName == "seq_last_index_of") {
-			return new SequenceIndexOf(sequence, env, callingExpression);
-		}
-		throw new InternalError("Cannot deal with built-in ?" + builtInName);
-	}
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) 
+    throws TemplateException {
+        if (!(model instanceof TemplateSequenceModel)) {
+            throw TemplateNode.invalidTypeException(model,
+                    caller.getTarget(), env, "sequence");
+        }
+        return apply((TemplateSequenceModel) model);
+    }
+    
+    public abstract TemplateModel apply(TemplateSequenceModel model) throws TemplateException;
+    
+    public static class First extends SequenceFunctions {
+        @Override
+        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+            return sequence.size() > 0 ? sequence.get(0) : null;
+        }
+    }
 
-	static class ReverseSequence implements TemplateSequenceModel {
-		private final TemplateSequenceModel seq;
+    public static class Last extends SequenceFunctions {
+        @Override
+        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+            return sequence.size() > 0 ? sequence.get(sequence.size() - 1) : null;
+        }
+    }
 
-		ReverseSequence(TemplateSequenceModel seq) {
-			this.seq = seq;
-		}
+    public static class Reverse extends SequenceFunctions {
+        @Override
+        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+            return new ReverseSequence(sequence);
+        }
+    }
 
-		public int size() throws TemplateModelException {
-			return seq.size();
-		}
+    public static class Sort extends SequenceFunctions {
+        @Override
+        public boolean isSideEffectFree() {
+            return false; // depends on locale and arithmetic engine
+        }
+        
+        @Override
+        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+            return sort(sequence, null);
+        }
+    }
 
-		public TemplateModel get(int index) throws TemplateModelException {
-			return seq.get(seq.size() - 1 - index);
-		}
-	}
+    public static class SortBy extends SequenceFunctions {
+        @Override
+        public boolean isSideEffectFree() {
+            return false; // depends on locale and arithmetic engine
+        }
 
-	static class ChunkFunction implements TemplateMethodModelEx {
+        @Override
+        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+            return new SortByMethod(sequence);
+        }
+    }
 
-		private final TemplateSequenceModel tsm;
+    public static class Chunk extends SequenceFunctions {
+        @Override
+        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+            return new ChunkFunction(sequence);
+        }
+    }
 
-		private ChunkFunction(TemplateSequenceModel tsm) {
-			this.tsm = tsm;
-		}
+    public static class IndexOf extends SequenceFunctions {
+        @Override
+        public boolean isSideEffectFree() {
+            return false; // can depend on locale and arithmetic engine 
+        }
+        
+        @Override
+        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+            return new SequenceIndexOf(sequence, false);
+        }
+    }
 
-		public Object exec(List args) throws TemplateModelException {
-			int numArgs = args.size();
-			if (numArgs != 1 && numArgs != 2) {
-				throw new TemplateModelException(
-						"?chunk(...) expects 1 or 2 arguments.");
-			}
+    public static class LastIndexOf extends SequenceFunctions {
+        @Override
+        public boolean isSideEffectFree() {
+            return false; // can depend on locale and arithmetic engine 
+        }
 
-			Object chunkSize = args.get(0);
-			if (!(chunkSize instanceof TemplateNumberModel)) {
-				throw new TemplateModelException(
-						"?chunk(...) expects a number as "
-								+ "its 1st argument.");
-			}
+        @Override
+        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+            return new SequenceIndexOf(sequence, true);
+        }
+    }
 
-			return new ChunkedSequence(tsm, ((TemplateNumberModel) chunkSize)
-					.getAsNumber().intValue(),
-					numArgs > 1 ? (TemplateModel) args.get(1) : null);
-		}
-	}
+    static class ReverseSequence implements TemplateSequenceModel {
+        private final TemplateSequenceModel seq;
 
-	static class ChunkedSequence implements TemplateSequenceModel {
+        ReverseSequence(TemplateSequenceModel seq) {
+            this.seq = seq;
+        }
 
-		private final TemplateSequenceModel wrappedTsm;
+        public int size() throws TemplateModelException {
+            return seq.size();
+        }
 
-		private final int chunkSize;
+        public TemplateModel get(int index) throws TemplateModelException {
+            return seq.get(seq.size() - 1 - index);
+        }
+    }
 
-		private final TemplateModel fillerItem;
+    static class ChunkFunction implements TemplateMethodModelEx {
 
-		private final int numberOfChunks;
+        private final TemplateSequenceModel tsm;
 
-		private ChunkedSequence(TemplateSequenceModel wrappedTsm,
-				int chunkSize, TemplateModel fillerItem)
-				throws TemplateModelException {
-			if (chunkSize < 1) {
-				throw new TemplateModelException(
-						"The 1st argument to ?chunk(...) must be at least 1.");
-			}
-			this.wrappedTsm = wrappedTsm;
-			this.chunkSize = chunkSize;
-			this.fillerItem = fillerItem;
-			numberOfChunks = (wrappedTsm.size() + chunkSize - 1) / chunkSize;
-		}
+        private ChunkFunction(TemplateSequenceModel tsm) {
+            this.tsm = tsm;
+        }
+        
+        public Object exec(List args) throws TemplateModelException {
+            int numArgs = args.size();
+            if (numArgs != 1 && numArgs != 2) {
+                throw new TemplateModelException(
+                "?chunk(...) expects 1 or 2 arguments.");
+            }
 
-		public TemplateModel get(final int chunkIndex)
-				throws TemplateModelException {
-			if (chunkIndex >= numberOfChunks) {
-				return null;
-			}
+            Object chunkSize = args.get(0);
+            if (!(chunkSize instanceof TemplateNumberModel)) {
+                throw new TemplateModelException(
+                        "?chunk(...) expects a number as "
+                        + "its 1st argument.");
+            }
 
-			return new TemplateSequenceModel() {
+            return new ChunkedSequence(tsm, ((TemplateNumberModel) chunkSize)
+                    .getAsNumber().intValue(),
+                    numArgs > 1 ? (TemplateModel) args.get(1) : null);
+        }
+    }
 
-				private final int baseIndex = chunkIndex * chunkSize;
+    static class ChunkedSequence implements TemplateSequenceModel {
 
-				public TemplateModel get(int relIndex)
-						throws TemplateModelException {
-					int absIndex = baseIndex + relIndex;
-					if (absIndex < wrappedTsm.size()) {
-						return wrappedTsm.get(absIndex);
-					} else {
-						return absIndex < numberOfChunks * chunkSize ? fillerItem
-								: null;
-					}
-				}
+        private final TemplateSequenceModel wrappedTsm;
 
-				public int size() throws TemplateModelException {
-					return fillerItem != null
-							|| chunkIndex + 1 < numberOfChunks ? chunkSize
-							: wrappedTsm.size() - baseIndex;
-				}
+        private final int chunkSize;
 
-			};
-		}
+        private final TemplateModel fillerItem;
 
-		public int size() throws TemplateModelException {
-			return numberOfChunks;
-		}
+        private final int numberOfChunks;
 
-	}
+        private ChunkedSequence(TemplateSequenceModel wrappedTsm,
+                int chunkSize, TemplateModel fillerItem)
+        throws TemplateModelException {
+            if (chunkSize < 1) {
+                throw new TemplateModelException(
+                "The 1st argument to ?chunk(...) must be at least 1.");
+            }
+            this.wrappedTsm = wrappedTsm;
+            this.chunkSize = chunkSize;
+            this.fillerItem = fillerItem;
+            numberOfChunks = (wrappedTsm.size() + chunkSize - 1) / chunkSize;
+        }
 
-	static TemplateSequenceModel sort(TemplateSequenceModel seq, String[] keys)
-			throws TemplateModelException {
-		int i;
-		int keyCnt;
+        public TemplateModel get(final int chunkIndex)
+        throws TemplateModelException {
+            if (chunkIndex >= numberOfChunks) {
+                return null;
+            }
 
-		int ln = seq.size();
-		if (ln == 0) {
-			return seq;
-		}
+            return new TemplateSequenceModel() {
 
-		List<Object> res = new ArrayList<Object>(ln);
-		Object item;
-		item = seq.get(0);
-		if (keys != null) {
-			keyCnt = keys.length;
-			if (keyCnt == 0) {
-				keys = null;
-			} else {
-				for (i = 0; i < keyCnt; i++) {
-					if (!(item instanceof TemplateHashModel)) {
-						throw new TemplateModelException(
-								"sorting failed: "
-										+ (i == 0 ? "You can't use ?sort_by when the "
-												+ "sequence items are not hashes."
-												: "The subvariable "
-														+ StringUtil
-																.jQuote(keys[i - 1])
-														+ " is not a hash, so ?sort_by "
-														+ "can't proceed by getting the "
-														+ StringUtil
-																.jQuote(keys[i])
-														+ " subvariable."));
-					}
+                private final int baseIndex = chunkIndex * chunkSize;
 
-					item = ((TemplateHashModel) item).get(keys[i]);
-					if (item == null) {
-						throw new TemplateModelException(
-								"sorting failed: "
-										+ "The "
-										+ StringUtil.jQuote(keys[i])
-										+ " subvariable "
-										+ (keyCnt == 1 ? "was not found."
-												: "(specified by ?sort_by argument number "
-														+ (i + 1)
-														+ ") was not found."));
-					}
-				}
-			}
-		} else {
-			keyCnt = 0;
-		}
+                public TemplateModel get(int relIndex)
+                throws TemplateModelException {
+                    int absIndex = baseIndex + relIndex;
+                    if (absIndex < wrappedTsm.size()) {
+                        return wrappedTsm.get(absIndex);
+                    } else {
+                        return absIndex < numberOfChunks * chunkSize ? fillerItem
+                                : null;
+                    }
+                }
 
-		int keyType;
-		if (item instanceof TemplateScalarModel) {
-			keyType = KEY_TYPE_STRING;
-		} else if (item instanceof TemplateNumberModel) {
-			keyType = KEY_TYPE_NUMBER;
-		} else if (item instanceof TemplateDateModel) {
-			keyType = KEY_TYPE_DATE;
-		} else {
-			throw new TemplateModelException(
-					"sorting failed: "
-							+ "Values used for sorting must be numbers, strings, or date/time values.");
-		}
+                public int size() throws TemplateModelException {
+                    return fillerItem != null
+                    || chunkIndex + 1 < numberOfChunks ? chunkSize
+                            : wrappedTsm.size() - baseIndex;
+                }
 
-		if (keys == null) {
-			if (keyType == KEY_TYPE_STRING) {
-				for (i = 0; i < ln; i++) {
-					item = seq.get(i);
-					try {
-						res.add(new KVP(((TemplateScalarModel) item)
-								.getAsString(), item));
-					} catch (ClassCastException e) {
-						if (!(item instanceof TemplateScalarModel)) {
-							throw new TemplateModelException(
-									"Failure of ?sort built-in: "
-											+ "All values in the sequence must be "
-											+ "strings, because the first value "
-											+ "was a string. "
-											+ "The value at index " + i
-											+ " is not string.");
-						} else {
-							throw e;
-						}
-					}
-				}
-			} else if (keyType == KEY_TYPE_NUMBER) {
-				for (i = 0; i < ln; i++) {
-					item = seq.get(i);
-					try {
-						res.add(new KVP(((TemplateNumberModel) item)
-								.getAsNumber(), item));
-					} catch (ClassCastException e) {
-						if (!(item instanceof TemplateNumberModel)) {
-							throw new TemplateModelException(
-									"sorting failed: " 
-											+ "All values in the sequence must be "
-											+ "numbers, because the first value "
-											+ "was a number. "
-											+ "The value at index " + i
-											+ " is not number.");
-						} else {
-							throw e;
-						}
-					}
-				}
-			} else if (keyType == KEY_TYPE_DATE) {
-				for (i = 0; i < ln; i++) {
-					item = seq.get(i);
-					try {
-						res.add(new KVP(((TemplateDateModel) item).getAsDate(),
-								item));
-					} catch (ClassCastException e) {
-						if (!(item instanceof TemplateNumberModel)) {
-							throw new TemplateModelException(
-									"sorting failed: " 
-											+ "All values in the sequence must be "
-											+ "date/time values, because the first "
-											+ "value was a date/time. "
-											+ "The value at index " + i
-											+ " is not date/time.");
-						} else {
-							throw e;
-						}
-					}
-				}
-			} else {
-				throw new RuntimeException("FreeMarker bug: Bad key type");
-			}
-		} else {
-			for (i = 0; i < ln; i++) {
-				item = seq.get(i);
-				Object key = item;
-				for (int j = 0; j < keyCnt; j++) {
-					try {
-						key = ((TemplateHashModel) key).get(keys[j]);
-					} catch (ClassCastException e) {
-						if (!(key instanceof TemplateHashModel)) {
-							throw new TemplateModelException(
-									"sorting failed: " 
-											+ "Problem with the sequence item at index "
-											+ i
-											+ ": "
-											+ "Can't get the "
-											+ StringUtil.jQuote(keys[j])
-											+ " subvariable, because the value is not a hash.");
-						} else {
-							throw e;
-						}
-					}
-					if (key == null) {
-						throw new TemplateModelException(
-								"sorting failed "  
-										+ "Problem with the sequence item at index "
-										+ i + ": " + "The "
-										+ StringUtil.jQuote(keys[j])
-										+ " subvariable was not found.");
-					}
-				}
-				if (keyType == KEY_TYPE_STRING) {
-					try {
-						res.add(new KVP(((TemplateScalarModel) key)
-								.getAsString(), item));
-					} catch (ClassCastException e) {
-						if (!(key instanceof TemplateScalarModel)) {
-							throw new TemplateModelException(
-									"sorting failed: " 
-											+ "All key values in the sequence must be "
-											+ "date/time values, because the first key "
-											+ "value was a date/time. The key value at "
-											+ "index " + i
-											+ " is not a date/time.");
-						} else {
-							throw e;
-						}
-					}
-				} else if (keyType == KEY_TYPE_NUMBER) {
-					try {
-						res.add(new KVP(((TemplateNumberModel) key)
-								.getAsNumber(), item));
-					} catch (ClassCastException e) {
-						if (!(key instanceof TemplateNumberModel)) {
-							throw new TemplateModelException(
-									"sorting failed: "
-											+ "All key values in the sequence must be "
-											+ "numbers, because the first key "
-											+ "value was a number. The key value at "
-											+ "index " + i
-											+ " is not a number.");
-						}
-					}
-				} else if (keyType == KEY_TYPE_DATE) {
-					try {
-						res.add(new KVP(((TemplateDateModel) key).getAsDate(),
-								item));
-					} catch (ClassCastException e) {
-						if (!(key instanceof TemplateDateModel)) {
-							throw new TemplateModelException(
-									"sorting failed: "
-											+ "All key values in the sequence must be "
-											+ "dates, because the first key "
-											+ "value was a date. The key value at "
-											+ "index " + i + " is not a date.");
-						}
-					}
-				} else {
-					throw new RuntimeException("FreeMarker bug: Bad key type");
-				}
-			}
-		}
+            };
+        }
 
-		Comparator cmprtr;
-		if (keyType == KEY_TYPE_STRING) {
-			cmprtr = new LexicalKVPComparator(Environment
-					.getCurrentEnvironment().getCollator());
-		} else if (keyType == KEY_TYPE_NUMBER) {
-			cmprtr = new NumericalKVPComparator(Environment
-					.getCurrentEnvironment().getArithmeticEngine());
-		} else if (keyType == KEY_TYPE_DATE) {
-			cmprtr = DateKVPComparator.INSTANCE;
-		} else {
-			throw new RuntimeException("FreeMarker bug: Bad key type");
-		}
+        public int size() throws TemplateModelException {
+            return numberOfChunks;
+        }
 
-		try {
-			Collections.sort(res, cmprtr);
-		} catch (ClassCastException exc) {
-			throw new TemplateModelException("Unexpected error while sorting:" + exc, exc);
-		}
+    }
 
-		for (i = 0; i < ln; i++) {
-			res.set(i, ((KVP) res.get(i)).value);
-		}
+    static TemplateSequenceModel sort(TemplateSequenceModel seq, String[] keys)
+    throws TemplateModelException {
+        int i;
+        int keyCnt;
 
-		return new TemplateModelListSequence(res);
-	}
-	
+        int ln = seq.size();
+        if (ln == 0) {
+            return seq;
+        }
+
+        List<Object> res = new ArrayList<Object>(ln);
+        Object item;
+        item = seq.get(0);
+        if (keys != null) {
+            keyCnt = keys.length;
+            if (keyCnt == 0) {
+                keys = null;
+            } else {
+                for (i = 0; i < keyCnt; i++) {
+                    if (!(item instanceof TemplateHashModel)) {
+                        throw new TemplateModelException(
+                                "sorting failed: "
+                                + (i == 0 ? "You can't use ?sort_by when the "
+                                        + "sequence items are not hashes."
+                                        : "The subvariable "
+                                            + StringUtil
+                                            .jQuote(keys[i - 1])
+                                            + " is not a hash, so ?sort_by "
+                                            + "can't proceed by getting the "
+                                            + StringUtil
+                                            .jQuote(keys[i])
+                                            + " subvariable."));
+                    }
+
+                    item = ((TemplateHashModel) item).get(keys[i]);
+                    if (item == null) {
+                        throw new TemplateModelException(
+                                "sorting failed: "
+                                + "The "
+                                + StringUtil.jQuote(keys[i])
+                                + " subvariable "
+                                + (keyCnt == 1 ? "was not found."
+                                        : "(specified by ?sort_by argument number "
+                                            + (i + 1)
+                                            + ") was not found."));
+                    }
+                }
+            }
+        } else {
+            keyCnt = 0;
+        }
+
+        int keyType;
+        if (item instanceof TemplateScalarModel) {
+            keyType = KEY_TYPE_STRING;
+        } else if (item instanceof TemplateNumberModel) {
+            keyType = KEY_TYPE_NUMBER;
+        } else if (item instanceof TemplateDateModel) {
+            keyType = KEY_TYPE_DATE;
+        } else {
+            throw new TemplateModelException(
+                    "sorting failed: "
+                    + "Values used for sorting must be numbers, strings, or date/time values.");
+        }
+
+        if (keys == null) {
+            if (keyType == KEY_TYPE_STRING) {
+                for (i = 0; i < ln; i++) {
+                    item = seq.get(i);
+                    try {
+                        res.add(new KVP(((TemplateScalarModel) item)
+                                .getAsString(), item));
+                    } catch (ClassCastException e) {
+                        if (!(item instanceof TemplateScalarModel)) {
+                            throw new TemplateModelException(
+                                    "Failure of ?sort built-in: "
+                                    + "All values in the sequence must be "
+                                    + "strings, because the first value "
+                                    + "was a string. "
+                                    + "The value at index " + i
+                                    + " is not string.");
+                        } else {
+                            throw e;
+                        }
+                    }
+                }
+            } else if (keyType == KEY_TYPE_NUMBER) {
+                for (i = 0; i < ln; i++) {
+                    item = seq.get(i);
+                    try {
+                        res.add(new KVP(((TemplateNumberModel) item)
+                                .getAsNumber(), item));
+                    } catch (ClassCastException e) {
+                        if (!(item instanceof TemplateNumberModel)) {
+                            throw new TemplateModelException(
+                                    "sorting failed: " 
+                                    + "All values in the sequence must be "
+                                    + "numbers, because the first value "
+                                    + "was a number. "
+                                    + "The value at index " + i
+                                    + " is not number.");
+                        } else {
+                            throw e;
+                        }
+                    }
+                }
+            } else if (keyType == KEY_TYPE_DATE) {
+                for (i = 0; i < ln; i++) {
+                    item = seq.get(i);
+                    try {
+                        res.add(new KVP(((TemplateDateModel) item).getAsDate(),
+                                item));
+                    } catch (ClassCastException e) {
+                        if (!(item instanceof TemplateNumberModel)) {
+                            throw new TemplateModelException(
+                                    "sorting failed: " 
+                                    + "All values in the sequence must be "
+                                    + "date/time values, because the first "
+                                    + "value was a date/time. "
+                                    + "The value at index " + i
+                                    + " is not date/time.");
+                        } else {
+                            throw e;
+                        }
+                    }
+                }
+            } else {
+                throw new RuntimeException("FreeMarker bug: Bad key type");
+            }
+        } else {
+            for (i = 0; i < ln; i++) {
+                item = seq.get(i);
+                Object key = item;
+                for (int j = 0; j < keyCnt; j++) {
+                    try {
+                        key = ((TemplateHashModel) key).get(keys[j]);
+                    } catch (ClassCastException e) {
+                        if (!(key instanceof TemplateHashModel)) {
+                            throw new TemplateModelException(
+                                    "sorting failed: " 
+                                    + "Problem with the sequence item at index "
+                                    + i
+                                    + ": "
+                                    + "Can't get the "
+                                    + StringUtil.jQuote(keys[j])
+                                    + " subvariable, because the value is not a hash.");
+                        } else {
+                            throw e;
+                        }
+                    }
+                    if (key == null) {
+                        throw new TemplateModelException(
+                                "sorting failed "  
+                                + "Problem with the sequence item at index "
+                                + i + ": " + "The "
+                                + StringUtil.jQuote(keys[j])
+                                + " subvariable was not found.");
+                    }
+                }
+                if (keyType == KEY_TYPE_STRING) {
+                    try {
+                        res.add(new KVP(((TemplateScalarModel) key)
+                                .getAsString(), item));
+                    } catch (ClassCastException e) {
+                        if (!(key instanceof TemplateScalarModel)) {
+                            throw new TemplateModelException(
+                                    "sorting failed: " 
+                                    + "All key values in the sequence must be "
+                                    + "date/time values, because the first key "
+                                    + "value was a date/time. The key value at "
+                                    + "index " + i
+                                    + " is not a date/time.");
+                        } else {
+                            throw e;
+                        }
+                    }
+                } else if (keyType == KEY_TYPE_NUMBER) {
+                    try {
+                        res.add(new KVP(((TemplateNumberModel) key)
+                                .getAsNumber(), item));
+                    } catch (ClassCastException e) {
+                        if (!(key instanceof TemplateNumberModel)) {
+                            throw new TemplateModelException(
+                                    "sorting failed: "
+                                    + "All key values in the sequence must be "
+                                    + "numbers, because the first key "
+                                    + "value was a number. The key value at "
+                                    + "index " + i
+                                    + " is not a number.");
+                        }
+                    }
+                } else if (keyType == KEY_TYPE_DATE) {
+                    try {
+                        res.add(new KVP(((TemplateDateModel) key).getAsDate(),
+                                item));
+                    } catch (ClassCastException e) {
+                        if (!(key instanceof TemplateDateModel)) {
+                            throw new TemplateModelException(
+                                    "sorting failed: "
+                                    + "All key values in the sequence must be "
+                                    + "dates, because the first key "
+                                    + "value was a date. The key value at "
+                                    + "index " + i + " is not a date.");
+                        }
+                    }
+                } else {
+                    throw new RuntimeException("FreeMarker bug: Bad key type");
+                }
+            }
+        }
+
+        Comparator cmprtr;
+        if (keyType == KEY_TYPE_STRING) {
+            cmprtr = new LexicalKVPComparator(Environment
+                    .getCurrentEnvironment().getCollator());
+        } else if (keyType == KEY_TYPE_NUMBER) {
+            cmprtr = new NumericalKVPComparator(Environment
+                    .getCurrentEnvironment().getArithmeticEngine());
+        } else if (keyType == KEY_TYPE_DATE) {
+            cmprtr = DateKVPComparator.INSTANCE;
+        } else {
+            throw new RuntimeException("FreeMarker bug: Bad key type");
+        }
+
+        try {
+            Collections.sort(res, cmprtr);
+        } catch (ClassCastException exc) {
+            throw new TemplateModelException("Unexpected error while sorting:" + exc, exc);
+        }
+
+        for (i = 0; i < ln; i++) {
+            res.set(i, ((KVP) res.get(i)).value);
+        }
+
+        return new TemplateModelListSequence(res);
+    }
+
     static class KVP {
         private KVP(Object key, Object value) {
             this.key = key;
@@ -488,7 +542,7 @@ public class SequenceFunctions extends BuiltIn {
                         (Number) ((KVP) arg1).key);
             } catch (TemplateException e) {
                 throw new ClassCastException(
-                    "Failed to compare numbers: " + e);
+                        "Failed to compare numbers: " + e);
             }
         }
     }
@@ -505,7 +559,7 @@ public class SequenceFunctions extends BuiltIn {
                     ((KVP) arg0).key, ((KVP) arg1).key);
         }
     }
-    
+
     static class DateKVPComparator implements Comparator {
         static final DateKVPComparator INSTANCE = new DateKVPComparator();
         public int compare(Object arg0, Object arg1) {
@@ -513,16 +567,16 @@ public class SequenceFunctions extends BuiltIn {
                     (Date) ((KVP) arg1).key);
         }
     }
-    
+
     static class SortByMethod implements TemplateMethodModelEx {
         TemplateSequenceModel seq;
-        
+
         SortByMethod(TemplateSequenceModel seq) {
             this.seq = seq;
         }
-        
+
         public Object exec(List params)
-                throws TemplateModelException {
+        throws TemplateModelException {
             if (params.size() == 0) {
                 throw new TemplateModelException(
                         "?sort_by(key) needs exactly 1 argument.");
@@ -539,7 +593,7 @@ public class SequenceFunctions extends BuiltIn {
                     Object item = seq.get(i);
                     try {
                         subvars[i] = ((TemplateScalarModel) item)
-                                .getAsString();
+                        .getAsString();
                     } catch (ClassCastException e) {
                         if (!(item instanceof TemplateScalarModel)) {
                             throw new TemplateModelException(
@@ -559,154 +613,53 @@ public class SequenceFunctions extends BuiltIn {
             return sort(seq, subvars); 
         }
     }
-    
-    /*
-     * WARNING! This algorithm is duplication of ComparisonExpression.isTrue(...).
-     * Thus, if you update this method, then you have to update that too!
-     */
-    public static boolean modelsEqual(TemplateModel model1, TemplateModel model2,
-                                Environment env, Template template)
-            throws TemplateModelException {
-        int comp = -1;
-        if(model1 instanceof TemplateNumberModel && model2 instanceof TemplateNumberModel) {
-            Number first = ((TemplateNumberModel) model1).getAsNumber();
-            Number second = ((TemplateNumberModel) model2).getAsNumber();
-            ArithmeticEngine ae =
-                env != null
-                    ? env.getArithmeticEngine()
-                    : template.getArithmeticEngine();
-            try {
-                comp = ae.compareNumbers(first, second);
-            } catch (TemplateException ex) {
-                throw new TemplateModelException(ex);
-            }
-        }
-        else if(model1 instanceof TemplateDateModel && model2 instanceof TemplateDateModel) {
-            TemplateDateModel ltdm = (TemplateDateModel)model1;
-            TemplateDateModel rtdm = (TemplateDateModel)model2;
-            int ltype = ltdm.getDateType();
-            int rtype = rtdm.getDateType();
-            if(ltype != rtype) {
-                throw new TemplateModelException(
-                    "Can not compare dates of different type. Left date is of "
-                    + TemplateDateModel.TYPE_NAMES.get(ltype)
-                    + " type, right date is of "
-                    + TemplateDateModel.TYPE_NAMES.get(rtype) + " type.");
-            }
-            if(ltype == TemplateDateModel.UNKNOWN) {
-                throw new TemplateModelException(
-                    "Left date is of UNKNOWN type, and can not be compared.");
-            }
-            if(rtype == TemplateDateModel.UNKNOWN) {
-                throw new TemplateModelException(
-                    "Right date is of UNKNOWN type, and can not be compared.");
-            }
-            Date first = ltdm.getAsDate();
-            Date second = rtdm.getAsDate();
-            comp = first.compareTo(second);
-        }
-        else if(model1 instanceof TemplateScalarModel && model2 instanceof TemplateScalarModel) {
-            String first = ((TemplateScalarModel) model1).getAsString();
-            String second = ((TemplateScalarModel) model2).getAsString();
-            Collator collator;
-            if(env == null) {
-                collator = Collator.getInstance(template.getLocale());
-            } else {
-                collator = env.getCollator();
-            }
-            comp = collator.compare(first, second);
-        }
-        else if(model1 instanceof TemplateBooleanModel && model2 instanceof TemplateBooleanModel) {
-            boolean first = ((TemplateBooleanModel)model1).getAsBoolean();
-            boolean second = ((TemplateBooleanModel)model2).getAsBoolean();
-            comp = (first ? 1 : 0) - (second ? 1 : 0);
+
+    static class SequenceIndexOf implements TemplateMethodModelEx {
+
+        private final TemplateSequenceModel sequence;
+        private final boolean reverse;
+
+        SequenceIndexOf(TemplateSequenceModel sequence, boolean reverse) {
+            this.sequence = sequence;
+            this.reverse = reverse;
         }
 
-        return (comp == 0);
+        public TemplateModel exec(List args) throws TemplateModelException {
+            final int argc = args.size();
+            final int startIndex;
+            if (argc != 1 && argc != 2) {
+                throw new TemplateModelException("Expecting one or two arguments for ?seq_" + (reverse ? "last_" : "") + "index_of");
+            }
+            TemplateModel compareToThis = (TemplateModel) args.get(0);
+            if (argc == 2) {
+                try {
+                    startIndex = ((TemplateNumberModel)args.get(1)).getAsNumber().intValue();
+                } catch (ClassCastException cce) {
+                    throw new TemplateModelException("Expecting number as second argument to ?seq_" + (reverse ? "last_" : "") + "index_of");
+                }
+            }
+            else {
+                startIndex = reverse ? sequence.size() - 1 : 0;
+            }
+            final Environment env = Environment.getCurrentEnvironment();
+            final ModelComparator comparator = new ModelComparator(env);
+            if (reverse) {
+                for (int i = startIndex; i > -1; --i) {
+                    if (comparator.modelsEqual(sequence.get(i), compareToThis)) {
+                        return new SimpleNumber(i); 
+                    }
+                }
+            }
+            else {
+                final int s = sequence.size();
+                for (int i = startIndex; i < s; ++i) {
+                    if (comparator.modelsEqual(sequence.get(i), compareToThis)) {
+                        return new SimpleNumber(i); 
+                    }
+                }
+            }
+            return new SimpleNumber(-1);
+        }
     }
-    
-    static class SequenceContainsFunction implements TemplateMethodModelEx {
-    	TemplateSequenceModel sequence;
-    	TemplateCollectionModel collection;
-    	Environment env;
-    	BuiltInExpression callingExpression;
-    	SequenceContainsFunction(TemplateModel seqModel, Environment env, BuiltInExpression callingExpression) {
-    		this.env = env;
-    		this.callingExpression = callingExpression;
-    		if (seqModel instanceof TemplateSequenceModel) {
-    			sequence = (TemplateSequenceModel) seqModel;
-    		}
-    		else if (seqModel instanceof TemplateCollectionModel) {
-    			collection = (TemplateCollectionModel) seqModel;
-    		}
-    	}
-    	
-    	public TemplateModel exec(List args) throws TemplateModelException {
-    		if (args.size() != 1) {
-    			throw new TemplateModelException("Expecting exactly one argument for ?seq_contains(...)");
-    		}
-    		TemplateModel compareToThis = (TemplateModel) args.get(0);
-    		if (collection != null) {
-    			TemplateModelIterator tmi = collection.iterator();
-    			while (tmi.hasNext()) {
-    				if (modelsEqual(tmi.next(), compareToThis, env, callingExpression.getTemplate())) {
-    					return TemplateBooleanModel.TRUE;
-    				}
-    			}
-   	   			return TemplateBooleanModel.FALSE;
-    		}
-    		else {
-    			for (int i=0; i<sequence.size(); i++) {
-    				if (modelsEqual(sequence.get(i), compareToThis, env, callingExpression.getTemplate())) {
-    					return TemplateBooleanModel.TRUE;
-    				}
-    			}
-       			return TemplateBooleanModel.FALSE;
-    		}
-   		}
-    }
-    
-    static class SequenceIndexOf implements TemplateMethodModelEx {
-    	
-    	TemplateSequenceModel sequence;
-    	BuiltInExpression callingExpression;
-    	Environment env;
-    	
-    	SequenceIndexOf(TemplateSequenceModel sequence, Environment env, BuiltInExpression callingExpression) {
-    		this.sequence = sequence;
-    		this.env = env;
-    		this.callingExpression = callingExpression;
-    	}
-    	
-    	public TemplateModel exec(List args) throws TemplateModelException {
-    		int argc = args.size();
-    		int startIndex = 0;
-    		if (argc != 1 && argc != 2) {
-    			throw new TemplateModelException("Expecting one or two arguments for ?" + callingExpression.getName());
-    		}
-    		TemplateModel compareToThis = (TemplateModel) args.get(0);
-    		if (argc == 2) {
-    			try {
-    				startIndex = ((TemplateNumberModel)args.get(1)).getAsNumber().intValue();
-    			} catch (ClassCastException cce) {
-    				throw new TemplateModelException("Expecting number as second argument to ?" + callingExpression.getName());
-    			}
-    		}
-    		boolean reverse = callingExpression.getName() == "seq_last_index_of";
-    		if (reverse) {
-    			sequence = new ReverseSequence(sequence);
-    			if (argc == 2) {
-    				startIndex = sequence.size() - 1 - startIndex;
-    			}
-    		}
-    		for (int i=startIndex; i<sequence.size(); i++) {
-    			if (modelsEqual(sequence.get(i), compareToThis, env, callingExpression.getTemplate())) {
-    				int result = reverse ? sequence.size() - i -1 : i;
-    				return new SimpleNumber(result); 
-    			}
-    		}
-    		return new SimpleNumber(-1);
-    	}
-    }
-    
+
 }

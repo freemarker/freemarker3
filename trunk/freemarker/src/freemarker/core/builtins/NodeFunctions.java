@@ -65,69 +65,101 @@ import freemarker.template.utility.StringUtil;
  * standard functions that operate on nodes
  */
 
-public class NodeFunctions extends BuiltIn {
-	
+public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
 
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		if (!(target instanceof TemplateNodeModel)) {
-			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "node");
-		}
-		TemplateNodeModel node = (TemplateNodeModel) target;
-		return getNodeFunction(node, builtInName, env);
-	}
-	
-	private TemplateModel getNodeFunction(TemplateNodeModel node, String builtInName, 
-			Environment env) throws TemplateException 
-	{
-		if (builtInName == "parent") {
-			return node.getParentNode();
-		}
-		if (builtInName == "children") {
-			return node.getChildNodes();
-		}
-		if (builtInName == "root") {
-			TemplateNodeModel result = node;
-			while (result.getParentNode() != null) {
-				result = result.getParentNode();
-			}
-			return result;
-		}
-		if (builtInName == "node_name") {
-			return new SimpleScalar(node.getNodeName());
-		}
-		if (builtInName == "node_namespace") {
-			String ns = node.getNodeNamespace();
-			return ns == null ? TemplateModel.JAVA_NULL : new SimpleScalar(ns);
-		}
-		if (builtInName == "node_type") {
-			String nt = node.getNodeType();
-			return nt == null ? TemplateModel.JAVA_NULL : new SimpleScalar(nt);
-		}
-		if (builtInName == "ancestors") {
-           AncestorSequence result = new AncestorSequence(env);
-           TemplateNodeModel parent = node.getParentNode();
-           while (parent != null) {
-               result.add(parent);
-               parent = parent.getParentNode();
-           }
-           return result;
-		}
-		throw new InternalError("Cannot deal with built-in ?" + builtInName);
-	}
-	
-    static class AncestorSequence extends SimpleSequence implements TemplateMethodModel {
-
-        private Environment env;
-        
-        AncestorSequence(Environment env) {
-            this.env = env;
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) 
+    throws TemplateException {
+        if (!(model instanceof TemplateNodeModel)) {
+            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "node");
         }
-        
+        return apply(env, (TemplateNodeModel)model);
+    }
+
+    public abstract TemplateModel apply(Environment env, TemplateNodeModel node) 
+    throws TemplateException;
+    
+    public static class Parent extends NodeFunctions {
+        @Override
+        public TemplateModel apply(Environment env, TemplateNodeModel node)
+        throws TemplateException {
+            return node.getParentNode();
+        }
+    }
+
+    public static class Children extends NodeFunctions {
+        @Override
+        public TemplateModel apply(Environment env, TemplateNodeModel node)
+        throws TemplateException {
+            return node.getChildNodes();
+        }
+    }
+
+    public static class Root extends NodeFunctions {
+        @Override
+        public TemplateModel apply(Environment env, TemplateNodeModel node)
+        throws TemplateException {
+            for(;;) {
+                final TemplateNodeModel parent = node.getParentNode();
+                if(parent == null) {
+                    return node;
+                }
+                node = parent;
+            }
+        }
+    }
+    
+    public static class NodeName extends NodeFunctions {
+        @Override
+        public TemplateModel apply(Environment env, TemplateNodeModel node)
+        throws TemplateException {
+            return new SimpleScalar(node.getNodeName());
+        }
+    }
+
+    public static class NodeNamespace extends NodeFunctions {
+        @Override
+        public TemplateModel apply(Environment env, TemplateNodeModel node)
+        throws TemplateException {
+            String ns = node.getNodeNamespace();
+            return ns == null ? TemplateModel.JAVA_NULL : new SimpleScalar(ns);
+        }
+    }
+
+    public static class NodeType extends NodeFunctions {
+        @Override
+        public TemplateModel apply(Environment env, TemplateNodeModel node)
+        throws TemplateException {
+            String nt = node.getNodeType();
+            return nt == null ? TemplateModel.JAVA_NULL : new SimpleScalar(nt);
+        }
+    }
+    
+
+    public static class Ancestors extends NodeFunctions {
+        @Override
+        public TemplateModel apply(Environment env, TemplateNodeModel node)
+        throws TemplateException {
+            final AncestorSequence result = new AncestorSequence();
+            TemplateNodeModel parent = node.getParentNode();
+            while (parent != null) {
+                result.add(parent);
+                parent = parent.getParentNode();
+            }
+            return result;
+        }
+    }
+
+    static class AncestorSequence extends SimpleSequence implements TemplateMethodModel {
+        private static final long serialVersionUID = 1L;
+
         public Object exec(List names) throws TemplateModelException {
             if (names == null || names.isEmpty()) {
                 return this;
             }
-            AncestorSequence result = new AncestorSequence(env);
+            AncestorSequence result = new AncestorSequence();
+            final Environment env = Environment.getCurrentEnvironment();
             for (int i=0; i<size(); i++) {
                 TemplateNodeModel tnm = (TemplateNodeModel) get(i);
                 String nodeName = tnm.getNodeName();

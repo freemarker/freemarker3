@@ -67,51 +67,53 @@ import java.math.RoundingMode;
  * ?short and ?long built-ins 
  */
 
-public class NumericalCast extends BuiltIn {
-        private static final BigDecimal half = new BigDecimal("0.5");
-        private static final MathContext mc = new MathContext(0, RoundingMode.FLOOR);
+public class NumericalCast extends ExpressionEvaluatingBuiltIn {
+    private static final BigDecimal half = new BigDecimal("0.5");
+    private static final MathContext mc = new MathContext(0, RoundingMode.FLOOR);
 
-	public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-		try {
-			Number num = ((TemplateNumberModel) target).getAsNumber();
-			return new SimpleNumber(getNumber(num, builtInName));
-		} catch (ClassCastException cce) {
-			throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "number");
-		} catch (NullPointerException npe) {
-			throw new InvalidReferenceException("Undefined number", env);
-		}
-	}
-	
-	private Number getNumber(Number num, String builtInName) {
-		if (builtInName == "int") {
-			return Integer.valueOf(num.intValue());
-		}
-		else if (builtInName == "double") {
-			return new Double(num.doubleValue());
-		}
-		else if (builtInName == "long") {
-			return Long.valueOf(num.longValue());
-		}
-		else if (builtInName == "float") {
-			return new Float(num.floatValue());
-		}
-		else if (builtInName == "byte") {
-			return Byte.valueOf(num.byteValue());
-		}
-		else if (builtInName == "short") {
-			return Short.valueOf(num.shortValue());
-		}
-		else if (builtInName == "floor") {
-			return (BigDecimal.valueOf(num.doubleValue()).divide(BigDecimal.ONE, 0, RoundingMode.FLOOR));
-		}
-		else if (builtInName == "ceiling") {
-			return (BigDecimal.valueOf(num.doubleValue()).divide(BigDecimal.ONE, 0, RoundingMode.CEILING));
-		}
-		else if (builtInName == "round") {
-			return (BigDecimal.valueOf(num.doubleValue()).add(half, mc).divide(BigDecimal.ONE, 0, RoundingMode.FLOOR));
-		}
-		else {
-			throw new InternalError("The only numerical cast built-ins available are ?int, ?long, ?short, ?byte, ?float, ?double, ?floor, ?ceiling, and ?round.");
-		}
-	}
+    @Override
+    public TemplateModel get(Environment env, BuiltInExpression caller,
+            TemplateModel model) 
+    throws TemplateException {
+        try {
+            return new SimpleNumber(getNumber(((TemplateNumberModel) model).getAsNumber(), caller.getName()));
+        } catch (ClassCastException cce) {
+            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number");
+        } catch (NullPointerException npe) {
+            throw new InvalidReferenceException("Undefined number", env);
+        }
+    }
+
+    private Number getNumber(Number num, String builtInName) {
+        if (builtInName == "int") {
+            return Integer.valueOf(num.intValue());
+        }
+        else if (builtInName == "double") {
+            return new Double(num.doubleValue());
+        }
+        else if (builtInName == "long") {
+            return Long.valueOf(num.longValue());
+        }
+        else if (builtInName == "float") {
+            return new Float(num.floatValue());
+        }
+        else if (builtInName == "byte") {
+            return Byte.valueOf(num.byteValue());
+        }
+        else if (builtInName == "short") {
+            return Short.valueOf(num.shortValue());
+        }
+        else if (builtInName == "floor") {
+            return (BigDecimal.valueOf(num.doubleValue()).divide(BigDecimal.ONE, 0, RoundingMode.FLOOR));
+        }
+        else if (builtInName == "ceiling") {
+            return (BigDecimal.valueOf(num.doubleValue()).divide(BigDecimal.ONE, 0, RoundingMode.CEILING));
+        }
+        else if (builtInName == "round") {
+            return (BigDecimal.valueOf(num.doubleValue()).add(half, mc).divide(BigDecimal.ONE, 0, RoundingMode.FLOOR));
+        }
+        else {
+            throw new InternalError("The only numerical cast built-ins available are ?int, ?long, ?short, ?byte, ?float, ?double, ?floor, ?ceiling, and ?round.");
+        }
+    }
 }

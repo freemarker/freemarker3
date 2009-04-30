@@ -59,26 +59,38 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.TemplateNode;
-import freemarker.template.*;
+import freemarker.template.SimpleDate;
+import freemarker.template.TemplateDateModel;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateHashModel;
+import freemarker.template.TemplateMethodModel;
+import freemarker.template.TemplateModel;
+import freemarker.template.TemplateModelException;
+import freemarker.template.TemplateScalarModel;
 
 /**
  * Implementations of builtins for standard functions
  * that operate on sequences
+ * @version $Id: $
  */
+public class DateTime extends ExpressionEvaluatingBuiltIn {
 
-public class DateTime extends BuiltIn {
+    private final int dateType;
+    
+    public DateTime(int dateType) {
+        this.dateType = dateType;
+    }
 
-
-    public TemplateModel get(TemplateModel target, String builtInName, Environment env, BuiltInExpression callingExpression) throws TemplateException {
-        int dateType = TemplateDateModel.DATETIME;
-        if ("date" == builtInName) {
-            dateType = TemplateDateModel.DATE;
-        }
-        else if ("time" == builtInName) {
-            dateType = TemplateDateModel.TIME;
-        }
-        if (target instanceof TemplateDateModel) {
-            TemplateDateModel dmodel = (TemplateDateModel) target;
+    @Override
+    public boolean isSideEffectFree() {
+        return false; // can depend on environment's date format
+    }
+    
+    public TemplateModel get(Environment env, BuiltInExpression caller, 
+            TemplateModel model) 
+    throws TemplateException {
+        if (model instanceof TemplateDateModel) {
+            TemplateDateModel dmodel = (TemplateDateModel) model;
             int dtype = dmodel.getDateType();
             // Any date model can be coerced into its own type
             if(dateType == dtype) {
@@ -92,11 +104,13 @@ public class DateTime extends BuiltIn {
                     "Cannot convert " + TemplateDateModel.TYPE_NAMES.get(dtype)
                     + " into " + TemplateDateModel.TYPE_NAMES.get(dateType), env);
         }
-        else if (target instanceof TemplateScalarModel) {
-            return new DateParser(((TemplateScalarModel) target).getAsString(), dateType, callingExpression,  env);
+        else if (model instanceof TemplateScalarModel) {
+            return new DateParser(((TemplateScalarModel) model).getAsString(), 
+                    dateType, caller,  env);
         }
         else {
-            throw TemplateNode.invalidTypeException(target, callingExpression.getTarget(), env, "time/date or string");
+            throw TemplateNode.invalidTypeException(model, caller, env, 
+                    "time/date or string");
         }
     }
 
@@ -109,17 +123,17 @@ public class DateTime extends BuiltIn {
         private final String text;
         private final Environment env;
         private final DateFormat defaultFormat;
-        private BuiltInExpression callingExpression;
+        private BuiltInExpression caller;
         private int dateType;
         private Date cachedValue;
 
-        DateParser(String text, int dateType, BuiltInExpression callingExpression, Environment env)
+        DateParser(String text, int dateType, BuiltInExpression caller, Environment env)
         throws
         TemplateModelException
         {
             this.text = text;
             this.env = env;
-            this.callingExpression = callingExpression;
+            this.caller = caller;
             this.dateType = dateType;
             this.defaultFormat = env.getDateFormatObject(dateType);
         }
@@ -145,7 +159,7 @@ public class DateTime extends BuiltIn {
         throws TemplateModelException {
             if (arguments.size() != 1) {
                 throw new TemplateModelException(
-                        "string?" + callingExpression.getName() + "(...) requires exactly 1 argument.");
+                        "string?" + caller.getName() + "(...) requires exactly 1 argument.");
             }
             return get((String) arguments.get(0));
         }
@@ -163,7 +177,7 @@ public class DateTime extends BuiltIn {
                 return df.parse(text);
             }
             catch(java.text.ParseException e) {
-                String mess = "Error: " + callingExpression.getStartLocation()
+                String mess = "Error: " + caller.getStartLocation()
                 + "\nExpecting a date here, found: " + text;
                 throw new TemplateModelException(mess);
             }

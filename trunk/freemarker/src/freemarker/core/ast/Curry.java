@@ -12,14 +12,15 @@ import java.util.Map;
 import java.util.Set;
 
 import freemarker.core.Environment;
-import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.builtins.ExpressionEvaluatingBuiltIn;
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateTransformModel;
-import freemarker.core.builtins.BuiltIn;
 
 /**
  * Implements the <tt>?curry</tt> built-in. Currying takes a macro, a function,
@@ -39,15 +40,15 @@ import freemarker.core.builtins.BuiltIn;
  * @author Attila Szegedi
  * @version $Id: $
  */
-public class Curry extends BuiltIn
+public class Curry extends ExpressionEvaluatingBuiltIn
 {
-	public TemplateModel get(TemplateModel target, String builtInName,
-			Environment env, BuiltInExpression callingExpression)
-			throws TemplateException {
-        if(target instanceof Macro) {
-            return new MacroCurry((Macro) target);
-        }
-        return new TransformAndMethodCurry(target);
+	public TemplateModel get(Environment env, BuiltInExpression expression,
+	        TemplateModel model)
+	throws TemplateException {
+            if(model instanceof Macro) {
+                return new MacroCurry((Macro)model);
+            }
+            return new TransformAndMethodCurry(model);
     }
     
     /**
@@ -257,6 +258,9 @@ public class Curry extends BuiltIn
         
         static TemplateModel instantiate(TemplateModel base, ParameterList parameterList) 
         throws TemplateException {
+            if(base instanceof TemplateDirectiveModel) {
+                return new CurriedDirective((TemplateDirectiveModel)base, parameterList);
+            }
             if(base instanceof TemplateTransformModel) {
                 return new CurriedTransform((TemplateTransformModel)base, parameterList);
             }
@@ -283,6 +287,28 @@ public class Curry extends BuiltIn
         public Writer getWriter(Writer out, Map<String, TemplateModel> args) throws TemplateModelException, IOException
         {
             return base.getWriter(out, args);
+        }
+        
+        @Override
+        TemplateModel getBase()
+        {
+            return base;
+        }
+    }
+    
+    static class CurriedDirective extends Curried implements TemplateDirectiveModel {
+        private final TemplateDirectiveModel base;
+
+        CurriedDirective(TemplateDirectiveModel base, ParameterList parameterList) {
+            super(parameterList);
+            this.base = base;
+        }
+        
+        public void execute(Environment env, Map<String, TemplateModel> params,
+                TemplateModel[] loopVars, TemplateDirectiveBody body)
+                throws TemplateException, IOException
+        {
+            base.execute(env, params, loopVars, body);
         }
         
         @Override
