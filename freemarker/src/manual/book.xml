@@ -20046,6 +20046,26 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
     <appendix xml:id="app_versions">
       <title>Versions</title>
 
+      <section xml:id="versions_2_4_pre2">
+        <title>2.4 Preview 2</title>
+
+        <para>Date of release: 2009-??-??</para>
+
+        <section>
+          <title>Changes on the FTL side</title>
+
+          <itemizedlist>
+            <listitem>
+              <para><emphasis>Warning, backward incompatible
+              change!</emphasis> The <link linkend="ref_builtin_interpret">
+              <literal>interpret</literal></link> built-in can no longer be 
+              used with the deprecated <link linkend="ref_depr_transform">
+              <literal>transform</literal></link> directive.</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+      </section>
+
       <section xml:id="versions_2_4_pre1">
         <title>2.4 Preview 1</title>
 
