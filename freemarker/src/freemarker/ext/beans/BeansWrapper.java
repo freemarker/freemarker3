@@ -84,6 +84,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import freemarker.ext.util.ModelCache;
 import freemarker.ext.util.ModelFactory;
@@ -156,7 +157,7 @@ public class BeansWrapper implements ObjectWrapper
     // for a specified class. Each key is a Class, each value is a hash map. In
     // that hash map, each key is a property/method name, each value is a
     // MethodDescriptor or a PropertyDescriptor assigned to that property/method.
-    private final Map<Class,Map> classCache = new HashMap<Class, Map>();
+    private final Map<Class,Map> classCache = new ConcurrentHashMap<Class, Map>();
     private Set<String> cachedClassNames = new HashSet<String>();
 
     private final ClassBasedModelFactory staticModels = new StaticModels(this);
@@ -905,11 +906,14 @@ public class BeansWrapper implements ObjectWrapper
     
     void introspectClass(Class clazz)
     {
-        synchronized(classCache)
+        if(!classCache.containsKey(clazz))
         {
-            if(!classCache.containsKey(clazz))
+            synchronized(classCache)
             {
-                introspectClassInternal(clazz);
+                if(!classCache.containsKey(clazz))
+                {
+                    introspectClassInternal(clazz);
+                }
             }
         }
     }
@@ -955,14 +959,17 @@ public class BeansWrapper implements ObjectWrapper
 
     Map getClassKeyMap(Class clazz)
     {
-        Map map;
-        synchronized(classCache)
+        Map map = classCache.get(clazz);
+        if(map == null)
         {
-            map = classCache.get(clazz);
-            if(map == null)
+            synchronized(classCache)
             {
-                introspectClassInternal(clazz);
                 map = classCache.get(clazz);
+                if(map == null)
+                {
+                    introspectClassInternal(clazz);
+                    map = classCache.get(clazz);
+                }
             }
         }
         return map;
