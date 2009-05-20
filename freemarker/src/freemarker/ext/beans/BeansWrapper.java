@@ -644,7 +644,7 @@ public class BeansWrapper implements ObjectWrapper
                 try {
                     int size = seq.size();
                     for (int i = 0; i < size; i++) {
-                        Object val = unwrap(model, componentType, 
+                        Object val = unwrap(seq.get(i), componentType, 
                                 recursionStops);
                         if(val == CAN_NOT_UNWRAP) {
                             return CAN_NOT_UNWRAP;
