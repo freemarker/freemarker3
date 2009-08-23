@@ -234,7 +234,7 @@
         again for each visiting. This ensures that the displayed information
         is always up-to-date.</para>
 
-        <para>Now, you may already noticed that the template contains no
+        <para>Now, you already may have noticed that the template contains no
         instructions regarding how to find out who the current visitor is, or
         how to query the database to find out what the latest product is. It
         seems it just already know these values. And indeed that's the case.
