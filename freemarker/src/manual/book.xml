@@ -8479,7 +8479,7 @@ TemplateHashModel roundingModeEnums =
   &lt;/init-param&gt;
   &lt;init-param&gt;
     &lt;param-name&gt;ContentType&lt;/param-name&gt;
-    &lt;param-value&gt;text/html&lt;/param-value&gt;
+    &lt;param-value&gt;text/html; charset=UTF-8&lt;/param-value&gt; &lt;!-- Forces UTF-8 output encoding! --&gt;
   &lt;/init-param&gt;
     
   &lt;!-- FreeMarker settings: --&gt;
@@ -8489,7 +8489,7 @@ TemplateHashModel roundingModeEnums =
   &lt;/init-param&gt;
   &lt;init-param&gt;
     &lt;param-name&gt;default_encoding&lt;/param-name&gt;
-    &lt;param-value&gt;ISO-8859-1&lt;/param-value&gt;
+    &lt;param-value&gt;ISO-8859-1&lt;/param-value&gt; &lt;!-- The encoding of the template files. --&gt;
   &lt;/init-param&gt;
   &lt;init-param&gt;
     &lt;param-name&gt;number_format&lt;/param-name&gt;
@@ -20058,7 +20058,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             <listitem>
               <para><emphasis>Warning, backward incompatible
               change!</emphasis> The <link linkend="ref_builtin_interpret">
-              <literal>interpret</literal></link> built-in can no longer be 
+              <literal>interpret</literal></link> built-in can no longer be
               used with the deprecated <link linkend="ref_depr_transform">
               <literal>transform</literal></link> directive.</para>
             </listitem>
