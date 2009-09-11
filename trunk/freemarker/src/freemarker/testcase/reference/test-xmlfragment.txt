@@ -2,6 +2,6 @@ b = b
 @document = @document
 @document = @document
 
-C = C
+C<>&"']]> = C<>&"']]>
 
-<root xmlns:n="http://x"><a><b><n:c>C</n:c></b></a></root>
+<root xmlns:n="http://x"><a><b><n:c>C&lt;>&amp;"']]&gt;</n:c></b></a></root>
