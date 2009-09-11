@@ -3,6 +3,6 @@ ${node?node_name} = b
 ${node?root?node_name} = @document
 ${node['/']?node_name} = @document
 
-${node['n:c']} = C
+${node['n:c']} = C<>&"']]>
 
 ${node?root.@@markup}
