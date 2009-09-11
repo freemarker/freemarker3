@@ -5365,7 +5365,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
         
         /* ------------------------------------------------------------------- */    
-        /* You usually do it only once in the whole application life-cycle:    */    
+        /* You should do this ONLY ONCE in the whole application life-cycle:   */    
     
         /* Create and adjust the configuration */
         Configuration cfg = new Configuration();
@@ -18845,8 +18845,8 @@ or
 
             <itemizedlist>
               <listitem>
-                <para>It potentially hiders accidental mistakes, like a typo
-                in a variable name, or when the template author refers to a
+                <para>It potentially hides accidental mistakes, like a typo in
+                a variable name, or when the template author refers to a
                 variable that the programmer doesn't put into the data-model,
                 or for which the programmer uses a different name. Human is
                 prone to do such accidental mistakes, computers are not, so
