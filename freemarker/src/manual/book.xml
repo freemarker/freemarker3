@@ -8250,6 +8250,10 @@ TemplateHashModel fileStatics =
         <section xml:id="jdk_15_enums">
           <title>Accessing enums</title>
 
+          <indexterm>
+            <primary>enum</primary>
+          </indexterm>
+
           <para>The <literal>TemplateHashModel</literal> returned from
           <literal>BeansWrapper.getEnumModels()</literal> can be used to
           create hash models for accessing values of enums on JRE 1.5 or
