@@ -64,7 +64,6 @@ import freemarker.template.*;
  */
 public class SwitchBlock extends TemplateElement {
 
-    private Case defaultCase;
     public final Expression testExpression;
 
     /**
@@ -79,9 +78,6 @@ public class SwitchBlock extends TemplateElement {
      * @param cas a Case element.
      */
     public void addCase(Case cas) {
-        if (cas.isDefault) {
-            defaultCase = cas;
-        }
         nestedElements.add(cas);
     }
     
@@ -95,6 +91,7 @@ public class SwitchBlock extends TemplateElement {
         boolean processedCase = false;
         Iterator iterator = nestedElements.iterator();
         try {
+            Case defaultCase = null;
             while (iterator.hasNext()) {
                 Case cas = (Case)iterator.next();
                 boolean processCase = false;
@@ -102,7 +99,10 @@ public class SwitchBlock extends TemplateElement {
                 // Fall through if a previous case tested true.
                 if (processedCase) {
                     processCase = true;
-                } else if (!cas.isDefault) {
+                } else if (cas.isDefault) {
+                    defaultCase = cas;
+                }
+                else {
                     // Otherwise, if this case isn't the default, test it.
                     ComparisonExpression equalsOp = new ComparisonExpression(testExpression, cas.expression, "==");
                     processCase = equalsOp.isTrue(env);
