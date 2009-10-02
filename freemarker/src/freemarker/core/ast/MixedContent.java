@@ -82,10 +82,6 @@ public class MixedContent extends TemplateElement implements Iterable<TemplateEl
         this.nestedElements = newList;
     }
 
-    public List<TemplateElement> getNestedElements() {
-    	return nestedElements;
-    }
-    
     public Iterator<TemplateElement> iterator() {
     	return nestedElements.iterator();
     }

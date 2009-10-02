@@ -103,6 +103,10 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     	return nestedBlock;
     }
     
+    public List<TemplateElement> getNestedElements() {
+        return nestedElements;
+    }
+    
     public void setNestedBlock(TemplateElement nestedBlock) {
     	this.nestedBlock = nestedBlock;
     }

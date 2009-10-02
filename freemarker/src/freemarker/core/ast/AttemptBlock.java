@@ -61,28 +61,25 @@ import freemarker.core.parser.ParsingProblem;
 
 public class AttemptBlock extends TemplateElement {
     
-    private TemplateElement attemptBlock, recoveryBlock;
     private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
     
     public AttemptBlock(TemplateElement attemptBlock, TemplateElement recoveryBlock) {
-        this.attemptBlock = attemptBlock;
-        this.recoveryBlock = recoveryBlock;
-        nestedElements = new ArrayList<TemplateElement>();
+        nestedElements = new ArrayList<TemplateElement>(2);
         nestedElements.add(attemptBlock);
         nestedElements.add(recoveryBlock);
     }
     
     public TemplateElement getAttemptBlock() {
-    	return attemptBlock;
+    	return nestedElements.get(0);
     }
     
     public TemplateElement getRecoverBlock() {
-    	return recoveryBlock;
+        return nestedElements.get(1);
     }
 
     public void execute(Environment env) throws TemplateException, IOException 
     {
-        env.render(attemptBlock, recoveryBlock, parsingProblems);
+        env.render(getAttemptBlock(), getRecoverBlock(), parsingProblems);
     }
 
     public String getDescription() {
@@ -99,8 +96,7 @@ public class AttemptBlock extends TemplateElement {
     
     public void addParsingProblem(ParsingProblem problem) {
     	parsingProblems.add(problem);
-    	attemptBlock = TextBlock.EMPTY_BLOCK;
-    	nestedElements.set(0, attemptBlock);
+    	nestedElements.set(0, TextBlock.EMPTY_BLOCK);
     }
     
     public void setParsingProblems(List<ParsingProblem> parsingProblems) {
