@@ -163,7 +163,14 @@ public class FileTemplateLoader implements SecureTemplateLoader
                         }
                         else {
                             retval2[0] = baseDir.getCanonicalFile();
-                            retval2[1] = ((File) retval2[0]).getPath() + File.separatorChar;
+                            String basePath = ((File) retval2[0]).getPath();
+                            // Most canonical paths don't end with File.separator,
+                            // but some does. Like, "C:\" VS "C:\templates".
+                            if (!basePath.endsWith(File.separator)) {
+                                basePath += File.separatorChar;
+                            }
+                            retval2[1] = basePath;
+	    
                         }
                         retval2[2] = baseDir.toURL();
                         return retval2;
