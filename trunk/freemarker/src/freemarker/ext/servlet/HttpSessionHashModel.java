@@ -124,9 +124,10 @@ implements
         return wrapper.wrap(session != null ? session.getAttribute(key) : null);
     }
 
-    boolean isZombie()
+    boolean isOrphaned(HttpSession currentSession)
     {
-        return session == null && request == null;
+        return (session != null && session != currentSession) || 
+            (session == null && request == null);
     }
     
     private void checkSessionExistence() throws TemplateModelException
@@ -135,7 +136,11 @@ implements
             session = request.getSession(false);
             if(session != null && servlet != null) {
                 try {
-                    servlet.initializeSession(request, response);
+                    servlet.initializeSessionAndInstallModel(request, response, 
+                            this, session);
+                }
+                catch(RuntimeException e) {
+                    throw e;
                 }
                 catch(Exception e) {
                     throw new TemplateModelException(e);

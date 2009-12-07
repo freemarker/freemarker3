@@ -543,12 +543,10 @@ public class FreemarkerServlet extends HttpServlet
             HttpSession session = request.getSession(false);
             if(session != null) {
                 sessionModel = (HttpSessionHashModel) session.getAttribute(ATTR_SESSION_MODEL);
-                if (sessionModel == null || sessionModel.isZombie()) {
+                if (sessionModel == null || sessionModel.isOrphaned(session)) {
                     sessionModel = new HttpSessionHashModel(session, wrapper);
-                    session.setAttribute(ATTR_SESSION_MODEL, sessionModel);
-                    if(!sessionModel.isZombie()) {
-                        initializeSession(request, response);
-                    }
+                    initializeSessionAndInstallModel(request, response,
+                            sessionModel, session);
                 }
             }
             else {
@@ -582,6 +580,15 @@ public class FreemarkerServlet extends HttpServlet
         } catch (IOException e) {
             throw new TemplateModelException(e);
         }
+    }
+
+    void initializeSessionAndInstallModel(HttpServletRequest request,
+            HttpServletResponse response, HttpSessionHashModel sessionModel, 
+            HttpSession session)
+            throws ServletException, IOException
+    {
+        session.setAttribute(ATTR_SESSION_MODEL, sessionModel);
+        initializeSession(request, response);
     }
 
     /**
