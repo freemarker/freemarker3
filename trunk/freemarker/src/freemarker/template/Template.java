@@ -61,8 +61,6 @@ import java.security.CodeSource;
 import java.security.cert.Certificate;
 import java.util.*;
 
-import javax.swing.tree.TreePath;
-
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.TemplateCore;
@@ -846,7 +844,7 @@ public class Template extends TemplateCore {
      * of this method does not posess the "modifyTemplate" FreeMarker 
      * permission.
      */
-    public TreePath containingElements(int column, int line) {
+    public List<TemplateElement> containingElements(int column, int line) {
         checkModifyTemplate();
         ArrayList<TemplateElement> elements = new ArrayList<TemplateElement>();
         TemplateElement element = getRootElement();
@@ -865,7 +863,7 @@ mainloop:
         if (elements.isEmpty()) {
             return null;
         }
-        return new TreePath(elements.toArray());
+        return elements;
     }
 
     static public class WrongEncodingException extends ParseException {
