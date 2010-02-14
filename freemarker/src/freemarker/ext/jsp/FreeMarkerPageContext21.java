@@ -1,26 +1,28 @@
 package freemarker.ext.jsp;
 
-import freemarker.log.Logger;
-import freemarker.template.TemplateModelException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.el.ELContext;
-import javax.servlet.jsp.el.ExpressionEvaluator;
-import javax.servlet.jsp.el.VariableResolver;
-import javax.servlet.jsp.el.ELException;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspContext;
 import javax.servlet.jsp.JspFactory;
 import javax.servlet.jsp.PageContext;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
+import javax.servlet.jsp.el.ELException;
+import javax.servlet.jsp.el.ExpressionEvaluator;
+import javax.servlet.jsp.el.VariableResolver;
+
+import freemarker.log.Logger;
+import freemarker.template.TemplateModelException;
 
 /**
- * Implementation of PageContext that contains JSP 2.0 and JSP 2.1 specific methods.
- *
+ * Implementation of PageContext that contains JSP 2.0 and JSP 2.1 specific 
+ * methods. This class is public to work around Google App Engine Java 
+ * compliance issues. Do not use it explicitly.
  * @author Attila Szegedi
  * @version $Id: FreeMarkerPageContext2.java,v 1.1 2005/06/11 12:13:39 szegedia Exp $
  */
-class FreeMarkerPageContext21 extends FreeMarkerPageContext {
+public class FreeMarkerPageContext21 extends FreeMarkerPageContext {
     private static final Logger logger = Logger.getLogger("freemarker.jsp");
 
     static {
@@ -31,12 +33,8 @@ class FreeMarkerPageContext21 extends FreeMarkerPageContext {
                 JspFactory.getDefaultFactory().getClass().getName());
     }
 
-    private FreeMarkerPageContext21() throws TemplateModelException {
+    public FreeMarkerPageContext21() throws TemplateModelException {
         super();
-    }
-
-    static FreeMarkerPageContext create() throws TemplateModelException {
-        return new FreeMarkerPageContext21();
     }
 
     /**

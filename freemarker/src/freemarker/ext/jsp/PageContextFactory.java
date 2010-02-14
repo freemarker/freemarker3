@@ -1,8 +1,5 @@
 package freemarker.ext.jsp;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import javax.servlet.jsp.PageContext;
 
 import freemarker.core.Environment;
@@ -15,32 +12,26 @@ import freemarker.template.utility.UndeclaredThrowableException;
  * @version $Id: PageContextFactory.java,v 1.2 2005/06/11 21:21:09 szegedia Exp $
  */
 class PageContextFactory {
-
-    private static final Method constructor;
+    private static final Class<?> pageContextImpl = getPageContextImpl();
     
-    static {
-        Class impl;
+    private static Class<?> getPageContextImpl() {
         try {
             try {
                 PageContext.class.getMethod("getELContext", (Class[]) null);
-                impl = Class.forName("freemarker.ext.jsp.FreeMarkerPageContext21");
+                return Class.forName("freemarker.ext.jsp.FreeMarkerPageContext21");
             }
             catch(NoSuchMethodException e1) {
                 try {
                     PageContext.class.getMethod("getExpressionEvaluator", (Class[]) null);
-                    impl = Class.forName("freemarker.ext.jsp.FreeMarkerPageContext2");
+                    return Class.forName("freemarker.ext.jsp.FreeMarkerPageContext2");
                 }
                 catch(NoSuchMethodException e2) {
-                    impl = Class.forName("freemarker.ext.jsp.FreeMarkerPageContext1");
+                    return Class.forName("freemarker.ext.jsp.FreeMarkerPageContext1");
                 }
             }
-            constructor = impl.getDeclaredMethod("create", (Class[]) null);
         }
         catch(ClassNotFoundException e) {
             throw new NoClassDefFoundError(e.getMessage());
-        }
-        catch(NoSuchMethodException e) {
-            throw new NoSuchMethodError(e.getMessage());
         }
     }
 
@@ -52,17 +43,14 @@ class PageContextFactory {
         }
         try {
             FreeMarkerPageContext pageContext = 
-                (FreeMarkerPageContext)constructor.invoke(null, (Object[]) null);
+                (FreeMarkerPageContext)pageContextImpl.newInstance();
             env.setGlobalVariable(PageContext.PAGECONTEXT, pageContext);
             return pageContext;
         }
         catch(IllegalAccessException e) {
             throw new IllegalAccessError(e.getMessage());
         }
-        catch(InvocationTargetException e) {
-            if(e.getTargetException() instanceof TemplateModelException) {
-                throw (TemplateModelException)e.getTargetException();
-            }
+        catch(InstantiationException e) {
             throw new UndeclaredThrowableException(e);
         }
     }
