@@ -14,12 +14,14 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * Implementation of PageContext that contains JSP 2.0 specific methods.
+ * Implementation of PageContext that contains JSP 2.0 specific methods. This 
+ * class is public to work around Google App Engine Java compliance issues. Do 
+ * not use it explicitly.
  *
  * @author Attila Szegedi
  * @version $Id: FreeMarkerPageContext2.java,v 1.1 2005/06/11 12:13:39 szegedia Exp $
  */
-class FreeMarkerPageContext2 extends FreeMarkerPageContext {
+public class FreeMarkerPageContext2 extends FreeMarkerPageContext {
     private static final Logger logger = Logger.getLogger("freemarker.jsp");
 
     static {
@@ -31,12 +33,8 @@ class FreeMarkerPageContext2 extends FreeMarkerPageContext {
     }
 
 
-    private FreeMarkerPageContext2() throws TemplateModelException {
+    public FreeMarkerPageContext2() throws TemplateModelException {
         super();
-    }
-
-    static FreeMarkerPageContext create() throws TemplateModelException {
-        return new FreeMarkerPageContext2();
     }
 
     /**
