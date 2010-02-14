@@ -136,8 +136,6 @@ public class BeansWrapper implements ObjectWrapper
     // for our users.
     private static final boolean DEVELOPMENT = "true".equals(SecurityUtilities.getSystemProperty("freemarker.development"));
 
-    private static final Constructor ENUMS_MODEL_CTOR = enumsModelCtor();
-
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     
     private static final Set UNSAFE_METHODS = createUnsafeMethodsSet();
@@ -161,7 +159,7 @@ public class BeansWrapper implements ObjectWrapper
     private Set<String> cachedClassNames = new HashSet<String>();
 
     private final ClassBasedModelFactory staticModels = new StaticModels(this);
-    private final ClassBasedModelFactory enumModels = createEnumModels(this);
+    private final ClassBasedModelFactory enumModels = new EnumModels(this);
 
     private final ModelCache modelCache = new BeansModelCache(this);
     
@@ -457,6 +455,9 @@ public class BeansWrapper implements ObjectWrapper
     protected ModelFactory getModelFactory(Class clazz) {
         if(Map.class.isAssignableFrom(clazz)) {
             return simpleMapWrapper ? SimpleMapModel.FACTORY : MapModel.FACTORY;
+        }
+        if(List.class.isAssignableFrom(clazz)) {
+            return ListModel.FACTORY;
         }
         if(Collection.class.isAssignableFrom(clazz)) {
             return CollectionModel.FACTORY;
@@ -1496,34 +1497,6 @@ public class BeansWrapper implements ObjectWrapper
         return bd;
     }
 
-    private static ClassBasedModelFactory createEnumModels(BeansWrapper wrapper) {
-        if(ENUMS_MODEL_CTOR != null) {
-            try {
-                return (ClassBasedModelFactory)ENUMS_MODEL_CTOR.newInstance(
-                        new Object[] { wrapper });
-            } catch(Exception e) {
-                throw new UndeclaredThrowableException(e);
-            }
-        } else {
-            return null;
-        }
-    }
-    
-    private static Constructor enumsModelCtor() {
-        try {
-            // Check if Enums are available on this platform
-            Class.forName("java.lang.Enum");
-            // If they are, return the appropriate constructor for enum models
-            return Class.forName(
-                "freemarker.ext.beans.EnumModels").getDeclaredConstructor(
-                        new Class[] { BeansWrapper.class });
-        }
-        catch(Exception e) {
-            // Otherwise, return null
-            return null;
-        }
-    }
-    
     private static boolean isJavaRebelAvailable() {
         try {
             JavaRebelIntegration.testAvailability();
