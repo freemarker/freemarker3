@@ -40,13 +40,13 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
         final TemplateSequenceModel sequence;
         final TemplateCollectionModel collection;
         SequenceContainsFunction(TemplateModel seqModel) {
-            if (seqModel instanceof TemplateSequenceModel) {
-                sequence = (TemplateSequenceModel) seqModel;
-                collection = null;
-            }
-            else if (seqModel instanceof TemplateCollectionModel) {
+            if (seqModel instanceof TemplateCollectionModel) {
                 collection = (TemplateCollectionModel) seqModel;
                 sequence = null;
+            }
+            else if (seqModel instanceof TemplateSequenceModel) {
+                sequence = (TemplateSequenceModel) seqModel;
+                collection = null;
             }
             else {
                 throw new AssertionError();
