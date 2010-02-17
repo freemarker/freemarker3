@@ -122,8 +122,10 @@ public class UnifiedCall extends TemplateElement {
             env.render(macro, args, bodyParameters, nestedBlock);
         }
         else if (tm instanceof TemplateDirectiveModel) {
-            Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
-            if (args != null) argMap = args.getParameterMap(tm, env);
+            Map<String, TemplateModel> argMap
+                    = args != null
+                            ? args.getParameterMap(tm, env)
+                            : new HashMap<String, TemplateModel>();
             List<String> paramNames;
             if(bodyParameters == null) {
                 paramNames = Collections.emptyList();
@@ -134,8 +136,10 @@ public class UnifiedCall extends TemplateElement {
             env.render(nestedBlock, (TemplateDirectiveModel) tm, argMap, paramNames);
         }
         else if (tm instanceof TemplateTransformModel) {
-            Map<String, TemplateModel> argMap = new HashMap<String, TemplateModel>();
-            if (args != null) argMap = args.getParameterMap(tm, env);
+            Map<String, TemplateModel> argMap
+                    = args != null
+                            ? args.getParameterMap(tm, env)
+                            : new HashMap<String, TemplateModel>();
             env.render(nestedBlock, (TemplateTransformModel) tm, argMap);
         }
         else {
