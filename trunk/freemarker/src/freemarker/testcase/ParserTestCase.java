@@ -76,7 +76,7 @@ public class ParserTestCase extends TestCase {
         super(name);
         this.filename = filename;
 
-        URL url = getClass().getResource("ParserTestCase.class");
+        URL url = getClass().getResource("testcases.xml");
         File parent = new File(url.getFile()).getParentFile();
         File dir = new File(parent, "template");
         conf.setDirectoryForTemplateLoading(dir);

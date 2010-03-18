@@ -84,24 +84,20 @@ public class TemplateTestCase extends TestCase {
         this.testName = name;
     }
     
-    public void setTemplateDirectory(String dirname) throws IOException {
-        URL url = getClass().getResource("TemplateTestCase.class");
-        File parent = new File(url.getFile()).getParentFile();
-        File dir = new File(parent, dirname);
+    public void setTemplateDirectory(String dirname, File baseDir) throws IOException {
+        File dir = new File(baseDir, dirname);
         conf.setDirectoryForTemplateLoading(dir);
         System.out.println("Setting loading directory as: " + dir);
     }
-    
-    public void setOutputDirectory(String dirname) {
-        URL url = getClass().getResource("TemplateTestCase.class");
-        File parent = new File(url.getFile()).getParentFile();
-        this.outputDir = new File(parent, dirname);
+
+    public void setOutputDirectory(String dirname, File baseDir) {
+        this.outputDir = new File(baseDir, dirname);
         System.out.println("Setting reference directory as: " + outputDir);
     }
 
-    public void setConfigParam(String param, String value) throws IOException {
+    public void setConfigParam(String param, String value, File baseDir) throws IOException {
         if ("templatedir".equals(param)) {
-            setTemplateDirectory(value);
+            setTemplateDirectory(value, baseDir);
         }
         else if ("auto_import".equals(param)) {
             StringTokenizer st = new StringTokenizer(value);
@@ -123,7 +119,7 @@ public class TemplateTestCase extends TestCase {
             conf.setDefaultEncoding(value);
         }
         else if ("outputdir".equals(param)) {
-            setOutputDirectory(value);
+            setOutputDirectory(value, baseDir);
         }
         else if ("output_encoding".equals(param)) {
             conf.setOutputEncoding(value);
