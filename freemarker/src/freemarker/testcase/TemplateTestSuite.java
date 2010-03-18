@@ -96,6 +96,7 @@ public class TemplateTestSuite extends TestSuite {
         Document d = db.parse(f);
         Element root = d.getDocumentElement();
         NodeList children = root.getChildNodes();
+        File baseDir = f.getParentFile();
         for (int i=0; i<children.getLength(); i++) {
             Node n = children.item(i);
             if (n.getNodeType() == Node.ELEMENT_NODE) {
@@ -107,7 +108,7 @@ public class TemplateTestSuite extends TestSuite {
                     }
                 }
                 if (n.getNodeName().equals("testcase")) {
-                    TestCase tc = createTestCaseFromNode((Element) n);
+                    TestCase tc = createTestCaseFromNode((Element) n, baseDir);
                     addTest(tc);
                 }
             }
@@ -134,7 +135,7 @@ public class TemplateTestSuite extends TestSuite {
      * it must be a TestCase class and have a constructor that 
      * takes two strings as parameters.
      */
-    TestCase createTestCaseFromNode(Element e) throws Exception {
+    TestCase createTestCaseFromNode(Element e, File baseDir) throws Exception {
         String filename = e.getAttribute("filename");
         String name = e.getAttribute("name");
         String classname = e.getAttribute("class");
@@ -149,14 +150,14 @@ public class TemplateTestSuite extends TestSuite {
             String key = entry.getKey().toString();
             String value = entry.getValue().toString();
             System.out.println("Setting " + key +  " to " + value);
-            result.setConfigParam(entry.getKey().toString(), entry.getValue().toString());
+            result.setConfigParam(entry.getKey().toString(), entry.getValue().toString(), baseDir);
         }
         NodeList configs = e.getElementsByTagName("config");
         for (int i=0; i<configs.getLength(); i++)  {
             NamedNodeMap atts = configs.item(i).getAttributes();
             for (int j=0; j<atts.getLength(); j++) {
                 Attr att = (Attr) atts.item(j);
-                result.setConfigParam(att.getName(), att.getValue());
+                result.setConfigParam(att.getName(), att.getValue(), baseDir);
             }
         }
         return result;
