@@ -62,13 +62,21 @@ import freemarker.template.TemplateModel;
  * <code>TemplateHashModel</code>.
  */
 public class Dot extends Expression {
-    public final Expression target;
-    public final String key;
+    private Expression target;
+    private String key;
 
     public Dot(Expression target, String key) {
         this.target = target;
         target.parent = this;
         this.key = key;
+    }
+    
+    public Expression getTarget() {
+    	return target;
+    }
+    
+    public String getKey() {
+    	return key;
     }
 
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException

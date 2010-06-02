@@ -64,8 +64,8 @@ import freemarker.template.*;
  */
 public class EscapeBlock extends TemplateElement {
 
-    public final String variable;
-    public final Expression expr;
+    private String variable;
+    private Expression expr;
     private Expression escapedExpr; // This will be the same as expr unless we are within another escape block.
 
 
@@ -73,6 +73,14 @@ public class EscapeBlock extends TemplateElement {
         this.variable = variable;
         this.expr = expr;
         this.escapedExpr = expr;
+    }
+    
+    public Expression getExpression() {
+    	return expr;
+    }
+    
+    public String getVariable() {
+    	return variable;
     }
     
     public Expression getEscapedExpression() {

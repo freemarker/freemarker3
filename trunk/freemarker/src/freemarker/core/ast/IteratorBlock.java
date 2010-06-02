@@ -62,9 +62,9 @@ import freemarker.core.*;
  */
 public class IteratorBlock extends TemplateElement {
 
-    public final String indexName;
-    public final Expression listExpression;
-    public final boolean isForEach;
+    private String indexName;
+    private Expression listExpression;
+    private boolean isForEach;
 
     /**
      * @param listExpression a variable referring to a sequence or collection
@@ -80,6 +80,14 @@ public class IteratorBlock extends TemplateElement {
         this.indexName = indexName;
         this.isForEach = isForEach;
         this.nestedBlock = nestedBlock;
+    }
+    
+    public String getIndexName() {
+    	return indexName;
+    }
+    
+    public Expression getListExpression() {
+    	return listExpression;
     }
 
     public void execute(Environment env) throws TemplateException, IOException 

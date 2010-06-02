@@ -57,7 +57,7 @@ import freemarker.template.*;
 
 public class ParentheticalExpression extends Expression {
 
-    public final Expression nested;
+    private Expression nested;
 
     public ParentheticalExpression(Expression nested) {
         this.nested = nested;
@@ -66,6 +66,10 @@ public class ParentheticalExpression extends Expression {
 
     boolean isTrue(Environment env) throws TemplateException {
         return nested.isTrue(env);
+    }
+    
+    public Expression getNested() {
+    	return nested;
     }
     
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException 

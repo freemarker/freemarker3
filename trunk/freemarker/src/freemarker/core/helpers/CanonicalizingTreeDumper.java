@@ -78,8 +78,8 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
     }
     
 	public void visit(MethodCall node) {
-		if (convertExistence && (node.target instanceof BuiltInExpression)) {
-			BuiltInExpression bi = (BuiltInExpression) node.target;
+		if (convertExistence && (node.getTarget() instanceof BuiltInExpression)) {
+			BuiltInExpression bi = (BuiltInExpression) node.getTarget();
 			if (bi.getName().equals("default")) { // convert ?default to newer syntax
 				Expression lhs = bi.getTarget();
 				buffer.append(render(lhs));
@@ -138,10 +138,10 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
             buffer.append (" in ");
             visit(namespaceExp);
         } else {
-            if (node.type == AssignmentInstruction.GLOBAL) {
+            if (node.getType() == AssignmentInstruction.GLOBAL) {
                 buffer.append (" in .globals");
             }
-            if (node.type == AssignmentInstruction.NAMESPACE) {
+            if (node.getType() == AssignmentInstruction.NAMESPACE) {
                 Macro enclosingMacro = node.getEnclosingMacro();
                 if (enclosingMacro != null) {
                     boolean declaredLocally = false;

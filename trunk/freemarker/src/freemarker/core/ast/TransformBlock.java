@@ -65,7 +65,7 @@ import freemarker.template.*;
  */
 public class TransformBlock extends TemplateElement {
 
-    public final Expression transformExpression;
+    private Expression transformExpression;
     Map<String, Expression> namedArgs;
 
     /**
@@ -77,6 +77,10 @@ public class TransformBlock extends TemplateElement {
         this.transformExpression = transformExpression;
         this.namedArgs = namedArgs;
         this.nestedBlock = nestedBlock;
+    }
+    
+    public Expression getTransformExpression() {
+    	return transformExpression;
     }
     
     public Map getArgs() {

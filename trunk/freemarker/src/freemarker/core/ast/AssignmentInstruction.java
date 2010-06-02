@@ -68,7 +68,7 @@ public class AssignmentInstruction extends TemplateElement {
 	static public final int GLOBAL = 2;
 	static public final int LOCAL = 3;
 
-    public final int type; 
+    private int type; 
     private Expression namespaceExp;
     
     private ArrayList<String> varNames = new ArrayList<String>();
@@ -76,6 +76,10 @@ public class AssignmentInstruction extends TemplateElement {
 
     public AssignmentInstruction(int type) {
         this.type = type;
+    }
+    
+    public int getType() {
+    	return type;
     }
     
     public List<String> getVarNames() {

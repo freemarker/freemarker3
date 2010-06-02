@@ -65,14 +65,22 @@ public class Case extends TemplateElement {
 
     // might as well just make these package-visible 
     // so the Switch can use them, no need to be too anal-retentive
-    public final boolean isDefault;
-    public final Expression expression;
+    private boolean isDefault;
+    private Expression expression;
 
     public Case(Expression expression, TemplateElement nestedBlock, boolean isDefault) 
     {
         this.expression = expression;
         this.nestedBlock = nestedBlock;
         this.isDefault = isDefault;
+    }
+    
+    public Expression getExpression() {
+    	return expression;
+    }
+    
+    public boolean isDefault() {
+    	return isDefault;
     }
 
     public void execute(Environment env) 

@@ -82,7 +82,7 @@ public class IfBlock extends TemplateElement {
     	
         for (TemplateNode te : nestedElements) {
             ConditionalBlock cblock = (ConditionalBlock) te;
-            Expression condition = cblock.condition;
+            Expression condition = cblock.getCondition();
             if (condition == null || condition.isTrue(env)) {
                 if (cblock.getNestedBlock() != null) {
                     env.render(cblock);

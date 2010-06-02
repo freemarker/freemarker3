@@ -90,7 +90,7 @@ public class TemplateHeaderElement extends TemplateNode {
 			return tm;
 		} catch (TemplateException te) {
 			if (exp instanceof Identifier) {
-				String s = ((Identifier) exp).name;
+				String s = ((Identifier) exp).getName();
 				TemplateModel result = new SimpleScalar(s);
 				values.put(name, result);
 				return result;

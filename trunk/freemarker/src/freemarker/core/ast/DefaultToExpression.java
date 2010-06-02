@@ -89,13 +89,21 @@ public class DefaultToExpression extends Expression {
 	
 	static final TemplateModel EMPTY_STRING_AND_SEQUENCE = new EmptyStringAndSequence();
 	
-	public final Expression lhs, rhs;
+	private Expression lhs, rhs;
 	
 	public DefaultToExpression(Expression lhs, Expression rhs) {
 		this.lhs = lhs;
 		this.rhs = rhs;
 		lhs.parent = this;
 		if (rhs != null) rhs.parent = this;
+	}
+	
+	public Expression getLeft() {
+		return lhs;
+	}
+	
+	public Expression getRight() {
+		return rhs;
 	}
 
 	TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {

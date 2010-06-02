@@ -64,11 +64,19 @@ import freemarker.template.*;
  */
 public class VisitNode extends TemplateElement {
     
-    public final Expression targetNode, namespaces;
+    private Expression targetNode, namespaces;
     
     public VisitNode(Expression targetNode, Expression namespaces) {
         this.targetNode = targetNode;
         this.namespaces = namespaces;
+    }
+    
+    public Expression getTargetNode() {
+    	return targetNode;
+    }
+    
+    public Expression getNamespaces() {
+    	return namespaces;
     }
 
     public void execute(Environment env) throws IOException, TemplateException {

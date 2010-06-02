@@ -57,11 +57,15 @@ import freemarker.template.TemplateException;
 
 public class NotExpression extends BooleanExpression {
 
-    public final Expression target;
+    private Expression target;
 
     public NotExpression(Expression target) {
         this.target = target;
         target.parent = this;
+    }
+    
+    public Expression getTarget() {
+    	return target;
     }
 
     boolean isTrue(Environment env) throws TemplateException {

@@ -57,14 +57,22 @@ import freemarker.template.*;
 
 public class UnaryPlusMinusExpression extends Expression {
 
-    public final Expression target;
-    public final boolean isMinus;
+    private Expression target;
+    private boolean isMinus;
     private static final Integer MINUS_ONE = Integer.valueOf(-1); 
 
     public UnaryPlusMinusExpression(Expression target, boolean isMinus) {
         this.target = target;
         this.isMinus = isMinus;
         target.parent = this;
+    }
+    
+    public Expression getTarget() {
+    	return target;
+    }
+    
+    public boolean isMinus() {
+    	return isMinus;
     }
     
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {

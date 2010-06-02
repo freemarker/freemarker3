@@ -62,7 +62,7 @@ import freemarker.template.TemplateException;
  */
 public class Interpolation extends TemplateElement {
 
-    public final Expression expression;
+    private Expression expression;
     private Expression escapedExpression; // This will be the same as the expression if we are not within an escape block.
 
     public Interpolation(Expression expression) {
@@ -76,6 +76,10 @@ public class Interpolation extends TemplateElement {
     
     public Expression getEscapedExpression() {
     	return this.escapedExpression;
+    }
+    
+    public Expression getExpression() {
+    	return expression;
     }
 
     /**

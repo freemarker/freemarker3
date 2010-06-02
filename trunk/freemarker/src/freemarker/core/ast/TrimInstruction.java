@@ -61,11 +61,19 @@ import freemarker.core.Environment;
  */
 public class TrimInstruction extends TemplateElement {
 
-    public final boolean left, right;
+    private boolean left, right;
 
     public TrimInstruction(boolean left, boolean right) {
         this.left = left;
         this.right = right;
+    }
+    
+    public boolean isLeft() {
+    	return left;
+    }
+    
+    public boolean isRight() {
+    	return right;
     }
 
     public void execute(Environment env) {

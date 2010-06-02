@@ -60,10 +60,14 @@ import freemarker.template.*;
  */
 public class Identifier extends Expression {
 
-    public final String name;
+    private String name;
 
     public Identifier(String name) {
         this.name = name;
+    }
+    
+    public String getName() {
+    	return name;
     }
 
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {

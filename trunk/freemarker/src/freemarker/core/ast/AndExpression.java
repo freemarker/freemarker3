@@ -57,14 +57,22 @@ import freemarker.template.TemplateException;
 
 public class AndExpression extends BooleanExpression {
 
-    public final Expression left;
-    public final Expression right;
+    private Expression left;
+    private Expression right;
 
     public AndExpression(Expression left, Expression right) {
         this.left = left;
         this.right = right;
         left.parent = this;
         right.parent = this;
+    }
+    
+    public Expression getLeft() {
+    	return left;
+    }
+    
+    public Expression getRight() {
+    	return right;
     }
 
     boolean isTrue(Environment env) throws TemplateException {

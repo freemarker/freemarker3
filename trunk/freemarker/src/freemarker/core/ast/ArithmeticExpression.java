@@ -67,9 +67,9 @@ public class ArithmeticExpression extends Expression {
     static public final int DIVISION = 2;
     static public final int MODULUS = 3;
 
-    public final Expression left;
-    public final Expression right;
-    public final int operation;
+    private Expression left;
+    private Expression right;
+    private int operation;
 
     public ArithmeticExpression(Expression left, Expression right, int operation) {
         this.left = left;
@@ -78,7 +78,19 @@ public class ArithmeticExpression extends Expression {
         left.parent = this;
         right.parent = this;
     }
-
+    
+    public Expression getLeft() {
+    	return left;
+    }
+    
+    public Expression getRight() {
+    	return right;
+    }
+    
+    public int getOperation() {
+    	return operation;
+    }
+    
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException 
     {
         TemplateModel leftModel = left.getAsTemplateModel(env);

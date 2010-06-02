@@ -57,10 +57,14 @@ import freemarker.template.*;
 
 public class BooleanLiteral extends Expression {
 
-    public final boolean value;
+    private boolean value;
 
     public BooleanLiteral(boolean value) {
         this.value = value;
+    }
+    
+    public boolean getValue() {
+    	return value;
     }
 
     static TemplateBooleanModel getTemplateModel(boolean b) {

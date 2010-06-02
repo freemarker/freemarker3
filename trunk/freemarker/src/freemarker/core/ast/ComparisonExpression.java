@@ -73,9 +73,9 @@ public class ComparisonExpression extends BooleanExpression {
     static public final int LESS_THAN_EQUALS=5;
     static public final int GREATER_THAN_EQUALS=6;
 
-    public final Expression left;
-    public final Expression right;
-    public final int operation;
+    private Expression left;
+    private Expression right;
+    private int operation;
     private final String opString;
 
     public ComparisonExpression(Expression left, Expression right, String opString) {
@@ -107,6 +107,23 @@ public class ComparisonExpression extends BooleanExpression {
             throw new RuntimeException("Unknown comparison operator " + opString);
         }
     }
+    
+    public int getOperation() {
+    	return operation;
+    }
+    
+    public Expression getLeft() {
+    	return left;
+    }
+    
+    public Expression getRight() {
+    	return right;
+    }
+    
+
+    
+
+    
 
     /*
      * WARNING! This algorithm is duplicated in SequenceBuiltins.modelsEqual.

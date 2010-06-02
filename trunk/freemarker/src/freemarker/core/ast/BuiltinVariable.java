@@ -79,7 +79,7 @@ public class BuiltinVariable extends Expression {
     static final String SCOPE = "scope";
     static final String URL_ESCAPING_CHARSET = "url_escaping_charset";
 
-    public final String name;
+    private String name;
 
     public BuiltinVariable(String name) throws ParseException {
         name = name.intern();
@@ -104,6 +104,10 @@ public class BuiltinVariable extends Expression {
         {
             throw new ParseException("Unknown built-in variable: " + name, this);
         }
+    }
+    
+    public String getName() {
+    	return name;
     }
 
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {

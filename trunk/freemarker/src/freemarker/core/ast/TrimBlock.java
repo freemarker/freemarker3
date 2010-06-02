@@ -59,12 +59,20 @@ import freemarker.template.*;
 
 public class TrimBlock extends TemplateElement {
 	
-	public final boolean left, right;
+	private boolean left, right;
     
     public TrimBlock(TemplateElement block, boolean left, boolean right) {
     	this.left = left;
     	this.right = right;
         this.nestedBlock = block;
+    }
+    
+    public boolean isLeft() {
+    	return left;
+    }
+    
+    public boolean isRight() {
+    	return right;
     }
 
     public void execute(Environment env) throws TemplateException, IOException 
