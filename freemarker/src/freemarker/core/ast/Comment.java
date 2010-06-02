@@ -59,10 +59,14 @@ import freemarker.core.Environment;
  */
 public class Comment extends TemplateElement {
 
-    public final String text;
+    private String text;
 
     public Comment(String text) {
         this.text = text;
+    }
+    
+    public String getText() {
+    	return text;
     }
 
     public void execute(Environment env) {

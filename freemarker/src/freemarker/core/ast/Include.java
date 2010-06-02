@@ -72,7 +72,7 @@ public class Include extends TemplateElement {
     private String encoding;
     private boolean parse;
     private String templatePath="";
-    public final boolean freshNamespace;
+    private boolean freshNamespace;
 
     /**
      * @param template the template that this <tt>Include</tt> is a part of.
@@ -125,6 +125,10 @@ public class Include extends TemplateElement {
         else {
             this.parseExp = parseExp;
         }
+    }
+    
+    public boolean isFreshNamespace() {
+    	return freshNamespace;
     }
 
     public void execute(Environment env) throws TemplateException, IOException {

@@ -63,14 +63,22 @@ import freemarker.template.*;
  */
 public class DynamicKeyName extends Expression {
 
-    public final Expression nameExpression;
-    public final Expression target;
+    private Expression nameExpression;
+    private Expression target;
 
     public DynamicKeyName(Expression target, Expression nameExpression) {
         this.target = target; 
         this.nameExpression = nameExpression;
         target.parent = this;
         nameExpression.parent = this;
+    }
+    
+    public Expression getNameExpression() {
+    	return nameExpression;
+    }
+    
+    public Expression getTarget() {
+    	return target;
     }
 
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException
@@ -142,32 +150,32 @@ public class DynamicKeyName extends Expression {
                                            Environment env)
         throws TemplateException
     {
-        int start = EvaluationUtil.getNumber(range.left, env).intValue();
+        int start = EvaluationUtil.getNumber(range.getLeft(), env).intValue();
         int end = 0;
         boolean hasRhs = range.hasRhs();
         if (hasRhs) {
-            end = EvaluationUtil.getNumber(range.right, env).intValue();
+            end = EvaluationUtil.getNumber(range.getRight(), env).intValue();
         }
         if (targetModel instanceof TemplateSequenceModel) {
             TemplateSequenceModel sequence = (TemplateSequenceModel) targetModel;
             if (!hasRhs) end = sequence.size() -1;
             if (start < 0) {
-                String msg = range.left.getStartLocation() + "\nNegative starting index for range, is " + range;
+                String msg = range.getRight().getStartLocation() + "\nNegative starting index for range, is " + range;
                 throw new TemplateException(msg, env);
             }
             if (end < 0) {
-                String msg = range.left.getStartLocation() + "\nNegative ending index for range, is " + range;
+                String msg = range.getLeft().getStartLocation() + "\nNegative ending index for range, is " + range;
                 throw new TemplateException(msg, env);
             }
             if (start >= sequence.size()) {
-                String msg = range.left.getStartLocation() 
+                String msg = range.getLeft().getStartLocation() 
                             + "\nLeft side index of range out of bounds, is " + start
                             + ", but the sequence has only " + sequence.size() + " element(s) "
                             + "(note that indices are 0 based, and ranges are inclusive).";
                 throw new TemplateException(msg, env);
             }
             if (end >= sequence.size()) {
-                String msg = range.right.getStartLocation() 
+                String msg = range.getRight().getStartLocation() 
                              + "\nRight side index of range out of bounds, is " + end
                              + ", but the sequence has only " + sequence.size() + " element(s)."
                              + "(note that indices are 0 based, and ranges are inclusive).";
@@ -192,21 +200,21 @@ public class DynamicKeyName extends Expression {
             String s = target.getStringValue(env);
             if (!hasRhs) end = s.length() -1;
             if (start < 0) {
-                String msg = range.left.getStartLocation() + "\nNegative starting index for range " + range + " : " + start;
+                String msg = range.getLeft().getStartLocation() + "\nNegative starting index for range " + range + " : " + start;
                 throw new TemplateException(msg, env);
             }
             if (end < 0) {
-                String msg = range.left.getStartLocation() + "\nNegative ending index for range " + range + " : " + end;
+                String msg = range.getLeft().getStartLocation() + "\nNegative ending index for range " + range + " : " + end;
                 throw new TemplateException(msg, env);
             }
             if (start > s.length()) {
-                String msg = range.left.getStartLocation() 
+                String msg = range.getLeft().getStartLocation() 
                             + "\nLeft side of range out of bounds, is: " + start
                             + "\nbut string " + targetModel + " has " + s.length() + " elements.";
                 throw new TemplateException(msg, env);
             }
             if (end > s.length()) {
-                String msg = range.right.getStartLocation() 
+                String msg = range.getRight().getStartLocation() 
                              + "\nRight side of range out of bounds, is: " + end
                              + "\nbut string " + targetModel + " is only " + s.length() + " characters.";
                 throw new TemplateException(msg, env);

@@ -63,11 +63,19 @@ import freemarker.template.*;
  */
 public class RecurseNode extends TemplateElement {
     
-    public final Expression targetNode, namespaces;
+    private Expression targetNode, namespaces;
     
     public RecurseNode(Expression targetNode, Expression namespaces) {
         this.targetNode = targetNode;
         this.namespaces = namespaces;
+    }
+    
+    public Expression getTargetNode() {
+    	return targetNode;
+    }
+    
+    public Expression getNamespaces() {
+    	return namespaces;
     }
 
     public void execute(Environment env) throws IOException, TemplateException {

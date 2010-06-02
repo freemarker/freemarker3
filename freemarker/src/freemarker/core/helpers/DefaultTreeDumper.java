@@ -123,32 +123,32 @@ public class DefaultTreeDumper extends ASTVisitor {
     }
 	
 	public void visit(AddConcatExpression node) {
-		visit(node.left);
+		visit(node.getLeft());
 		buffer.append("+");
-		visit(node.right);
+		visit(node.getRight());
 	}
 	
 	public void visit(AndExpression node) {
-		visit(node.left);
+		visit(node.getLeft());
 		buffer.append("&&");
-		visit(node.right);
+		visit(node.getRight());
 	}
 	
 	public void visit(ArithmeticExpression node) {
 		String opString = null;
-		switch (node.operation) {
+		switch (node.getOperation()) {
 		   case ArithmeticExpression.DIVISION : opString = "/"; break;  
 		   case ArithmeticExpression.MODULUS : opString = "%"; break;
 		   case ArithmeticExpression.MULTIPLICATION : opString = "*"; break;
 		   case ArithmeticExpression.SUBSTRACTION : opString = "-"; break;
 		}
-		visit(node.left);
+		visit(node.getLeft());
 		buffer.append(opString);
-		visit(node.right);
+		visit(node.getRight());
 	}
 	
 	public void visit(AssignmentInstruction node) {
-		switch (node.type) {
+		switch (node.getType()) {
 			case AssignmentInstruction.GLOBAL : openDirective("global "); break;
 			case AssignmentInstruction.LOCAL : openDirective("local "); break;
 			case AssignmentInstruction.SET : openDirective("set "); break;
@@ -174,10 +174,10 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(BlockAssignment node) {
-		String varname = StringUtil.quoteStringIfNecessary(node.varName);
-		Expression nsExp = node.namespaceExp;
+		String varname = StringUtil.quoteStringIfNecessary(node.getVarName());
+		Expression nsExp = node.getNamespaceExpression();
 		String instruction = null;
-		switch(node.type) {
+		switch(node.getType()) {
 			case AssignmentInstruction.GLOBAL : instruction = "global"; break;
 			case AssignmentInstruction.LOCAL : instruction = "local"; break;
 			case AssignmentInstruction.NAMESPACE : instruction = "assign"; break;
@@ -206,7 +206,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(BooleanLiteral node) {
-		buffer.append(node.value ? "true" : "false"); 
+		buffer.append(node.getValue() ? "true" : "false"); 
 	}
 	
 	public void visit(BreakInstruction node) {
@@ -222,16 +222,16 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(BuiltinVariable node) {
 		buffer.append(".");
-		buffer.append(node.name);
+		buffer.append(node.getName());
 	}
 	
 	public void visit(Case node) {
 		buffer.append(OPEN_BRACKET);
-		if (node.isDefault) {
+		if (node.isDefault()) {
 			buffer.append("#default");
 		} else {
 			buffer.append("#case ");
-			visit(node.expression);
+			visit(node.getExpression());
 		}
 		buffer.append(CLOSE_BRACKET);
 		visit(node.getNestedBlock());
@@ -240,15 +240,15 @@ public class DefaultTreeDumper extends ASTVisitor {
 	public void visit(Comment node) {
 		buffer.append(OPEN_BRACKET);
 		buffer.append("#--");
-		buffer.append(node.text);
+		buffer.append(node.getText());
 		buffer.append("--");
 		buffer.append(CLOSE_BRACKET);
 	}
 	
 	public void visit(ComparisonExpression node) {
-		visit(node.left);
+		visit(node.getLeft());
 		boolean usingAltSyntax = CLOSE_BRACKET.equals("]");
-		switch(node.operation) {
+		switch(node.getOperation()) {
 			case ComparisonExpression.EQUALS : buffer.append(" = "); break;
 			case ComparisonExpression.NOT_EQUALS : buffer.append(" != "); break;
 			case ComparisonExpression.GREATER_THAN :
@@ -273,7 +273,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 				buffer.append("<=");
 				break;
 		}
-		visit(node.right);
+		visit(node.getRight());
 	}
 	
 	
@@ -286,16 +286,16 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(ConditionalBlock node) {
 		buffer.append(OPEN_BRACKET);
-		if (node.isFirst) {
+		if (node.isFirst()) {
 			buffer.append("#if ");
 		}
-		else if (node.condition == null) {
+		else if (node.getCondition() == null) {
 			buffer.append("#else");
 		}
 		else {
 			buffer.append("#elseif ");
 		}
-		visit(node.condition);
+		visit(node.getCondition());
 		buffer.append(CLOSE_BRACKET);
 		visit(node.getNestedBlock());
 		if (node.isLoneIfBlock()) {
@@ -304,42 +304,42 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(DefaultToExpression node) {
-		visit(node.lhs);
+		visit(node.getLeft());
 		buffer.append("!");
-		visit(node.rhs);
+		visit(node.getLeft());
 	}
 	
 	public void visit(Interpolation node) {
 		buffer.append("${");
-		visit(node.expression);
+		visit(node.getExpression());
 		buffer.append("}");
 	}
 	
 	public void visit(Dot node) {
-		visit(node.target);
+		visit(node.getTarget());
 		buffer.append(".");
-		buffer.append(node.key);
+		buffer.append(node.getKey());
 	}
 	
 	public void visit(DynamicKeyName node) {
-		visit(node.target);
+		visit(node.getTarget());
 		buffer.append("[");
-		visit(node.nameExpression);
+		visit(node.getNameExpression());
 		buffer.append("]");
 	}
 	
 	public void visit(EscapeBlock node) {
 		openDirective("escape ");
-		buffer.append(node.variable);
+		buffer.append(node.getVariable());
 		buffer.append(" as ");
-		visit(node.expr);
+		visit(node.getExpression());
 		buffer.append(CLOSE_BRACKET);
 		visit(node.getNestedBlock());
 		closeDirective("escape");
 	}
 	
 	public void visit(ExistsExpression node) {
-		visit(node.exp);
+		visit(node.getExpression());
 		buffer.append("??");
 	}
 	
@@ -367,7 +367,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 
 	public void visit(Identifier node) {
-		buffer.append(node.name);
+		buffer.append(node.getName());
 	}
 	
 	public void visit(IfBlock node) {
@@ -379,7 +379,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(Include node) {
-		if (node.freshNamespace) openDirective("embed ");
+		if (node.isFreshNamespace()) openDirective("embed ");
 		else openDirective("include ");
 		visit(node.getIncludedTemplateExpression());
 		Expression parseExp = node.getParseExp();
@@ -402,9 +402,9 @@ public class DefaultTreeDumper extends ASTVisitor {
 
 	public void visit(IteratorBlock node) {
 		openDirective("list ");
-		visit(node.listExpression);
+		visit(node.getListExpression());
 		buffer.append(" as ");
-		buffer.append(node.indexName);
+		buffer.append(node.getIndexName());
 		buffer.append(CLOSE_BRACKET);
 		visit(node.getNestedBlock());
 		closeDirective("list");
@@ -412,9 +412,9 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(LibraryLoad node) {
 		openDirective("import ");
-		visit(node.templateName);
+		visit(node.getTemplateNameExpression());
 		buffer.append(" as ");
-		buffer.append(node.namespace);
+		buffer.append(node.getNamespace());
 		buffer.append(CLOSE_BRACKET);
 	}
 	
@@ -456,7 +456,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(MethodCall node) {
-		visit(node.target);
+		visit(node.getTarget());
 		buffer.append("(");
 		visit(node.getArgs());
 		buffer.append(")");
@@ -485,7 +485,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(NotExpression node) {
 		buffer.append("!");
-		visit(node.target);
+		visit(node.getTarget());
 	}
 	
 	public void visit(NullLiteral node) {
@@ -493,12 +493,12 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(NumberLiteral node) {
-		buffer.append(node.value.toString());
+		buffer.append(node.getValue().toString());
 	}
 	
 	public void visit(NumericalOutput node) {
 		buffer.append("#{");
-		visit(node.expression);
+		visit(node.getExpression());
 		String formatString = node.getFormatString();
 		if (formatString != null) {
 			buffer.append(" ; ");
@@ -508,9 +508,9 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(OrExpression exp) {
-		visit(exp.left);
+		visit(exp.getLeft());
 		buffer.append(" || ");
-		visit(exp.right);
+		visit(exp.getRight());
 	}
 	
 	public void visit(ParameterList plist) {
@@ -536,7 +536,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(ParentheticalExpression node) {
 		buffer.append("(");
-		visit(node.nested);
+		visit(node.getNested());
 		buffer.append(")");
 	}
 	
@@ -551,17 +551,17 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(PropertySetting node) {
 		openDirective("setting ");
-		buffer.append(node.key);
+		buffer.append(node.getKey());
 		buffer.append(" = ");
-		visit(node.value);
+		visit(node.getValue());
 		buffer.append(CLOSE_BRACKET);
 	}
 	
 	public void visit(Range node) {
-		visit(node.left);
+		visit(node.getLeft());
 		buffer.append("..");
-		if (node.right != null) {
-			String right = render(node.right);
+		if (node.getRight() != null) {
+			String right = render(node.getRight());
 			if (right.charAt(0) == '.') buffer.append(" ");
 			buffer.append(right);
 		}
@@ -576,10 +576,10 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(RecurseNode node) {
 		openDirective("recurse ");
-		visit(node.targetNode);
-		if (node.namespaces != null) {
+		visit(node.getTargetNode());
+		if (node.getNamespaces() != null) {
 			buffer.append(" using ");
-			visit(node.namespaces);
+			visit(node.getNamespaces());
 		}
 		buffer.append(CLOSE_BRACKET);
 	}
@@ -640,7 +640,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(SwitchBlock node) {
 		openDirective("switch ");
-		buffer.append(render(node.testExpression));
+		buffer.append(render(node.getTestExpression()));
 		buffer.append(CLOSE_BRACKET);
 		List<TemplateElement> cases = node.getCases();
 		if (cases != null) for (TemplateNode cas : node.getCases()) {
@@ -664,7 +664,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(TransformBlock node) {
 		openDirective("transform ");
-		visit(node.transformExpression);
+		visit(node.getTransformExpression());
 		Map args = node.getArgs();
 		for (Iterator it = args.entrySet().iterator(); it.hasNext();) {
 			Map.Entry entry = (Map.Entry) it.next();
@@ -682,13 +682,13 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(TrimInstruction node) {
-		if (node.left && node.right) {
+		if (node.isLeft() && node.isRight()) {
 			openDirective("t");
 		}
-		else if (node.left) {
+		else if (node.isLeft()) {
 			openDirective("lt");
 		}
-		else if (node.right) {
+		else if (node.isRight()) {
 			openDirective("rt");
 		}
 		else {
@@ -699,11 +699,11 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(TrimBlock node) {
 		String tagName = "nt_lines";
-		if (node.left && node.right) {
+		if (node.isLeft() && node.isRight()) {
 			tagName = "t_lines";
-		} else if (node.left) {
+		} else if (node.isLeft()) {
 			tagName = "lt_lines";
-		} else if (node.right) {
+		} else if (node.isRight()) {
 			tagName = "rt_lines";
 		}
 		openDirective(tagName);
@@ -713,9 +713,9 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	
 	public void visit(UnaryPlusMinusExpression node) {
-		String op = node.isMinus ? "-" : "+";
+		String op = node.isMinus() ? "-" : "+";
 		buffer.append(op);
-		visit(node.target);
+		visit(node.getTarget());
 	}
 
 	public void visit(UnifiedCall node) {
@@ -750,10 +750,10 @@ public class DefaultTreeDumper extends ASTVisitor {
 	
 	public void visit(VisitNode node) {
 		openDirective("visit ");
-		visit(node.targetNode);
-		if (node.namespaces != null) {
+		visit(node.getTargetNode());
+		if (node.getNamespaces() != null) {
 			buffer.append(" using ");
-			visit(node.namespaces);
+			visit(node.getNamespaces());
 		}
 		buffer.append(CLOSE_BRACKET);
 	}

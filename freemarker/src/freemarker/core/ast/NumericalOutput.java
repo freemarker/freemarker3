@@ -66,7 +66,7 @@ import freemarker.template.*;
  */
 public class NumericalOutput extends TemplateElement {
 
-	public final Expression expression;
+	private Expression expression;
 	private int minFracDigits;
 	private int maxFracDigits;
 	private String formatString;
@@ -79,6 +79,10 @@ public class NumericalOutput extends TemplateElement {
 	public NumericalOutput(Expression expression, String format) {
 		this.expression = expression;
 		this.formatString = format;
+	}
+	
+	public Expression getExpression() {
+		return expression;
 	}
 
 	public void parseFormat() {

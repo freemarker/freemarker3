@@ -62,7 +62,7 @@ import freemarker.template.*;
  */
 public class NumberLiteral extends Expression implements TemplateNumberModel {
 
-    public final Number value;
+    private Number value;
 
     public NumberLiteral(Number value) {
         this.value = value;
@@ -70,6 +70,10 @@ public class NumberLiteral extends Expression implements TemplateNumberModel {
     
     TemplateModel _getAsTemplateModel(Environment env) {
         return new SimpleNumber(value);
+    }
+    
+    public Number getValue() {
+    	return value;
     }
 
     public String getStringValue(Environment env) {

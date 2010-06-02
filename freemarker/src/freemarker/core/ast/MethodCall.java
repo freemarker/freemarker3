@@ -71,7 +71,7 @@ import java.io.IOException;
  */
 public class MethodCall extends Expression {
 
-    public final Expression target;
+    private Expression target;
     private final ArgsList arguments;
     
     public MethodCall(Expression target, ArgsList args) {
@@ -83,6 +83,10 @@ public class MethodCall extends Expression {
     
     public ArgsList getArgs() {
     	return arguments;
+    }
+    
+    public Expression getTarget() {
+    	return target;
     }
     
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException

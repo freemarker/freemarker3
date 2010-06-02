@@ -57,13 +57,21 @@ import freemarker.template.TemplateException;
 
 public class OrExpression extends BooleanExpression {
 
-    public final Expression left;
-    public final Expression right;
+    private Expression left;
+    private Expression right;
 
     public OrExpression(Expression left, Expression right) {
         this.left = left;
         this.right = right;
         left.parent = right.parent = this;
+    }
+    
+    public Expression getLeft() {
+    	return left;
+    }
+    
+    public Expression getRight() {
+    	return right;
     }
 
     boolean isTrue(Environment env) throws TemplateException {

@@ -60,12 +60,16 @@ import freemarker.template.*;
 
 public class ExistsExpression extends Expression {
 	
-	public final Expression exp;
+	private Expression exp;
 	
 	
 	public ExistsExpression(Expression exp) {
 		this.exp = exp;
 		exp.parent = this;
+	}
+	
+	public Expression getExpression() {
+		return exp;
 	}
 
 	TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {

@@ -60,14 +60,22 @@ import freemarker.template.*;
  */
 public class Range extends Expression {
 
-    public final Expression left;
-    public final Expression right;
+    private Expression left;
+    private Expression right;
 
     public Range(Expression left, Expression right) {
         this.left = left;
         this.right = right;
         left.parent = this;
         if (right != null) right.parent = this;
+    }
+    
+    public Expression getLeft() {
+    	return left;
+    }
+    
+    public Expression getRight() {
+    	return right;
     }
     
     boolean hasRhs() {

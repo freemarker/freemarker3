@@ -62,12 +62,20 @@ import freemarker.core.Environment;
  */
 public class PropertySetting extends TemplateElement {
 
-    public final String key;
-    public final Expression value;
+    private String key;
+    private Expression value;
 
     public PropertySetting(String key, Expression value) {
         this.key = key;
         this.value = value;
+    }
+    
+    public String getKey() {
+    	return key;
+    }
+    
+    public Expression getValue() {
+    	return value;
     }
 
     public void execute(Environment env) throws TemplateException {

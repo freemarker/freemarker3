@@ -68,8 +68,8 @@ import freemarker.core.parser.ParseException;
  */
 public final class LibraryLoad extends TemplateElement {
 
-    public final Expression templateName;
-    public final String namespace;
+    private Expression templateName;
+    private String namespace;
     private String templatePath="";
 
     /**
@@ -88,6 +88,14 @@ public final class LibraryLoad extends TemplateElement {
         	templatePath = lastSlash == -1 ? "" : templatePath1.substring(0, lastSlash + 1);
         }
         this.templateName = templateName;
+    }
+    
+    public String getNamespace() {
+    	return namespace;
+    }
+    
+    public Expression getTemplateNameExpression() {
+    	return templateName;
     }
 
     public void execute(Environment env) throws TemplateException, IOException {

@@ -143,25 +143,25 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(AndExpression node) {
-		visit(node.left);
-		checkLiteralInBooleanContext(node.left);
-		visit(node.right);
-		checkLiteralInBooleanContext(node.right);
+		visit(node.getLeft());
+		checkLiteralInBooleanContext(node.getLeft());
+		visit(node.getRight());
+		checkLiteralInBooleanContext(node.getRight());
 	}
 	
 	public void visit(AssignmentInstruction node) {
 		super.visit(node);
 		if (template.strictVariableDeclaration()) {
-			if (node.type == AssignmentInstruction.NAMESPACE) {
+			if (node.getType() == AssignmentInstruction.NAMESPACE) {
 				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
-			if (node.type == AssignmentInstruction.LOCAL) {
+			if (node.getType() == AssignmentInstruction.LOCAL) {
 				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 		}
-        if (node.type == AssignmentInstruction.LOCAL) {
+        if (node.getType() == AssignmentInstruction.LOCAL) {
         	Macro macro = getContainingMacro(node);
         	if (macro == null) {
         		ParsingProblem problem = new ParsingProblem("The local directive can only be used inside a function or macro.", node);
@@ -178,22 +178,22 @@ public class PostParseVisitor extends ASTVisitor {
 	public void visit(BlockAssignment node) {
 		super.visit(node);
 		if (template.strictVariableDeclaration()) {
-			if (node.type == AssignmentInstruction.NAMESPACE) {
+			if (node.getType() == AssignmentInstruction.NAMESPACE) {
 				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
-			if (node.type == AssignmentInstruction.LOCAL) {
+			if (node.getType() == AssignmentInstruction.LOCAL) {
 				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 		}
-		if (node.type == AssignmentInstruction.LOCAL) {
+		if (node.getType() == AssignmentInstruction.LOCAL) {
 			Macro macro = getContainingMacro(node);
 			if (macro == null) {
 				template.addParsingProblem(new ParsingProblem("The local directive can only be used inside a function or macro.", node));
 			} else {
-				if (!macro.declaresVariable(node.varName)) {
-					macro.declareVariable(node.varName);
+				if (!macro.declaresVariable(node.getVarName())) {
+					macro.declareVariable(node.getVarName());
 				}
 			}
 		}
@@ -210,7 +210,7 @@ public class PostParseVisitor extends ASTVisitor {
 	public void visit(Interpolation node) {
 		super.visit(node);
 		markAsProducingOutput(node);
-		Expression escapedExpression = escapedExpression(node.expression);
+		Expression escapedExpression = escapedExpression(node.getExpression());
 		node.setEscapedExpression(escapedExpression);
 		checkLiteralInScalarContext(escapedExpression);
 	}
@@ -228,7 +228,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(EscapeBlock node) {
-		Expression escapedExpression = escapedExpression(node.expr);
+		Expression escapedExpression = escapedExpression(node.getExpression());
 		node.setEscapedExpression(escapedExpression);
 		escapes.add(node);
 		super.visit(node);
@@ -270,9 +270,9 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(IteratorBlock node) {
-		node.declareVariable(node.indexName);
-		node.declareVariable(node.indexName + "_has_next");
-		node.declareVariable(node.indexName + "_index");
+		node.declareVariable(node.getIndexName());
+		node.declareVariable(node.getIndexName() + "_has_next");
+		node.declareVariable(node.getIndexName() + "_index");
 		super.visit(node);
 	}
 	
@@ -374,7 +374,7 @@ public class PostParseVisitor extends ASTVisitor {
 		super.visit(node);
 		boolean foundDefaultCase = false;
 		for (TemplateNode te : node.getCases()) {
-			if (((Case) te).isDefault) {
+			if (((Case) te).isDefault()) {
 				if (foundDefaultCase) {
 					template.addParsingProblem(new ParsingProblem("You can only have one default case in a switch construct.", node));
 				}
@@ -399,24 +399,24 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(OrExpression node) {
-		visit(node.left);
-		checkLiteralInBooleanContext(node.left);
-		visit(node.right);
-		checkLiteralInBooleanContext(node.right);
+		visit(node.getLeft());
+		checkLiteralInBooleanContext(node.getLeft());
+		visit(node.getRight());
+		checkLiteralInBooleanContext(node.getRight());
 	}
 	
 	public void visit(ArithmeticExpression node) {
-		visit(node.left);
-		checkLiteralInNumericalContext(node.left);
-		visit(node.right);
-		checkLiteralInNumericalContext(node.right);
+		visit(node.getLeft());
+		checkLiteralInNumericalContext(node.getLeft());
+		visit(node.getRight());
+		checkLiteralInNumericalContext(node.getRight());
 	}
 	
 	public void visit(ComparisonExpression node) {
-		visit(node.left);
-		checkLiteralInScalarContext(node.left);
-		visit(node.right);
-		checkLiteralInScalarContext(node.right);
+		visit(node.getLeft());
+		checkLiteralInScalarContext(node.getLeft());
+		visit(node.getRight());
+		checkLiteralInScalarContext(node.getRight());
 	}
 	
 	public void visit(NumericalOutput node) {
@@ -429,26 +429,26 @@ public class PostParseVisitor extends ASTVisitor {
 			template.addParsingProblem(problem);
 		}
 		markAsProducingOutput(node);
-		checkLiteralInNumericalContext(node.expression);
+		checkLiteralInNumericalContext(node.getExpression());
 	}
 	
 	public void visit(Dot node) {
 		super.visit(node);
-		TemplateModel target = node.target.literalValue();
+		TemplateModel target = node.getTarget().literalValue();
 		if (target != null && !(target instanceof TemplateHashModel)) {
-			template.addParsingProblem(new ParsingProblem("Expression " + node.target.getSource() + " is not a hash type.", node.target));
+			template.addParsingProblem(new ParsingProblem("Expression " + node.getTarget().getSource() + " is not a hash type.", node.getTarget()));
 		}
 	}
 	
 	public void visit(DynamicKeyName node) {
 		super.visit(node);
-		TemplateModel target = node.target.literalValue();
+		TemplateModel target = node.getTarget().literalValue();
 		if (target != null && !(target instanceof TemplateHashModel) && !(target instanceof TemplateSequenceModel)) {
-			String msg = "Expression: " + node.target.getSource() + " is not a hash or sequence type.";
-			template.addParsingProblem(new ParsingProblem(msg, node.target));
+			String msg = "Expression: " + node.getTarget().getSource() + " is not a hash or sequence type.";
+			template.addParsingProblem(new ParsingProblem(msg, node.getTarget()));
 		}
-		if (!(node.nameExpression instanceof Range)) {
-			checkLiteralInScalarContext(node.nameExpression);
+		if (!(node.getNameExpression() instanceof Range)) {
+			checkLiteralInScalarContext(node.getNameExpression());
 		}
 	}
 	
@@ -472,7 +472,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(LibraryLoad node) {
-		String namespaceName = node.namespace;
+		String namespaceName = node.getNamespace();
 		if (template.strictVariableDeclaration() && 
 				template.declaresVariable(namespaceName)) { 
 			String msg = "The variable "+namespaceName + " is already declared and should not be used as a namespace name to import.";
@@ -484,25 +484,25 @@ public class PostParseVisitor extends ASTVisitor {
 
 	public void visit(Range node) {
 		super.visit(node);
-		checkLiteralInNumericalContext(node.left);
-		if (node.right != null) {
-			checkLiteralInNumericalContext(node.right);
+		checkLiteralInNumericalContext(node.getLeft());
+		if (node.getRight() != null) {
+			checkLiteralInNumericalContext(node.getRight());
 		}
 	}
 	
 	
 	public void visit(UnaryPlusMinusExpression node) {
-		checkLiteralInNumericalContext(node.target);
+		checkLiteralInNumericalContext(node.getTarget());
 		super.visit(node);
 	}
 	
 	public void visit(TrimInstruction node) {
 		for (int i = node.getBeginLine(); i<= node.getEndLine(); i++) {
-			if (node.left)
+			if (node.isLeft())
 				template.setLineSaysLeftTrim(i);
-			if (node.right)
+			if (node.isRight())
 				template.setLineSaysRightTrim(i);
-			if (!(node.left || node.right)) 
+			if (!(node.isLeft() || node.isRight())) 
 				template.setLineSaysNoTrim(i);
 		}
 	}
@@ -510,20 +510,20 @@ public class PostParseVisitor extends ASTVisitor {
 	public void visit(TrimBlock node) {
 		int beginLine = node.getBeginLine();
 		int endLine = node.getEndLine();
-		if (node.right) {
+		if (node.isRight()) {
 			template.setLineSaysRightTrim(beginLine++); 
 		}
-		if (node.left) {
+		if (node.isLeft()) {
 			template.setLineSaysLeftTrim(endLine--);
 		}
 		for (int i= beginLine; i<=endLine; i++) {
-			if (node.left) {
+			if (node.isLeft()) {
 				template.setLineSaysLeftTrim(i);
 			}
-			if (node.right) {
+			if (node.isRight()) {
 				template.setLineSaysRightTrim(i);
 			}
-			if (!node.left && !node.right) {
+			if (!node.isLeft() && !node.isRight()) {
 				template.setLineSaysNoTrim(i);
 			}
 		}
@@ -531,7 +531,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
     public void visit(PropertySetting node) {
-    	String key = node.key;
+    	String key = node.getKey();
         if (!key.equals(Configurable.LOCALE_KEY) &&
                 !key.equals(Configurable.NUMBER_FORMAT_KEY) &&
                 !key.equals(Configurable.TIME_FORMAT_KEY) &&

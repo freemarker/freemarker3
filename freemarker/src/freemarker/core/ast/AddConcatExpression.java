@@ -64,14 +64,22 @@ import java.util.*;
  */
 public class AddConcatExpression extends Expression {
 
-    public final Expression left;
-    public final Expression right;
+    private Expression left;
+    private Expression right;
 
     public AddConcatExpression(Expression left, Expression right) {
         this.left = left;
         this.right = right;
         left.parent = this;
         right.parent = this;
+    }
+    
+    public Expression getLeft() {
+    	return left;
+    }
+    
+    public Expression getRight() {
+    	return right;
     }
 
     TemplateModel _getAsTemplateModel(Environment env)

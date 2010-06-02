@@ -130,18 +130,18 @@ public abstract class ASTVisitor {
 	
 	
 	public void visit(AddConcatExpression node) {
-		visit(node.left);
-		visit(node.right);
+		visit(node.getLeft());
+		visit(node.getRight());
 	}
 	
 	public void visit(AndExpression node) {
-		visit(node.left);
-		visit(node.right);
+		visit(node.getLeft());
+		visit(node.getRight());
 	}
 	
 	public void visit(ArithmeticExpression node) {
-		visit(node.left);
-		visit(node.right);
+		visit(node.getLeft());
+		visit(node.getRight());
 	}
 	
 	public void visit(AssignmentInstruction node) {
@@ -175,15 +175,15 @@ public abstract class ASTVisitor {
 	public void visit(BuiltinVariable node) {}
 	
 	public void visit(Case node) {
-		visit(node.expression);
+		visit(node.getExpression());
 		recurse(node);
 	}
 	
 	public void visit(Comment node) {}
 	
 	public void visit(ComparisonExpression node) {
-		visit(node.left);
-		visit(node.right);
+		visit(node.getLeft());
+		visit(node.getRight());
 	}
 	
 	public void visit(CompressedBlock node) {
@@ -191,39 +191,39 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(ConditionalBlock node) {
-		visit(node.condition);
+		visit(node.getCondition());
 		recurse(node);
 	}
 	
 	public void visit(DefaultToExpression node) {
-		visit(node.lhs);
-		if (node.rhs != null) {
-			visit(node.rhs);
+		visit(node.getLeft());
+		if (node.getRight() != null) {
+			visit(node.getRight());
 		}
 	}
 	
 	public void visit(Interpolation node) {
-		visit(node.expression); // Do we visit both?
+		visit(node.getExpression()); // Do we visit both?
 		visit(node.getEscapedExpression());
 	}
 	
 	public void visit(Dot node) {
-		visit(node.target);
+		visit(node.getTarget());
 	}
 	
 	public void visit(DynamicKeyName node) {
-		visit(node.target);
-		visit(node.nameExpression);
+		visit(node.getTarget());
+		visit(node.getNameExpression());
 	}
 	
 	public void visit(EscapeBlock node) {
-		visit(node.expr);
+		visit(node.getExpression());
 		visit(node.getEscapedExpression());
 		recurse(node);
 	}
 	
 	public void visit(ExistsExpression node) {
-		visit(node.exp);
+		visit(node.getExpression());
 	}
 	
 	public void visit(FallbackInstruction node) {}
@@ -256,12 +256,12 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(IteratorBlock node) {
-		visit(node.listExpression);
+		visit(node.getListExpression());
 		recurse(node);
 	}
 	
 	public void visit(LibraryLoad node) {
-		visit(node.templateName);
+		visit(node.getTemplateNameExpression());
 	}
 	
 	public void visit(ListLiteral node) {
@@ -277,7 +277,7 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(MethodCall node) {
-		visit(node.target);
+		visit(node.getTarget());
 		visit(node.getArgs());
 	}
 	
@@ -301,7 +301,7 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(NotExpression node) {
-		visit(node.target);
+		visit(node.getTarget());
 	}
 	
 	public void visit(NullLiteral node) {	}
@@ -309,12 +309,12 @@ public abstract class ASTVisitor {
 	public void visit(NumberLiteral node) {}
 	
 	public void visit(NumericalOutput node) {
-		visit(node.expression);
+		visit(node.getExpression());
 	}
 	
 	public void visit(OrExpression node) {
-		visit(node.left);
-		visit(node.right);
+		visit(node.getLeft());
+		visit(node.getRight());
 	}
 	
 	public void visit(ParameterList node) {
@@ -327,7 +327,7 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(ParentheticalExpression node) {
-		visit(node.nested);
+		visit(node.getNested());
 	}
 	
 	
@@ -338,12 +338,12 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(PropertySetting node) {
-		visit(node.value);
+		visit(node.getValue());
 	}
 	
 	public void visit(Range node) {
-		visit(node.left);
-		if (node.right != null) visit(node.right);
+		visit(node.getLeft());
+		if (node.getRight() != null) visit(node.getRight());
 	}
 	
 	public void visit(RecoveryBlock node) {
@@ -351,8 +351,8 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(RecurseNode node) {
-		visit(node.targetNode);
-		visit(node.namespaces);
+		visit(node.getTargetNode());
+		visit(node.getNamespaces());
 	}
 	
 	public void visit(ReturnInstruction node) {
@@ -370,14 +370,14 @@ public abstract class ASTVisitor {
 	public void visit(StringLiteral node) {}
 	
 	public void visit(SwitchBlock node) {
-		visit(node.testExpression);
+		visit(node.getTestExpression());
 		recurse(node);
 	}
 	
 	public void visit(TextBlock node) {}
 	
 	public void visit(TransformBlock node) {
-		visit(node.transformExpression);
+		visit(node.getTransformExpression());
 		if (node.namedArgs != null) {
 			for (Expression exp : node.namedArgs.values()) {
 				visit(exp);
@@ -393,7 +393,7 @@ public abstract class ASTVisitor {
 	public void visit(TrimInstruction node) {}
 	
 	public void visit(UnaryPlusMinusExpression node) {
-		visit(node.target);
+		visit(node.getTarget());
 	}
 	
 	public void visit(UnifiedCall node) {
@@ -408,8 +408,8 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(VisitNode node) {
-		visit(node.targetNode);
-		if (node.namespaces != null) visit(node.namespaces);
+		visit(node.getTargetNode());
+		if (node.getNamespaces() != null) visit(node.getNamespaces());
 	}
 	
 	protected void recurse(TemplateElement node) {

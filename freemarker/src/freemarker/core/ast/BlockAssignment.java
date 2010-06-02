@@ -70,15 +70,27 @@ import freemarker.template.TemplateTransformModel;
  */
 public class BlockAssignment extends TemplateElement {
 
-    public final String varName;
-    public final Expression namespaceExp;
-    public final int type;
+    private String varName;
+    private Expression namespaceExp;
+    private int type;
 
     public BlockAssignment(TemplateElement nestedBlock, String varName, int type, Expression namespaceExp) {
         this.nestedBlock = nestedBlock;
         this.varName = varName;
         this.namespaceExp = namespaceExp;
         this.type = type;
+    }
+    
+    public Expression getNamespaceExpression() {
+    	return namespaceExp;
+    }
+    
+    public String getVarName() {
+    	return varName;
+    }
+    
+    public int getType() {
+    	return type;
     }
 
     public void execute(Environment env) throws TemplateException, IOException {

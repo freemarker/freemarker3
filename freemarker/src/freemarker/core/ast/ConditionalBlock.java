@@ -64,8 +64,8 @@ import freemarker.template.*;
 
 public class ConditionalBlock extends TemplateElement {
 
-    public final Expression condition;
-    public final boolean isFirst;
+    private Expression condition;
+    private boolean isFirst;
     boolean isSimple;
 
     public ConditionalBlock(Expression condition, TemplateElement nestedBlock, boolean isFirst)
@@ -73,6 +73,18 @@ public class ConditionalBlock extends TemplateElement {
         this.condition = condition;
         this.nestedBlock = nestedBlock;
         this.isFirst = isFirst;
+    }
+    
+    public Expression getCondition() {
+    	return condition;
+    }
+    
+    public boolean isFirst() {
+    	return isFirst;
+    }
+    
+    public boolean isSimple() {
+    	return isSimple;
     }
 
     public void execute(Environment env) throws TemplateException, IOException {

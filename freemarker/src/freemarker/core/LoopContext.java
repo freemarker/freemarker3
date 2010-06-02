@@ -90,10 +90,10 @@ public class LoopContext extends BlockScope {
             	clear();
                 loopVar = it.next();
                 hasNext = it.hasNext();
-                put(iteratorBlock.indexName, loopVar);
+                put(iteratorBlock.getIndexName(), loopVar);
                 TemplateBooleanModel hasNextModel = hasNext ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
-                put(iteratorBlock.indexName + "_has_next", hasNextModel);
-                put(iteratorBlock.indexName + "_index", new SimpleNumber(index));
+                put(iteratorBlock.getIndexName() + "_has_next", hasNextModel);
+                put(iteratorBlock.getIndexName() + "_index", new SimpleNumber(index));
                 TemplateElement nestedBlock = iteratorBlock.getNestedBlock();
                 if (nestedBlock != null) {
                     env.render(nestedBlock);
@@ -107,11 +107,11 @@ public class LoopContext extends BlockScope {
             for (index =0; index <size; index++) {
             	clear();
                 loopVar = tsm.get(index);
-                put(iteratorBlock.indexName, loopVar);
+                put(iteratorBlock.getIndexName(), loopVar);
                 hasNext = (size > index + 1);
                 TemplateBooleanModel hasNextModel = (size > index +1) ?  TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
-                put(iteratorBlock.indexName + "_has_next", hasNextModel);
-                put(iteratorBlock.indexName + "_index", new SimpleNumber(index));
+                put(iteratorBlock.getIndexName() + "_has_next", hasNextModel);
+                put(iteratorBlock.getIndexName() + "_index", new SimpleNumber(index));
                 TemplateElement nestedBlock = iteratorBlock.getNestedBlock();
                 if (nestedBlock != null) {
                     env.render(nestedBlock);
@@ -119,7 +119,7 @@ public class LoopContext extends BlockScope {
             }
         }
         else {
-            throw TemplateNode.invalidTypeException(list, iteratorBlock.listExpression, env, "collection or sequence");
+            throw TemplateNode.invalidTypeException(list, iteratorBlock.getListExpression(), env, "collection or sequence");
         }
     }
 }
