@@ -2802,13 +2802,13 @@ J</programlisting>
 
           <para>Example:</para>
 
-          <programlisting role="template">${x * x - 100}
+          <programlisting role="template">${100 - x * x}
 ${x / 2}
 ${12 % 10}</programlisting>
 
           <para>Assuming that <literal>x</literal> is 5, it will print:</para>
 
-          <programlisting role="output">-75
+          <programlisting role="output">75
 2.5
 2</programlisting>
 
