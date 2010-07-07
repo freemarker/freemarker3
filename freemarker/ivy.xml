@@ -57,6 +57,9 @@
         <conf name="site" description="for integrating website inot a distro" />
         
         <conf name="emma" description="for generating EMMA reports" />
+        
+        <conf name="bnd" description="for creating OSGi bundle" />
+        
     </configurations>
     <publications>
         <artifact name="freemarker" type="jar" conf="runtime" ext="jar" />
@@ -102,6 +105,9 @@
         
         <!-- parser -->
         <dependency org="org.visigoths" name="freecc" rev="0.9.2" conf="parser->default" />
+        
+        <!-- bnd -->
+        <dependency org="biz.aQute" name="bnd" rev="0.0.384" conf="bnd->default" />
         
         <!-- As the test runs on Ant... but Ivy 2.0.0 ignores this for some reason. -->
         <exclude org="ant" module="ant" conf="test" />
