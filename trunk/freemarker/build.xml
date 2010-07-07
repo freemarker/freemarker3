@@ -5,6 +5,7 @@
   xmlns:freecc="http://visigoths.org/freecc"
   xmlns:docgen="http://freemarker.org/docgen"
   xmlns:emma="http://emma.sourceforge.net/emma"
+  xmlns:bnd="http://www.aqute.biz/bnd"
   xmlns:retrotranslator="http://retrotranslator.sf.net/retrotranslator"
 >
 
@@ -191,6 +192,32 @@
    </target>
    
    <target name="jar" depends="compile">
+    <ivy:cachepath pathid="ivy.dep" conf="bnd" />
+    <taskdef resource="aQute/bnd/ant/taskdef.properties"
+      uri="http://www.aqute.biz/bnd"
+      classpathref="ivy.dep"
+    />
+  
+    <!-- Hack: This file should be excluded, but I can't explain that to bnd. -->
+    <move
+        file="${classes.dir}/freemarker/core/SecureRendererImpl.class"
+        tofile="build/delme.tmp" preservelastmodified="true"
+    />
+    
+    <bnd:bnd
+        files="org.freemarker.freemarker.bnd" eclipse="false"
+        output="freemarker.jar"
+    />
+    
+    <!-- Revert previous hack... -->
+    <move
+        file="build/delme.tmp"
+        tofile="${classes.dir}/freemarker/core/SecureRendererImpl.class"
+        preservelastmodified="true"
+    />
+   
+    <!--
+    This is the part that was replaced with "bnd" above:
     <jar 
       basedir="${classes.dir}" jarfile="freemarker.jar" 
       includes="freemarker/** META-INF/**" 
@@ -207,6 +234,7 @@
         <attribute name="Implementation-Vendor" value="freemarker.org" />
       </manifest>
      </jar>
+     -->
      
      <!-- Needed for Ivy publishing -->
      <copy todir="build/artifacts" file="freemarker.jar" />
