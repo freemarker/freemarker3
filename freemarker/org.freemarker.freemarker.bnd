@@ -1,0 +1,30 @@
+# This file is used for creating OSGi bundles with biz.aQute.bnd
+
+-classpath: ${classes.dir}
+-failok: false
+
+Bundle-Version: ${versionForOsgi}
+
+Include-Resource: META-INF=${classes.dir}/META-INF
+
+Export-Package: !freemarker.testcase.*, freemarker.*
+# Important:
+# Packages that doesn't match nor the Export-Package nor the
+# Private-Package mainfest header will be excluded from
+# the .jar file!
+
+Import-Package: freemarker.*, \
+  javax.xml.*, org.w3c.dom.*, org.xml.sax.*, \
+  *;resolution:="optional"
+
+Bundle-License: BSD
+
+# Non-OSGi meta:
+Main-Class: freemarker.core.CommandLine
+Extension-name: FreeMarker
+Specification-Title: FreeMarker
+Specification-Version: ${versionForMf}
+Specification-Vendor: freemarker.org
+Implementation-Title: FreeMarker
+Implementation-Version: ${versionForMf}
+Implementation-Vendor: freemarker.org
