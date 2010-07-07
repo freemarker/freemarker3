@@ -1,4 +1,8 @@
 # This file is used for creating OSGi bundles with biz.aQute.bnd
+#
+# bnd is a tool that automatically discovers the possible exports and
+# imports by examining the class files, and generates the OSGi meta-info
+# based on that and this file.
 
 -classpath: ${classes.dir}
 -failok: false
@@ -9,13 +13,15 @@ Include-Resource: META-INF=${classes.dir}/META-INF
 
 Export-Package: !freemarker.testcase.*, freemarker.*
 # Important:
-# Packages that doesn't match nor the Export-Package nor the
+# Packages that don't match nor the Export-Package nor the
 # Private-Package mainfest header will be excluded from
 # the .jar file!
 
 Import-Package: freemarker.*, \
   javax.xml.*, org.w3c.dom.*, org.xml.sax.*, \
   *;resolution:="optional"
+# The above makes all imports optional (like org.jython, etc.),
+# except those that were explicitly listed (or are inside java.*).
 
 Bundle-License: BSD
 
