@@ -2392,7 +2392,7 @@ SwitchBlock Switch() :
      LOOKAHEAD(2)
      caseIns=Case()
      {
-       if (caseIns.isDefault) {
+       if (caseIns.isDefault()) {
 	   if (defaultFound) {
                 String msg = getErrorStart(start)
                             + "\nYou can only have one default case in a switch statement";
