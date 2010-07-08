@@ -205,7 +205,7 @@
     />
     
     <bnd:bnd
-        files="org.freemarker.freemarker.bnd" eclipse="false"
+        files="osgi.bnd" eclipse="false"
         output="freemarker.jar"
     />
     
