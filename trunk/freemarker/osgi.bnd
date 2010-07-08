@@ -9,6 +9,8 @@
 
 Bundle-SymbolicName: ${moduleOrg}.${moduleName}
 Bundle-Version: ${version}
+Bundle-License: BSD-style, see: http://freemarker.org/docs/app_license.html
+Bundle-Vendor: freemarker.org
 
 Include-Resource: META-INF=${classes.dir}/META-INF
 
@@ -24,9 +26,7 @@ Import-Package: !freemarker.*, \
 # The above makes all imports optional (like org.python, etc.),
 # except those that were explicitly listed (or are inside java.*).
 
-Bundle-License: BSD-style, see: http://freemarker.org/docs/app_license.html
-
-Bundle-Vendor: freemarker.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 
 # Non-OSGi meta:
 Main-Class: freemarker.core.CommandLine
