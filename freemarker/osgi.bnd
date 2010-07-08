@@ -12,19 +12,21 @@ Bundle-Version: ${version}
 
 Include-Resource: META-INF=${classes.dir}/META-INF
 
-Export-Package: !freemarker.testcase.*, freemarker.*
+Export-Package: !freemarker.testcase.*, freemarker.*;version="${version}"
 # Important:
 # Packages that don't match nor the Export-Package nor the
 # Private-Package mainfest header will be excluded from
 # the .jar file!
 
-Import-Package: freemarker.*, \
+Import-Package: !freemarker.*, \
   javax.xml.*, org.w3c.dom.*, org.xml.sax.*, \
   *;resolution:="optional"
 # The above makes all imports optional (like org.python, etc.),
 # except those that were explicitly listed (or are inside java.*).
 
 Bundle-License: BSD-style, see: http://freemarker.org/docs/app_license.html
+
+Bundle-Vendor: freemarker.org
 
 # Non-OSGi meta:
 Main-Class: freemarker.core.CommandLine
