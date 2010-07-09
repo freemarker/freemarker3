@@ -26,6 +26,9 @@ Import-Package: !freemarker.*, \
 # The above makes all imports optional (like org.python, etc.),
 # except those that were explicitly listed (or are inside java.*).
 
+# This is needed for "a.class.from.another.Bundle"?new() to work.
+DynamicImport-Package: *
+
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 
 # Non-OSGi meta:
