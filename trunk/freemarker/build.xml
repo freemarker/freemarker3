@@ -30,9 +30,28 @@
     classname="java.lang.Object" ignoresystemclasses="true" 
     property="boot.classpath.correct"
   />
+
+  <!-- Set up version/timestamp filters and the version property: -->
+  <tstamp>
+    <format property="timestampNice" pattern="yyyy-MM-dd HH:mm:ss z"
+        timezone="GMT" />
+    <format property="timestampInVersion" pattern="yyyy_MM_dd_HH_mm_ss"
+        timezone="GMT" />
+  </tstamp>
+  <filter token="timestampInVersion" value="${timestampInVersion}" />
+  <filter token="timestampNice" value="${timestampNice}" />
+  <mkdir dir="build "/>
+  <!-- Copying is needed to substitute the timestamps. -->
+  <copy
+      file="src/freemarker/version.properties"
+      tofile="build/delme.tmp"
+      filtering="true"
+  />
+  <property file="build/delme.tmp" />
+  <delete file="build/delme.tmp" />
+  <filter token="version" value="${version}" />
   
   <property name="classes.dir" location="build/classes" />
-  <property file="src/freemarker/version.properties" />
   <property name="dist.dir" value="build/dist/freemarker-${version}" />
   <property name="site.dir" value="../../site" />
   <property name="docgen.dir" value="../../docgen" />
@@ -186,7 +205,14 @@
       <fileset dir="src"
         excludes="
           **/CVS/**, **/*.bak, **/*.java, **/*.jj,
-          **/package.html, freemarker/testcase/**"
+          **/package.html, freemarker/testcase/**,
+          freemarker/version.properties"
+      />
+    </copy>
+    <copy toDir="${classes.dir}" filtering="true" overwrite="true">
+      <fileset dir="src"
+        includes="
+          freemarker/version.properties"
       />
     </copy>
    </target>
