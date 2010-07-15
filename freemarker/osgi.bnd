@@ -8,13 +8,13 @@
 -failok: false
 
 Bundle-SymbolicName: ${moduleOrg}.${moduleName}
-Bundle-Version: ${version}
+Bundle-Version: ${versionForOSGi}
 Bundle-License: BSD-style, see: http://freemarker.org/docs/app_license.html
 Bundle-Vendor: freemarker.org
 
 Include-Resource: META-INF=${classes.dir}/META-INF
 
-Export-Package: !freemarker.testcase.*, freemarker.*;version="${version}"
+Export-Package: !freemarker.testcase.*, freemarker.*;version="${versionForOSGi}"
 # Important:
 # Packages that don't match nor the Export-Package nor the
 # Private-Package mainfest header will be excluded from

@@ -105,7 +105,6 @@ import freemarker.core.ast.ASTVisitor;
  *
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  * @author Attila Szegedi
- * @version $Id: Configuration.java,v 1.125 2006/02/03 19:22:04 revusky Exp $
  */
 
 public class Configuration extends Configurable implements Cloneable, Scope {
@@ -1005,34 +1004,46 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     
     /**
      * Returns FreeMarker version number string. 
-     * Examples of possible return values:
-     * <code>"2.2.5"</code>, <code>"2.3pre13"</code>,
-     * <code>"2.3pre13mod"</code>, <code>"2.3rc1"</code>, <code>"2.3"</code>,
-     * <code>"3.0"</code>.
      *
-     * <p>Notes on FreeMarker version numbering rules:
+     * <p>Examples of possible return values <em>before 2.4.0</em>:
+     * <code>"2.2.5"</code>, <code>"2.3.pre13"</code>,
+     * <code>"2.3pre13mod"</code>, <code>"2.3rc1"</code>, <code>"2.3"</code>
+     *
+     * <p>Examples of possible return values <em>starting from 2.4.0</em>:
+     * <code>"2.4.0"</code>,
+     * <code>"2.4.1-nightly_2010_07_29_17_55_59"</code>,
+     * <code>"2.5.0-pre03"</code>,
+     * <code>"2.5.0-pre04_nightly_2010_07_29_17_55_59"</code>,
+     * <code>"2.5.0-rc01"</code>
+     *
+     * <p>Notes on FreeMarker version numbering rules (for FreeMarker 2.4
+     * or later):
      * <ul>
      *   <li>"pre" and "rc" (lowercase!) means "preview" and "release
      *       candidate" respectively. It is must be followed with a
-     *       number (as "1" for the first release candidate).
-     *   <li>The "mod" after the version number indicates that it's an
-     *       unreleased modified version of the released version.
-     *       After releases, the nighly builds are such releases. E.g.
-     *       the nightly build after releasing "2.2.1" but before releasing
-     *       "2.2.2" is "2.2.1mod".
-     *   <li>The 2nd version number must be present, and maybe 0,
-     *       as in "3.0".
-     *   <li>The 3rd version number is never 0. E.g. the version
-     *       number string for the first release of the 2.2 series
-     *       is "2.2", and NOT "2.2.0". 
+     *       number (as "01" for the first release candidate).
+     *   <li>The "nightly" postfix indicates that it's a
+     *       development version of the version that is specified by the
+     *       part before the "nightly" word. So
+     *       <code>"2.4.0-rc02-nightly_2010_07_29_17_55_59"</code> is
+     *       a in-developement version that will be releaed as
+     *       <code>2.4.0-rc02</code> later.
+     *   <li>The 2nd and 3rd version numbers are always present,
+     *       as in "3.0.0".
      *   <li>When only the 3rd version number increases
-     *       (2.2 -> 2.2.1, 2.2.1 -> 2.2.2 etc.), 100% backward compatiblity
-     *       with the previous version MUST be kept.
-     *       This means that <tt>freemarker.jar</tt> can be replaced in an
-     *       application without risk (as far as the application doesn't depend
-     *       on the presence of a FreeMarker bug).
-     *       Note that backward compatibility restrictions do not apply for
+     *       (2.2.0 -> 2.2.1, 2.2.1 -> 2.2.2 etc.), 100% backward compatiblity
+     *       with the previous version is kept.
+     *       This means that replacing the <tt>freemarker.jar</tt>
+     *       in an application should not break anything (as far as the application
+     *       doesn't depend on the presence of a FreeMarker bug).
+     *       Note that backward compatibility restrictions don't apply to
      *       preview releases.
+     *   <li>When the 2nd version number increases, backward
+     *       compatibilty might be broken for some applications, and
+     *       the changes needed in those applications should be trivial.
+     *       Note that this only stands since FreeMarker 2.4.0.
+     *   <li>When the 1st version number increases that indicates
+     *       changes that are seriously backward-incompatibile.
      * </ul>
      */
     public static String getVersionNumber() {
