@@ -16,7 +16,7 @@
   <!-- Ivy project coordinates: -->
   <property name="moduleOrg" value="org.freemarker" />
   <property name="moduleName" value="freemarker" />
-  <property name="moduleBranch" value="3.0.0" />
+  <property name="moduleBranch" value="3.0" />
 
   <!-- Will be overidden on the server: -->
   <property name="server.ivy.repo.root" value="${basedir}/build/dummy-server-ivy-repo" />
