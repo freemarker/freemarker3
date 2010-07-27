@@ -73,6 +73,9 @@
         <dependency org="org.jruby" name="jruby" rev="1.0" conf="build.base->default" />
         <dependency org="org.python" name="jython" rev="2.2.1" conf="build.base->default" />
         <dependency org="log4j" name="log4j" rev="1.2.6" conf="build.base->default" />
+        <dependency org="avalon-logkit" name="avalon-logkit" rev="2.0" conf="build.base->default" />
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" conf="build.base->default" />
+        <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="build.base->default" />
         <dependency org="saxpath" name="saxpath" rev="1.0-FCS" conf="build.base->default" />
         <dependency org="rhino" name="js" rev="1.6R1" conf="build.base->default" />
         <dependency org="xalan" name="xalan" rev="2.7.0" conf="build.base->default" />
