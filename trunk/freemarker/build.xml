@@ -44,11 +44,12 @@
   <!-- Copying is needed to substitute the timestamps. -->
   <copy
       file="src/freemarker/version.properties"
-      tofile="build/delme.tmp"
+      tofile="build/version.properties.tmp"
       filtering="true"
+      overwrite="true"
   />
-  <property file="build/delme.tmp" />
-  <delete file="build/delme.tmp" />
+  <property file="build/version.properties.tmp" />
+  <delete file="build/version.properties.tmp" />
   <filter token="version" value="${version}" />
   
   <property name="classes.dir" location="build/classes" />
@@ -227,41 +228,20 @@
     <!-- Hack: This file should be excluded, but I can't explain that to bnd. -->
     <move
         file="${classes.dir}/freemarker/core/SecureRendererImpl.class"
-        tofile="build/delme.tmp" preservelastmodified="true"
+        tofile="build/SecureRendererImpl.class.tmp"
+        preservelastmodified="true" overwrite="true"
     />
-    
     <bnd:bnd
         files="osgi.bnd" eclipse="false"
         output="freemarker.jar"
     />
-    
     <!-- Revert previous hack... -->
     <move
-        file="build/delme.tmp"
+        file="build/SecureRendererImpl.class.tmp"
         tofile="${classes.dir}/freemarker/core/SecureRendererImpl.class"
-        preservelastmodified="true"
+        preservelastmodified="true" overwrite="true"
     />
-   
-    <!--
-    This is the part that was replaced with "bnd" above:
-    <jar 
-      basedir="${classes.dir}" jarfile="freemarker.jar" 
-      includes="freemarker/** META-INF/**" 
-      excludes="freemarker/testcase/**, freemarker/core/SecureRendererImpl.class"
-    >
-      <manifest>
-        <attribute name="Main-Class" value="freemarker.core.CommandLine" />
-        <attribute name="Extension-name" value="FreeMarker" />
-        <attribute name="Specification-Title" value="FreeMarker" />
-        <attribute name="Specification-Version" value="${versionForMf}" />
-        <attribute name="Specification-Vendor" value="freemarker.org" />
-        <attribute name="Implementation-Title" value="FreeMarker" />
-        <attribute name="Implementation-Version" value="${versionForMf}" />
-        <attribute name="Implementation-Vendor" value="freemarker.org" />
-      </manifest>
-     </jar>
-     -->
-     
+    
      <!-- Needed for Ivy publishing -->
      <copy todir="build/artifacts" file="freemarker.jar" />
    </target>
@@ -563,7 +543,7 @@
     ]]></echo>
     
     <jar destfile="build/maven-source-attachment.jar"
-         basedir="src" excludes="freemarker/testcase/**"
+         basedir="src" includes="freemarker/**" excludes="freemarker/testcase/**"
     />
    
     <artifact:install-provider artifactId="wagon-ssh" version="1.0-beta-2"/>
@@ -611,6 +591,142 @@ Proceed? </input>
   <target name="artifacts" depends="jar, retrojar"
     description="Creates the artifacts for Ivy."
   />
+  
+  
+  <!-- ================================================================== -->
+  <!-- Eclipse                                                            -->
+  <!-- ================================================================== -->
+
+  <property name="eclipseFeatureFileName" value="org.freemarker.freemarker.feature_${versionForOSGi}.jar" />
+  <property name="eclipseSourceFeatureFileName" value="org.freemarker.freemarker.source.feature_${versionForOSGi}.jar" />
+  <property name="eclipsePluginFileName" value="org.freemarker.freemarker_${versionForOSGi}.jar" />
+  <property name="eclipseSourcePluginFileName" value="org.freemarker.freemarker.source_${versionForOSGi}.jar" />
+  
+  <target name="eclipse-update-site" depends="jar">
+    <delete dir="build/eclipse" />
+
+    <!-- Create org.freemarker.freemarker feature: -->
+    
+    <mkdir dir="build/eclipse/freemarker/plugins" />
+    <copy
+        file="freemarker.jar"
+        tofile="build/eclipse/freemarker/plugins/org.freemarker.freemarker_${versionForOSGi}.jar"
+    />
+    
+    <mkdir dir="build/eclipse/freemarker/features/tmp" />
+    <echo file="build/eclipse/freemarker/features/tmp/feature.xml"><![CDATA[<?xml version="1.0"?>
+<feature
+    id="org.freemarker.freemarker"
+    label="FreeMarker"
+    version="${versionForOSGi}">
+
+  <description url="http://freemarker.org">
+    Adds barebone FreeMarker as a plug-in (OSGi bundle) to Eclipse.
+  </description>
+
+  <license><!--
+    -->FreeMarker and this plug-in is provided under the terms and conditions <!--
+    -->of a BSD-style license, available at http://freemarker.org/LICENSE.txt.<!--
+  --></license>
+
+  <plugin
+      id="org.freemarker.freemarker"
+      download-size="0"
+      install-size="0"
+      version="${versionForOSGi}"
+      unpack="false"
+  />
+</feature>
+    ]]></echo>
+    <jar
+        basedir="build/eclipse/freemarker/features/tmp"
+        destfile="build/eclipse/freemarker/features/${eclipseFeatureFileName}"
+    />
+    <delete dir="build/eclipse/freemarker/features/tmp" />
+
+    <!-- Create org.freemarker.freemarker.soruce feature: -->
+    
+    <mkdir dir="build/eclipse/freemarker/plugins" />
+    <jar 
+        basedir="src" jarfile="build/eclipse/freemarker/plugins/org.freemarker.freemarker.source_${versionForOSGi}.jar" 
+        includes="freemarker/**" excludes="freemarker/testcase/**"
+    >
+      <manifest>
+        <attribute name="Bundle-SymbolicName" value="${moduleOrg}.${moduleName}.source" />
+        <attribute name="Bundle-Version" value="${versionForOSGi}" />
+        <attribute name="Bundle-License" value="BSD-style, see: http://freemarker.org/LICENSE.txt" />
+        <attribute name="Bundle-Vendor" value="freemarker.org" />
+        <attribute name="Eclipse-SourceBundle" value='org.freemarker.freemarker;version="${versionForOSGi}";roots:="."' />
+      </manifest>
+    </jar>
+    
+    <mkdir dir="build/eclipse/freemarker/features/tmp" />
+    <echo file="build/eclipse/freemarker/features/tmp/feature.xml"><![CDATA[<?xml version="1.0"?>
+<feature
+    id="org.freemarker.freemarker.source"
+    label="FreeMarker source"
+    version="${versionForOSGi}">
+
+  <description url="http://freemarker.org">
+    Adds source code attachment to the barebone FreeMarker plug-in.
+  </description>
+
+  <license><!--
+    -->FreeMarker and this plug-in is provided under the terms and conditions <!--
+    -->of a BSD-style license, available at http://freemarker.org/LICENSE.txt.<!--
+  --></license>
+
+  <plugin
+      id="org.freemarker.freemarker.source"
+      download-size="0"
+      install-size="0"
+      version="${versionForOSGi}"
+      unpack="false"
+  />
+</feature>
+    ]]></echo>
+    <jar
+        basedir="build/eclipse/freemarker/features/tmp"
+        destfile="build/eclipse/freemarker/features/${eclipseSourceFeatureFileName}"
+    />
+    <delete dir="build/eclipse/freemarker/features/tmp" />
+
+    <!-- Create site: -->
+
+    <echo file="build/eclipse/freemarker/site.xml"><![CDATA[<?xml version="1.0"?>
+<site>
+  <feature url="features/${eclipseFeatureFileName}"
+      id="org.freemarker.freemarker"
+      version="${versionForOSGi}">
+    <category name="core" />
+    <category name="core-with-sources" />
+  </feature>
+  <feature url="features/${eclipseSourceFeatureFileName}"
+      id="org.freemarker.freemarker.source"
+      version="${versionForOSGi}">
+    <category name="core-with-sources" />
+  </feature>
+  <category-def name="core" label="FreeMarker core">
+    <description>
+      Features that are used as dependencies of other products, but do nothing visible themselves.
+    </description>
+  </category-def>
+  <category-def name="core-with-sources" label="FreeMarker core with sources">
+    <description>
+      Features that are used as dependencies of other products, but do nothing visible themselves.
+      Includes source code attachments.
+    </description>
+  </category-def>
+</site>
+    ]]></echo>
+    <echo message="**************************************************************" />
+    <echo message="The new Eclipse update site is created in:" />
+    <echo message="${basedir}/build/eclipse/freemarker" />
+    <echo message="You can use this directory as a local update site in Eclipse," />
+    <echo message="or if you are an admin who makes a release, you should replace" />
+    <echo message="http://freemarker.org/eclipse/freemarker with this directory." />
+    <echo message="**************************************************************" />
+  </target>
   
   
   <!-- ================================================================== -->
