@@ -132,6 +132,10 @@ public class Template extends TemplateCore {
     
     private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
     private TemplateHeaderElement headerElement;
+    
+    public int getAbsoluteOffset(int line, int column) {
+    	return lineStartOffsets[line-1] +column -1;
+    }
 
     
     /**
