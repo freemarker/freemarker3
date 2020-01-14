@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2020, Jonathan Revusky revusky@freemarker.es
+  ~
+  ~ Redistribution and use in source and binary forms, with or without
+  ~ modification, are permitted provided that the following conditions are met:
+  ~
+  ~ 1. Redistributions of source code must retain the above copyright notice, this
+  ~     list of conditions and  the following disclaimer.
+  ~ 2. Redistributions in binary form must reproduce the above copyright notice,
+  ~      this list of conditions and the following disclaimer in the documentation
+  ~      and/or other materials provided with the distribution.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS" AND
+  ~ ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  ~ WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+  ~ ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  ~ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  ~ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+  ~ AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~ INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  ~ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
 <book conformance="docgen" version="5.0" xml:lang="en"
       xmlns="http://docbook.org/ns/docbook"
       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -26359,15 +26383,18 @@ ${obj.myMethod("foo")}</programlisting>
       </indexterm>
 
       <para>FreeMarker 1.x was released under the LGPL license. Later, by
-      community consensus, we have switched over to a BSD-style license. As of
+      community consensus, we have switched over to the original multi-clause BSD-style license. As of
       FreeMarker 2.2pre1, the original author, <emphasis>Benjamin
-      Geer</emphasis>, has relinquished the copyright in behalf of Visigoth
-      Software Society. The current copyright holder is the Visigoth Software
-      Society.</para>
+      Geer</emphasis>, relinquished the copyright in favor of the Visigoth
+      Software Society, which never really existed and was mostly just an alias for the various
+      open source software efforts led by Jonathan Revusky. The current copyright holder is thus
+      Jonathan Revusky. The only other individual with any credible claim to intellectual ownership,
+      Attila Szegedi, has stated that he has no objection to this, as it keeps matters simple.
+      </para>
 
       <para> </para>
 
-      <para>Copyright (c) 2003 The Visigoth Software Society. All rights
+      <para>Copyright (c) 2020 Jonathan Revusky. All rights
       reserved.</para>
 
       <para>Redistribution and use in source and binary forms, with or without
@@ -26381,34 +26408,16 @@ ${obj.myMethod("foo")}</programlisting>
         </listitem>
 
         <listitem>
-          <para>The end-user documentation included with the redistribution,
-          if any, must include the following acknowledgement: <emphasis>"This
-          product includes software developed by the Visigoth Software Society
-          (http://www.visigoths.org/)."</emphasis> Alternately, this
-          acknowledgement may appear in the software itself, if and wherever
-          such third-party acknowledgements normally appear.</para>
-        </listitem>
-
-        <listitem>
-          <para>Neither the name "FreeMarker", "Visigoth", nor any of the
-          names of the project contributors may be used to endorse or promote
-          products derived from this software without prior written
-          permission. For written permission, please contact
-          visigoths@visigoths.org.</para>
-        </listitem>
-
-        <listitem>
-          <para>Products derived from this software may not be called
-          "FreeMarker" or "Visigoth" nor may "FreeMarker" or "Visigoth" appear
-          in their names without prior written permission of the Visigoth
-          Software Society.</para>
+          <para>Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.</para>
         </listitem>
       </orderedlist>
 
       <para>THIS SOFTWARE IS PROVIDED ''AS IS'' AND ANY EXPRESSED OR IMPLIED
       WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
       MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN
-      NO EVENT SHALL THE VISIGOTH SOFTWARE SOCIETY OR ITS CONTRIBUTORS BE
+      NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
       LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
       CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
       SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
@@ -26417,12 +26426,7 @@ ${obj.myMethod("foo")}</programlisting>
       ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
       THE POSSIBILITY OF SUCH DAMAGE.</para>
 
-      <para> </para>
-
-      <para>This software consists of voluntary contributions made by many
-      individuals on behalf of the Visigoth Software Society. For more
-      information on the Visigoth Software Society, please see <link
-      xlink:href="http://www.visigoths.org/">http://www.visigoths.org/</link></para>
+  
     </appendix>
   </part>
 
