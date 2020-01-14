@@ -87,7 +87,6 @@
   <target name="clean" description="get rid of all generated files">
     <delete dir="build" />
     <delete dir="docs" />
-    <delete dir="retrobuild" />
     <delete file="src/freemarker/core/parser/FMParser.java" />
     <delete file="src/freemarker/core/parser/FMConstants.java" />
     <delete file="src/freemarker/core/parser/FMLexer.java" />
@@ -110,7 +109,7 @@
     <mkdir dir="build"/>
     <uptodate property="parser.uptodate"
         targetfile="src/freemarker/core/parser/FMParser.java">
-      <srcfiles dir="src/parser" includes="*.freecc" />
+      <srcfiles dir="src/parser" includes="*.javacc" />
     </uptodate>
   </target>
 
@@ -118,7 +117,7 @@
   <!-- Compilation                                                       -->
   <!-- ================================================================= -->
   
-  <target name="freecc" depends="init" unless="parser.uptodate"
+  <target name="javacc" depends="init" unless="parser.uptodate"
     description="Build the parser from its grammar file"
   >
     <ivy:cachepath conf="parser" pathid="ivy.dep" />
@@ -127,10 +126,10 @@
       uri="https://javacc.com/" classpathref="ivy.dep"
     />
 
-    <freecc:generate src="src/parser/FM.freecc"/> 
+    <javacc:generate src="src/parser/FM.javacc"/> 
   </target>
    
-  <target name="compile" depends="freecc">
+  <target name="compile" depends="javacc">
     <fail unless="boot.classpath.correct"><!--
       -->The "boot.classpath" property value (${boot.classpath}) <!--
       -->seems to be an incorrect boot classpath. Please fix it in <!--
@@ -349,82 +348,13 @@
     </emma:emma>
    </target>
 
-  <!-- ================================================================= -->
-  <!-- Retro stuff                                                       -->
-  <!-- ================================================================= -->
-
-  <target name="retrotest" description="Test against older JDK">
-    <echo message="You are testing against JDK version ${java.version}." />
-    <echo message="Note that this test only makes sense against a JDK version inferior to 1.5" />
-    <echo message="The error log will be put in the retrobuild directory." />
-    <mkdir dir="retrobuild" />
-    <copy todir="retrobuild/freemarker/testcase">
-      <fileset dir="src/freemarker/testcase" excludes="*.class" />
-    </copy>
-    <ivy:cachepath conf="test" pathid="ivy.dep" />
-    <junit haltonfailure="off" fork="true">
-      <classpath>
-        <pathelement path="retrobuild" />
-        <path refid="ivy.dep" />
-      </classpath>
-      <formatter type="plain" />
-      <test
-        name="freemarker.testcase.TemplateTestSuite"
-        todir="retrobuild"
-      />
-    </junit>
-  </target>
-
-  <target name="retrotrans" depends="compile" description="Run Retrotranslator over the .class files">
-    <ivy:cachepath conf="retrotranslate" pathid="ivy.dep" />
-    <taskdef name="translate" classpathref="ivy.dep"
-      classname="net.sf.retrotranslator.transformer.RetrotranslatorTask"
-      uri="http://retrotranslator.sf.net/retrotranslator"
-    />
-      
-    <mkdir dir="retrobuild" />
-   
-    <copy file="${classes.dir}/freemarker/core/SecureRendererImpl.clazz" tofile="retrobuild/freemarker/core/SecureRendererImpl.class" />
-    
-    <retrotranslator:translate
-      srcdir="build/classes" destdir="retrobuild"
-      embed="freemarker.retrosupport"
-      uptodatecheck="false"
-    />
-    <!-- Note: uptodatecheck="true" has randombly created empty jar-s -->
-    
-    <copy file="retrobuild/freemarker/core/SecureRendererImpl.class" tofile="retrobuild/freemarker/core/SecureRendererImpl.clazz" />
-  </target>
-  <target name="retrojar" depends="retrotrans" description="Build a .jar file that can be run under 1.4">
-    <copy toDir="retrobuild">
-      <fileset dir="src"
-        excludes="**/CVS/**,**/*.bak,**/*.java,**/*.jj,**/package.html,freemarker/testcase/**"
-      />
-    </copy>
-    <jar basedir="retrobuild" jarfile="freemarker-14compat.jar" excludes="eclipse/**,freemarker/testcase/**,TEST*,freemarker/core/SecureRendererImpl.class,manual/**,parser/**">
-      <manifest>
-        <attribute name="Main-Class" value="freemarker.core.CommandLine" />
-        <attribute name="Extension-name" value="FreeMarker" />
-        <attribute name="Specification-Title" value="FreeMarker" />
-        <attribute name="Specification-Version" value="${versionForMf}" />
-        <attribute name="Specification-Vendor" value="freemarker.org" />
-        <attribute name="Implementation-Title" value="FreeMarker" />
-        <attribute name="Implementation-Version" value="${versionForMf}" />
-        <attribute name="Implementation-Vendor" value="freemarker.org" />
-      </manifest>
-    </jar>
-    
-     <!-- Needed for Ivy publishing -->
-     <copy todir="build/artifacts" file="freemarker-14compat.jar" />
-  </target>
-
 
   <!-- ================================================================= -->
   <!-- Generate docs                                                     -->
   <!-- ================================================================= -->
 
-  <target depends="freecc" name="javadoc" description="Build the JavaDocs" >
-    <!-- depends="freecc" is needed as its output is referred in the docs. -->
+  <target depends="javacc" name="javadoc" description="Build the JavaDocs" >
+    <!-- depends="javacc" is needed as its output is referred in the docs. -->
     <mkdir dir="build/api" />
     <delete includeEmptyDirs="yes">
       <fileset dir="build/api" includes="**/*" />
@@ -471,7 +401,7 @@
   </target>
 
   <target name="_dist"
-    depends="jar, retrojar, javadoc, manual"
+    depends="jar, javadoc, manual"
     description="(Used internally; don't call it)"
   >
     <!-- Copy jars and sources and such into the distro -->
@@ -611,7 +541,7 @@ Proceed? </input>
     <echo>**********************************************</echo>
   </target>
 
-  <target name="artifacts" depends="jar, retrojar"
+  <target name="artifacts" depends="jar"
     description="Creates the artifacts for Ivy."
   />
   
