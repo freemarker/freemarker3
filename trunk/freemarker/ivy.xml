@@ -72,8 +72,6 @@
                 description="to be used in IDE-s with Ivy plugin"
         />
         
-        <conf name="retrotranslate" description="for retro-translation" />
-        
         <conf name="parser" extends="default" description="for generating parser" />
         
         <conf name="manual" description="for generating the manual with Docgen" />
@@ -92,7 +90,6 @@
     <dependencies>
         <!-- build -->
         <dependency org="ant" name="ant" rev="1.6.5" conf="build.base->default" />
-        <dependency org="org.visigoths" name="cavalry" rev="1.0" conf="build.base->default" />
         <dependency org="jaxen" name="jaxen" rev="1.0-FCS" conf="build.base->default" />
         <dependency org="org.jruby" name="jruby" rev="1.0" conf="build.base->default" />
         <dependency org="org.python" name="jython" rev="2.2.1" conf="build.base->default" />
@@ -115,11 +112,6 @@
         <!-- test -->
         <dependency org="junit" name="junit" rev="3.7" conf="build.test->default; test->default" />
         
-        <!-- retrotranslate: -->
-        <dependency org="net.sf.retrotranslator" name="retrotranslator-runtime" rev="1.2.4" conf="retrotranslate->default" />
-        <dependency org="net.sf.retrotranslator" name="retrotranslator-transformer" rev="1.2.4" conf="retrotranslate->default" />
-        <dependency org="backport-util-concurrent" name="backport-util-concurrent" rev="3.1" conf="retrotranslate->default" />
-
         <!-- docs -->
         <dependency org="org.freemarker" name="docgen" rev="1.0-branch-head" conf="manual->default" changing="true" />
         
@@ -129,9 +121,6 @@
         <!-- EMMA -->
         <dependency org="emma" name="emma" rev="2.0.5312" conf="emma->default" />
         <dependency org="emma" name="emma_ant" rev="2.0.5312" conf="emma->default" />
-        
-        <!-- parser -->
-        <dependency org="org.visigoths" name="freecc" rev="0.9.2" conf="parser->default" />
         
         <!-- bnd -->
         <dependency org="biz.aQute" name="bnd" rev="0.0.384" conf="bnd->default" />
