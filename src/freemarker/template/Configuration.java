@@ -976,74 +976,9 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     
     /**
      * Returns FreeMarker version number string. 
-     *
-     * <p>Examples of possible return values <em>before 2.4.0</em>:
-     * <code>"2.2.5"</code>, <code>"2.3.pre13"</code>,
-     * <code>"2.3pre13mod"</code>, <code>"2.3rc1"</code>, <code>"2.3"</code>
-     *
-     * <p>Examples of possible return values <em>starting from 2.4.0</em>:
-     * <code>"2.4.0"</code>,
-     * <code>"2.4.1-nightly_2010_07_29_17_55_59"</code>,
-     * <code>"2.5.0-pre03"</code>,
-     * <code>"2.5.0-pre04_nightly_2010_07_29_17_55_59"</code>,
-     * <code>"2.5.0-rc01"</code>
-     *
-     * <p>Notes on FreeMarker version numbering rules (for FreeMarker 2.4
-     * or later):
-     * <ul>
-     *   <li>"pre" and "rc" (lowercase!) means "preview" and "release
-     *       candidate" respectively. It is must be followed with a
-     *       number (as "01" for the first release candidate).
-     *   <li>The "nightly" postfix indicates that it's a
-     *       development version of the version that is specified by the
-     *       part before the "nightly" word. So
-     *       <code>"2.4.0-rc02-nightly_2010_07_29_17_55_59"</code> is
-     *       a in-developement version that will be releaed as
-     *       <code>2.4.0-rc02</code> later.
-     *   <li>The 2nd and 3rd version numbers are always present,
-     *       as in "3.0.0".
-     *   <li>When only the 3rd version number increases
-     *       (2.2.0 -> 2.2.1, 2.2.1 -> 2.2.2 etc.), 100% backward compatiblity
-     *       with the previous version is kept.
-     *       This means that replacing the <tt>freemarker.jar</tt>
-     *       in an application should not break anything (as far as the application
-     *       doesn't depend on the presence of a FreeMarker bug).
-     *       Note that backward compatibility restrictions don't apply to
-     *       preview releases.
-     *   <li>When the 2nd version number increases, backward
-     *       compatibilty might be broken for some applications, and
-     *       the changes needed in those applications should be trivial.
-     *       Note that this only stands since FreeMarker 2.4.0.
-     *   <li>When the 1st version number increases that indicates
-     *       changes that are seriously backward-incompatibile.
-     * </ul>
      */
     public static String getVersionNumber() {
-        if (cachedVersion != null) {
-            return cachedVersion;
-        }
-        try {
-            Properties vp = new Properties();
-            InputStream ins = Configuration.class.getClassLoader()
-                    .getResourceAsStream("freemarker/version.properties");
-            if (ins == null) {
-                throw new RuntimeException("Version file is missing.");
-            } else {
-                try {
-                    vp.load(ins);
-                } finally {
-                    ins.close();
-                }
-                String v = vp.getProperty("version");
-                if (v == null) {
-                    throw new RuntimeException("Version file is corrupt: version key is missing.");
-                }
-                cachedVersion = v;
-            }
-            return cachedVersion;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to load version file: " + e);
-        }
+    	return "3.0 Preview 1";
     }
     
     /**

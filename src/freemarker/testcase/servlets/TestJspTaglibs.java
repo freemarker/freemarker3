@@ -37,18 +37,27 @@ import java.net.URL;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.EventListener;
 import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterRegistration;
+import javax.servlet.FilterRegistration.Dynamic;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRegistration;
+import javax.servlet.SessionCookieConfig;
+import javax.servlet.SessionTrackingMode;
+import javax.servlet.descriptor.JspConfigDescriptor;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -248,6 +257,136 @@ public class TestJspTaglibs extends TestCase {
         public void setAttribute(String arg0, Object arg1) {
             attributes.put(arg0, arg1);
         }
+
+		public Dynamic addFilter(String arg0, String arg1) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public Dynamic addFilter(String arg0, Filter arg1) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public Dynamic addFilter(String arg0, Class<? extends Filter> arg1) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void addListener(String arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public <T extends EventListener> void addListener(T arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void addListener(Class<? extends EventListener> arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, String arg1) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, Servlet arg1) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0, Class<? extends Servlet> arg1) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public <T extends Filter> T createFilter(Class<T> arg0) throws ServletException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public <T extends EventListener> T createListener(Class<T> arg0) throws ServletException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public <T extends Servlet> T createServlet(Class<T> arg0) throws ServletException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void declareRoles(String... arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public ClassLoader getClassLoader() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public int getEffectiveMajorVersion() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		public int getEffectiveMinorVersion() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+
+		public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public FilterRegistration getFilterRegistration(String arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public JspConfigDescriptor getJspConfigDescriptor() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public ServletRegistration getServletRegistration(String arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public Map<String, ? extends ServletRegistration> getServletRegistrations() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public SessionCookieConfig getSessionCookieConfig() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public boolean setInitParameter(String arg0, String arg1) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		public void setSessionTrackingModes(Set<SessionTrackingMode> arg0) {
+			// TODO Auto-generated method stub
+			
+		}
     }
 
     private static final class MockRequest

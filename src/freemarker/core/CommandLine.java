@@ -38,7 +38,6 @@ import java.io.*;
  * For a serious freemarker-based command-line file processing tool we recommend  
  * <a href="http://fmpp.sourceforge.net">FMPP</a>.
  *
- * @version $Id: CommandLine.java,v 1.2 2003/09/24 12:15:08 ddekany Exp $
  */
 public class CommandLine {
 	
