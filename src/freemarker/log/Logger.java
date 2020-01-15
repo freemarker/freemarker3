@@ -65,27 +65,9 @@ public abstract class Logger
     
     /**
      * Constant used with {@link #selectLoggerLibrary(int)} that indicates the
-     * engine should use the Apache Jakarta Avalon LogKit logger package.
-     */
-    public static final int LIBRARY_AVALON = 2;
-    
-    /**
-     * Constant used with {@link #selectLoggerLibrary(int)} that indicates the
-     * engine should use the Apache Jakarta Log4J logger package.
-     */
-    public static final int LIBRARY_LOG4J = 3;
-
-    /**
-     * Constant used with {@link #selectLoggerLibrary(int)} that indicates the
-     * engine should use the Apache commons-logging logger adapter package.
-     */
-    public static final int LIBRARY_COMMONS = 4;
-    
-    /**
-     * Constant used with {@link #selectLoggerLibrary(int)} that indicates the
      * engine should use the SLF4J logger adapter package.
      */
-    public static final int LIBRARY_SLF4J = 5;
+    public static final int LIBRARY_SLF4J = 2;
 
     /**
      * Order matters! Starts with the lowest priority.
@@ -94,9 +76,6 @@ public abstract class Logger
     {
         "freemarker.log.Logger", "Null",
         "java.util.logging.Logger", "JDK14",
-        "org.apache.log.Logger",    "Avalon",
-        "org.apache.log4j.Logger",  "Log4J",
-        "org.apache.commons.logging.Log",  "CommonsLogging",
         "org.slf4j.Logger",  "SLF4J",
     };
 
