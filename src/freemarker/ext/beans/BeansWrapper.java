@@ -115,8 +115,6 @@ public class BeansWrapper implements ObjectWrapper
     static final Object GENERIC_GET_KEY = new Object();
     private static final Object CONSTRUCTORS = new Object();
     private static final Object ARGTYPES = new Object();
-
-    private static final boolean javaRebelAvailable = isJavaRebelAvailable();
     
     /**
      * The default instance of BeansWrapper
@@ -190,11 +188,8 @@ public class BeansWrapper implements ObjectWrapper
      * {@link #EXPOSE_SAFE} method exposure level, and will not cache
      * model instances.
      */
-    public BeansWrapper() {
-        if(javaRebelAvailable) {
-            JavaRebelIntegration.registerWrapper(this);
-        }
-    }
+    public BeansWrapper() {}
+
     
     /**
      * @see #setStrict(boolean)
@@ -1467,15 +1462,5 @@ public class BeansWrapper implements ObjectWrapper
             return bd.toBigInteger();
         }
         return bd;
-    }
-
-    private static boolean isJavaRebelAvailable() {
-        try {
-            JavaRebelIntegration.testAvailability();
-            return true;
-        }
-        catch(NoClassDefFoundError e) {
-            return false;
-        }
     }
 }
