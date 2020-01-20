@@ -19,5 +19,9 @@
     <orderEntry type="library" name="junit4" level="project" />
     <orderEntry type="library" name="jsp-api-2.3" level="project" />
     <orderEntry type="library" name="servlet-api-3.1" level="project" />
+    <orderEntry type="library" name="minimal-ant-classes" level="project" />
+    <orderEntry type="library" name="minimal-lang-classes" level="project" />
+    <orderEntry type="library" name="minimal-xml-classes" level="project" />
+    <orderEntry type="library" name="slf4j-api-1.7.9" level="project" />
   </component>
 </module>

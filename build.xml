@@ -1,4 +1,4 @@
-<project name="freemarker" default="parser-gen" basedir=".">
+<project name="freemarker" default="jar" basedir=".">
 
    <target name="init">
 
@@ -20,7 +20,7 @@
  	</java>
   </target>
   
-  <target name="compile" depends="parser-gen, init">
+  <target name="compile" depends="parser-gen">
   	<mkdir dir="build"/>
     <javac srcdir="src" 
  	       destdir="build"
@@ -34,6 +34,14 @@
     >
        <classpath refid="class.path"/>
     </javac>
+  </target>
+  
+  <target name="jar" depends="compile">
+     <jar jarfile="freemarker.jar" basedir="build" compress="true">
+        <manifest>
+           <attribute name="Main-Class" value="freemarker.core.CommandLine"/>
+        </manifest>
+     </jar>
   </target>
   
   
