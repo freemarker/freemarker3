@@ -37,7 +37,7 @@
   </target>
   
   <target name="jar" depends="compile">
-     <jar jarfile="freemarker.jar" basedir="build" compress="true">
+     <jar jarfile="freemarker.jar" basedir="build" compress="true" excludes="freemarker/testcase/**">
         <manifest>
            <attribute name="Main-Class" value="freemarker.core.CommandLine"/>
         </manifest>
@@ -56,6 +56,7 @@
      <delete file="src/freemarker/core/parser/Node.java"/>
      <delete file="src/freemarker/core/parser/Nodes.java"/>
      <delete dir="build"/>
+     <delete file="freemarker.jar"/>
   </target>
   
 </project>
