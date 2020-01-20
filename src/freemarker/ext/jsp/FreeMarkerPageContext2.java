@@ -32,6 +32,8 @@ import javax.servlet.jsp.el.VariableResolver;
 import javax.servlet.jsp.el.ELException;
 import javax.servlet.jsp.JspFactory;
 import javax.servlet.jsp.PageContext;
+import javax.el.ELContext;
+import javax.el.ELContext;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.security.AccessController;
@@ -96,6 +98,18 @@ public class FreeMarkerPageContext2 extends FreeMarkerPageContext {
             public Object resolveVariable(String name) throws ELException {
                 return ctx.findAttribute(name);
             }
+    
+
+	public ELContext getELContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}        
         };
     }
+
+	@Override
+	public ELContext getELContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -24,6 +24,10 @@
 
 package freemarker.ext.jsp;
 
+import javax.el.ELContext;
+import javax.servlet.jsp.el.ExpressionEvaluator;
+import javax.servlet.jsp.el.VariableResolver;
+
 import freemarker.template.TemplateModelException;
 
 /**
@@ -38,4 +42,22 @@ public class FreeMarkerPageContext1 extends FreeMarkerPageContext {
     public FreeMarkerPageContext1() throws TemplateModelException {
         super();
     }
+
+	@Override
+	public ELContext getELContext() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ExpressionEvaluator getExpressionEvaluator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public VariableResolver getVariableResolver() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
