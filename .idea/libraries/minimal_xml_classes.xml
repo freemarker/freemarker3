@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="minimal-xml-classes">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/minimal-xml-classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

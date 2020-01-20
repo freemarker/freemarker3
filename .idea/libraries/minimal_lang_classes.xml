@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="minimal-lang-classes">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/minimal-lang-classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

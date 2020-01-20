@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="minimal-ant-classes">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/minimal-ant-classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
