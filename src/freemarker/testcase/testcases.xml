@@ -74,9 +74,9 @@
    <testcase name="comparisons" filename="test-comparisons.html" />
    <testcase name="compress" filename="test-compress.html"/>
    <testcase name="dateformat" filename="test-dateformat.html" />
-   <!-- testcase name="default-xmlns" filename="test-defaultxmlns1.txt">
+   <testcase name="default-xmlns" filename="test-defaultxmlns1.txt">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase -->
+   </testcase>
    <testcase name="embed" filename="test-embed.ftl"/>
    <testcase name="encoding-builtins" filename="test-encodingbuiltins.txt" />
    <testcase name="escapes" filename="test-escapes.txt" />
@@ -138,9 +138,9 @@
    <testcase name="variables" filename="test-variables.html"/>
    <testcase name="whitespace-trim" filename="test-wstrim.txt"/>
    <testcase name="wstrip-in-header" filename="test-wsstripinheader.txt"/>
-   <!-- testcase name="xml-fragment" filename="test-xmlfragment.txt">
+   <testcase name="xml-fragment" filename="test-xmlfragment.txt">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/> 
-   </testcase -->
+   </testcase>
    <!-- testcase name="xmlns1" filename="test-xmlns.html">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
    </testcase -->
