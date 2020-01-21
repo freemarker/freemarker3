@@ -87,10 +87,11 @@ public class TestJspTaglibs extends TestCase {
     }
 
     public void setUp() throws Exception {
-        URL url = TestJspTaglibs.class.getResource("../testcases.xml");
-        File thisDir = new File(new File(url.getFile()).getParentFile(), "servlets");
-        refFile = new File(thisDir, "reference/test-jsptaglibs.txt");
-        outputDir = new File(thisDir, "reference");
+//        URL url = TestJspTaglibs.class.getResource("../testcases.xml");
+//        File thisDir = new File(new File(url.getFile()).getParentFile(), "servlets");
+//        refFile = new File(thisDir, "reference/test-jsptaglibs.txt");
+        outputDir = new File("src/freemarker/testcase/servlets/reference");
+        refFile= new File(outputDir, "test-jsptaglibs.txt");
     }
 
     public void runTest() throws TemplateException {

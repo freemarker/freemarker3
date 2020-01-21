@@ -53,8 +53,9 @@ public class TemplateTestSuite extends TestSuite {
     }
     
     void readConfig() throws Exception {
-        java.net.URL url = TemplateTestSuite.class.getResource("testcases.xml");
-        File f = new File(url.getFile());
+//        java.net.URL url = TemplateTestSuite.class.getResource("testcases.xml");
+//        File f = new File(url.getFile());
+        File f= new File("src/freemarker/testcase/testcases.xml");
         readConfig(f);
     }
     

@@ -9,6 +9,7 @@ src/freemarker/core/parser/Nodes.java
 src/freemarker/core/parser/SimpleCharStream.java
 src/freemarker/core/parser/Token.java
 *.class
+*~
 .settings/*
 /build/*
 /build/

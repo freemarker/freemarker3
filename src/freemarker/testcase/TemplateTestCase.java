@@ -53,6 +53,7 @@ public class TemplateTestCase extends TestCase {
         super(name);
         this.filename = filename;
         this.testName = name;
+        conf.setLocale(new Locale("en", "US"));
     }
     
     public void setTemplateDirectory(String dirname, File baseDir) throws IOException {

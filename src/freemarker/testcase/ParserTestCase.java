@@ -48,9 +48,10 @@ public class ParserTestCase extends TestCase {
         super(name);
         this.filename = filename;
 
-        URL url = getClass().getResource("testcases.xml");
-        File parent = new File(url.getFile()).getParentFile();
-        File dir = new File(parent, "template");
+//        URL url = getClass().getResource("testcases.xml");
+//        File parent = new File(url.getFile()).getParentFile();
+//        File dir = new File(parent, "template");
+        File dir = new File("src/freemarker/testcase/template");
         conf.setDirectoryForTemplateLoading(dir);
     }
 

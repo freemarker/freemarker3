@@ -9,7 +9,8 @@
 	
 	<path id="class.path">
       <fileset dir="libs">
-       <include name="*.jar" />
+          <include name="*.jar" />
+          <exclude name="minimal-ant-classes.jar"/>
       </fileset>
     </path>
   </target>
@@ -57,6 +58,23 @@
      <delete file="src/freemarker/core/parser/Nodes.java"/>
      <delete dir="build"/>
      <delete file="freemarker.jar"/>
+  </target>
+
+  <target name="test" depends="compile">
+      <junit haltonfailure="off" fork="true">
+      <classpath>
+          <dirset dir="src"/>
+          <dirset dir="build"/>
+          <path refid="class.path"/>
+      </classpath>
+      <formatter type="plain" />
+      <formatter type="xml" />
+      <test
+        name="freemarker.testcase.TemplateTestSuite"
+        todir="build"
+      />
+    </junit>
+
   </target>
   
 </project>
