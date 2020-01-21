@@ -141,9 +141,9 @@
    <testcase name="xml-fragment" filename="test-xmlfragment.txt">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/> 
    </testcase>
-   <!-- testcase name="xmlns1" filename="test-xmlns.html">
+   <testcase name="xmlns1" filename="test-xmlns.html">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase -->
+   </testcase>
    <!-- testcase name="xmlns2" filename="test-xmlns.html">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
    </testcase -->
