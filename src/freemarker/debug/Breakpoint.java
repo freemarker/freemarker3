@@ -33,7 +33,11 @@ import java.io.Serializable;
  */
 public class Breakpoint implements Serializable, Comparable
 {
-    private final String templateName;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3052047457697630123L;
+	private final String templateName;
     private final int line;
     
     /**

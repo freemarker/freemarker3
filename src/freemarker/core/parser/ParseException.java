@@ -42,6 +42,11 @@ import freemarker.core.ast.*;
 public class ParseException extends java.io.IOException implements FMConstants {
 
   /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6175892317621829075L;
+
+/**
    * This constructor is used by the method "generateParseException"
    * in the generated parser.  Calling this constructor generates
    * a new object of this type with the fields "currentToken",

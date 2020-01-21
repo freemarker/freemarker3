@@ -27,7 +27,6 @@ package freemarker.template;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,7 +35,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import freemarker.cache.CacheStorage;
@@ -79,6 +77,7 @@ import freemarker.core.ast.ASTVisitor;
  * @author Attila Szegedi
  */
 
+@SuppressWarnings("deprecation")
 public class Configuration extends Configurable implements Cloneable, Scope {
     public static final String DEFAULT_ENCODING_KEY = "default_encoding"; 
     public static final String LOCALIZED_LOOKUP_KEY = "localized_lookup";
@@ -96,7 +95,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
 
 
     private static Configuration defaultConfig = new Configuration();
-    private static String cachedVersion;
     private boolean localizedLookup = true, whitespaceStripping = true, strictVariableDefinition=false;
     private TemplateCache cache;
     private HashMap<String, TemplateModel> variables = new HashMap<String, TemplateModel>();

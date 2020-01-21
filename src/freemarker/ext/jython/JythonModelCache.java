@@ -24,12 +24,6 @@
 
 package freemarker.ext.jython;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
 import org.python.core.Py;
 import org.python.core.PyDictionary;
 import org.python.core.PyFloat;
@@ -40,8 +34,6 @@ import org.python.core.PyObject;
 import org.python.core.PySequence;
 import org.python.core.PyStringMap;
 
-import freemarker.ext.beans.BeansWrapper;
-import freemarker.ext.beans.DateModel;
 import freemarker.ext.util.ModelCache;
 import freemarker.template.TemplateModel;
 

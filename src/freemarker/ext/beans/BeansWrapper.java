@@ -76,7 +76,6 @@ import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.ClassUtil;
 import freemarker.template.utility.SecurityUtilities;
-import freemarker.template.utility.UndeclaredThrowableException;
 
 /**
  * Utility class that provides generic services to reflection classes.

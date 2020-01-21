@@ -121,7 +121,8 @@ public class FileTemplateLoader implements SecureTemplateLoader
         try {
             Object[] retval = AccessController.doPrivileged(
                 new PrivilegedExceptionAction<Object[]>() {
-                    public Object[] run() throws IOException {
+                    @SuppressWarnings("deprecation")
+					public Object[] run() throws IOException {
                         if (!baseDir.exists()) {
                             throw new FileNotFoundException(baseDir + " does not exist.");
                         }

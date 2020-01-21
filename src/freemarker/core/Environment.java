@@ -316,7 +316,8 @@ public final class Environment extends Configurable implements Scope {
      * @param args
      *            optional arguments fed to the transform
      */
-    public void render(TemplateElement element,
+    @SuppressWarnings("deprecation")
+	public void render(TemplateElement element,
             TemplateTransformModel transform, Map<String, TemplateModel> args)
     throws TemplateException, IOException {
         try {
@@ -452,7 +453,8 @@ public final class Environment extends Configurable implements Scope {
      * "Visit" A TemplateNodeModel
      */
 
-    public void render(TemplateNodeModel node, TemplateSequenceModel namespaces)
+    @SuppressWarnings("deprecation")
+	public void render(TemplateNodeModel node, TemplateSequenceModel namespaces)
     throws TemplateException, IOException {
         if (nodeNamespaces == null) {
             SimpleSequence ss = new SimpleSequence(1);
@@ -544,7 +546,8 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    public void fallback() throws TemplateException, IOException {
+    @SuppressWarnings("deprecation")
+	public void fallback() throws TemplateException, IOException {
         TemplateModel macroOrTransform = getNodeProcessor(currentNodeName,
                 currentNodeNS, nodeNamespaceIndex);
         if (macroOrTransform instanceof Macro) {

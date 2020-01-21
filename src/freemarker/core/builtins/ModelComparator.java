@@ -29,7 +29,6 @@ import java.util.Date;
 
 import freemarker.core.Environment;
 import freemarker.core.ast.ArithmeticEngine;
-import freemarker.template.Template;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;

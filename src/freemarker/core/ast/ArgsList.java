@@ -105,6 +105,7 @@ abstract public class ArgsList extends TemplateNode {
 		return parser.ParameterList();
 	}
 	
+	@SuppressWarnings("deprecation")
 	private static Parameters getAnnotatedParameters(TemplateModel target) {
 		Parameters params = null;
 		Method keyMethod = null;

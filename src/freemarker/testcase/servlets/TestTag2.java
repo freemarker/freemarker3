@@ -35,7 +35,12 @@ import javax.servlet.jsp.tagext.TagSupport;
  */
 public class TestTag2 extends TagSupport
 {
-    public int doStartTag() throws JspException {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4123183184113269523L;
+
+	public int doStartTag() throws JspException {
         try {
             pageContext.getOut().println("TestTag2.doStartTag() called here");
             return Tag.EVAL_BODY_INCLUDE;

@@ -58,7 +58,11 @@ extends
 implements
     DebuggedEnvironment
 {
-    private static final CacheStorage storage = new SoftCacheStorage(new IdentityHashMap());
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7553276041458835559L;
+	private static final CacheStorage storage = new SoftCacheStorage(new IdentityHashMap());
     private static final Object idLock = new Object();
     private static long nextId = 1;
     

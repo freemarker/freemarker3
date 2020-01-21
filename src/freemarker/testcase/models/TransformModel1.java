@@ -114,9 +114,6 @@ public class TransformModel1 implements TemplateTransformModel {
     public void transform(Reader source, Writer output)
     throws IOException 
     {
-        // Output the source, converting unsafe certain characters to their
-        // equivalent entities.
-        int n = 0;
         boolean bCommentSent = false;
         char[]  aBuffer = new char[ READER_BUFFER_SIZE ];
         int i = source.read( aBuffer );
@@ -170,7 +167,6 @@ public class TransformModel1 implements TemplateTransformModel {
                     default:
                         output.write(c);
                 }
-                n++;
             }
             i = source.read( aBuffer );
         }

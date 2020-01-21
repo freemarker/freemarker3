@@ -33,6 +33,11 @@ package freemarker.core;
  */
 
 public class UndeclaredVariableException extends RuntimeException {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7809054327560058509L;
+
 	public UndeclaredVariableException(String message) {
 		super(message);
 	}

@@ -46,6 +46,7 @@ import freemarker.template.TemplateModelException;
  * @author Attila Szegedi
  * @version $Id: FreeMarkerPageContext2.java,v 1.1 2005/06/11 12:13:39 szegedia Exp $
  */
+@SuppressWarnings("deprecation")
 public class FreeMarkerPageContext21 extends FreeMarkerPageContext {
     private static final Logger logger = Logger.getLogger("freemarker.jsp");
 

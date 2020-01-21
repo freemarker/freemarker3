@@ -34,7 +34,11 @@ import java.util.EventObject;
  */
 public class EnvironmentSuspendedEvent extends EventObject
 {
-    private final int line;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -999730114010871063L;
+	private final int line;
     private final DebuggedEnvironment env;
 
     public EnvironmentSuspendedEvent(Object source, int line, DebuggedEnvironment env)

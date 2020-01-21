@@ -38,7 +38,11 @@ import javax.servlet.jsp.tagext.TryCatchFinally;
  */
 public class TestTag extends BodyTagSupport implements TryCatchFinally
 {
-    private boolean throwException;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4284914801318941990L;
+	private boolean throwException;
     private int repeatCount;
     
     public void setRepeatCount(int repeatCount) {

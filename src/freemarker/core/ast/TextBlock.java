@@ -250,7 +250,6 @@ public final class TextBlock extends TemplateElement {
 			String trailingWS = firstLine.substring(firstPart.length());
 			if (firstPart.length() >0) {
 				TextBlock tb = new TextBlock(firstPart);
-				int type = firstPart.trim().length() == 0 ? WHITE_SPACE : PRINTABLE_TEXT;
 				tb.setLocation(template, beginColumn, beginLine, beginColumn + firstPart.length() -1, beginLine);
 				result.add(tb);
 			}
@@ -274,7 +273,6 @@ public final class TextBlock extends TemplateElement {
 		if (middleLines.length() > 0) {
 			TextBlock tb = new TextBlock(middleLines);
 			int startingLine = beginLine;
-			int startingColumn = 1;
 			if (beginColumn != 1) ++startingLine;
 			int endColumn = mergeLastLine ? lastLine.length() : lastLine(middleLines).length();
 			int endingLine = beginLine + numLines -1;

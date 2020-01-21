@@ -33,7 +33,11 @@ import java.util.*;
  */
 public class LegacyList extends SimpleSequence {
 
-    private Iterator iterator;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5113695891943970389L;
+	private Iterator iterator;
 
     /**
      * Resets the cursor to the beginning of the list.

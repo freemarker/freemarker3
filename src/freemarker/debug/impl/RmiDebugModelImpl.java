@@ -51,7 +51,11 @@ import freemarker.template.TemplateSequenceModel;
  */
 class RmiDebugModelImpl extends UnicastRemoteObject implements DebugModel
 {
-    private final TemplateModel model;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7636888557752102511L;
+	private final TemplateModel model;
     private final int type;
     
     RmiDebugModelImpl(TemplateModel model) throws RemoteException

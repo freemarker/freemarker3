@@ -43,7 +43,11 @@ extends
 implements
     Debugger
 {
-    private final RmiDebuggerService service;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4192307465600345394L;
+	private final RmiDebuggerService service;
     
     protected RmiDebuggerImpl(RmiDebuggerService service) throws RemoteException
     {

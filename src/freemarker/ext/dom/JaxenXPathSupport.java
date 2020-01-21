@@ -148,7 +148,12 @@ class JaxenXPathSupport implements XPathSupport {
     private static final CustomAttribute cachedTree = new CustomAttribute(CustomAttribute.SCOPE_TEMPLATE);
      
     private static final Navigator fmDomNavigator = new DocumentNavigator() {
-        public Object getDocument(String uri) throws FunctionCallException
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 6718387093084486426L;
+
+		public Object getDocument(String uri) throws FunctionCallException
         {
             try
             {

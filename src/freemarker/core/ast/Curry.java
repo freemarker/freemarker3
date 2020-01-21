@@ -64,6 +64,7 @@ import freemarker.template.TemplateTransformModel;
  * @author Attila Szegedi
  * @version $Id: $
  */
+@SuppressWarnings("deprecation")
 public class Curry extends ExpressionEvaluatingBuiltIn
 {
 	public TemplateModel get(Environment env, BuiltInExpression expression,

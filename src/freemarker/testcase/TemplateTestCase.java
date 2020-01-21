@@ -32,7 +32,6 @@ import freemarker.template.utility.*;
 import junit.framework.*;
 import java.util.*;
 import java.io.*;
-import java.net.URL;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.xml.sax.InputSource;
@@ -441,7 +440,11 @@ public class TemplateTestCase extends TestCase {
     }
 
     public static class TestBean extends HashMap {
-        public String getName() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 2531504146861186823L;
+		public String getName() {
             return "Christopher";
         }
         public int getLuckyNumber() {

@@ -40,6 +40,7 @@ import freemarker.template.TemplateTransformModel;
 /**
  * @version $Id: BlockAssignment.java,v 1.4 2004/07/07 21:11:12 szegedia Exp $
  */
+@SuppressWarnings("deprecation")
 public class BlockAssignment extends TemplateElement {
 
     private String varName;
