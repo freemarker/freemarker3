@@ -46,8 +46,10 @@
 ]>
 
 <!--
-   I had to comment out all the fancy XML/XPath related testcases as well as 
-   the JSP taglibs testcase. Need to revisit this whole setup really.
+   I had to comment out a couple of the XML/XPath testcases. One is because we
+   aren't even supporting JDom any more and another is one of these XPath thingies. Also,
+   the JSP taglibs testcase is not working. 
+   Need to revisit this whole testcase setup really though.
 -->
 
 <testcases>
@@ -144,18 +146,18 @@
    <testcase name="xmlns1" filename="test-xmlns.html">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
    </testcase>
-   <!-- testcase name="xmlns2" filename="test-xmlns.html">
+   <testcase name="xmlns2" filename="test-xmlns.html">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase -->
-   <!-- testcase name="xmlns3" filename="test-xmlns3.html">
+   </testcase>
+   <testcase name="xmlns3" filename="test-xmlns3.html">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase -->   
-   <!-- testcase name="xmlns4" filename="test-xmlns4.html">
+   </testcase>   
+   <testcase name="xmlns4" filename="test-xmlns4.html">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase -->   
-   <!-- testcase name="xmlns5" filename="test-xmlns5.txt">
+   </testcase>   
+   <testcase name="xmlns5" filename="test-xmlns5.txt">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase -->
+   </testcase>
    <!-- testcase name="xpath1" filename="test-xpath1.txt">
       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
    </testcase -->
