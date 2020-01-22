@@ -48,7 +48,8 @@ public class TemplateTestSuite extends TestSuite {
     }
     
     public TemplateTestSuite() throws Exception {
-        NodeModel.useJaxenXPathSupport();
+       // NodeModel.useJaxenXPathSupport();
+        NodeModel.useSunInternalXPathSupport();
         readConfig();
     }
     
