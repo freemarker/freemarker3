@@ -1,6 +1,10 @@
 <project name="freemarker" default="jar" basedir=".">
 
-   <target name="init">
+    <tstamp>
+        <format property="timestamp" pattern="yyyy-MM-dd HH:mm:ss" />
+    </tstamp>
+
+    <target name="init">
 
 	<uptodate property="parser.uptodate"
                  targetfile="src/freemarker/core/parser/FMParser.java">
@@ -41,6 +45,8 @@
      <jar jarfile="freemarker.jar" basedir="build" compress="true" excludes="freemarker/testcase/**">
         <manifest>
            <attribute name="Main-Class" value="freemarker.core.CommandLine"/>
+           <attribute name="Built-By" value="${user.name}"/>
+           <attribute name="Build-Date"   value="${timestamp}"/>
         </manifest>
      </jar>
   </target>
