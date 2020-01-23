@@ -1,5 +1,5 @@
 [#setting number_format = ",##0.##"]
-[#setting locale = "fr_FR"]
+[#setting locale = "es_ES"]
 ${1}
 ${1?c}
 ${1234567.886}
