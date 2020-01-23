@@ -46,11 +46,7 @@ public class ParserTestCase extends TestCase {
     public ParserTestCase(String name, String filename) throws IOException {
         super(name);
         this.filename = filename;
-
-//        URL url = getClass().getResource("testcases.xml");
-//        File parent = new File(url.getFile()).getParentFile();
-//        File dir = new File(parent, "template");
-        File dir = new File("src/freemarker/testcase/template");
+        File dir = new File("src/freemarker/testcase/template"); 
         conf.setDirectoryForTemplateLoading(dir);
     }
 

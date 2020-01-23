@@ -46,11 +46,13 @@ public class DefaultXPathSupport implements XPathSupport {
         try {
             scalar = xp.evaluate(xpathQuery, context);
         } catch (Exception e) {}
-        if (scalar != null) {
-            // This whole XPATH API was created by total morons!
-            if (scalar.equals("true")) return XPathBoolean.TRUE;
-            if (scalar.equals("false")) return XPathBoolean.FALSE;
+        if (scalar == null) {
+        	// I'm not even sure that this can be null, but just in case...
+        	return TemplateModel.JAVA_NULL;
         }
+        // Man, this whole XPATH API was created by total morons!
+        if (scalar.equals("true")) return XPathBoolean.TRUE;
+        if (scalar.equals("false")) return XPathBoolean.FALSE;
         try {
             return new XPathNumber(Double.valueOf(scalar));
         } catch (Exception e) {
