@@ -37,10 +37,7 @@
     	   includeantruntime="true"
     	   nowarn="true"
     >
-       <classpath refid="class.path"/>
-        <exclude name="**/JaxenXPathSupport.java"/>
-        <exclude name="**/SunInternalXalanXPathSupport.java"/>
-        <exclude name="**/XalanXPathSupport.java"/>
+      <classpath refid="class.path"/>
     </javac>
   </target>
   
