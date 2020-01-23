@@ -489,7 +489,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
      * this FreeMarker version on this system.
      */
     static public void useDefaultXPathSupport() {
-        xpathSupportClass = null;
+        xpathSupportClass = DefaultXPathSupport.class;
         jaxenXPathSupport = null;
         if (xpathSupportClass == null) try {
             useJaxenXPathSupport();
@@ -502,7 +502,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
             ; // ignore
         }
         if (xpathSupportClass == null) try {
-        	useSunInternalXPathSupport();
+        	useDefaultXPathSupport();
         } catch (Exception e) {
         	; // ignore
         }
@@ -536,13 +536,13 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
     }
     
     
-    static public void useSunInternalXPathSupport() throws Exception {
-        Class.forName("com.sun.org.apache.xpath.internal.XPath");
+    static public void useDefaultInternalXPathSupport() throws Exception {
+/*        Class.forName("com.sun.org.apache.xpath.internal.XPath");
         Class c = Class.forName("freemarker.ext.dom.SunInternalXalanXPathSupport");
         if (logger.isDebugEnabled()) {
             logger.debug("Using Sun's internal Xalan classes for XPath support");
-        }
-        xpathSupportClass = c;
+        }*/
+        xpathSupportClass = DefaultXPathSupport.class;
     }
 
     /**
@@ -587,6 +587,8 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
     }
     
     XPathSupport getXPathSupport() {
+        return DefaultXPathSupport.instance;
+/*
         if (jaxenXPathSupport != null) {
             return jaxenXPathSupport;
         }
@@ -610,6 +612,8 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
             }
         }
         return xps;
+
+ */
     }
     
     

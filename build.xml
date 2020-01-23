@@ -38,6 +38,9 @@
     	   nowarn="true"
     >
        <classpath refid="class.path"/>
+        <exclude name="**/JaxenXPathSupport.java"/>
+        <exclude name="**/SunInternalXalanXPathSupport.java"/>
+        <exclude name="**/XalanXPathSupport.java"/>
     </javac>
   </target>
   
@@ -67,7 +70,7 @@
   </target>
 
   <target name="test" depends="compile">
-      <junit haltonfailure="off">
+      <junit haltonfailure="on">
       <classpath>
           <dirset dir="src"/>
           <dirset dir="build"/>
