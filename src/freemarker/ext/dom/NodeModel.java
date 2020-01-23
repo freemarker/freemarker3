@@ -77,8 +77,6 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
     
     static private Map xpathSupportMap = Collections.synchronizedMap(new WeakHashMap());
     
-    static private XPathSupport jaxenXPathSupport;
-    
     static private ErrorHandler errorHandler;
     
     static Class xpathSupportClass;
@@ -490,60 +488,8 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
      */
     static public void useDefaultXPathSupport() {
         xpathSupportClass = DefaultXPathSupport.class;
-        jaxenXPathSupport = null;
-        if (xpathSupportClass == null) try {
-            useJaxenXPathSupport();
-        } catch (Exception e) {
-            ; // ignore
-        }
-        try {
-            useXalanXPathSupport();
-        } catch (Exception e) {
-            ; // ignore
-        }
-        if (xpathSupportClass == null) try {
-        	useDefaultXPathSupport();
-        } catch (Exception e) {
-        	; // ignore
-        }
     }
-    
-    /**
-     * Convenience method. Tells the system to use Jaxen for XPath queries.
-     * @throws Exception if the Jaxen classes are not present.
-     */
-    static public void useJaxenXPathSupport() throws Exception {
-        Class.forName("org.jaxen.dom.DOMXPath");
-        Class c = Class.forName("freemarker.ext.dom.JaxenXPathSupport");
-        jaxenXPathSupport = (XPathSupport) c.newInstance();
-        if (logger.isDebugEnabled()) {
-            logger.debug("Using Jaxen classes for XPath support");
-        }
-        xpathSupportClass = c;
-    }
-    
-    /**
-     * Convenience method. Tells the system to use Xalan for XPath queries.
-     * @throws Exception if the Xalan XPath classes are not present.
-     */
-    static public void useXalanXPathSupport() throws Exception {
-        Class.forName("org.apache.xpath.XPath");
-        Class c = Class.forName("freemarker.ext.dom.XalanXPathSupport");
-        if (logger.isDebugEnabled()) {
-            logger.debug("Using Xalan classes for XPath support");
-        }
-        xpathSupportClass = c;
-    }
-    
-    
-    static public void useDefaultInternalXPathSupport() throws Exception {
-/*        Class.forName("com.sun.org.apache.xpath.internal.XPath");
-        Class c = Class.forName("freemarker.ext.dom.SunInternalXalanXPathSupport");
-        if (logger.isDebugEnabled()) {
-            logger.debug("Using Sun's internal Xalan classes for XPath support");
-        }*/
-        xpathSupportClass = DefaultXPathSupport.class;
-    }
+  
 
     /**
      * Set an alternative implementation of freemarker.ext.dom.XPathSupport to use
