@@ -973,10 +973,10 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     }
     
     /**
-     * Returns FreeMarker version number string. 
+     * Returns FreeMarker version.
      */
     public static String getVersionNumber() {
-    	return "3.0 Preview 1";
+    	return "3.0 Preview";
     }
     
     /**

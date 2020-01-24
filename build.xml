@@ -20,7 +20,31 @@
   </target>
 
   <target name="parser-gen" depends="init" unless="parser.uptodate">
- 	<java jar="bootstrap/javacc.jar" fork="true">
+        <get
+            src="https://javacc.com/download/javacc.jar"
+            dest="bootstrap"
+            ignoreerrors="true"
+            usetimestamp="true" />
+        <get
+            src="https://javacc.com/download/freemarker.jar"
+            dest="bootstrap"
+            ignoreerrors="true"
+            usetimestamp="true" />
+         <fail message="Bootstrap javacc.jar not available">
+            <condition>
+             <not>
+              <available file="bootstrap/javacc.jar"/>
+             </not>
+            </condition>
+         </fail>
+         <fail message="Bootstrap freemarker.jar not available">
+            <condition>
+             <not>
+              <available file="bootstrap/freemarker.jar"/>
+             </not>
+            </condition>
+         </fail>
+  	<java jar="bootstrap/javacc.jar" fork="true">
  	   <arg value="src/parser/FM.javacc"/>
  	</java>
   </target>
