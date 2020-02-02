@@ -1,0 +1,173 @@
+/*
+ * Author: Jonathan Revusky revusky@freemarker.es
+ * This JSON Grammar generates a parser that builds up a FreeMarker object tree 
+ * of SimpleXXX TemplateModel objects. The grammar is(as far as I can tell) an 
+ * EXACT implementation of the spec found here: https://www.json.org/json-en.html
+ * That means that you cannot put comments in there. Also, you cannot put trailing 
+ * commas inside hashes and lists.
+ */
+ 
+options {
+    TREE_BUILDING_ENABLED=false;
+    TOKENS_ARE_NODES = false;
+    BASE_SRC_DIR="..";
+    PARSER_PACKAGE="freemarker.formats.json";
+}
+
+INJECT(PARSER_CLASS) :
+{
+    import freemarker.template.*;
+}
+{
+   static private String decodeStringLiteral(String s) {
+        String raw = s.substring(1, s.length()-1);
+       if (raw.indexOf('\\') == -1) {
+           return raw;
+       } 
+       StringBuilder buf = new StringBuilder();
+       boolean escape = false;
+       for (int i = 0; i<raw.length(); i++) {
+           char c = raw.charAt(i);
+           if (escape) {
+               escape = false;
+               switch (c) {
+                   case 't' : buf.append((char)'\t'); break;
+                   case 'n' : buf.append((char)'\n'); break;
+                   case 'r' : buf.append((char)'\r'); break;
+                   case 'f' : buf.append((char)'\r'); break;
+                   case 'b' : buf.append((char)'\r'); break;
+                   default : buf.append(c);
+               }
+           }
+           else if (c=='\\') {
+              escape = true;
+           }
+           else {
+              buf.append(c);
+           }
+       }
+       return buf.toString();
+   }
+
+}
+
+SKIP :
+{
+  <WHITESPACE : (" "| "\t"| "\n"| "\r")+> 
+}
+
+TOKEN :
+{
+    <COLON : ":">
+    |
+    <COMMA : ",">
+    |
+    <OPEN_BRACKET : "[">
+    |
+    <CLOSE_BRACKET : "]">
+    |
+    <OPEN_BRACE : "{" >
+    |
+    <CLOSE_BRACE : "}">
+}
+
+TOKEN :
+{
+    <TRUE: "true">
+    |
+    <FALSE: "false"> 
+    |
+    <NULL: "null"> 
+    |
+    <#ESCAPE1 : "\\" (["\\", "\"", "/","b","f","n","r","t"])>
+    |
+    <#ESCAPE2 : "\\u" (["0"-"9", "a"-"f", "A"-"F"]) {4}>
+    |
+    <#REGULAR_CHAR : ~["\u0000"-"\u001F","\"","\\"]>
+    |
+    <STRING_LITERAL : "\"" (<REGULAR_CHAR>|<ESCAPE2>|<ESCAPE1>)* "\"">
+    |
+    <#ZERO : "0">
+    |
+    <#NON_ZERO : (["1"-"9"])(["0"-"9"])*>
+    |
+    <#FRACTION : "." (["0"-"9"])+>
+    |
+    <#EXPONENT : ["E","e"]["+","-"](["1"-"9"])+>
+    |
+    <NUMBER : ("-")?(<ZERO>|<NON_ZERO>)(<FRACTION>)?(<EXPONENT>)?> 
+}
+
+
+SimpleSequence JSONArray() : 
+{
+    SimpleSequence result = new SimpleSequence();
+    TemplateModel element = null;
+}
+{
+
+    <OPEN_BRACKET>
+    [
+      element=JSONValue(){result.add(element);} 
+      (
+        <COMMA>
+        JSONValue() {result.add(element);}
+      )*
+    ]
+    <CLOSE_BRACKET>
+    {
+        return result;
+    }
+}
+
+TemplateModel JSONValue() : 
+{
+    TemplateModel result = null;
+    Token t;
+}
+{
+   (
+    <TRUE> {result = TemplateBooleanModel.TRUE;}
+    |
+    <FALSE> {result = TemplateBooleanModel.FALSE;}
+    |
+    <NULL> {result = TemplateModel.JAVA_NULL;}
+    |
+    t=<STRING_LITERAL> {result = new SimpleScalar(decodeStringLiteral(t.image));}
+    |
+    t=<NUMBER> {result = new SimpleNumber(new Double(t.image));}
+    |
+    result=JSONArray()
+    |
+    result=JSONObject()
+   )
+   {
+       return result;
+   }
+}
+
+SimpleHash JSONObject() : 
+{
+    String key;
+    TemplateModel value;
+    SimpleHash result = new SimpleHash();
+    Token t = null;
+}
+{
+    <OPEN_BRACE>
+    [
+       t=<STRING_LITERAL>
+       <COLON>
+       value=JSONValue() {result.put(decodeStringLiteral(t.image), value);}
+       (
+         <COMMA>
+        t=<STRING_LITERAL>
+        <COLON>
+        value=JSONValue() {result.put(decodeStringLiteral(t.image), value);}
+       )*
+    ]
+    <CLOSE_BRACE>
+    {
+       return result;
+    }
+}

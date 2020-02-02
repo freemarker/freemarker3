@@ -169,6 +169,7 @@ public class Template extends TemplateCore {
                 }
             }
             catch (LexicalException exc) {
+		exc.printStackTrace();
                 throw new ParseException("Lexical error: " + exc, 0, 0);
             }
         }
