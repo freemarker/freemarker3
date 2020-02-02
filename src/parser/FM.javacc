@@ -2843,18 +2843,16 @@ TemplateElement Root() :
    }
 }
 
-//TODO: Figure out a way to encapsulate this.
-
-  <EXPRESSION, NO_SPACE_EXPRESSION> TOKEN :
+<EXPRESSION, NO_SPACE_EXPRESSION> TOKEN:
 {
-  < ID: <LETTER> (<PART_LETTER>)* > #Identifier
-  |
-  < #LETTER:
-      [  // all chars for which Character.isIdentifierStart is true plus the '@
+   <ID: <LETTER>(<PART_LETTER>)*>
+   |   
+   <#LETTER:
+      [  // all chars for which Character.isIdentifierStart is true
          "$",
+         "@",
          "A"-"Z",
          "_",
-         "@",
          "a"-"z",
          "\u00a2"-"\u00a5",
          "\u00aa",
@@ -3133,7 +3131,7 @@ TemplateElement Root() :
          "0"-"9",
          "A"-"Z",
          "_",
-          "@",
+         "@",
          "a"-"z",
          "\u007f"-"\u009f",
          "\u00a2"-"\u00a5",
@@ -3493,9 +3491,6 @@ TemplateElement Root() :
          "\ufff9"-"\ufffb"
       ]
   >
-  |
-  <UNEXPECTED : ~[]>
 }
-  
 
 
