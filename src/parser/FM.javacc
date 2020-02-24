@@ -653,19 +653,6 @@ Expression Exp() :
 	 exp=OrExpression() {return exp;}
 }
 
-JAVACODE
-Token KeepGoingUntil(int type) {
-	Token t = null;
-	do {
-		t = getNextToken();
-	} while (t.kind != type && t.kind != EOF);
-	if (t.kind == type) {
-		this.current_token = t;
-	}
-	return t;
-}
-
-
 /**
  * Lowest level expression, a literal, a variable,
  * or a possibly more complex expression bounded
