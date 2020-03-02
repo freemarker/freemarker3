@@ -93,11 +93,17 @@
   </target>
 
   <target name="test" depends="compile">
-      <junit haltonfailure="on">
-      <classpath>
+      <junit haltonfailure="off">
+      <!--classpath>
           <dirset dir="src"/>
           <dirset dir="build"/>
           <path refid="class.path"/>
+      </classpath-->
+      <classpath>
+          <pathelement location="libs/junit4.jar"/>
+          <pathelement location="freemarker.jar"/>
+          <dirset dir="src"/>
+          <dirset dir="build"/>
       </classpath>
       <formatter type="plain" />
       <formatter type="xml" />

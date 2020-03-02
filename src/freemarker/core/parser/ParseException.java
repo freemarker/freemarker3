@@ -239,7 +239,7 @@ public class ParseException extends java.io.IOException implements FMConstants {
    * when these raw version cannot be used as part of an ASCII
    * string literal.
    */
-  protected String add_escapes(String str) {
+  protected static String addEscapes(String str) {
       StringBuilder retval = new StringBuilder();
       char ch;
       for (int i = 0; i < str.length(); i++) {
@@ -283,4 +283,6 @@ public class ParseException extends java.io.IOException implements FMConstants {
       }
       return retval.toString();
    }
+
+   public static String add_escapes(String s) {return addEscapes(s);}
 }

@@ -102,7 +102,7 @@ public class Template extends TemplateCore {
     boolean stripWhitespace;
     private boolean strictVariableDeclaration;
     
-    private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
+    private List<ParsingProblem> parsingProblems = new ArrayList<>();
     private TemplateHeaderElement headerElement;
     
     public int getAbsoluteOffset(int line, int column) {
@@ -169,7 +169,7 @@ public class Template extends TemplateCore {
                 }
             }
             catch (LexicalException exc) {
-		exc.printStackTrace();
+                exc.printStackTrace();
                 throw new ParseException("Lexical error: " + exc, 0, 0);
             }
         }

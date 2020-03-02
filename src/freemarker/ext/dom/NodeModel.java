@@ -50,6 +50,7 @@ import org.w3c.dom.Text;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.log.Logger;
@@ -70,27 +71,36 @@ abstract public class NodeModel
 implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
     AdapterTemplateModel, WrapperTemplateModel
 {
+	    static final Logger logger = Logger.getLogger("freemarker.dom");
+	 
+	    static private ErrorHandler errorHandler = new ErrorHandler() {
 
-    static final Logger logger = Logger.getLogger("freemarker.dom");
-    
+			@Override
+			public void warning(SAXParseException exception) throws SAXException {
+				if (logger.isWarnEnabled()) {
+					logger.warn(exception.getMessage(), exception);
+				}
+			}
+
+			@Override
+			public void error(SAXParseException exception) throws SAXException {
+				if (logger.isErrorEnabled()) {
+					logger.error(exception.getMessage(), exception);
+				}
+			}
+
+			@Override
+			public void fatalError(SAXParseException exception) throws SAXException {
+				error(exception);
+				throw exception;
+			}
+	    };
+	    
+
+
     static private DocumentBuilderFactory docBuilderFactory;
     
-    static private Map xpathSupportMap = Collections.synchronizedMap(new WeakHashMap());
-    
-    static private ErrorHandler errorHandler;
-    
-    static Class xpathSupportClass;
-    
-    static {
-        try {
-            useDefaultXPathSupport();
-        } catch (Exception e) {
-            // do nothing
-        }
-        if (xpathSupportClass == null && logger.isWarnEnabled()) {
-            logger.warn("No XPath support is available.");
-        }
-    }
+//    static private Map xpathSupportMap = Collections.synchronizedMap(new WeakHashMap());
     
     /**
      * The W3C DOM Node being wrapped.
@@ -482,37 +492,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
         }
     }
 
-    /**
-     * Tells the system to use (restore) the default (initial) XPath system used by
-     * this FreeMarker version on this system.
-     */
-    static public void useDefaultXPathSupport() {
-        xpathSupportClass = DefaultXPathSupport.class;
-    }
-  
-
-    /**
-     * Set an alternative implementation of freemarker.ext.dom.XPathSupport to use
-     * as the XPath engine.
-     * @param cl the class, or <code>null</code> to disable XPath support.
-     */
-    static public void setXPathSupportClass(Class cl) {
-        if (cl != null && !XPathSupport.class.isAssignableFrom(cl)) {
-            throw new RuntimeException("Class " + cl.getName()
-                    + " does not implement freemarker.ext.dom.XPathSupport");
-        }
-        xpathSupportClass = cl;
-    }
-
-    /**
-     * Get the currently used freemarker.ext.dom.XPathSupport used as the XPath engine.
-     * Returns <code>null</code> if XPath support is disabled.
-     */
-    static public Class getXPathSupportClass() {
-        return xpathSupportClass;
-    }
-
-    static private String getText(Node node) {
+     static private String getText(Node node) {
         if (node instanceof Text || node instanceof CDATASection) {
             return ((org.w3c.dom.CharacterData) node).getData();
         }
@@ -534,32 +514,6 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
     
     XPathSupport getXPathSupport() {
         return DefaultXPathSupport.instance;
-/*
-        if (jaxenXPathSupport != null) {
-            return jaxenXPathSupport;
-        }
-        XPathSupport xps = null;
-        Document doc = node.getOwnerDocument();
-        if (doc == null) {
-            doc = (Document) node;
-        }
-        synchronized (doc) {
-            WeakReference ref = (WeakReference) xpathSupportMap.get(doc);
-            if (ref != null) {
-                xps = (XPathSupport) ref.get();
-            }
-            if (xps == null) {
-                try {
-                    xps = (XPathSupport) xpathSupportClass.newInstance();
-                    xpathSupportMap.put(doc, new WeakReference(xps));
-                } catch (Exception e) {
-                    logger.error("Error instantiating xpathSupport class", e);
-                }                
-            }
-        }
-        return xps;
-
- */
     }
     
     
@@ -574,4 +528,8 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
     public Object getWrappedObject() {
         return node;
     }
+    
+    
 }
+
+

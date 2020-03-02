@@ -19,7 +19,7 @@ INJECT(PARSER_CLASS) :
     import freemarker.template.*;
 }
 {
-   static private String decodeStringLiteral(String s) {
+   static public String decodeStringLiteral(String s) {
         String raw = s.substring(1, s.length()-1);
        if (raw.indexOf('\\') == -1) {
            return raw;
@@ -31,11 +31,11 @@ INJECT(PARSER_CLASS) :
            if (escape) {
                escape = false;
                switch (c) {
-                   case 't' : buf.append((char)'\t'); break;
-                   case 'n' : buf.append((char)'\n'); break;
-                   case 'r' : buf.append((char)'\r'); break;
-                   case 'f' : buf.append((char)'\r'); break;
-                   case 'b' : buf.append((char)'\r'); break;
+                   case 't' : buf.append('\t'); break;
+                   case 'n' : buf.append('\n'); break;
+                   case 'r' : buf.append('\r'); break;
+                   case 'f' : buf.append('\r'); break;
+                   case 'b' : buf.append('\r'); break;
                    default : buf.append(c);
                }
            }

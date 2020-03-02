@@ -70,7 +70,6 @@ public abstract class ASTVisitor {
     	}
     	catch (InvocationTargetException ite) {
     		Throwable cause = ite.getCause();
-//    		cause.printStackTrace();
     		if (cause instanceof RuntimeException) {
     			throw (RuntimeException) cause;
     		}

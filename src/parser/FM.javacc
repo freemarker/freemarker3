@@ -229,7 +229,7 @@ INJECT(LEXER_CLASS) :
                         + " on line: " + token.beginLine
                         + ", column: " + token.beginColumn +1
                         + ", in template: " + templateName;
-          	  throw new LexicalException(msg, LexicalException.LEXICAL_ERROR);
+          	  throw new RuntimeException(msg); // REVISIT
  			}
  		}
  	}
