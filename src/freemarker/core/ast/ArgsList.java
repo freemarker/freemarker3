@@ -97,7 +97,7 @@ abstract public class ArgsList extends TemplateNode {
 	}
 	
 	private static ParameterList getParameterList(String s) throws ParseException {
-		SimpleCharStream scs = new SimpleCharStream(new StringReader(s), 1, 1, s.length());
+		SimpleCharStream scs = new SimpleCharStream(new StringReader(s), 1, 1, 16* s.length());
 		FMLexer token_source = new FMLexer(scs);
 //		FMLexer token_source = new FMLexer(scs);
 		token_source.SwitchTo(FMConstants.EXPRESSION);

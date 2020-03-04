@@ -68,7 +68,7 @@ public class evalBI extends ExpressionEvaluatingBuiltIn {
     throws TemplateException {
         SimpleCharStream scs = new SimpleCharStream(
                 new StringReader("(" + s + ")"), caller.getBeginLine(),
-                caller.getBeginColumn(), s.length() + 2);
+                caller.getBeginColumn(), 16*s.length());
         //        FMLexer token_source = new FMLexer(scs);
         FMLexer token_source = new FMLexer(scs);
         token_source.SwitchTo(FMConstants.EXPRESSION);
