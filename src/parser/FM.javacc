@@ -53,8 +53,8 @@ INJECT(PARSER_CLASS) :
    * Create an FM expression parser using a string.
    */
   static public FMParser createExpressionParser(String s) {
-      SimpleCharStream scs = new SimpleCharStream(new StringReader(s), 1, 1, 16*s.length());
-      FMLexer lexer = new FMLexer(scs);
+//      SimpleCharStream scs = new SimpleCharStream(new StringReader(s), 1, 1, 16*s.length());
+      FMLexer lexer = new FMLexer(new StringReader(s));
       lexer.SwitchTo(FMConstants.EXPRESSION);
       return new FMParser(lexer);
   }

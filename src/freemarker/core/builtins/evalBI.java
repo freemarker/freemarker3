@@ -33,7 +33,6 @@ import freemarker.core.parser.FMConstants;
 import freemarker.core.parser.FMLexer;
 import freemarker.core.parser.FMParser;
 import freemarker.core.parser.ParseException;
-import freemarker.core.parser.SimpleCharStream;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -66,12 +65,13 @@ public class evalBI extends ExpressionEvaluatingBuiltIn {
 
     TemplateModel eval(String s, Environment env, BuiltInExpression caller) 
     throws TemplateException {
-        SimpleCharStream scs = new SimpleCharStream(
-                new StringReader("(" + s + ")"), caller.getBeginLine(),
-                caller.getBeginColumn(), 16*s.length());
+//        SimpleCharStream scs = new SimpleCharStream(
+//                new StringReader("(" + s + ")"), caller.getBeginLine(),
+//                caller.getBeginColumn(), 16*s.length());
         //        FMLexer token_source = new FMLexer(scs);
-        FMLexer token_source = new FMLexer(scs);
-        token_source.SwitchTo(FMConstants.EXPRESSION);
+        StringReader sr = new StringReader("(" + s + ")");
+        FMLexer token_source = new FMLexer(sr, FMConstants.EXPRESSION, caller.getBeginLine(), caller.getBeginColumn());
+//        token_source.SwitchTo(FMConstants.EXPRESSION);
         FMParser parser = new FMParser(token_source);
         parser.setTemplate(caller.getTemplate());
         Expression exp = null;
