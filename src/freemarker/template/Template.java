@@ -151,26 +151,20 @@ public class Template extends TemplateCore {
         
         readInTemplateText(reader);
         try {
-            try {
-                int syntaxSetting = getConfiguration().getTagSyntax();
-                this.stripWhitespace = getConfiguration().getWhitespaceStripping();
-                this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
-                FMParser parser = new FMParser(this, new CharArrayReader(templateText), syntaxSetting);
-                setRootElement(parser.Root());
-                PostParseVisitor ppv = new PostParseVisitor(this);
-                ppv.visit(this);
-                WhitespaceAdjuster wadj = new WhitespaceAdjuster(this);
-                wadj.visit(this);
-                for (ASTVisitor visitor : cfg.getAutoVisitors()) {
-                	if (visitor instanceof Cloneable) {
-                		visitor = visitor.clone();
-                	}
-                	visitor.visit(this);
-                }
-            }
-            catch (LexicalException exc) {
-                exc.printStackTrace();
-                throw new ParseException("Lexical error: " + exc, 0, 0);
+            int syntaxSetting = getConfiguration().getTagSyntax();
+            this.stripWhitespace = getConfiguration().getWhitespaceStripping();
+            this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
+            FMParser parser = new FMParser(this, new CharArrayReader(templateText), syntaxSetting);
+            setRootElement(parser.Root());
+            PostParseVisitor ppv = new PostParseVisitor(this);
+            ppv.visit(this);
+            WhitespaceAdjuster wadj = new WhitespaceAdjuster(this);
+            wadj.visit(this);
+            for (ASTVisitor visitor : cfg.getAutoVisitors()) {
+            	if (visitor instanceof Cloneable) {
+            		visitor = visitor.clone();
+            	}
+            	visitor.visit(this);
             }
         }
         catch(ParseException e) {
