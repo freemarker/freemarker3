@@ -88,6 +88,7 @@
      <delete file="src/freemarker/core/parser/FMParser.html"/>
      <delete file="src/freemarker/core/parser/Node.java"/>
      <delete file="src/freemarker/core/parser/Nodes.java"/>
+     <delete file="src/freemarker/core/parser/FileLineMap.java"/>
      <delete dir="build"/>
      <delete file="freemarker.jar"/>
   </target>

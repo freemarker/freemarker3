@@ -65,12 +65,14 @@ public class evalBI extends ExpressionEvaluatingBuiltIn {
 
     TemplateModel eval(String s, Environment env, BuiltInExpression caller) 
     throws TemplateException {
-//        SimpleCharStream scs = new SimpleCharStream(
-//                new StringReader("(" + s + ")"), caller.getBeginLine(),
-//                caller.getBeginColumn(), 16*s.length());
-        //        FMLexer token_source = new FMLexer(scs);
         StringReader sr = new StringReader("(" + s + ")");
-        FMLexer token_source = new FMLexer(sr, FMConstants.EXPRESSION, caller.getBeginLine(), caller.getBeginColumn());
+        FMLexer token_source;
+        try {
+        	token_source = new FMLexer(sr, FMConstants.EXPRESSION, caller.getBeginLine(), caller.getBeginColumn());
+        } catch (Exception e) {
+        	//FIXME
+        	throw new RuntimeException(e);
+        }
 //        token_source.SwitchTo(FMConstants.EXPRESSION);
         FMParser parser = new FMParser(token_source);
         parser.setTemplate(caller.getTemplate());

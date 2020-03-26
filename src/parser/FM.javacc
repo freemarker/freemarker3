@@ -27,6 +27,7 @@ options
    BASE_SRC_DIR="..";
    PARSER_PACKAGE="freemarker.core.parser";
    TREE_BUILDING_ENABLED=false;
+//  HUGE_FILE_SUPPORT=true; //Necessary for now because one test fails.
 }
 
 INJECT(PARSER_CLASS) : 
@@ -53,8 +54,13 @@ INJECT(PARSER_CLASS) :
    * Create an FM expression parser using a string.
    */
   static public FMParser createExpressionParser(String s) {
-//      SimpleCharStream scs = new SimpleCharStream(new StringReader(s), 1, 1, 16*s.length());
-      FMLexer lexer = new FMLexer(new StringReader(s));
+      FMLexer lexer;
+      try {
+         lexer = new FMLexer(new StringReader(s));
+      }
+      catch (Exception e) {
+          throw new RuntimeException(e);
+      }
       lexer.SwitchTo(FMConstants.EXPRESSION);
       return new FMParser(lexer);
   }

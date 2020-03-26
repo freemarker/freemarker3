@@ -52,10 +52,13 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
     	String src = this.getSource();
 //    	String src = value;
         if (src.length() >5 && (src.indexOf("${") >= 0 || src.indexOf("#{") >= 0)) {
-//            SimpleCharStream scs = new SimpleCharStream(new StringReader(value), getBeginLine(), getBeginColumn()+1, 16*value.length());
- 
-//            FMLexer token_source = new FMLexer(scs);
-            FMLexer token_source = new FMLexer(new StringReader(value), 0, getBeginLine(), getBeginColumn()+1);
+            FMLexer token_source;
+            try {
+            	token_source = new FMLexer(new StringReader(value), 0, getBeginLine(), getBeginColumn()+1);
+            } catch (Exception e) {
+            	// FIXME later.
+            	throw new RuntimeException(e);
+            }
             token_source.setOnlyTextOutput(true);
             FMParser parser = new FMParser(token_source);
             parser.setTemplate(getTemplate());

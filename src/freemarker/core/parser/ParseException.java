@@ -111,6 +111,14 @@ public class ParseException extends java.io.IOException implements FMConstants {
       problems.add(new ParsingProblem(message, tobj));
   }
   
+  private Token errorToken;
+  
+  public ParseException(Token errorToken) {
+	   this.errorToken = errorToken;
+	  
+  }
+  
+  
   /**
    * This variable determines which constructor was used to create
    * this object and thereby affects the semantics of the
@@ -161,6 +169,12 @@ public class ParseException extends java.io.IOException implements FMConstants {
    * gets displayed.
    */
   public String getMessage() {
+	if (errorToken != null) {
+	    return "Encountered an error on (or somewhere around) line "
+                + errorToken.getBeginLine() 
+                + ", column " + errorToken.getBeginColumn() 
+                + " of " + errorToken.getInputSource();		
+	}
 	if (problems != null && problems.size() >0) {
 		StringBuilder buf = new StringBuilder();
 		for (ParsingProblem problem : problems) {

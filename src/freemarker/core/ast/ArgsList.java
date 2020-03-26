@@ -97,9 +97,13 @@ abstract public class ArgsList extends TemplateNode {
 	}
 	
 	private static ParameterList getParameterList(String s) throws ParseException {
-//		SimpleCharStream scs = new SimpleCharStream(new StringReader(s), 1, 1, 16* s.length());
-//		FMLexer token_source = new FMLexer(scs);
-		FMLexer token_source = new FMLexer(new StringReader(s));
+		FMLexer token_source;
+		try {
+			token_source = new FMLexer(new StringReader(s));
+		} catch (Exception e) {
+			// Fix this later. Probably, the Lexers should just have a constructor that takes a string.
+			throw new RuntimeException(e);
+		}
 		token_source.SwitchTo(FMConstants.EXPRESSION);
 		FMParser parser = new FMParser(token_source);
 		return parser.ParameterList();
