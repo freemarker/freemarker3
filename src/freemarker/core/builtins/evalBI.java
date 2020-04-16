@@ -69,6 +69,7 @@ public class evalBI extends ExpressionEvaluatingBuiltIn {
         FMLexer token_source;
         try {
         	token_source = new FMLexer(sr, FMConstants.EXPRESSION, caller.getBeginLine(), caller.getBeginColumn());
+//            token_source = new FMLexer(sr, FMLexer.LexicalState.EXPRESSION, caller.getBeginLine(), caller.getBeginColumn());
         } catch (Exception e) {
         	//FIXME
         	throw new RuntimeException(e);

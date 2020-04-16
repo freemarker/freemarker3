@@ -27,6 +27,7 @@ options
    BASE_SRC_DIR="..";
    PARSER_PACKAGE="freemarker.core.parser";
    TREE_BUILDING_ENABLED=false;
+   LEGACY_API;
 //  HUGE_FILE_SUPPORT=true; //Necessary for now because one test fails.
 }
 
