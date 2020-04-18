@@ -114,12 +114,12 @@ INJECT(PARSER_CLASS) :
    *         that we were scanning ahead for
    */
   
-  private Token recoverToToken(int kind, boolean consume) {
+  private Token recoverToToken(TokenType type, boolean consume) {
   	  Token t = this.current_token, prevToken;
   	  do {
   	  	prevToken = t;
   	  	t = getNextToken();
-  	  } while (t.kind != kind && t.kind != EOF);
+  	  } while (t.getType() != type && t.getType() != TokenType.EOF);
   	  if (!consume) {
   	  	this.current_token = prevToken;
   	  }
@@ -203,7 +203,7 @@ INJECT(LEXER_CLASS) :
  
  
  private void CommonTokenAction(Token token) {
- 	if (token.kind == EOF) return;
+ 	if (token.getType() == TokenType.EOF) return;
  	String tokText = token.image;
  	char firstChar = tokText.charAt(0);
  	if (justAfterDot) {
@@ -228,7 +228,7 @@ INJECT(LEXER_CLASS) :
  				token.setType(TokenType.PRINTABLE_CHARS);
  				return;
  			}
- 			if (token.kind == UNKNOWN_DIRECTIVE) {
+ 			if (token.getType() == TokenType.UNKNOWN_DIRECTIVE) {
     	      int index = tokText.indexOf('#');
         	  String s = tokText.substring(index);
               String msg = "Unknown directive: " 
@@ -240,14 +240,14 @@ INJECT(LEXER_CLASS) :
  			}
  		}
  	}
-  	switch(token.kind) {
+  	switch(token.getType()) {
   		case FTL_HEADER : 
           SwitchTo(EXPRESSION);
           break;
         case GREATER_THAN_EQUALS : 
   		case GREATER_THAN:
 			if (parenthesisNesting == 0 && !altDirectiveSyntax) {
-				if (token.kind == GREATER_THAN_EQUALS) {
+				if (token.getType() == TokenType.GREATER_THAN_EQUALS) {
 					input_stream.backup(1); // So that the = doesn't get eaten.
 				} 
 				token.setType(TokenType.DIRECTIVE_END);
@@ -303,7 +303,7 @@ INJECT(LEXER_CLASS) :
  				break;
  			} // deliberate fall-through to next case...
  		case COMMENT_END:
- 			if (token.kind == COMMENT_END && noparseType != COMMENT) {
+ 			if (token.getType() == TokenType.COMMENT_END && noparseType != COMMENT) {
 	 			token.setType(TokenType.PRINTABLE_CHARS);
  			} else {
  				char lastChar = tokText.charAt(tokText.length() -1);
@@ -342,6 +342,46 @@ INJECT(LEXER_CLASS) :
  			SwitchTo(EXPRESSION);
  	}
  }
+ }
+ 
+ INJECT(ParseException) : 
+ {
+    import java.util.*;
+    import freemarker.core.ast.TemplateNode;
+    extends java.io.IOException;
+ }
+ {
+     int lineNumber, columnNumber;
+     String templateName;
+     public List<ParsingProblem> problems;
+     
+     public ParseException(String message, int lineNumber, int columnNumber) {
+         super(message);
+         this.lineNumber = lineNumber;
+         this.columnNumber = columnNumber;
+     }
+     
+      public ParseException(String message, TemplateNode tobj) {
+         super(message);
+          this.lineNumber = tobj.getBeginLine();
+          this.columnNumber = tobj.getBeginColumn();
+          problems = new ArrayList<ParsingProblem>();
+          problems.add(new ParsingProblem(message, tobj));
+     }
+     
+     public ParseException(List<ParsingProblem> problems) {
+         this.problems = problems;
+     }
+     
+  
+     
+  
+     public void setTemplateName(String templateName) {
+           this.templateName = templateName;
+     }
+  
+     
+     
  }
 
 TOKEN:
@@ -626,7 +666,7 @@ TOKEN:
  * says whether to consume the recoverToken or not.
  */
 
-Expression Expression(Token start, int recoverToType, boolean consumeToken) :
+Expression Expression(Token start, TokenType recoverToType, boolean consumeToken) :
 {
    Expression exp = null;
    Token end;
@@ -640,7 +680,7 @@ Expression Expression(Token start, int recoverToType, boolean consumeToken) :
        do {
   	  	   prevToken = t;
 		   t = getNextToken();
- 	   } while (t.kind != recoverToType && t.kind != EOF);
+ 	   } while (t.getType() != recoverToType && t.getType() != TokenType.EOF);
        if (!consumeToken) {
   	  	   this.current_token = prevToken;
   	   }
@@ -710,7 +750,7 @@ Expression Parenthesis() :
 }
 {
     start=<OPEN_PAREN>
-    exp=Expression(start, CLOSE_PAREN, false) 
+    exp=Expression(start, TokenType.CLOSE_PAREN, false) 
     end=<CLOSE_PAREN>
     {
        result = new ParentheticalExpression(exp);
@@ -1110,7 +1150,7 @@ Expression DefaultTo(Expression exp) :
    (
        t=<EXCLAM>
        [
-         LOOKAHEAD(PrimaryExpression(), {getToken(1).kind != ID || getToken(2).kind != EQUALS})
+         LOOKAHEAD(PrimaryExpression(), {getToken(1).getType() != TokenType.ID || getToken(2).getType() != TokenType.EQUALS})
           rhs=PrimaryExpression()
        ]
    )
@@ -1322,15 +1362,15 @@ TemplateElement StringOutput() :
 }
 {
    begin=<OUTPUT_ESCAPE> 
-   exp=Expression(begin, CLOSE_BRACE, false)
+   exp=Expression(begin, TokenType.CLOSE_BRACE, false)
    try {
 	   end=<CLOSE_BRACE>
    }
    catch (ParseException pe2) {
-   	   end=recoverToToken(CLOSE_BRACE, true);
+   	   end=recoverToToken(TokenType.CLOSE_BRACE, true);
    	   exp=new InvalidExpression("The expression inside the interpolation is invalid.");
    	   exp.setLocation(template, begin.next, end);
-   	   if (end.next.kind != EOF) {
+   	   if (end.next.getType() != TokenType.EOF) {
 	   	   end = end.next;
    	   } else {
    	   	   unclosed = true;
@@ -1427,10 +1467,10 @@ AttemptBlock Attempt() :
    try {
 	   block=OptionalBlock()
    } catch (ParseException pe) {
-   	   recoverToToken(RECOVER, false);
+   	   recoverToToken(TokenType.RECOVER, false);
    	   problem = pe;
    } catch (LexicalException tme) {
-   	   recoverToToken(RECOVER, false);
+   	   recoverToToken(TokenType.RECOVER, false);
    	   problem = new ParseException(tme.getMessage());
    }*/
    recoveryBlock=Recover()
@@ -1469,7 +1509,7 @@ TemplateElement List() :
 }
 {
    start=<LIST> 
-   exp=Expression(start, AS, false)
+   exp=Expression(start, TokenType.AS, false)
    <AS>
    index=<ID>
    <DIRECTIVE_END>

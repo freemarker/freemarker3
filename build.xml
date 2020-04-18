@@ -20,7 +20,7 @@
   </target>
 
   <target name="parser-gen" depends="init" unless="parser.uptodate">
-        <get
+        <!--get
             src="https://javacc.com/download/javacc.jar"
             dest="bootstrap"
             quiet="true"
@@ -45,7 +45,7 @@
               <available file="bootstrap/freemarker.jar"/>
              </not>
             </condition>
-         </fail>
+         </fail-->
   	<java jar="bootstrap/javacc.jar" fork="true">
  	   <arg value="src/parser/FM.javacc"/>
  	</java>
@@ -89,6 +89,7 @@
      <delete file="src/freemarker/core/parser/Node.java"/>
      <delete file="src/freemarker/core/parser/Nodes.java"/>
      <delete file="src/freemarker/core/parser/FileLineMap.java"/>
+     <delete file="src/freemarker/core/parser/ParseException.java"/>
      <delete dir="build"/>
      <delete file="freemarker.jar"/>
   </target>
