@@ -208,7 +208,7 @@ INJECT(LEXER_CLASS) :
  	char firstChar = tokText.charAt(0);
  	if (justAfterDot) {
  		if (StringUtil.isFTLIdentifier(tokText) || tokText.equals("*") || tokText.equals("**")) {
- 			token.kind = ID;
+ 			token.setType(TokenType.ID);
  			return;
  		} 
  	}
@@ -217,7 +217,7 @@ INJECT(LEXER_CLASS) :
  		if (chopFirst.startsWith("#") || chopFirst.startsWith("/#")
  		    || chopFirst.startsWith("@") || chopFirst.startsWith("/@")) {
  			if (this.onlyTextOutput) {
- 				token.kind = PRINTABLE_CHARS;
+ 				token.setType(TokenType.PRINTABLE_CHARS);
  				return;
  			}
 	 		boolean squareBracket = firstChar == '[';
@@ -225,7 +225,7 @@ INJECT(LEXER_CLASS) :
  				setAltDirectiveSyntax(squareBracket);
  			} 
  			else if (altDirectiveSyntax != squareBracket) {
- 				token.kind = PRINTABLE_CHARS;
+ 				token.setType(TokenType.PRINTABLE_CHARS);
  				return;
  			}
  			if (token.kind == UNKNOWN_DIRECTIVE) {
@@ -250,7 +250,7 @@ INJECT(LEXER_CLASS) :
 				if (token.kind == GREATER_THAN_EQUALS) {
 					input_stream.backup(1); // So that the = doesn't get eaten.
 				} 
-				token.kind = DIRECTIVE_END;
+				token.setType(TokenType.DIRECTIVE_END);
 				SwitchTo(DEFAULT);
 			}
 			break;
@@ -268,7 +268,7 @@ INJECT(LEXER_CLASS) :
             if (bracketNesting >0) {
         	   --bracketNesting;
             } else {
-            	token.kind=DIRECTIVE_END;
+            	token.setType(TokenType.DIRECTIVE_END);
         		SwitchTo(DEFAULT);
             }   
             break; 
@@ -299,12 +299,12 @@ INJECT(LEXER_CLASS) :
  			break;
  		case NOPARSE_END:
  			if (noparseType != NOPARSE) {
- 				token.kind = PRINTABLE_CHARS;
+ 				token.setType(TokenType.PRINTABLE_CHARS);
  				break;
  			} // deliberate fall-through to next case...
  		case COMMENT_END:
  			if (token.kind == COMMENT_END && noparseType != COMMENT) {
-	 			token.kind = PRINTABLE_CHARS;
+	 			token.setType(TokenType.PRINTABLE_CHARS);
  			} else {
  				char lastChar = tokText.charAt(tokText.length() -1);
  				char startTagChar = lastChar == ']' ? '[' : '<';
@@ -312,7 +312,7 @@ INJECT(LEXER_CLASS) :
  				if (extraChars.length() >0) {
  					token.image = extraChars;
  					input_stream.backup(tokText.length() - extraChars.length());
- 					token.kind = PRINTABLE_CHARS;
+ 					token.setType(TokenType.PRINTABLE_CHARS);
  				} else {
 		 			SwitchTo(DEFAULT);
  				}
@@ -320,7 +320,7 @@ INJECT(LEXER_CLASS) :
  			break;
  		case TERSE_COMMENT_END:
  			if (noparseType != TERSE_COMMENT) {
- 				token.kind = PRINTABLE_CHARS;
+ 				token.setType(TokenType.PRINTABLE_CHARS);
  			}
  			else if (tokText.length() == 3) {
  				SwitchTo(DEFAULT);
@@ -328,7 +328,7 @@ INJECT(LEXER_CLASS) :
  			else {
 		 		token.image = tokText.substring(0, tokText.length() -3);
 		 		input_stream.backup(3);
-	 		 	token.kind = PRINTABLE_CHARS;
+	 		 	token.setType(TokenType.PRINTABLE_CHARS);
  			}
  			break;
   		case FUNCTION: case MACRO: case PARAM: case NESTED: case TRANSFORM: case STOP: case RETURN: case CALL:
