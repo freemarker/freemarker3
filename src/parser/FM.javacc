@@ -396,9 +396,9 @@ TOKEN:
     |
     <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> 
     |
-    <ATTEMPT : <START_TAG> "attempt" <CLOSE_TAG1>> 
+    <_ATTEMPT : <START_TAG> "attempt" <CLOSE_TAG1>> 
     |
-    <RECOVER : <START_TAG> "recover" <CLOSE_TAG1>>
+    <_RECOVER : <START_TAG> "recover" <CLOSE_TAG1>>
     |
     <BLOCKTRIM : <START_TAG> "t_lines" <CLOSE_TAG1>>
     |
@@ -1461,16 +1461,16 @@ AttemptBlock Attempt() :
    ParseException problem = null;
 }
 {
-   start=<ATTEMPT>
+   start=<_ATTEMPT>
    block=OptionalBlock()
 /*   
    try {
 	   block=OptionalBlock()
    } catch (ParseException pe) {
-   	   recoverToToken(TokenType.RECOVER, false);
+   	   recoverToToken(TokenType._RECOVER, false);
    	   problem = pe;
    } catch (LexicalException tme) {
-   	   recoverToToken(TokenType.RECOVER, false);
+   	   recoverToToken(TokenType._RECOVER, false);
    	   problem = new ParseException(tme.getMessage());
    }*/
    recoveryBlock=Recover()
@@ -1492,7 +1492,7 @@ RecoveryBlock Recover() :
    TemplateElement block;
 }
 {
-   start=<RECOVER>
+   start=<_RECOVER>
    block=OptionalBlock()
    {
       RecoveryBlock result = new RecoveryBlock(block);
