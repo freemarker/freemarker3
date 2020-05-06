@@ -204,7 +204,7 @@ INJECT(LEXER_CLASS) :
  
  private void CommonTokenAction(Token token) {
  	if (token.getType() == TokenType.EOF) return;
- 	String tokText = token.image;
+ 	String tokText = token.getImage();
  	char firstChar = tokText.charAt(0);
  	if (justAfterDot) {
  		if (StringUtil.isFTLIdentifier(tokText) || tokText.equals("*") || tokText.equals("**")) {
@@ -310,7 +310,7 @@ INJECT(LEXER_CLASS) :
  				char startTagChar = lastChar == ']' ? '[' : '<';
  				String extraChars = tokText.substring(0, tokText.lastIndexOf(startTagChar));
  				if (extraChars.length() >0) {
- 					token.image = extraChars;
+ 					token.setImage(extraChars);
  					input_stream.backup(tokText.length() - extraChars.length());
  					token.setType(TokenType.PRINTABLE_CHARS);
  				} else {
@@ -326,7 +326,7 @@ INJECT(LEXER_CLASS) :
  				SwitchTo(DEFAULT);
  			}
  			else {
-		 		token.image = tokText.substring(0, tokText.length() -3);
+		 		token.setImage(tokText.substring(0, tokText.length() -3));
 		 		input_stream.backup(3);
 	 		 	token.setType(TokenType.PRINTABLE_CHARS);
  			}
@@ -908,7 +908,7 @@ Expression EqualityExpression() :
      )
      rhs=RelationalExpression()
      {
-        result = new ComparisonExpression(lhs, rhs, t.image);
+        result = new ComparisonExpression(lhs, rhs, t.getImage());
         result.setLocation(template, lhs, rhs);
      }
    ]
@@ -940,7 +940,7 @@ Expression RelationalExpression() :
      )
      rhs=RangeExpression()
      {
-        result = new ComparisonExpression(lhs, rhs, t.image);
+        result = new ComparisonExpression(lhs, rhs, t.getImage());
         result.setLocation(template, lhs, rhs);
      }
    ]
@@ -1054,7 +1054,7 @@ Expression NumberLiteral() :
       t=<DECIMAL>
    )
    {
-       String s = t.image;
+       String s = t.getImage();
        Number n = template != null ? template.getArithmeticEngine().toNumber(s) : new java.math.BigDecimal(s);
        Expression result = new NumberLiteral(n);
        Token startToken = (op != null) ? op : t;
@@ -1070,7 +1070,7 @@ Identifier Identifier() :
 {
     t=<ID>
     {
-        Identifier id = new Identifier(t.image);
+        Identifier id = new Identifier(t.getImage());
         id.setLocation(template, t, t);
         return id;
     }
@@ -1101,7 +1101,7 @@ BuiltinVariable BuiltinVariable() :
    {
       BuiltinVariable result = null;
       try {
-          result = new BuiltinVariable(name.image);
+          result = new BuiltinVariable(name.getImage());
       } catch (ParseException pe) {
           pe.lineNumber = dot.beginLine;
           pe.columnNumber = dot.beginColumn;
@@ -1189,7 +1189,7 @@ Expression BuiltIn(Expression exp) :
    <BUILT_IN>
    t=<ID>
    {
-   	   BuiltInExpression result = new BuiltInExpression(exp, t.image);
+   	   BuiltInExpression result = new BuiltInExpression(exp, t.getImage());
    	   result.setLocation(template, exp, t);
    	   return result;
    }
@@ -1206,7 +1206,7 @@ Expression DotVariable(Expression exp) :
      <DOT>{token_source.justAfterDot = true;}
      t=<ID>{token_source.justAfterDot = false;}
      {
-         Dot dot = new Dot(exp, t.image);
+         Dot dot = new Dot(exp, t.getImage());
          dot.setLocation(template, exp, t);
          return dot;
      }
@@ -1264,7 +1264,7 @@ Expression StringLiteral() :
      t=<RAW_STRING> {raw = true;}
    )
    {
-       String s = t.image;
+       String s = t.getImage();
        // Get rid of the quotes.
        s = s.substring(1, s.length() -1);
        if (raw) {
@@ -1402,7 +1402,7 @@ NumericalOutput NumericalOutput() :
    ]
    end=<CLOSE_BRACE>
    {
-   	  String formatString = fmt == null ? null : fmt.image;
+   	  String formatString = fmt == null ? null : fmt.getImage();
       NumericalOutput result = new NumericalOutput(exp, formatString);
       result.setLocation(template, begin, end);
       return result;
@@ -1517,7 +1517,7 @@ TemplateElement List() :
    end=CloseDirectiveBlock("list")
    {
      IteratorBlock result = new IteratorBlock(exp,
-                                              index.image,
+                                              index.getImage(),
                                               block,
                                               false);
      result.setLocation(template, start, end);
@@ -1541,7 +1541,7 @@ IteratorBlock ForEach() :
    end=CloseDirectiveBlock("foreach")
    {
      IteratorBlock result = new IteratorBlock(exp,
-                                              index.image,
+                                              index.getImage(),
                                               block,
                                               true);
      result.setLocation(template, start, end);
@@ -1803,7 +1803,7 @@ TemplateElement Assign() :
        block=OptionalBlock()
        end=CloseDirectiveBlock(assignmentType)
        {
-       	  String name = end.image.substring(3, end.image.length() -1);
+       	  String name = end.getImage().substring(3, end.getImage().length() -1);
        	  switch (type) {
        	   	   case AssignmentInstruction.LOCAL : if (name.length() >0 && !name.equals("local")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.beginLine, end.beginColumn); break;
        	   	   case AssignmentInstruction.NAMESPACE : if (name.length() >0 && !name.equals("assign")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.beginLine, end.beginColumn); break;
@@ -1837,7 +1837,7 @@ Include Include() :
 	  <EQUALS>
 	  exp=Exp()
 	  {
-	     String attString = att.image;
+	     String attString = att.getImage();
 	     if (attString.equalsIgnoreCase("parse")) {
 	        if (parseExp != null) {
 	           String msg = getErrorStart(att)
@@ -1881,7 +1881,7 @@ LibraryLoad Import() :
    ns=<ID>
    end=LooseDirectiveEnd()
    {
-       LibraryLoad result = new LibraryLoad(template, nameExp, ns.image);
+       LibraryLoad result = new LibraryLoad(template, nameExp, ns.getImage());
        result.setLocation(template, start, end);
        if (template != null) template.addImport(result);
        return result;
@@ -1903,10 +1903,10 @@ ParameterList ParameterList() :
           {
           	if (firstArg == null) firstArg = arg;
           	defValue = null;
-          	if (paramNames.contains(arg.image)) {
-          		throw new ParseException(getErrorStart(arg) + "\nThe parameter " + arg.image + " cannot be repeated.");
+          	if (paramNames.contains(arg.getImage())) {
+          		throw new ParseException(getErrorStart(arg) + "\nThe parameter " + arg.getImage() + " cannot be repeated.");
           	}
-          	paramNames.add(arg.image);
+          	paramNames.add(arg.getImage());
           }
           [
              ellipsis=<ELLIPSIS> { isCatchAll = true; }
@@ -1931,7 +1931,7 @@ ParameterList ParameterList() :
                     + "\n\"Catch-all\" macro parameter may not have a default value.",
                     arg.beginLine, arg.endLine);
               }
-              result.setCatchAll(arg.image);
+              result.setCatchAll(arg.getImage());
           } 
           else if (defValue == null) {
              if (hasDefaults) {
@@ -1940,10 +1940,10 @@ ParameterList ParameterList() :
                     + "must all occur before the parameters with default values.",
                     arg.beginLine, arg.endLine);
              }
-          	 result.addParam(arg.image);
+          	 result.addParam(arg.getImage());
           }
           else {
-              result.addParam(arg.image, defValue);
+              result.addParam(arg.getImage(), defValue);
           	  hasDefaults = true;
           }
 	  }
@@ -2078,14 +2078,14 @@ NamedArgsList NamedArgsList() :
 	<EQUALS> 
 	arg=Exp()  
 	{
-		result.addNamedArg(firstParam.image, arg);
+		result.addNamedArg(firstParam.getImage(), arg);
 	}
 	(
 	   [<COMMA>]
 	   id=<ID>
 	   <EQUALS>
 	   arg=Exp()
-	   {result.addNamedArg(id.image, arg);}
+	   {result.addNamedArg(id.getImage(), arg);}
 	)*
 	{
 		token_source.inInvocation = false;
@@ -2159,7 +2159,7 @@ TemplateElement UnifiedMacroTransform() :
 		nestedBlock=OptionalBlock()
 		end=<UNIFIED_CALL_END>
 		{
-           String s=end.image.substring(2);;
+           String s=end.getImage().substring(2);;
            if (s.charAt(0) == '@') {
               s = s.substring(1);
            }
@@ -2220,12 +2220,12 @@ Map<String, Expression> NamedArgs() :
      <EQUALS>
      exp=Exp()
      {
-        if (result.containsKey(t.image)) {
+        if (result.containsKey(t.getImage())) {
            throw new ParseException(getErrorStart(t)
-              + "\nValue of named parameter '" + t.image
+              + "\nValue of named parameter '" + t.getImage()
               + "' may only be specified once.", t.beginLine, t.endLine);
         }
-        result.put(t.image, exp);
+        result.put(t.getImage(), exp);
      }
   )+
   {
@@ -2241,7 +2241,7 @@ Comment TerseComment() :
 {
 	start=<TERSE_COMMENT>
 	(
-	   t=<PRINTABLE_CHARS> {buf.append(t.image);}
+	   t=<PRINTABLE_CHARS> {buf.append(t.getImage());}
 	)*
 	end=<TERSE_COMMENT_END>
 	{
@@ -2259,7 +2259,7 @@ Comment Comment() :
 {
     start=<COMMENT>
     (
-       t=<PRINTABLE_CHARS> {buf.append(t.image);}
+       t=<PRINTABLE_CHARS> {buf.append(t.getImage());}
     )*
     end=<COMMENT_END>
     {
@@ -2277,14 +2277,14 @@ NoParseBlock NoParse() :
 {
     start=<NOPARSE>
     (
-       t=<PRINTABLE_CHARS> {buf.append(t.image);}
+       t=<PRINTABLE_CHARS> {buf.append(t.getImage());}
     )*
     end=<NOPARSE_END>
     {
     	int beginColumn = start.beginColumn;
     	int beginLine = start.beginLine;
     	char lastChar = 0;
-    	for (char c : start.image.toCharArray()) {
+    	for (char c : start.getImage().toCharArray()) {
     		switch (c) {
     			case '\n' : if (lastChar == '\r') break;
     			case '\r' : beginColumn = 1; beginLine++; break;   
@@ -2293,7 +2293,7 @@ NoParseBlock NoParse() :
     		lastChar = c;
     	}
        	List<TextBlock> text = TextBlock.breakIntoBlocks(buf.toString(), template, beginColumn, beginLine);
-        NoParseBlock result = new NoParseBlock(start.image, end.image, text);
+        NoParseBlock result = new NoParseBlock(start.getImage(), end.getImage(), text);
         result.setLocation(template, start, end);
         return result;
     }
@@ -2317,7 +2317,7 @@ TransformBlock Transform() :
        argExp=Exp()
        {
            if (args == null) args = new HashMap<String, Expression>();
-           args.put(argName.image, argExp);
+           args.put(argName.getImage(), argExp);
        }
     )*
     (
@@ -2437,7 +2437,7 @@ EscapeBlock Escape() :
     escapeExpr=Exp()
     <DIRECTIVE_END>
     {
-        EscapeBlock result = new EscapeBlock(variable.image, escapeExpr);
+        EscapeBlock result = new EscapeBlock(variable.getImage(), escapeExpr);
     }
     content=OptionalBlock()
     {
@@ -2474,7 +2474,7 @@ Token CloseDirectiveBlock(String expectedTags) :
 {
     t=<CLOSE_DIRECTIVE_BLOCK>
 	{
-		String name = t.image;
+		String name = t.getImage();
 		name = name.substring(3, name.length() -1);
 		if (name.length()>0) {
 			StringTokenizer st = new StringTokenizer(expectedTags, ", ");
@@ -2483,7 +2483,7 @@ Token CloseDirectiveBlock(String expectedTags) :
 				if (st.nextToken().equals(name.trim())) found = true;
 			}
 			if (!found) {
-				throw new ParseException(getErrorStart(t) + " Expecting " + t.image.substring(0,3) + expectedTags + t.image.charAt(t.image.length() -1));
+				throw new ParseException(getErrorStart(t) + " Expecting " + t.getImage().substring(0,3) + expectedTags + t.getImage().charAt(t.getImage().length() -1));
 			}
 		}
 		return t;
@@ -2522,7 +2522,7 @@ PropertySetting Setting() :
    value=Exp()
    end=LooseDirectiveEnd()
    {
-      PropertySetting result = new PropertySetting(key.image, value);
+      PropertySetting result = new PropertySetting(key.getImage(), value);
       result.setLocation(template, start, end);
       return result;
    }
@@ -2664,7 +2664,7 @@ List<TextBlock> PCData() :
          t=<WHITESPACE> 
       )
       {
-         buf.append(t.image);
+         buf.append(t.getImage());
          if (start == null) start = t;
          if (prevToken != null) prevToken.next = null;
       }
@@ -2803,7 +2803,7 @@ TemplateHeaderElement HeaderElement() :
        (
           key=<ID>
           <EQUALS>
-          exp=Exp() {params.put(key.image.toLowerCase(), exp);}
+          exp=Exp() {params.put(key.getImage().toLowerCase(), exp);}
        )*
        end=LooseDirectiveEnd()
      )
