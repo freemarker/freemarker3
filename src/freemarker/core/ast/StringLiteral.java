@@ -55,7 +55,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
             FMLexer token_source;
             try {
 //            	token_source = new FMLexer(new StringReader(value), 0, getBeginLine(), getBeginColumn()+1);
-                token_source = new FMLexer(new StringReader(value), FMConstants.LexicalState.DEFAULT, getBeginLine(), getBeginColumn() +1);
+                token_source = new FMLexer("input", value, FMConstants.LexicalState.DEFAULT, getBeginLine(), getBeginColumn() +1);
             } catch (Exception e) {
             	// FIXME later.
             	throw new RuntimeException(e);
