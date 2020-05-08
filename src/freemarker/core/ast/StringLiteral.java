@@ -52,14 +52,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
     	String src = this.getSource();
 //    	String src = value;
         if (src.length() >5 && (src.indexOf("${") >= 0 || src.indexOf("#{") >= 0)) {
-            FMLexer token_source;
-            try {
-//            	token_source = new FMLexer(new StringReader(value), 0, getBeginLine(), getBeginColumn()+1);
-                token_source = new FMLexer("input", value, FMConstants.LexicalState.DEFAULT, getBeginLine(), getBeginColumn() +1);
-            } catch (Exception e) {
-            	// FIXME later.
-            	throw new RuntimeException(e);
-            }
+            FMLexer token_source = new FMLexer("input", value, FMConstants.LexicalState.DEFAULT, getBeginLine(), getBeginColumn() +1);
             token_source.setOnlyTextOutput(true);
             FMParser parser = new FMParser(token_source);
             parser.setTemplate(getTemplate());

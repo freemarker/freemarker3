@@ -83,6 +83,7 @@
      <delete file="src/freemarker/core/parser/FMLexer.java"/>
      <delete file="src/freemarker/core/parser/LexicalException.java"/>
      <delete file="src/freemarker/core/parser/SimpleCharStream.java"/>
+     <delete file="src/freemarker/core/parser/InvalidToken.java"/>
      <delete file="src/freemarker/core/parser/Token.java"/>
      <delete file="src/freemarker/core/parser/FMConstants.java"/>
      <delete file="src/freemarker/core/parser/FMParser.html"/>
