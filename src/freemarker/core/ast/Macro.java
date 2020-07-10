@@ -37,7 +37,7 @@ import freemarker.core.Environment;
 public final class Macro extends TemplateElement implements TemplateModel, Cloneable {
     private String name;
     private ParameterList params;
-    boolean isFunction;
+    private boolean isFunction;
     static public final Macro DO_NOTHING_MACRO = new Macro();
     static {
     	DO_NOTHING_MACRO.setName(".pass");

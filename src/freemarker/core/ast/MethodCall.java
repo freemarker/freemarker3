@@ -34,6 +34,7 @@ import java.io.Writer;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import java.io.IOException;
+import java.io.StringWriter;
 
 
 /**
@@ -72,20 +73,23 @@ public class MethodCall extends Expression {
         }
         else if (targetModel instanceof Macro) {
             Macro func = (Macro) targetModel;
+            StringWriter sw = null;
             env.setLastReturnValue(null);
-            if (!func.isFunction()) {
-                throw new TemplateException("A macro cannot be called in an expression.", env);
-            }
             Writer prevOut = env.getOut();
             try {
                 env.setOut(Environment.NULL_WRITER);
+                if (!func.isFunction()) {
+                    sw = new StringWriter();
+                    env.setOut(sw);
+//                    throw new TemplateException("A macro cannot be called in an expression.", env);
+                 }
                 env.render(func, arguments, null, null);
             } catch (IOException ioe) {
                 throw new InternalError("This should be impossible.");
             } finally {
                 env.setOut(prevOut);
             }
-            return env.getLastReturnValue();
+            return sw != null ? env.getObjectWrapper().wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
         }
         else if (targetModel instanceof Curry.Operator) {
             return ((Curry.Operator)targetModel).curry(arguments, env);
