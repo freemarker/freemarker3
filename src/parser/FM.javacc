@@ -1237,7 +1237,7 @@ Expression BooleanLiteral :
    }
 ;
 
-Expression NullLiteral() :
+Expression NullLiteral :
 {
    Token t;
 }
@@ -1250,7 +1250,7 @@ Expression NullLiteral() :
 ;
 
 
-HashLiteral HashLiteral() :
+HashLiteral HashLiteral :
 {
    Token begin, end;
    Expression key, value;
@@ -1431,7 +1431,7 @@ RecoveryBlock Recover :
    }
 ;
 
-TemplateElement List() :
+TemplateElement List :
 {
     Expression exp;
     Token index, start, end, as=null, directiveEnd=null;
@@ -1507,7 +1507,7 @@ RecurseNode Recurse :
       (
          start=<RECURSE>
          [
-            node=Exp()
+            node=Exp
          ]
          [
             <USING>
@@ -1563,7 +1563,9 @@ ReturnInstruction Return :
    (
       start=<SIMPLE_RETURN>{end = start;}
       |
-      start=<RETURN> exp=Exp() end=LooseDirectiveEnd()
+      start=<RETURN> 
+      exp=Exp 
+      end=LooseDirectiveEnd
    )
    {
       ReturnInstruction result = new ReturnInstruction(exp);
@@ -1606,8 +1608,8 @@ TemplateElement Nested :
       |
       (
           t=<NESTED>
-          args=PositionalArgsList()
-          end=LooseDirectiveEnd()
+          args=PositionalArgsList
+          end=LooseDirectiveEnd
           {
              result = new BodyInstruction(args);
              result.setLocation(template, t, end);
@@ -1631,7 +1633,7 @@ TemplateElement Flush :
    }
 ;
 
-TemplateElement Trim() :
+TemplateElement Trim :
 {
   Token t;
   TrimInstruction result=null;
@@ -1679,7 +1681,7 @@ TemplateElement Assign :
     }
     ((
        <EQUALS>
-       exp=Exp() {assignments.put(varName, exp);}
+       exp=Exp {assignments.put(varName, exp);}
        (
          SCAN [<COMMA>](<ID>|<STRING_LITERAL>)<EQUALS> =>
             [<COMMA>]
@@ -1688,20 +1690,20 @@ TemplateElement Assign :
                varName = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
             }
             <EQUALS>
-            exp=Exp()
+            exp=Exp
             {
             	assignments.put(varName, exp);
             } 
        )*
        [
           id=<IN>
-          nsExp=Exp() {if (type != AssignmentInstruction.SET && type != AssignmentInstruction.NAMESPACE) {
+          nsExp=Exp {if (type != AssignmentInstruction.SET && type != AssignmentInstruction.NAMESPACE) {
           	   ParsingProblem problem = new ParsingProblem("Can only assign to namespace with #set or #assign.", result);
           	   template.addParsingProblem(problem);
             } 
           }
        ]
-       end=LooseDirectiveEnd()
+       end=LooseDirectiveEnd
        {
            result.setNamespaceExp(nsExp);
 		   for (Map.Entry<String,Expression> entry : assignments.entrySet()) {
@@ -1715,7 +1717,7 @@ TemplateElement Assign :
     (
        [
           id=<IN>
-          nsExp=Exp() {if (type != AssignmentInstruction.NAMESPACE && type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.beginLine, id.beginColumn);}
+          nsExp=Exp {if (type != AssignmentInstruction.NAMESPACE && type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.beginLine, id.beginColumn);}
        ]
        <DIRECTIVE_END>
        block=OptionalBlock
@@ -1828,7 +1830,7 @@ ParameterList ParameterList :
           ]
           [
             <EQUALS>
-          	defValue=Exp()
+          	defValue=Exp
             {
 		      hasDefaults = true;
             }
@@ -1933,7 +1935,7 @@ Macro Macro :
     params=ParameterList {result.setParams(params);}
     [<CLOSE_PAREN>]
     <DIRECTIVE_END>
-    block=OptionalBlock()
+    block=OptionalBlock
     end=CloseDirectiveBlock(functionOrMacro)
     {
 	   result.setName(name);
@@ -2247,7 +2249,7 @@ SwitchBlock Switch :
    start=<SWITCH>
    switchExp=Exp
    <DIRECTIVE_END>
-   (<WHITESPACE>|Comment())*   
+   (<WHITESPACE>|Comment)*   
    {
       switchBlock = new SwitchBlock(switchExp);
    }
@@ -2280,7 +2282,9 @@ Case Case :
     Token start;
 }
    (
-      start=<CASE>exp=Exp()<DIRECTIVE_END>
+      start=<CASE> 
+      exp=Exp 
+      <DIRECTIVE_END>
       |
       start=<DEFAUL>{isDefault = true;}
    )
@@ -2292,7 +2296,7 @@ Case Case :
    }
 ;
 
-TrimBlock TrimBlock() :
+TrimBlock TrimBlock :
 {
 	Token start, end;
 	TemplateElement content;
@@ -2427,7 +2431,7 @@ VarDirective Var :
 }
    start=<VAR>
    (
-     var=IdentifierOrStringLiteral()
+     var=IdentifierOrStringLiteral
      [
        <EQUALS>
        valueExp=Exp
@@ -2443,7 +2447,7 @@ VarDirective Var :
         var=IdentifierOrStringLiteral
         [
            <EQUALS>
-           valueExp=Exp()
+           valueExp=Exp
         ]
       )
       {
@@ -2537,7 +2541,7 @@ TemplateElement FreemarkerDirective :
  * FreeMarker directives.
  */
 
-List<TextBlock> PCData() :
+List<TextBlock> PCData :
 {
     StringBuilder buf = new StringBuilder();
     Token t=null, start=null, prevToken = null;
@@ -2587,13 +2591,13 @@ TemplateElement Content :
 }
     (
       (
-         text=PCData() {elem = null;}
+         text=PCData {elem = null;}
          |
-         elem=StringOutput()
+         elem=StringOutput
          |
-         elem=NumericalOutput()
+         elem=NumericalOutput
          |
-         elem=FreemarkerDirective()
+         elem=FreemarkerDirective
       )
       {
             if (begin == null) {
@@ -2704,7 +2708,7 @@ Map<String,Expression> ParamList :
    Map<String,Expression> result = new HashMap<String,Expression>();
 }
    (
-      id=Identifier()
+      id=Identifier
       <EQUALS>
       exp=Exp {result.put(id.toString(), exp);}
       [<COMMA>]
