@@ -707,7 +707,7 @@ Expression PrimaryExpression :
   )
   (
       SCAN <DOT> |<OPEN_BRACKET> |<OPEN_PAREN> |<BUILT_IN> |<EXISTS> |<EXCLAM> 
-      -> exp=AddSubExpression(exp)
+      => exp=AddSubExpression(exp)
   )*
   {
      return exp;
@@ -1681,7 +1681,7 @@ TemplateElement Assign :
        <EQUALS>
        exp=Exp() {assignments.put(varName, exp);}
        (
-         SCAN [<COMMA>](<ID>|<STRING_LITERAL>)<EQUALS> ->
+         SCAN [<COMMA>](<ID>|<STRING_LITERAL>)<EQUALS> =>
             [<COMMA>]
             nameExp=IdentifierOrStringLiteral
             {
@@ -2010,7 +2010,7 @@ ArgsList ArgsList :
 	Expression exp = null;
 }
 	(
-	   SCAN <ID><EQUALS> ->
+	   SCAN <ID><EQUALS> =>
        result=NamedArgsList
        |
        result=PositionalArgsList
@@ -2252,7 +2252,7 @@ SwitchBlock Switch :
       switchBlock = new SwitchBlock(switchExp);
    }
    (
-     SCAN 2 -> caseIns=Case
+     SCAN 2 => caseIns=Case
      {
        if (caseIns.isDefault()) {
 	   if (defaultFound) {
@@ -2544,7 +2544,7 @@ List<TextBlock> PCData() :
     List<TextBlock> result = new ArrayList<TextBlock>();
 }
     (
-      SCAN <WHITESPACE>|<PRINTABLE_CHARS> ->
+      SCAN <WHITESPACE>|<PRINTABLE_CHARS> =>
       (
          {prevToken = t;}         
          t=<PRINTABLE_CHARS> 
@@ -2725,7 +2725,7 @@ TemplateElement Root :
    TemplateElement doc;
 }
    [
-      SCAN [<WHITESPACE>](<TRIVIAL_FTL_HEADER>|<FTL_HEADER>) ->
+      SCAN [<WHITESPACE>](<TRIVIAL_FTL_HEADER>|<FTL_HEADER>) =>
        header=HeaderElement()
        {
        	   template.setHeaderElement(header);
