@@ -1095,7 +1095,7 @@ Expression DefaultTo(Expression exp) :
        t=<EXCLAM>
        [
          SCAN {getToken(1).getType() != TokenType.ID || getToken(2).getType() != TokenType.EQUALS}
-          rhs=PrimaryExpression
+         => rhs=PrimaryExpression
        ]
    )
    {
