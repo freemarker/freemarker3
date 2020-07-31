@@ -336,7 +336,7 @@ INJECT(LEXER_CLASS) :
  }
  }
  
- INJECT(ParseException) : 
+ INJECT ParseException  : 
     import java.util.*;
     import freemarker.core.ast.TemplateNode;
     extends java.io.IOException;
@@ -706,8 +706,7 @@ Expression PrimaryExpression :
       exp=BuiltinVariable
   )
   (
-      SCAN <DOT> |<OPEN_BRACKET> |<OPEN_PAREN> |<BUILT_IN> |<EXISTS> |<EXCLAM> 
-      => exp=AddSubExpression(exp)
+      exp=AddSubExpression(exp)
   )*
   {
      return exp;
@@ -1683,13 +1682,13 @@ TemplateElement Assign :
        <EQUALS>
        exp=Exp {assignments.put(varName, exp);}
        (
-         SCAN [<COMMA>](<ID>|<STRING_LITERAL>)<EQUALS> =>
+   //      SCAN [<COMMA>](<ID>|<STRING_LITERAL>)<EQUALS> =>
             [<COMMA>]
             nameExp=IdentifierOrStringLiteral
             {
                varName = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
             }
-            <EQUALS>
+            <EQUALS> =>||
             exp=Exp
             {
             	assignments.put(varName, exp);
