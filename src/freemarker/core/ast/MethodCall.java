@@ -79,6 +79,9 @@ public class MethodCall extends Expression {
             try {
                 env.setOut(Environment.NULL_WRITER);
                 if (!func.isFunction()) {
+                   // I think the previous behavior was just silly.
+                    // If you use a macro in a context calling for a function, it should
+                    // just return the text that the macro would output.
                     sw = new StringWriter();
                     env.setOut(sw);
 //                    throw new TemplateException("A macro cannot be called in an expression.", env);

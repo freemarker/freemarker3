@@ -27,7 +27,7 @@
  TREE_BUILDING_ENABLED=false;
  LEGACY_API;
 
-INJECT(PARSER_CLASS) : 
+INJECT PARSER_CLASS : 
     import freemarker.core.ast.*;
     import freemarker.template.*;
     import freemarker.template.utility.StringUtil;
@@ -194,14 +194,14 @@ INJECT(LEXER_CLASS) :
  }
  
  
- private void CommonTokenAction(Token token) {
- 	if (token.getType() == TokenType.EOF) return;
+ private Token TOKEN_HOOK(Token token) {
+ 	if (token.getType() == TokenType.EOF) return token;
  	String tokText = token.getImage();
  	char firstChar = tokText.charAt(0);
  	if (justAfterDot) {
  		if (StringUtil.isFTLIdentifier(tokText) || tokText.equals("*") || tokText.equals("**")) {
  			token.setType(TokenType.ID);
- 			return;
+ 			return token;
  		} 
  	}
  	if (firstChar == '[' || firstChar=='<') {
@@ -210,7 +210,7 @@ INJECT(LEXER_CLASS) :
  		    || chopFirst.startsWith("@") || chopFirst.startsWith("/@")) {
  			if (this.onlyTextOutput) {
  				token.setType(TokenType.PRINTABLE_CHARS);
- 				return;
+ 				return token;
  			}
 	 		boolean squareBracket = firstChar == '[';
  			if (!directiveSyntaxEstablished) {
@@ -218,7 +218,7 @@ INJECT(LEXER_CLASS) :
  			} 
  			else if (altDirectiveSyntax != squareBracket) {
  				token.setType(TokenType.PRINTABLE_CHARS);
- 				return;
+ 				return token;
  			}
  			if (token.getType() == TokenType.UNKNOWN_DIRECTIVE) {
     	      int index = tokText.indexOf('#');
@@ -333,6 +333,7 @@ INJECT(LEXER_CLASS) :
   		case ESCAPE: case SETTING: 
  			SwitchTo(EXPRESSION);
  	}
+   return token;
  }
  }
  
