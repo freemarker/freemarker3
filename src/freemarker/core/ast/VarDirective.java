@@ -45,7 +45,9 @@ public class VarDirective extends TemplateElement {
                 }
             } 
             else {
-                scope.put(varname, exp.getAsTemplateModel(env));
+                TemplateModel tm = exp.getAsTemplateModel(env);
+                assertIsDefined(tm, exp, env);
+                scope.put(varname, tm);
             }
         }
     }
