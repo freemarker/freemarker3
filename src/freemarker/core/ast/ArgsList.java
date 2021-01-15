@@ -26,7 +26,6 @@ package freemarker.core.ast;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.io.StringReader;
 import java.lang.reflect.*;
 import freemarker.core.Environment;
 import freemarker.template.*;

@@ -48,16 +48,16 @@ INJECT PARSER_CLASS :
   /**
    * Create an FM expression parser using a string.
    */
-  static public FMParser createExpressionParser(String s) {
+  static public PARSER_CLASS createExpressionParser(String s) {
       FMLexer lexer;
       try {
-         lexer = new FMLexer(new StringReader(s));
+         lexer = new LEXER_CLASS(new StringReader(s));
       }
       catch (Exception e) {
           throw new RuntimeException(e);
       }
-      lexer.SwitchTo(FMConstants.EXPRESSION);
-      return new FMParser(lexer);
+      lexer.SwitchTo(CONSTANTS_CLASS.EXPRESSION);
+      return new PARSER_CLASS(lexer);
   }
   
   /**
@@ -65,7 +65,7 @@ INJECT PARSER_CLASS :
    * @param template The template associated with this parser.
    * @param reader The character stream to use as input
    */
-  public FMParser(Template template, Reader reader) {
+  public PARSER_CLASS(Template template, Reader reader) {
       this(reader);
       this.template = template;
       this.templateName = template != null ? template.getName() : "";
@@ -73,14 +73,14 @@ INJECT PARSER_CLASS :
       token_source.setTabSize(1);
   }
   
-  public FMParser(Template template, Reader reader, int syntaxSetting) {
+  public PARSER_CLASS(Template template, Reader reader, int syntaxSetting) {
   	  this(template, reader);
   	  if (syntaxSetting != Configuration.AUTO_DETECT_TAG_SYNTAX) {
   	  	   token_source.setAltDirectiveSyntax(syntaxSetting==Configuration.SQUARE_BRACKET_TAG_SYNTAX);
   	  }
   }
   
-  public FMParser(Template template, String input, int syntaxSetting) {
+  public PARSER_CLASS(Template template, String input, int syntaxSetting) {
   	  this(template, new StringReader(input), syntaxSetting); 
   }
   
@@ -112,7 +112,7 @@ INJECT PARSER_CLASS :
   	  Token t = this.current_token, prevToken;
   	  do {
   	  	prevToken = t;
-  	  	t = getNextToken();
+  	  	t = getToken(1);
   	  } while (t.getType() != type && t.getType() != TokenType.EOF);
   	  if (!consume) {
   	  	this.current_token = prevToken;
@@ -658,7 +658,7 @@ Expression Expression(Token start, TokenType recoverToType, boolean consumeToken
        Token t = this.current_token, prevToken;
        do {
   	  	   prevToken = t;
-		   t = getNextToken();
+		   t = getToken(1);
  	   } while (t.getType() != recoverToType && t.getType() != TokenType.EOF);
        if (!consumeToken) {
   	  	   this.current_token = prevToken;

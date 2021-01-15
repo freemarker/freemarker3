@@ -155,6 +155,7 @@ public class Template extends TemplateCore {
             this.stripWhitespace = getConfiguration().getWhitespaceStripping();
             this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
             FMParser parser = new FMParser(this, new CharArrayReader(templateText), syntaxSetting);
+            parser.setInputSource(getName());
             setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
             ppv.visit(this);
