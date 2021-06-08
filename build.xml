@@ -47,6 +47,7 @@
             </condition>
          </fail-->
   	<java jar="bootstrap/javacc.jar" fork="true">
+        	<assertions><enable/></assertions>
  	   <arg value="src/parser/FM.javacc"/>
  	</java>
   </target>
