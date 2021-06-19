@@ -1,0 +1,22 @@
+// This is a barebones VSCode workspace for working on FreeMarker. 
+// To use this, you really need to have the Language support for Java installed.
+// (I mean this one: https://marketplace.visualstudio.com/items?itemName=redhat.java)
+// Note that, due to how VSCode works, the extension is typically only activated
+// when you first open a .java file.
+// You also need to run 'ant parser-gen' to generate the parser files or you'll 
+// be missing files.
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.project.sourcePaths": [
+			"src"
+		],
+		"java.project.referencedLibraries": [
+		    "libs/*.jar"
+		]
+	}
+}

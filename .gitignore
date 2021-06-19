@@ -3,9 +3,9 @@ src/freemarker/core/parser/FMParser.java
 src/freemarker/core/parser/FMParser.html
 src/freemarker/core/parser/FMConstants.java
 src/freemarker/core/parser/FMLexer.java
+src/freemarker/core/parser/FMNfaData.java
 src/freemarker/core/parser/LexicalException.java
 src/freemarker/core/parser/Node.java
-src/freemarker/core/parser/Nodes.java
 src/freemarker/core/parser/SimpleCharStream.java
 src/freemarker/core/parser/Token.java
 src/freemarker/core/parser/InvalidToken.java
