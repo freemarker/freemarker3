@@ -153,22 +153,22 @@ public class TemplateLocation {
     
     public final void setLocation(Template template, Token begin, Token end)
     {
-        setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
+        setLocation(template, begin.getBeginColumn(), begin.getBeginLine(), end.getEndColumn(), end.getEndLine());
     }
     
     public final void setLocation(Template template, Token begin, TemplateLocation end)
     {
-        setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
+        setLocation(template, begin.getBeginColumn(), begin.getBeginLine(), end.getEndColumn(), end.getEndLine());
     }
 
     public final void setLocation(Template template, TemplateLocation begin, Token end)
     {
-        setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
+        setLocation(template, begin.getBeginColumn(), begin.getBeginLine(), end.getEndColumn(), end.getEndLine());
     }
 
     public final void setLocation(Template template, TemplateLocation begin, TemplateLocation end)
     {
-        setLocation(template, begin.beginColumn, begin.beginLine, end.endColumn, end.endLine);
+        setLocation(template, begin.getBeginColumn(), begin.getBeginLine(), end.getEndColumn(), end.getEndLine());
     }
 
     public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine)

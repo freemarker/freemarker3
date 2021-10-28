@@ -30,6 +30,7 @@ import java.lang.reflect.*;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.core.parser.*;
+import static freemarker.core.parser.FMConstants.LexicalState;
 import freemarker.ext.beans.SimpleMethodModel;
 
 /**
@@ -97,7 +98,7 @@ abstract public class ArgsList extends TemplateNode {
 	
 	private static ParameterList getParameterList(String s) throws ParseException {
 		FMLexer token_source = new FMLexer(s);
-		token_source.SwitchTo(FMConstants.EXPRESSION);
+		token_source.switchTo(LexicalState.EXPRESSION);
 		FMParser parser = new FMParser(token_source);
 		return parser.ParameterList();
 	}
