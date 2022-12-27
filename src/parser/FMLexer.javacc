@@ -1,0 +1,487 @@
+PARSER_PACKAGE="freemarker.core.parser";
+TREE_BUILDING_ENABLED=false;
+
+/**
+ * The lexer portion defines 5 lexical states:
+ * DEFAULT, NO_PARSE, EXPRESSION, EXPRESSION_COMMENT, 
+ * NO_SPACE_EXPRESSION
+ * The lexer is in the DEFAULT state when it is 
+ * just consuming regular text, but are scanning for
+ * FreeMarker constructs. NO_PARSE is the simplest state.
+ * We are consuming text, but ignoring FreeMarker constructs,
+ * so ${x} or [#if..] are just treated as plain text.
+ * EXPRESSION is the state you are in
+ * when the parser wants a FreeMarker expression.
+ * So, for example, you enter the EXPRESSION state
+ * right after a ${ and leave it after the matching }.
+ * Or, you enter the EXPRESSION state right after
+ * an "<#if" and then, when you hit the matching ">"
+ * that ends the if directive, you go back to DEFAULT lexical state.
+ * Note that whitespace is ignored in the
+ * EXPRESSION statep but is passed through to the parser as PCDATA 
+ * in the DEFAULT state. EXPRESSION_COMMENT is a lexical state
+ * we are in if for comments within an FTL expression.
+ * NO_SPACE_EXPRESSION is a slight variant on the EXPRESSION state. 
+ * It basically exists as a kludge to deal with a nasty
+ * little corner in FTL syntax. In NO_SPACE_EXPRESSION,
+ * spaces are not ignored, so a whitespace token effectively ends
+ * the parsing of an expression. THus, for example, [@x (y+1)/]
+ * is parsed as the macro x with the single argument (y+1) rather than
+ * the macro x(y+1) with no args.
+ */
+
+INJECT(LEXER_CLASS) : 
+   import freemarker.template.utility.StringUtil;
+{
+
+/**
+  The noparseType is set when we enter
+  a block of text that the parser more or less ignores.
+  These are <noparse> and <comment>. This variable
+  tells us what the closing tag should be, and when
+  we hit that, we resume parsing. Note that with this
+  scheme, <comment> and <noparse> tags cannot nest
+  recursively, but it is not clear how important that is.
+*/
+    private TokenType noparseType;
+
+/**
+    Keeps track of how deeply nested
+    we have the hash literals.
+    This is necessary since we need to be
+    able to distinguish the } used to close
+    a hash literal and the one used to
+    close a ${
+ */
+ private int hashLiteralNesting;
+ private int parenthesisNesting;
+ private int bracketNesting;
+ boolean onlyTextOutput, 
+         directiveSyntaxEstablished, 
+         altDirectiveSyntax,
+         inInvocation,
+         justAfterDot;
+ String templateName;
+ 
+ public void setOnlyTextOutput(boolean b) {
+     this.onlyTextOutput = b;
+ }
+ 
+ void setAltDirectiveSyntax(boolean b) {
+    altDirectiveSyntax = b;
+    directiveSyntaxEstablished = true;
+ }
+ 
+ 
+ private Token TOKEN_HOOK(Token token) {
+ 	if (token.getType() == TokenType.EOF) return token;
+ 	String tokText = token.getImage();
+ 	char firstChar = tokText.charAt(0);
+ 	if (justAfterDot) {
+ 		if (StringUtil.isFTLIdentifier(tokText) || tokText.equals("*") || tokText.equals("**")) {
+ 			token.setType(TokenType.ID);
+ 			return token;
+ 		} 
+ 	}
+ 	if (firstChar == '[' || firstChar=='<') {
+ 		String chopFirst = tokText.substring(1);
+ 		if (chopFirst.startsWith("#") || chopFirst.startsWith("/#")
+ 		    || chopFirst.startsWith("@") || chopFirst.startsWith("/@")) {
+ 			if (this.onlyTextOutput) {
+ 				token.setType(TokenType.PRINTABLE_CHARS);
+ 				return token;
+ 			}
+	 		boolean squareBracket = firstChar == '[';
+ 			if (!directiveSyntaxEstablished) {
+ 				setAltDirectiveSyntax(squareBracket);
+ 			} 
+ 			else if (altDirectiveSyntax != squareBracket) {
+ 				token.setType(TokenType.PRINTABLE_CHARS);
+ 				return token;
+ 			}
+ 			if (token.getType() == TokenType.UNKNOWN_DIRECTIVE) {
+    	      int index = tokText.indexOf('#');
+        	  String s = tokText.substring(index);
+              String msg = "Unknown directive: " 
+                        + s
+                        + " on line: " + token.getBeginLine()
+                        + ", column: " + token.getBeginColumn() +1
+                        + ", in template: " + templateName;
+          	  throw new RuntimeException(msg); // REVISIT
+ 			}
+ 		}
+ 	}
+  	switch(token.getType()) {
+  		case FTL_HEADER : 
+          switchTo(LexicalState.EXPRESSION);
+          break;
+        case GREATER_THAN_EQUALS : 
+  		case GREATER_THAN:
+			if (parenthesisNesting == 0 && !altDirectiveSyntax) {
+				if (token.getType() == TokenType.GREATER_THAN_EQUALS) {
+					backup(1); // So that the = doesn't get eaten.
+               token.setEndOffset(token.getEndOffset()-1);
+				} 
+				token.setType(TokenType.DIRECTIVE_END);
+				switchTo(LexicalState.DEFAULT);
+			}
+			break;
+		case OPEN_PAREN :
+			parenthesisNesting++;
+			switchTo(LexicalState.EXPRESSION);
+			break;
+		case CLOSE_PAREN : 
+			parenthesisNesting--;
+			break;
+  		case OPEN_BRACKET:
+  			bracketNesting++;
+  			break;
+  		case CLOSE_BRACKET : 
+            if (bracketNesting >0) {
+        	   --bracketNesting;
+            } else {
+            	token.setType(TokenType.DIRECTIVE_END);
+        		switchTo(LexicalState.DEFAULT);
+            }   
+            break; 
+        case OPEN_BRACE :
+        	++hashLiteralNesting;
+        	break;
+        case CLOSE_BRACE :
+        	if (hashLiteralNesting >0) {
+        		--hashLiteralNesting;
+        	} else {
+        		switchTo(LexicalState.DEFAULT);
+        	}
+        	break;
+  		case UNIFIED_CALL:
+  			switchTo(LexicalState.NO_SPACE_EXPRESSION);
+  			break;
+		case NOPARSE: 
+			noparseType = NOPARSE;
+			switchTo(LexicalState.NO_PARSE); 
+			break; 		
+ 		case TERSE_COMMENT: 
+ 			noparseType = TERSE_COMMENT;
+ 			switchTo(LexicalState.NO_PARSE); 
+ 			break;
+ 		case COMMENT: 
+ 			noparseType = COMMENT;
+ 			switchTo(LexicalState.NO_PARSE); 
+ 			break;
+ 		case NOPARSE_END:
+ 			if (noparseType != NOPARSE) {
+ 				token.setType(TokenType.PRINTABLE_CHARS);
+ 				break;
+ 			} // deliberate fall-through to next case...
+ 		case COMMENT_END:
+ 			if (token.getType() == TokenType.COMMENT_END && noparseType != COMMENT) {
+	 			token.setType(TokenType.PRINTABLE_CHARS);
+ 			} else {
+ 				char lastChar = tokText.charAt(tokText.length() -1);
+ 				char startTagChar = lastChar == ']' ? '[' : '<';
+ 				String extraChars = tokText.substring(0, tokText.lastIndexOf(startTagChar));
+ 				if (extraChars.length() >0) {
+ 					//token.setImage(extraChars);
+ 					backup(tokText.length() - extraChars.length());
+               token.setEndOffset(token.getEndOffset()-(tokText.length() - extraChars.length()));
+ 					token.setType(TokenType.PRINTABLE_CHARS);
+ 				} else {
+		 			switchTo(LexicalState.DEFAULT);
+ 				}
+ 			}
+ 			break;
+ 		case TERSE_COMMENT_END:
+ 			if (noparseType != TERSE_COMMENT) {
+ 				token.setType(TokenType.PRINTABLE_CHARS);
+ 			}
+ 			else if (tokText.length() == 3) {
+ 				switchTo(LexicalState.DEFAULT);
+ 			}
+ 			else {
+		 		//token.setImage(tokText.substring(0, tokText.length() -3));
+		 		backup(3);
+            token.setEndOffset(token.getEndOffset()-3);
+	 		 	token.setType(TokenType.PRINTABLE_CHARS);
+ 			}
+ 			break;
+  		case FUNCTION: case MACRO: case PARAM: case NESTED: case TRANSFORM: case STOP: case RETURN: case CALL:
+  		case IF: case ELSE_IF: 
+  		case VISIT: case RECURSE: 
+ 		case VAR: case SET: case ASSIGN: case LOCALASSIGN: case GLOBALASSIGN:
+ 		case LIST: case FOREACH:
+ 		case SWITCH: case CASE:
+ 		case _INCLUDE: case IMPORT: case EMBED:  
+  		case ESCAPE: case SETTING: 
+ 			switchTo(LexicalState.EXPRESSION);
+ 	}
+   return token;
+ }
+ }
+
+TOKEN:
+    <#BLANK : [" ", "\t", "\n", "\r"]>
+    |
+    <#START_TAG : "<#" | "[#">
+    |
+    <#CLOSE_TAG1 : (<BLANK>)* (">" | "]")>
+    |
+    <#CLOSE_TAG2 : (<BLANK>)* ("/")? (">" | "]")>
+    |
+    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> 
+    |
+    <_ATTEMPT : <START_TAG> "attempt" <CLOSE_TAG1>> 
+    |
+    <_RECOVER : <START_TAG> "recover" <CLOSE_TAG1>>
+    |
+    <BLOCKTRIM : <START_TAG> "t_lines" <CLOSE_TAG1>>
+    |
+    <BLOCKTRIML : <START_TAG> "lt_lines" <CLOSE_TAG2>>
+    |
+    <BLOCKTRIMR : <START_TAG> "rt_lines" <CLOSE_TAG1>>
+    |
+    <BLOCKNOTRIM : <START_TAG> "nt_lines" <CLOSE_TAG1>>
+    |
+    <IF : <START_TAG> "if" <BLANK>> 
+    |
+    <ELSE_IF : <START_TAG> "elseif" <BLANK>>
+    |
+    <LIST : <START_TAG> "list" <BLANK>> 
+    |
+    <FOREACH : <START_TAG> "foreach" <BLANK>> 
+    |
+    <SWITCH : <START_TAG> "switch" <BLANK>>
+    |
+    <CASE : <START_TAG> "case" <BLANK>> 
+    |
+    <ASSIGN : <START_TAG> "assign" <BLANK>>
+    |
+    <GLOBALASSIGN : <START_TAG> "global" <BLANK>> 
+    |
+    <LOCALASSIGN : <START_TAG> "local" <BLANK>> 
+    |
+    <SET : <START_TAG> "set" <BLANK>>
+    |
+    <_INCLUDE : <START_TAG> "include" <BLANK>> 
+    |
+    <IMPORT : <START_TAG> "import" <BLANK>> 
+    |
+    <FUNCTION : <START_TAG> "function" <BLANK>> 
+    |
+    <MACRO : <START_TAG> "macro" <BLANK>>
+    |
+    <PARAM : <START_TAG> "param" <BLANK>> 
+    |
+    <TRANSFORM : <START_TAG> "transform" <BLANK>> 
+    |
+    <VISIT : <START_TAG> "visit" <BLANK>> 
+    |
+    <STOP : <START_TAG> "stop" <BLANK>> 
+    |
+    <RETURN : <START_TAG> "return" <BLANK>> 
+    |
+    <CALL : <START_TAG> "call" <BLANK>> 
+    |
+    <SETTING : <START_TAG> "setting" <BLANK>> 
+    |
+    <EMBED : <START_TAG> "embed" <BLANK>> 
+    |
+    <VAR : <START_TAG> "var"  <BLANK>>
+    |
+    <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> 
+    |
+    <COMMENT : <START_TAG> "comment" <CLOSE_TAG1>> 
+    |
+    <TERSE_COMMENT : ("<" | "[") "#--" >
+    |
+    <NOPARSE : <START_TAG> "noparse" <CLOSE_TAG1>> 
+    |
+    <ELSE : <START_TAG> "else" <CLOSE_TAG2>> 
+    |
+    <BREAK : <START_TAG> "break" <CLOSE_TAG2>> 
+    |
+    <SIMPLE_RETURN : <START_TAG> "return" <CLOSE_TAG2>>
+    |
+    <HALT : <START_TAG> "stop" <CLOSE_TAG2>> 
+    |
+    <FLUSH : <START_TAG> "flush" <CLOSE_TAG2>> 
+    |
+    <TRIM : <START_TAG> "t" <CLOSE_TAG2>> 
+    |
+    <LTRIM : <START_TAG> "lt" <CLOSE_TAG2>> 
+    |
+    <RTRIM : <START_TAG> "rt" <CLOSE_TAG2>> 
+    |
+    <NOTRIM : <START_TAG> "nt" <CLOSE_TAG2>> 
+    |
+    <DEFAUL : <START_TAG> "default" <CLOSE_TAG1>> 
+    |
+    <SIMPLE_NESTED : <START_TAG> "nested" <CLOSE_TAG2>> 
+    |
+    <NESTED : <START_TAG> "nested" <BLANK>> 
+    |
+    <SIMPLE_RECURSE : <START_TAG> "recurse" <CLOSE_TAG2>>
+    |
+    <RECURSE : <START_TAG> "recurse" <BLANK>>
+    |
+    <FALLBACK : <START_TAG> "fallback" <CLOSE_TAG2>> 
+    |
+    <ESCAPE : <START_TAG> "escape" <BLANK>> 
+    |
+    <NOESCAPE : <START_TAG> "noescape" <CLOSE_TAG1>> 
+    |
+    <UNIFIED_CALL : "<@" | "[@" > 
+    |
+    <UNIFIED_CALL_END : ("<" | "[") "/@" ((<ID>) ("."<ID>)*)? <CLOSE_TAG1>> 
+    |
+    <FTL_HEADER : ("<#ftl" | "[#ftl") <BLANK>>
+    |
+    <TRIVIAL_FTL_HEADER : ("<#ftl" | "[#ftl") ("/")? (">" | "]")>
+    |
+    <UNKNOWN_DIRECTIVE : ("[#" | "[/#" | "<#" | "</#") (["a"-"z","A"-"Z", "_"])+>
+;
+
+<DEFAULT, NODIRECTIVE> TOKEN :
+    <WHITESPACE : (["\t", " ", "\r", "\n"])+>
+    |
+    <PRINTABLE_CHARS : ("$" | "#" | "<" | "[" | "{") 
+                      | (~["$", "<", "#", "[", "{", "\n", "\r", "\t", " "])+>
+    |
+    <OUTPUT_ESCAPE : "${" > : EXPRESSION
+    |
+    <NUMERICAL_ESCAPE : "#{" > : EXPRESSION
+;
+
+<EXPRESSION> SKIP :
+    < ( " " | "\t" | "\n" | "\r" )+ >
+    |
+    < ["<", "["]  ["#", "!"] "--"> : EXPRESSION_COMMENT
+;
+
+<EXPRESSION_COMMENT> SKIP:
+    < ~[] >  
+    |
+    < "-->"> : EXPRESSION
+    |
+    < "--]" > : EXPRESSION
+;
+
+<EXPRESSION, NO_SPACE_EXPRESSION> TOKEN :
+  <STRING_LITERAL :
+      ("\"" 
+          ((~["\\", "\""]) | ("\\" ~[]))*      
+      "\"")
+      |
+      ("'"
+          ((~["\\", "'"]) | ("\\" ~[]))*            
+      "'")
+  > 
+  |
+  <RAW_STRING : "r" (("\"" (~["\""])* "\"") | ("'" (~["'"])* "'"))>
+  |
+  <FALSE : "false">
+  |
+  <TRUE : "true">
+  |
+  <NULL : "null">
+  |
+  <INTEGER : (["0"-"9"])+>
+  |
+  <DECIMAL : <INTEGER> "." <INTEGER>>
+  |
+  <DOT : ".">
+  |
+  <DOT_DOT : "..">
+  |
+  <BUILT_IN : "?">
+  |
+  <EXISTS : "??">
+  |
+  <EQUALS : "=">
+  |
+  <DOUBLE_EQUALS : "==">
+  |
+  <NOT_EQUALS : "!=">
+  |
+  <GREATER_THAN : ">">
+  |
+  <GREATER_THAN_EQUALS: ">=">
+  |
+  <EMPTY_DIRECTIVE_END : "/>" | "/]"> :DEFAULT
+  |
+  <LESS_THAN : "lt" | "<" | "&lt;">
+  |
+  <LESS_THAN_EQUALS : "lte" | "<=" | "&lt;=">
+  |
+  <ESCAPED_GT: "gt" | "\\gt" |  "&gt;">
+  |
+  <ESCAPED_GTE : "gte" | "\\gte" | "&gt;=">
+  |
+  <PLUS : "+">
+  |
+  <MINUS : "-">
+  |
+  <TIMES : "*">
+  |
+  <DOUBLE_STAR : "**">
+  |
+  <ELLIPSIS : "...">
+  |
+  <DIVIDE : "/">
+  |
+  <PERCENT : "%">
+  |
+  <AND : "&" | "&&" >
+  |
+  <OR : "|" | "||">
+  |
+  <EXCLAM : "!">
+  |
+  <COMMA : ",">
+  |
+  <SEMICOLON : ";">
+  |
+  <COLON : ":">
+  |
+  <OPEN_BRACKET : "[">
+  |
+  <CLOSE_BRACKET : "]"> 
+  |
+  <OPEN_PAREN : "(">
+  |
+  <CLOSE_PAREN : ")">
+  |
+  <OPEN_BRACE : "{" > 
+  |
+  <CLOSE_BRACE : "}" >
+  |
+  <IN : "in">
+  |
+  <AS : "as">
+  |
+  <USING : "using">
+;
+
+<NO_SPACE_EXPRESSION> TOKEN :
+    <TERMINATING_WHITESPACE :  (["\n", "\r", "\t", " "])+> : EXPRESSION
+;
+
+
+
+<NO_PARSE> MORE:  <(~[])> ;
+
+<NO_PARSE> TOKEN :
+	<TERSE_COMMENT_END : "-->" | "--]">
+	|
+    <COMMENT_END : ("</#comment" (<BLANK>)* ">") | ("[/#comment" (<BLANK>)* "]")>
+    |
+    <NOPARSE_END : ("</#noparse" (<BLANK>)* ">") | ("[/#noparse" (<BLANK>)* "]")>
+;
+
+<PHONY> TOKEN: <DIRECTIVE_END : ">"|"]">;
+
+INCLUDE JAVA_IDENTIFIER_DEF
+
+<EXPRESSION, NO_SPACE_EXPRESSION> TOKEN:
+   <ID: ("@"|<JAVA_IDENTIFIER_START>)("@"|<JAVA_IDENTIFIER_PART>)*>
+;
