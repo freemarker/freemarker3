@@ -64,7 +64,7 @@ public abstract class ASTVisitor {
 	public void visit(TemplateNode node) {
 		if (node == null) return;
     	try {
-    		Class clazz = node.getClass();
+    		Class<? extends TemplateNode> clazz = node.getClass();
         	Method visitMethod = this.getClass().getMethod("visit", new Class[] {clazz});
     		visitMethod.invoke(this, new Object[] {node});
     	}

@@ -20,32 +20,6 @@
   </target>
 
   <target name="parser-gen" depends="init" unless="parser.uptodate">
-        <!--get
-            src="https://javacc.com/download/javacc.jar"
-            dest="bootstrap"
-            quiet="true"
-            ignoreerrors="true"
-            usetimestamp="true" />
-        <get
-            src="https://javacc.com/download/freemarker.jar"
-            dest="bootstrap"
-            quiet="true"
-            ignoreerrors="true"
-            usetimestamp="true" />
-         <fail message="Bootstrap javacc.jar not available">
-            <condition>
-             <not>
-              <available file="bootstrap/javacc.jar"/>
-             </not>
-            </condition>
-         </fail>
-         <fail message="Bootstrap freemarker.jar not available">
-            <condition>
-             <not>
-              <available file="bootstrap/freemarker.jar"/>
-             </not>
-            </condition>
-         </fail-->
   	<java jar="bootstrap/javacc.jar" fork="true">
         	<assertions><enable/></assertions>
  	   <arg value="src/parser/FM.javacc"/>
@@ -82,15 +56,10 @@
   <target name="clean">
      <delete file="src/freemarker/core/parser/FMParser.java"/>
      <delete file="src/freemarker/core/parser/FMLexer.java"/>
-     <delete file="src/freemarker/core/parser/LexicalException.java"/>
-     <delete file="src/freemarker/core/parser/SimpleCharStream.java"/>
+     <delete file="src/freemarker/core/parser/FMNfaData.java"/>
      <delete file="src/freemarker/core/parser/InvalidToken.java"/>
      <delete file="src/freemarker/core/parser/Token.java"/>
      <delete file="src/freemarker/core/parser/FMConstants.java"/>
-     <delete file="src/freemarker/core/parser/FMParser.html"/>
-     <delete file="src/freemarker/core/parser/Node.java"/>
-     <delete file="src/freemarker/core/parser/Nodes.java"/>
-     <delete file="src/freemarker/core/parser/FileLineMap.java"/>
      <delete file="src/freemarker/core/parser/ParseException.java"/>
      <delete dir="build"/>
      <delete file="freemarker.jar"/>
