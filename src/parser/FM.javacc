@@ -25,7 +25,7 @@
  BASE_SRC_DIR="..";
  PARSER_PACKAGE="freemarker.core.parser";
  TREE_BUILDING_ENABLED=false;
- //LEGACY_API;
+ MINIMAL_TOKEN;
 
 INJECT PARSER_CLASS : 
     import freemarker.core.ast.*;
@@ -241,7 +241,8 @@ INJECT(LEXER_CLASS) :
   		case GREATER_THAN:
 			if (parenthesisNesting == 0 && !altDirectiveSyntax) {
 				if (token.getType() == TokenType.GREATER_THAN_EQUALS) {
-					input_stream.backup(1); // So that the = doesn't get eaten.
+					backup(1); // So that the = doesn't get eaten.
+               token.setEndOffset(token.getEndOffset()-1);
 				} 
 				token.setType(TokenType.DIRECTIVE_END);
 				switchTo(LexicalState.DEFAULT);
@@ -303,8 +304,9 @@ INJECT(LEXER_CLASS) :
  				char startTagChar = lastChar == ']' ? '[' : '<';
  				String extraChars = tokText.substring(0, tokText.lastIndexOf(startTagChar));
  				if (extraChars.length() >0) {
- 					token.setImage(extraChars);
- 					input_stream.backup(tokText.length() - extraChars.length());
+ 					//token.setImage(extraChars);
+ 					backup(tokText.length() - extraChars.length());
+               token.setEndOffset(token.getEndOffset()-(tokText.length() - extraChars.length()));
  					token.setType(TokenType.PRINTABLE_CHARS);
  				} else {
 		 			switchTo(LexicalState.DEFAULT);
@@ -319,8 +321,9 @@ INJECT(LEXER_CLASS) :
  				switchTo(LexicalState.DEFAULT);
  			}
  			else {
-		 		token.setImage(tokText.substring(0, tokText.length() -3));
-		 		input_stream.backup(3);
+		 		//token.setImage(tokText.substring(0, tokText.length() -3));
+		 		backup(3);
+            token.setEndOffset(token.getEndOffset()-3);
 	 		 	token.setType(TokenType.PRINTABLE_CHARS);
  			}
  			break;
@@ -341,7 +344,7 @@ INJECT(LEXER_CLASS) :
  INJECT ParseException  : 
     import java.util.*;
     import freemarker.core.ast.TemplateNode;
-    extends java.io.IOException;
+    extends RuntimeException;
  {
      int lineNumber, columnNumber;
      String templateName;
@@ -2562,7 +2565,8 @@ List<TextBlock> PCData :
       {
          buf.append(t.getImage());
          if (start == null) start = t;
-         if (prevToken != null) prevToken.setNext(null);
+         //if (prevToken != null) prevToken.setNext(null);
+         if (prevToken != null) token_source.uncacheTokens(prevToken);
       }
     )+
     {
