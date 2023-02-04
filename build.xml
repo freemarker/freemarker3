@@ -63,6 +63,9 @@
      <delete file="src/freemarker/core/parser/ParseException.java"/>
      <delete dir="build"/>
      <delete file="freemarker.jar"/>
+     <delete>
+      <fileset dir="src/freemarker/testcase/reference" includes="*.out"/>
+    </delete>     
   </target>
 
   <target name="test" depends="compile">
