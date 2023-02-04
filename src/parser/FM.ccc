@@ -1,31 +1,10 @@
-/*
- * Copyright (c) 2020, Jonathan Revusky revusky@freemarker.es
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice, this
- *     list of conditions and  the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *      this list of conditions and the following disclaimer in the documentation
- *      and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
- * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+
  
  BASE_SRC_DIR="..";
  PARSER_PACKAGE="freemarker.core.parser";
  TREE_BUILDING_ENABLED=false;
  MINIMAL_TOKEN;
+
 
 INJECT PARSER_CLASS : 
     import freemarker.core.ast.*;
@@ -34,140 +13,131 @@ INJECT PARSER_CLASS :
     import java.io.*;
     import java.util.*;
     import java.security.CodeSource;
-    import static PARSER_PACKAGE.FMConstants.LexicalState;
-
 {
+    // Necessary for adding macros and setting location info.
+    Template template;
+    private String templateName;
+    private boolean stripText;
+    // variables that keep track of whether we are in a loop or a switch.
+    private int contentNesting;
+    // for stripText
+    private int trimBlockNesting;
 
-// Necessary for adding macros and setting location info.
-  Template template;
-  private String templateName;
+    /**
+    * Create an FM expression parser using a string.
+    */
+    static public FMParser createExpressionParser(String s) {
+        FMLexer lexer;
+        try {
+            lexer = new FMLexer(s);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        lexer.switchTo(LexicalState.EXPRESSION);
+        return new FMParser(lexer);
+    }
 
-  private boolean stripText;
-// variables that keep track of whether we are in a loop or a switch.
-  private int contentNesting; // for stripText
-  private int trimBlockNesting;
-  
-  /**
-   * Create an FM expression parser using a string.
-   */
-  static public PARSER_CLASS createExpressionParser(String s) {
-      FMLexer lexer;
-      try {
-         lexer = new LEXER_CLASS(new StringReader(s));
-      }
-      catch (Exception e) {
-          throw new RuntimeException(e);
-      }
-      lexer.switchTo(LexicalState.EXPRESSION);
-      return new PARSER_CLASS(lexer);
-  }
-  
-  /**
-   * Constructs a new parser object.
-   * @param template The template associated with this parser.
-   * @param reader The character stream to use as input
-   */
-  public PARSER_CLASS(Template template, Reader reader) {
-      this(reader);
-      this.template = template;
-      this.templateName = template != null ? template.getName() : "";
-      token_source.templateName = templateName;
-  }
-  
-  public PARSER_CLASS(Template template, Reader reader, int syntaxSetting) {
-  	  this(template, reader);
-  	  if (syntaxSetting != Configuration.AUTO_DETECT_TAG_SYNTAX) {
-  	  	   token_source.setAltDirectiveSyntax(syntaxSetting==Configuration.SQUARE_BRACKET_TAG_SYNTAX);
-  	  }
-  }
-  
-  public PARSER_CLASS(Template template, String input, int syntaxSetting) {
-  	  this(template, new StringReader(input), syntaxSetting); 
-  }
-  
-  public void setTemplate(Template t) {
-      this.template = t;
-  }
-  
-  private String getErrorStart(Token t) {
-      return "Error in template: " + template.getName()
-            + "\non line " + t.getBeginLine() + ", column " + t.getBeginColumn();
-  }
-  
-  public boolean isSyntaxSet() {
-  	  return token_source.directiveSyntaxEstablished;
-  }
-  
-  public boolean isAltDirectiveSyntax() {
-  	  return token_source.altDirectiveSyntax;
-  }
-  
-  /**
-   * Used in error recovery, scans forward for a 
-   * token of a given kind, and optionally consumes it.
-   * @return the token right before the one of the kind
-   *         that we were scanning ahead for
-   */
-  
-  private Token recoverToToken(TokenType type, boolean consume) {
-  	  Token t = this.current_token, prevToken;
-  	  do {
-  	  	prevToken = t;
-  	  	t = getToken(1);
-  	  } while (t.getType() != type && t.getType() != TokenType.EOF);
-  	  if (!consume) {
-  	  	this.current_token = prevToken;
-  	  }
-	  return prevToken;
-  }
+    /**
+    * Constructs a new parser object.
+    * @param template The template associated with this parser.
+    * @param path The character stream to use as input
+    */
+    public FMParser(Template template, Path path) throws IOException {
+        this(path);
+        this.template = template;
+        this.templateName = template != null ? template.getName() : "";
+        token_source.templateName = templateName;
+    }
+
+    public FMParser(Template template, Path path, int syntaxSetting) throws IOException {
+        this(template, path);
+        if (syntaxSetting != Configuration.AUTO_DETECT_TAG_SYNTAX) {
+            token_source.setAltDirectiveSyntax(syntaxSetting == Configuration.SQUARE_BRACKET_TAG_SYNTAX);
+        }
+    }
+
+    public FMParser(Template template, String input, int syntaxSetting) {
+        this (input);
+//        this(template, new StringReader(input), syntaxSetting);
+        this.template = template;
+        this.templateName = template != null ? template.getName() : "";
+         if (syntaxSetting != Configuration.AUTO_DETECT_TAG_SYNTAX) {
+            token_source.setAltDirectiveSyntax(syntaxSetting == Configuration.SQUARE_BRACKET_TAG_SYNTAX);
+        }
+    }
+
+    public void setTemplate(Template t) {
+        this.template = t;
+    }
+
+    private String getErrorStart(Token t) {
+        return "Error in template: " + template.getName() + "\non line " + t.getBeginLine() + ", column " + t.getBeginColumn();
+    }
+
+    public boolean isSyntaxSet() {
+        return token_source.directiveSyntaxEstablished;
+    }
+
+    public boolean isAltDirectiveSyntax() {
+        return token_source.altDirectiveSyntax;
+    }
+
+    /**
+    * Used in error recovery, scans forward for a
+    * token of a given kind, and optionally consumes it.
+    * @return the token right before the one of the kind
+    *         that we were scanning ahead for
+    */
+    private Token recoverToToken(TokenType type, boolean consume) {
+        Token t = this.lastConsumedToken, prevToken;
+        do {
+            prevToken = t;
+            t = getToken(1);
+        }
+        while (t.getType() != type && t.getType() != TokenType.EOF);
+        if (!consume) {
+            this.lastConsumedToken = prevToken;
+        }
+        return prevToken;
+    }
+
 }
+
  
  INJECT ParseException  : 
     import java.util.*;
-    import freemarker.core.ast.TemplateNode;
- {
-     int lineNumber, columnNumber;
-     String templateName;
-     public List<ParsingProblem> problems;
-     
-     public ParseException(String message, int lineNumber, int columnNumber) {
-         super(message);
-         this.lineNumber = lineNumber;
-         this.columnNumber = columnNumber;
-     }
-     
-      public ParseException(String message, TemplateNode tobj) {
-         super(message);
-          this.lineNumber = tobj.getBeginLine();
-          this.columnNumber = tobj.getBeginColumn();
-          problems = new ArrayList<ParsingProblem>();
-          problems.add(new ParsingProblem(message, tobj));
-     }
-     
-     public ParseException(List<ParsingProblem> problems) {
-         this.problems = problems;
-     }
-  
-     public void setTemplateName(String templateName) {
-           this.templateName = templateName;
-     }
- }
+    import freemarker.core.ast.TemplateNode;{
+    int lineNumber, columnNumber;
+    String templateName;
+    public List<ParsingProblem> problems;
 
-INCLUDE "FMLexer.javacc"
-  
-// Now the actual parsing code, starting
-// with the productions for FreeMarker's
-// expression syntax.
+    public ParseException(String message, int lineNumber, int columnNumber) {
+        super(message);
+        this.lineNumber = lineNumber;
+        this.columnNumber = columnNumber;
+    }
 
-/**
- * An Expression production with error recovery
- * The start Token is the token just before the expression
- * we are trying to parse, the recoverToType is 
- * the kind of token to scan ahead for to recover from 
- * errors, and the boolean consumeToken
- * says whether to consume the recoverToken or not.
- */
-Expression Expression(Token start, TokenType recoverToType, boolean consumeToken) :
+    public ParseException(String message, TemplateNode tobj) {
+        super(message);
+        this.lineNumber = tobj.getBeginLine();
+        this.columnNumber = tobj.getBeginColumn();
+        problems = new ArrayList<ParsingProblem>();
+        problems.add(new ParsingProblem(message, tobj));
+    }
+
+    public ParseException(List<ParsingProblem> problems) {
+        this.problems = problems;
+    }
+
+    public void setTemplateName(String templateName) {
+        this.templateName = templateName;
+    }
+
+}
+
+
+INCLUDE "FMLexer.ccc"
+#Expression(Token start, TokenType recoverToType, boolean consumeToken) :
 {
    Expression exp = null;
    Token end;
@@ -176,13 +146,13 @@ Expression Expression(Token start, TokenType recoverToType, boolean consumeToken
 	   exp=OrExpression
    } catch (ParseException pe) {
    	   String msg = "invalid expression";
-       Token t = this.current_token, prevToken;
+       Token t = this.lastConsumedToken, prevToken;
        do {
   	  	   prevToken = t;
 		   t = getToken(1);
  	   } while (t.getType() != recoverToType && t.getType() != TokenType.EOF);
        if (!consumeToken) {
-  	  	   this.current_token = prevToken;
+  	  	   this.lastConsumedToken = prevToken;
   	   }
   	   exp = new InvalidExpression(msg);
   	   exp.setLocation(template, start.getNext(), prevToken);
@@ -436,8 +406,7 @@ Expression RangeExpression :
     lhs=AdditiveExpression {result = lhs;}
     [
       <DOT_DOT>
-       [
-        SCAN rhs=AdditiveExpression
+       [ rhs=AdditiveExpression =>|| 
        ]
        {
            Range range = new Range(lhs, rhs);
@@ -491,8 +460,7 @@ Expression OrExpression :
       return result;
    }
 ;
-
-ListLiteral ListLiteral :
+#ListLiteral :
 {
    Expression exp;
    ArrayList<Expression> values = new ArrayList<Expression>();
@@ -533,8 +501,7 @@ Expression NumberLiteral :
        return result;
    }
 ;
-
-Identifier Identifier :
+#Identifier :
 {
     Token t;
 }
@@ -559,8 +526,7 @@ Expression IdentifierOrStringLiteral :
       return exp;
    }   
 ;
-
-BuiltinVariable BuiltinVariable :
+#BuiltinVariable :
 {
    Token dot, name;
 }
@@ -616,7 +582,7 @@ Expression DefaultTo(Expression exp) :
        t=<EXCLAM>
        [
          SCAN {getToken(1).getType() != TokenType.ID || getToken(2).getType() != TokenType.EQUALS}
-         => rhs=PrimaryExpression
+         => rhs=PrimaryExpression =>|| 
        ]
    )
    {
@@ -770,9 +736,7 @@ Expression NullLiteral :
        return result;
    }
 ;
-
-
-HashLiteral HashLiteral :
+#HashLiteral :
 {
    Token begin, end;
    Expression key, value;
@@ -843,8 +807,7 @@ TemplateElement StringOutput :
       return result;
    }
 ;
-
-NumericalOutput NumericalOutput :
+#NumericalOutput :
 {
    Expression exp;
    Token fmt = null, begin, end;
@@ -1258,9 +1221,7 @@ TemplateElement Assign :
        }
     ))
 ;
-
-
-Include Include :
+#Include :
 {
    Token att, start, end;
    Expression nameExp, exp, parseExp = null, encodingExp = null;
@@ -1327,8 +1288,7 @@ LibraryLoad Import :
        return result;
    }
 ;
-
-ParameterList ParameterList :
+#ParameterList :
 {
 	Token arg=null, firstArg=null, ellipsis = null;
 	Expression defValue = null;
@@ -1400,8 +1360,7 @@ ParameterList ParameterList :
 		return result;
 	}
 ;
-
-Param Param :
+#Param :
 {
 	Token start, end;
 	Expression nameExp;
@@ -1430,8 +1389,7 @@ Param Param :
 		return null;
 	}
 ;
-
-Macro Macro :
+#Macro :
 {
    CodeSource codeSource = Template.NULL_CODE_SOURCE;
    if (template != null) codeSource = template.getCodeSource();
@@ -1482,9 +1440,7 @@ CompressedBlock Compress :
        return cb;
     }
 ;
-
-
-PositionalArgsList PositionalArgsList : 
+#PositionalArgsList : 
 {
 	Expression firstArg=null, arg=null;
 	PositionalArgsList result = new PositionalArgsList();
@@ -1500,8 +1456,7 @@ PositionalArgsList PositionalArgsList :
 		return result;
 	}
 ;
-
-NamedArgsList NamedArgsList :
+#NamedArgsList :
 {
 	Token firstParam, id;
 	Expression arg;
@@ -1526,8 +1481,7 @@ NamedArgsList NamedArgsList :
 		return result;
 	}
 ;
-
-ArgsList ArgsList :
+#ArgsList :
 {
 	ArgsList result = null;
 	Token id;
@@ -1677,8 +1631,7 @@ Comment TerseComment :
 		return result;
 	}
 ;
-
-Comment Comment :
+#Comment :
 {
    Token start, end, t;
    StringBuilder buf = new StringBuilder();
@@ -1795,8 +1748,7 @@ SwitchBlock Switch :
       return switchBlock;
    }
 ;
-
-Case Case :
+#Case :
 {
     Expression exp = null;
     TemplateElement block;
@@ -1817,8 +1769,7 @@ Case Case :
        return result;
    }
 ;
-
-TrimBlock TrimBlock :
+#TrimBlock :
 {
 	Token start, end;
 	TemplateElement content;
@@ -2253,7 +2204,7 @@ TemplateElement Root :
 }
    [
       SCAN [<WHITESPACE>](<TRIVIAL_FTL_HEADER>|<FTL_HEADER>) =>
-       header=HeaderElement()
+       header=HeaderElement
        {
        	   template.setHeaderElement(header);
        	   String templateEncoding = template.getEncoding();
@@ -2283,3 +2234,4 @@ TemplateElement Root :
        return doc;
    }
 ;
+

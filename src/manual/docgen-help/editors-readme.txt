@@ -4,10 +4,10 @@ Guide to FreeMarker Manual for Editors
 Non-technical
 -------------
 
-- The Template Authror's Guide is for Web designers. Assume that a
+- The Template Author's Guide is for Web designers. Assume that a
   designer is not a programmer, (s)he doesn't even know what is Java.
   Forget that FM is implemented in Java when you edit the Template
-  Authror's Guide. Try to avoid technical writing.
+  Author's Guide. Try to avoid technical writing.
 
 - In the Guide chapters, be careful not to mention things that were
   not explained earlier. The Guide chapters should be understandable

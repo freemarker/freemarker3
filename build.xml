@@ -8,7 +8,7 @@
 
 	<uptodate property="parser.uptodate"
                  targetfile="src/freemarker/core/parser/FMParser.java">
-	 <srcfiles dir="src/parser" includes="*.javacc"/>
+	 <srcfiles dir="src/parser" includes="*.ccc"/>
 	</uptodate>
 	
 	<path id="class.path">
@@ -20,9 +20,9 @@
   </target>
 
   <target name="parser-gen" depends="init" unless="parser.uptodate">
-  	<java jar="bootstrap/javacc.jar" fork="true">
+  	<java jar="bootstrap/congocc.jar" fork="true">
         	<assertions><enable/></assertions>
- 	   <arg value="src/parser/FM.javacc"/>
+ 	   <arg value="src/parser/FM.ccc"/>
  	</java>
   </target>
   
@@ -56,10 +56,10 @@
   <target name="clean">
      <delete file="src/freemarker/core/parser/FMParser.java"/>
      <delete file="src/freemarker/core/parser/FMLexer.java"/>
-     <delete file="src/freemarker/core/parser/FMNfaData.java"/>
+     <delete file="src/freemarker/core/parser/TokenSource.java"/>
      <delete file="src/freemarker/core/parser/InvalidToken.java"/>
      <delete file="src/freemarker/core/parser/Token.java"/>
-     <delete file="src/freemarker/core/parser/FMConstants.java"/>
+     <delete file="src/freemarker/core/parser/NonTerminalCall.java"/>
      <delete file="src/freemarker/core/parser/ParseException.java"/>
      <delete dir="build"/>
      <delete file="freemarker.jar"/>

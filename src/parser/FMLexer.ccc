@@ -1,5 +1,7 @@
+
 PARSER_PACKAGE="freemarker.core.parser";
 TREE_BUILDING_ENABLED=false;
+
 
 /**
  * The lexer portion defines 5 lexical states:
@@ -31,193 +33,174 @@ TREE_BUILDING_ENABLED=false;
  */
 
 INJECT(LEXER_CLASS) : 
-   import freemarker.template.utility.StringUtil;
-{
-
-/**
-  The noparseType is set when we enter
-  a block of text that the parser more or less ignores.
-  These are <noparse> and <comment>. This variable
-  tells us what the closing tag should be, and when
-  we hit that, we resume parsing. Note that with this
-  scheme, <comment> and <noparse> tags cannot nest
-  recursively, but it is not clear how important that is.
-*/
+   import freemarker.template.utility.StringUtil;{
+    /**
+    The noparseType is set when we enter
+    a block of text that the parser more or less ignores.
+    These are <noparse> and <comment>. This variable
+    tells us what the closing tag should be, and when
+    we hit that, we resume parsing. Note that with this
+    scheme, <comment> and <noparse> tags cannot nest
+    recursively, but it is not clear how important that is.
+    */
     private TokenType noparseType;
-
-/**
+    /**
     Keeps track of how deeply nested
     we have the hash literals.
     This is necessary since we need to be
     able to distinguish the } used to close
     a hash literal and the one used to
     close a ${
- */
- private int hashLiteralNesting;
- private int parenthesisNesting;
- private int bracketNesting;
- boolean onlyTextOutput, 
-         directiveSyntaxEstablished, 
-         altDirectiveSyntax,
-         inInvocation,
-         justAfterDot;
- String templateName;
- 
- public void setOnlyTextOutput(boolean b) {
-     this.onlyTextOutput = b;
- }
- 
- void setAltDirectiveSyntax(boolean b) {
-    altDirectiveSyntax = b;
-    directiveSyntaxEstablished = true;
- }
- 
- 
- private Token TOKEN_HOOK(Token token) {
- 	if (token.getType() == TokenType.EOF) return token;
- 	String tokText = token.getImage();
- 	char firstChar = tokText.charAt(0);
- 	if (justAfterDot) {
- 		if (StringUtil.isFTLIdentifier(tokText) || tokText.equals("*") || tokText.equals("**")) {
- 			token.setType(TokenType.ID);
- 			return token;
- 		} 
- 	}
- 	if (firstChar == '[' || firstChar=='<') {
- 		String chopFirst = tokText.substring(1);
- 		if (chopFirst.startsWith("#") || chopFirst.startsWith("/#")
- 		    || chopFirst.startsWith("@") || chopFirst.startsWith("/@")) {
- 			if (this.onlyTextOutput) {
- 				token.setType(TokenType.PRINTABLE_CHARS);
- 				return token;
- 			}
-	 		boolean squareBracket = firstChar == '[';
- 			if (!directiveSyntaxEstablished) {
- 				setAltDirectiveSyntax(squareBracket);
- 			} 
- 			else if (altDirectiveSyntax != squareBracket) {
- 				token.setType(TokenType.PRINTABLE_CHARS);
- 				return token;
- 			}
- 			if (token.getType() == TokenType.UNKNOWN_DIRECTIVE) {
-    	      int index = tokText.indexOf('#');
-        	  String s = tokText.substring(index);
-              String msg = "Unknown directive: " 
-                        + s
-                        + " on line: " + token.getBeginLine()
-                        + ", column: " + token.getBeginColumn() +1
-                        + ", in template: " + templateName;
-          	  throw new RuntimeException(msg); // REVISIT
- 			}
- 		}
- 	}
-  	switch(token.getType()) {
-  		case FTL_HEADER : 
-          switchTo(LexicalState.EXPRESSION);
-          break;
-        case GREATER_THAN_EQUALS : 
-  		case GREATER_THAN:
-			if (parenthesisNesting == 0 && !altDirectiveSyntax) {
-				if (token.getType() == TokenType.GREATER_THAN_EQUALS) {
-					backup(1); // So that the = doesn't get eaten.
-               token.setEndOffset(token.getEndOffset()-1);
-				} 
-				token.setType(TokenType.DIRECTIVE_END);
-				switchTo(LexicalState.DEFAULT);
-			}
-			break;
-		case OPEN_PAREN :
-			parenthesisNesting++;
-			switchTo(LexicalState.EXPRESSION);
-			break;
-		case CLOSE_PAREN : 
-			parenthesisNesting--;
-			break;
-  		case OPEN_BRACKET:
-  			bracketNesting++;
-  			break;
-  		case CLOSE_BRACKET : 
-            if (bracketNesting >0) {
-        	   --bracketNesting;
-            } else {
-            	token.setType(TokenType.DIRECTIVE_END);
-        		switchTo(LexicalState.DEFAULT);
-            }   
-            break; 
-        case OPEN_BRACE :
-        	++hashLiteralNesting;
-        	break;
-        case CLOSE_BRACE :
-        	if (hashLiteralNesting >0) {
-        		--hashLiteralNesting;
-        	} else {
-        		switchTo(LexicalState.DEFAULT);
-        	}
-        	break;
-  		case UNIFIED_CALL:
-  			switchTo(LexicalState.NO_SPACE_EXPRESSION);
-  			break;
-		case NOPARSE: 
-			noparseType = NOPARSE;
-			switchTo(LexicalState.NO_PARSE); 
-			break; 		
- 		case TERSE_COMMENT: 
- 			noparseType = TERSE_COMMENT;
- 			switchTo(LexicalState.NO_PARSE); 
- 			break;
- 		case COMMENT: 
- 			noparseType = COMMENT;
- 			switchTo(LexicalState.NO_PARSE); 
- 			break;
- 		case NOPARSE_END:
- 			if (noparseType != NOPARSE) {
- 				token.setType(TokenType.PRINTABLE_CHARS);
- 				break;
- 			} // deliberate fall-through to next case...
- 		case COMMENT_END:
- 			if (token.getType() == TokenType.COMMENT_END && noparseType != COMMENT) {
-	 			token.setType(TokenType.PRINTABLE_CHARS);
- 			} else {
- 				char lastChar = tokText.charAt(tokText.length() -1);
- 				char startTagChar = lastChar == ']' ? '[' : '<';
- 				String extraChars = tokText.substring(0, tokText.lastIndexOf(startTagChar));
- 				if (extraChars.length() >0) {
- 					//token.setImage(extraChars);
- 					backup(tokText.length() - extraChars.length());
-               token.setEndOffset(token.getEndOffset()-(tokText.length() - extraChars.length()));
- 					token.setType(TokenType.PRINTABLE_CHARS);
- 				} else {
-		 			switchTo(LexicalState.DEFAULT);
- 				}
- 			}
- 			break;
- 		case TERSE_COMMENT_END:
- 			if (noparseType != TERSE_COMMENT) {
- 				token.setType(TokenType.PRINTABLE_CHARS);
- 			}
- 			else if (tokText.length() == 3) {
- 				switchTo(LexicalState.DEFAULT);
- 			}
- 			else {
-		 		//token.setImage(tokText.substring(0, tokText.length() -3));
-		 		backup(3);
-            token.setEndOffset(token.getEndOffset()-3);
-	 		 	token.setType(TokenType.PRINTABLE_CHARS);
- 			}
- 			break;
-  		case FUNCTION: case MACRO: case PARAM: case NESTED: case TRANSFORM: case STOP: case RETURN: case CALL:
-  		case IF: case ELSE_IF: 
-  		case VISIT: case RECURSE: 
- 		case VAR: case SET: case ASSIGN: case LOCALASSIGN: case GLOBALASSIGN:
- 		case LIST: case FOREACH:
- 		case SWITCH: case CASE:
- 		case _INCLUDE: case IMPORT: case EMBED:  
-  		case ESCAPE: case SETTING: 
- 			switchTo(LexicalState.EXPRESSION);
- 	}
-   return token;
- }
- }
+    */
+    private int hashLiteralNesting;
+    private int parenthesisNesting;
+    private int bracketNesting;
+    boolean onlyTextOutput, directiveSyntaxEstablished, altDirectiveSyntax, inInvocation, justAfterDot;
+    String templateName;
+
+    public void setOnlyTextOutput(boolean b) {
+        this.onlyTextOutput = b;
+    }
+
+    void setAltDirectiveSyntax(boolean b) {
+        altDirectiveSyntax = b;
+        directiveSyntaxEstablished = true;
+    }
+
+    private Token tokenHook$FMLexer_javacc$77$16(Token token) {
+        if (token.getType() == TokenType.EOF) return token;
+        String tokText = token.getImage();
+        char firstChar = tokText.charAt(0);
+        if (justAfterDot) {
+            if (StringUtil.isFTLIdentifier(tokText) || tokText.equals("*") || tokText.equals("**")) {
+                token.setType(TokenType.ID);
+                return token;
+            }
+        }
+        if (firstChar == '[' || firstChar == '<') {
+            String chopFirst = tokText.substring(1);
+            if (chopFirst.startsWith("#") || chopFirst.startsWith("/#") || chopFirst.startsWith("@") || chopFirst.startsWith("/@")) {
+                if (this.onlyTextOutput) {
+                    token.setType(TokenType.PRINTABLE_CHARS);
+                    return token;
+                }
+                boolean squareBracket = firstChar == '[';
+                if (!directiveSyntaxEstablished) {
+                    setAltDirectiveSyntax(squareBracket);
+                } else if (altDirectiveSyntax != squareBracket) {
+                    token.setType(TokenType.PRINTABLE_CHARS);
+                    return token;
+                }
+                if (token.getType() == TokenType.UNKNOWN_DIRECTIVE) {
+                    int index = tokText.indexOf('#');
+                    String s = tokText.substring(index);
+                    String msg = "Unknown directive: " + s + " on line: " + token.getBeginLine() + ", column: " + token.getBeginColumn() + 1 + ", in template: " + templateName;
+                    throw new RuntimeException(msg);
+                    // REVISIT
+                }
+            }
+        }
+        switch(token.getType()) {
+            case FTL_HEADER : 
+                switchTo(LexicalState.EXPRESSION);
+                break;
+            case GREATER_THAN_EQUALS : case GREATER_THAN : 
+                if (parenthesisNesting == 0 && !altDirectiveSyntax) {
+                    if (token.getType() == TokenType.GREATER_THAN_EQUALS) {
+                        backup(1);
+                        // So that the = doesn't get eaten.
+                        token.setEndOffset(token.getEndOffset() - 1);
+                    }
+                    token.setType(TokenType.DIRECTIVE_END);
+                    switchTo(LexicalState.DEFAULT);
+                }
+                break;
+            case OPEN_PAREN : 
+                parenthesisNesting++;
+                switchTo(LexicalState.EXPRESSION);
+                break;
+            case CLOSE_PAREN : 
+                parenthesisNesting--;
+                break;
+            case OPEN_BRACKET : 
+                bracketNesting++;
+                break;
+            case CLOSE_BRACKET : 
+                if (bracketNesting > 0) {
+                    --bracketNesting;
+                } else {
+                    token.setType(TokenType.DIRECTIVE_END);
+                    switchTo(LexicalState.DEFAULT);
+                }
+                break;
+            case OPEN_BRACE : 
+                ++hashLiteralNesting;
+                break;
+            case CLOSE_BRACE : 
+                if (hashLiteralNesting > 0) {
+                    --hashLiteralNesting;
+                } else {
+                    switchTo(LexicalState.DEFAULT);
+                }
+                break;
+            case UNIFIED_CALL : 
+                switchTo(LexicalState.NO_SPACE_EXPRESSION);
+                break;
+            case NOPARSE : 
+                noparseType = NOPARSE;
+                switchTo(LexicalState.NO_PARSE);
+                break;
+            case TERSE_COMMENT : 
+                noparseType = TERSE_COMMENT;
+                switchTo(LexicalState.NO_PARSE);
+                break;
+            case COMMENT : 
+                noparseType = COMMENT;
+                switchTo(LexicalState.NO_PARSE);
+                break;
+            case NOPARSE_END : 
+                if (noparseType != NOPARSE) {
+                    token.setType(TokenType.PRINTABLE_CHARS);
+                    break;
+                }
+            // deliberate fall-through to next case...
+            case COMMENT_END : 
+                if (token.getType() == TokenType.COMMENT_END && noparseType != COMMENT) {
+                    token.setType(TokenType.PRINTABLE_CHARS);
+                } else {
+                    char lastChar = tokText.charAt(tokText.length() - 1);
+                    char startTagChar = lastChar == ']' ? '[' : '<';
+                    String extraChars = tokText.substring(0, tokText.lastIndexOf(startTagChar));
+                    if (extraChars.length() > 0) {
+                        //token.setImage(extraChars);
+                        backup(tokText.length() - extraChars.length());
+                        token.setEndOffset(token.getEndOffset() - (tokText.length() - extraChars.length()));
+                        token.setType(TokenType.PRINTABLE_CHARS);
+                    } else {
+                        switchTo(LexicalState.DEFAULT);
+                    }
+                }
+                break;
+            case TERSE_COMMENT_END : 
+                if (noparseType != TERSE_COMMENT) {
+                    token.setType(TokenType.PRINTABLE_CHARS);
+                } else if (tokText.length() == 3) {
+                    switchTo(LexicalState.DEFAULT);
+                } else {
+                    //token.setImage(tokText.substring(0, tokText.length() -3));
+                    backup(3);
+                    token.setEndOffset(token.getEndOffset() - 3);
+                    token.setType(TokenType.PRINTABLE_CHARS);
+                }
+                break;
+            case FUNCTION : case MACRO : case PARAM : case NESTED : case TRANSFORM : case STOP : case RETURN : case CALL : case IF : case ELSE_IF : case VISIT : case RECURSE : case VAR : case SET : case ASSIGN : case LOCALASSIGN : case GLOBALASSIGN : case LIST : case FOREACH : case SWITCH : case CASE : case _INCLUDE : case IMPORT : case EMBED : case ESCAPE : case SETTING : 
+                switchTo(LexicalState.EXPRESSION);
+        }
+        return token;
+    }
+
+}
+
 
 TOKEN:
     <#BLANK : [" ", "\t", "\n", "\r"]>
@@ -485,3 +468,4 @@ INCLUDE JAVA_IDENTIFIER_DEF
 <EXPRESSION, NO_SPACE_EXPRESSION> TOKEN:
    <ID: ("@"|<JAVA_IDENTIFIER_START>)("@"|<JAVA_IDENTIFIER_PART>)*>
 ;
+
