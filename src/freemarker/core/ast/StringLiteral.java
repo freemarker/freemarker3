@@ -24,7 +24,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
     	return value;
     }
     
-    public void checkInterpolation() throws ParseException {
+    public void checkInterpolation() {
     	String src = this.getSource();
 //    	String src = value;
         if (src.length() >5 && (src.indexOf("${") >= 0 || src.indexOf("#{") >= 0)) {

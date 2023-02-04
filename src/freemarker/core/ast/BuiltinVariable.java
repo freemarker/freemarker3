@@ -29,7 +29,7 @@ public class BuiltinVariable extends Expression {
 
     private String name;
 
-    public BuiltinVariable(String name) throws ParseException {
+    public BuiltinVariable(String name) {
         name = name.intern();
         this.name = name;
         if (name != NAMESPACE

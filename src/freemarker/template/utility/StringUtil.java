@@ -417,7 +417,7 @@ public class StringUtil {
      * @return String with all escape sequences resolved
      * @throws ParseException if there string contains illegal escapes
      */
-    public static String FTLStringLiteralDec(String s) throws ParseException {
+    public static String FTLStringLiteralDec(String s) {
 
         int idx = s.indexOf('\\');
         if (idx == -1) {

@@ -93,7 +93,7 @@ public class NamedArgsList extends ArgsList {
         return result;
     }
     
-    void addOOParamArg(OOParamElement param) throws ParseException {
+    void addOOParamArg(OOParamElement param) {
     	Expression exp = namedArgs.get(param.getName());
     	if (exp != null) {
     		

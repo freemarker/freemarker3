@@ -20,7 +20,7 @@ class SettingStringParser {
         this.ln = text.length();
     }
 
-    ArrayList<String> parseAsList() throws ParseException {
+    ArrayList<String> parseAsList() {
         char c;
         ArrayList<String> seq = new ArrayList<String>();
         while (true) {
@@ -37,7 +37,7 @@ class SettingStringParser {
         return seq;
     }
 
-    HashMap<String, String> parseAsImportList() throws ParseException {
+    HashMap<String, String> parseAsImportList() {
         char c;
         HashMap<String, String> map = new HashMap<String, String>();
         while (true) {
@@ -69,7 +69,7 @@ class SettingStringParser {
         return map;
     }
 
-    String fetchStringValue() throws ParseException {
+    String fetchStringValue() {
         String w = fetchWord();
         if (w.startsWith("'") || w.startsWith("\"")) {
             w = w.substring(1, w.length() - 1);
@@ -77,7 +77,7 @@ class SettingStringParser {
         return StringUtil.FTLStringLiteralDec(w);
     }
 
-    String fetchKeyword() throws ParseException {
+    String fetchKeyword() {
         String w = fetchWord();
         if (w.startsWith("'") || w.startsWith("\"")) {
             throw new ParseException(
@@ -96,7 +96,7 @@ class SettingStringParser {
         return ' ';
     }
 
-    private String fetchWord() throws ParseException {
+    private String fetchWord() {
         if (p == ln) throw new ParseException(
                 "Unexpeced end of text", 0, 0);
 

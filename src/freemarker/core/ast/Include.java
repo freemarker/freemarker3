@@ -142,7 +142,7 @@ public class Include extends TemplateElement {
     	return freshNamespace;
     }
 
-    private boolean getYesNo(String s) throws ParseException {
+    private boolean getYesNo(String s) {
         try {
            return StringUtil.getYesNo(s);
         }

@@ -378,7 +378,7 @@ public class BeansWrapper implements ObjectWrapper
     
     private final ModelFactory BOOLEAN_FACTORY = new ModelFactory() {
         public TemplateModel create(Object object, ObjectWrapper wrapper) {
-            return ((Boolean)object).booleanValue() ? TRUE : FALSE; 
+            return (Boolean)object ? TRUE : FALSE; 
         }
     };
 

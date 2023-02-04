@@ -72,7 +72,7 @@ abstract public class ArgsList extends TemplateNode {
             }
 	}
 	
-	private static ParameterList getParameterList(String s) throws ParseException {
+	private static ParameterList getParameterList(String s) {
 		FMLexer token_source = new FMLexer(s);
 		token_source.switchTo(LexicalState.EXPRESSION);
 		FMParser parser = new FMParser(token_source);
