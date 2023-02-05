@@ -176,7 +176,7 @@ public final class Environment extends Configurable implements Scope {
             try {
                 doAutoImportsAndIncludes(this);
                 Template template = getTemplate();
-                renderSecurely(template.getRootElement(), template.getCodeSource());
+                render(template.getRootElement());
                 // Do not flush if there was an exception.
                 out.flush();
             } finally {
@@ -187,9 +187,9 @@ public final class Environment extends Configurable implements Scope {
             threadEnv.set(savedEnv);
         }
     }
-
+/*
     public void renderSecurely(TemplateElement element, CodeSource newCodeSource)
-    throws TemplateException, IOException
+    throws IOException
     {
         // currentCodeSource can be null if we don't have enough privilege to
         // obtain DEFAULT_CODE_SOURCE. In that case, assume newCodeSource must
@@ -213,7 +213,7 @@ public final class Environment extends Configurable implements Scope {
             render(element);
         }
     }
-
+*/
     /**
      * "Visit" the template element.
      */
@@ -395,7 +395,7 @@ public final class Environment extends Configurable implements Scope {
             setParent(getCurrentNamespace().getTemplate());
             currentScope = bctxt;
             try {
-                renderSecurely(body, body.getTemplate().getCodeSource());
+                render(body);
             } finally {
                 currentScope = prevScope;
                 this.currentMacroContext = invokingMacroContext;
@@ -1565,8 +1565,7 @@ public final class Environment extends Configurable implements Scope {
             importMacros(includedTemplate);
         }
         try {
-            renderSecurely(includedTemplate.getRootElement(), 
-                    includedTemplate.getCodeSource());
+            render(includedTemplate.getRootElement());
         } finally {
             this.currentScope = prevScope;
             setParent(prevTemplate);
@@ -1651,9 +1650,7 @@ public final class Environment extends Configurable implements Scope {
             this.out = NULL_WRITER;
             setParent(loadedTemplate);
             try {
-                renderSecurely(loadedTemplate.getRootElement(), 
-                        loadedTemplate.getCodeSource());
-//              include(loadedTemplate, false);
+                render(loadedTemplate.getRootElement()); 
             } finally {
                 this.out = prevOut;
                 currentScope = prevScope;

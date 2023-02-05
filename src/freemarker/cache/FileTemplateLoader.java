@@ -6,13 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URL;
-import java.security.AccessController;
 import java.security.CodeSource;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.security.cert.Certificate;
 
 /**
  * A {@link TemplateLoader} that uses files in a specified directory as the
@@ -35,7 +29,6 @@ public class FileTemplateLoader implements SecureTemplateLoader
      */
     public final File baseDir;
     private String canonicalPath;
-    private final CodeSource baseDirCodeSource;
     
     /**
      * Creates a new file template cache that will use the current directory
@@ -108,53 +101,36 @@ public class FileTemplateLoader implements SecureTemplateLoader
             }
         }
         this.baseDir = baseDir;
-        if (useBaseDirCodeSource) {
-            baseDirCodeSource = new CodeSource(baseDir.toURL(), 
-                    (Certificate[]) null);
-        } else {
-            baseDirCodeSource = null;
-        }
     }
 
     public Object findTemplateSource(final String name) throws IOException {
-        try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<File>() {
-                public File run() throws IOException {
-                    File source = new File(baseDir, SEP_IS_SLASH ? name : name.replace('/', File.separatorChar));
-                    if(!source.isFile()) {
-                        return null;
-                    }
-                    // Security check for inadvertently returning something 
-                    // outside the template directory when linking is not 
-                    // allowed.
-                    if(canonicalPath != null) {
-                        String normalized = source.getCanonicalPath(); 
-                        if (!normalized.startsWith(canonicalPath)) {
-                            throw new SecurityException(source.getAbsolutePath() 
-                                    + " resolves to " + normalized + " which " + 
-                                    " doesn't start with " + canonicalPath);
-                        }
-                    }
-                    return source;
-                }
-            });
+        File source = new File(baseDir, SEP_IS_SLASH ? name : name.replace('/', File.separatorChar));
+        if (!source.isFile()) {
+            return null;
         }
-        catch(PrivilegedActionException e) {
-            throw (IOException)e.getException();
+        // Security check for inadvertently returning something
+        // outside the template directory when linking is not
+        // allowed.
+        if (canonicalPath != null) {
+            String normalized = source.getCanonicalPath();
+            if (!normalized.startsWith(canonicalPath)) {
+                throw new SecurityException(source.getAbsolutePath()
+                        + " resolves to " + normalized + " which " +
+                        " doesn't start with " + canonicalPath);
+            }
         }
+        return source;
     }
     
     public long getLastModified(final Object templateSource) {
-        return AccessController.doPrivileged(new PrivilegedAction<Long>() {
-            public Long run() {
-            	return Long.valueOf(((File) templateSource).lastModified());
-            }
-        }).longValue();
+        return ((File) templateSource).lastModified();
     }
     
     public Reader getReader(final Object templateSource, final String encoding)
     throws IOException
     {
+        return new InputStreamReader(new FileInputStream((File) templateSource), encoding);
+/*                
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<Reader>() {
                 public Reader run() throws IOException {
@@ -168,18 +144,14 @@ public class FileTemplateLoader implements SecureTemplateLoader
         }
         catch(PrivilegedActionException e) {
             throw (IOException)e.getException();
-        }
+        }*/
     }
     
     public void closeTemplateSource(Object templateSource) {
         // Do nothing.
     }
     
-    public CodeSource getCodeSource(Object templateSource) throws IOException {
-        if(baseDirCodeSource != null) {
-            return baseDirCodeSource;
-        }
-        File f = (File)templateSource;
-        return new CodeSource(f.toURL(), (Certificate[])null);
+    public CodeSource getCodeSource(Object templateSource) {
+        return null;
     }
 }

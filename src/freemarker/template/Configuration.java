@@ -1021,31 +1021,4 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     public TemplateCollectionModel values() {
     	return new SimpleCollection(variables.values(), getObjectWrapper());
     }
-
-    /**
-     * We're keeping this functionality for now, but if there is no
-     * sign anybody is interested in using this, it will likely be removed.
-     * @return whether successful
-     */
-    public boolean enableRhino() {
-        return DefaultObjectWrapper.enableRhino();
-    }
-
-    /**
-     * We're keeping this functionality for now, but if there is no
-     * sign anybody is interested in using this, it will likely be removed.
-     * @return whether successful
-     */
-    public boolean enableJython() {
-        return DefaultObjectWrapper.enableJython();
-    }
-
-    /**
-     * We're keeping this functionality for now, but if there is no
-     * sign anybody is interested in using this, it will likely be removed.
-     * @return whether successful
-     */
-    public boolean enableJRuby() {
-        return DefaultObjectWrapper.enableJRuby();
-    }
 }

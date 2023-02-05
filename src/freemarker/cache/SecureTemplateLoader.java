@@ -19,5 +19,5 @@ public interface SecureTemplateLoader extends TemplateLoader
      * @throws IOException if an I/O exception occurs while trying to obtain 
      * the code source.
      */
-    public CodeSource getCodeSource(Object templateSource) throws IOException;
+     CodeSource getCodeSource(Object templateSource) throws IOException;
 }

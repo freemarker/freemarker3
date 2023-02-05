@@ -1,7 +1,6 @@
 package freemarker.ext.jsp;
 
 import freemarker.log.Logger;
-import freemarker.template.TemplateModelException;
 
 import javax.servlet.jsp.el.ExpressionEvaluator;
 import javax.servlet.jsp.el.VariableResolver;
@@ -9,8 +8,6 @@ import javax.servlet.jsp.el.ELException;
 import javax.servlet.jsp.JspFactory;
 import javax.servlet.jsp.PageContext;
 import javax.el.ELContext;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 
 /**
  * Implementation of PageContext that contains JSP 2.0 specific methods. This 
@@ -43,16 +40,10 @@ public class FreeMarkerPageContext2 extends FreeMarkerPageContext {
      */
     public ExpressionEvaluator getExpressionEvaluator() {
         try {
-            Class type = AccessController.doPrivileged(
-                    new PrivilegedAction<ClassLoader>() {
-                        public ClassLoader run() {
-                            return Thread.currentThread().getContextClassLoader();
-                        }
-                    }).loadClass
-                    ("org.apache.commons.el.ExpressionEvaluatorImpl");
-            return (ExpressionEvaluator) type.newInstance();
-        }
-        catch (Exception e) {
+           ClassLoader cl = Thread.currentThread().getContextClassLoader();
+           Class<?> clazz = cl.loadClass("org.apache.commons.el.ExpressionEvaluatorImpl");
+           return (ExpressionEvaluator) clazz.newInstance(); 
+        } catch(Exception e) {
             throw new UnsupportedOperationException("In order for the getExpressionEvaluator() " +
                 "method to work, you must have downloaded the apache commons-el jar and " +
                 "made it available in the classpath.");

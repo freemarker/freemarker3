@@ -1,8 +1,5 @@
 package freemarker.ext.jsp;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 import javax.el.ELContext;
 import javax.servlet.jsp.JspApplicationContext;
 import javax.servlet.jsp.JspContext;
@@ -13,7 +10,6 @@ import javax.servlet.jsp.el.ExpressionEvaluator;
 import javax.servlet.jsp.el.VariableResolver;
 
 import freemarker.log.Logger;
-import freemarker.template.TemplateModelException;
 
 /**
  * Implementation of PageContext that contains JSP 2.0 and JSP 2.1 specific 

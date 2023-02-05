@@ -17,52 +17,6 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
     
     static final DefaultObjectWrapper instance = new DefaultObjectWrapper();
     
-    static private Class JYTHON_OBJ_CLASS,
-                         RHINO_SCRIPTABLE_CLASS,
-                         JRUBY_OBJ_CLASS; 
-    
-    static private ObjectWrapper JYTHON_WRAPPER, JRUBY_WRAPPER, RHINO_WRAPPER;
-
-    /**
-     * @return whether successful
-     */
-    static boolean enableJython() {
-        if (JYTHON_WRAPPER == null) {
-            try {
-                JYTHON_OBJ_CLASS = Class.forName("org.python.core.PyObject");
-                Class clazz = Class.forName("freemarker.ext.jython.JythonWrapper");
-                JYTHON_WRAPPER = (ObjectWrapper) clazz.newInstance();
-            } catch (Exception e) {
-            }
-        }
-        return JYTHON_WRAPPER != null;
-    }
-
-    static boolean enableJRuby() {
-        if (JRUBY_WRAPPER == null) {
-            try {
-                JRUBY_OBJ_CLASS = Class.forName("org.jruby.RubyObject");
-                Class clazz = Class.forName("freemarker.ext.jruby.JRubyWrapper");
-                JRUBY_WRAPPER = (ObjectWrapper) clazz.newInstance();
-            } catch (Exception e) {
-            }
-        }
-        return JRUBY_WRAPPER !=null;
-    }
-    
-    static boolean enableRhino() {
-        if (RHINO_WRAPPER == null) {
-            try {
-                RHINO_SCRIPTABLE_CLASS = Class.forName("org.mozilla.javascript.Scriptable");
-                Class clazz = Class.forName("freemarker.ext.rhino.RhinoWrapper");
-                RHINO_WRAPPER = (ObjectWrapper) clazz.newInstance();
-            } catch (Exception e) {
-            }
-        }
-        return RHINO_WRAPPER != null;
-    }
-    
-
     public TemplateModel wrap(Object obj) {
         if (obj == null) {
             return super.wrap(null);
@@ -115,15 +69,6 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
         if (obj instanceof org.w3c.dom.Node) {
             return wrapDomNode(obj);
         }
-        if (JYTHON_WRAPPER != null  && JYTHON_OBJ_CLASS.isInstance(obj)) {
-            return JYTHON_WRAPPER.wrap(obj);
-        }
-        if (JRUBY_WRAPPER != null  && JRUBY_OBJ_CLASS.isInstance(obj)) {
-            return JRUBY_WRAPPER.wrap(obj);
-        }
-        if (RHINO_SCRIPTABLE_CLASS != null && RHINO_SCRIPTABLE_CLASS.isInstance(obj)) {
-        	return RHINO_WRAPPER.wrap(obj);
-        }
         return super.wrap(obj); 
     }
 
@@ -137,7 +82,7 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
      */
     protected Object convertArray(Object arr) {
         final int size = Array.getLength(arr);
-        ArrayList list = new ArrayList(size);
+        ArrayList<Object> list = new ArrayList<>(size);
         for (int i=0;i<size; i++) {
             list.add(Array.get(arr, i));
         }
