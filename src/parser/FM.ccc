@@ -8,8 +8,12 @@ INJECT PARSER_CLASS :
     import freemarker.core.ast.*;
     import freemarker.template.*;
     import freemarker.template.utility.StringUtil;
-    import java.io.*;
-    import java.util.*;
+    import java.util.List;
+    import java.util.StringTokenizer;
+    import java.util.Map;
+    import java.util.Set;
+    import java.util.HashSet;
+    import java.util.LinkedHashMap;
 {
     // Necessary for adding macros and setting location info.
     Template template;
@@ -1101,7 +1105,7 @@ TemplateElement Assign :
    Expression nameExp, exp, nsExp=null;
    String varName;
    TemplateElement block;
-   LinkedHashMap<String, Expression> assignments = new LinkedHashMap<String, Expression>();
+   Map<String, Expression> assignments = new LinkedHashMap<>();
    String assignmentType;
    AssignmentInstruction result;
 }
