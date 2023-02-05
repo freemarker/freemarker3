@@ -45,13 +45,7 @@ public class FreeMarkerPageContext21 extends FreeMarkerPageContext {
      */
     public ExpressionEvaluator getExpressionEvaluator() {
         try {
-            Class type = AccessController.doPrivileged(
-                    new PrivilegedAction<ClassLoader>() {
-                        public ClassLoader run() {
-                            return Thread.currentThread().getContextClassLoader();
-                        }
-                    }).loadClass
-                    ("org.apache.commons.el.ExpressionEvaluatorImpl");
+            Class<?> type = Class.forName("org.apache.commons.el.ExpressionEvaluatorImpl");
             return (ExpressionEvaluator) type.newInstance();
         }
         catch (Exception e) {

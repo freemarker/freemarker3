@@ -14,7 +14,6 @@ import java.util.Random;
 
 import freemarker.debug.Debugger;
 import freemarker.log.Logger;
-import freemarker.template.utility.SecurityUtilities;
 import freemarker.template.utility.UndeclaredThrowableException;
 
 /**
@@ -33,10 +32,10 @@ class DebuggerServer
     
     public DebuggerServer(Serializable debuggerStub)
     {
-        port = SecurityUtilities.getSystemProperty("freemarker.debug.port", Debugger.DEFAULT_PORT).intValue();
+        port = Integer.getInteger("freemarker.debug.port", Debugger.DEFAULT_PORT);
         try
         {
-            password = SecurityUtilities.getSystemProperty("freemarker.debug.password", "").getBytes("UTF-8");
+            password = System.getProperty("freemarker.debug.password", "").getBytes("UTF-8");
         }
         catch (UnsupportedEncodingException e)
         {

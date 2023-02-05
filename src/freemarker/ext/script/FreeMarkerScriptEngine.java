@@ -3,7 +3,6 @@ package freemarker.ext.script;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.security.Permission;
 import java.util.Properties;
 
 import javax.script.AbstractScriptEngine;
@@ -16,7 +15,6 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 
-import freemarker.core.FreeMarkerPermission;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -36,9 +34,6 @@ extends
 implements
     Compilable
 {
-    private static final Permission SET_CONFIGURATION = 
-        new FreeMarkerPermission("setScriptEngineFactoryConfiguration");
-    
     private final FreeMarkerScriptEngineFactory factory;
     private Configuration config;
     
@@ -77,18 +72,12 @@ implements
         {
             throw new IllegalArgumentException("config == null");
         }
-        checkSetConfiguration();
         synchronized(this)
         {
             this.config = config;
         }
     }
 
-    private void checkSetConfiguration()
-    {
-        FreeMarkerPermission.checkPermission(SET_CONFIGURATION);
-    }
-    
     public Bindings createBindings()
     {
         return new SimpleBindings();
@@ -131,18 +120,10 @@ implements
             {
                 if(objConfig instanceof Configuration)
                 {
-                    synchronized(this)
-                    {
-                        if(objConfig != this.config)
-                        {
-                            checkSetConfiguration();
-                        }
-                    }
                     config = (Configuration)objConfig;
                 }
                 else if(objConfig instanceof Properties)
                 {
-                    checkSetConfiguration();
                     config = new Configuration();
                     config.setSettings((Properties)objConfig);
                 }

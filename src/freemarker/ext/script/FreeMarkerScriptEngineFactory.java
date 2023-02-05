@@ -1,7 +1,6 @@
 package freemarker.ext.script;
 
 import java.io.Reader;
-import java.security.Permission;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +9,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
 import freemarker.cache.TemplateLoader;
-import freemarker.core.FreeMarkerPermission;
 import freemarker.core.ast.StringLiteral;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
@@ -25,9 +23,6 @@ import freemarker.template.Configuration;
  */
 public class FreeMarkerScriptEngineFactory implements ScriptEngineFactory
 {
-    private static final Permission SET_CONFIGURATION = 
-        new FreeMarkerPermission("setScriptEngineConfiguration");
-
     private Configuration config;
     
     private static final TemplateLoader NOOP_TEMPLATE_LOADER = 
@@ -79,11 +74,6 @@ public class FreeMarkerScriptEngineFactory implements ScriptEngineFactory
         if(config == null)
         {
             throw new IllegalArgumentException("config == null");
-        }
-        SecurityManager sm = System.getSecurityManager();
-        if(sm != null)
-        {
-            sm.checkPermission(SET_CONFIGURATION);
         }
         synchronized(this)
         {

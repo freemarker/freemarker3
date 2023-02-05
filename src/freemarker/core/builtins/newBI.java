@@ -7,7 +7,6 @@ import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.*;
-import freemarker.template.utility.ClassUtil;
 
 /**
  * Implementation of ?new built-in 
@@ -53,7 +52,7 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
         public ConstructorFunction(String classname, Environment env) {
             this.env = env;
             try {
-                cl = ClassUtil.forName(classname);
+                cl = Class.forName(classname);
                 if (!TM_CLASS.isAssignableFrom(cl)) {
                     throw new TemplateException("Class " + cl.getName() + " does not implement freemarker.template.TemplateModel", env);
                 }

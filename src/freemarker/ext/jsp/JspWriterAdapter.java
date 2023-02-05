@@ -9,14 +9,12 @@ import java.io.Writer;
 
 import javax.servlet.jsp.JspWriter;
 
-import freemarker.template.utility.SecurityUtilities;
-
 /**
  * @author Attila Szegedi
  * @version $Id: $
  */
 class JspWriterAdapter extends JspWriter {
-    static final char[] NEWLINE = SecurityUtilities.getSystemProperty("line.separator").toCharArray();
+    static final char[] NEWLINE = System.getProperty("line.separator").toCharArray();
 
     private final Writer out;
     

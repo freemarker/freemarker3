@@ -37,7 +37,6 @@ import freemarker.log.Logger;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.utility.ClassUtil;
 
 
 
@@ -537,7 +536,7 @@ public class TaglibFactory implements TemplateHashModel {
             }
             else if ("tag".equals(qName)) {
                 try {
-                    Class tagClass = ClassUtil.forName(tagClassName);
+                    Class tagClass = Class.forName(tagClassName);
                     TemplateModel impl;
                     if(Tag.class.isAssignableFrom(tagClass)) {
                         impl = new TagTransformModel(tagClass); 
@@ -566,7 +565,7 @@ public class TaglibFactory implements TemplateHashModel {
                 String listenerClass = buf.toString().trim();
                 buf = null;
                 try {
-                    listeners.add(ClassUtil.forName(listenerClass).newInstance());
+                    listeners.add(Class.forName(listenerClass).newInstance());
                 }
                 catch(Exception e) {
                     throw new SAXParseException(

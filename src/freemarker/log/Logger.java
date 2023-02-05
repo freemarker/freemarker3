@@ -3,8 +3,6 @@ package freemarker.log;
 import java.util.HashMap;
 import java.util.Map;
 
-import freemarker.template.utility.ClassUtil;
-
 /**
  * The FreeMarker logging facility. This is a polymorphic implementation
  * that will use whatever logging package it can find on the system:
@@ -245,7 +243,7 @@ public abstract class Logger
 
         try
         {
-            ClassUtil.forName(loggerClassName);
+            Class.forName(loggerClassName);
             return (LoggerFactory)Class.forName("freemarker.log." + factoryType + "LoggerFactory").newInstance();
         }
         catch(IllegalAccessException e)

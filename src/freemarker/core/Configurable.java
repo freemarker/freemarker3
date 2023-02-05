@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.*;
 
 import freemarker.template.*;
-import freemarker.template.utility.ClassUtil;
 import freemarker.template.utility.StringUtil;
 import freemarker.core.ast.ArithmeticEngine;
 import freemarker.ext.beans.BeansWrapper;
@@ -469,7 +468,7 @@ public class Configurable
                     }
                 } else {
                     setTemplateExceptionHandler(
-                            (TemplateExceptionHandler) ClassUtil.forName(value)
+                            (TemplateExceptionHandler) Class.forName(value)
                             .newInstance());
                 }
             } else if (ARITHMETIC_ENGINE_KEY.equals(key)) {
@@ -483,7 +482,7 @@ public class Configurable
                     }
                 } else {
                     setArithmeticEngine(
-                            (ArithmeticEngine) ClassUtil.forName(value)
+                            (ArithmeticEngine) Class.forName(value)
                             .newInstance());
                 }
             } else if (OBJECT_WRAPPER_KEY.equals(key)) {
@@ -504,7 +503,7 @@ public class Configurable
                     }
                     
                 } else {
-                    setObjectWrapper((ObjectWrapper) ClassUtil.forName(value)
+                    setObjectWrapper((ObjectWrapper) Class.forName(value)
                             .newInstance());
                 }
             } else if (BOOLEAN_FORMAT_KEY.equals(key)) {

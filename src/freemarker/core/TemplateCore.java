@@ -20,8 +20,6 @@ import freemarker.template.Template;
  */
 public abstract class TemplateCore extends Configurable
 {
-    private static final Permission MODIFY_TEMPLATE = new FreeMarkerPermission("modifyTemplate");
-
     private TemplateElement rootElement;
     private Map<String, Macro> macros = new HashMap<String, Macro>();
     
@@ -48,7 +46,6 @@ public abstract class TemplateCore extends Configurable
     }
 
     protected static void checkModifyTemplate() {
-        FreeMarkerPermission.checkPermission(MODIFY_TEMPLATE);
     }
     
     /**

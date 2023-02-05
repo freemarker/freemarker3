@@ -6,7 +6,6 @@ import java.util.Map;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.utility.ClassUtil;
 
 /**
  * Base class for hash models keyed by Java class names. 
@@ -26,7 +25,7 @@ abstract class ClassBasedModelFactory implements TemplateHashModel {
             TemplateModel model = cache.get(key);
             if(model == null) {
                 try {
-                    Class clazz = ClassUtil.forName(key);
+                    Class clazz = Class.forName(key);
                     model = createModel(clazz);
                     // This is called so that we trigger the
                     // class-reloading detector. If there was a class reload,

@@ -22,11 +22,9 @@ import freemarker.cache.TemplateCache;
 import freemarker.cache.TemplateLoader;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
-import freemarker.core.FreeMarkerPermission;
 import freemarker.core.Scope;
 import freemarker.core.parser.ParseException;
 import freemarker.template.utility.CaptureOutput;
-import freemarker.template.utility.ClassUtil;
 import freemarker.template.utility.HtmlEscape;
 import freemarker.template.utility.NormalizeNewlines;
 import freemarker.template.utility.StandardCompress;
@@ -79,7 +77,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     private ArrayList<String> autoImports = new ArrayList<String>();
     private ArrayList<String> autoIncludes = new ArrayList<String>();
     private ArrayList<ASTVisitor> autoVisitors = new ArrayList<ASTVisitor>();
-//    private String defaultEncoding = SecurityUtilities.getSystemProperty("file.encoding");
+//    private String defaultEncoding = System.getProperty("file.encoding");
 //  private String defaultEncoding = "ISO-8859-1";
     private String defaultEncoding = "UTF-8";
     private boolean secure = false;
@@ -288,11 +286,9 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * in the current directory, then from a resource on the classpath.
      * @throws SecurityException if there is a {@link SecurityManager} in the
      * JVM, {@link #isSecure()} is true and the calling code doesn't 
-     * have the "setTemplateLoader" {@link FreeMarkerPermission}
+     * have the "setTemplateLoader" 
      */
     public synchronized void setTemplateLoader(TemplateLoader loader) {
-        FreeMarkerPermission.checkPermission(this, new FreeMarkerPermission(
-                "setTemplateLoader"));
         createTemplateCache(loader, cache.getCacheStorage());
     }
     
@@ -350,14 +346,14 @@ public class Configuration extends Configurable implements Cloneable, Scope {
         try {
             if (path == null) {
                 setTemplateLoaderNoCheck( (TemplateLoader)
-                        ClassUtil.forName("freemarker.cache.WebappTemplateLoader")
-                            .getConstructor(new Class[]{ClassUtil.forName("javax.servlet.ServletContext")})
+                        Class.forName("freemarker.cache.WebappTemplateLoader")
+                            .getConstructor(new Class[]{Class.forName("javax.servlet.ServletContext")})
                                     .newInstance(new Object[]{sctxt}) );
             }
             else {
                 setTemplateLoaderNoCheck( (TemplateLoader)
-                        ClassUtil.forName("freemarker.cache.WebappTemplateLoader")
-                            .getConstructor(new Class[]{ClassUtil.forName("javax.servlet.ServletContext"), String.class})
+                        Class.forName("freemarker.cache.WebappTemplateLoader")
+                            .getConstructor(new Class[]{Class.forName("javax.servlet.ServletContext"), String.class})
                                     .newInstance(new Object[]{sctxt, path}) );
             }
         } catch (Exception exc) {
@@ -796,7 +792,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
                     }
                     setCacheStorage(new MruCacheStorage(strongSize, softSize));
                 } else {
-                    setCacheStorage((CacheStorage) ClassUtil.forName(value)
+                    setCacheStorage((CacheStorage) Class.forName(value)
                             .newInstance());
                 }
             } else if (TEMPLATE_UPDATE_DELAY_KEY.equalsIgnoreCase(key)) {
@@ -930,14 +926,10 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @param secure
      * @throws SecurityException if there is a {@link SecurityManager} in the
      * JVM, {@link #isSecure()} is true and the calling code doesn't 
-     * have the "setSecure" {@link FreeMarkerPermission}
+     * have the "setSecure" 
      */
     public void setSecure(boolean secure) {
         if(this.secure != secure) {
-            if(secure == false) {
-                FreeMarkerPermission.checkPermission(this, 
-                        new FreeMarkerPermission("setSecure"));
-            }
             this.secure = secure;
             // Clearing the template cache so that templates are reloaded with 
             // expected code sources.

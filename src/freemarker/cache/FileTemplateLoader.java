@@ -14,8 +14,6 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.Certificate;
 
-import freemarker.template.utility.SecurityUtilities;
-
 /**
  * A {@link TemplateLoader} that uses files in a specified directory as the
  * source of templates. If contains security checks that will prevent it
@@ -36,7 +34,7 @@ public class FileTemplateLoader implements SecureTemplateLoader
      * template paths.
      */
     public final File baseDir;
-    private final String canonicalPath;
+    private String canonicalPath;
     private final CodeSource baseDirCodeSource;
     
     /**
@@ -48,7 +46,7 @@ public class FileTemplateLoader implements SecureTemplateLoader
      * @throws IOException if an I/O exception occurs
      */
     public FileTemplateLoader() throws IOException {
-        this(new File(SecurityUtilities.getSystemProperty("user.dir")));
+        this(new File(System.getProperty("user.dir")));
     }
 
     /**
@@ -91,54 +89,33 @@ public class FileTemplateLoader implements SecureTemplateLoader
      * specified in the policy file at expense of having multiple code sources.
      * @throws IOException if an I/O exception occurs
      */
-    public FileTemplateLoader(final File baseDir, final boolean allowLinking,
+    public FileTemplateLoader(File baseDir, final boolean allowLinking,
             boolean useBaseDirCodeSource) throws IOException
     {
-        try {
-            Object[] retval = AccessController.doPrivileged(
-                new PrivilegedExceptionAction<Object[]>() {
-                    @SuppressWarnings("deprecation")
-					public Object[] run() throws IOException {
-                        if (!baseDir.exists()) {
-                            throw new FileNotFoundException(baseDir + " does not exist.");
-                        }
-                        if (!baseDir.isDirectory()) {
-                            throw new IOException(baseDir + " is not a directory.");
-                        }
-                        Object[] retval2 = new Object[3];
-                        if(allowLinking) {
-                            retval2[0] = baseDir;
-                            retval2[1] = null;
-                        }
-                        else {
-                            retval2[0] = baseDir.getCanonicalFile();
-                            String basePath = ((File) retval2[0]).getPath();
-                            // Most canonical paths don't end with File.separator,
-                            // but some does. Like, "C:\" VS "C:\templates".
-                            if (!basePath.endsWith(File.separator)) {
-                                basePath += File.separatorChar;
-                            }
-                            retval2[1] = basePath;
-	    
-                        }
-                        retval2[2] = baseDir.toURL();
-                        return retval2;
-                    }
-                });
-            this.baseDir = (File) retval[0];
-            this.canonicalPath = (String) retval[1];
-            if(useBaseDirCodeSource) {
-                baseDirCodeSource = new CodeSource((URL)retval[2], 
-                        (Certificate[])null);
-            } else {
-                baseDirCodeSource = null;
+        if (!baseDir.exists()) {
+            throw new FileNotFoundException(baseDir + " does not exist.");
+        }
+        if (!baseDir.isDirectory()) {
+            throw new IOException(baseDir + " is not a directory.");
+        }
+        if (!allowLinking) {
+            baseDir = baseDir.getCanonicalFile();
+            canonicalPath = baseDir.getPath();
+            // Most canonical paths don't end with File.separator,
+            // but some does. Like, "C:\" VS "C:\templates".
+            if (!canonicalPath.endsWith(File.separator)) {
+                canonicalPath += File.separatorChar;
             }
         }
-        catch(PrivilegedActionException e) {
-            throw (IOException)e.getException();
+        this.baseDir = baseDir;
+        if (useBaseDirCodeSource) {
+            baseDirCodeSource = new CodeSource(baseDir.toURL(), 
+                    (Certificate[]) null);
+        } else {
+            baseDirCodeSource = null;
         }
     }
-    
+
     public Object findTemplateSource(final String name) throws IOException {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<File>() {

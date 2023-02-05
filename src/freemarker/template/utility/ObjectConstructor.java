@@ -3,7 +3,6 @@ package freemarker.template.utility;
 import java.util.List;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.*;
-import freemarker.template.utility.ClassUtil;
 
 /**
  * An object that you can make available in a template
@@ -28,7 +27,7 @@ public class ObjectConstructor implements TemplateMethodModelEx
         String classname = args.get(0).toString();
         Class cl = null;
         try {
-            cl = ClassUtil.forName(classname);
+            cl = Class.forName(classname);
         }
         catch (Exception e) {
             throw new TemplateModelException(e.getMessage());

@@ -161,10 +161,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     private void resetCodeSource() {
-        currentCodeSource = 
-            getConfiguration().isSecure() 
-            ? DefaultCodeSourceProvider.DEFAULT_CODE_SOURCE 
-                    : Template.NULL_CODE_SOURCE;
+        currentCodeSource = Template.NULL_CODE_SOURCE;
     }
 
     /**

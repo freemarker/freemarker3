@@ -2,9 +2,7 @@ package freemarker.cache;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.AccessController;
 import java.security.CodeSource;
-import java.security.PrivilegedAction;
 
 /**
  * A {@link TemplateLoader} that uses streams reachable through 
@@ -14,7 +12,7 @@ import java.security.PrivilegedAction;
  */
 public class ClassTemplateLoader extends URLTemplateLoader
 {
-    private final Class loaderClass;
+    private final Class<?> loaderClass;
     private String path;
     private CodeSource classCodeSource; 
     
@@ -53,7 +51,7 @@ public class ClassTemplateLoader extends URLTemplateLoader
      * @deprecated it is confusing that the base path is <code>""</code>;
      *     use {@link #ClassTemplateLoader(Class, String)} instead.
      */
-    public ClassTemplateLoader(Class loaderClass)
+    public ClassTemplateLoader(Class<?> loaderClass)
     {
         this(loaderClass, "", false);
     }
@@ -73,8 +71,14 @@ public class ClassTemplateLoader extends URLTemplateLoader
      * used by the underlying operating system. This parameter can't be 
      * <code>null</code>.
      */
-    public ClassTemplateLoader(Class loaderClass, String path) {
-        this(loaderClass, path, false);
+    public ClassTemplateLoader(Class<?> loaderClass, String path) {
+        if(path == null)
+        {
+            throw new IllegalArgumentException("path == null");
+        }
+        this.loaderClass = loaderClass == null ? this.getClass() : loaderClass;
+        this.path = canonicalizePrefix(path);
+        classCodeSource = null;
     }
     
     /**
@@ -110,27 +114,9 @@ public class ClassTemplateLoader extends URLTemplateLoader
      * false, then {@link URLTemplateLoader#getCodeSource(Object)} will be used
      * to obtain (a different) code source for each template.
      */
-    public ClassTemplateLoader(Class loaderClass, String path, 
-            boolean useClassCodeSource)
+    public ClassTemplateLoader(Class<?> loaderClass, String path, boolean useClassCodeSource)
     {
-        if(path == null)
-        {
-            throw new IllegalArgumentException("path == null");
-        }
-        this.loaderClass = loaderClass == null ? this.getClass() : loaderClass;
-        this.path = canonicalizePrefix(path);
-        if(useClassCodeSource) {
-            classCodeSource = AccessController.doPrivileged(
-                    new PrivilegedAction<CodeSource>()
-                    {
-                        public CodeSource run()
-                        {
-                            return ClassTemplateLoader.this.loaderClass.getProtectionDomain().getCodeSource();
-                        }
-                    });
-        } else {
-            classCodeSource = null;
-        }
+        this(loaderClass, path);
     }
 
     protected URL getURL(String name)

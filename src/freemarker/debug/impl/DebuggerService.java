@@ -6,7 +6,6 @@ import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.template.Template;
-import freemarker.template.utility.SecurityUtilities;
 
 /**
  * This class provides debugging hooks for the core FreeMarker engine. It is
@@ -25,7 +24,7 @@ public abstract class DebuggerService
         // off, this is a fast no-op service, otherwise it is the real-thing
         // RMI service.
         return 
-            SecurityUtilities.getSystemProperty("freemarker.debug.password") == null
+            System.getProperty("freemarker.debug.password") == null
             ? (DebuggerService)new NoOpDebuggerService()
             : (DebuggerService)new RmiDebuggerService();
     }

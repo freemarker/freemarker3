@@ -50,8 +50,6 @@ import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
-import freemarker.template.utility.ClassUtil;
-import freemarker.template.utility.SecurityUtilities;
 
 /**
  * Utility class that provides generic services to reflection classes.
@@ -81,7 +79,7 @@ public class BeansWrapper implements ObjectWrapper
     // When this property is true, some things are stricter. This is mostly to
     // catch anomalous things in development that can otherwise be valid situations
     // for our users.
-    private static final boolean DEVELOPMENT = "true".equals(SecurityUtilities.getSystemProperty("freemarker.development"));
+    private static final boolean DEVELOPMENT = "true".equals(System.getProperty("freemarker.development"));
 
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     
@@ -1354,7 +1352,7 @@ public class BeansWrapper implements ObjectWrapper
     {
         int brace = methodSpec.indexOf('(');
         int dot = methodSpec.lastIndexOf('.', brace);
-        Class clazz = ClassUtil.forName(methodSpec.substring(0, dot));
+        Class clazz = Class.forName(methodSpec.substring(0, dot));
         String methodName = methodSpec.substring(dot + 1, brace);
         String argSpec = methodSpec.substring(brace + 1, methodSpec.length() - 1);
         StringTokenizer tok = new StringTokenizer(argSpec, ",");
@@ -1366,7 +1364,7 @@ public class BeansWrapper implements ObjectWrapper
             argTypes[i] = (Class)primClasses.get(argClassName);
             if(argTypes[i] == null)
             {
-                argTypes[i] = ClassUtil.forName(argClassName);
+                argTypes[i] = Class.forName(argClassName);
             }
         }
         return clazz.getMethod(methodName, argTypes);
