@@ -36,7 +36,6 @@
            target="1.8"
            source="1.8"
     	   includeantruntime="true"
-    	   nowarn="true"
     >
       <classpath refid="class.path"/>
     </javac>

@@ -18,10 +18,10 @@ import freemarker.core.parser.TemplateLocation;
  *
  * @version $Id: TemplateException.java,v 1.27 2006/02/12 20:01:45 revusky Exp $
  */
-public class TemplateException extends Exception {
+public class TemplateException extends RuntimeException {
     private static final long serialVersionUID = -5875559384037048115L;
 
-    private static final Class[] EMPTY_CLASS_ARRAY = new Class[]{};
+    private static final Class<?>[] EMPTY_CLASS_ARRAY = new Class<?>[]{};
 
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
     

@@ -1,9 +1,7 @@
-
- 
- BASE_SRC_DIR="..";
- PARSER_PACKAGE="freemarker.core.parser";
- TREE_BUILDING_ENABLED=false;
- MINIMAL_TOKEN;
+BASE_SRC_DIR="..";
+PARSER_PACKAGE="freemarker.core.parser";
+TREE_BUILDING_ENABLED=false;
+MINIMAL_TOKEN;
 
 
 INJECT PARSER_CLASS : 

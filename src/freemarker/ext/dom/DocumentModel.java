@@ -11,7 +11,7 @@ import freemarker.template.utility.StringUtil;
  * the W3C DOM API.
  */
 
-class DocumentModel extends NodeModel implements TemplateHashModel {
+class DocumentModel extends NodeModel {
     
     private ElementModel rootElement;
     
