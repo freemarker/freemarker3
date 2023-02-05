@@ -34,7 +34,7 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
         }
         
         Object[] packArgs(Object[] args, List<TemplateModel> modelArgs, BeansWrapper w) 
-        throws TemplateModelException {
+        {
             final int actualArgCount = args.length;
             final int fixArgCount = argCount - 1;
             if(args.length != argCount) {
@@ -155,7 +155,7 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
     }
     
     Object getMemberAndArguments(List<TemplateModel> arguments, BeansWrapper w) 
-    throws TemplateModelException {
+    {
         if(arguments == null) {
             // null is treated as empty args
             arguments = Collections.emptyList();

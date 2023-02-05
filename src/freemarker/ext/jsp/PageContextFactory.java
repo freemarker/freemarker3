@@ -35,7 +35,7 @@ class PageContextFactory {
         }
     }
 
-    static FreeMarkerPageContext getCurrentPageContext() throws TemplateModelException {
+    static FreeMarkerPageContext getCurrentPageContext() {
         Environment env = Environment.getCurrentEnvironment();
         TemplateModel pageContextModel = env.get(PageContext.PAGECONTEXT);
         if(pageContextModel instanceof FreeMarkerPageContext) {

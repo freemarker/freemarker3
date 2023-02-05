@@ -24,7 +24,7 @@ public class DefaultXPathSupport implements XPathSupport {
         xpf = XPathFactory.newInstance();
     }
 
-    public TemplateModel executeQuery(Object context, String xpathQuery) throws TemplateModelException {
+    public TemplateModel executeQuery(Object context, String xpathQuery) {
         XPath xp = null;
         synchronized(xpf) {
             xp = xpf.newXPath();
@@ -111,7 +111,7 @@ class XPathNumber implements TemplateScalarModel, TemplateNumberModel {
     }
 
     public Number getAsNumber() {
-        return new Double(val);
+        return val;
     }
 }
 

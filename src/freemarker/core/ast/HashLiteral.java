@@ -24,7 +24,7 @@ public class HashLiteral extends Expression {
         }
     }
 
-    TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+    TemplateModel _getAsTemplateModel(Environment env) {
         return new SequenceHash(env);
     }
     
@@ -68,7 +68,7 @@ public class HashLiteral extends Expression {
         private HashMap<String, TemplateModel> keyMap  = new HashMap<String, TemplateModel>(); // maps keys to integer offset
         private TemplateCollectionModel keyCollection, valueCollection; // ordered lists of keys and values
 
-        SequenceHash(Environment env) throws TemplateException {
+        SequenceHash(Environment env) {
             ArrayList<String> keyList = new ArrayList<String>(size);
             ArrayList<TemplateModel> valueList = new ArrayList<TemplateModel>(size);
             for (int i = 0; i< size; i++) {

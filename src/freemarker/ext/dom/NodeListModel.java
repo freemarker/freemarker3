@@ -55,7 +55,7 @@ class NodeListModel extends SimpleSequence implements TemplateHashModel, Templat
         this.contextNode = contextNode;
     }
     
-    NodeListModel filterByName(String name) throws TemplateModelException {
+    NodeListModel filterByName(String name) {
         NodeListModel result = new NodeListModel(contextNode);
         int size = size();
         if (size == 0) {
@@ -77,7 +77,7 @@ class NodeListModel extends SimpleSequence implements TemplateHashModel, Templat
         return size() == 0;
     }
     
-    public TemplateModel get(String key) throws TemplateModelException {
+    public TemplateModel get(String key) {
         if (size() ==1) {
             NodeModel nm = (NodeModel) get(0);
             return nm.get(key);
@@ -128,7 +128,7 @@ class NodeListModel extends SimpleSequence implements TemplateHashModel, Templat
                 + "node lists of size 1.");
     }
     
-    private List rawNodeList() throws TemplateModelException {
+    private List rawNodeList() {
         int size = size();
         ArrayList al = new ArrayList(size);
         for (int i=0; i<size; i++) {
@@ -137,7 +137,7 @@ class NodeListModel extends SimpleSequence implements TemplateHashModel, Templat
         return al;
     }
     
-    XPathSupport getXPathSupport() throws TemplateModelException {
+    XPathSupport getXPathSupport() {
         if (xpathSupport == null) {
             if (contextNode != null) {
                 xpathSupport = contextNode.getXPathSupport();

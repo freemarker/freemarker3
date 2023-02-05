@@ -54,7 +54,7 @@ public class DefaultToExpression extends Expression {
 		return rhs;
 	}
 
-	TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+	TemplateModel _getAsTemplateModel(Environment env) {
 		TemplateModel left = null;		
 		try {
 			left = lhs.getAsTemplateModel(env);

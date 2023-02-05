@@ -621,7 +621,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @see #setSharedVariable(String,TemplateModel)
      * @see #setAllSharedVariables
      */
-    public void setSharedVariable(String name, Object obj) throws TemplateModelException {
+    public void setSharedVariable(String name, Object obj) {
         setSharedVariable(name, getObjectWrapper().wrap(obj));
     }
 
@@ -639,7 +639,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @see #setSharedVariable(String,Object)
      * @see #setSharedVariable(String,TemplateModel)
      */
-    public void setAllSharedVariables(TemplateHashModelEx hash) throws TemplateModelException {
+    public void setAllSharedVariables(TemplateHashModelEx hash) {
         TemplateModelIterator keys = hash.keys().iterator();
         TemplateModelIterator values = hash.values().iterator();
         while(keys.hasNext())
@@ -751,7 +751,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @throws TemplateException if the new value of the setting can't be set
      *     for any other reasons.
      */
-    public void setSetting(String key, String value) throws TemplateException {
+    public void setSetting(String key, String value) {
         if ("TemplateUpdateInterval".equalsIgnoreCase(key)) {
             key = TEMPLATE_UPDATE_DELAY_KEY;
         } else if ("DefaultEncoding".equalsIgnoreCase(key)) {

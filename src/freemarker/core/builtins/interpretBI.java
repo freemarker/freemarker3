@@ -24,7 +24,7 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
             TemplateModel model) 
-    throws TemplateException {
+    {
         String id = null, interpretString = null;
         if (model instanceof TemplateSequenceModel) {
             TemplateSequenceModel tsm = (TemplateSequenceModel) model;

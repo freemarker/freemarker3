@@ -42,7 +42,7 @@ public class Range extends Expression {
         return new NumericalRange(min);
     }
     
-    boolean isTrue(Environment env) throws TemplateException {
+    boolean isTrue(Environment env) {
         String msg = "Error " + getStartLocation() + ". " 
                     + "\nExpecting a boolean here."
                     + " Expression " + this + " is a range.";

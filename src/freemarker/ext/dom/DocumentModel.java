@@ -23,7 +23,7 @@ class DocumentModel extends NodeModel {
         return "@document";
     }
     
-    public TemplateModel get(String key) throws TemplateModelException {
+    public TemplateModel get(String key) {
         if (key.equals("*")) {
             return getRootElement();
         }

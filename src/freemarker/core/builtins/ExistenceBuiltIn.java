@@ -20,7 +20,7 @@ import freemarker.template.TemplateModelException;
  */
 public abstract class ExistenceBuiltIn extends BuiltIn {
     public TemplateModel get(Environment env, BuiltInExpression caller) 
-    throws TemplateException {
+    {
         final Expression target = caller.getTarget();
         try {
             return apply(target.getAsTemplateModel(env));
@@ -61,7 +61,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
     };
         
     public static class HasContentBuiltIn extends ExistenceBuiltIn {
-        public TemplateModel apply(final TemplateModel model) throws TemplateModelException {
+        public TemplateModel apply(final TemplateModel model) {
             return model == null || Expression.isEmpty(model) ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
         }
     };

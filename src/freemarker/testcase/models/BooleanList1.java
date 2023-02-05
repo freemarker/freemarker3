@@ -35,7 +35,7 @@ public class BooleanList1 implements TemplateSequenceModel {
     /**
      * @return the next element in the list.
      */
-    public TemplateModel next() throws TemplateModelException {
+    public TemplateModel next() {
         return cList.next();
     }
 
@@ -49,7 +49,7 @@ public class BooleanList1 implements TemplateSequenceModel {
     /**
      * @return the specified index in the list
      */
-    public TemplateModel get(int i) throws TemplateModelException {
+    public TemplateModel get(int i) {
         return cList.get(i);
     }
 

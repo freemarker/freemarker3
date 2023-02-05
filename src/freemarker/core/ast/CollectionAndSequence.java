@@ -25,7 +25,7 @@ implements TemplateCollectionModel, TemplateSequenceModel, Serializable
         this.sequence = sequence;
     }
 
-    public TemplateModelIterator iterator() throws TemplateModelException {
+    public TemplateModelIterator iterator() {
         if (collection != null) {
             return collection.iterator();
         } else {
@@ -33,7 +33,7 @@ implements TemplateCollectionModel, TemplateSequenceModel, Serializable
         }
     }
 
-    public TemplateModel get(int i) throws TemplateModelException {
+    public TemplateModel get(int i) {
         if (sequence != null) {
             return sequence.get(i);
         } else {
@@ -42,7 +42,7 @@ implements TemplateCollectionModel, TemplateSequenceModel, Serializable
         }
     }
 
-    public int size() throws TemplateModelException {
+    public int size() {
         if (sequence != null) {
             return sequence.size();
         } else {
@@ -51,7 +51,7 @@ implements TemplateCollectionModel, TemplateSequenceModel, Serializable
         }
     }
 
-    private void initSequence() throws TemplateModelException {
+    private void initSequence() {
         if (data == null) {
             data = new ArrayList<TemplateModel>();
             TemplateModelIterator it = collection.iterator();
@@ -68,12 +68,12 @@ implements TemplateCollectionModel, TemplateSequenceModel, Serializable
         private final int size;
         private int index = 0;
 
-        SequenceIterator(TemplateSequenceModel sequence) throws TemplateModelException {
+        SequenceIterator(TemplateSequenceModel sequence) {
             this.sequence = sequence;
             this.size = sequence.size();
             
         }
-        public TemplateModel next() throws TemplateModelException {
+        public TemplateModel next() {
             return sequence.get(index++);
         }
 

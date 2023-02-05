@@ -16,7 +16,7 @@ public abstract class StringTransformations extends ExpressionEvaluatingBuiltIn 
 
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) throws TemplateException {
+            TemplateModel model) {
         String string = null;
         if (model instanceof TemplateScalarModel) {
             string = ((TemplateScalarModel) model).getAsString();

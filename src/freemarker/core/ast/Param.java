@@ -36,7 +36,7 @@ public class Param extends TemplateElement {
 			return false;
 		}
 		
-		public TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+		public TemplateModel _getAsTemplateModel(Environment env) {
 			return Param.this.new Model();
 		}
 		
@@ -56,7 +56,7 @@ public class Param extends TemplateElement {
 			return false;
 		}
 		
-		public TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+		public TemplateModel _getAsTemplateModel(Environment env) {
 			SimpleSequence result = new SimpleSequence();
 			for (Param param : params) {
 				result.add(param.new Model());

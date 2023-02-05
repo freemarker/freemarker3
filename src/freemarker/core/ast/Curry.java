@@ -45,7 +45,7 @@ public class Curry extends ExpressionEvaluatingBuiltIn
 {
 	public TemplateModel get(Environment env, BuiltInExpression expression,
 	        TemplateModel model)
-	throws TemplateException {
+	{
             if(model instanceof Macro) {
                 return new MacroCurry((Macro)model);
             }
@@ -197,7 +197,7 @@ public class Curry extends ExpressionEvaluatingBuiltIn
         private final TemplateModel base;
         private final ParameterList originalParams;
         
-        TransformAndMethodCurry(TemplateModel base) throws TemplateException {
+        TransformAndMethodCurry(TemplateModel base) {
             if(base instanceof Curried) {
                 Curried ct = (Curried)base;
                 this.base = ct.getBase();
@@ -258,7 +258,7 @@ public class Curry extends ExpressionEvaluatingBuiltIn
         abstract TemplateModel getBase();
         
         static TemplateModel instantiate(TemplateModel base, ParameterList parameterList) 
-        throws TemplateException {
+        {
             if(base instanceof TemplateDirectiveModel) {
                 return new CurriedDirective((TemplateDirectiveModel)base, parameterList);
             }
@@ -348,14 +348,14 @@ public class Curry extends ExpressionEvaluatingBuiltIn
     private static class ModelLiteral extends Expression {
         private final Expression underlying;
         
-        public ModelLiteral(Expression underlying, Environment env) throws TemplateException {
+        public ModelLiteral(Expression underlying, Environment env) {
             this.constantValue = underlying.getAsTemplateModel(env);
             this.underlying = underlying;
             copyLocationFrom(underlying);
         }
 
         @Override
-        TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+        TemplateModel _getAsTemplateModel(Environment env) {
             throw new UnsupportedOperationException();
         }
 

@@ -42,7 +42,7 @@ public class LegacyList extends SimpleSequence {
     /**
      * @return the next element in the list.
      */
-    public synchronized TemplateModel next() throws TemplateModelException {
+    public synchronized TemplateModel next() {
         if (iterator == null) {
             iterator = list.listIterator();
         }

@@ -16,7 +16,7 @@ public class cBI extends ExpressionEvaluatingBuiltIn {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
             TemplateModel model) 
-    throws TemplateException {
+    {
         final Number num;
         try {
             num = ((TemplateNumberModel) model).getAsNumber();

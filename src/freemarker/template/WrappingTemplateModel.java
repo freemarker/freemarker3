@@ -78,7 +78,7 @@ abstract public class WrappingTemplateModel {
      * @throws TemplateModelException if the wrapper does not know how to
      * wrap the passed object.
      */
-    protected final TemplateModel wrap(Object obj) throws TemplateModelException {
+    protected final TemplateModel wrap(Object obj) {
 //    	if (obj == null) return null;
         return objectWrapper.wrap(obj);
     }

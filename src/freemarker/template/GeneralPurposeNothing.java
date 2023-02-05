@@ -41,7 +41,7 @@ implements TemplateBooleanModel, TemplateScalarModel, TemplateSequenceModel, Tem
         return 0;
     }
 
-    public TemplateModel get(int i) throws TemplateModelException {
+    public TemplateModel get(int i) {
         throw new TemplateModelException("Empty list");
     }
 

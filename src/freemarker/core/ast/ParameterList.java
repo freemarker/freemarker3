@@ -92,7 +92,7 @@ public class ParameterList extends TemplateNode {
     }
 
     private void fillInDefaults(final Environment env, final Scope scope, final Collection<String> paramNames) 
-    throws TemplateException {
+    {
         try {
             env.runInScope(scope, new TemplateRunnable<Object>() {
                 public Object run() throws TemplateException, IOException {
@@ -105,7 +105,7 @@ public class ParameterList extends TemplateNode {
             throw new TemplateException(e, env);
         }
     }
-    private void fillInDefaultsInternal(Environment env, Scope scope, Collection<String> paramNames) throws TemplateException {
+    private void fillInDefaultsInternal(Environment env, Scope scope, Collection<String> paramNames) {
         
         boolean resolvedAnArg, hasUnresolvedArg;
         Expression firstUnresolvedExpression;
@@ -164,7 +164,7 @@ public class ParameterList extends TemplateNode {
      */
     List<TemplateModel> getParameterSequence(final PositionalArgsList args, 
             final Environment env) 
-    throws TemplateException {
+    {
         final List<TemplateModel> result = new ArrayList<TemplateModel>(params.size());
         int argsSize = args.size();
         int paramsSize = params.size();
@@ -202,7 +202,7 @@ public class ParameterList extends TemplateNode {
      */
     List<TemplateModel> getParameterSequence(final NamedArgsList args, 
             final Environment env) 
-    throws TemplateException {
+    {
         int argsSize = args.size();
         int paramsSize = params.size();
         if(argsSize > paramsSize) {
@@ -341,7 +341,7 @@ public class ParameterList extends TemplateNode {
         return result;
     }
 
-    public Map<String, TemplateModel> getParameterMap(ArgsList args, Environment env) throws TemplateException {
+    public Map<String, TemplateModel> getParameterMap(ArgsList args, Environment env) {
         if (args instanceof NamedArgsList) {
             return getParameterMap((NamedArgsList) args, env);
         } 

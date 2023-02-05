@@ -40,7 +40,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
             TemplateModel model) 
-    throws TemplateException {
+    {
         if (!(model instanceof TemplateSequenceModel)) {
             throw TemplateNode.invalidTypeException(model,
                     caller.getTarget(), env, "sequence");
@@ -52,21 +52,21 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
     
     public static class First extends SequenceFunctions {
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+        public TemplateModel apply(TemplateSequenceModel sequence) {
             return sequence.size() > 0 ? sequence.get(0) : null;
         }
     }
 
     public static class Last extends SequenceFunctions {
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+        public TemplateModel apply(TemplateSequenceModel sequence) {
             return sequence.size() > 0 ? sequence.get(sequence.size() - 1) : null;
         }
     }
 
     public static class Reverse extends SequenceFunctions {
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+        public TemplateModel apply(TemplateSequenceModel sequence) {
             return new ReverseSequence(sequence);
         }
     }
@@ -78,7 +78,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
         
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+        public TemplateModel apply(TemplateSequenceModel sequence) {
             return sort(sequence, null);
         }
     }
@@ -90,14 +90,14 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+        public TemplateModel apply(TemplateSequenceModel sequence) {
             return new SortByMethod(sequence);
         }
     }
 
     public static class Chunk extends SequenceFunctions {
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+        public TemplateModel apply(TemplateSequenceModel sequence) {
             return new ChunkFunction(sequence);
         }
     }
@@ -109,7 +109,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
         
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+        public TemplateModel apply(TemplateSequenceModel sequence) {
             return new SequenceIndexOf(sequence, false);
         }
     }
@@ -121,7 +121,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) throws TemplateException {
+        public TemplateModel apply(TemplateSequenceModel sequence) {
             return new SequenceIndexOf(sequence, true);
         }
     }
@@ -133,11 +133,11 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.seq = seq;
         }
 
-        public int size() throws TemplateModelException {
+        public int size() {
             return seq.size();
         }
 
-        public TemplateModel get(int index) throws TemplateModelException {
+        public TemplateModel get(int index) {
             return seq.get(seq.size() - 1 - index);
         }
     }
@@ -150,7 +150,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.tsm = tsm;
         }
         
-        public Object exec(List args) throws TemplateModelException {
+        public Object exec(List args) {
             int numArgs = args.size();
             if (numArgs != 1 && numArgs != 2) {
                 throw new TemplateModelException(
@@ -182,7 +182,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
         private ChunkedSequence(TemplateSequenceModel wrappedTsm,
                 int chunkSize, TemplateModel fillerItem)
-        throws TemplateModelException {
+        {
             if (chunkSize < 1) {
                 throw new TemplateModelException(
                 "The 1st argument to ?chunk(...) must be at least 1.");
@@ -194,7 +194,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         public TemplateModel get(final int chunkIndex)
-        throws TemplateModelException {
+        {
             if (chunkIndex >= numberOfChunks) {
                 return null;
             }
@@ -204,7 +204,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 private final int baseIndex = chunkIndex * chunkSize;
 
                 public TemplateModel get(int relIndex)
-                throws TemplateModelException {
+                {
                     int absIndex = baseIndex + relIndex;
                     if (absIndex < wrappedTsm.size()) {
                         return wrappedTsm.get(absIndex);
@@ -214,7 +214,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 }
 
-                public int size() throws TemplateModelException {
+                public int size() {
                     return fillerItem != null
                     || chunkIndex + 1 < numberOfChunks ? chunkSize
                             : wrappedTsm.size() - baseIndex;
@@ -223,14 +223,14 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             };
         }
 
-        public int size() throws TemplateModelException {
+        public int size() {
             return numberOfChunks;
         }
 
     }
 
     static TemplateSequenceModel sort(TemplateSequenceModel seq, String[] keys)
-    throws TemplateModelException {
+    {
         int i;
         int keyCnt;
 
@@ -524,7 +524,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         public Object exec(List params)
-        throws TemplateModelException {
+        {
             if (params.size() == 0) {
                 throw new TemplateModelException(
                         "?sort_by(key) needs exactly 1 argument.");
@@ -572,7 +572,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.reverse = reverse;
         }
 
-        public TemplateModel exec(List args) throws TemplateModelException {
+        public TemplateModel exec(List args) {
             final int argc = args.size();
             final int startIndex;
             if (argc != 1 && argc != 2) {

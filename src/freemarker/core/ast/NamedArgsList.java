@@ -31,7 +31,7 @@ public class NamedArgsList extends ArgsList {
         return (Map<String,Expression>)namedArgs.clone();
     }
 
-    Map<String, TemplateModel> getParameterMap(TemplateModel tm, Environment env) throws TemplateException {
+    Map<String, TemplateModel> getParameterMap(TemplateModel tm, Environment env) {
         Map<String, TemplateModel> result = null; 
         ParameterList annotatedParameterList = ArgsList.getParameterList(tm);
         if (annotatedParameterList == null) {
@@ -49,7 +49,7 @@ public class NamedArgsList extends ArgsList {
         return result;
     }
 
-    List getParameterSequence(TemplateModel target, Environment env) throws TemplateException {
+    List getParameterSequence(TemplateModel target, Environment env) {
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             String msg = "Error at: " + getStartLocation() 

@@ -88,7 +88,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 		   case ArithmeticExpression.DIVISION : opString = "/"; break;  
 		   case ArithmeticExpression.MODULUS : opString = "%"; break;
 		   case ArithmeticExpression.MULTIPLICATION : opString = "*"; break;
-		   case ArithmeticExpression.SUBSTRACTION : opString = "-"; break;
+		   case ArithmeticExpression.SUBTRACTION : opString = "-"; break;
 		}
 		visit(node.getLeft());
 		buffer.append(opString);

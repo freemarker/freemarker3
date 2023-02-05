@@ -16,7 +16,7 @@ public class NotExpression extends BooleanExpression {
     	return target;
     }
 
-    boolean isTrue(Environment env) throws TemplateException {
+    boolean isTrue(Environment env) {
         return (!target.isTrue(env));
     }
 

@@ -29,7 +29,7 @@ class NumericalRange implements TemplateSequenceModel, java.io.Serializable {
         descending = (left != lower);
     }
 
-    public TemplateModel get(int i) throws TemplateModelException {
+    public TemplateModel get(int i) {
         int index = descending ? (upper -i) : (lower + i);
         if ((norhs && index > upper) || index <lower) {
             throw new TemplateModelException("out of bounds of range");

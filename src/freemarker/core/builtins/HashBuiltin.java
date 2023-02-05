@@ -15,7 +15,7 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
             TemplateModel model) 
-    throws TemplateException {
+    {
         if (!(model instanceof TemplateHashModelEx)) {
             throw TemplateNode.invalidTypeException(model, 
                     caller.getTarget(), env, "extended hash");
@@ -33,7 +33,7 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
     public static class Keys extends HashBuiltin {
         @Override
         public TemplateCollectionModel apply(TemplateHashModelEx hash)
-        throws TemplateModelException {
+        {
             return hash.keys();
         }
     }
@@ -41,7 +41,7 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
     public static class Values extends HashBuiltin {
         @Override
         public TemplateCollectionModel apply(TemplateHashModelEx hash)
-        throws TemplateModelException {
+        {
             return hash.values();
         }
     }

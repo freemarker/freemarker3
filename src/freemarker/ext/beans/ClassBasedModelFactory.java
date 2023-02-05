@@ -21,7 +21,7 @@ abstract class ClassBasedModelFactory implements TemplateHashModel {
         this.wrapper = wrapper;
     }
 
-    public TemplateModel get(String key) throws TemplateModelException {
+    public TemplateModel get(String key) {
         synchronized(cache) {
             TemplateModel model = cache.get(key);
             if(model == null) {

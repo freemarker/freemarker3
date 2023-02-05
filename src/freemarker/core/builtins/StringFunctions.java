@@ -41,7 +41,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
     static private LinkedList<String> patterns = new LinkedList<String>();
     static private final int PATTERN_CACHE_SIZE=100;
 
-    static Pattern getPattern(String patternString, String flagString) throws TemplateModelException {
+    static Pattern getPattern(String patternString, String flagString) {
         int flags = 0;
         String patternKey = patternString + (char) 0 + flagString;
         Pattern result = patternLookup.get(patternKey);
@@ -212,7 +212,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = string;
         }
 
-        public Object exec(List args) throws TemplateModelException {
+        public Object exec(List args) {
             int numArgs = args.size();
             if (numArgs < 2 || numArgs >3 ) {
                 throw new TemplateModelException(
@@ -244,7 +244,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = string;
         }
 
-        public Object exec(java.util.List args) throws TemplateModelException {
+        public Object exec(java.util.List args) {
             int argCount = args.size(), left=0, right=0;
             if (argCount != 1 && argCount != 2) {
                 throw new TemplateModelException("Expecting 1 or 2 numerical arguments for ?substring(...)");
@@ -274,7 +274,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = string;
         }
 
-        public Object exec(List args) throws TemplateModelException {
+        public Object exec(List args) {
             int numArgs = args.size();
             if (numArgs < 1 || numArgs >2 ) {
                 throw new TemplateModelException(
@@ -303,7 +303,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.matchString = matchString;
         }
 
-        public Object exec(List args) throws TemplateModelException {
+        public Object exec(List args) {
             int numArgs = args.size();
             if (numArgs == 0) {
                 throw new TemplateModelException("Expecting at least one argument");
@@ -338,17 +338,17 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return matches;
         }
 
-        public TemplateModel get(int i) throws TemplateModelException {
+        public TemplateModel get(int i) {
             if (data == null) initSequence();
             return data.get(i);
         }
 
-        public int size() throws TemplateModelException {
+        public int size() {
             if (data == null) initSequence();
             return data.size();
         }
 
-        private void initSequence() throws TemplateModelException {
+        private void initSequence() {
             data = new ArrayList<TemplateModel>();
             TemplateModelIterator it = iterator();
             while (it.hasNext()) {
@@ -359,7 +359,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         public TemplateModel getGroups() {
             if (groups == null) {
                 groups = new TemplateSequenceModel() {
-                    public int size() throws TemplateModelException {
+                    public int size() {
                         try {
                             return matcher.groupCount() + 1;
                         }
@@ -367,7 +367,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                             throw new TemplateModelException(e);
                         }
                     }
-                    public TemplateModel get(int i) throws TemplateModelException {
+                    public TemplateModel get(int i) {
                         try {
                             return new SimpleScalar(matcher.group(i));
                         }
@@ -389,7 +389,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     return hasFindInfo;
                 }
 
-                public TemplateModel next() throws TemplateModelException {
+                public TemplateModel next() {
                     if (!hasNext()) throw new TemplateModelException("No more matches");
                     Match result = new Match();
                     hasFindInfo = matcher.find();
@@ -420,7 +420,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = s;
         }
 
-        public Object exec(List args) throws TemplateModelException {
+        public Object exec(List args) {
             Object obj;
 
             int ln  = args.size();
@@ -475,7 +475,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = string;
         }
 
-        public Object exec(List args) throws TemplateModelException {
+        public Object exec(List args) {
             Object obj;
 
             int ln  = args.size();
@@ -534,7 +534,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.env = env;
         }
 
-        public String getAsString() throws TemplateModelException {
+        public String getAsString() {
             if (cachedResult == null) {
                 String cs = env.getEffectiveURLEscapingCharset();
                 if (cs == null) {
@@ -559,7 +559,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return cachedResult;
         }
 
-        public Object exec(List args) throws TemplateModelException {
+        public Object exec(List args) {
             if (args.size() != 1) {
                 throw new TemplateModelException("The \"url\" built-in "
                         + "needs exactly 1 parameter, the charset.");
@@ -587,7 +587,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return reverse ? "?ends_with" : "?starts_with";
         }
         
-        public Object exec(List args) throws TemplateModelException {
+        public Object exec(List args) {
             String sub;
 
             if (args.size() != 1) {
@@ -620,7 +620,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return "?" + (reverse ? "last_" : "") + "index_of";
         }
         
-        public Object exec(List args) throws TemplateModelException {
+        public Object exec(List args) {
             Object obj;
             String sub;
             int fidx;
@@ -670,7 +670,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.s = s;
         }
 
-        public Object exec(List args) throws TemplateModelException {
+        public Object exec(List args) {
             Object obj;
             String sub;
 

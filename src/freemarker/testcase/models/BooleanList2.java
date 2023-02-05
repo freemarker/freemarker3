@@ -21,7 +21,7 @@ public class BooleanList2 implements TemplateSequenceModel {
     /**
      * @return the specified index in the list
      */
-    public TemplateModel get(int i) throws TemplateModelException {
+    public TemplateModel get(int i) {
         return cList.get(i);
     }
 

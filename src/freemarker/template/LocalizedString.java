@@ -26,7 +26,7 @@ import java.util.Locale;
 abstract public class LocalizedString implements TemplateScalarModel {
 
 
-        public String getAsString() throws TemplateModelException {
+        public String getAsString() {
                 Environment env = Environment.getCurrentEnvironment();
                 Locale locale = env.getLocale();
                 return getLocalizedString(locale);

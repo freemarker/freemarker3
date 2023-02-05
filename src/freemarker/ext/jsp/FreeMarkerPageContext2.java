@@ -32,7 +32,7 @@ public class FreeMarkerPageContext2 extends FreeMarkerPageContext {
     }
 
 
-    public FreeMarkerPageContext2() throws TemplateModelException {
+    public FreeMarkerPageContext2() {
         super();
     }
 

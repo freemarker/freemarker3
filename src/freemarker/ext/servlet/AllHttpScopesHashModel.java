@@ -61,7 +61,7 @@ public class AllHttpScopesHashModel extends SimpleHash
         unlistedModels.put(key, model);
     }
 
-    public TemplateModel get(String key) throws TemplateModelException {
+    public TemplateModel get(String key) {
         // Lookup in page scope
         TemplateModel model = super.get(key);
         if(model != null) {

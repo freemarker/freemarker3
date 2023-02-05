@@ -37,16 +37,16 @@ public class BaseScope extends AbstractScope {
         return variables.isEmpty();
     }
 
-    public TemplateCollectionModel keys() throws TemplateModelException {
+    public TemplateCollectionModel keys() {
         return new SimpleCollection(variables.keySet(), TRIVIAL_WRAPPER);
     }
 
-    public TemplateCollectionModel values() throws TemplateModelException {
+    public TemplateCollectionModel values() {
         return new SimpleCollection(variables.values(), TRIVIAL_WRAPPER);
     }
 
 
-    public int size() throws TemplateModelException {
+    public int size() {
         return variables.size();
     }
 

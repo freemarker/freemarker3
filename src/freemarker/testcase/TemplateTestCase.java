@@ -223,7 +223,7 @@ public class TemplateTestCase extends TestCase {
         else if (testName.equals("multimodels")) {
             dataModel.put("test", "selftest");
             dataModel.put("self", "self");
-            dataModel.put("zero", new Integer(0));
+            dataModel.put("zero", 0);
             dataModel.put("data", new MultiModel1());
         }
 /*        
@@ -244,9 +244,9 @@ public class TemplateTestCase extends TestCase {
         }
         
         else if (testName.equals("var-layers")) {
-            dataModel.put("x", new Integer(4));
-            dataModel.put("z", new Integer(4));
-            conf.setSharedVariable("y", new Integer(7));
+            dataModel.put("x", 4);
+            dataModel.put("z", 4);
+            conf.setSharedVariable("y", 7);
         }
         
         else if (testName.equals("xml-fragment")) {
@@ -412,7 +412,7 @@ public class TemplateTestCase extends TestCase {
         Map testBean = new TestBean();
         testBean.put("name", "Chris");
         testBean.put("location", "San Francisco");
-        testBean.put("age", new Integer(27));
+        testBean.put("age", 27);
         return testBean;
     }
 

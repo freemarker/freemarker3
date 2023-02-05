@@ -92,7 +92,7 @@ public class TaglibFactory implements TemplateHashModel {
      * hash model represents a single custom tag from the library, implemented
      * as a {@link freemarker.template.TemplateTransformModel}.
      */
-    public TemplateModel get(String uri) throws TemplateModelException {
+    public TemplateModel get(String uri) {
         synchronized (taglibs) {
             Taglib taglib = null;
             taglib = (Taglib) taglibs.get(uri);

@@ -48,7 +48,7 @@ public class Execute implements freemarker.template.TemplateMethodModel {
      * of the arguments passed to the method.
      * @return the <tt>TemplateModel</tt> produced by the method, or null.
      */
-    public Object exec (List arguments) throws TemplateModelException {
+    public Object exec (List arguments) {
         String aExecute;
         StringBuilder    aOutputBuffer = new StringBuilder();
 

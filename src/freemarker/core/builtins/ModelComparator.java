@@ -32,7 +32,7 @@ public class ModelComparator
      * Thus, if you update this method, then you have to update that too!
      */
     public boolean modelsEqual(TemplateModel model1, TemplateModel model2)
-    throws TemplateModelException {
+    {
         if(model1 instanceof TemplateNumberModel && model2 instanceof TemplateNumberModel) {
             try {
                 return arithmeticEngine.compareNumbers(

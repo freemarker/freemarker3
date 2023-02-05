@@ -34,7 +34,7 @@ public class FreeMarkerPageContext21 extends FreeMarkerPageContext {
                 JspFactory.getDefaultFactory().getClass().getName());
     }
 
-    public FreeMarkerPageContext21() throws TemplateModelException {
+    public FreeMarkerPageContext21() {
         super();
     }
 

@@ -20,7 +20,7 @@ public abstract class MacroBuiltins extends ExpressionEvaluatingBuiltIn {
     
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) throws TemplateException {
+            TemplateModel model) {
         if (!(model instanceof Macro)) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "macro");
         }

@@ -10,7 +10,7 @@ import freemarker.template.*;
  */
 public class ArithmeticExpression extends Expression {
 
-    static public final int SUBSTRACTION = 0;
+    static public final int SUBTRACTION = 0;
     static public final int MULTIPLICATION = 1;
     static public final int DIVISION = 2;
     static public final int MODULUS = 3;
@@ -63,7 +63,7 @@ public class ArithmeticExpression extends Expression {
                 ? env.getArithmeticEngine()
                 : getTemplate().getArithmeticEngine();
         switch (operation) {
-            case SUBSTRACTION : 
+            case SUBTRACTION : 
                 return new SimpleNumber(ae.subtract(first, second));
             case MULTIPLICATION :
                 return new SimpleNumber(ae.multiply(first, second));

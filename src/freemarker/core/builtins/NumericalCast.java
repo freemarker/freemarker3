@@ -22,7 +22,7 @@ public class NumericalCast extends ExpressionEvaluatingBuiltIn {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
             TemplateModel model) 
-    throws TemplateException {
+    {
         try {
             return new SimpleNumber(getNumber(((TemplateNumberModel) model).getAsNumber(), caller.getName()));
         } catch (ClassCastException cce) {
@@ -34,22 +34,22 @@ public class NumericalCast extends ExpressionEvaluatingBuiltIn {
 
     private Number getNumber(Number num, String builtInName) {
         if (builtInName == "int") {
-            return Integer.valueOf(num.intValue());
+            return num.intValue();
         }
         else if (builtInName == "double") {
-            return new Double(num.doubleValue());
+            return num.doubleValue();
         }
         else if (builtInName == "long") {
             return Long.valueOf(num.longValue());
         }
         else if (builtInName == "float") {
-            return new Float(num.floatValue());
+            return num.floatValue();
         }
         else if (builtInName == "byte") {
-            return Byte.valueOf(num.byteValue());
+            return num.byteValue();
         }
         else if (builtInName == "short") {
-            return Short.valueOf(num.shortValue());
+            return num.shortValue();
         }
         else if (builtInName == "floor") {
             return (BigDecimal.valueOf(num.doubleValue()).divide(BigDecimal.ONE, 0, RoundingMode.FLOOR));

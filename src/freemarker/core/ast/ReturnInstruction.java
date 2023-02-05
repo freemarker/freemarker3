@@ -16,7 +16,7 @@ public class ReturnInstruction extends TemplateElement {
         this.returnExp = returnExp;
     }
 
-    public void execute(Environment env) throws TemplateException {
+    public void execute(Environment env) {
         if (returnExp != null) {
             env.setLastReturnValue(returnExp.getAsTemplateModel(env));
         }

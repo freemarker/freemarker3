@@ -23,7 +23,7 @@ public class AndExpression extends BooleanExpression {
     	return right;
     }
 
-    boolean isTrue(Environment env) throws TemplateException {
+    boolean isTrue(Environment env) {
         return left.isTrue(env) && right.isTrue(env);
     }
 

@@ -20,7 +20,7 @@ public class PositionalArgsList extends ArgsList {
     }
 
     Map<String, TemplateModel> getParameterMap(TemplateModel target, Environment env)
-    throws TemplateException {
+    {
         Map<String, TemplateModel> result = new HashMap<String, TemplateModel>();
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
@@ -34,7 +34,7 @@ public class PositionalArgsList extends ArgsList {
         return result;
     }
 
-    List getParameterSequence(TemplateModel target, Environment env) throws TemplateException {
+    List getParameterSequence(TemplateModel target, Environment env) {
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             return target instanceof TemplateMethodModelEx ? 
@@ -78,7 +78,7 @@ public class PositionalArgsList extends ArgsList {
         }
     }
 
-    public TemplateModel getValueAt(int i, Environment env) throws TemplateException {
+    public TemplateModel getValueAt(int i, Environment env) {
         Expression exp = args.get(i);
         TemplateModel value = exp.getAsTemplateModel(env);
         TemplateNode.assertIsDefined(value, exp, env);
@@ -95,7 +95,7 @@ public class PositionalArgsList extends ArgsList {
         static final ExpressionTransformator INSTANCE = new ToValueTransformator(); 
 
         Object transform(Expression exp, Environment env) 
-        throws TemplateException {
+        {
             return exp.getStringValue(env);
         }
     }
@@ -104,13 +104,13 @@ public class PositionalArgsList extends ArgsList {
         static final ExpressionTransformator INSTANCE = new ToModelTransformator(); 
 
         Object transform(Expression exp, Environment env) 
-        throws TemplateException {
+        {
             return exp.getAsTemplateModel(env);
         }
     }
 
     private List getList(Environment env, ExpressionTransformator transformator)
-    throws TemplateException {
+    {
         int size = args.size();
         switch(size) {
             case 0: {
@@ -133,7 +133,7 @@ public class PositionalArgsList extends ArgsList {
      * For the benefit of method calls, return the list of arguments as a list
      * of values.
      */
-    List getValueList(Environment env) throws TemplateException {
+    List getValueList(Environment env) {
         return getList(env, ToValueTransformator.INSTANCE);
     }
 
@@ -141,7 +141,7 @@ public class PositionalArgsList extends ArgsList {
      * For the benefit of extended method calls, return the list of arguments as
      * a list of template models.
      */
-    List getModelList(Environment env) throws TemplateException {
+    List getModelList(Environment env) {
         return getList(env, ToModelTransformator.INSTANCE);
     }
 

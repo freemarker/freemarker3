@@ -15,7 +15,7 @@ public class MacroInvocationBodyContext extends BlockScope {
     MacroContext invokingMacroContext;
     TemplateElement enclosingDirective;
     
-    public MacroInvocationBodyContext(Environment env, PositionalArgsList bodyArgs) throws TemplateException {
+    public MacroInvocationBodyContext(Environment env, PositionalArgsList bodyArgs) {
     	super(null, env.getCurrentMacroContext().invokingScope);
         invokingMacroContext = env.getCurrentMacroContext();
         block = invokingMacroContext.body;

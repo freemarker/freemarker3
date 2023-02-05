@@ -41,7 +41,7 @@ public abstract class AbstractScope implements Scope
     }
 
     public final TemplateModel resolveVariable(String key)
-            throws TemplateModelException {
+            {
     	TemplateModel result = get(key);
     	if (result == null) {
     		return enclosingScope.resolveVariable(key);
@@ -49,7 +49,7 @@ public abstract class AbstractScope implements Scope
     	return result;
     }
 
-    public boolean isEmpty() throws TemplateModelException {
+    public boolean isEmpty() {
         return size() != 0;
     }
 }

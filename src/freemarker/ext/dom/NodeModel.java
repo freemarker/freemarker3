@@ -198,7 +198,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
         return node;
     }
     
-    public TemplateModel get(String key) throws TemplateModelException {
+    public TemplateModel get(String key) {
         if (key.startsWith("@@")) {
             if (key.equals("@@text")) {
                 return new SimpleScalar(getText(node));
@@ -261,7 +261,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
         return children;
     }
     
-    public final String getNodeType() throws TemplateModelException {
+    public final String getNodeType() {
         short nodeType = node.getNodeType();
         switch (nodeType) {
             case Node.ATTRIBUTE_NODE : return "attribute";
@@ -280,7 +280,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
         throw new TemplateModelException("Unknown node type: " + nodeType + ". This should be impossible!");
     }
     
-    public TemplateModel exec(List args) throws TemplateModelException {
+    public TemplateModel exec(List args) {
         if (args.size() != 1) {
             throw new TemplateModelException("Expecting exactly one arguments");
         }
@@ -494,7 +494,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
     }
     
     
-    String getQualifiedName() throws TemplateModelException {
+    String getQualifiedName() {
         return getNodeName();
     }
     

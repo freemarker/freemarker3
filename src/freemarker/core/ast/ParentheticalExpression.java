@@ -12,7 +12,7 @@ public class ParentheticalExpression extends Expression {
         nested.parent = this;
     }
 
-    boolean isTrue(Environment env) throws TemplateException {
+    boolean isTrue(Environment env) {
         return nested.isTrue(env);
     }
     

@@ -14,7 +14,7 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
             TemplateModel model) 
-    throws TemplateException {
+    {
         int size = -1;
         if (model instanceof TemplateSequenceModel) {
             size = ((TemplateSequenceModel) model).size();

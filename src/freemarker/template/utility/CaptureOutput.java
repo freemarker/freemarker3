@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public class CaptureOutput implements TemplateTransformModel {
 
-    public Writer getWriter(final Writer out, final Map args) throws TemplateModelException {
+    public Writer getWriter(final Writer out, final Map args) {
         String errmsg = "Must specify the name of the variable in "
                 + "which to capture the output with the 'var' or 'local' or 'global' parameter.";
         if (args == null) throw new TemplateModelException(errmsg);

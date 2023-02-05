@@ -81,7 +81,7 @@ implements TemplateCollectionModel, Serializable {
             this.iteratorShared = iteratorShared;
         }
 
-        public TemplateModel next() throws TemplateModelException {
+        public TemplateModel next() {
             if (iteratorShared) makeIteratorDirty();
             
             if (!iterator.hasNext()) {
@@ -96,7 +96,7 @@ implements TemplateCollectionModel, Serializable {
             }
         }
 
-        public boolean hasNext() throws TemplateModelException {
+        public boolean hasNext() {
             /* 
              * Theorically this should not make the iterator dirty,
              * but I met sync. problems if I don't do it here. :(
@@ -105,7 +105,7 @@ implements TemplateCollectionModel, Serializable {
             return iterator.hasNext();
         }
         
-        private void makeIteratorDirty() throws TemplateModelException {
+        private void makeIteratorDirty() {
             synchronized (SimpleCollection.this) {
                 if (iteratorDirty) {
                     throw new TemplateModelException(

@@ -44,11 +44,11 @@ abstract public class Expression extends TemplateNode {
         }
     }
     
-    public final TemplateModel getAsTemplateModel(Environment env) throws TemplateException {
+    public final TemplateModel getAsTemplateModel(Environment env) {
         return constantValue != null ? constantValue : _getAsTemplateModel(env);
     }
     
-    String getStringValue(Environment env) throws TemplateException {
+    String getStringValue(Environment env) {
         return getStringValue(getAsTemplateModel(env), this, env);
     }
     
@@ -90,7 +90,7 @@ abstract public class Expression extends TemplateNode {
 
     abstract Expression _deepClone(String name, Expression subst);
 
-    boolean isTrue(Environment env) throws TemplateException {
+    boolean isTrue(Environment env) {
         TemplateModel referent = getAsTemplateModel(env);
         if (referent instanceof TemplateBooleanModel) {
             return ((TemplateBooleanModel) referent).getAsBoolean();

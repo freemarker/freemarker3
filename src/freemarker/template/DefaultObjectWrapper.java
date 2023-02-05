@@ -63,7 +63,7 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
     }
     
 
-    public TemplateModel wrap(Object obj) throws TemplateModelException {
+    public TemplateModel wrap(Object obj) {
         if (obj == null) {
             return super.wrap(null);
         }
@@ -111,7 +111,7 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
      * Called if an unknown type is passed in.
      * Since 2.3, this falls back on XML wrapper and BeansWrapper functionality.
      */
-    protected TemplateModel handleUnknownType(Object obj) throws TemplateModelException {
+    protected TemplateModel handleUnknownType(Object obj) {
         if (obj instanceof org.w3c.dom.Node) {
             return wrapDomNode(obj);
         }

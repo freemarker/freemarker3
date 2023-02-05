@@ -37,7 +37,7 @@ public class ListLiteral extends Expression {
     	return result;
     }
 
-    TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+    TemplateModel _getAsTemplateModel(Environment env) {
         SimpleSequence list = new SimpleSequence(values.size());
         for (Iterator it = values.iterator(); it.hasNext();) {
             Expression exp = (Expression) it.next();
@@ -65,7 +65,7 @@ public class ListLiteral extends Expression {
 
     // A hacky routine used by VisitNode and RecurseNode
     
-    TemplateSequenceModel evaluateStringsToNamespaces(Environment env) throws TemplateException {
+    TemplateSequenceModel evaluateStringsToNamespaces(Environment env) {
         TemplateSequenceModel val = (TemplateSequenceModel) getAsTemplateModel(env);
         SimpleSequence result = new SimpleSequence(val.size());
         for (int i=0; i<values.size(); i++) {

@@ -21,7 +21,7 @@ import freemarker.template.utility.ClassUtil;
 
 public class ObjectConstructor implements TemplateMethodModelEx
 {
-    public Object exec(List args) throws TemplateModelException {
+    public Object exec(List args) {
         if (args.isEmpty()) {
             throw new TemplateModelException("This method must have at least one argument, the name of the class to instantiate.");
         }

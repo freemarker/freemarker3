@@ -38,11 +38,11 @@ public class Constants {
     
     public static final TemplateModelIterator EMPTY_ITERATOR = new TemplateModelIterator() {
 
-        public TemplateModel next() throws TemplateModelException {
+        public TemplateModel next() {
             throw new TemplateModelException("The collection has no more elements.");
         }
 
-        public boolean hasNext() throws TemplateModelException {
+        public boolean hasNext() {
             return false;
         }
         
@@ -50,7 +50,7 @@ public class Constants {
 
     public static final TemplateCollectionModel EMPTY_COLLECTION = new TemplateCollectionModel() {
 
-        public TemplateModelIterator iterator() throws TemplateModelException {
+        public TemplateModelIterator iterator() {
             return EMPTY_ITERATOR;
         }
         
@@ -59,11 +59,11 @@ public class Constants {
     public static final TemplateSequenceModel EMPTY_SEQUENCE
             = new TemplateSequenceModel() {
     
-        public TemplateModel get(int index) throws TemplateModelException {
+        public TemplateModel get(int index) {
             return null;
         }
     
-        public int size() throws TemplateModelException {
+        public int size() {
             return 0;
         }
         
@@ -71,23 +71,23 @@ public class Constants {
     
     public static final TemplateHashModelEx EMPTY_HASH = new TemplateHashModelEx() {
 
-        public int size() throws TemplateModelException {
+        public int size() {
             return 0;
         }
 
-        public TemplateCollectionModel keys() throws TemplateModelException {
+        public TemplateCollectionModel keys() {
             return EMPTY_COLLECTION;
         }
 
-        public TemplateCollectionModel values() throws TemplateModelException {
+        public TemplateCollectionModel values() {
             return EMPTY_COLLECTION;
         }
 
-        public TemplateModel get(String key) throws TemplateModelException {
+        public TemplateModel get(String key) {
             return null;
         }
 
-        public boolean isEmpty() throws TemplateModelException {
+        public boolean isEmpty() {
             return true;
         }
         

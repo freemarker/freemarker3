@@ -15,7 +15,7 @@ import freemarker.template.TemplateModelException;
  */
 public class FreeMarkerPageContext1 extends FreeMarkerPageContext {
 
-    public FreeMarkerPageContext1() throws TemplateModelException {
+    public FreeMarkerPageContext1() {
         super();
     }
 

@@ -78,7 +78,7 @@ class SimpleMemberModel<T extends Member>
     }
 
     private static Object unwrapArgument(TemplateModel model, Class type, BeansWrapper w) 
-    throws TemplateModelException {
+    {
         Object val = w.unwrap(model, type);
         if(val == BeansWrapper.CAN_NOT_UNWRAP) {
             throw new TemplateModelException("Can not unwrap argument " +

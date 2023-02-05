@@ -51,7 +51,7 @@ public class OOParamElement extends TemplateElement {
 			return false;
 		}
 		
-		public TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+		public TemplateModel _getAsTemplateModel(Environment env) {
 			return new OOParamModel(OOParamElement.this);
 		}
 		
@@ -69,7 +69,7 @@ public class OOParamElement extends TemplateElement {
 			return false;
 		}
 		
-		public TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+		public TemplateModel _getAsTemplateModel(Environment env) {
 			SimpleSequence result = new SimpleSequence();
 			for (OOParamElement param : params) {
 				result.add(new OOParamModel(param));

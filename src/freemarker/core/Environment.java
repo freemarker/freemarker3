@@ -129,7 +129,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public Environment(Template template,
-            final TemplateHashModel rootDataModel, Writer out) throws TemplateException {
+            final TemplateHashModel rootDataModel, Writer out) {
         super(template);
         this.currentScope = mainNamespace = new TemplateNamespace(
                 this, template);
@@ -378,7 +378,7 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    public String getCurrentRecoveredErrorMessage() throws TemplateException {
+    public String getCurrentRecoveredErrorMessage() {
         if (recoveredErrorStack.isEmpty()) {
             throw new TemplateException(
                     ".error is not available outside of a <#recover> block",
@@ -579,7 +579,7 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    public void visitMacroDef(Macro macro) throws TemplateException {
+    public void visitMacroDef(Macro macro) {
         if (currentMacroContext == null) {
             macroToNamespaceLookup.put(macro, getCurrentNamespace());
 //          getCurrentNamespace().put(macro.getName(), macro);
@@ -629,7 +629,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     private void handleTemplateException(TemplateException te)
-    throws TemplateException {
+    {
         // Logic to prevent double-handling of the exception in
         // nested visit() calls.
         if (lastThrowable == te) {
@@ -736,7 +736,7 @@ public final class Environment extends Configurable implements Scope {
         numberFormat = null;
     }
 
-    public String formatDate(Date date, int type) throws TemplateModelException {
+    public String formatDate(Date date, int type) {
         DateFormat df = getDateFormatObject(type);
         if (df == null) {
             throw new TemplateModelException(
@@ -817,7 +817,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public DateFormat getDateFormatObject(int dateType)
-    throws TemplateModelException {
+    {
         switch (dateType) {
             case TemplateDateModel.UNKNOWN: {
                 return null;
@@ -849,7 +849,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public DateFormat getDateFormatObject(int dateType, String pattern)
-    throws TemplateModelException {
+    {
         if (dateFormats == null) {
             dateFormats = new Map[4];
             dateFormats[TemplateDateModel.UNKNOWN] = new HashMap<String, DateFormat>();
@@ -962,7 +962,7 @@ public final class Environment extends Configurable implements Scope {
     }
     
     public TemplateTransformModel getTransform(Expression exp)
-    throws TemplateException {
+    {
         TemplateTransformModel ttm = null;
         TemplateModel tm = exp.getAsTemplateModel(this);
         if (tm instanceof TemplateTransformModel) {
@@ -1003,7 +1003,7 @@ public final class Environment extends Configurable implements Scope {
      * </li>
      * </ol>
      */
-    public TemplateModel getVariable(String name) throws TemplateModelException {
+    public TemplateModel getVariable(String name) {
         return currentScope.resolveVariable(name);
     }
 
@@ -1011,7 +1011,7 @@ public final class Environment extends Configurable implements Scope {
      * This method returns a variable from the "global" namespace and falls back
      * to the data model.
      */
-    public TemplateModel get(String name) throws TemplateModelException {
+    public TemplateModel get(String name) {
         TemplateModel result = globalVariables.get(name);
         if (result == null) {
             result = rootDataModel.get(name);
@@ -1022,7 +1022,7 @@ public final class Environment extends Configurable implements Scope {
         return result;
     }
 
-    public Collection<String> getDirectVariableNames() throws TemplateModelException {
+    public Collection<String> getDirectVariableNames() {
         Collection<String> coll = new HashSet<String>(globalVariables.keySet());
         if (rootDataModel instanceof TemplateHashModelEx) {
             TemplateModelIterator rootNames =
@@ -1080,7 +1080,7 @@ public final class Environment extends Configurable implements Scope {
      * @param model
      *            the value of the variable
      */
-    public void unqualifiedSet(String name, TemplateModel model) throws TemplateException {
+    public void unqualifiedSet(String name, TemplateModel model) {
         Scope scope = this.currentScope;
         while (!(scope instanceof TemplateNamespace)) {
             if (scope.get(name) != null) {
@@ -1116,7 +1116,7 @@ public final class Environment extends Configurable implements Scope {
      * is completely disconnected from the Environment. That is, modifying the
      * set will have no effect on the Environment object.
      */
-    public Collection<String> getKnownVariableNames() throws TemplateModelException {
+    public Collection<String> getKnownVariableNames() {
         Collection<String> coll = new HashSet<String>();
         Scope scope = currentScope;
         while(scope != null) {
@@ -1193,7 +1193,7 @@ public final class Environment extends Configurable implements Scope {
         return false; // REVISIT, is this right?
     }
 
-    public int size() throws TemplateModelException {
+    public int size() {
         if (rootDataModel instanceof TemplateHashModelEx) {
             TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
             return globalVariables.size() + root.size()
@@ -1203,7 +1203,7 @@ public final class Environment extends Configurable implements Scope {
                 "The size() method is not applicable because the root data model does not expose a size() method.");
     }
 
-    public TemplateCollectionModel keys() throws TemplateModelException {
+    public TemplateCollectionModel keys() {
         if (!(rootDataModel instanceof TemplateHashModelEx)) {
             throw new TemplateModelException(
             "The keys() method is not applicable because the root data model does not expose a keys() method.");
@@ -1225,7 +1225,7 @@ public final class Environment extends Configurable implements Scope {
         return new SimpleCollection(aggregate, getObjectWrapper());
     }
 
-    public TemplateCollectionModel values() throws TemplateModelException {
+    public TemplateCollectionModel values() {
         if (!(rootDataModel instanceof TemplateHashModelEx)) {
             throw new TemplateModelException(
             "The keys() method is not applicable because the root data model does not expose a keys() method.");
@@ -1311,7 +1311,7 @@ public final class Environment extends Configurable implements Scope {
                 return false;
             }
 
-            public TemplateModel get(String key) throws TemplateModelException {
+            public TemplateModel get(String key) {
                 TemplateModel value = rootDataModel.get(key);
                 if (value == null) {
                     value = getConfiguration().getSharedVariable(key);
@@ -1322,23 +1322,23 @@ public final class Environment extends Configurable implements Scope {
 
         if (rootDataModel instanceof TemplateHashModelEx) {
             return new TemplateHashModelEx() {
-                public boolean isEmpty() throws TemplateModelException {
+                public boolean isEmpty() {
                     return result.isEmpty();
                 }
-                public TemplateModel get(String key) throws TemplateModelException {
+                public TemplateModel get(String key) {
                     return result.get(key);
                 }
 
                 //NB: The methods below do not take into account
                 // configuration shared variables even though
                 // the hash will return them, if only for BWC reasons
-                public TemplateCollectionModel values() throws TemplateModelException {
+                public TemplateCollectionModel values() {
                     return ((TemplateHashModelEx) rootDataModel).values();
                 }
-                public TemplateCollectionModel keys() throws TemplateModelException {
+                public TemplateCollectionModel keys() {
                     return ((TemplateHashModelEx) rootDataModel).keys();
                 }
-                public int size() throws TemplateModelException {
+                public int size() {
                     return ((TemplateHashModelEx) rootDataModel).size();
                 }
             };
@@ -1371,7 +1371,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     TemplateModel getNodeProcessor(TemplateNodeModel node)
-    throws TemplateException {
+    {
         String nodeName = node.getNodeName();
         if (nodeName == null) {
             throw new TemplateException("Node name is null.", this);
@@ -1391,7 +1391,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     private TemplateModel getNodeProcessor(final String nodeName,
-            final String nsURI, int startIndex) throws TemplateException {
+            final String nsURI, int startIndex) {
         TemplateModel result = null;
         int i;
         for (i = startIndex; i < nodeNamespaces.size(); i++) {
@@ -1417,7 +1417,7 @@ public final class Environment extends Configurable implements Scope {
 
     /*
      * private TemplateModel getNodeProcessor(final String nodeName, final
-     * String nsURI, int startIndex) throws TemplateException { TemplateModel
+     * String nsURI, int startIndex) { TemplateModel
      * result = null; TemplateSequenceModel nodeNamespaces =
      * this.nodeNamespaces; if (currentMacroContext != null) { SimpleSequence ss =
      * new SimpleSequence(); Macro.Context ctxt = currentMacroContext; while
@@ -1679,7 +1679,7 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    void importMacros(Template template) throws TemplateException {
+    void importMacros(Template template) {
           for (Macro macro : ((TemplateCore)template).getMacrosNoCheck().values()) {
         	  visitMacroDef(macro);
         }
@@ -1708,14 +1708,14 @@ public final class Environment extends Configurable implements Scope {
     /**
      * A hook that Jython uses.
      */
-    public Object __getitem__(String key) throws TemplateModelException {
+    public Object __getitem__(String key) {
         return BeansWrapper.getDefaultInstance().unwrap(getVariable(key));
     }
 
     /**
      * A hook that Jython uses.
      */
-    public void __setitem__(String key, Object o) throws TemplateException {
+    public void __setitem__(String key, Object o) {
         setGlobalVariable(key, getObjectWrapper().wrap(o));
     }
 

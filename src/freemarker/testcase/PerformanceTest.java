@@ -130,7 +130,7 @@ public class PerformanceTest
 
         public Number getAsNumber()
         {
-            return new Integer(i);
+            return i;
         }
         
         public boolean isEmpty()

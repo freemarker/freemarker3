@@ -26,7 +26,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
         TemplateModel model) 
-    throws TemplateException {
+    {
         if (model instanceof TemplateNumberModel) {
             return new NumberFormatter(EvaluationUtil.getNumber(model, caller.getTarget(), env), env);
         }
@@ -59,7 +59,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             this.env = env;
         }
 
-        public String getAsString() throws TemplateModelException {
+        public String getAsString() {
             if (bool instanceof TemplateScalarModel) {
                 return ((TemplateScalarModel) bool).getAsString();
             } else {
@@ -68,7 +68,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
 
         public Object exec(List arguments)
-                throws TemplateModelException {
+                {
             if (arguments.size() != 2) {
                 throw new TemplateModelException(
                         "boolean?string(...) requires exactly "
@@ -88,14 +88,14 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         private final DateFormat defaultFormat;
         private String cachedValue;
 
-        DateFormatter(Date date, int dateType, Environment env) throws TemplateModelException {
+        DateFormatter(Date date, int dateType, Environment env) {
             this.date = date;
             this.dateType = dateType;
             this.env = env;
             defaultFormat = env.getDateFormatObject(dateType);
         }
 
-        public String getAsString() throws TemplateModelException { 
+        public String getAsString() { 
             if(dateType == TemplateDateModel.UNKNOWN) {
                 throw new TemplateModelException("Can't convert the date to string, because it is not known which parts of the date variable are in use. Use ?date, ?time or ?datetime built-in, or ?string.<format> or ?string(format) built-in with this date.");
             }
@@ -113,7 +113,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
         
         public Object exec(List arguments)
-            throws TemplateModelException {
+            {
             if (arguments.size() != 1) {
                 throw new TemplateModelException(
                         "date?string(...) requires exactly 1 argument.");
@@ -156,7 +156,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         @Parameters("format")
         
         public Object exec(List arguments)
-            throws TemplateModelException {
+            {
             if (arguments.size() != 1) {
                 throw new TemplateModelException(
                         "number?string(...) requires exactly 1 argument.");

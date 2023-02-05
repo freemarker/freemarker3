@@ -45,7 +45,7 @@ WrapperTemplateModel
         this.map = map;
     }
 
-    public TemplateModel get(String key) throws TemplateModelException {
+    public TemplateModel get(String key) {
         Object val = map.get(key);
         if(val == null) {
             if(key.length() == 1) {
@@ -63,7 +63,7 @@ WrapperTemplateModel
         return wrap(val);
     }
     
-    public Object exec(List args) throws TemplateModelException {
+    public Object exec(List args) {
         Object key = ((BeansWrapper)getObjectWrapper()).unwrap((TemplateModel)args.get(0));
         Object value = map.get(key);
         if (value == null && !map.containsKey(key)) {

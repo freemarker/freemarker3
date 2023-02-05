@@ -5775,7 +5775,7 @@ public class Test {
 
         <programlisting role="unspecified">public class IndexOfMethod implements TemplateMethodModel {
     
-    public TemplateModel exec(List args) throws TemplateModelException {
+    public TemplateModel exec(List args) {
         if (args.size() != 2) {
             throw new TemplateModelException("Wrong arguments");
         }
@@ -7289,7 +7289,7 @@ cfg.setTemplateLoader(mtl);</programlisting>
 
           <programlisting role="unspecified">class MyTemplateExceptionHandler implements TemplateExceptionHandler {
     public void handleTemplateException(TemplateException te, Environment env, java.io.Writer out)
-            throws TemplateException {
+            {
         try {
             out.write("[ERROR: " + te.getMessage() + "]");
         } catch (IOException e) {

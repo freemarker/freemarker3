@@ -33,7 +33,7 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
 
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) throws TemplateException {
+            TemplateModel model) {
         try {
             String classString = ((TemplateScalarModel) model).getAsString();
             return new ConstructorFunction(classString, env);
@@ -50,7 +50,7 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
         private final Class<?> cl;
         private final Environment env;
 
-        public ConstructorFunction(String classname, Environment env) throws TemplateException {
+        public ConstructorFunction(String classname, Environment env) {
             this.env = env;
             try {
                 cl = ClassUtil.forName(classname);
@@ -69,7 +69,7 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public Object exec(List arguments) throws TemplateModelException {
+        public Object exec(List arguments) {
             ObjectWrapper ow = null;
             if (env != null) ow = env.getObjectWrapper();
             BeansWrapper bw = 

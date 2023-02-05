@@ -72,7 +72,7 @@ implements TemplateSequenceModel, Serializable {
      * default object wrapper set in 
      * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
      */
-    public SimpleSequence(TemplateCollectionModel tcm) throws TemplateModelException {
+    public SimpleSequence(TemplateCollectionModel tcm) {
         ArrayList<Object> alist = new ArrayList<Object>();
         for (TemplateModelIterator it = tcm.iterator(); it.hasNext();) {
             alist.add(it.next());
@@ -145,7 +145,7 @@ implements TemplateSequenceModel, Serializable {
      * but we should maintain our immutability semantics (at least using default SimpleXXX wrappers) 
      * for the data model. It will recursively unwrap the stuff in the underlying container. 
      */
-    public List toList() throws TemplateModelException {
+    public List toList() {
         if (unwrappedList == null) {
             Class<? extends List> listClass = list.getClass();
             List result = null;
@@ -170,7 +170,7 @@ implements TemplateSequenceModel, Serializable {
     /**
      * @return the specified index in the list
      */
-    public TemplateModel get(int i) throws TemplateModelException {
+    public TemplateModel get(int i) {
         try {
             Object value = list.get(i);
             if (value instanceof TemplateModel) {
@@ -210,7 +210,7 @@ implements TemplateSequenceModel, Serializable {
             }
         }
 
-        public TemplateModel get(int i) throws TemplateModelException {
+        public TemplateModel get(int i) {
             synchronized (SimpleSequence.this) {
                 return SimpleSequence.this.get(i);
             }
@@ -221,7 +221,7 @@ implements TemplateSequenceModel, Serializable {
                 return SimpleSequence.this.size();
             }
         }
-        public List toList() throws TemplateModelException {
+        public List toList() {
             synchronized (SimpleSequence.this) {
                 return SimpleSequence.this.toList();
             }

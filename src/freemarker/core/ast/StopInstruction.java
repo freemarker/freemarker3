@@ -16,7 +16,7 @@ public class StopInstruction extends TemplateElement {
         this.message = message;
     }
 
-    public void execute(Environment env) throws TemplateException {
+    public void execute(Environment env) {
         if (message == null) {
             throw new StopException(env);
         }

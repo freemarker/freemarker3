@@ -70,7 +70,7 @@ public class TestJspTaglibs extends TestCase {
         refFile= new File(outputDir, "test-jsptaglibs.txt");
     }
 
-    public void runTest() throws TemplateException {
+    public void runTest() {
         try {
             ServletConfig cfg = new MockServletConfig();
             FreemarkerServlet servlet = new FreemarkerServlet();

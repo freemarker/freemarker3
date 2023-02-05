@@ -139,7 +139,7 @@ implements TemplateHashModelEx, Serializable {
         put(key, b ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE);
     }
 
-    public TemplateModel get(String key) throws TemplateModelException {
+    public TemplateModel get(String key) {
         Object result = map.get(key);
         // The key to use for putting -- it is the key that already exists in
         // the map (either key or charKey below). This way, we'll never put a 
@@ -208,7 +208,7 @@ implements TemplateHashModelEx, Serializable {
      * but we should maintain our immutability semantics (at least using default SimpleXXX wrappers) 
      * for the data model. It will recursively unwrap the stuff in the underlying container. 
      */
-    public Map toMap() throws TemplateModelException {
+    public Map toMap() {
         if (unwrappedMap == null) {
             Class mapClass = this.map.getClass();
             Map m = null;
@@ -278,7 +278,7 @@ implements TemplateHashModelEx, Serializable {
             }
         }
 
-        public TemplateModel get(String key) throws TemplateModelException {
+        public TemplateModel get(String key) {
             synchronized (SimpleHash.this) {
                 return SimpleHash.this.get(key);
             }
@@ -308,7 +308,7 @@ implements TemplateHashModelEx, Serializable {
             }
         }
         
-        public Map toMap() throws TemplateModelException {
+        public Map toMap() {
             synchronized (SimpleHash.this) {
                 return SimpleHash.this.toMap();
             }

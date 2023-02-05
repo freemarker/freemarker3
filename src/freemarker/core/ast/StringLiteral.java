@@ -43,7 +43,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
         }
     }
     
-    TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+    TemplateModel _getAsTemplateModel(Environment env) {
         return new SimpleScalar(getStringValue(env));
     }
 
@@ -51,7 +51,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
         return value;
     }
     
-    String getStringValue(Environment env) throws TemplateException {
+    String getStringValue(Environment env) {
         if (interpolatedOutput == null) {
             return value;
         } 

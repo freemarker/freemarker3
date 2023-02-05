@@ -274,7 +274,7 @@ Expression AdditiveExpression :
          }
          else {
              result = new ArithmeticExpression(lhs, rhs,
-                                            ArithmeticExpression.SUBSTRACTION);
+                                            ArithmeticExpression.SUBTRACTION);
          }
          result.setLocation(template, lhs, rhs);
          lhs = result;

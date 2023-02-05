@@ -36,7 +36,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
     
     public TemplateModel get(Environment env, BuiltInExpression caller, 
             TemplateModel model) 
-    throws TemplateException {
+    {
         if (model instanceof TemplateDateModel) {
             TemplateDateModel dmodel = (TemplateDateModel) model;
             int dtype = dmodel.getDateType();
@@ -86,7 +86,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
             this.defaultFormat = env.getDateFormatObject(dateType);
         }
 
-        public Date getAsDate() throws TemplateModelException {
+        public Date getAsDate() {
             if(cachedValue == null) {
                 cachedValue = parse(defaultFormat);
             }
@@ -97,14 +97,14 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
             return dateType;
         }
 
-        public TemplateModel get(String pattern) throws TemplateModelException {
+        public TemplateModel get(String pattern) {
             return new SimpleDate(
                     parse(env.getDateFormatObject(dateType, pattern)),
                     dateType);
         }
 
         public Object exec(List arguments)
-        throws TemplateModelException {
+        {
             if (arguments.size() != 1) {
                 throw new TemplateModelException(
                         "string?" + caller.getName() + "(...) requires exactly 1 argument.");

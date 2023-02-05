@@ -14,11 +14,11 @@ class DocumentTypeModel extends NodeModel {
         return ((ProcessingInstruction) node).getData();
     }
     
-    public TemplateSequenceModel getChildren() throws TemplateModelException {
+    public TemplateSequenceModel getChildren() {
         throw new TemplateModelException("entering the child nodes of a DTD node is not currently supported");
     }
     
-    public TemplateModel get(String key) throws TemplateModelException {
+    public TemplateModel get(String key) {
         throw new TemplateModelException("accessing properties of a DTD is not currently supported");
     }
     

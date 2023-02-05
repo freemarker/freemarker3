@@ -29,7 +29,7 @@ public class InvalidExpression extends Expression {
     }	
 
 	@Override
-	TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+	TemplateModel _getAsTemplateModel(Environment env) {
 		return TemplateModel.INVALID_EXPRESSION;
 	}
 

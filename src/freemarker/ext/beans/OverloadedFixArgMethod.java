@@ -24,7 +24,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
     };
 
     Object getMemberAndArguments(List<TemplateModel> arguments, BeansWrapper w) 
-    throws TemplateModelException {
+    {
         if(arguments == null) {
             // null is treated as empty args
             arguments = Collections.emptyList();

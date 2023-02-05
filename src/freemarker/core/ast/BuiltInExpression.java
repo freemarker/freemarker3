@@ -145,7 +145,7 @@ public class BuiltInExpression extends Expression {
         return bi;
     }
 
-    TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+    TemplateModel _getAsTemplateModel(Environment env) {
         return bi.get(env, this);
     }
 

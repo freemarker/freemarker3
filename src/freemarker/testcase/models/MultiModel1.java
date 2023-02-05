@@ -63,7 +63,7 @@ public class MultiModel1 implements TemplateHashModel,
     /**
      * @return the specified index in the list
      */
-    public TemplateModel get(int i) throws TemplateModelException {
+    public TemplateModel get(int i) {
         return m_cListModel.get( i );
     }
 
@@ -76,7 +76,7 @@ public class MultiModel1 implements TemplateHashModel,
         return "MultiModel1 as a string!";
     }
 
-    public int size() throws TemplateModelException {
+    public int size() {
         return m_cListModel.size();
     }
 }

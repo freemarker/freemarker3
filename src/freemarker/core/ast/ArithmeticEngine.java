@@ -168,7 +168,7 @@ public abstract class ArithmeticEngine {
         
         private static final Map classCodes = createClassCodesMap();
         
-        public int compareNumbers(Number first, Number second) throws TemplateException {
+        public int compareNumbers(Number first, Number second) {
             switch(getCommonClassCode(first, second)) {
                 case INTEGER: {
                     int n1 = first.intValue();
@@ -206,7 +206,7 @@ public abstract class ArithmeticEngine {
             throw new Error();
         }
     
-        public Number add(Number first, Number second) throws TemplateException {
+        public Number add(Number first, Number second) {
             switch(getCommonClassCode(first, second)) {
                 case INTEGER: {
                     int n1 = first.intValue();
@@ -227,10 +227,10 @@ public abstract class ArithmeticEngine {
                         : (Number)Long.valueOf(n);
                 }
                 case FLOAT: {
-                    return new Float(first.floatValue() + second.floatValue());
+                    return first.floatValue() + second.floatValue();
                 }
                 case DOUBLE: {
-                    return new Double(first.doubleValue() + second.doubleValue());
+                    return first.doubleValue() + second.doubleValue();
                 }
                 case BIGINTEGER: {
                     BigInteger n1 = toBigInteger(first);
@@ -248,7 +248,7 @@ public abstract class ArithmeticEngine {
             throw new Error();
         }
     
-        public Number subtract(Number first, Number second) throws TemplateException {
+        public Number subtract(Number first, Number second) {
             switch(getCommonClassCode(first, second)) {
                 case INTEGER: {
                     int n1 = first.intValue();
@@ -269,10 +269,10 @@ public abstract class ArithmeticEngine {
                         : (Number)Long.valueOf(n);
                 }
                 case FLOAT: {
-                    return new Float(first.floatValue() - second.floatValue());
+                    return first.floatValue() - second.floatValue();
                 }
                 case DOUBLE: {
-                    return new Double(first.doubleValue() - second.doubleValue());
+                    return first.doubleValue() - second.doubleValue();
                 }
                 case BIGINTEGER: {
                     BigInteger n1 = toBigInteger(first);
@@ -290,7 +290,7 @@ public abstract class ArithmeticEngine {
             throw new Error();
         }
     
-        public Number multiply(Number first, Number second) throws TemplateException {
+        public Number multiply(Number first, Number second) {
             switch(getCommonClassCode(first, second)) {
                 case INTEGER: {
                     int n1 = first.intValue();
@@ -311,10 +311,10 @@ public abstract class ArithmeticEngine {
                         : (Number)toBigInteger(first).multiply(toBigInteger(second));
                 }
                 case FLOAT: {
-                    return new Float(first.floatValue() * second.floatValue());
+                    return first.floatValue() * second.floatValue();
                 }
                 case DOUBLE: {
-                    return new Double(first.doubleValue() * second.doubleValue());
+                    return first.doubleValue() * second.doubleValue();
                 }
                 case BIGINTEGER: {
                     BigInteger n1 = toBigInteger(first);
@@ -333,7 +333,7 @@ public abstract class ArithmeticEngine {
             throw new Error();
         }
     
-        public Number divide(Number first, Number second) throws TemplateException {
+        public Number divide(Number first, Number second) {
             switch(getCommonClassCode(first, second)) {
                 case INTEGER: {
                     int n1 = first.intValue();
@@ -341,7 +341,7 @@ public abstract class ArithmeticEngine {
                     if (n1 % n2 == 0) {
                         return Integer.valueOf(n1/n2);
                     }
-                    return new Double(((double)n1)/n2);
+                    return ((double)n1)/n2;
                 }
                 case LONG: {
                     long n1 = first.longValue();
@@ -349,13 +349,13 @@ public abstract class ArithmeticEngine {
                     if (n1 % n2 == 0) {
                         return Long.valueOf(n1/n2);
                     }
-                    return new Double(((double)n1)/n2);
+                    return ((double)n1)/n2;
                 }
                 case FLOAT: {
-                    return new Float(first.floatValue() / second.floatValue());
+                    return first.floatValue() / second.floatValue();
                 }
                 case DOUBLE: {
-                    return new Double(first.doubleValue() / second.doubleValue());
+                    return first.doubleValue() / second.doubleValue();
                 }
                 case BIGINTEGER: {
                     BigInteger n1 = toBigInteger(first);
@@ -385,19 +385,19 @@ public abstract class ArithmeticEngine {
             throw new Error();
         }
     
-        public Number modulus(Number first, Number second) throws TemplateException {
+        public Number modulus(Number first, Number second) {
             switch(getCommonClassCode(first, second)) {
                 case INTEGER: {
-                    return Integer.valueOf(first.intValue() % second.intValue());
+                    return first.intValue() % second.intValue();
                 }
                 case LONG: {
-                    return Long.valueOf(first.longValue() % second.longValue());
+                    return first.longValue() % second.longValue();
                 }
                 case FLOAT: {
-                    return new Float(first.floatValue() % second.floatValue());
+                    return first.floatValue() % second.floatValue();
                 }
                 case DOUBLE: {
-                    return new Double(first.doubleValue() % second.doubleValue());
+                    return first.doubleValue() % second.doubleValue();
                 }
                 case BIGINTEGER: {
                     BigInteger n1 = toBigInteger(first);
@@ -431,7 +431,7 @@ public abstract class ArithmeticEngine {
             return map;
         }
         
-        private static int getClassCode(Number num) throws TemplateException {
+        private static int getClassCode(Number num) {
             try {
                 return ((Integer)classCodes.get(num.getClass())).intValue();
             }
@@ -443,7 +443,7 @@ public abstract class ArithmeticEngine {
             }
         }
         
-        private static int getCommonClassCode(Number num1, Number num2) throws TemplateException {
+        private static int getCommonClassCode(Number num1, Number num2) {
             int c1 = getClassCode(num1);
             int c2 = getClassCode(num2);
             int c = c1 > c2 ? c1 : c2;

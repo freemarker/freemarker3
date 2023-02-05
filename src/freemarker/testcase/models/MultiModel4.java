@@ -14,7 +14,7 @@ public class MultiModel4 implements TemplateSequenceModel, TemplateHashModel {
     /**
      * @return the specified index in the list
      */
-    public TemplateModel get(int i) throws TemplateModelException {
+    public TemplateModel get(int i) {
         return m_cList.get( i );
     }
 

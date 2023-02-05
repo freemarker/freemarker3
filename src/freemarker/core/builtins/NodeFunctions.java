@@ -18,7 +18,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
             TemplateModel model) 
-    throws TemplateException {
+    {
         if (!(model instanceof TemplateNodeModel)) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "node");
         }
@@ -31,7 +31,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     public static class Parent extends NodeFunctions {
         @Override
         public TemplateModel apply(Environment env, TemplateNodeModel node)
-        throws TemplateException {
+        {
             return node.getParentNode();
         }
     }
@@ -39,7 +39,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     public static class Children extends NodeFunctions {
         @Override
         public TemplateModel apply(Environment env, TemplateNodeModel node)
-        throws TemplateException {
+        {
             return node.getChildNodes();
         }
     }
@@ -47,7 +47,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     public static class Root extends NodeFunctions {
         @Override
         public TemplateModel apply(Environment env, TemplateNodeModel node)
-        throws TemplateException {
+        {
             for(;;) {
                 final TemplateNodeModel parent = node.getParentNode();
                 if(parent == null) {
@@ -61,7 +61,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     public static class NodeName extends NodeFunctions {
         @Override
         public TemplateModel apply(Environment env, TemplateNodeModel node)
-        throws TemplateException {
+        {
             return new SimpleScalar(node.getNodeName());
         }
     }
@@ -69,7 +69,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     public static class NodeNamespace extends NodeFunctions {
         @Override
         public TemplateModel apply(Environment env, TemplateNodeModel node)
-        throws TemplateException {
+        {
             String ns = node.getNodeNamespace();
             return ns == null ? TemplateModel.JAVA_NULL : new SimpleScalar(ns);
         }
@@ -78,7 +78,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     public static class NodeType extends NodeFunctions {
         @Override
         public TemplateModel apply(Environment env, TemplateNodeModel node)
-        throws TemplateException {
+        {
             String nt = node.getNodeType();
             return nt == null ? TemplateModel.JAVA_NULL : new SimpleScalar(nt);
         }
@@ -88,7 +88,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     public static class Ancestors extends NodeFunctions {
         @Override
         public TemplateModel apply(Environment env, TemplateNodeModel node)
-        throws TemplateException {
+        {
             final AncestorSequence result = new AncestorSequence();
             TemplateNodeModel parent = node.getParentNode();
             while (parent != null) {
@@ -102,7 +102,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     static class AncestorSequence extends SimpleSequence implements TemplateMethodModel {
         private static final long serialVersionUID = 1L;
 
-        public Object exec(List names) throws TemplateModelException {
+        public Object exec(List names) {
             if (names == null || names.isEmpty()) {
                 return this;
             }

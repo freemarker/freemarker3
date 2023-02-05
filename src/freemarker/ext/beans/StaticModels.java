@@ -19,7 +19,7 @@ class StaticModels extends ClassBasedModelFactory {
     }
 
     protected TemplateModel createModel(Class clazz) 
-    throws TemplateModelException {
+    {
         return new StaticModel(clazz, getWrapper());
     }
 }

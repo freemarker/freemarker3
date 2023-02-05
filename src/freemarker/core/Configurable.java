@@ -436,7 +436,7 @@ public class Configurable
      * @throws TemplateException if the new value of the setting can't be set
      *     for any other reasons.
      */
-    public void setSetting(String key, String value) throws TemplateException {
+    public void setSetting(String key, String value) {
         try {
             if (LOCALE_KEY.equals(key)) {
                 setLocale(StringUtil.deduceLocale(value));
@@ -591,8 +591,8 @@ public class Configurable
      *     invalid keys, or invalid setting values, or any other error occurs
      *     while changing the settings.
      */    
-    public void setSettings(Properties props) throws TemplateException {
-        Iterator it = props.keySet().iterator();
+    public void setSettings(Properties props) {
+        Iterator<Object> it = props.keySet().iterator();
         while (it.hasNext()) {
             String key = (String) it.next();
             setSetting(key, props.getProperty(key).trim()); 

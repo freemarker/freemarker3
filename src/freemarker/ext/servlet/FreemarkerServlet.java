@@ -463,7 +463,7 @@ public class FreemarkerServlet extends HttpServlet
     protected TemplateModel createModel(ObjectWrapper wrapper,
                                         ServletContext servletContext,
                                         final HttpServletRequest request,
-                                        final HttpServletResponse response) throws TemplateModelException {
+                                        final HttpServletResponse response) {
         try {
             AllHttpScopesHashModel params = new AllHttpScopesHashModel(wrapper, servletContext, request);
     

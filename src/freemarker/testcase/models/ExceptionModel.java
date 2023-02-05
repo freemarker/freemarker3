@@ -14,7 +14,7 @@ public class ExceptionModel implements TemplateScalarModel {
      *
      * @return the String value of this scalar.
      */
-    public String getAsString () throws TemplateModelException {
+    public String getAsString () {
         throw new TemplateModelException( "Throwing from ExceptionModel!" );
     }
 }

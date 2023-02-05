@@ -15,7 +15,7 @@ public class groupsBI extends ExpressionEvaluatingBuiltIn
 {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) throws TemplateException {
+            TemplateModel model) {
         if (model instanceof RegexMatchModel) {
             return ((RegexMatchModel) model).getGroups();
         }

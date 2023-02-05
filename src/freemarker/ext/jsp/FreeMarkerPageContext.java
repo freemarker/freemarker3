@@ -391,7 +391,7 @@ abstract class FreeMarkerPageContext extends PageContext implements TemplateMode
     private static class TemplateHashModelExEnumeration implements Enumeration {
         private final TemplateModelIterator it;
             
-        private TemplateHashModelExEnumeration(TemplateHashModelEx hashEx) throws TemplateModelException {
+        private TemplateHashModelExEnumeration(TemplateHashModelEx hashEx) {
             it = hashEx.keys().iterator();
         }
         

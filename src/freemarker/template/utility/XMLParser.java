@@ -66,7 +66,7 @@ public class XMLParser implements TemplateTransformModel, TemplateMethodModel
         };
     }
     
-    public Object exec(List args) throws TemplateModelException {
+    public Object exec(List args) {
         if (args.size() != 1) {
             throw new TemplateModelException("Expecting one argument (a string containing an XML document)");
         }

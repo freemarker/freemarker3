@@ -13,7 +13,7 @@ public abstract class ExpressionEvaluatingBuiltIn extends BuiltIn {
 
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller) 
-    throws TemplateException {
+    {
         return get(env, caller, caller.getTarget().getAsTemplateModel(env));
     }
     

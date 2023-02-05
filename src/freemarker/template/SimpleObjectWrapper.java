@@ -14,7 +14,7 @@ public class SimpleObjectWrapper extends DefaultObjectWrapper {
      * Called if a type other than the simple ones we know about is passed in. 
      * In this implementation, this just throws an exception.
      */
-    protected TemplateModel handleUnknownType(Object obj) throws TemplateModelException {
+    protected TemplateModel handleUnknownType(Object obj) {
         throw new TemplateModelException("Don't know how to present an object of this type to a template: " 
                                          + obj.getClass().getName());
     }

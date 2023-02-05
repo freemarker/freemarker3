@@ -1413,25 +1413,25 @@ public class BeansWrapper implements ObjectWrapper
         }
     }
     
-    public static Object coerceBigDecimal(BigDecimal bd, Class formalType) {
+    public static Object coerceBigDecimal(BigDecimal bd, Class<?> formalType) {
         // int is expected in most situations, so we check it first
         if(formalType == Integer.TYPE || formalType == Integer.class) {
             return Integer.valueOf(bd.intValue());
         }
         else if(formalType == Double.TYPE || formalType == Double.class) {
-            return new Double(bd.doubleValue());
+            return bd.doubleValue();
         }
         else if(formalType == Long.TYPE || formalType == Long.class) {
-            return Long.valueOf(bd.longValue());
+            return bd.longValue();
         }
         else if(formalType == Float.TYPE || formalType == Float.class) {
-            return new Float(bd.floatValue());
+            return bd.floatValue();
         }
         else if(formalType == Short.TYPE || formalType == Short.class) {
-            return Short.valueOf(bd.shortValue());
+            return bd.shortValue();
         }
         else if(formalType == Byte.TYPE || formalType == Byte.class) {
-            return Byte.valueOf(bd.byteValue());
+            return bd.byteValue();
         }
         else if(BIGINTEGER_CLASS.isAssignableFrom(formalType)) {
             return bd.toBigInteger();

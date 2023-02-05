@@ -12,7 +12,7 @@ public class sourceBI extends BuiltIn {
 
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller)
-    throws TemplateException {
+    {
         return new SimpleScalar(caller.getTarget().getCanonicalForm());
     }
 }

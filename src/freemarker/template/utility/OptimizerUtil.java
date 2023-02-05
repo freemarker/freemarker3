@@ -70,7 +70,7 @@ public class OptimizerUtil
                 if(d != Double.POSITIVE_INFINITY && d != Double.NEGATIVE_INFINITY)
                 {
                     // BigDecimal -> Double
-                    return new Double(d);
+                    return d;
                 }
             }
         }

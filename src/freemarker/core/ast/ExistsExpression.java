@@ -19,7 +19,7 @@ public class ExistsExpression extends Expression {
 		return exp;
 	}
 
-	TemplateModel _getAsTemplateModel(Environment env) throws TemplateException {
+	TemplateModel _getAsTemplateModel(Environment env) {
 		TemplateModel tm = null;
 		try {
 			tm = exp.getAsTemplateModel(env);

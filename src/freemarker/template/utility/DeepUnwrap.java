@@ -53,7 +53,7 @@ public class DeepUnwrap
      *       unwrap the object.
      * </ol>
      */
-    public static Object unwrap(TemplateModel model) throws TemplateModelException {
+    public static Object unwrap(TemplateModel model) {
         return unwrap(model, false);
     }
 
@@ -62,7 +62,7 @@ public class DeepUnwrap
      * if it doesn't know how to unwrap the model, but rather returns it as-is.
      * @since 2.3.14
      */
-    public static Object permissiveUnwrap(TemplateModel model) throws TemplateModelException {
+    public static Object permissiveUnwrap(TemplateModel model) {
         return unwrap(model, true);
     }
     
@@ -70,11 +70,11 @@ public class DeepUnwrap
      * @deprecated the name of this method is mistyped. Use 
      * {@link #permissiveUnwrap(TemplateModel)} instead.
      */
-    public static Object premissiveUnwrap(TemplateModel model) throws TemplateModelException {
+    public static Object premissiveUnwrap(TemplateModel model) {
         return unwrap(model, true);
     }
     
-    private static Object unwrap(TemplateModel model, boolean permissive) throws TemplateModelException {
+    private static Object unwrap(TemplateModel model, boolean permissive) {
         if(model instanceof AdapterTemplateModel) {
             return ((AdapterTemplateModel)model).getAdaptedObject(OBJECT_CLASS);
         }

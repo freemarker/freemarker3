@@ -53,7 +53,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public TemplateModel exec(List args) throws TemplateModelException {
+        public TemplateModel exec(List args) {
             if (args.size() != 1) {
                 throw new TemplateModelException("Expecting exactly one argument for ?seq_contains(...)");
             }

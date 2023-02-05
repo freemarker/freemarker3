@@ -35,7 +35,7 @@ class MethodMap<T extends Member>
     }
     
     MemberAndArguments<T> getMemberAndArguments(List<TemplateModel> arguments) 
-    throws TemplateModelException {
+    {
         Object memberAndArguments = fixArgMethod.getMemberAndArguments(arguments, wrapper);
         if(memberAndArguments == OverloadedMethod.NO_SUCH_METHOD) {
             if(varArgMethod != null) {

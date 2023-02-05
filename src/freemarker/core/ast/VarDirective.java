@@ -10,7 +10,7 @@ import freemarker.core.*;
 public class VarDirective extends TemplateElement {
     private Map<String, Expression> vars = new LinkedHashMap<String, Expression>();
 
-    public void execute(Environment env) throws TemplateException {
+    public void execute(Environment env) {
         for (Map.Entry<String, Expression> entry : vars.entrySet()) {
             String varname = entry.getKey();
             Expression exp = entry.getValue();

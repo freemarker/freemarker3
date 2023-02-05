@@ -77,7 +77,7 @@ public class ComparisonExpression extends BooleanExpression {
      * WARNING! This algorithm is duplicated in SequenceBuiltins.modelsEqual.
      * Thus, if you update this method, then you have to update that too!
      */
-    boolean isTrue(Environment env) throws TemplateException {
+    boolean isTrue(Environment env) {
         TemplateModel ltm = left.getAsTemplateModel(env);
         TemplateModel rtm = right.getAsTemplateModel(env);
 /*

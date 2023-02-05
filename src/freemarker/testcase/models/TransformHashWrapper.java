@@ -29,7 +29,7 @@ public class TransformHashWrapper implements TemplateHashModel,
      * @return the <tt>TemplateModel</tt> referred to by the key,
      * or null if not found.
      */
-    public TemplateModel get(String key) throws TemplateModelException {
+    public TemplateModel get(String key) {
         return m_cHashModel.get( key );
     }
 
