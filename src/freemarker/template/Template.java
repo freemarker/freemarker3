@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.security.CodeSource;
-import java.security.cert.Certificate;
 import java.util.*;
 
 import freemarker.core.Configurable;
@@ -51,9 +49,6 @@ import freemarker.debug.impl.DebuggerService;
  */
 
 public class Template extends TemplateCore {
-    public static final CodeSource NULL_CODE_SOURCE = new CodeSource(null, 
-            (Certificate[])null);
-    
     public static final String DEFAULT_NAMESPACE_PREFIX = "D";
     public static final String NO_NS_PREFIX = "N";
 
@@ -72,8 +67,7 @@ public class Template extends TemplateCore {
     private Set<String> declaredVariables = new HashSet<String>();
     
     //This is necessary for backward compatibility
-    private Set<String> implicitlyDeclaredVariables = new HashSet<String>();
-    private final CodeSource codeSource;
+    private Set<String> implicitlyDeclaredVariables = new HashSet<>();
     boolean stripWhitespace;
     private boolean strictVariableDeclaration;
     
@@ -89,11 +83,10 @@ public class Template extends TemplateCore {
      * A prime constructor to which all other constructors should
      * delegate directly or indirectly.
      */
-    protected Template(String name, Configuration cfg, CodeSource codeSource)
+    protected Template(String name, Configuration cfg)
     {
         super(cfg != null ? cfg : Configuration.getDefaultConfiguration());
         this.name = name;
-        this.codeSource = codeSource == null ? NULL_CODE_SOURCE : codeSource;
     }
 
     /**
@@ -111,16 +104,12 @@ public class Template extends TemplateCore {
      * non-null (It's not actually necessary because we are using a Reader) then it is
      * checked against the encoding specified in the FTL header -- assuming that is specified,
      * and if they don't match a WrongEncodingException is thrown.
-     * @param codeSource the code source used to determine the security 
-     * privileges for the template based on the Java policy in effect when it 
-     * is run within a secured environment. Can be null, which is treated as 
-     * being equivalent to untrusted code.
      */
     
     
 	public Template(String name, Reader reader, Configuration cfg,
-			String encoding, CodeSource codeSource) throws IOException {
-       this(name, cfg, codeSource);
+			String encoding) throws IOException {
+       this(name, cfg);
         
         this.encoding = encoding;
         
@@ -171,18 +160,11 @@ public class Template extends TemplateCore {
         this.lineInfoTable = new byte[lineStartOffsets.length];
 	}    
     
-    public Template(String name, Reader reader, Configuration cfg, 
-            String encoding)
-    throws IOException
-    {
-        this(name, reader, cfg, encoding, NULL_CODE_SOURCE);
-    }
-    
     /**
      * This is equivalent to Template(name, reader, cfg, null)
      */
     public Template(String name, Reader reader, Configuration cfg) throws IOException {
-        this(name, reader, cfg, null, NULL_CODE_SOURCE);
+        this(name, reader, cfg, null);
     }
 
 
@@ -211,7 +193,7 @@ public class Template extends TemplateCore {
      */
     static public Template getPlainTextTemplate(String name, String content, 
             Configuration config) {
-         Template template = new Template(name, config, NULL_CODE_SOURCE);
+         Template template = new Template(name, config);
         final char[] text = content.toCharArray();
         template.templateText = text;
         template.setRootElement(new TemplateElement() {
@@ -698,10 +680,6 @@ public class Template extends TemplateCore {
         return imports;
     }
 
-    public CodeSource getCodeSource() {
-        return codeSource;
-    }
-    
     /**
      * This is used internally.
      */

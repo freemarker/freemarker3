@@ -5,7 +5,6 @@ import java.io.Reader;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -365,22 +364,16 @@ public class TemplateCache
     throws IOException
     {
         Template template;
-        CodeSource codeSource;
-        if(config.isSecure() && loader instanceof SecureTemplateLoader) {
-            codeSource = ((SecureTemplateLoader)loader).getCodeSource(source);
-        } else {
-            codeSource = null;
-        }
         Reader reader = loader.getReader(source, encoding);
         try {
             if(parse) {
                 try {
-                    template = createTemplate(name, reader, config, encoding, codeSource);
+                    template = createTemplate(name, reader, config, encoding);
                 }
                 catch (Template.WrongEncodingException wee) {
                     encoding = wee.specifiedEncoding;
                     reader = loader.getReader(source, encoding);
-                    template = createTemplate(name, reader, config, encoding, codeSource);
+                    template = createTemplate(name, reader, config, encoding);
                 }
                 template.setLocale(locale);
             }
@@ -581,8 +574,8 @@ public class TemplateCache
         return buf.toString();
     }
     
-    protected Template createTemplate(String name, Reader reader, Configuration config, String encoding, CodeSource codeSource) throws IOException {
-    	return new Template(name, reader, config, encoding, codeSource);
+    protected Template createTemplate(String name, Reader reader, Configuration config, String encoding ) throws IOException {
+    	return new Template(name, reader, config, encoding);
     }
     
     private static String normalizeName(String name) {

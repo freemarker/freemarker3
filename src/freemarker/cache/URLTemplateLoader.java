@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
-import java.security.CodeSource;
 
 /**
  * This is an abstract template loader that can load templates whose
@@ -14,11 +13,8 @@ import java.security.CodeSource;
  * @version $Id: URLTemplateLoader.java,v 1.14 2003/01/29 08:01:17 szegedia Exp $
  * @author Attila Szegedi
  */
-public abstract class URLTemplateLoader implements SecureTemplateLoader
-{
-    public Object findTemplateSource(String name)
-    throws
-    	IOException
+public abstract class URLTemplateLoader implements TemplateLoader {
+    public Object findTemplateSource(String name) throws IOException
     {
         URL url = getURL(name);
         return url == null ? null : new URLTemplateSource(url);
@@ -53,21 +49,6 @@ public abstract class URLTemplateLoader implements SecureTemplateLoader
     	IOException
     {
         ((URLTemplateSource) templateSource).close();
-    }
-
-    /**
-     * For jar: URLs, returns a code source that points to the URL of the JAR
-     * file as the code source URL. If the JAR file is signed, the code source
-     * will contain the appropriate certificates as well. For other URLs, 
-     * returns the code source with URL itself and no certificates.
-     * @return an appropriate CodeSource for this template source.
-     * @throws IOException
-     */
-    public CodeSource getCodeSource(Object templateSource) 
-    throws
-        IOException
-    {
-        return ((URLTemplateSource)templateSource).getCodeSource();
     }
     
     /**

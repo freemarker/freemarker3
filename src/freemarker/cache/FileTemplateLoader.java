@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.security.CodeSource;
 
 /**
  * A {@link TemplateLoader} that uses files in a specified directory as the
@@ -20,8 +19,7 @@ import java.security.CodeSource;
  * @author Attila Szegedi, szegedia at freemail dot hu
  * @version $Id: FileTemplateLoader.java,v 1.26 2004/03/29 08:06:22 szegedia Exp $
  */
-public class FileTemplateLoader implements SecureTemplateLoader
-{
+public class FileTemplateLoader implements TemplateLoader {
     private static final boolean SEP_IS_SLASH = File.separatorChar == '/';
     /**
      * The base directory used as the root of the namespace for resolving
@@ -130,28 +128,9 @@ public class FileTemplateLoader implements SecureTemplateLoader
     throws IOException
     {
         return new InputStreamReader(new FileInputStream((File) templateSource), encoding);
-/*                
-        try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Reader>() {
-                public Reader run() throws IOException {
-                    if (!(templateSource instanceof File)) {
-                        throw new IllegalArgumentException(
-                                "templateSource is a: " + templateSource.getClass().getName());
-                    }
-                    return new InputStreamReader(new FileInputStream((File) templateSource), encoding);
-                }
-            });
-        }
-        catch(PrivilegedActionException e) {
-            throw (IOException)e.getException();
-        }*/
     }
     
     public void closeTemplateSource(Object templateSource) {
         // Do nothing.
-    }
-    
-    public CodeSource getCodeSource(Object templateSource) {
-        return null;
     }
 }

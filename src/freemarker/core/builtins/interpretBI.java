@@ -70,17 +70,14 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
 
         public void execute(Environment env, Map<String, TemplateModel> params,
                 TemplateModel[] loopVars, TemplateDirectiveBody body)
-                throws TemplateException, IOException {
+                throws IOException {
             try {
                 env.include(template, false);
             }
-            catch(TemplateModelException e) {
+            catch(RuntimeException e) {
                 throw e;
             }
             catch(IOException e) {
-                throw e;
-            }
-            catch(RuntimeException e) {
                 throw e;
             }
             catch(Exception e) {

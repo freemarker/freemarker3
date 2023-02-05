@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.CodeSource;
-import java.security.cert.Certificate;
 
 import javax.servlet.ServletContext;
 
@@ -20,8 +18,7 @@ import freemarker.log.Logger;
  * @version $Id: WebappTemplateLoader.java,v 1.10 2003/01/29 08:01:18 szegedia Exp $
  * @author Attila Szegedi
  */
-public class WebappTemplateLoader implements SecureTemplateLoader 
-{
+public class WebappTemplateLoader implements TemplateLoader {
     private static final Logger logger = Logger.getLogger("freemarker.cache");
     
     private final ServletContext servletContext;
@@ -127,12 +124,5 @@ public class WebappTemplateLoader implements SecureTemplateLoader
         } else {
             ((URLTemplateSource) templateSource).close();
         }
-    }
-    
-    public CodeSource getCodeSource(Object templateSource) throws IOException {
-        if(templateSource instanceof File) {
-            return new CodeSource(((File)templateSource).toURL(), (Certificate[])null);
-        }
-        return ((URLTemplateSource)templateSource).getCodeSource();
     }
 }

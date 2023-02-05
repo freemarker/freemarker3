@@ -17,7 +17,6 @@ import freemarker.cache.CacheStorage;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.FileTemplateLoader;
 import freemarker.cache.MruCacheStorage;
-import freemarker.cache.SecureTemplateLoader;
 import freemarker.cache.TemplateCache;
 import freemarker.cache.TemplateLoader;
 import freemarker.core.Configurable;
@@ -78,7 +77,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     private ArrayList<String> autoIncludes = new ArrayList<String>();
     private ArrayList<ASTVisitor> autoVisitors = new ArrayList<ASTVisitor>();
 //    private String defaultEncoding = System.getProperty("file.encoding");
-//  private String defaultEncoding = "ISO-8859-1";
     private String defaultEncoding = "UTF-8";
     private boolean secure = false;
     private boolean tolerateParsingProblems = false;
@@ -284,9 +282,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * {@link #setServletContextForTemplateLoading(Object, String)}. By default,
      * a multi-loader is used that first tries to load a template from the file
      * in the current directory, then from a resource on the classpath.
-     * @throws SecurityException if there is a {@link SecurityManager} in the
-     * JVM, {@link #isSecure()} is true and the calling code doesn't 
-     * have the "setTemplateLoader" 
      */
     public synchronized void setTemplateLoader(TemplateLoader loader) {
         createTemplateCache(loader, cache.getCacheStorage());
@@ -801,8 +796,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
                 setAutoIncludes(new SettingStringParser(value).parseAsList());
             } else if (AUTO_IMPORT_KEY.equalsIgnoreCase(key)) {
                 setAutoImports(new SettingStringParser(value).parseAsImportList());
-            } else if (SECURE.equalsIgnoreCase(key)) {
-                setSecure(Boolean.valueOf(value));
             } else {
                 super.setSetting(key, value);
             }
@@ -913,32 +906,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     
     synchronized List<ASTVisitor> getAutoVisitors() {
     	return new ArrayList<ASTVisitor>(autoVisitors);
-    }
-
-    /**
-     * Sets whether templates are secured. When templates are secured, they are
-     * executing in a protection domain determined by their code source. See
-     * {@link SecureTemplateLoader} and its implementations for details. When
-     * templates are not secured, they are executing in the protection domain
-     * of FreeMarker libraries. If your deployment execution of templates from
-     * sources you don't control, you should consider using the secured 
-     * templates feature.
-     * @param secure
-     * @throws SecurityException if there is a {@link SecurityManager} in the
-     * JVM, {@link #isSecure()} is true and the calling code doesn't 
-     * have the "setSecure" 
-     */
-    public void setSecure(boolean secure) {
-        if(this.secure != secure) {
-            this.secure = secure;
-            // Clearing the template cache so that templates are reloaded with 
-            // expected code sources.
-            clearTemplateCache();
-        }
-    }
-    
-    public boolean isSecure() {
-        return secure;
     }
     
     /**

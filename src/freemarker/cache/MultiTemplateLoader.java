@@ -2,7 +2,6 @@ package freemarker.cache;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.security.CodeSource;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,9 +19,7 @@ import java.util.Map;
  * @author Attila Szegedi, szegedia at freemail dot hu
  * @version $Id: MultiTemplateLoader.java,v 1.12 2003/08/08 10:10:58 szegedia Exp $
  */
-public class MultiTemplateLoader 
-implements StatefulTemplateLoader, SecureTemplateLoader
-{
+public class MultiTemplateLoader implements StatefulTemplateLoader {
     private final TemplateLoader[] loaders;
     private final Map<String, TemplateLoader> lastLoaderForName = 
     	Collections.synchronizedMap(new HashMap<String, TemplateLoader>());
@@ -91,11 +88,6 @@ implements StatefulTemplateLoader, SecureTemplateLoader
         ((MultiSource)templateSource).close();
     }
     
-    public CodeSource getCodeSource(Object templateSource) throws IOException
-    {
-        return ((MultiSource)templateSource).getCodeSource();
-    }
-
     public void resetState()
     {
         lastLoaderForName.clear();
@@ -140,13 +132,6 @@ implements StatefulTemplateLoader, SecureTemplateLoader
             IOException
         {
             loader.closeTemplateSource(source);
-        }
-        
-        CodeSource getCodeSource() throws IOException {
-            if(loader instanceof SecureTemplateLoader) {
-                return ((SecureTemplateLoader)loader).getCodeSource(source);
-            }
-            return null;
         }
         
         public boolean equals(Object o) {

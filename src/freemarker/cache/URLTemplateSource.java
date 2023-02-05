@@ -6,10 +6,6 @@ import java.io.InputStream;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.CodeSource;
-import java.security.cert.Certificate;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 /**
  * Wraps a <code>java.net.URL</code>, and implements methods required for a typical template source.
@@ -93,45 +89,5 @@ class URLTemplateSource {
           conn = null;
         }
     }
-    
-    /**
-     * For jar: URLs, returns a code source that points to the URL of the JAR
-     * file as the code source URL. If the JAR file is signed, the code source
-     * will contain the appropriate certificates as well. For other URLs, 
-     * returns the code source with URL itself and no certificates.
-     * @return an appropriate CodeSource for this template source.
-     * @throws IOException
-     */
-    CodeSource getCodeSource() throws IOException {
-        Certificate[] signers;
-        URL baseUrl;
-        if(url.getProtocol().equals("jar")) {
-            String sUrl = url.toExternalForm();
-            int bang = sUrl.indexOf('!');
-            if(bang != -1) {
-                baseUrl = new URL(sUrl.substring(4, bang));
-                URL jarUrl = new URL(sUrl.substring(0, bang));
-                JarFile f = ((JarURLConnection)jarUrl.openConnection()).getJarFile();
-                try
-                {
-                    JarEntry entry = f.getJarEntry(sUrl.substring(bang + 1));
-                    if(entry != null) {
-                        signers = entry.getCertificates();
-                    }
-                    else {
-                        signers = null;
-                    }
-                } finally {
-                    f.close();
-                }
-            } else {
-                baseUrl = new URL(sUrl.substring(4));
-                signers = null;
-            }
-        } else {
-            baseUrl = url;
-            signers = null;
-        }
-        return new CodeSource(baseUrl, signers); 
-    }
+  
 }

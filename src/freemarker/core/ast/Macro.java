@@ -1,6 +1,5 @@
 package freemarker.core.ast;
 
-import java.security.CodeSource;
 import java.util.*;
 import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;
@@ -20,18 +19,7 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     	DO_NOTHING_MACRO.setNestedBlock(TextBlock.EMPTY_BLOCK);
     }
     
-    private final CodeSource codeSource;
-    
     public Macro() {
-        codeSource = Template.NULL_CODE_SOURCE;
-    }
-    
-    public Macro(CodeSource codeSource) {
-        this.codeSource = codeSource;
-    }
-    
-    public CodeSource getCodeSource() {
-        return codeSource;
     }
     
     public void setName(String name) {

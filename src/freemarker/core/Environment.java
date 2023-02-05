@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.security.CodeSource;
 import java.text.Collator;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -71,8 +70,6 @@ public final class Environment extends Configurable implements Scope {
 
     private final List<String> recoveredErrorStack = new ArrayList<String>();
 
-    private CodeSource currentCodeSource;
-
     private NumberFormat numberFormat;
 
     private Map<String, NumberFormat> numberFormats;
@@ -135,7 +132,6 @@ public final class Environment extends Configurable implements Scope {
                 this, template);
         this.out = out;
         this.rootDataModel = rootDataModel;
-        resetCodeSource();
         importMacros(template);
     }
 
@@ -157,11 +153,6 @@ public final class Environment extends Configurable implements Scope {
         collator = null;
         cachedURLEscapingCharset = null;
         urlEscapingCharsetCached = false;
-        resetCodeSource();
-    }
-
-    private void resetCodeSource() {
-        currentCodeSource = Template.NULL_CODE_SOURCE;
     }
 
     /**
@@ -187,33 +178,7 @@ public final class Environment extends Configurable implements Scope {
             threadEnv.set(savedEnv);
         }
     }
-/*
-    public void renderSecurely(TemplateElement element, CodeSource newCodeSource)
-    throws IOException
-    {
-        // currentCodeSource can be null if we don't have enough privilege to
-        // obtain DEFAULT_CODE_SOURCE. In that case, assume newCodeSource must
-        // differ from it. Also, don't do any security related operations if
-        // there's no security manager in the system.
-        if(currentCodeSource == null || !currentCodeSource.equals(
-                newCodeSource))
-        {
-            // Code sources differ - incorporate the new code source's
-            // protection domain onto the Java call stack
-            CodeSource oldCodeSource = currentCodeSource;
-            currentCodeSource = newCodeSource;
-            try {
-                SecureRenderer.renderSecurely(newCodeSource, this, element);
-            }
-            finally {
-                currentCodeSource = oldCodeSource;
-            }
-        } else {
-            // Equal code sources - just render in the current protection domain
-            render(element);
-        }
-    }
-*/
+
     /**
      * "Visit" the template element.
      */

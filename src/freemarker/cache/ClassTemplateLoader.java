@@ -1,8 +1,6 @@
 package freemarker.cache;
 
-import java.io.IOException;
 import java.net.URL;
-import java.security.CodeSource;
 
 /**
  * A {@link TemplateLoader} that uses streams reachable through 
@@ -14,7 +12,6 @@ public class ClassTemplateLoader extends URLTemplateLoader
 {
     private final Class<?> loaderClass;
     private String path;
-    private CodeSource classCodeSource; 
     
     /**
      * Creates a template loader that will use the {@link Class#getResource(String)}
@@ -78,7 +75,6 @@ public class ClassTemplateLoader extends URLTemplateLoader
         }
         this.loaderClass = loaderClass == null ? this.getClass() : loaderClass;
         this.path = canonicalizePrefix(path);
-        classCodeSource = null;
     }
     
     /**
@@ -123,14 +119,4 @@ public class ClassTemplateLoader extends URLTemplateLoader
     {
         return loaderClass.getResource(path + name);
     }
-
-    public CodeSource getCodeSource(Object templateSource) throws IOException
-    {
-        if(classCodeSource != null) {
-            return classCodeSource;
-        }
-        return super.getCodeSource(templateSource);
-    }
-    
-    
 }
