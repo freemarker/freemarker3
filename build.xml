@@ -20,7 +20,7 @@
   </target>
 
   <target name="parser-gen" depends="init" unless="parser.uptodate">
-  	<java jar="bootstrap/congocc.jar" fork="true">
+  	<java jar="bootstrap/congocc.jar" fork="true" failonerror="true">
         	<assertions><enable/></assertions>
  	   <arg value="src/parser/FM.ccc"/>
  	</java>
@@ -33,9 +33,10 @@
  	       deprecation="off"
  	       debug="on"
  	       optimize="off"
-           target="1.8"
-           source="1.8"
-    	   includeantruntime="true"
+         failonerror="true"
+         fork="true"
+         target="1.8" source="1.8"
+    	   includeantruntime="false"
     >
       <classpath refid="class.path"/>
     </javac>

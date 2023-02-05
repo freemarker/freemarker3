@@ -46,7 +46,7 @@ public class evalBI extends ExpressionEvaluatingBuiltIn {
         parser.setTemplate(caller.getTemplate());
         Expression exp = null;
         try {
-            exp = parser.Exp();
+            exp = parser.Expression();
         } catch (ParseException pe) {
             pe.setTemplateName(caller.getTemplate().getName());
             throw new TemplateException(pe, env);

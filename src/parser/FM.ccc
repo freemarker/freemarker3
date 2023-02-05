@@ -133,34 +133,9 @@ INJECT PARSER_CLASS :
 
 }
 
-
 INCLUDE "FMLexer.ccc"
-#Expression(Token start, TokenType recoverToType, boolean consumeToken) :
-{
-   Expression exp = null;
-   Token end;
-}
-   try {
-	   exp=OrExpression
-   } catch (ParseException pe) {
-   	   String msg = "invalid expression";
-       Token t = this.lastConsumedToken, prevToken;
-       do {
-  	  	   prevToken = t;
-		   t = getToken(1);
- 	   } while (t.getType() != recoverToType && t.getType() != TokenType.EOF);
-       if (!consumeToken) {
-  	  	   this.lastConsumedToken = prevToken;
-  	   }
-  	   exp = new InvalidExpression(msg);
-  	   exp.setLocation(template, start.getNext(), prevToken);
-   }
-   {
-      return exp;
-   }
-;
 
-Expression Exp :
+#Expression :
 {
 	Expression exp;
 }
@@ -209,7 +184,7 @@ Expression Parenthesis :
    Token start, end;
 }
     start=<OPEN_PAREN>
-    exp=Expression(start, TokenType.CLOSE_PAREN, false) 
+    exp=Expression
     end=<CLOSE_PAREN>
     {
        result = new ParentheticalExpression(exp);
@@ -466,10 +441,10 @@ Expression OrExpression :
 }
     begin=<OPEN_BRACKET>
     [
-      exp=Exp {values.add(exp);}
+      exp=Expression {values.add(exp);}
       (
          [<COMMA>]
-         exp=Exp {values.add(exp);}
+         exp=Expression {values.add(exp);}
       )*
     ]
     end=<CLOSE_BRACKET>
@@ -649,7 +624,7 @@ Expression DynamicKey(Expression exp) :
    Token t;
 }
    <OPEN_BRACKET>
-   arg=Exp
+   arg=Expression
    t=<CLOSE_BRACKET>
    {
        DynamicKeyName dkn = new DynamicKeyName(exp, arg);
@@ -743,18 +718,18 @@ Expression NullLiteral :
 }
    begin=<OPEN_BRACE>
    [
-       key=Exp
+       key=Expression
        (<COMMA>|<COLON>)
-       value=Exp
+       value=Expression
        {
           keys.add(key);
           values.add(value);
        }
        (
           <COMMA>
-           key=Exp
+           key=Expression
            (<COMMA>|<COLON>)
-           value=Exp
+           value=Expression
            {
                keys.add(key);
                values.add(value);
@@ -780,27 +755,10 @@ TemplateElement StringOutput :
    boolean unclosed = false;
 }
    begin=<OUTPUT_ESCAPE> 
-   exp=Expression(begin, TokenType.CLOSE_BRACE, false)
-   try {
-	   end=<CLOSE_BRACE>
-   }
-   catch (ParseException pe2) {
-   	   end=recoverToToken(TokenType.CLOSE_BRACE, true);
-   	   exp=new InvalidExpression("The expression inside the interpolation is invalid.");
-   	   exp.setLocation(template, begin.getNext(), end);
-   	   if (end.getNext().getType() != TokenType.EOF) {
-	   	   end = end.getNext();
-   	   } else {
-   	   	   unclosed = true;
-   	   }
-   }
+   exp=Expression
+	end=<CLOSE_BRACE>
    {
-   	  TemplateElement result;
-   	  if (unclosed) {
-   	  	  result = new UnclosedElement("Unclosed output interpolation, expecting a closing '}'");
-   	  } else {
-	      result = new Interpolation(exp);
-   	  }
+   	TemplateElement result = new Interpolation(exp);
       result.setLocation(template, begin, end);
       return result;
    }
@@ -811,7 +769,7 @@ TemplateElement StringOutput :
    Token fmt = null, begin, end;
 }
    begin=<NUMERICAL_ESCAPE>
-   exp=Exp
+   exp=Expression
    [
       <SEMICOLON>
       fmt=<ID>
@@ -834,7 +792,7 @@ TemplateElement If :
     ConditionalBlock cblock;
 }
    start=<IF>
-   condition=Exp
+   condition=Expression
    <DIRECTIVE_END>
    block=OptionalBlock
    {
@@ -844,7 +802,7 @@ TemplateElement If :
    }
    (
        t=<ELSE_IF>
-       condition=Exp
+       condition=Expression
        LooseDirectiveEnd
        block=OptionalBlock
        {
@@ -921,7 +879,7 @@ TemplateElement List :
     TemplateElement block;
 }
    start=<LIST> 
-   exp=Expression(start, TokenType.AS, false)
+   exp=Expression
    <AS>
    index=<ID>
    <DIRECTIVE_END>
@@ -946,7 +904,7 @@ IteratorBlock ForEach :
    start=<FOREACH> 
    index=<ID>
    <IN>
-   exp=Exp
+   exp=Expression
    <DIRECTIVE_END>
    block=OptionalBlock
    end=CloseDirectiveBlock("foreach")
@@ -966,10 +924,10 @@ VisitNode Visit :
    Expression targetNode, namespaces=null;
 }
    start=<VISIT>
-   targetNode=Exp
+   targetNode=Expression
    [
        <USING>
-       namespaces=Exp
+       namespaces=Expression
    ]
    end=LooseDirectiveEnd
    {
@@ -990,11 +948,11 @@ RecurseNode Recurse :
       (
          start=<RECURSE>
          [
-            node=Exp
+            node=Expression
          ]
          [
             <USING>
-            namespaces=Exp
+            namespaces=Expression
          ]
          end=LooseDirectiveEnd
       )
@@ -1047,7 +1005,7 @@ ReturnInstruction Return :
       start=<SIMPLE_RETURN>{end = start;}
       |
       start=<RETURN> 
-      exp=Exp 
+      exp=Expression 
       end=LooseDirectiveEnd
    )
    {
@@ -1065,7 +1023,7 @@ StopInstruction Stop :
     (
       start=<HALT>
       |
-      start=<STOP> exp=Exp LooseDirectiveEnd
+      start=<STOP> exp=Expression LooseDirectiveEnd
     )
     {
        StopInstruction result = new StopInstruction(exp);
@@ -1164,7 +1122,7 @@ TemplateElement Assign :
     }
     ((
        <EQUALS>
-       exp=Exp {assignments.put(varName, exp);}
+       exp=Expression {assignments.put(varName, exp);}
        (
    //      SCAN [<COMMA>](<ID>|<STRING_LITERAL>)<EQUALS> =>
             [<COMMA>]
@@ -1173,14 +1131,14 @@ TemplateElement Assign :
                varName = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
             }
             <EQUALS> =>||
-            exp=Exp
+            exp=Expression
             {
             	assignments.put(varName, exp);
             } 
        )*
        [
           id=<IN>
-          nsExp=Exp {if (type != AssignmentInstruction.SET && type != AssignmentInstruction.NAMESPACE) {
+          nsExp=Expression {if (type != AssignmentInstruction.SET && type != AssignmentInstruction.NAMESPACE) {
           	   ParsingProblem problem = new ParsingProblem("Can only assign to namespace with #set or #assign.", result);
           	   template.addParsingProblem(problem);
             } 
@@ -1200,7 +1158,7 @@ TemplateElement Assign :
     (
        [
           id=<IN>
-          nsExp=Exp {if (type != AssignmentInstruction.NAMESPACE && type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.getBeginLine(), id.getBeginColumn());}
+          nsExp=Expression {if (type != AssignmentInstruction.NAMESPACE && type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.getBeginLine(), id.getBeginColumn());}
        ]
        <DIRECTIVE_END>
        block=OptionalBlock
@@ -1230,12 +1188,12 @@ TemplateElement Assign :
         |
         start=<EMBED> {freshNamespace=true;}
     )
-    nameExp=Exp
+    nameExp=Expression
     [<SEMICOLON>]
     (
 	  att=<ID>
 	  <EQUALS>
-	  exp=Exp
+	  exp=Expression
 	  {
 	     String attString = att.getImage();
 	     if (attString.equalsIgnoreCase("parse")) {
@@ -1275,7 +1233,7 @@ LibraryLoad Import :
    Expression nameExp;
 }
    start=<IMPORT>
-   nameExp=Exp
+   nameExp=Expression
    <AS>
    ns=<ID>
    end=LooseDirectiveEnd
@@ -1310,7 +1268,7 @@ LibraryLoad Import :
           ]
           [
             <EQUALS>
-          	defValue=Exp
+          	defValue=Expression
             {
 		      hasDefaults = true;
             }
@@ -1443,10 +1401,10 @@ CompressedBlock Compress :
 	Expression firstArg=null, arg=null;
 	PositionalArgsList result = new PositionalArgsList();
 }
-	firstArg=Exp {result.addArg(firstArg); arg=firstArg;}
+	firstArg=Expression {result.addArg(firstArg); arg=firstArg;}
 	(
 	   [<COMMA>]
-	   arg=Exp {result.addArg(arg);}
+	   arg=Expression {result.addArg(arg);}
 	)*
 	{
 		if (firstArg != null)
@@ -1462,7 +1420,7 @@ CompressedBlock Compress :
 }
 	firstParam=<ID>
 	<EQUALS> 
-	arg=Exp  
+	arg=Expression  
 	{
 		result.addNamedArg(firstParam.getImage(), arg);
 	}
@@ -1470,7 +1428,7 @@ CompressedBlock Compress :
 	   [<COMMA>]
 	   id=<ID>
 	   <EQUALS>
-	   arg=Exp
+	   arg=Expression
 	   {result.addNamedArg(id.getImage(), arg);}
 	)*
 	{
@@ -1511,7 +1469,7 @@ TemplateElement UnifiedMacroTransform :
    ParameterList bodyParameters = null;
 }
     start=<UNIFIED_CALL>
-    exp=Exp
+    exp=Expression
     {
         if (exp instanceof Identifier || (exp instanceof Dot && ((Dot) exp).onlyHasIdentifiers())) {
            directiveName = exp.getCanonicalForm();
@@ -1598,7 +1556,7 @@ Map<String, Expression> NamedArgs :
   (
      t=<ID>
      <EQUALS>
-     exp=Exp
+     exp=Expression
      {
         if (result.containsKey(t.getImage())) {
            throw new ParseException(getErrorStart(t)
@@ -1684,12 +1642,12 @@ TransformBlock Transform :
    HashMap<String, Expression> args = null;
 }
     start=<TRANSFORM>
-    exp=Exp
+    exp=Expression
     [<SEMICOLON>]
     (
        argName=<ID>
        <EQUALS>
-       argExp=Exp
+       argExp=Expression
        {
            if (args == null) args = new HashMap<String, Expression>();
            args.put(argName.getImage(), argExp);
@@ -1720,7 +1678,7 @@ SwitchBlock Switch :
     boolean defaultFound = false;
 }
    start=<SWITCH>
-   switchExp=Exp
+   switchExp=Expression
    <DIRECTIVE_END>
    (<WHITESPACE>|Comment)*   
    {
@@ -1755,7 +1713,7 @@ SwitchBlock Switch :
 }
    (
       start=<CASE> 
-      exp=Exp 
+      exp=Expression 
       <DIRECTIVE_END>
       |
       start=<DEFAUL>{isDefault = true;}
@@ -1804,7 +1762,7 @@ EscapeBlock Escape :
     start=<ESCAPE>
     variable=<ID>
     <AS>
-    escapeExpr=Exp
+    escapeExpr=Expression
     <DIRECTIVE_END>
     {
         EscapeBlock result = new EscapeBlock(variable.getImage(), escapeExpr);
@@ -1885,7 +1843,7 @@ PropertySetting Setting :
    start=<SETTING>
    key=<ID>
    <EQUALS>
-   value=Exp
+   value=Expression
    end=LooseDirectiveEnd
    {
       PropertySetting result = new PropertySetting(key.getImage(), value);
@@ -1905,7 +1863,7 @@ VarDirective Var :
      var=IdentifierOrStringLiteral
      [
        <EQUALS>
-       valueExp=Exp
+       valueExp=Expression
      ]
    )
    {
@@ -1918,7 +1876,7 @@ VarDirective Var :
         var=IdentifierOrStringLiteral
         [
            <EQUALS>
-           valueExp=Exp
+           valueExp=Expression
         ]
       )
       {
@@ -2161,7 +2119,7 @@ TemplateHeaderElement HeaderElement :
        (
           key=<ID>
           <EQUALS>
-          exp=Exp {params.put(key.getImage().toLowerCase(), exp);}
+          exp=Expression {params.put(key.getImage().toLowerCase(), exp);}
        )*
        end=LooseDirectiveEnd
      )
@@ -2182,7 +2140,7 @@ Map<String,Expression> ParamList :
    (
       id=Identifier
       <EQUALS>
-      exp=Exp {result.put(id.toString(), exp);}
+      exp=Expression {result.put(id.toString(), exp);}
       [<COMMA>]
    )+
    {

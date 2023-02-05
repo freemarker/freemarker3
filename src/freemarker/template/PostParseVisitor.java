@@ -86,10 +86,6 @@ public class PostParseVisitor extends ASTVisitor {
 		template.addParsingProblem(new ParsingProblem(node.getMessage() + " " + node.getSource(), node));
 	}
 	
-	public void visit(UnclosedElement node) {
-		template.addParsingProblem(new ParsingProblem(node.getDescription(), node));
-	}
-	
 	public void visit(AndExpression node) {
 		visit(node.getLeft());
 		checkLiteralInBooleanContext(node.getLeft());
