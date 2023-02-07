@@ -14,7 +14,6 @@ import freemarker.core.ast.LibraryLoad;
 import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.TemplateHeaderElement;
 import freemarker.core.parser.*;
-import freemarker.debug.impl.DebuggerService;
 
 /**
  * <p>A core FreeMarker API that represents a compiled template.
@@ -136,7 +135,6 @@ public class Template extends TemplateCore {
             e.setTemplateName(name);
             throw e;
         }
-        DebuggerService.registerTemplate(this);
         namespaceURIToPrefixLookup = Collections.unmodifiableMap(namespaceURIToPrefixLookup);
         prefixToNamespaceURILookup = Collections.unmodifiableMap(prefixToNamespaceURILookup);
 	}
@@ -201,7 +199,6 @@ public class Template extends TemplateCore {
         		env.getOut().write(text);
         	}
         });
-        DebuggerService.registerTemplate(template);
         return template;
     }
     
@@ -783,7 +780,7 @@ mainloop:
         return elements;
     }
 
-    static public class WrongEncodingException extends ParseException {
+    static public class WrongEncodingException extends RuntimeException {
         private static final long serialVersionUID = 3716984277969927605L;
 
         public String specifiedEncoding;

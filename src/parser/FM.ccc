@@ -1,6 +1,6 @@
 BASE_SRC_DIR="..";
 PARSER_PACKAGE="freemarker.core.parser";
-BASE_NODE_CLASS="TemplateObject";
+BASE_NODE_CLASS="TemplateNode";
 //TREE_BUILDING_ENABLED=false;
 NODE_DEFAULT_VOID;
 

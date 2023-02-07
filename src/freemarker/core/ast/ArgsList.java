@@ -54,12 +54,10 @@ abstract public class ArgsList extends TemplateNode {
                 if("".equals(paramString)) {
                     result = new ParameterList();
                 }
-                else {
-                    try {
-                        result = getParameterList(paramString);
-                    } catch (Exception pe) {
-                        throw new TemplateException("Can't parse parameter list [" + paramString + "] on " + target, pe, Environment.getCurrentEnvironment());
-                    }
+                else try {
+                    result = getParameterList(paramString);
+                } catch (Exception pe) {
+                    throw new TemplateException("Can't parse parameter list [" + paramString + "] on " + target, pe, Environment.getCurrentEnvironment());
                 }
                 parameterListCache.put(keyName, result);
                 return result;

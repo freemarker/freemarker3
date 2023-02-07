@@ -77,7 +77,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     private ArrayList<ASTVisitor> autoVisitors = new ArrayList<ASTVisitor>();
 //    private String defaultEncoding = System.getProperty("file.encoding");
     private String defaultEncoding = "UTF-8";
-    private boolean secure = false;
     private boolean tolerateParsingProblems = false;
     private int tagSyntax = AUTO_DETECT_TAG_SYNTAX;
 
