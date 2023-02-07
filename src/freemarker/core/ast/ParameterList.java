@@ -36,7 +36,6 @@ public class ParameterList extends TemplateNode {
     List<String> params = new ArrayList<String>();
     private Map<String, Expression> defaults;
     private String catchall;
-    private boolean curryGenerated;
     protected TemplateElement parent;
 
     public void addParam(String paramName) {
@@ -66,14 +65,6 @@ public class ParameterList extends TemplateNode {
 
     public String getCatchAll() {
         return catchall;
-    }
-
-    void setCurryGenerated(boolean curryGenerated) {
-        this.curryGenerated = curryGenerated;
-    }
-
-    boolean isCurryGenerated() {
-        return curryGenerated;
     }
 
     private boolean hasDefaultExpressions() {
@@ -308,16 +299,12 @@ public class ParameterList extends TemplateNode {
             result.put(catchall, catchAllMap);
         }
         if (!argsMap.isEmpty()) {
-            if(catchall != null || curryGenerated) {
+            if(catchall != null) {
                 for (Map.Entry<String, Expression> entry : argsMap.entrySet()) {
                     Expression exp = entry.getValue();
                     TemplateModel val = exp.getAsTemplateModel(env);
                     assertIsDefined(val, exp, env);
-                    if(curryGenerated) {
-                        result.put(entry.getKey(), val);
-                    } else {
-                        catchAllMap.put(entry.getKey(), val);
-                    }
+                    catchAllMap.put(entry.getKey(), val);
                 }
             } else {
                 throw new TemplateException("Extraneous parameters " + 

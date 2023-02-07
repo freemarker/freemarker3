@@ -70,9 +70,6 @@ public class MethodCall extends Expression {
             }
             return sw != null ? env.getObjectWrapper().wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
         }
-        else if (targetModel instanceof Curry.Operator) {
-            return ((Curry.Operator)targetModel).curry(arguments, env);
-        }
         else {
             throw invalidTypeException(targetModel, target, env, "method");
         }

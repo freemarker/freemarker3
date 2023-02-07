@@ -41,7 +41,6 @@ public class BuiltInExpression extends Expression {
         knownBuiltins.put("new", new newBI());
         knownBuiltins.put("interpret", new interpretBI());
         knownBuiltins.put("resolve", new resolveBI());
-        knownBuiltins.put("use_defaults", new Curry());
         NumericalCast numericalCast = new NumericalCast();
         knownBuiltins.put("byte", numericalCast);
         knownBuiltins.put("double", numericalCast);

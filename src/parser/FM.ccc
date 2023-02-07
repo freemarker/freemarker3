@@ -1,8 +1,8 @@
 BASE_SRC_DIR="..";
 PARSER_PACKAGE="freemarker.core.parser";
-TREE_BUILDING_ENABLED=false;
-MINIMAL_TOKEN;
-
+BASE_NODE_CLASS="TemplateObject";
+//TREE_BUILDING_ENABLED=false;
+NODE_DEFAULT_VOID;
 
 INJECT PARSER_CLASS : 
     import freemarker.core.ast.*;
@@ -59,7 +59,6 @@ INJECT PARSER_CLASS :
 
     public FMParser(Template template, String input, int syntaxSetting) {
         this (input);
-//        this(template, new StringReader(input), syntaxSetting);
         this.template = template;
         this.templateName = template != null ? template.getName() : "";
          if (syntaxSetting != Configuration.AUTO_DETECT_TAG_SYNTAX) {

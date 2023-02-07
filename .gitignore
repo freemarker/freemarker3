@@ -8,6 +8,7 @@ src/freemarker/core/parser/InvalidToken.java
 src/freemarker/core/parser/ParseException.java
 src/freemarker/core/parser/NonTerminalCall.java
 src/freemarker/core/parser/TokenSource.java
+src/freemarker/core/parser/ast/
 src/freemarker/testcase/reference/*.out
 *.class
 *~

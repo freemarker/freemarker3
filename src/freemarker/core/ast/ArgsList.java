@@ -48,9 +48,6 @@ abstract public class ArgsList extends TemplateNode {
             if(result != null) {
                 return result;
             }
-            if(target instanceof Curry.Curried) {
-                return ((Curry.Curried)target).getParameterList();
-            }
             Parameters params = getAnnotatedParameters(target);
             if (params != null) {
                 String paramString = params.value();
