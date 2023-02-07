@@ -82,19 +82,6 @@ A test string containing tags: <p>Fish &amp; Chips.</p>
 <#assign captured_output>
 <#compress>
 <#assign x=2, y=3, z = "python", adjective="cool">
-<#--
-Commenting this out for now because I don't want jython to be a dependency
-for running the test suite. It does work though!
-<#assign utility = "freemarker.testcase.models.TransformHashWrapper"?new()>
-<@jython>
-print 2+2
-# Now we interact with the template environment somewhat.
-print ${x} + ${y} 
-print env['x'] # using a variable from the template
-env["message"] = 'I saw the ${z}. It was ${adjective}.'
-
-</@jython>
--->
 </#compress>
 </#assign>
 

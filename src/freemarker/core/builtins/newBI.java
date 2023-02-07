@@ -16,14 +16,6 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
 
     static final Class<TemplateModel> TM_CLASS = TemplateModel.class;
     static final Class<freemarker.ext.beans.BeanModel> BEAN_MODEL_CLASS = freemarker.ext.beans.BeanModel.class;
-    static Class<?> JYTHON_MODEL_CLASS;
-    static {
-        try {
-            JYTHON_MODEL_CLASS = Class.forName("freemarker.ext.jython.JythonModel");
-        } catch (Throwable e) {
-            JYTHON_MODEL_CLASS = null;
-        }
-    }
 
     @Override
     public boolean isSideEffectFree() {
@@ -58,9 +50,6 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
                 }
                 if (BEAN_MODEL_CLASS.isAssignableFrom(cl)) {
                     throw new TemplateException("Bean Models cannot be instantiated using the ?new built-in", env);
-                }
-                if (JYTHON_MODEL_CLASS != null && JYTHON_MODEL_CLASS.isAssignableFrom(cl)) {
-                    throw new TemplateException("Jython Models cannot be instantiated using the ?new built-in", env);
                 }
             } 
             catch (ClassNotFoundException cnfe) {

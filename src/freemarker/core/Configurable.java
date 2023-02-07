@@ -409,7 +409,7 @@ public class Configurable
      *       interpreted as class name, and the object will be created with
      *       its parameterless constructor. If the value does not contain dot,
      *       then it must be one of these special values:
-     *       <code>"simple"</code>, <code>"beans"</code>, <code>"jython"</code> (case insensitive).
+     *       <code>"simple"</code>, <code>"beans"</code>.
      *   <li><code>"number_format"</code>: pattern as <code>java.text.DecimalFormat</code> defines.
      *   <li><code>"boolean_format"</code>: the textual value for boolean true and false,
      *       separated with comma. For example <code>"yes,no"</code>.
@@ -493,11 +493,6 @@ public class Configurable
                         setObjectWrapper(new SimpleObjectWrapper());
                     } else if ("beans".equalsIgnoreCase(value)) {
                         setObjectWrapper(new BeansWrapper());
-                    } else if ("jython".equalsIgnoreCase(value)) {
-                        Class clazz = Class.forName(
-                                "freemarker.ext.jython.JythonWrapper");
-                        setObjectWrapper(
-                                (ObjectWrapper) clazz.getField("INSTANCE").get(null));        
                     } else {
                         throw invalidSettingValueException(key, value);
                     }

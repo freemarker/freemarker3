@@ -218,9 +218,7 @@ public class Template extends TemplateCore {
      * @param rootMap the root node of the data model.  If null, an
      * empty data model is used. Can be any object that the effective object
      * wrapper can turn into a <tt>TemplateHashModel</tt>. Basically, simple and
-     * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes
-     * and the Jython wrapper can turn both a <tt>PyDictionary</tt> as well as
-     * any object that implements <tt>__getitem__</tt> into a template hash.
+     * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes.
      * Naturally, you can pass any object directly implementing
      * <tt>TemplateHashModel</tt> as well.
      * @param out a <tt>Writer</tt> to output the text to.
@@ -240,9 +238,7 @@ public class Template extends TemplateCore {
      * @param rootMap the root node of the data model.  If null, an
      * empty data model is used. Can be any object that the effective object
      * wrapper can turn into a <tt>TemplateHashModel</tt> Basically, simple and
-     * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes
-     * and the Jython wrapper can turn both a <tt>PyDictionary</tt> as well as any
-     * object that implements <tt>__getitem__</tt> into a template hash.
+     * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes.
      * Naturally, you can pass any object directly implementing
      * <tt>TemplateHashModel</tt> as well.
      * @param wrapper The object wrapper to use to wrap objects into
@@ -271,9 +267,7 @@ public class Template extends TemplateCore {
      * @param rootMap the root node of the data model.  If null, an
      * empty data model is used. Can be any object that the effective object
      * wrapper can turn into a <tt>TemplateHashModel</tt> Basically, simple and
-     * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes
-     * and the Jython wrapper can turn both a <tt>PyDictionary</tt> as well as any
-     * object that implements <tt>__getitem__</tt> into a template hash.
+     * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes.
      * Naturally, you can pass any object directly implementing
      * <tt>TemplateHashModel</tt> as well.
      * @param wrapper The object wrapper to use to wrap objects into
@@ -323,9 +317,7 @@ public class Template extends TemplateCore {
     * @param rootMap the root node of the data model.  If null, an
     * empty data model is used. Can be any object that the effective object
     * wrapper can turn into a <tt>TemplateHashModel</tt> Basically, simple and
-    * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes
-    * and the Jython wrapper can turn both a <tt>PyDictionary</tt> as well as any
-    * object that implements <tt>__getitem__</tt> into a template hash.
+    * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes.
     * Naturally, you can pass any object directly implementing
     * <tt>TemplateHashModel</tt> as well.
     * @param wrapper The object wrapper to use to wrap objects into

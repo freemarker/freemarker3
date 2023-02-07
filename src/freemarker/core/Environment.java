@@ -1664,20 +1664,6 @@ public final class Environment extends Configurable implements Scope {
         return getCurrentNamespace().getTemplate().getDefaultNS();
     }
 
-    /**
-     * A hook that Jython uses.
-     */
-    public Object __getitem__(String key) {
-        return BeansWrapper.getDefaultInstance().unwrap(getVariable(key));
-    }
-
-    /**
-     * A hook that Jython uses.
-     */
-    public void __setitem__(String key, Object o) {
-        setGlobalVariable(key, getObjectWrapper().wrap(o));
-    }
-
     private static final class NumberFormatKey {
         private final String pattern;
 

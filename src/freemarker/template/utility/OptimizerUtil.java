@@ -48,7 +48,7 @@ public class OptimizerUtil
      * This is needed to reverse the extreme conversions in arithmetic 
      * operations so that numbers can be meaningfully used with models that
      * don't know what to do with a BigDecimal. Of course, this will make
-     * impossible for these models (i.e. Jython) to receive a BigDecimal even if 
+     * impossible for these models to receive a BigDecimal even if 
      * it was originally placed as such in the data model. However, since 
      * arithmetic operations aggressively erase the information regarding the 
      * original number type, we have no other choice to ensure expected operation

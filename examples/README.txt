@@ -10,7 +10,6 @@ Web application examples
 webapp1        Building Web app. framework around FM, step 1: Hello World!
 webapp2        Building Web app. framework around FM, step 2: Guest-book
 struts-webapp  Using FM with Struts 1.1 Web app. framework: Guest-book
-jython-webapp  Web app. that uses Jython instead of Java Language
 jsp-webapp     Embedding FM templates into JSP pages
 
 In order not to duplicate too much JAR files around, we have not fully built
@@ -28,10 +27,8 @@ directory, or the above will fail. An example of dependencies.properties:
 
   lib.servlet=/home/java/servlet/servlet2_3_jsp1_2.jar
   lib.struts=/home/java/strtus1_1/lib/struts.jar
-  jython.home=/home/java/jython
 
-You need the lib.struts line only if you need the struts-webapp, and you need
-the jython.home line only if you need the jython-webapp.
+You need the lib.struts line only if you need the struts-webapp
 
 For more information please read the help.html or README.txt in the directory
 of examples. Especially, please read these files if the Web application does

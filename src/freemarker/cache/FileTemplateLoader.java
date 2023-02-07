@@ -13,9 +13,6 @@ import java.io.Reader;
  * serving templates outside the template directory (like <code>&lt;include /etc/passwd></code>.
  * It compares canonical paths for this, so templates that are symbolically
  * linked into the template directory from outside of it won't work either.
- * The code source URL of the templates can be either globally set to the base 
- * directory, or if more fine-grained access control is required, then each
- * template can have a code source URL of its file.
  * @author Attila Szegedi, szegedia at freemail dot hu
  * @version $Id: FileTemplateLoader.java,v 1.26 2004/03/29 08:06:22 szegedia Exp $
  */
