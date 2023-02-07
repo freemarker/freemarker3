@@ -75,7 +75,7 @@ public class StandardCompress implements TemplateTransformModel, TemplateDirecti
     }
 
     public void execute(Environment env, Map<String, TemplateModel> args, TemplateModel[] bodyVars, TemplateDirectiveBody body) 
-    throws TemplateException, IOException {
+    throws IOException {
     	if (body == null) return;
         int bufferSize = defaultBufferSize;
         boolean singleLine = false;

@@ -16,7 +16,6 @@ import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.*;
 
-import freemarker.ext.beans.BeansWrapper;
 import freemarker.log.Logger;
 import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;

@@ -23,7 +23,6 @@ import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.Scope;
 import freemarker.core.parser.ParseException;
-import freemarker.template.utility.CaptureOutput;
 import freemarker.template.utility.HtmlEscape;
 import freemarker.template.utility.NormalizeNewlines;
 import freemarker.template.utility.StandardCompress;
@@ -112,7 +111,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     }
     
     private void loadBuiltInSharedVariables() {
-        variables.put("capture_output", new CaptureOutput());
         variables.put("compress", StandardCompress.INSTANCE);
         variables.put("html_escape", new HtmlEscape());
         variables.put("normalize_newlines", new NormalizeNewlines());

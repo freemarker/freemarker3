@@ -59,9 +59,11 @@
      <delete file="src/freemarker/core/parser/TokenSource.java"/>
      <delete file="src/freemarker/core/parser/InvalidToken.java"/>
      <delete file="src/freemarker/core/parser/Token.java"/>
+     <delete file="src/freemarker/core/parser/Node.java"/>
      <delete file="src/freemarker/core/parser/NonTerminalCall.java"/>
      <delete file="src/freemarker/core/parser/ParseException.java"/>
      <delete dir="build"/>
+     <delete dir="src/freemarker/core/parser/ast"/>
      <delete file="freemarker.jar"/>
      <delete>
       <fileset dir="src/freemarker/testcase/reference" includes="*.out"/>

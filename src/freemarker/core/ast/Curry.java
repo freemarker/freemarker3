@@ -67,7 +67,7 @@ public class Curry extends ExpressionEvaluatingBuiltIn
      * @version $Id: $
      */
     static abstract class Operator implements TemplateModel {
-        abstract TemplateModel curry(ArgsList arguments, Environment env) throws TemplateException;
+        abstract TemplateModel curry(ArgsList arguments, Environment env);
     };
     
     /**
@@ -141,14 +141,13 @@ public class Curry extends ExpressionEvaluatingBuiltIn
         
         @Override
         Collection<String> getBogusArgs(Collection<String> names) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
     }
     
     private static void curryExplictParamList(ArgsList arguments, 
             Environment env, ParameterList originalParams, 
             ParameterList curriedParams, String curriedType, String curriedName) 
-    throws TemplateException
     {
         DefaultValueGenerator gen = arguments instanceof NamedArgsList 
             ? new NamedDefaultValueGenerator((NamedArgsList)arguments)
@@ -182,8 +181,7 @@ public class Curry extends ExpressionEvaluatingBuiltIn
         }
         
         @Override
-        public TemplateModel curry(ArgsList arguments, Environment env) throws TemplateException
-        {
+        public TemplateModel curry(ArgsList arguments, Environment env) {
             ParameterList originalParams = baseMacro.getParams();
             ParameterList curriedParams = new ParameterList();
             curriedParams.setCatchAll(originalParams.getCatchAll());
@@ -209,8 +207,7 @@ public class Curry extends ExpressionEvaluatingBuiltIn
         }
         
         @Override
-        public TemplateModel curry(ArgsList arguments, Environment env) throws TemplateException
-        {
+        public TemplateModel curry(ArgsList arguments, Environment env) {
             ParameterList curriedParams = new ParameterList();
             boolean hasOriginalParams = originalParams != null;
             if(!hasOriginalParams || originalParams.isCurryGenerated()) {
@@ -307,7 +304,7 @@ public class Curry extends ExpressionEvaluatingBuiltIn
         
         public void execute(Environment env, Map<String, TemplateModel> params,
                 TemplateModel[] loopVars, TemplateDirectiveBody body)
-                throws TemplateException, IOException
+                throws IOException
         {
             base.execute(env, params, loopVars, body);
         }

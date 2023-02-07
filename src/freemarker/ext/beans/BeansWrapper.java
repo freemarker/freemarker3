@@ -83,11 +83,12 @@ public class BeansWrapper implements ObjectWrapper
 
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     
-    private static final Set UNSAFE_METHODS = createUnsafeMethodsSet();
+    private static final Set<Method> UNSAFE_METHODS = createUnsafeMethodsSet();
     
     static final Object GENERIC_GET_KEY = new Object();
     private static final Object CONSTRUCTORS = new Object();
-    private static final Object ARGTYPES = new Object();
+    //private static final Object ARGTYPES = new Object();
+    private static final Map<AccessibleObject, Class<?>[]> ARGTYPES = new HashMap<>();
     
     /**
      * The default instance of BeansWrapper
@@ -98,7 +99,7 @@ public class BeansWrapper implements ObjectWrapper
     // for a specified class. Each key is a Class, each value is a hash map. In
     // that hash map, each key is a property/method name, each value is a
     // MethodDescriptor or a PropertyDescriptor assigned to that property/method.
-    private final Map<Class,Map> classCache = new ConcurrentHashMap<Class, Map>();
+    private final Map<Class<?>,Map> classCache = new ConcurrentHashMap<Class<?>, Map>();
     private Set<String> cachedClassNames = new HashSet<String>();
 
     private final ClassBasedModelFactory staticModels = new StaticModels(this);
@@ -669,32 +670,25 @@ public class BeansWrapper implements ObjectWrapper
         return CAN_NOT_UNWRAP;
     }
     
-    private static Number convertUnwrappedNumber(Class hint, Number number)
+    private static Number convertUnwrappedNumber(Class<?> hint, Number number)
     {
         if(hint == Integer.TYPE || hint == Integer.class) {
-            return number instanceof Integer ? (Integer)number : 
-                Integer.valueOf(number.intValue());
+            return number.intValue();
         }
         if(hint == Long.TYPE || hint == Long.class) {
-            return number instanceof Long ? (Long)number : 
-                Long.valueOf(number.longValue());
+            return number.longValue();
         }
         if(hint == Float.TYPE || hint == Float.class) {
-            return number instanceof Float ? (Float)number : 
-                Float.valueOf(number.floatValue());
+            return number.floatValue();
         }
-        if(hint == Double.TYPE 
-                || hint == Double.class) {
-            return number instanceof Double ? (Double)number : 
-                Double.valueOf(number.doubleValue());
+        if(hint == Double.TYPE || hint == Double.class) {
+            return number.doubleValue();
         }
         if(hint == Byte.TYPE || hint == Byte.class) {
-            return number instanceof Byte ? (Byte)number : 
-                Byte.valueOf(number.byteValue());
+            return number.byteValue();
         }
         if(hint == Short.TYPE || hint == Short.class) {
-            return number instanceof Short ? (Short)number : 
-                Short.valueOf(number.shortValue());
+            return number.shortValue();
         }
         if(hint == BigInteger.class) {
             return number instanceof BigInteger ? number : 
@@ -797,7 +791,7 @@ public class BeansWrapper implements ObjectWrapper
         return enumModels;
     }
 
-    public Object newInstance(Class clazz, List<TemplateModel> arguments)
+    public Object newInstance(Class<?> clazz, List<TemplateModel> arguments)
     throws
         TemplateModelException
     {
@@ -811,11 +805,11 @@ public class BeansWrapper implements ObjectWrapper
                 throw new TemplateModelException("Class " + clazz.getName() + 
                         " has no public constructors.");
             }
-            Constructor ctor = null;
+            Constructor<?> ctor = null;
             Object[] objargs;
             if(ctors instanceof SimpleMemberModel)
             {
-                SimpleMemberModel<Constructor> smm = (SimpleMemberModel<Constructor>)ctors;
+                SimpleMemberModel<Constructor<?>> smm = (SimpleMemberModel<Constructor<?>>)ctors;
                 ctor = smm.getMember();
                 objargs = smm.unwrapArguments(arguments, this);
             }
@@ -1026,24 +1020,17 @@ public class BeansWrapper implements ObjectWrapper
             }
         }
         Map<MethodSignature, List<Method>> accessibleMethods = discoverAccessibleMethods(clazz);
-        Method genericGet = getFirstAccessibleMethod(
-                MethodSignature.GET_STRING_SIGNATURE, accessibleMethods);
-        if(genericGet == null)
-        {
-            genericGet = getFirstAccessibleMethod(
-                    MethodSignature.GET_OBJECT_SIGNATURE, accessibleMethods);
+        Method genericGet = getFirstAccessibleMethod(MethodSignature.GET_STRING_SIGNATURE, accessibleMethods);
+        if(genericGet == null) {
+            genericGet = getFirstAccessibleMethod(MethodSignature.GET_OBJECT_SIGNATURE, accessibleMethods);
         }
-        if(genericGet != null)
-        {
+        if(genericGet != null) {
             classMap.put(GENERIC_GET_KEY, genericGet);
         }
-        if(exposureLevel == EXPOSE_NOTHING)
-        {
+        if(exposureLevel == EXPOSE_NOTHING) {
             return classMap;
         }
-        
-        try
-        {
+        try {
             BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
             PropertyDescriptor[] pda = beanInfo.getPropertyDescriptors();
             MethodDescriptor[] mda = beanInfo.getMethodDescriptors();
@@ -1150,10 +1137,10 @@ public class BeansWrapper implements ObjectWrapper
         }
     }
 
-    private static Map<AccessibleObject, Class[]> getArgTypes(Map classMap) {
-        Map<AccessibleObject, Class[]> argTypes = (Map<AccessibleObject, Class[]>)classMap.get(ARGTYPES);
+    private static Map<AccessibleObject, Class<?>[]> getArgTypes(Map classMap) {
+        Map<AccessibleObject, Class<?>[]> argTypes = (Map<AccessibleObject, Class<?>[]>)classMap.get(ARGTYPES);
         if(argTypes == null) {
-            argTypes = new HashMap<AccessibleObject, Class[]>();
+            argTypes = new HashMap<AccessibleObject, Class<?>[]>();
             classMap.put(ARGTYPES, argTypes);
         }
         return argTypes;
@@ -1202,23 +1189,19 @@ public class BeansWrapper implements ObjectWrapper
      * interfaces (if they exist). Basically upcasts every method to the 
      * nearest accessible method.
      */
-    private static Map<MethodSignature, List<Method>> discoverAccessibleMethods(Class clazz)
+    private static Map<MethodSignature, List<Method>> discoverAccessibleMethods(Class<?> clazz)
     {
-        Map<MethodSignature, List<Method>> map = new HashMap<MethodSignature, List<Method>>();
+        Map<MethodSignature, List<Method>> map = new HashMap<>();
         discoverAccessibleMethods(clazz, map);
         return map;
     }
     
-    private static void discoverAccessibleMethods(Class clazz, Map<MethodSignature, List<Method>> map)
+    private static void discoverAccessibleMethods(Class<?> clazz, Map<MethodSignature, List<Method>> map)
     {
-        if(Modifier.isPublic(clazz.getModifiers()))
-        {
-            try
-            {
-                Method[] methods = clazz.getMethods();
-                for(int i = 0; i < methods.length; i++)
-                {
-                    Method method = methods[i];
+        if(Modifier.isPublic(clazz.getModifiers())) {
+            try {
+                for(Method method : clazz.getMethods()) {
+//                    if (method.isDefault()) System.err.println("KILROY!!! " + clazz.getSimpleName() + ":" + method.getName());
                     MethodSignature sig = new MethodSignature(method);
                     // Contrary to intuition, a class can actually have several 
                     // different methods with same signature *but* different
@@ -1249,16 +1232,11 @@ public class BeansWrapper implements ObjectWrapper
                 // methods
             }
         }
-
-        Class[] interfaces = clazz.getInterfaces();
-        for(int i = 0; i < interfaces.length; i++)
-        {
-            discoverAccessibleMethods(interfaces[i], map);
+        for (Class<?> inter : clazz.getInterfaces()) {
+            discoverAccessibleMethods(inter, map);
         }
-        Class superclass = clazz.getSuperclass();
-        if(superclass != null)
-        {
-            discoverAccessibleMethods(superclass, map);
+        if(clazz.getSuperclass() != null) {
+            discoverAccessibleMethods(clazz.getSuperclass(), map);
         }
     }
 
@@ -1270,9 +1248,9 @@ public class BeansWrapper implements ObjectWrapper
             new MethodSignature("get", new Class[] { OBJECT_CLASS });
 
         private final String name;
-        private final Class[] args;
+        private final Class<?>[] args;
         
-        private MethodSignature(String name, Class[] args)
+        private MethodSignature(String name, Class<?>[] args)
         {
             this.name = name;
             this.args = args;
@@ -1299,7 +1277,7 @@ public class BeansWrapper implements ObjectWrapper
         }
     }
     
-    private static final Set createUnsafeMethodsSet()
+    private static final Set<Method> createUnsafeMethodsSet()
     {
         Properties props = new Properties();
         InputStream in = BeansWrapper.class.getResourceAsStream("unsafeMethods.txt");
@@ -1317,8 +1295,8 @@ public class BeansWrapper implements ObjectWrapper
                     in.close();
                 }
                 Set<Method> set = new HashSet<Method>(props.size() * 4/3, .75f);
-                Map primClasses = createPrimitiveClassesMap();
-                for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();)
+                Map<String,Class<?>> primClasses = createPrimitiveClassesMap();
+                for (Iterator<Object> iterator = props.keySet().iterator(); iterator.hasNext();)
                 {
                     methodSpec = (String) iterator.next();
                     try {
@@ -1342,26 +1320,26 @@ public class BeansWrapper implements ObjectWrapper
                 throw new RuntimeException("Could not load unsafe method " + methodSpec + " " + e.getClass().getName() + " " + e.getMessage());
             }
         }
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
                                                                            
-    private static Method parseMethodSpec(String methodSpec, Map primClasses)
+    private static Method parseMethodSpec(String methodSpec, Map<String,Class<?>> primClasses)
     throws
         ClassNotFoundException,
         NoSuchMethodException
     {
         int brace = methodSpec.indexOf('(');
         int dot = methodSpec.lastIndexOf('.', brace);
-        Class clazz = Class.forName(methodSpec.substring(0, dot));
+        Class<?> clazz = Class.forName(methodSpec.substring(0, dot));
         String methodName = methodSpec.substring(dot + 1, brace);
         String argSpec = methodSpec.substring(brace + 1, methodSpec.length() - 1);
         StringTokenizer tok = new StringTokenizer(argSpec, ",");
         int argcount = tok.countTokens();
-        Class[] argTypes = new Class[argcount];
+        Class<?>[] argTypes = new Class<?>[argcount];
         for (int i = 0; i < argcount; i++)
         {
             String argClassName = tok.nextToken();
-            argTypes[i] = (Class)primClasses.get(argClassName);
+            argTypes[i] = (Class<?>)primClasses.get(argClassName);
             if(argTypes[i] == null)
             {
                 argTypes[i] = Class.forName(argClassName);
@@ -1370,9 +1348,9 @@ public class BeansWrapper implements ObjectWrapper
         return clazz.getMethod(methodName, argTypes);
     }
 
-    private static Map createPrimitiveClassesMap()
+    private static Map<String,Class<?>> createPrimitiveClassesMap()
     {
-        Map<String, Class> map = new HashMap<String, Class>();
+        Map<String, Class<?>> map = new HashMap<>();
         map.put("boolean", Boolean.TYPE);
         map.put("byte", Byte.TYPE);
         map.put("char", Character.TYPE);
@@ -1389,7 +1367,7 @@ public class BeansWrapper implements ObjectWrapper
      * Converts any {@link BigDecimal}s in the passed array to the type of
      * the corresponding formal argument of the method.
      */
-    public static void coerceBigDecimals(Class[] formalTypes, Object[] args)
+    public static void coerceBigDecimals(Class<?>[] formalTypes, Object[] args)
     {
         int typeLen = formalTypes.length;
         int argsLen = args.length;
@@ -1401,7 +1379,7 @@ public class BeansWrapper implements ObjectWrapper
             }
         }
         if(argsLen > typeLen) {
-            Class varArgType = formalTypes[typeLen - 1];
+            Class<?> varArgType = formalTypes[typeLen - 1];
             for(int i = typeLen; i < argsLen; ++i) {
                 Object arg = args[i];
                 if(arg instanceof BigDecimal) {

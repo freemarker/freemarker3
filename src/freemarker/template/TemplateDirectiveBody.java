@@ -23,5 +23,5 @@ public interface TemplateDirectiveBody
      * might be after multiple renderings).
      * @param out the writer to write the output to.
      */
-    public void render(Writer out) throws TemplateException, IOException;
+    public void render(Writer out) throws IOException;
 }

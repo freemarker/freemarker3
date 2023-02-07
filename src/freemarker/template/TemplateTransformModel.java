@@ -67,5 +67,5 @@ public interface TemplateTransformModel extends TemplateModel {
       * transformation body.
       */
      Writer getWriter(Writer out, Map<String, TemplateModel> args) 
-         throws TemplateModelException, IOException;
+         throws IOException;
 }

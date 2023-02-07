@@ -37,7 +37,7 @@ class SimpleTagDirectiveModel extends JspTagModelBase<SimpleTag> implements Temp
 
     public void execute(Environment env, Map<String, TemplateModel> args, 
             TemplateModel[] outArgs, final TemplateDirectiveBody body) 
-    throws TemplateException, IOException {
+    throws IOException {
         try {
             SimpleTag tag = getTagInstance();
             final FreeMarkerPageContext pageContext = PageContextFactory.getCurrentPageContext();
