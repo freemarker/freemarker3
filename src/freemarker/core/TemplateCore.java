@@ -30,37 +30,15 @@ public abstract class TemplateCore extends Configurable
     /**
      * Called by code internally to maintain
      * a table of macros
-     *  @throws SecurityException if the macro with this name already exists,
-     *  getConfiguration().isSecure() returns true, there is a security manager
-     *  in the JVM, and the caller of this method does not posess the 
-     *  "modifyTemplate" FreeMarker permission.
      */
     public void addMacro(Macro macro) {
         String macroName = macro.getName();
         synchronized(macros) {
-            if(macros.containsKey(macroName)) {
-                checkModifyTemplate();
-            }
             macros.put(macroName, macro);
         }
     }
 
-    protected static void checkModifyTemplate() {
-    }
-    
-    /**
-     *  @throws SecurityException if the getConfiguration().isSecure()
-     *  returns true, there is a security manager in the JVM, and the caller
-     *  of this method does not posess the "modifyTemplate" FreeMarker 
-     *  permission (since both the retrieved map and the macros in it are 
-     *  mutable).
-     */
     public Map<String,Macro> getMacros() {
-        checkModifyTemplate();
-        return getMacrosNoCheck();
-    }
-    
-    Map<String,Macro> getMacrosNoCheck() {
         return macros;
     }
     

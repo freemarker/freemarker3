@@ -643,13 +643,8 @@ public class Template extends TemplateCore {
 
     /**
      *  @return the root TemplateElement object.
-     *  @throws SecurityException if the getConfiguration().isSecure()
-     *  returns true, there is a security manager in the JVM, and the caller
-     *  of this method does not posess the "modifyTemplate" FreeMarker 
-     *  permission (since the retrieved root tree node is mutable).
      */
     public TemplateElement getRootTreeNode() {
-        checkModifyTemplate();
         return getRootElement();
     }
 
@@ -661,7 +656,6 @@ public class Template extends TemplateCore {
      */
     @Override
     public void setParent(Configurable parent) {
-        checkModifyTemplate();
         super.setParent(parent);
     }
 
@@ -759,7 +753,6 @@ public class Template extends TemplateCore {
      * permission.
      */
     public List<TemplateElement> containingElements(int column, int line) {
-        checkModifyTemplate();
         ArrayList<TemplateElement> elements = new ArrayList<TemplateElement>();
         TemplateElement element = getRootElement();
 mainloop:

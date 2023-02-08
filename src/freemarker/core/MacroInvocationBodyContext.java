@@ -3,7 +3,6 @@ package freemarker.core;
 import java.util.*;
 
 import freemarker.core.ast.*;
-import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 
 /**

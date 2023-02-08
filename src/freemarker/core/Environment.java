@@ -372,8 +372,7 @@ public final class Environment extends Configurable implements Scope {
     /**
      * "visit" an IteratorBlock
      */
-    public void process(LoopContext ictxt) throws TemplateException,
-    IOException {
+    public void process(LoopContext ictxt) throws IOException {
         Scope prevScope = currentScope;
         currentScope = ictxt;
         try {
@@ -1638,7 +1637,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     void importMacros(Template template) {
-          for (Macro macro : ((TemplateCore)template).getMacrosNoCheck().values()) {
+          for (Macro macro : ((TemplateCore)template).getMacros().values()) {
         	  visitMacroDef(macro);
         }
     }

@@ -2,7 +2,6 @@ package freemarker.core;
 
 import freemarker.template.Template;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
 
 /**
  * An abstract scope with no variable storage mechanism of its own; only 

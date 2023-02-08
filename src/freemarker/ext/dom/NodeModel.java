@@ -4,11 +4,7 @@
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -76,8 +72,6 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
 
 
     static private DocumentBuilderFactory docBuilderFactory;
-    
-//    static private Map xpathSupportMap = Collections.synchronizedMap(new WeakHashMap());
     
     /**
      * The W3C DOM Node being wrapped.
