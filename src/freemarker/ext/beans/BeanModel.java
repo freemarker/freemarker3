@@ -58,7 +58,7 @@ implements
     // Cached template models that implement member properties and methods for this
     // instance. Keys are FeatureDescriptor instances (from classCache values),
     // values are either ReflectionMethodModels/ReflectionScalarModels
-    private HashMap<Object,TemplateModel> memberMap;
+    private HashMap<Object,Object> memberMap;
 
     /**
      * Creates a new model that wraps the specified object. Note that there are
@@ -109,13 +109,13 @@ implements
      * @throws TemplateModelException if there was no property nor method nor
      * a generic <tt>get</tt> method to invoke.
      */
-    public TemplateModel get(String key)
+    public Object get(String key)
         throws
         TemplateModelException
     {
         Class clazz = object.getClass();
         Map classInfo = wrapper.getClassKeyMap(clazz);
-        TemplateModel retval = null;
+        Object retval = null;
         
         try
         {
@@ -131,7 +131,7 @@ implements
             }
             else
             {
-                TemplateModel model = invokeGenericGet(classInfo, key);
+                Object model = invokeGenericGet(classInfo, key);
                 if(model != null && model != JAVA_NULL)
                 {
                     return model;
@@ -176,7 +176,7 @@ implements
     	return wrapper.getClassKeyMap(object.getClass()).get(BeansWrapper.GENERIC_GET_KEY) != null;
     }
     
-    private TemplateModel invokeThroughDescriptor(Object desc, Map classInfo)
+    private Object invokeThroughDescriptor(Object desc, Map classInfo)
         throws
         IllegalAccessException,
         InvocationTargetException,
@@ -184,7 +184,7 @@ implements
     {
         // See if this particular instance has a cached implementation
         // for the requested feature descriptor
-        TemplateModel member;
+        Object member;
         synchronized(this){
             if(memberMap != null) {
                 member = memberMap.get(desc);
@@ -197,7 +197,7 @@ implements
         if(member != null)
             return member;
 
-        TemplateModel retval = null;
+        Object retval = null;
         if(desc instanceof IndexedPropertyDescriptor)
         {
             Method readMethod = 
@@ -233,7 +233,7 @@ implements
         if(member != null) {
             synchronized(this) {
                 if(memberMap == null) {
-                    memberMap = new HashMap<Object,TemplateModel>();
+                    memberMap = new HashMap<Object,Object>();
                 }
                 memberMap.put(desc, member);
             }
@@ -241,7 +241,7 @@ implements
         return retval;
     }
 
-    protected TemplateModel invokeGenericGet(Map keyMap, String key)
+    protected Object invokeGenericGet(Map keyMap, String key)
     throws
         IllegalAccessException,
         InvocationTargetException,
@@ -254,7 +254,7 @@ implements
         return wrapper.invokeMethod(object, genericGet, new Object[] { key });
     }
 
-    protected TemplateModel wrap(Object obj)
+    protected Object wrap(Object obj)
     throws TemplateModelException
     {
         return wrapper.getOuterIdentity().wrap(obj);
@@ -305,8 +305,8 @@ implements
 
     public TemplateCollectionModel values() throws TemplateModelException
     {
-        List<TemplateModel> values = new ArrayList<TemplateModel>(size());
-        Iterator<TemplateModel> it = keys().iterator();
+        List<Object> values = new ArrayList<>(size());
+        Iterator<Object> it = keys().iterator();
         while (it.hasNext()) {
             String key = ((TemplateScalarModel)it.next()).getAsString();
             values.add(get(key));

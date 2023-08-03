@@ -72,7 +72,7 @@ public class AssignmentInstruction extends TemplateElement {
     	for (int i=0; i< varNames.size(); i++) {
     		String varname = varNames.get(i);
     		Expression valueExp = values.get(i);
-    		TemplateModel value = valueExp.getAsTemplateModel(env);
+    		Object value = valueExp.getAsTemplateModel(env);
     		assertIsDefined(value, valueExp, env);
     		if (scope != null) {
     			scope.put(varname, value);

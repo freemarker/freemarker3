@@ -17,13 +17,13 @@ public interface Scope extends TemplateHashModelEx {
      * Set a variable in this scope. This 
      * will typically only be used internally by the FreeMarker engine.
      */
-    void put(String key, TemplateModel value);
+    void put(String key, Object value);
 
     /**
      * Removes a variable in this scope.
      * This will typically only be used by FreeMarker engine internals 
      */
-    TemplateModel remove(String key);
+    Object remove(String key);
 
     /**
      * @return the Environment object associated with this Scope.
@@ -54,7 +54,7 @@ public interface Scope extends TemplateHashModelEx {
      * falling back to the enclosing Scope if it is not
      * defined in this one.
      */
-    TemplateModel resolveVariable(String name) throws TemplateModelException;
+    Object resolveVariable(String name);
 
     /**
      * Returns the names of variables directly managed by this scope (i.e. it 

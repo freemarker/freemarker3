@@ -87,9 +87,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
 
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) throws TemplateException
-    {
+    public Object get(Environment env, BuiltInExpression caller, Object model) {
         try {
             String string = ((TemplateScalarModel) model).getAsString();
             return apply(string, env, caller);
@@ -100,7 +98,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    public abstract TemplateModel apply(final String string, final Environment env, final BuiltInExpression callingExpression) throws TemplateException;
+    public abstract Object apply(final String string, final Environment env, final BuiltInExpression callingExpression);
     
     public static class Length extends StringFunctions {
         @Override
@@ -118,7 +116,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class EndsWith extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new StartsOrEndsWithMethod(string, true);
         }
     }
@@ -326,7 +324,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         String input;
         final boolean matches;
         TemplateSequenceModel groups;
-        private ArrayList<TemplateModel> data;
+        private ArrayList<Object> data;
 
         RegexMatchModel(Matcher matcher, String input) {
             this.matcher = matcher;
@@ -338,7 +336,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return matches;
         }
 
-        public TemplateModel get(int i) {
+        public Object get(int i) {
             if (data == null) initSequence();
             return data.get(i);
         }
@@ -349,8 +347,8 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         private void initSequence() {
-            data = new ArrayList<TemplateModel>();
-            Iterator<TemplateModel> it = iterator();
+            data = new ArrayList<Object>();
+            Iterator<Object> it = iterator();
             while (it.hasNext()) {
                 data.add(it.next());
             }
@@ -380,16 +378,16 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return groups;
         }
 
-        public Iterator<TemplateModel> iterator() {
+        public Iterator<Object> iterator() {
             matcher.reset();
-            return new Iterator<TemplateModel>() {
+            return new Iterator<Object>() {
                 boolean hasFindInfo = matcher.find();
 
                 public boolean hasNext() {
                     return hasFindInfo;
                 }
 
-                public TemplateModel next() {
+                public Object next() {
                     if (!hasNext()) throw new TemplateModelException("No more matches");
                     Match result = new Match();
                     hasFindInfo = matcher.find();

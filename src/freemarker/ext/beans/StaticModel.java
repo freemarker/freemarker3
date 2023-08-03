@@ -41,7 +41,7 @@ final class StaticModel implements TemplateHashModelEx
      * Returns the field or method named by the <tt>key</tt>
      * parameter.
      */
-    public TemplateModel get(String key) throws TemplateModelException
+    public Object get(String key) throws TemplateModelException
     {
         Object model = map.get(key);
         // Simple method, overloaded method or final field -- these have cached 

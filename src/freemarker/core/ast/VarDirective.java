@@ -21,7 +21,7 @@ public class VarDirective extends TemplateElement {
                 }
             } 
             else {
-                TemplateModel tm = exp.getAsTemplateModel(env);
+                Object tm = exp.getAsTemplateModel(env);
                 assertIsDefined(tm, exp, env);
                 scope.put(varname, tm);
             }

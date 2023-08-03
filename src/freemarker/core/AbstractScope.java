@@ -39,9 +39,9 @@ public abstract class AbstractScope implements Scope
         return enclosingScope.getEnvironment();
     }
 
-    public final TemplateModel resolveVariable(String key)
+    public final Object resolveVariable(String key)
             {
-    	TemplateModel result = get(key);
+    	Object result = get(key);
     	if (result == null) {
     		return enclosingScope.resolveVariable(key);
     	}

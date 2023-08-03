@@ -55,7 +55,7 @@ implements TemplateCollectionModel, Serializable {
      * <tt>TemplateModelException</tt> when you try to call their methods, since the wrapped <tt>Iterator</tt>
      * can't return the first element.
      */
-    public Iterator<TemplateModel> iterator() {
+    public Iterator<Object> iterator() {
         if (iterator != null) {
             return new SimpleTemplateModelIterator(iterator, true);
         } else {
@@ -71,7 +71,7 @@ implements TemplateCollectionModel, Serializable {
      * SimpleTemplateModelIterator instance can wrap the same Iterator instance),
      * but the first thread which uses the shared Iterator will monopolize that.
      */
-    private class SimpleTemplateModelIterator implements Iterator<TemplateModel> {
+    private class SimpleTemplateModelIterator implements Iterator<Object> {
         
         private Iterator iterator;
         private boolean iteratorShared;
@@ -81,7 +81,7 @@ implements TemplateCollectionModel, Serializable {
             this.iteratorShared = iteratorShared;
         }
 
-        public TemplateModel next() {
+        public Object next() {
             if (iteratorShared) makeIteratorDirty();
             
             if (!iterator.hasNext()) {
@@ -89,11 +89,7 @@ implements TemplateCollectionModel, Serializable {
             }
             
             Object value  = iterator.next();
-            if (value instanceof TemplateModel) {
-                return (TemplateModel) value;
-            } else {
-                return wrap(value);
-            }
+            return wrap(value);
         }
 
         public boolean hasNext() {

@@ -24,8 +24,8 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     }
     
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-        TemplateModel model) 
+    public Object get(Environment env, BuiltInExpression caller,
+        Object model) 
     {
         if (model instanceof TemplateNumberModel) {
             return new NumberFormatter(EvaluationUtil.getNumber(model, caller.getTarget(), env), env);

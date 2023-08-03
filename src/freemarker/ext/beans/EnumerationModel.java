@@ -24,7 +24,7 @@ public class EnumerationModel
 extends
     BeanModel
 implements
-    Iterator<TemplateModel>,
+    Iterator<Object>,
     TemplateCollectionModel
 {
     private boolean accessed = false;
@@ -46,7 +46,7 @@ implements
      * This allows the enumeration to be used in a <tt>&lt;foreach></tt> block.
      * @return "this"
      */
-    public Iterator<TemplateModel> iterator() throws TemplateModelException
+    public Iterator<Object> iterator() throws TemplateModelException
     {
         synchronized(this) {
             if(accessed) {
@@ -70,10 +70,7 @@ implements
     /**
      * Calls underlying {@link Enumeration#nextElement()} and wraps the result.
      */
-    public TemplateModel next()
-    throws
-        TemplateModelException
-    {
+    public Object next() {
         try {
             return wrap(((Enumeration)object).nextElement());
         }

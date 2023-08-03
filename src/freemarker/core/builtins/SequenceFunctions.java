@@ -38,8 +38,8 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
 
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) 
+    public Object get(Environment env, BuiltInExpression caller,
+            Object model) 
     {
         if (!(model instanceof TemplateSequenceModel)) {
             throw TemplateNode.invalidTypeException(model,
@@ -48,18 +48,18 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         return apply((TemplateSequenceModel) model);
     }
     
-    public abstract TemplateModel apply(TemplateSequenceModel model) throws TemplateException;
+    public abstract Object apply(TemplateSequenceModel model) throws TemplateException;
     
     public static class First extends SequenceFunctions {
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) {
+        public Object apply(TemplateSequenceModel sequence) {
             return sequence.size() > 0 ? sequence.get(0) : null;
         }
     }
 
     public static class Last extends SequenceFunctions {
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) {
+        public Object apply(TemplateSequenceModel sequence) {
             return sequence.size() > 0 ? sequence.get(sequence.size() - 1) : null;
         }
     }
@@ -137,7 +137,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             return seq.size();
         }
 
-        public TemplateModel get(int index) {
+        public Object get(int index) {
             return seq.get(seq.size() - 1 - index);
         }
     }
@@ -193,7 +193,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             numberOfChunks = (wrappedTsm.size() + chunkSize - 1) / chunkSize;
         }
 
-        public TemplateModel get(final int chunkIndex)
+        public Object get(final int chunkIndex)
         {
             if (chunkIndex >= numberOfChunks) {
                 return null;
@@ -203,7 +203,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
                 private final int baseIndex = chunkIndex * chunkSize;
 
-                public TemplateModel get(int relIndex)
+                public Object get(int relIndex)
                 {
                     int absIndex = baseIndex + relIndex;
                     if (absIndex < wrappedTsm.size()) {

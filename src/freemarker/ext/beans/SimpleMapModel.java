@@ -45,7 +45,7 @@ WrapperTemplateModel
         this.map = map;
     }
 
-    public TemplateModel get(String key) {
+    public Object get(String key) {
         Object val = map.get(key);
         if(val == null) {
             if(key.length() == 1) {

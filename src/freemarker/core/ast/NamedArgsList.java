@@ -31,14 +31,14 @@ public class NamedArgsList extends ArgsList {
         return (Map<String,Expression>)namedArgs.clone();
     }
 
-    Map<String, TemplateModel> getParameterMap(TemplateModel tm, Environment env) {
-        Map<String, TemplateModel> result = null; 
+    Map<String, Object> getParameterMap(Object tm, Environment env) {
+        Map<String, Object> result = null; 
         ParameterList annotatedParameterList = ArgsList.getParameterList(tm);
         if (annotatedParameterList == null) {
-            result = new HashMap<String, TemplateModel>();
+            result = new HashMap<String, Object>();
             for (String paramName : namedArgs.keySet()) {
                 Expression exp = namedArgs.get(paramName);
-                TemplateModel value = exp.getAsTemplateModel(env);
+                Object value = exp.getAsTemplateModel(env);
                 TemplateNode.assertIsDefined(value, exp, env);
                 result.put(paramName, value);
             }
@@ -49,19 +49,19 @@ public class NamedArgsList extends ArgsList {
         return result;
     }
 
-    List getParameterSequence(TemplateModel target, Environment env) {
+    List getParameterSequence(Object target, Environment env) {
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             String msg = "Error at: " + getStartLocation() 
             + "\nCannot invoke method " + target + " with a key=value parameter list because it is not annotated.";
             throw new TemplateException(msg, env);
         }
-        List<TemplateModel> result = annotatedParameterList.getParameterSequence(this, env);
+        List<Object> result = annotatedParameterList.getParameterSequence(this, env);
         if ((target instanceof TemplateMethodModel) && !(target instanceof TemplateMethodModelEx)) {
             List<String> strings = new ArrayList<String>();
             List<String> paramNames = annotatedParameterList.getParamNames();
             for(int i = 0; i < result.size(); ++i) {
-                TemplateModel value = result.get(i);
+                Object value = result.get(i);
                 Expression exp;
                 String paramName = paramNames.get(i);
                 exp = namedArgs.get(paramName);

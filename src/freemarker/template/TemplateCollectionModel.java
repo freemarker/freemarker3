@@ -21,5 +21,5 @@ public interface TemplateCollectionModel extends TemplateModel {
      * Retrieves a template model iterator that is used to iterate over
      * the elements in this collection.
      */
-    public Iterator<TemplateModel> iterator();
+    public Iterator<Object> iterator();
 }

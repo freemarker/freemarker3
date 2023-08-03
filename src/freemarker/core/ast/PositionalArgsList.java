@@ -19,9 +19,9 @@ public class PositionalArgsList extends ArgsList {
         exp.parent = this;
     }
 
-    Map<String, TemplateModel> getParameterMap(TemplateModel target, Environment env)
+    Map<String, Object> getParameterMap(Object target, Environment env)
     {
-        Map<String, TemplateModel> result = new HashMap<String, TemplateModel>();
+        Map<String, Object> result = new HashMap<String, Object>();
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             if (!args.isEmpty()) {
@@ -34,7 +34,7 @@ public class PositionalArgsList extends ArgsList {
         return result;
     }
 
-    List getParameterSequence(TemplateModel target, Environment env) {
+    List getParameterSequence(Object target, Environment env) {
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             return target instanceof TemplateMethodModelEx ? 
@@ -46,11 +46,11 @@ public class PositionalArgsList extends ArgsList {
                                                 getValueList(env));
         }
         // TODO: Attila's lazy evaluation machinery here as well, I guess FWIW...
-        List<TemplateModel> result = annotatedParameterList.getParameterSequence(this, env);
+        List<Object> result = annotatedParameterList.getParameterSequence(this, env);
         if ((target instanceof TemplateMethodModel) && !(target instanceof TemplateMethodModelEx)) {
             List<String> strings = new ArrayList<String>();
             for(int i = 0; i < result.size(); ++i) {
-                TemplateModel value = result.get(i);
+                Object value = result.get(i);
                 Expression exp;
                 if(i < args.size()) {
                     exp = args.get(i);
@@ -78,9 +78,9 @@ public class PositionalArgsList extends ArgsList {
         }
     }
 
-    public TemplateModel getValueAt(int i, Environment env) {
+    public Object getValueAt(int i, Environment env) {
         Expression exp = args.get(i);
-        TemplateModel value = exp.getAsTemplateModel(env);
+        Object value = exp.getAsTemplateModel(env);
         TemplateNode.assertIsDefined(value, exp, env);
         return value;
     }

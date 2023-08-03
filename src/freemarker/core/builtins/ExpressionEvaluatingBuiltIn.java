@@ -2,8 +2,6 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 
 /**
  * @author Attila Szegedi
@@ -12,11 +10,11 @@ import freemarker.template.TemplateModel;
 public abstract class ExpressionEvaluatingBuiltIn extends BuiltIn {
 
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller) 
+    public Object get(Environment env, BuiltInExpression caller) 
     {
         return get(env, caller, caller.getTarget().getAsTemplateModel(env));
     }
     
-    public abstract TemplateModel get(Environment env, BuiltInExpression caller, 
-            TemplateModel model) throws TemplateException;
+    public abstract Object get(Environment env, BuiltInExpression caller, 
+            Object model);
 }

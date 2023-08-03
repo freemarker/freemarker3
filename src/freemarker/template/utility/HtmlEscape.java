@@ -41,7 +41,7 @@ public class HtmlEscape implements TemplateTransformModel, TemplateDirectiveMode
     private static final char[] AMP = "&amp;".toCharArray();
     private static final char[] QUOT = "&quot;".toCharArray();
     
-    public void execute(Environment env, Map<String, TemplateModel> args, TemplateModel[] bodyVars, TemplateDirectiveBody body) throws IOException {
+    public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) throws IOException {
     	body.render(getWriter(env.getOut(), args));
     }
 

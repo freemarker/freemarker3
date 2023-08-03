@@ -17,11 +17,11 @@ import freemarker.template.TemplateModel;
  */
 public class NamedParameterListScope extends AbstractScope {
     private final List<String> paramNames;
-    private final List<TemplateModel> paramValues;
+    private final List<Object> paramValues;
     private final boolean readOnly;
     
     public NamedParameterListScope(Scope enclosingScope, 
-            List<String> paramNames, List<TemplateModel> paramValues, boolean
+            List<String> paramNames, List<Object> paramValues, boolean
             readOnly) {
         super(enclosingScope);
         this.paramNames = paramNames;
@@ -37,7 +37,7 @@ public class NamedParameterListScope extends AbstractScope {
         return paramNames;
     }
 
-    public void put(String key, TemplateModel value) {
+    public void put(String key, Object value) {
         if(readOnly) {
             throw new UnsupportedOperationException();
         }
@@ -79,9 +79,9 @@ public class NamedParameterListScope extends AbstractScope {
 
     public TemplateCollectionModel values()  {
         int size = Math.min(paramNames.size(), paramValues.size());
-        List<TemplateModel> nonNullValues = new ArrayList<TemplateModel>(size);
+        List<Object> nonNullValues = new ArrayList<>(size);
         for(int i = 0; i < size; ++i) {
-            TemplateModel value = paramValues.get(i);
+            Object value = paramValues.get(i);
             if(value != null) {
                 nonNullValues.add(value);
             }
@@ -89,7 +89,7 @@ public class NamedParameterListScope extends AbstractScope {
         return new SimpleCollection(nonNullValues);
     }
 
-    public TemplateModel get(String key) {
+    public Object get(String key) {
         int i = paramNames.indexOf(key);
         return i != -1 && i < paramValues.size() ? paramValues.get(i) : null;
     }

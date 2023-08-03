@@ -79,7 +79,7 @@ public class BlockAssignment extends TemplateElement {
         	return getWriter(out, (Map) null);
         }
         
-        public Writer getWriter(Writer out, Map<String, TemplateModel> args) {
+        public Writer getWriter(Writer out, Map<String, Object> args) {
             return new StringWriter() {
                 public void close() {
                 	capturedText = this.toString();

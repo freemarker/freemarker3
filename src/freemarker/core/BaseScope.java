@@ -11,21 +11,21 @@ import freemarker.template.*;
  */
 public class BaseScope extends AbstractScope {
 
-    private HashMap<String,TemplateModel> variables = new HashMap<String,TemplateModel>();
+    private HashMap<String,Object> variables = new HashMap<>();
 
     BaseScope(Scope enclosingScope) {
         super(enclosingScope);
     }
 
-    public void put(String key, TemplateModel value) {
+    public void put(String key, Object value) {
         variables.put(key, value);
     }
 
-    public TemplateModel remove(String key) {
+    public Object remove(String key) {
         return variables.remove(key);
     }
 
-    public TemplateModel get(String key) { 
+    public Object get(String key) { 
         return variables.get(key);
     }
 

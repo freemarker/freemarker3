@@ -9,7 +9,6 @@ import java.util.Map;
 import freemarker.core.Environment;
 import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateTransformModel;
 
 /**
@@ -57,8 +56,8 @@ public class UnifiedCall extends TemplateElement {
     	}
     }
 
-    public void execute(Environment env) throws TemplateException, IOException {
-        TemplateModel tm = nameExp.getAsTemplateModel(env);
+    public void execute(Environment env) throws IOException {
+        Object tm = nameExp.getAsTemplateModel(env);
         if (tm == Macro.DO_NOTHING_MACRO) return; // shortcut here.
         if (tm instanceof Macro) {
             Macro macro = (Macro) tm;
@@ -70,10 +69,10 @@ public class UnifiedCall extends TemplateElement {
             env.render(macro, args, bodyParameters, nestedBlock);
         }
         else if (tm instanceof TemplateDirectiveModel) {
-            Map<String, TemplateModel> argMap
+            Map<String, Object> argMap
                     = args != null
                             ? args.getParameterMap(tm, env)
-                            : new HashMap<String, TemplateModel>();
+                            : new HashMap<String, Object>();
             List<String> paramNames;
             if(bodyParameters == null) {
                 paramNames = Collections.emptyList();
@@ -84,10 +83,10 @@ public class UnifiedCall extends TemplateElement {
             env.render(nestedBlock, (TemplateDirectiveModel) tm, argMap, paramNames);
         }
         else if (tm instanceof TemplateTransformModel) {
-            Map<String, TemplateModel> argMap
+            Map<String, Object> argMap
                     = args != null
                             ? args.getParameterMap(tm, env)
-                            : new HashMap<String, TemplateModel>();
+                            : new HashMap<String, Object>();
             env.render(nestedBlock, (TemplateTransformModel) tm, argMap);
         }
         else {

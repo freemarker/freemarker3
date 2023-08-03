@@ -28,12 +28,12 @@ public class VisitNode extends TemplateElement {
     }
 
     public void execute(Environment env) throws IOException, TemplateException {
-        TemplateModel node = targetNode.getAsTemplateModel(env);
+        Object node = targetNode.getAsTemplateModel(env);
         assertNonNull(node, targetNode, env);
         if (!(node instanceof TemplateNodeModel)) {
             throw new TemplateException("Expecting an XML node here", env);
         }
-        TemplateModel nss = namespaces == null ? null : namespaces.getAsTemplateModel(env);
+        Object nss = namespaces == null ? null : namespaces.getAsTemplateModel(env);
         if (namespaces instanceof StringLiteral) {
             nss = env.importLib(((TemplateScalarModel) nss).getAsString(), null);
         }

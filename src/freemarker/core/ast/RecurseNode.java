@@ -27,8 +27,8 @@ public class RecurseNode extends TemplateElement {
     }
 
     public void execute(Environment env) throws IOException, TemplateException {
-        TemplateModel node = targetNode == null ? null : targetNode.getAsTemplateModel(env);
-        TemplateModel nss = namespaces == null ? null : namespaces.getAsTemplateModel(env);
+        Object node = targetNode == null ? null : targetNode.getAsTemplateModel(env);
+        Object nss = namespaces == null ? null : namespaces.getAsTemplateModel(env);
         if (namespaces instanceof StringLiteral) {
             nss = env.importLib(((TemplateScalarModel) nss).getAsString(), null);
         }

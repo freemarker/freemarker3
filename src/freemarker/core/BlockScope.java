@@ -18,7 +18,7 @@ public class BlockScope extends BaseScope {
 		return block.getTemplate();
 	}
 	
-	public void put(String key, TemplateModel tm) {
+	public void put(String key, Object tm) {
 		if (!definesVariable(key)) {
 			throw new IllegalArgumentException("The variable " + key + " is not declared here.");
 		}

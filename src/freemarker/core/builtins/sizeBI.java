@@ -12,8 +12,8 @@ import freemarker.template.*;
 public class sizeBI extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) 
+    public Object get(Environment env, BuiltInExpression caller,
+            Object model) 
     {
         int size = -1;
         if (model instanceof TemplateSequenceModel) {

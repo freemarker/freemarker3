@@ -16,12 +16,7 @@ import freemarker.template.TemplateSequenceModel;
  * @author Attila Szegedi
  * @version $Id: ArrayModel.java,v 1.26 2003/06/03 13:21:32 szegedia Exp $
  */
-public class ArrayModel
-extends
-    BeanModel
-implements
-    TemplateCollectionModel,
-    TemplateSequenceModel
+public class ArrayModel extends BeanModel implements TemplateCollectionModel, TemplateSequenceModel
 {
     static final ModelFactory FACTORY =
         new ModelFactory()
@@ -54,12 +49,12 @@ implements
     }
 
 
-    public java.util.Iterator<TemplateModel> iterator()
+    public java.util.Iterator<Object> iterator()
     {
         return new Iterator();
     }
 
-    public TemplateModel get(int index)
+    public Object get(int index)
     throws
         TemplateModelException
     {
@@ -77,7 +72,7 @@ implements
     private class Iterator
     implements 
         TemplateSequenceModel,
-        java.util.Iterator<TemplateModel>
+        java.util.Iterator<Object>
     {
         private int position = 0;
 
@@ -86,14 +81,14 @@ implements
             return position < length;
         }
 
-        public TemplateModel get(int index)
+        public Object get(int index)
         throws
             TemplateModelException
         {
             return ArrayModel.this.get(index);
         }
 
-        public TemplateModel next()
+        public Object next()
         throws
             TemplateModelException
         {

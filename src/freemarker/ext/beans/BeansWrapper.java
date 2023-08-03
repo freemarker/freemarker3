@@ -441,19 +441,19 @@ public class BeansWrapper implements ObjectWrapper
      * {@link TemplateBooleanModel} instances into a Boolean.
      * All other objects are returned unchanged.
      */
-    public Object unwrap(TemplateModel model) throws TemplateModelException
+    public Object unwrap(Object model) throws TemplateModelException
     {
         return unwrap(model, OBJECT_CLASS);
     }
     
-    public Object unwrap(TemplateModel model, Class requiredType) 
+    public Object unwrap(Object model, Class requiredType) 
     throws TemplateModelException
     {
         return unwrap(model, requiredType, null);
     }
     
-    private Object unwrap(TemplateModel model, Class<?> requiredType, 
-            Map<TemplateModel, Object> recursionStops) 
+    private Object unwrap(Object model, Class<?> requiredType, 
+            Map<Object, Object> recursionStops) 
     throws TemplateModelException
     {
         if(model == null) {
@@ -577,7 +577,7 @@ public class BeansWrapper implements ObjectWrapper
                     }
                 } else {
                     recursionStops = 
-                        new IdentityHashMap<TemplateModel, Object>();
+                        new IdentityHashMap<Object, Object>();
                 }
                 TemplateSequenceModel seq = (TemplateSequenceModel)model;
                 Class componentType = requiredType.getComponentType();
@@ -732,7 +732,7 @@ public class BeansWrapper implements ObjectWrapper
      * and the outer identity or the subclass throws an exception. Plain
      * BeansWrapper never throws TemplateModelException).
      */
-    TemplateModel invokeMethod(Object object, Method method, Object[] args)
+    Object invokeMethod(Object object, Method method, Object[] args)
     throws
         InvocationTargetException,
         IllegalAccessException,

@@ -27,7 +27,7 @@ class ElementModel extends NodeModel implements TemplateScalarModel {
      * The special key "@@" returns a hash of all the element's attributes.
      * The special key "/" returns the root document node associated with this element.
      */
-    public TemplateModel get(String key) {
+    public Object get(String key) {
         if (key.equals("*")) {
             NodeListModel ns = new NodeListModel(this);
             TemplateSequenceModel children = getChildNodes();

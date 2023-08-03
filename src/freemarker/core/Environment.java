@@ -93,13 +93,13 @@ public final class Environment extends Configurable implements Scope {
 
     private Map<Macro, TemplateNamespace> macroToNamespaceLookup = new HashMap<Macro, TemplateNamespace>();
 
-    private HashMap<String, TemplateModel> globalVariables = new HashMap<String, TemplateModel>();
+    private HashMap<String, Object> globalVariables = new HashMap<>();
 
     private HashMap<String, TemplateNamespace> loadedLibs;
 
     private Throwable lastThrowable;
 
-    private TemplateModel lastReturnValue;
+    private Object lastReturnValue;
 
     private TemplateNodeModel currentVisitorNode;
 
@@ -202,7 +202,7 @@ public final class Environment extends Configurable implements Scope {
     private static final TemplateModel[] NO_OUT_ARGS = new TemplateModel[0];
 
     public void render(final TemplateElement element,
-            TemplateDirectiveModel directiveModel, Map<String, TemplateModel> args,
+            TemplateDirectiveModel directiveModel, Map<String, Object> args,
             final List<String> bodyParameterNames)
     throws TemplateException, IOException {
         TemplateDirectiveBody nested = null;
@@ -255,7 +255,7 @@ public final class Environment extends Configurable implements Scope {
      */
     @SuppressWarnings("deprecation")
 	public void render(TemplateElement element,
-            TemplateTransformModel transform, Map<String, TemplateModel> args)
+            TemplateTransformModel transform, Map<String, Object> args)
     throws TemplateException, IOException {
         try {
             Writer tw = transform.getWriter(out, args);
@@ -407,7 +407,7 @@ public final class Environment extends Configurable implements Scope {
             this.nodeNamespaces = namespaces;
         }
         try {
-            TemplateModel macroOrTransform = getNodeProcessor(node);
+            Object macroOrTransform = getNodeProcessor(node);
             if (macroOrTransform instanceof Macro) {
                 render((Macro) macroOrTransform, (ArgsList)null, null, null);
             } else if (macroOrTransform instanceof TemplateTransformModel) {
@@ -483,8 +483,8 @@ public final class Environment extends Configurable implements Scope {
     }
 
     @SuppressWarnings("deprecation")
-	public void fallback() throws TemplateException, IOException {
-        TemplateModel macroOrTransform = getNodeProcessor(currentNodeName,
+	public void fallback() throws IOException {
+        Object macroOrTransform = getNodeProcessor(currentNodeName,
                 currentNodeNS, nodeNamespaceIndex);
         if (macroOrTransform instanceof Macro) {
             render((Macro) macroOrTransform, (ArgsList)null, null, null);
@@ -510,8 +510,8 @@ public final class Environment extends Configurable implements Scope {
             MacroContext prevMc = macroContextLookup.get(macro);
             macroContextLookup.put(macro, mc);
             if (args != null) {
-                Map<String, TemplateModel> argsMap = macro.getParams().getParameterMap(args, this);
-                for (Map.Entry<String, TemplateModel> entry : argsMap.entrySet()) {
+                Map<String, Object> argsMap = macro.getParams().getParameterMap(args, this);
+                for (Map.Entry<String, Object> entry : argsMap.entrySet()) {
                     mc.put(entry.getKey(), entry.getValue());
                 }
             }
@@ -724,11 +724,11 @@ public final class Environment extends Configurable implements Scope {
         return getTemplate().getConfiguration();
     }
 
-    public TemplateModel getLastReturnValue() {
+    public Object getLastReturnValue() {
         return lastReturnValue;
     }
 
-    public void setLastReturnValue(TemplateModel lastReturnValue) {
+    public void setLastReturnValue(Object lastReturnValue) {
         this.lastReturnValue = lastReturnValue;
     }
 
@@ -924,7 +924,7 @@ public final class Environment extends Configurable implements Scope {
     public TemplateTransformModel getTransform(Expression exp)
     {
         TemplateTransformModel ttm = null;
-        TemplateModel tm = exp.getAsTemplateModel(this);
+        Object tm = exp.getAsTemplateModel(this);
         if (tm instanceof TemplateTransformModel) {
             ttm = (TemplateTransformModel) tm;
         } else if (exp instanceof Identifier) {
@@ -936,9 +936,7 @@ public final class Environment extends Configurable implements Scope {
         return ttm;
     }
 
-    public TemplateModel resolveVariable(String name)
-    throws TemplateModelException 
-    {
+    public Object resolveVariable(String name) {
         return get(name);
     }
 
@@ -963,7 +961,7 @@ public final class Environment extends Configurable implements Scope {
      * </li>
      * </ol>
      */
-    public TemplateModel getVariable(String name) {
+    public Object getVariable(String name) {
         return currentScope.resolveVariable(name);
     }
 
@@ -971,8 +969,8 @@ public final class Environment extends Configurable implements Scope {
      * This method returns a variable from the "global" namespace and falls back
      * to the data model.
      */
-    public TemplateModel get(String name) {
-        TemplateModel result = globalVariables.get(name);
+    public Object get(String name) {
+        Object result = globalVariables.get(name);
         if (result == null) {
             result = rootDataModel.get(name);
         }
@@ -985,7 +983,7 @@ public final class Environment extends Configurable implements Scope {
     public Collection<String> getDirectVariableNames() {
         Collection<String> coll = new HashSet<String>(globalVariables.keySet());
         if (rootDataModel instanceof TemplateHashModelEx) {
-            Iterator<TemplateModel> rootNames =
+            Iterator<Object> rootNames =
                 ((TemplateHashModelEx) rootDataModel).keys().iterator();
             while(rootNames.hasNext()) {
                 coll.add(((TemplateScalarModel)rootNames.next()).getAsString());
@@ -1040,7 +1038,7 @@ public final class Environment extends Configurable implements Scope {
      * @param model
      *            the value of the variable
      */
-    public void unqualifiedSet(String name, TemplateModel model) {
+    public void unqualifiedSet(String name, Object model) {
         Scope scope = this.currentScope;
         while (!(scope instanceof TemplateNamespace)) {
             if (scope.get(name) != null) {
@@ -1141,11 +1139,11 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    public void put(String varname, TemplateModel value) {
+    public void put(String varname, Object value) {
         globalVariables.put(varname, value);
     }
 
-    public TemplateModel remove(String varname) {
+    public Object remove(String varname) {
         return globalVariables.remove(varname);
     }
 
@@ -1171,12 +1169,12 @@ public final class Environment extends Configurable implements Scope {
         TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
         TemplateCollectionModel rootKeys = root.keys();
         TemplateCollectionModel sharedVariableKeys = getEnclosingScope().keys();
-        LinkedHashSet<TemplateModel> aggregate = new LinkedHashSet<TemplateModel>();
-        for (Iterator<TemplateModel> tmi = sharedVariableKeys.iterator(); tmi
+        LinkedHashSet<Object> aggregate = new LinkedHashSet<>();
+        for (Iterator<Object> tmi = sharedVariableKeys.iterator(); tmi
         .hasNext();) {
             aggregate.add(tmi.next());
         }
-        for (Iterator<TemplateModel> tmi = rootKeys.iterator(); tmi.hasNext();) {
+        for (Iterator<Object> tmi = rootKeys.iterator(); tmi.hasNext();) {
             aggregate.add(tmi.next());
         }
         for (String varname : globalVariables.keySet()) {
@@ -1194,15 +1192,15 @@ public final class Environment extends Configurable implements Scope {
         TemplateCollectionModel rootValues = root.values();
         TemplateCollectionModel sharedVariableValues = getEnclosingScope()
         .values();
-        LinkedHashSet<TemplateModel> aggregate = new LinkedHashSet<TemplateModel>();
-        for (Iterator<TemplateModel> tmi = sharedVariableValues.iterator(); tmi
+        LinkedHashSet<Object> aggregate = new LinkedHashSet<>();
+        for (Iterator<Object> tmi = sharedVariableValues.iterator(); tmi
         .hasNext();) {
             aggregate.add(tmi.next());
         }
-        for (Iterator<TemplateModel> tmi = rootValues.iterator(); tmi.hasNext();) {
+        for (Iterator<Object> tmi = rootValues.iterator(); tmi.hasNext();) {
             aggregate.add(tmi.next());
         }
-        for (TemplateModel value : globalVariables.values()) {
+        for (Object value : globalVariables.values()) {
             aggregate.add(value);
         }
         return new SimpleCollection(aggregate, getObjectWrapper());
@@ -1271,8 +1269,8 @@ public final class Environment extends Configurable implements Scope {
                 return false;
             }
 
-            public TemplateModel get(String key) {
-                TemplateModel value = rootDataModel.get(key);
+            public Object get(String key) {
+                Object value = rootDataModel.get(key);
                 if (value == null) {
                     value = getConfiguration().getSharedVariable(key);
                 }
@@ -1285,7 +1283,7 @@ public final class Environment extends Configurable implements Scope {
                 public boolean isEmpty() {
                     return result.isEmpty();
                 }
-                public TemplateModel get(String key) {
+                public Object get(String key) {
                     return result.get(key);
                 }
 
@@ -1330,13 +1328,13 @@ public final class Environment extends Configurable implements Scope {
         currentVisitorNode = node;
     }
 
-    TemplateModel getNodeProcessor(TemplateNodeModel node)
+    Object getNodeProcessor(TemplateNodeModel node)
     {
         String nodeName = node.getNodeName();
         if (nodeName == null) {
             throw new TemplateException("Node name is null.", this);
         }
-        TemplateModel result = getNodeProcessor(nodeName, node
+        Object result = getNodeProcessor(nodeName, node
                 .getNodeNamespace(), 0);
         if (result == null) {
             String type = node.getNodeType();
@@ -1350,9 +1348,9 @@ public final class Environment extends Configurable implements Scope {
         return result;
     }
 
-    private TemplateModel getNodeProcessor(final String nodeName,
+    private Object getNodeProcessor(final String nodeName,
             final String nsURI, int startIndex) {
-        TemplateModel result = null;
+        Object result = null;
         int i;
         for (i = startIndex; i < nodeNamespaces.size(); i++) {
             TemplateNamespace ns = null;
@@ -1403,9 +1401,9 @@ public final class Environment extends Configurable implements Scope {
      * nodeName; this.currentNodeNS = nsURI; } return result; }
      */
 
-    private TemplateModel getNodeProcessor(TemplateNamespace ns,
+    private Object getNodeProcessor(TemplateNamespace ns,
             String localName, String nsURI) {
-        TemplateModel result = null;
+        Object result = null;
         if (nsURI == null) {
             result = ns.get(localName);
             if (!(result instanceof Macro)

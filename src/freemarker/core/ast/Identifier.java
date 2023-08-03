@@ -18,7 +18,7 @@ public class Identifier extends Expression {
     	return name;
     }
 
-    TemplateModel _getAsTemplateModel(Environment env) {
+    Object _getAsTemplateModel(Environment env) {
         try {
             return env.getVariable(name);
         } catch (NullPointerException e) {

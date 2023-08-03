@@ -27,9 +27,8 @@ public class Dot extends Expression {
     	return key;
     }
 
-    TemplateModel _getAsTemplateModel(Environment env) throws TemplateException
-    {
-        TemplateModel leftModel = target.getAsTemplateModel(env);
+    Object _getAsTemplateModel(Environment env) {
+        Object leftModel = target.getAsTemplateModel(env);
         if(leftModel instanceof TemplateHashModel) {
             return ((TemplateHashModel) leftModel).get(key);
         }

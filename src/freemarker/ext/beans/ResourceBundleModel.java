@@ -58,9 +58,7 @@ public class ResourceBundleModel
     /**
      * Overridden to invoke the getObject method of the resource bundle.
      */
-    protected TemplateModel invokeGenericGet(Map keyMap, String key)
-    throws
-    	TemplateModelException
+    protected Object invokeGenericGet(Map keyMap, String key) 
     {
         try
         {

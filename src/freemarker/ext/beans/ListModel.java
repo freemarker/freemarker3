@@ -17,12 +17,7 @@ import freemarker.template.TemplateSequenceModel;
  * @author Attila Szegedi
  * @version $Id: CollectionModel.java,v 1.22 2003/06/03 13:21:32 szegedia Exp $
  */
-public class ListModel
-extends
-    CollectionModel
-implements
-    TemplateSequenceModel
-{
+public class ListModel extends CollectionModel implements TemplateSequenceModel {
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
@@ -51,16 +46,11 @@ implements
      * @return null if the index is out of bounds
      * *@throws TemplateModelException if the underlying collection is not a List.
      */
-    public TemplateModel get(int index)
-    throws
-        TemplateModelException
-    {
-        try
-        {
+    public Object get(int index) {
+        try {
             return wrap(((List)object).get(index));
         }
-        catch(IndexOutOfBoundsException e)
-        {
+        catch(IndexOutOfBoundsException e) {
             return null; // This is better because it allows the use of existence built-ins, i.e. x[10]?? etcetera (JR)
         }
     }

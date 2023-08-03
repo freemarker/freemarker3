@@ -29,14 +29,14 @@ public class DynamicKeyName extends Expression {
     	return target;
     }
 
-    TemplateModel _getAsTemplateModel(Environment env) throws TemplateException
+    Object _getAsTemplateModel(Environment env) throws TemplateException
     {
-        TemplateModel targetModel = target.getAsTemplateModel(env);
+        Object targetModel = target.getAsTemplateModel(env);
         assertNonNull(targetModel, target, env);
         if (nameExpression instanceof Range) {
             return dealWithRangeKey(targetModel, (Range) nameExpression, env);
         }
-        TemplateModel keyModel = nameExpression.getAsTemplateModel(env);
+        Object keyModel = nameExpression.getAsTemplateModel(env);
         if(keyModel == null) {
             assertNonNull(keyModel, nameExpression, env);
         }
@@ -52,10 +52,9 @@ public class DynamicKeyName extends Expression {
     }
 
 
-    private TemplateModel dealWithNumericalKey(TemplateModel targetModel, 
+    private Object dealWithNumericalKey(Object targetModel, 
                                                int index, 
                                                Environment env)
-        throws TemplateException
     {
         if (targetModel instanceof TemplateSequenceModel) {
             TemplateSequenceModel tsm = (TemplateSequenceModel) targetModel;
@@ -82,10 +81,9 @@ public class DynamicKeyName extends Expression {
     }
 
 
-    private TemplateModel dealWithStringKey(TemplateModel targetModel, 
+    private Object dealWithStringKey(Object targetModel, 
                                             String key,
                                             Environment env)
-        throws TemplateException
     {
         if(targetModel instanceof TemplateHashModel) {
             return((TemplateHashModel) targetModel).get(key);
@@ -93,10 +91,9 @@ public class DynamicKeyName extends Expression {
         throw invalidTypeException(targetModel, target, env, "hash");
     }
 
-    private TemplateModel dealWithRangeKey(TemplateModel targetModel, 
+    private Object dealWithRangeKey(Object targetModel, 
                                            Range range, 
                                            Environment env)
-        throws TemplateException
     {
         int start = EvaluationUtil.getNumber(range.getLeft(), env).intValue();
         int end = 0;
@@ -129,7 +126,7 @@ public class DynamicKeyName extends Expression {
                              + "(note that indices are 0 based, and ranges are inclusive).";
                 throw new TemplateException(msg, env);
             }
-            ArrayList<TemplateModel> list = new ArrayList<TemplateModel>(1+Math.abs(start-end));
+            ArrayList<Object> list = new ArrayList<>(1+Math.abs(start-end));
             if (start>end) {
                 for (int i = start; i>=end; i--) {
                     list.add(sequence.get(i));

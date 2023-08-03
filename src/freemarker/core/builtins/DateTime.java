@@ -34,8 +34,8 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
         return false; // can depend on environment's date format
     }
     
-    public TemplateModel get(Environment env, BuiltInExpression caller, 
-            TemplateModel model) 
+    public Object get(Environment env, BuiltInExpression caller, 
+            Object model) 
     {
         if (model instanceof TemplateDateModel) {
             TemplateDateModel dmodel = (TemplateDateModel) model;

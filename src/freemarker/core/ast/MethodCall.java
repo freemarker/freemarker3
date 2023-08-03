@@ -38,9 +38,9 @@ public class MethodCall extends Expression {
     	return target;
     }
     
-    TemplateModel _getAsTemplateModel(Environment env) throws TemplateException
+    Object _getAsTemplateModel(Environment env) throws TemplateException
     {
-        TemplateModel targetModel = target.getAsTemplateModel(env);
+        Object targetModel = target.getAsTemplateModel(env);
         if (targetModel instanceof TemplateMethodModel) {
             TemplateMethodModel targetMethod = (TemplateMethodModel)targetModel;
             List argumentStrings = arguments.getParameterSequence(targetMethod, env);

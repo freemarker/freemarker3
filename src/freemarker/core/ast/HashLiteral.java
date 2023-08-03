@@ -65,17 +65,17 @@ public class HashLiteral extends Expression {
 
     private class SequenceHash implements TemplateHashModelEx {
 
-        private HashMap<String, TemplateModel> keyMap  = new HashMap<String, TemplateModel>(); // maps keys to integer offset
+        private HashMap<String, Object> keyMap  = new HashMap<>(); // maps keys to integer offset
         private TemplateCollectionModel keyCollection, valueCollection; // ordered lists of keys and values
 
         SequenceHash(Environment env) {
             ArrayList<String> keyList = new ArrayList<String>(size);
-            ArrayList<TemplateModel> valueList = new ArrayList<TemplateModel>(size);
+            ArrayList<Object> valueList = new ArrayList<>(size);
             for (int i = 0; i< size; i++) {
                 Expression keyExp = keys.get(i);
                 Expression valExp = values.get(i);
                 String key = keyExp.getStringValue(env);
-                TemplateModel value = valExp.getAsTemplateModel(env);
+                Object value = valExp.getAsTemplateModel(env);
                 assertIsDefined(value, valExp, env);
                 keyMap.put(key, value);
                 keyList.add(key);
@@ -97,7 +97,7 @@ public class HashLiteral extends Expression {
             return valueCollection;
         }
 
-        public TemplateModel get(String key) {
+        public Object get(String key) {
             return keyMap.get(key);
         }
 

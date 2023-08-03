@@ -27,7 +27,7 @@ public class PropertySetting extends TemplateElement {
     }
 
     public void execute(Environment env) {
-        TemplateModel mval = value.getAsTemplateModel(env);
+        Object mval = value.getAsTemplateModel(env);
         String strval;
         if (mval instanceof TemplateScalarModel) {
             strval = ((TemplateScalarModel) mval).getAsString();

@@ -139,7 +139,7 @@ implements TemplateHashModelEx, Serializable {
         put(key, b ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE);
     }
 
-    public TemplateModel get(String key) {
+    public Object get(String key) {
         Object result = map.get(key);
         // The key to use for putting -- it is the key that already exists in
         // the map (either key or charKey below). This way, we'll never put a 
@@ -169,7 +169,7 @@ implements TemplateHashModelEx, Serializable {
         if (result instanceof TemplateModel) {
             return (TemplateModel) result;
         }
-        TemplateModel tm = wrap(result);
+        Object tm = wrap(result);
         if (!putFailed) try {
             if (tm != null) map.put(putKey, tm);
         } catch (Exception e) {
@@ -278,7 +278,7 @@ implements TemplateHashModelEx, Serializable {
             }
         }
 
-        public TemplateModel get(String key) {
+        public Object get(String key) {
             synchronized (SimpleHash.this) {
                 return SimpleHash.this.get(key);
             }

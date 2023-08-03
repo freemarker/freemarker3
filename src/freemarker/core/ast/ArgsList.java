@@ -31,12 +31,11 @@ abstract public class ArgsList extends TemplateNode {
 	 * this ArgList in some way.
 	 */
 	
-	abstract Map<String, TemplateModel> getParameterMap(TemplateModel target, Environment env)
-	throws TemplateException;
+	abstract Map<String, Object> getParameterMap(Object target, Environment env);
 	
-	abstract List getParameterSequence(TemplateModel target, Environment env) throws TemplateException;
+	abstract List getParameterSequence(Object target, Environment env);
 	
-	static final ParameterList getParameterList(TemplateModel target) {
+	static final ParameterList getParameterList(Object target) {
             String keyName = target.getClass().getName();
             if (target instanceof SimpleMethodModel) {
                 keyName = target.toString();
@@ -75,7 +74,7 @@ abstract public class ArgsList extends TemplateNode {
 	}
 	
 	@SuppressWarnings("deprecation")
-	private static Parameters getAnnotatedParameters(TemplateModel target) {
+	private static Parameters getAnnotatedParameters(Object target) {
 		Parameters params = null;
 		Method keyMethod = null;
 		if (target instanceof TemplateTransformModel) {

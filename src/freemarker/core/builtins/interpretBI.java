@@ -23,12 +23,12 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
 
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) 
+            Object model) 
     {
         String id = null, interpretString = null;
         if (model instanceof TemplateSequenceModel) {
             TemplateSequenceModel tsm = (TemplateSequenceModel) model;
-            TemplateModel tm = tsm.get(1);
+            Object tm = tsm.get(1);
             if (tm != null) {
                 if(tm instanceof TemplateScalarModel) {
                     id = ((TemplateScalarModel) tm).getAsString();
@@ -68,8 +68,8 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
             this.template = template;
         }
 
-        public void execute(Environment env, Map<String, TemplateModel> params,
-                TemplateModel[] loopVars, TemplateDirectiveBody body)
+        public void execute(Environment env, Map<String, Object> params,
+                Object[] loopVars, TemplateDirectiveBody body)
                 throws IOException {
             try {
                 env.include(template, false);

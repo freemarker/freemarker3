@@ -22,10 +22,10 @@ public class EmptyArgsList extends ArgsList {
     }
 
     @Override
-    Map<String, TemplateModel> getParameterMap(TemplateModel tm, Environment env) {
+    Map<String, Object> getParameterMap(Object tm, Environment env) {
         ParameterList annotatedParameterList = ArgsList.getParameterList(tm);
         if (annotatedParameterList == null) {
-            return new HashMap<String, TemplateModel>();
+            return new HashMap<String, Object>();
         }
         else {
             return annotatedParameterList.getParameterMapForEmptyArgs(env);
@@ -33,7 +33,7 @@ public class EmptyArgsList extends ArgsList {
     }
 
     @Override
-    List getParameterSequence(TemplateModel target, Environment env) {
+    List getParameterSequence(Object target, Environment env) {
         throw new UnsupportedOperationException();
     }
 

@@ -41,8 +41,8 @@ public class ArithmeticExpression extends Expression {
     
     TemplateModel _getAsTemplateModel(Environment env) throws TemplateException 
     {
-        TemplateModel leftModel = left.getAsTemplateModel(env);
-        TemplateModel rightModel = right.getAsTemplateModel(env);
+        Object leftModel = left.getAsTemplateModel(env);
+        Object rightModel = right.getAsTemplateModel(env);
         boolean leftIsNumber = (leftModel instanceof TemplateNumberModel);
         boolean rightIsNumber = (rightModel instanceof TemplateNumberModel);
         boolean bothNumbers = leftIsNumber && rightIsNumber;

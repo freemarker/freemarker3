@@ -37,5 +37,5 @@ public interface ObjectWrapper {
     /**
      * @return a TemplateModel wrapper of the object passed in.
      */
-    TemplateModel wrap(Object obj) throws TemplateModelException;
+    Object wrap(Object obj);
 }

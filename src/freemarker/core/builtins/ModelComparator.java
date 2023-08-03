@@ -31,7 +31,7 @@ public class ModelComparator
      * WARNING! This algorithm is duplication of ComparisonExpression.isTrue(...).
      * Thus, if you update this method, then you have to update that too!
      */
-    public boolean modelsEqual(TemplateModel model1, TemplateModel model2)
+    public boolean modelsEqual(Object model1, Object model2)
     {
         if(model1 instanceof TemplateNumberModel && model2 instanceof TemplateNumberModel) {
             try {

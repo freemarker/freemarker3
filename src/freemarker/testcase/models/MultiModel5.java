@@ -19,7 +19,7 @@ public class MultiModel5 implements TemplateSequenceModel, TemplateHashModel {
     /**
      * @return the specified index in the list
      */
-    public TemplateModel get(int i) {
+    public Object get(int i) {
         return m_cList.get( i );
     }
 

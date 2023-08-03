@@ -23,12 +23,7 @@ import freemarker.template.TemplateModelException;
  * @version $Id: IteratorModel.java,v 1.26 2003/06/03 13:21:32 szegedia Exp $
  */
 
-public class IteratorModel
-extends
-    BeanModel
-implements
-    Iterator<TemplateModel>,
-    TemplateCollectionModel
+public class IteratorModel extends BeanModel implements Iterator<Object>, TemplateCollectionModel
 {
     private boolean accessed = false;
     
@@ -49,8 +44,7 @@ implements
      * This allows the iterator to be used in a <tt>&lt;foreach></tt> block.
      * @return "this"
      */
-    public Iterator<TemplateModel> iterator() throws TemplateModelException
-    {
+    public Iterator<Object> iterator() {
         synchronized(this) {
             if(accessed) {
                 throw new TemplateModelException(
@@ -73,10 +67,7 @@ implements
     /**
      * Calls underlying {@link Iterator#next()} and wraps the result.
      */
-    public TemplateModel next()
-    throws
-        TemplateModelException
-    {
+    public Object next() {
         try {
             return wrap(((Iterator)object).next());
         }

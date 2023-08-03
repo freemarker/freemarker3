@@ -14,8 +14,8 @@ import freemarker.template.*;
 public class resolveBI extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) 
+    public Object get(Environment env, BuiltInExpression caller,
+            Object model) 
     {
         if (!(model instanceof Scope)) {
             throw new TemplateException("Expecting scope on left of ?resolve built-in", env);

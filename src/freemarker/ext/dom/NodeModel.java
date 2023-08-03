@@ -1,5 +1,5 @@
 
- package freemarker.ext.dom;
+package freemarker.ext.dom;
 
 
 import java.io.File;
@@ -192,7 +192,7 @@ implements TemplateNodeModel, TemplateHashModel, TemplateSequenceModel,
         return node;
     }
     
-    public TemplateModel get(String key) {
+    public Object get(String key) {
         if (key.startsWith("@@")) {
             if (key.equals("@@text")) {
                 return new SimpleScalar(getText(node));

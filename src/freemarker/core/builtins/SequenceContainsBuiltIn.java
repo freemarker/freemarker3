@@ -26,8 +26,8 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
     }
 
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) throws TemplateException
+    public Object get(Environment env, BuiltInExpression caller,
+            Object model) 
     {
         if (!(model instanceof TemplateSequenceModel || model instanceof TemplateCollectionModel)) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "sequence or collection");
@@ -39,7 +39,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
     static class SequenceContainsFunction implements TemplateMethodModelEx {
         final TemplateSequenceModel sequence;
         final TemplateCollectionModel collection;
-        SequenceContainsFunction(TemplateModel seqModel) {
+        SequenceContainsFunction(Object seqModel) {
             if (seqModel instanceof TemplateCollectionModel) {
                 collection = (TemplateCollectionModel) seqModel;
                 sequence = null;
@@ -60,7 +60,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             TemplateModel compareToThis = (TemplateModel) args.get(0);
             final ModelComparator modelComparator = new ModelComparator(Environment.getCurrentEnvironment());
             if (collection != null) {
-                Iterator<TemplateModel> tmi = collection.iterator();
+                Iterator<Object> tmi = collection.iterator();
                 while (tmi.hasNext()) {
                     if (modelComparator.modelsEqual(tmi.next(), compareToThis)) {
                         return TemplateBooleanModel.TRUE;

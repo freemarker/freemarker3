@@ -74,7 +74,7 @@ public class StandardCompress implements TemplateTransformModel, TemplateDirecti
         this.defaultBufferSize = defaultBufferSize;
     }
 
-    public void execute(Environment env, Map<String, TemplateModel> args, TemplateModel[] bodyVars, TemplateDirectiveBody body) 
+    public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) 
     throws IOException {
     	if (body == null) return;
         int bufferSize = defaultBufferSize;
@@ -104,7 +104,7 @@ public class StandardCompress implements TemplateTransformModel, TemplateDirecti
         }
     }
 
-    public Writer getWriter(final Writer out, Map<String, TemplateModel> args)
+    public Writer getWriter(final Writer out, Map<String, Object> args)
     throws TemplateModelException
     {
         int bufferSize = defaultBufferSize;

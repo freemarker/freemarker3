@@ -20,8 +20,7 @@ public class ParentheticalExpression extends Expression {
     	return nested;
     }
     
-    TemplateModel _getAsTemplateModel(Environment env) throws TemplateException 
-    {
+    Object _getAsTemplateModel(Environment env) {
         return nested.getAsTemplateModel(env);
     }
 

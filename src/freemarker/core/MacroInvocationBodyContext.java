@@ -23,8 +23,8 @@ public class MacroInvocationBodyContext extends BlockScope {
         }
         ParameterList bodyParameters = invokingMacroContext.bodyParameters;
         if (bodyParameters != null) {
-            Map<String, TemplateModel> bodyParamsMap = bodyParameters.getParameterMap(bodyArgs, env, true);
-            for (Map.Entry<String, TemplateModel> entry : bodyParamsMap.entrySet()) {
+            Map<String, Object> bodyParamsMap = bodyParameters.getParameterMap(bodyArgs, env, true);
+            for (Map.Entry<String, Object> entry : bodyParamsMap.entrySet()) {
             	put(entry.getKey(), entry.getValue());
             }
         }

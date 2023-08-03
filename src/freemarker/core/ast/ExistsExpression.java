@@ -19,8 +19,8 @@ public class ExistsExpression extends Expression {
 		return exp;
 	}
 
-	TemplateModel _getAsTemplateModel(Environment env) {
-		TemplateModel tm = null;
+	Object _getAsTemplateModel(Environment env) {
+		Object tm = null;
 		try {
 			tm = exp.getAsTemplateModel(env);
 		} catch (InvalidReferenceException ire) {

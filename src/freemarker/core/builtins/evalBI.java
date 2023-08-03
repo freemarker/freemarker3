@@ -25,8 +25,7 @@ public class evalBI extends ExpressionEvaluatingBuiltIn {
     }
 
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) 
+    public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
         try {
             return eval(((TemplateScalarModel) model).getAsString(), env, caller);
@@ -38,7 +37,7 @@ public class evalBI extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    TemplateModel eval(String s, Environment env, BuiltInExpression caller) 
+    Object eval(String s, Environment env, BuiltInExpression caller) 
     {
         String input = "(" + s + ")";
         FMLexer token_source= new FMLexer("input", input, FMLexer.LexicalState.EXPRESSION, caller.getBeginLine(), caller.getBeginColumn());;

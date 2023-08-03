@@ -77,7 +77,7 @@ class NodeListModel extends SimpleSequence implements TemplateHashModel, Templat
         return size() == 0;
     }
     
-    public TemplateModel get(String key) {
+    public Object get(String key) {
         if (size() ==1) {
             NodeModel nm = (NodeModel) get(0);
             return nm.get(key);

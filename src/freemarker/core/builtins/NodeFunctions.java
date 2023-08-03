@@ -16,8 +16,8 @@ import freemarker.template.utility.StringUtil;
 public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) 
+    public Object get(Environment env, BuiltInExpression caller,
+            Object model) 
     {
         if (!(model instanceof TemplateNodeModel)) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "node");
@@ -25,8 +25,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         return apply(env, (TemplateNodeModel)model);
     }
 
-    public abstract TemplateModel apply(Environment env, TemplateNodeModel node) 
-    throws TemplateException;
+    public abstract Object apply(Environment env, TemplateNodeModel node);
     
     public static class Parent extends NodeFunctions {
         @Override
@@ -77,7 +76,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class NodeType extends NodeFunctions {
         @Override
-        public TemplateModel apply(Environment env, TemplateNodeModel node)
+        public Object apply(Environment env, TemplateNodeModel node)
         {
             String nt = node.getNodeType();
             return nt == null ? TemplateModel.JAVA_NULL : new SimpleScalar(nt);

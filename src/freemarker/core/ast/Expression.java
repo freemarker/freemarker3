@@ -10,7 +10,7 @@ import freemarker.core.Environment;
  */
 abstract public class Expression extends TemplateNode {
 
-    abstract TemplateModel _getAsTemplateModel(Environment env) throws TemplateException;
+    abstract Object _getAsTemplateModel(Environment env) throws TemplateException;
     abstract boolean isLiteral();
     
     public String getDescription() {
@@ -20,13 +20,13 @@ abstract public class Expression extends TemplateNode {
     // Used to store a constant return value for this expression. Only if it
     // is possible, of course.
     
-    TemplateModel constantValue;
+    Object constantValue;
     
     /**
      * @return the value of the expression if it is a literal, null otherwise.
      */
     
-    public final TemplateModel literalValue() {
+    public final Object literalValue() {
     	return constantValue;
     }
     
@@ -44,7 +44,7 @@ abstract public class Expression extends TemplateNode {
         }
     }
     
-    public final TemplateModel getAsTemplateModel(Environment env) {
+    public final Object getAsTemplateModel(Environment env) {
         return constantValue != null ? constantValue : _getAsTemplateModel(env);
     }
     
@@ -52,15 +52,13 @@ abstract public class Expression extends TemplateNode {
         return getStringValue(getAsTemplateModel(env), this, env);
     }
     
-    static boolean isDisplayableAsString(TemplateModel tm) {
+    static boolean isDisplayableAsString(Object tm) {
     	return tm instanceof TemplateScalarModel
     	     ||tm instanceof TemplateNumberModel
     	     || tm instanceof TemplateDateModel;
     }
     
-    static public String getStringValue(TemplateModel referentModel, Expression exp, Environment env)
-    throws
-        TemplateException
+    static public String getStringValue(Object referentModel, Expression exp, Environment env)
     {
         if (referentModel instanceof TemplateNumberModel) {
             return env.formatNumber(EvaluationUtil.getNumber((TemplateNumberModel) referentModel, exp, env));
@@ -91,7 +89,7 @@ abstract public class Expression extends TemplateNode {
     abstract Expression _deepClone(String name, Expression subst);
 
     boolean isTrue(Environment env) {
-        TemplateModel referent = getAsTemplateModel(env);
+        Object referent = getAsTemplateModel(env);
         if (referent instanceof TemplateBooleanModel) {
             return ((TemplateBooleanModel) referent).getAsBoolean();
         }
@@ -109,7 +107,7 @@ abstract public class Expression extends TemplateNode {
 	}
     
     
-	static public boolean isEmpty(TemplateModel model) throws TemplateModelException
+	static public boolean isEmpty(Object model) throws TemplateModelException
     {
         if (model instanceof BeanModel) {
             return ((BeanModel) model).isEmpty();

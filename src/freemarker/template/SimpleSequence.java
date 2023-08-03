@@ -74,7 +74,7 @@ implements TemplateSequenceModel, Serializable {
      */
     public SimpleSequence(TemplateCollectionModel tcm) {
         ArrayList<Object> alist = new ArrayList<Object>();
-        for (Iterator<TemplateModel> it = tcm.iterator(); it.hasNext();) {
+        for (Iterator<Object> it = tcm.iterator(); it.hasNext();) {
             alist.add(it.next());
         }
         alist.trimToSize();
@@ -170,13 +170,13 @@ implements TemplateSequenceModel, Serializable {
     /**
      * @return the specified index in the list
      */
-    public TemplateModel get(int i) {
+    public Object get(int i) {
         try {
             Object value = list.get(i);
             if (value instanceof TemplateModel) {
                 return (TemplateModel) value;
             }
-            TemplateModel tm = wrap(value);
+            Object tm = wrap(value);
             list.set(i, tm);
             return tm;
         }
@@ -210,7 +210,7 @@ implements TemplateSequenceModel, Serializable {
             }
         }
 
-        public TemplateModel get(int i) {
+        public Object get(int i) {
             synchronized (SimpleSequence.this) {
                 return SimpleSequence.this.get(i);
             }

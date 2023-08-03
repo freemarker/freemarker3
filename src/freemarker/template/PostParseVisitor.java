@@ -43,9 +43,9 @@ public class PostParseVisitor extends ASTVisitor {
 				else if (key.equals("ns_prefixes")) {
 					TemplateHashModelEx prefixMap = (TemplateHashModelEx) header.getParameter("ns_prefixes");
 	                TemplateCollectionModel keys = prefixMap.keys();
-	                for (Iterator<TemplateModel> it = keys.iterator(); it.hasNext();) {
+	                for (Iterator<Object> it = keys.iterator(); it.hasNext();) {
 	                    String prefix = ((TemplateScalarModel) it.next()).getAsString();
-	                    TemplateModel valueModel = prefixMap.get(prefix);
+	                    Object valueModel = prefixMap.get(prefix);
 	                    String nsURI = ((TemplateScalarModel) valueModel).getAsString();
 	                    template.addPrefixNSMapping(prefix, nsURI);
 	                }
@@ -53,7 +53,7 @@ public class PostParseVisitor extends ASTVisitor {
 				else if (key.equals("attributes")) {
 					TemplateHashModelEx attributeMap = (TemplateHashModelEx) header.getParameter("attributes");
 	                TemplateCollectionModel keys = attributeMap.keys();
-	                for (Iterator<TemplateModel> it = keys.iterator(); it.hasNext();) {
+	                for (Iterator<Object> it = keys.iterator(); it.hasNext();) {
 	                    String attName = ((TemplateScalarModel) it.next()).getAsString();
 	                    Object attValue = DeepUnwrap.unwrap(attributeMap.get(attName));
 	                    template.setCustomAttribute(attName, attValue);
@@ -378,7 +378,7 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(Dot node) {
 		super.visit(node);
-		TemplateModel target = node.getTarget().literalValue();
+		Object target = node.getTarget().literalValue();
 		if (target != null && !(target instanceof TemplateHashModel)) {
 			template.addParsingProblem(new ParsingProblem("Expression " + node.getTarget().getSource() + " is not a hash type.", node.getTarget()));
 		}
@@ -386,7 +386,7 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(DynamicKeyName node) {
 		super.visit(node);
-		TemplateModel target = node.getTarget().literalValue();
+		Object target = node.getTarget().literalValue();
 		if (target != null && !(target instanceof TemplateHashModel) && !(target instanceof TemplateSequenceModel)) {
 			String msg = "Expression: " + node.getTarget().getSource() + " is not a hash or sequence type.";
 			template.addParsingProblem(new ParsingProblem(msg, node.getTarget()));
@@ -493,7 +493,7 @@ public class PostParseVisitor extends ASTVisitor {
     }
 	
 	private void checkLiteralInBooleanContext(Expression exp) {
-		TemplateModel value = exp.literalValue();
+        Object value = exp.literalValue();
 		if (value != null && !(value instanceof TemplateBooleanModel)) {
 			String msg;
 			if (value == TemplateModel.INVALID_EXPRESSION) {
@@ -506,7 +506,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	private void checkLiteralInStringContext(Expression exp) {
-		TemplateModel value = exp.literalValue();
+		Object value = exp.literalValue();
 		if (value != null && !(value instanceof TemplateScalarModel)) {
 			String msg;
 			if (value == TemplateModel.INVALID_EXPRESSION) {
@@ -519,7 +519,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	private void checkLiteralInNumericalContext(Expression exp) {
-		TemplateModel value = exp.literalValue();
+		Object value = exp.literalValue();
 		if (value != null && !(value instanceof TemplateNumberModel)) {
 			String msg;
 			if (value == TemplateModel.INVALID_EXPRESSION) {
@@ -532,7 +532,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	private void checkLiteralInScalarContext(Expression exp) {
-		TemplateModel value = exp.literalValue();
+		Object value = exp.literalValue();
 		if (value != null && !(value instanceof TemplateScalarModel)
 			&& !(value instanceof TemplateNumberModel)
 			&& !(value instanceof TemplateDateModel)) 

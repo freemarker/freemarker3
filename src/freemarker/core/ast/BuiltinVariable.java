@@ -133,7 +133,7 @@ public class BuiltinVariable extends Expression {
             this.env = env;
         }
         
-        public TemplateModel get(String key) {
+        public Object get(String key) {
             return env.getVariable(key);
         }
         

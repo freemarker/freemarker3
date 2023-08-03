@@ -17,7 +17,7 @@ public interface TemplateHashModel extends TemplateModel {
      * @return the <tt>TemplateModel</tt> referred to by the key,
      * or null if not found.
      */
-    TemplateModel get(String key) throws TemplateModelException;
+    Object get(String key);
 
-    boolean isEmpty() throws TemplateModelException;
+    boolean isEmpty();
 }

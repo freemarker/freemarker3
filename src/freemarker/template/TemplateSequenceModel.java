@@ -22,10 +22,10 @@ public interface TemplateSequenceModel extends TemplateModel {
      * a missing variables is usually considered as an error in the FreeMarker
      * Template Language, so the usage of a bad index will not remain hidden.
      */
-    TemplateModel get(int index) throws TemplateModelException;
+    Object get(int index);
 
     /**
      * @return the number of items in the list.
      */
-    int size() throws TemplateModelException;
+    int size();
 }

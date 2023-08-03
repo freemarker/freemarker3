@@ -30,11 +30,11 @@ public class AddConcatExpression extends Expression {
     	return right;
     }
 
-    TemplateModel _getAsTemplateModel(Environment env)
+    Object _getAsTemplateModel(Environment env)
             throws TemplateException
     {
-        TemplateModel leftModel = left.getAsTemplateModel(env);
-        TemplateModel rightModel = right.getAsTemplateModel(env);
+        Object leftModel = left.getAsTemplateModel(env);
+        Object rightModel = right.getAsTemplateModel(env);
         if (leftModel instanceof TemplateNumberModel && rightModel instanceof TemplateNumberModel)
         {
             Number first = EvaluationUtil.getNumber((TemplateNumberModel) leftModel, left, env);
@@ -111,10 +111,7 @@ public class AddConcatExpression extends Expression {
             return left.size() + right.size();
         }
 
-        public TemplateModel get(int i)
-        throws
-            TemplateModelException
-        {
+        public Object get(int i) {
             int ls = left.size();
             return i < ls ? left.get(i) : right.get(i - ls);
         }
@@ -132,10 +129,9 @@ public class AddConcatExpression extends Expression {
             this.right = right;
         }
         
-        public TemplateModel get(String key)
-        throws TemplateModelException
+        public Object get(String key)
         {
-            TemplateModel model = right.get(key);
+            Object model = right.get(key);
             return (model != null) ? model : left.get(key);
         }
 
@@ -195,7 +191,7 @@ public class AddConcatExpression extends Expression {
         private static void addKeys(Set<String> set, SimpleSequence keySeq, TemplateHashModelEx hash)
         throws TemplateModelException
         {
-            Iterator<TemplateModel> it = hash.keys().iterator();
+            Iterator<Object> it = hash.keys().iterator();
             while (it.hasNext()) {
                 TemplateScalarModel tsm = (TemplateScalarModel)it.next();
                 if (set.add(tsm.getAsString())) {

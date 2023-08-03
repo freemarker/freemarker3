@@ -106,12 +106,12 @@ public class ParameterList extends TemplateNode {
             firstReferenceException = null;
             resolvedAnArg = hasUnresolvedArg = false;
             for (String paramName : paramNames) {
-                TemplateModel arg = scope.get(paramName);
+                Object arg = scope.get(paramName);
                 if (arg == null) {
                     Expression defaultExp = getDefaultExpression(paramName);
                     if (defaultExp != null) {
                         try {
-                            TemplateModel value = defaultExp.getAsTemplateModel(env);
+                            Object value = defaultExp.getAsTemplateModel(env);
                             if(value == null) {
                                 if(!hasUnresolvedArg) {
                                     firstUnresolvedExpression = defaultExp;
@@ -153,10 +153,10 @@ public class ParameterList extends TemplateNode {
      * list of template models. Used to pass positional arguments to a template
      * method model.
      */
-    List<TemplateModel> getParameterSequence(final PositionalArgsList args, 
+    List<Object> getParameterSequence(final PositionalArgsList args, 
             final Environment env) 
     {
-        final List<TemplateModel> result = new ArrayList<TemplateModel>(params.size());
+        final List<Object> result = new ArrayList<>(params.size());
         int argsSize = args.size();
         int paramsSize = params.size();
         int commonSize = Math.min(argsSize, paramsSize);
@@ -191,7 +191,7 @@ public class ParameterList extends TemplateNode {
      * list of template models. Used to pass named arguments to a template
      * method model.
      */
-    List<TemplateModel> getParameterSequence(final NamedArgsList args, 
+    List<Object> getParameterSequence(final NamedArgsList args, 
             final Environment env) 
     {
         int argsSize = args.size();
@@ -201,13 +201,13 @@ public class ParameterList extends TemplateNode {
             l.removeAll(params);
             throw new TemplateException("Extraneous parameters " + l, env);
         }
-        final List<TemplateModel> result = new ArrayList<TemplateModel>();
+        final List<Object> result = new ArrayList<>();
         List<String> unresolvedParamNames = null;
         Map<String, Expression> argsMap = args.getCopyOfMap();
         for (String paramName : params) {
             Expression argExp = argsMap.remove(paramName);
             if (argExp != null) {
-                TemplateModel argModel = argExp.getAsTemplateModel(env);
+                Object argModel = argExp.getAsTemplateModel(env);
                 assertIsDefined(argModel, argExp, env);
                 result.add(argModel);
             } else {
@@ -231,13 +231,12 @@ public class ParameterList extends TemplateNode {
      * Given a positional args list, creates a map of key-value pairs based
      * on the named parameter info encapsulated in this object. 
      */
-    public Map<String, TemplateModel> getParameterMap(final PositionalArgsList args, 
+    public Map<String, Object> getParameterMap(final PositionalArgsList args, 
             final Environment env, boolean ignoreExtraParams) 
-    throws TemplateException 
     {
         final int argsSize = args.size();
         final int paramsSize = params.size();
-        final Map<String, TemplateModel> result = new HashMap<String, TemplateModel>();
+        final Map<String, Object> result = new HashMap<>();
         if (catchall == null && argsSize > paramsSize && !ignoreExtraParams) {
             throw new TemplateException("Expecting exactly " + paramsSize + 
                     " arguments, received " + argsSize + ".", env);
@@ -263,16 +262,15 @@ public class ParameterList extends TemplateNode {
         return result;
     }
     
-    public Map<String, TemplateModel> getParameterMap(NamedArgsList args, Environment env) 
-    throws TemplateException 
+    public Map<String, Object> getParameterMap(NamedArgsList args, Environment env) 
     {
-        Map<String, TemplateModel> result = new HashMap<String, TemplateModel>();
+        Map<String, Object> result = new HashMap<>();
         Collection<String> unresolvedParamNames = null;
         Map<String, Expression> argsMap = args.getCopyOfMap();
         for (String paramName : params) {
             Expression argExp = argsMap.remove(paramName);
             if (argExp != null) {
-                TemplateModel value = argExp.getAsTemplateModel(env);
+                Object value = argExp.getAsTemplateModel(env);
                 TemplateNode.assertIsDefined(value, argExp, env);
                 result.put(paramName, value);
             }
@@ -289,8 +287,7 @@ public class ParameterList extends TemplateNode {
         if(unresolvedParamNames != null) {
             // Create a scope that provides live access to the parameter list
             // so we can reference already defined parameters
-            Scope scope = new NamedParameterMapScope(env.getCurrentScope(), 
-                    result);
+            Scope scope = new NamedParameterMapScope(env.getCurrentScope(), result);
             fillInDefaults(env, scope, unresolvedParamNames);
         }
         SimpleHash catchAllMap = null;
@@ -302,7 +299,7 @@ public class ParameterList extends TemplateNode {
             if(catchall != null) {
                 for (Map.Entry<String, Expression> entry : argsMap.entrySet()) {
                     Expression exp = entry.getValue();
-                    TemplateModel val = exp.getAsTemplateModel(env);
+                    Object val = exp.getAsTemplateModel(env);
                     assertIsDefined(val, exp, env);
                     catchAllMap.put(entry.getKey(), val);
                 }
@@ -314,10 +311,9 @@ public class ParameterList extends TemplateNode {
         return result;
     }
 
-    public Map<String, TemplateModel> getParameterMapForEmptyArgs(Environment env) 
-    throws TemplateException 
+    public Map<String, Object> getParameterMapForEmptyArgs(Environment env) 
     {
-        Map<String, TemplateModel> result = new HashMap<String, TemplateModel>();
+        Map<String, Object> result = new HashMap<>();
         if(hasDefaultExpressions()) {
             // Create a scope that provides live access to the parameter list
             // so we can reference already defined parameters
@@ -328,7 +324,7 @@ public class ParameterList extends TemplateNode {
         return result;
     }
 
-    public Map<String, TemplateModel> getParameterMap(ArgsList args, Environment env) {
+    public Map<String, Object> getParameterMap(ArgsList args, Environment env) {
         if (args instanceof NamedArgsList) {
             return getParameterMap((NamedArgsList) args, env);
         } 

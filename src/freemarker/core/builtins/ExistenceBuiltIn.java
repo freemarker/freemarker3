@@ -19,7 +19,7 @@ import freemarker.template.TemplateModelException;
  * @version $Id: $
  */
 public abstract class ExistenceBuiltIn extends BuiltIn {
-    public TemplateModel get(Environment env, BuiltInExpression caller) 
+    public Object get(Environment env, BuiltInExpression caller) 
     {
         final Expression target = caller.getTarget();
         try {
@@ -33,10 +33,10 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
         }
     }
 
-    public abstract TemplateModel apply(TemplateModel model) throws TemplateModelException;
+    public abstract Object apply(Object obj);
 
     public static final class DefaultBuiltIn extends ExistenceBuiltIn {
-        public TemplateModel apply(final TemplateModel model) {
+        public Object apply(final Object model) {
             if(model == null || model == TemplateModel.JAVA_NULL) {
                 return FirstDefined.INSTANCE;
             }
@@ -49,24 +49,24 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
     };
 
     public static class IfExistsBuiltIn extends ExistenceBuiltIn {
-        public TemplateModel apply(final TemplateModel model) {
+        public Object apply(final Object model) {
             return model == null || model == TemplateModel.JAVA_NULL ? TemplateModel.NOTHING : model;
         }
     };
 
     public static class ExistsBuiltIn extends ExistenceBuiltIn {
-        public TemplateModel apply(final TemplateModel model) {
+        public TemplateModel apply(final Object model) {
             return model == null || model == TemplateModel.JAVA_NULL ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
         }
     };
         
     public static class HasContentBuiltIn extends ExistenceBuiltIn {
-        public TemplateModel apply(final TemplateModel model) {
+        public Object apply(final Object model) {
             return model == null || Expression.isEmpty(model) ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
         }
     };
     public static class IsDefinedBuiltIn extends ExistenceBuiltIn {
-        public TemplateModel apply(final TemplateModel model) {
+        public Object apply(final Object model) {
             return model == null ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
         }
     };

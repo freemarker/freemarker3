@@ -28,17 +28,16 @@ public class EvaluationUtil
     }
 
     static Number getNumber(Expression expr, Environment env)
-    throws
-        TemplateException
     {
-        TemplateModel model = expr.getAsTemplateModel(env);
+        Object model = expr.getAsTemplateModel(env);
         return getNumber(model, expr, env);
     }
 
-    static public Number getNumber(TemplateModel model, Expression expr, Environment env)
-    throws
-        TemplateException
+    static public Number getNumber(Object model, Expression expr, Environment env)
     {
+        if (model instanceof Number) {
+            return (Number) model;
+        }
         if(model instanceof TemplateNumberModel) {
             return getNumber((TemplateNumberModel)model, expr, env);
         }

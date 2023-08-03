@@ -7,7 +7,7 @@ import static freemarker.template.utility.StringUtil.*;
 public class TemplateHeaderElement extends TemplateNode {
 
 	private Map<String,Expression> params;
-	private Map<String,TemplateModel> values = new HashMap<String, TemplateModel>();
+	private Map<String,Object> values = new HashMap<String, Object>();
 	protected TemplateElement parent;
 	
 	public TemplateHeaderElement(Map<String,Expression> params) {
@@ -27,13 +27,13 @@ public class TemplateHeaderElement extends TemplateNode {
 		values.remove(name);
 	}
 	
-	public TemplateModel getParameter(String name) {
+	public Object getParameter(String name) {
 		if (values.containsKey(name)) {
 			return values.get(name);
 		}
 		Expression exp = params.get(name);
 		try {
-			TemplateModel tm = exp.getAsTemplateModel(null);
+			Object tm = exp.getAsTemplateModel(null);
 			values.put(name, tm);
 			return tm;
 		} catch (TemplateException te) {
@@ -49,7 +49,7 @@ public class TemplateHeaderElement extends TemplateNode {
 	}
 	
 	public String getStringParameter(String name) {
-		TemplateModel tm = getParameter(name);
+		Object tm = getParameter(name);
 		if (tm instanceof TemplateScalarModel) {
 			try {
 				return ((TemplateScalarModel) tm).getAsString();
@@ -61,7 +61,7 @@ public class TemplateHeaderElement extends TemplateNode {
 	}
 
 	public boolean getBooleanParameter(String name) {
-		TemplateModel tm = getParameter(name);
+		Object tm = getParameter(name);
 		if (tm == null) {
 			throw new IllegalArgumentException("No parameter " + name);
 		}

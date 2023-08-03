@@ -13,7 +13,7 @@ public class DefaultReferenceChecker {
 	
 	private Locale locale;
 	
-    public void assertNonNull(TemplateModel model, Expression exp, Environment env) throws InvalidReferenceException {
+    public void assertNonNull(Object model, Expression exp, Environment env) throws InvalidReferenceException {
         assertIsDefined(model, exp, env);
         if (model == TemplateModel.JAVA_NULL) {
             throw new InvalidReferenceException(
@@ -22,7 +22,7 @@ public class DefaultReferenceChecker {
         }
     }
     
-    public void assertIsDefined(TemplateModel model, Expression exp, Environment env) throws InvalidReferenceException {
+    public void assertIsDefined(Object model, Expression exp, Environment env) throws InvalidReferenceException {
         if (model == null) {
             throw new InvalidReferenceException(
                 "Expression " + exp + " is undefined " +

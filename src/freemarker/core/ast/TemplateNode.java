@@ -38,7 +38,7 @@ public abstract class TemplateNode extends TemplateLocation {
     }
 
     
-    static public TemplateException invalidTypeException(TemplateModel model, Expression exp, Environment env, String expected)
+    static public TemplateException invalidTypeException(Object model, Expression exp, Environment env, String expected)
     throws
         TemplateException
     {
@@ -50,11 +50,11 @@ public abstract class TemplateNode extends TemplateLocation {
             exp.getStartLocation() + ".", env);
     }
     
-    static public void assertNonNull(TemplateModel model, Expression exp, Environment env) throws InvalidReferenceException {
+    static public void assertNonNull(Object model, Expression exp, Environment env) throws InvalidReferenceException {
     	referenceChecker.assertNonNull(model, exp, env);
     }
     
-    static public void assertIsDefined(TemplateModel model, Expression exp, Environment env) throws InvalidReferenceException {
+    static public void assertIsDefined(Object model, Expression exp, Environment env) throws InvalidReferenceException {
     	referenceChecker.assertIsDefined(model, exp, env);
     }
     

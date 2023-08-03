@@ -36,7 +36,7 @@ public class Constants {
     
     public static final TemplateNumberModel MINUS_ONE = new SimpleNumber(-1);
     
-    public static final Iterator<TemplateModel> EMPTY_ITERATOR = new Iterator<TemplateModel>() {
+    public static final Iterator<Object> EMPTY_ITERATOR = new Iterator<Object>() {
 
         public TemplateModel next() {
             throw new TemplateModelException("The collection has no more elements.");
@@ -50,7 +50,7 @@ public class Constants {
 
     public static final TemplateCollectionModel EMPTY_COLLECTION = new TemplateCollectionModel() {
 
-        public Iterator<TemplateModel> iterator() {
+        public Iterator<Object> iterator() {
             return EMPTY_ITERATOR;
         }
         

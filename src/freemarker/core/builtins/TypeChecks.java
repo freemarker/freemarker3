@@ -13,8 +13,8 @@ import freemarker.template.*;
 public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 	
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-        TemplateModel model) {
+    public Object get(Environment env, BuiltInExpression caller,
+        Object model) {
 		boolean result = false;
 		final String builtInName = caller.getName(); 
 		if (builtInName == "is_string") {

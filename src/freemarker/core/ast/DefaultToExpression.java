@@ -54,8 +54,8 @@ public class DefaultToExpression extends Expression {
 		return rhs;
 	}
 
-	TemplateModel _getAsTemplateModel(Environment env) {
-		TemplateModel left = null;		
+	Object _getAsTemplateModel(Environment env) {
+		Object left = null;		
 		try {
 			left = lhs.getAsTemplateModel(env);
 		} catch (InvalidReferenceException ire) {

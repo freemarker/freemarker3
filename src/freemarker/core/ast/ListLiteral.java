@@ -37,11 +37,11 @@ public class ListLiteral extends Expression {
     	return result;
     }
 
-    TemplateModel _getAsTemplateModel(Environment env) {
+    Object _getAsTemplateModel(Environment env) {
         SimpleSequence list = new SimpleSequence(values.size());
         for (Iterator it = values.iterator(); it.hasNext();) {
             Expression exp = (Expression) it.next();
-            TemplateModel tm = exp.getAsTemplateModel(env);
+            Object tm = exp.getAsTemplateModel(env);
             assertIsDefined(tm, exp, env);
             list.add(tm);
         }

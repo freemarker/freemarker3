@@ -41,20 +41,20 @@ public class TransformBlock extends TemplateElement {
     {
         TemplateTransformModel ttm = env.getTransform(transformExpression);
         if (ttm != null) {
-            Map<String,TemplateModel> args = new HashMap<String,TemplateModel>();
+            Map<String,Object> args = new HashMap<String,Object>();
             if (namedArgs != null && !namedArgs.isEmpty()) {
                 for (Iterator it = namedArgs.entrySet().iterator(); it.hasNext();) {
                     Map.Entry entry = (Map.Entry) it.next();
                     String key = (String) entry.getKey();
                     Expression valueExp = (Expression) entry.getValue();
-                    TemplateModel value = valueExp.getAsTemplateModel(env);
+                    Object value = valueExp.getAsTemplateModel(env);
                     args.put(key, value);
                 }
             } 
             env.render(nestedBlock, ttm, args);
         }
         else {
-            TemplateModel tm = transformExpression.getAsTemplateModel(env);
+            Object tm = transformExpression.getAsTemplateModel((Environment)env);
             throw invalidTypeException(tm, transformExpression, env, "transform");
         }
     }

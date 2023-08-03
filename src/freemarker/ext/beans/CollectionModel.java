@@ -44,7 +44,7 @@ implements
         super(collection, wrapper);
     }
 
-    public Iterator<TemplateModel> iterator()
+    public Iterator<Object> iterator()
     {
         return new IteratorModel(((Collection)object).iterator(), wrapper);
     }

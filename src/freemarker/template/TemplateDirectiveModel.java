@@ -42,7 +42,7 @@ public interface TemplateDirectiveModel extends TemplateModel
      *
      * @throws IOException
      */
-    public void execute(Environment env, Map<String, TemplateModel> params, 
-            TemplateModel[] loopVars, TemplateDirectiveBody body) 
+    public void execute(Environment env, Map<String, Object> params, 
+            Object[] loopVars, TemplateDirectiveBody body) 
     throws IOException;
 }

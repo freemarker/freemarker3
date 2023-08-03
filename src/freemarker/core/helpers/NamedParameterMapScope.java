@@ -7,17 +7,16 @@ import freemarker.core.AbstractScope;
 import freemarker.core.Scope;
 import freemarker.template.SimpleCollection;
 import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateModel;
 
 /**
  * @author Attila Szegedi
  * @version $Id: $
  */
 public class NamedParameterMapScope extends AbstractScope {
-    private final Map<String, TemplateModel> parameters;
+    private final Map<String, Object> parameters;
     
     public NamedParameterMapScope(Scope enclosingScope, 
-            Map<String, TemplateModel> parameters) {
+            Map<String, Object> parameters) {
         super(enclosingScope);
         this.parameters = parameters;
     }
@@ -30,11 +29,11 @@ public class NamedParameterMapScope extends AbstractScope {
         return parameters.keySet();
     }
 
-    public void put(String key, TemplateModel value) {
+    public void put(String key, Object value) {
         parameters.put(key, value);
     }
 
-    public TemplateModel remove(String key) {
+    public Object remove(String key) {
         return parameters.remove(key);
     }
 
@@ -50,7 +49,7 @@ public class NamedParameterMapScope extends AbstractScope {
         return new SimpleCollection(parameters.values());
     }
 
-    public TemplateModel get(String key) {
+    public Object get(String key) {
         return parameters.get(key);
     }
 }

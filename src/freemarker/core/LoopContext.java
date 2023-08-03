@@ -17,11 +17,11 @@ import freemarker.template.TemplateSequenceModel;
 
 public class LoopContext extends BlockScope {
     private boolean hasNext;
-    private TemplateModel loopVar;
+    private Object loopVar;
     private int index;
-    private TemplateModel list;
+    private Object list;
     
-    public LoopContext(IteratorBlock iteratorBlock, Scope enclosingScope, TemplateModel list) {
+    public LoopContext(IteratorBlock iteratorBlock, Scope enclosingScope, Object list) {
     	super(iteratorBlock, enclosingScope);
         this.list = list;
     }
@@ -31,7 +31,7 @@ public class LoopContext extends BlockScope {
     	Environment env = getEnvironment();
         if (list instanceof TemplateCollectionModel) {
             TemplateCollectionModel baseListModel = (TemplateCollectionModel) list;
-            Iterator<TemplateModel> it = baseListModel.iterator();
+            Iterator<Object> it = baseListModel.iterator();
             hasNext = it.hasNext();
             while (hasNext) {
             	clear();

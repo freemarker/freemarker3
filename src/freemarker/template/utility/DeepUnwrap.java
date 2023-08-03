@@ -53,7 +53,7 @@ public class DeepUnwrap
      *       unwrap the object.
      * </ol>
      */
-    public static Object unwrap(TemplateModel model) {
+    public static Object unwrap(Object model) {
         return unwrap(model, false);
     }
 
@@ -62,19 +62,19 @@ public class DeepUnwrap
      * if it doesn't know how to unwrap the model, but rather returns it as-is.
      * @since 2.3.14
      */
-    public static Object permissiveUnwrap(TemplateModel model) {
+    public static Object permissiveUnwrap(Object model) {
         return unwrap(model, true);
     }
     
     /**
      * @deprecated the name of this method is mistyped. Use 
-     * {@link #permissiveUnwrap(TemplateModel)} instead.
+     * {@link #permissiveUnwrap(Object)} instead.
      */
     public static Object premissiveUnwrap(TemplateModel model) {
         return unwrap(model, true);
     }
     
-    private static Object unwrap(TemplateModel model, boolean permissive) {
+    private static Object unwrap(Object model, boolean permissive) {
         if(model instanceof AdapterTemplateModel) {
             return ((AdapterTemplateModel)model).getAdaptedObject(OBJECT_CLASS);
         }
@@ -104,7 +104,7 @@ public class DeepUnwrap
         if(model instanceof TemplateCollectionModel) {
             TemplateCollectionModel coll = (TemplateCollectionModel)model;
             ArrayList<Object> list = new ArrayList<Object>();
-            Iterator<TemplateModel> it = coll.iterator();            
+            Iterator<Object> it = coll.iterator();            
             while(it.hasNext()) {
                 list.add(unwrap(it.next(), permissive));
             }
@@ -113,7 +113,7 @@ public class DeepUnwrap
         if(model instanceof TemplateHashModelEx) {
             TemplateHashModelEx hash = (TemplateHashModelEx)model;
             Map map = new LinkedHashMap();
-            Iterator<TemplateModel> keys = hash.keys().iterator();
+            Iterator<Object> keys = hash.keys().iterator();
             while(keys.hasNext()) {
                 String key = (String)unwrap(keys.next(), permissive); 
                 map.put(key, unwrap(hash.get(key), permissive));

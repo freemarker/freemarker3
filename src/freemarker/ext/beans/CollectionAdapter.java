@@ -33,7 +33,7 @@ class CollectionAdapter extends AbstractCollection implements TemplateModelAdapt
     public Iterator iterator() {
         try {
             return new Iterator() {
-                final Iterator<TemplateModel> i = model.iterator();
+                final Iterator<Object> i = model.iterator();
     
                 public boolean hasNext() {
                     try {

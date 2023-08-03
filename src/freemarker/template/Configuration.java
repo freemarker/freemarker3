@@ -70,7 +70,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     private static Configuration defaultConfig = new Configuration();
     private boolean localizedLookup = true, whitespaceStripping = true, strictVariableDefinition=false;
     private TemplateCache cache;
-    private HashMap<String, TemplateModel> variables = new HashMap<String, TemplateModel>();
+    private HashMap<String, Object> variables = new HashMap<String, Object>();
     private HashMap<String, String> encodingMap = new HashMap<String, String>();
     private Map<String, String> autoImportMap = new HashMap<String, String>();
     private ArrayList<String> autoImports = new ArrayList<String>();
@@ -101,7 +101,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     public Object clone() {
         try {
             Configuration copy = (Configuration)super.clone();
-            copy.variables = new HashMap<String, TemplateModel>(variables);
+            copy.variables = new HashMap<String, Object>(variables);
             copy.encodingMap = new HashMap<String, String>(encodingMap);
             copy.createTemplateCache(cache.getTemplateLoader(), cache.getCacheStorage());
             return copy;
@@ -589,8 +589,12 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @see #setSharedVariable(String,Object)
      * @see #setAllSharedVariables
      */
-    public void setSharedVariable(String name, TemplateModel tm) {
-        variables.put(name, tm);
+    public void setSharedVariable(String name, Object tm) {
+        variables.put(name, getObjectWrapper().wrap(tm));
+    }
+
+    public void put(String key, Object obj) {
+        variables.put(key, getObjectWrapper().wrap(obj));
     }
 
     /**
@@ -603,17 +607,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
         return new HashSet<String>(variables.keySet());
     }
     
-    /**
-     * Adds shared variable to the configuration.
-     * It uses {@link Configurable#getObjectWrapper()} to wrap the 
-     * <code>obj</code>.
-     * @see #setSharedVariable(String,TemplateModel)
-     * @see #setAllSharedVariables
-     */
-    public void setSharedVariable(String name, Object obj) {
-        setSharedVariable(name, getObjectWrapper().wrap(obj));
-    }
-
     /**
      * Adds all object in the hash as shared variable to the configuration.
      *
@@ -629,8 +622,8 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @see #setSharedVariable(String,TemplateModel)
      */
     public void setAllSharedVariables(TemplateHashModelEx hash) {
-        Iterator<TemplateModel> keys = hash.keys().iterator();
-        Iterator<TemplateModel> values = hash.values().iterator();
+        Iterator<Object> keys = hash.keys().iterator();
+        Iterator<Object> values = hash.values().iterator();
         while(keys.hasNext())
         {
             setSharedVariable(((TemplateScalarModel)keys.next()).getAsString(), values.next());
@@ -649,7 +642,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @see #setSharedVariable(String,TemplateModel)
      * @see #setAllSharedVariables
      */
-    public TemplateModel getSharedVariable(String name) {
+    public Object getSharedVariable(String name) {
         return variables.get(name);
     }
     
@@ -951,15 +944,11 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     	return null;
     }
     
-    public void put(String varname, TemplateModel value) {
-    	setSharedVariable(varname, value);
-    }
-    
-    public TemplateModel get(String name) {
+    public Object get(String name) {
     	return variables.get(name);
     }
     
-    public TemplateModel resolveVariable(String name) {
+    public Object resolveVariable(String name) {
     	return variables.get(name);
     }
     
@@ -967,7 +956,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
         return Collections.unmodifiableCollection(variables.keySet());
     }
     
-    public TemplateModel remove(String varname) {
+    public Object remove(String varname) {
     	return variables.remove(varname);
     }
     

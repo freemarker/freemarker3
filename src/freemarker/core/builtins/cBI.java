@@ -15,7 +15,7 @@ public class cBI extends ExpressionEvaluatingBuiltIn {
     
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) 
+            Object model) 
     {
         final Number num;
         try {

@@ -18,8 +18,8 @@ import freemarker.template.TemplateScalarModel;
 public class numberBI extends ExpressionEvaluatingBuiltIn
 {
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-            TemplateModel model) throws TemplateException
+    public Object get(Environment env, BuiltInExpression caller,
+            Object model) throws TemplateException
     {
         if(model instanceof TemplateNumberModel) {
             return model;

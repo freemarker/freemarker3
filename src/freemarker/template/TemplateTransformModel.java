@@ -66,6 +66,6 @@ public interface TemplateTransformModel extends TemplateModel {
       * interface if it needs advanced control over the evaluation of the 
       * transformation body.
       */
-     Writer getWriter(Writer out, Map<String, TemplateModel> args) 
+     Writer getWriter(Writer out, Map<String, Object> args) 
          throws IOException;
 }

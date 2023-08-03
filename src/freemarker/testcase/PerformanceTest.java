@@ -64,13 +64,13 @@ public class PerformanceTest
     
     private static class TestSequence implements TemplateCollectionModel
     {
-        public Iterator<TemplateModel> iterator()
+        public Iterator<Object> iterator()
         {
-            return new Iterator<TemplateModel>()
+            return new Iterator<Object>()
             {
                 private int i = 0;
                 
-                public TemplateModel next()
+                public Object next()
                 {
                     return new TestI(i++);
                 }
@@ -85,7 +85,7 @@ public class PerformanceTest
     
     private static class TestHash implements TemplateHashModel, TemplateScalarModel
     {
-        public TemplateModel get(String key)
+        public Object get(String key)
         {
             return this;
         }

@@ -73,9 +73,7 @@ implements
      * Overridden to invoke the generic get method by casting to Map instead of 
      * through reflection - should yield better performance.
      */
-    protected TemplateModel invokeGenericGet(Map keyMap, String key)
-    throws TemplateModelException
-    {
+    protected Object invokeGenericGet(Map keyMap, String key) {
         Map map = (Map) object;
         Object val = map.get(key);
         if(val == null) {

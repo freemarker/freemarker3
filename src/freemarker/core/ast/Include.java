@@ -93,7 +93,7 @@ public class Include extends TemplateElement {
         
         boolean parse = this.parse;
         if (parseExp != null) {
-            TemplateModel tm = parseExp.getAsTemplateModel(env);
+            Object tm = parseExp.getAsTemplateModel(env);
             assertNonNull(tm, parseExp, env);
             if (tm instanceof TemplateScalarModel) {
                 parse = getYesNo(EvaluationUtil.getString((TemplateScalarModel)tm, parseExp, env));

@@ -2,11 +2,9 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 
 abstract public class BuiltIn {
-    abstract public TemplateModel get(Environment env, BuiltInExpression caller) throws TemplateException;
+    abstract public Object get(Environment env, BuiltInExpression caller);
     
     /**
      * True if the value this built-in returns from {@link #get(Environment, BuiltInExpression)} 

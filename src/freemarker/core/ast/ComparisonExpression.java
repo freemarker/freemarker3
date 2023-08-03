@@ -78,8 +78,8 @@ public class ComparisonExpression extends BooleanExpression {
      * Thus, if you update this method, then you have to update that too!
      */
     boolean isTrue(Environment env) {
-        TemplateModel ltm = left.getAsTemplateModel(env);
-        TemplateModel rtm = right.getAsTemplateModel(env);
+        Object ltm = left.getAsTemplateModel(env);
+        Object rtm = right.getAsTemplateModel(env);
 /*
   The following block that allows comparison of nulls is now commented out.        
         if (ltm == TemplateModel.JAVA_NULL || rtm == TemplateModel.JAVA_NULL) {
