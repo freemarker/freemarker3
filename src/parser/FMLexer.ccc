@@ -32,7 +32,7 @@ TREE_BUILDING_ENABLED=false;
  * the macro x(y+1) with no args.
  */
 
-INJECT(LEXER_CLASS) : 
+INJECT LEXER_CLASS : 
    import freemarker.template.utility.StringUtil;{
     /**
     The noparseType is set when we enter
@@ -107,9 +107,10 @@ INJECT(LEXER_CLASS) :
             case GREATER_THAN_EQUALS : case GREATER_THAN : 
                 if (parenthesisNesting == 0 && !altDirectiveSyntax) {
                     if (token.getType() == TokenType.GREATER_THAN_EQUALS) {
-                        backup(1);
+                        //backup(1);
+                        //token.setEndOffset(token.getEndOffset() - 1);
                         // So that the = doesn't get eaten.
-                        token.setEndOffset(token.getEndOffset() - 1);
+                        token.truncate(1);
                     }
                     token.setType(TokenType.DIRECTIVE_END);
                     switchTo(LexicalState.DEFAULT);
@@ -173,8 +174,9 @@ INJECT(LEXER_CLASS) :
                     String extraChars = tokText.substring(0, tokText.lastIndexOf(startTagChar));
                     if (extraChars.length() > 0) {
                         //token.setImage(extraChars);
-                        backup(tokText.length() - extraChars.length());
-                        token.setEndOffset(token.getEndOffset() - (tokText.length() - extraChars.length()));
+                        // backup(tokText.length() - extraChars.length());
+                        //token.setEndOffset(token.getEndOffset() - (tokText.length() - extraChars.length()));
+                        token.truncate(extraChars.length());
                         token.setType(TokenType.PRINTABLE_CHARS);
                     } else {
                         switchTo(LexicalState.DEFAULT);
@@ -188,8 +190,9 @@ INJECT(LEXER_CLASS) :
                     switchTo(LexicalState.DEFAULT);
                 } else {
                     //token.setImage(tokText.substring(0, tokText.length() -3));
-                    backup(3);
-                    token.setEndOffset(token.getEndOffset() - 3);
+                    //backup(3);
+                    //token.setEndOffset(token.getEndOffset() - 3);
+                    token.truncate(3);
                     token.setType(TokenType.PRINTABLE_CHARS);
                 }
                 break;

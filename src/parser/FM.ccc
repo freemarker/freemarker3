@@ -593,7 +593,8 @@ Expression BuiltIn(Expression exp) :
    {
    	   BuiltInExpression result = new BuiltInExpression(exp, t.getImage());
          if (result.getBuiltIn() == null) {
-           throw new ParseException(this, "Unknown builtin " + t.getImage());
+            fail("Unknown builtin ",t);
+           //throw new ParseException(this, "Unknown builtin " + t.getImage());
          }
    	   result.setLocation(template, exp, t);
    	   return result;
