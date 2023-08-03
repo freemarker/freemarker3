@@ -54,11 +54,7 @@ abstract public class WrappingTemplateModel {
      * object wrapper is used.
      */
     protected WrappingTemplateModel(ObjectWrapper objectWrapper) {
-        this.objectWrapper = 
-            objectWrapper != null ? objectWrapper : defaultObjectWrapper;
-        if (this.objectWrapper == null) { // This is to address some weird static initializing bug
-            this.objectWrapper = defaultObjectWrapper =  new ObjectWrapper();
-        }
+        this.objectWrapper = ObjectWrapper.getDefaultInstance();
     }
     
     /**

@@ -489,7 +489,7 @@ public class Configurable
                 }
             } else if (OBJECT_WRAPPER_KEY.equals(key)) {
                 if (value.indexOf('.') == -1) {
-                    setObjectWrapper(new ObjectWrapper());
+                    setObjectWrapper(ObjectWrapper.getDefaultInstance());
                 } else {
                     setObjectWrapper((ObjectWrapper) Class.forName(value)
                             .newInstance());

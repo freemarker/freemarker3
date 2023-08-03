@@ -7,10 +7,6 @@ import freemarker.template.utility.*;
 import junit.framework.*;
 import java.util.*;
 import java.io.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.xml.sax.InputSource;
-
 
 public class TemplateTestCase extends TestCase {
     
@@ -89,13 +85,8 @@ public class TemplateTestCase extends TestCase {
             }
         }
         else if ("object_wrapper".equals(param)) {
-            try {
-                Class cl = Class.forName(value);
-                ObjectWrapper ow = (ObjectWrapper) cl.newInstance();
-                conf.setObjectWrapper(ow);
-            } catch (Exception e) {
-                fail("Error setting object wrapper to " + value + "\n" + e.getMessage());
-            }
+            ObjectWrapper ow = ObjectWrapper.getDefaultInstance();
+            conf.setObjectWrapper(ow);
         }
         else if ("input_encoding".equals(param)) {
             conf.setDefaultEncoding(value);
@@ -119,13 +110,13 @@ public class TemplateTestCase extends TestCase {
         dataModel.put("message", "Hello, world!");
         
         if (testName.equals("bean-maps")) {
-            ObjectWrapper w1 = new ObjectWrapper();
-            ObjectWrapper w2 = new ObjectWrapper();
-            ObjectWrapper w3 = new ObjectWrapper();
-            ObjectWrapper w4 = new ObjectWrapper();
-            ObjectWrapper w5 = new ObjectWrapper();
-            ObjectWrapper w6 = new ObjectWrapper();
-            ObjectWrapper w7 = new ObjectWrapper();
+            ObjectWrapper w1 = ObjectWrapper.getDefaultInstance();
+            ObjectWrapper w2 = ObjectWrapper.getDefaultInstance();
+            ObjectWrapper w3 = ObjectWrapper.getDefaultInstance();
+            ObjectWrapper w4 = ObjectWrapper.getDefaultInstance();
+            ObjectWrapper w5 = ObjectWrapper.getDefaultInstance();
+            ObjectWrapper w6 = ObjectWrapper.getDefaultInstance();
+            ObjectWrapper w7 = ObjectWrapper.getDefaultInstance();
             w1.setSimpleMapWrapper(false);
             w2.setSimpleMapWrapper(false);
             w3.setSimpleMapWrapper(false);

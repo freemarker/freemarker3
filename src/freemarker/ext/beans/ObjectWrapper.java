@@ -37,7 +37,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-//import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateDateModel;
@@ -160,7 +159,7 @@ public class ObjectWrapper
      * {@link #EXPOSE_SAFE} method exposure level, and will not cache
      * model instances.
      */
-    public ObjectWrapper() {}
+    private ObjectWrapper() {}
 
     
     /**
