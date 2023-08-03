@@ -15,10 +15,6 @@ public class BooleanLiteral extends Expression {
     	return value;
     }
 
-    static TemplateBooleanModel getTemplateModel(boolean b) {
-        return b? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
-    }
-
     boolean isTrue(Environment env) {
         return value;
     }
@@ -27,7 +23,7 @@ public class BooleanLiteral extends Expression {
         return value ? "true" : "false";
     }
 
-    TemplateModel _getAsTemplateModel(Environment env) {
+    Object _getAsTemplateModel(Environment env) {
         return value ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
     }
 

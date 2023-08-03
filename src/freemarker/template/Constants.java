@@ -1,15 +1,6 @@
-package freemarker.template.utility;
+package freemarker.template;
 
 import java.util.Iterator;
-import freemarker.template.SimpleNumber;
-import freemarker.template.TemplateBooleanModel;
-import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateHashModelEx;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateNumberModel;
-import freemarker.template.TemplateScalarModel;
-import freemarker.template.TemplateSequenceModel;
 
 /**
  * Frequently used constant {@link TemplateModel} values.

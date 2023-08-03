@@ -11,7 +11,7 @@ import freemarker.template.*;
  */
 public class BaseScope extends AbstractScope {
 
-    private HashMap<String,Object> variables = new HashMap<>();
+    private Map<String,Object> variables = new HashMap<>();
 
     BaseScope(Scope enclosingScope) {
         super(enclosingScope);

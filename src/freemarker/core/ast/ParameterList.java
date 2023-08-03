@@ -18,7 +18,6 @@ import freemarker.core.helpers.NamedParameterMapScope;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
 /**

@@ -12,7 +12,7 @@ public interface TemplateBooleanModel extends TemplateModel {
      * @return whether to interpret this object as true or false in a boolean context
      */
 
-    boolean getAsBoolean() throws TemplateModelException;
+    boolean getAsBoolean();
     /**
      * A singleton object to represent boolean false
      */
