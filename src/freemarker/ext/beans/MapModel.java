@@ -6,7 +6,6 @@ import java.util.Set;
 
 import freemarker.ext.util.ModelFactory;
 import freemarker.template.Constants;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -35,9 +34,9 @@ implements
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object, BeansWrapper wrapper)
             {
-                return new MapModel((Map)object, (BeansWrapper)wrapper);
+                return new MapModel((Map)object, wrapper);
             }
         };
 

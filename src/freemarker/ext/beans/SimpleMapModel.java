@@ -8,7 +8,6 @@ import freemarker.ext.util.ModelFactory;
 import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
@@ -32,9 +31,9 @@ WrapperTemplateModel
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object, BeansWrapper wrapper)
             {
-                return new SimpleMapModel((Map)object, (BeansWrapper)wrapper);
+                return new SimpleMapModel((Map)object, wrapper);
             }
         };
 

@@ -58,13 +58,9 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
         }
 
         public Object exec(List arguments) {
-            ObjectWrapper ow = null;
+            BeansWrapper ow = null;
             if (env != null) ow = env.getObjectWrapper();
-            BeansWrapper bw = 
-                ow instanceof BeansWrapper 
-                ? (BeansWrapper)ow
-                        : BeansWrapper.getDefaultInstance();
-                return bw.newInstance(cl, arguments);
+            return ow.newInstance(cl, arguments);
         }
     }
 }

@@ -1,7 +1,6 @@
 package freemarker.ext.beans;
 
 import freemarker.ext.util.ModelFactory;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateScalarModel;
 
@@ -18,9 +17,9 @@ implements TemplateScalarModel
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object, BeansWrapper wrapper)
             {
-                return new StringModel(object, (BeansWrapper)wrapper);
+                return new StringModel(object, wrapper);
             }
         };
 

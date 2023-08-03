@@ -36,16 +36,16 @@ implements TemplateHashModelEx, Serializable {
 
     /**
      * Constructs an empty hash that uses the default wrapper set in
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)}.
      */
     public SimpleHash() {
-        this((ObjectWrapper)null);
+        this((BeansWrapper)null);
     }
 
     /**
      * Creates a new simple hash with the copy of the underlying map and the
      * default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)}.
      * @param map The Map to use for the key/value pairs. It makes a copy for 
      * internal use. If the map implements the {@link SortedMap} interface, the
      * internal copy will be a {@link TreeMap}, otherwise it will be a 
@@ -59,10 +59,10 @@ implements TemplateHashModelEx, Serializable {
      * Creates an empty simple hash using the specified object wrapper.
      * @param wrapper The object wrapper to use to wrap objects into
      * {@link TemplateModel} instances. If null, the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)} is
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)} is
      * used.
      */
-    public SimpleHash(ObjectWrapper wrapper) {
+    public SimpleHash(BeansWrapper wrapper) {
         super(wrapper);
         map = new HashMap();
     }
@@ -70,17 +70,17 @@ implements TemplateHashModelEx, Serializable {
     /**
      * Creates a new simple hash with the copy of the underlying map and 
      * either the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}, or
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)}, or
      * the {@link freemarker.ext.beans.BeansWrapper JavaBeans wrapper}.
      * @param map The Map to use for the key/value pairs. It makes a copy for 
      * internal use. If the map implements the {@link SortedMap} interface, the
      * internal copy will be a {@link TreeMap}, otherwise it will be a 
      * @param wrapper The object wrapper to use to wrap objects into
      * {@link TemplateModel} instances. If null, the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)} is
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)} is
      * used.
      */
-    public SimpleHash(Map map, ObjectWrapper wrapper) {
+    public SimpleHash(Map map, BeansWrapper wrapper) {
         super(wrapper);
         try {
             this.map = copyMap(map);

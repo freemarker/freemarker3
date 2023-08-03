@@ -57,7 +57,7 @@ public class Configurable
     private String falseFormat;
     private TemplateExceptionHandler templateExceptionHandler;
     private ArithmeticEngine arithmeticEngine;
-    private ObjectWrapper objectWrapper;
+    private BeansWrapper objectWrapper;
     private String outputEncoding;
     private boolean outputEncodingSet;
     private String urlEscapingCharset;
@@ -75,7 +75,7 @@ public class Configurable
         falseFormat = "false";
         templateExceptionHandler = TemplateExceptionHandler.DEBUG_HANDLER;
         arithmeticEngine = ArithmeticEngine.BIGDECIMAL_ENGINE;
-        objectWrapper = new BeansWrapper();
+        objectWrapper = BeansWrapper.getDefaultInstance();
         // outputEncoding and urlEscapingCharset defaults to null,
         // which means "not specified"
         
@@ -329,7 +329,7 @@ public class Configurable
      * @param objectWrapper the object wrapper used to wrap objects to template
      * models.
      */
-    public void setObjectWrapper(ObjectWrapper objectWrapper) {
+    public void setObjectWrapper(BeansWrapper objectWrapper) {
         if (objectWrapper == null) throw new IllegalArgumentException("Setting \"object_wrapper\" can't be null");
         this.objectWrapper = objectWrapper;
         properties.setProperty(OBJECT_WRAPPER_KEY, objectWrapper.getClass().getName());
@@ -338,9 +338,10 @@ public class Configurable
     /**
      * Retrieves the object wrapper used to wrap objects to template models.
      */
-    public ObjectWrapper getObjectWrapper() {
-        return objectWrapper != null
-                ? objectWrapper : parent.getObjectWrapper();
+    public BeansWrapper getObjectWrapper() {
+        return BeansWrapper.getDefaultInstance();
+//        return objectWrapper != null
+//                ? objectWrapper : parent.getObjectWrapper();
     }
     
     /**
@@ -490,7 +491,7 @@ public class Configurable
                 if (value.indexOf('.') == -1) {
                     setObjectWrapper(new BeansWrapper());
                 } else {
-                    setObjectWrapper((ObjectWrapper) Class.forName(value)
+                    setObjectWrapper((BeansWrapper) Class.forName(value)
                             .newInstance());
                 }
             } else if (BOOLEAN_FORMAT_KEY.equals(key)) {

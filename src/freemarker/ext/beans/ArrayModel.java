@@ -3,7 +3,6 @@ package freemarker.ext.beans;
 import java.lang.reflect.Array;
 
 import freemarker.ext.util.ModelFactory;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -21,9 +20,9 @@ public class ArrayModel extends BeanModel implements TemplateCollectionModel, Te
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object, BeansWrapper wrapper)
             {
-                return new ArrayModel(object, (BeansWrapper)wrapper);
+                return new ArrayModel(object, wrapper);
             }
         };
         

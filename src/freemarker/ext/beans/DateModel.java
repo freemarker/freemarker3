@@ -3,7 +3,6 @@ package freemarker.ext.beans;
 import java.util.Date;
 
 import freemarker.ext.util.ModelFactory;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateModel;
 
@@ -21,9 +20,9 @@ implements
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object, BeansWrapper wrapper)
             {
-                return new DateModel((Date)object, (BeansWrapper)wrapper);
+                return new DateModel((Date)object, wrapper);
             }
         };
 

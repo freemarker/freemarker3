@@ -11,7 +11,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import freemarker.ext.util.ModelFactory;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -42,9 +41,9 @@ public class ResourceBundleModel
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object, BeansWrapper wrapper)
             {
-                return new ResourceBundleModel((ResourceBundle)object, (BeansWrapper)wrapper);
+                return new ResourceBundleModel((ResourceBundle)object, wrapper);
             }
         };
 

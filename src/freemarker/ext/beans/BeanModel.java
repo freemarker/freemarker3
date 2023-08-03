@@ -19,7 +19,6 @@ import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
@@ -50,9 +49,9 @@ implements
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object, BeansWrapper wrapper)
             {
-                return new BeanModel(object, (BeansWrapper)wrapper);
+                return new BeanModel(object, wrapper);
             }
         };
 

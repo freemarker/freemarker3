@@ -40,7 +40,7 @@ import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-import freemarker.template.ObjectWrapper;
+//import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateDateModel;
@@ -58,7 +58,7 @@ import freemarker.template.TemplateSequenceModel;
  * @author Attila Szegedi
  * @version $Id: BeansWrapper.java,v 1.95 2006/03/11 19:21:23 ddekany Exp $
  */
-public class BeansWrapper implements ObjectWrapper
+public class BeansWrapper //implements ObjectWrapper
 {
     public static final Object CAN_NOT_UNWRAP = new Object();
     private static final Class<java.math.BigInteger> BIGINTEGER_CLASS = java.math.BigInteger.class;
@@ -153,7 +153,7 @@ public class BeansWrapper implements ObjectWrapper
     private boolean exposeFields = false;
     private int defaultDateType = TemplateDateModel.UNKNOWN;
 
-    private ObjectWrapper outerIdentity = this;
+    private BeansWrapper outerIdentity = this;
     private boolean simpleMapWrapper=true;
     private boolean strict = false;
     
@@ -207,7 +207,7 @@ public class BeansWrapper implements ObjectWrapper
      * which will be used to wrap the sub-objects.
      * @param outerIdentity the aggregate ObjectWrapper
      */
-    public void setOuterIdentity(ObjectWrapper outerIdentity)
+    public void setOuterIdentity(BeansWrapper outerIdentity)
     {
         this.outerIdentity = outerIdentity;
     }
@@ -216,7 +216,7 @@ public class BeansWrapper implements ObjectWrapper
      * By default returns <tt>this</tt>.
      * @see #setOuterIdentity(ObjectWrapper)
      */
-    public ObjectWrapper getOuterIdentity()
+    public BeansWrapper getOuterIdentity()
     {
         return outerIdentity;
     }
@@ -335,7 +335,6 @@ public class BeansWrapper implements ObjectWrapper
      * Returns the default instance of the wrapper. This instance is used
      * when you construct various bean models without explicitly specifying
      * a wrapper. It is also returned by 
-     * {@link freemarker.template.ObjectWrapper#BEANS_WRAPPER}
      * and this is the sole instance that is used by the JSP adapter.
      * You can modify the properties of the default instance (caching,
      * exposure level, null model) to affect its operation. By default, the
@@ -377,20 +376,20 @@ public class BeansWrapper implements ObjectWrapper
     }
     
     private final ModelFactory BOOLEAN_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object, ObjectWrapper wrapper) {
+        public TemplateModel create(Object object, BeansWrapper wrapper) {
             return (Boolean)object ? TRUE : FALSE; 
         }
     };
 
     private static final ModelFactory ITERATOR_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object, ObjectWrapper wrapper) {
-            return new IteratorModel((Iterator)object, (BeansWrapper)wrapper); 
+        public TemplateModel create(Object object, BeansWrapper wrapper) {
+            return new IteratorModel((Iterator)object, wrapper); 
         }
     };
 
     private static final ModelFactory ENUMERATION_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object, ObjectWrapper wrapper) {
-            return new EnumerationModel((Enumeration)object, (BeansWrapper)wrapper); 
+        public TemplateModel create(Object object, BeansWrapper wrapper) {
+            return new EnumerationModel((Enumeration)object, wrapper); 
         }
     };
 

@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import freemarker.ext.util.ModelFactory;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModel;
 
@@ -24,9 +23,9 @@ implements
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object, BeansWrapper wrapper)
             {
-                return new CollectionModel((Collection)object, (BeansWrapper)wrapper);
+                return new CollectionModel((Collection)object, wrapper);
             }
         };
 

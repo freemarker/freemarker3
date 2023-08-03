@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import freemarker.ext.util.ModelFactory;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -21,9 +20,9 @@ public class ListModel extends CollectionModel implements TemplateSequenceModel 
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object, BeansWrapper wrapper)
             {
-                return new ListModel((List)object, (BeansWrapper)wrapper);
+                return new ListModel((List)object, wrapper);
             }
         };
 

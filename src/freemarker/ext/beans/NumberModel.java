@@ -1,7 +1,6 @@
 package freemarker.ext.beans;
 
 import freemarker.ext.util.ModelFactory;
-import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateNumberModel;
 
@@ -19,9 +18,9 @@ implements
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object, BeansWrapper wrapper)
             {
-                return new NumberModel((Number)object, (BeansWrapper)wrapper);
+                return new NumberModel((Number)object, wrapper);
             }
         };
     /**

@@ -15,13 +15,12 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.TemplateNode;
-import freemarker.template.ObjectWrapper;
+import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateException;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
@@ -289,7 +288,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 Pattern pattern = getPattern(splitString, flags);
                 result = pattern.split(string);
             } 
-            return ObjectWrapper.DEFAULT_WRAPPER.wrap(result);
+            return BeansWrapper.getDefaultInstance().wrap(result);
         }
     }
 

@@ -3,6 +3,8 @@ package freemarker.template;
 import java.io.Serializable;
 import java.util.*;
 
+import freemarker.ext.beans.BeansWrapper;
+
 /**
  * A simple implementation of {@link TemplateCollectionModel}.
  * It's able to wrap <tt>java.util.Iterator</tt>-s and <tt>java.util.Collection</tt>-s.
@@ -21,8 +23,7 @@ import java.util.*;
  * @version $Id: SimpleCollection.java,v 1.13 2004/11/27 14:49:57 ddekany Exp $
  */
 public class SimpleCollection extends WrappingTemplateModel
-implements TemplateCollectionModel, Serializable {
-    private static final long serialVersionUID = 1729171563434869856L;
+implements TemplateCollectionModel {
 
     private boolean iteratorDirty;
     private Iterator iterator;
@@ -36,12 +37,12 @@ implements TemplateCollectionModel, Serializable {
         this.collection = collection;
     }
 
-    public SimpleCollection(Iterator iterator, ObjectWrapper wrapper) {
+    public SimpleCollection(Iterator iterator, BeansWrapper wrapper) {
         super(wrapper);
         this.iterator = iterator;
     }
 
-    public SimpleCollection(Collection collection, ObjectWrapper wrapper) {
+    public SimpleCollection(Collection collection, BeansWrapper wrapper) {
         super(wrapper);
         this.collection = collection;
     }

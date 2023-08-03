@@ -91,7 +91,7 @@ public class TemplateTestCase extends TestCase {
         else if ("object_wrapper".equals(param)) {
             try {
                 Class cl = Class.forName(value);
-                ObjectWrapper ow = (ObjectWrapper) cl.newInstance();
+                BeansWrapper ow = (BeansWrapper) cl.newInstance();
                 conf.setObjectWrapper(ow);
             } catch (Exception e) {
                 fail("Error setting object wrapper to " + value + "\n" + e.getMessage());
