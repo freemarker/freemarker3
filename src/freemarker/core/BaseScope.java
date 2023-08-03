@@ -38,11 +38,11 @@ public class BaseScope extends AbstractScope {
     }
 
     public TemplateCollectionModel keys() {
-        return new SimpleCollection(variables.keySet(), TRIVIAL_WRAPPER);
+        return new SimpleCollection(variables.keySet(), ObjectWrapper.BEANS_WRAPPER);
     }
 
     public TemplateCollectionModel values() {
-        return new SimpleCollection(variables.values(), TRIVIAL_WRAPPER);
+        return new SimpleCollection(variables.values(), ObjectWrapper.BEANS_WRAPPER);
     }
 
 
@@ -57,15 +57,4 @@ public class BaseScope extends AbstractScope {
     public Collection<String> getDirectVariableNames() {
         return Collections.unmodifiableCollection(variables.keySet());
     }
-
-    // An object wrapper where everything is known to be either a string or already a TemplateModel
-
-    static ObjectWrapper TRIVIAL_WRAPPER = new ObjectWrapper() {
-        public TemplateModel wrap(Object obj) {
-            if (obj instanceof String) {
-                return new SimpleScalar((String) obj);
-            }
-            return (TemplateModel) obj;
-        }
-    };
 }

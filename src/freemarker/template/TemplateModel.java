@@ -11,7 +11,6 @@ package freemarker.template;
  * @see TemplateNumberModel
  * @see TemplateTransformModel
  *
- * @version $Id: TemplateModel.java,v 1.19 2003/01/12 23:40:21 revusky Exp $
  */
 public interface TemplateModel {
 }
