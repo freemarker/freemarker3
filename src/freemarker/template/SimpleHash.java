@@ -26,10 +26,7 @@ import freemarker.ext.beans.ObjectWrapper;
  * @see SimpleSequence
  * @see SimpleScalar
  */
-public class SimpleHash extends WrappingTemplateModel 
-implements TemplateHashModelEx, Serializable {
-    private static final long serialVersionUID = -5942587725941500249L;
-
+public class SimpleHash implements TemplateHashModelEx {
     private Map map;
     private boolean putFailed;
     private Map unwrappedMap;
@@ -39,7 +36,7 @@ implements TemplateHashModelEx, Serializable {
      * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
      */
     public SimpleHash() {
-        this((ObjectWrapper)null);
+        map = new HashMap(); 
     }
 
     /**
@@ -52,52 +49,7 @@ implements TemplateHashModelEx, Serializable {
      * {@link HashMap}.
      */
     public SimpleHash(Map map) {
-        this(map, null);
-    }
-
-    /**
-     * Creates an empty simple hash using the specified object wrapper.
-     * @param wrapper The object wrapper to use to wrap objects into
-     * {@link TemplateModel} instances. If null, the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)} is
-     * used.
-     */
-    public SimpleHash(ObjectWrapper wrapper) {
-        super(wrapper);
-        map = new HashMap();
-    }
-
-    /**
-     * Creates a new simple hash with the copy of the underlying map and 
-     * either the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}, or
-     * the {@link freemarker.ext.beans.ObjectWrapper JavaBeans wrapper}.
-     * @param map The Map to use for the key/value pairs. It makes a copy for 
-     * internal use. If the map implements the {@link SortedMap} interface, the
-     * internal copy will be a {@link TreeMap}, otherwise it will be a 
-     * @param wrapper The object wrapper to use to wrap objects into
-     * {@link TemplateModel} instances. If null, the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)} is
-     * used.
-     */
-    public SimpleHash(Map map, ObjectWrapper wrapper) {
-        super(wrapper);
-        try {
-            this.map = copyMap(map);
-        } catch (ConcurrentModificationException cme) {
-            //This will occur extremely rarely.
-            //If it does, we just wait 5 ms and try again. If 
-            // the ConcurrentModificationException
-            // is thrown again, we just let it bubble up this time.
-            // TODO: Maybe we should log here.
-            try {
-                Thread.sleep(5);
-            } catch (InterruptedException ie) {
-            }
-            synchronized (map) {
-                this.map = copyMap(map);
-            }
-        }
+        this.map = map;
     }
 
     protected Map copyMap(Map map) {
@@ -169,7 +121,7 @@ implements TemplateHashModelEx, Serializable {
         if (result instanceof TemplateModel) {
             return (TemplateModel) result;
         }
-        Object tm = wrap(result);
+        Object tm = ObjectWrapper.instance().wrap(result);
         if (!putFailed) try {
             if (tm != null) map.put(putKey, tm);
         } catch (Exception e) {
@@ -219,7 +171,7 @@ implements TemplateHashModelEx, Serializable {
             }
             // Create a copy to maintain immutability semantics and
             // Do nested unwrapping of elements if necessary.
-            ObjectWrapper bw = ObjectWrapper.getDefaultInstance();
+            ObjectWrapper bw = ObjectWrapper.instance();
             for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
                 Map.Entry entry = (Map.Entry) it.next();
                 Object key = entry.getKey();
@@ -251,68 +203,10 @@ implements TemplateHashModelEx, Serializable {
     }
 
     public TemplateCollectionModel keys() {
-        return new SimpleCollection(map.keySet(), getObjectWrapper());
+        return new SimpleCollection(map.keySet());
     }
 
     public TemplateCollectionModel values() {
-        return new SimpleCollection(map.values(), getObjectWrapper());
-    }
-
-    public SimpleHash synchronizedWrapper() {
-        return new SynchronizedHash();
-    }
-    
-    
-    private class SynchronizedHash extends SimpleHash {
-        private static final long serialVersionUID = -5266601722334529216L;
-
-        public boolean isEmpty() {
-            synchronized (SimpleHash.this) {
-                return SimpleHash.this.isEmpty();
-            }
-        }
-        
-        public void put(String key, Object obj) {
-            synchronized (SimpleHash.this) {
-                SimpleHash.this.put(key, obj);
-            }
-        }
-
-        public Object get(String key) {
-            synchronized (SimpleHash.this) {
-                return SimpleHash.this.get(key);
-            }
-        }
-
-        public void remove(String key) {
-            synchronized (SimpleHash.this) {
-                SimpleHash.this.remove(key);
-            }
-        }
-
-        public int size() {
-            synchronized (SimpleHash.this) {
-                return SimpleHash.this.size();
-            }
-        }
-
-        public TemplateCollectionModel keys() {
-            synchronized (SimpleHash.this) {
-                return SimpleHash.this.keys();
-            }
-        }
-
-        public TemplateCollectionModel values() {
-            synchronized (SimpleHash.this) {
-                return SimpleHash.this.values();
-            }
-        }
-        
-        public Map toMap() {
-            synchronized (SimpleHash.this) {
-                return SimpleHash.this.toMap();
-            }
-        }
-    
+        return new SimpleCollection(map.values());
     }
 }

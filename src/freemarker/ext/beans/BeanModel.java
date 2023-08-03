@@ -298,10 +298,10 @@ implements
 
     public TemplateCollectionModel keys()
     {
-        return new CollectionAndSequence(new SimpleSequence(keySet(), wrapper));
+        return new CollectionAndSequence(new SimpleSequence(keySet()));
     }
 
-    public TemplateCollectionModel values() throws TemplateModelException
+    public TemplateCollectionModel values() 
     {
         List<Object> values = new ArrayList<>(size());
         Iterator<Object> it = keys().iterator();
@@ -309,7 +309,7 @@ implements
             String key = ((TemplateScalarModel)it.next()).getAsString();
             values.add(get(key));
         }
-        return new CollectionAndSequence(new SimpleSequence(values, wrapper));
+        return new CollectionAndSequence(new SimpleSequence(values));
     }
     
     public String toString() {

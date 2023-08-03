@@ -27,23 +27,13 @@ import freemarker.ext.beans.ObjectWrapper;
  * @see SimpleHash
  * @see SimpleScalar
  */
-public class SimpleSequence extends WrappingTemplateModel
-implements TemplateSequenceModel, Serializable {
-    private static final long serialVersionUID = 789777794622325773L;
+public class SimpleSequence implements TemplateSequenceModel {
 
-    /**
-     * @serial The <tt>List</tt> that this <tt>SimpleSequence</tt> wraps.
-     */
     protected final List<Object> list;
     private List<Object> unwrappedList;
 
-    /**
-     * Constructs an empty simple sequence that will use the the default object 
-     * wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
-     */
     public SimpleSequence() {
-        this((ObjectWrapper) null);
+        list = new ArrayList<Object>();
     }
 
     /**
@@ -64,7 +54,7 @@ implements TemplateSequenceModel, Serializable {
      * copy of the collection is made for internal use.
      */
     public SimpleSequence(Collection collection) {
-        this(collection, null);
+        list = new ArrayList<Object>(collection);
     }
     
     /**
@@ -79,34 +69,6 @@ implements TemplateSequenceModel, Serializable {
         }
         alist.trimToSize();
         list = alist;
-    }
-
-    /**
-     * Constructs an empty simple sequence using the specified object wrapper.
-     * @param wrapper The object wrapper to use to wrap objects into
-     * {@link TemplateModel} instances. If null, the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)} is
-     * used.
-     */
-    public SimpleSequence(ObjectWrapper wrapper) {
-        super(wrapper);
-        list = new ArrayList<Object>();
-    }
-    
-    /**
-     * Constructs a simple sequence that will contain the elements
-     * from the specified {@link Collection} and will use the specified object
-     * wrapper.
-     * @param collection the collection containing initial values. Note that a
-     * copy of the collection is made for internal use.
-     * @param wrapper The object wrapper to use to wrap objects into
-     * {@link TemplateModel} instances. If null, the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)} is
-     * used.
-     */
-    public SimpleSequence(Collection<?> collection, ObjectWrapper wrapper) {
-        super(wrapper);
-        list = new ArrayList<Object>(collection);
     }
 
     /**
@@ -154,7 +116,7 @@ implements TemplateSequenceModel, Serializable {
             } catch (Exception e) {
                 throw new TemplateModelException("Error instantiating an object of type " + listClass.getName() + "\n" + e.getMessage());
             }
-            ObjectWrapper bw = ObjectWrapper.getDefaultInstance();
+            ObjectWrapper bw = ObjectWrapper.instance();
             for (int i=0; i<list.size(); i++) {
                 Object elem = list.get(i);
                 if (elem instanceof TemplateModel) {
@@ -176,7 +138,7 @@ implements TemplateSequenceModel, Serializable {
             if (value instanceof TemplateModel) {
                 return (TemplateModel) value;
             }
-            Object tm = wrap(value);
+            Object tm = ObjectWrapper.instance().wrap(value);
             list.set(i, tm);
             return tm;
         }

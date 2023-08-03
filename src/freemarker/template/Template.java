@@ -340,7 +340,7 @@ public class Template extends TemplateCore {
             try {
                 root = rootMap != null
                     ? (TemplateHashModel)wrapper.wrap(rootMap)
-                    : new SimpleHash(wrapper);
+                    : new SimpleHash();
                 if(root == null) {
                     throw new IllegalArgumentException(wrapper.getClass().getName() + " converted " + (rootMap == null ? "null" : rootMap.getClass().getName()) + " to null.");
                 }
@@ -355,7 +355,6 @@ public class Template extends TemplateCore {
     /**
      * Same as <code>createProcessingEnvironment(rootMap, out, null)</code>.
      * @throws IOException 
-     * @see #createProcessingEnvironment(Object rootMap, Writer out, ObjectWrapper wrapper)
      */
     public Environment createProcessingEnvironment(Object rootMap, Writer out)
     throws TemplateException, IOException

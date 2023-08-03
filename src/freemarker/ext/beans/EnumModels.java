@@ -30,6 +30,6 @@ class EnumModels extends ClassBasedModelFactory {
             Enum value = (Enum) obj[i];
             map.put(value.name(), value);
         }
-        return new SimpleMapModel(map, getWrapper());
+        return new SimpleMapModel(map);
     }
 }

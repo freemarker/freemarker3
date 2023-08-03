@@ -12,7 +12,6 @@ import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.WrappingTemplateModel;
 
 /**
  * Model used by {@link ObjectWrapper} when <tt>simpleMapWrapper</tt>
@@ -22,8 +21,7 @@ import freemarker.template.WrappingTemplateModel;
  * @author Chris Nokleberg
  * @version $Id: SimpleMapModel.java,v 1.9 2005/06/12 19:03:04 szegedia Exp $
  */
-public class SimpleMapModel extends WrappingTemplateModel 
-implements TemplateHashModelEx, TemplateMethodModelEx, AdapterTemplateModel, 
+public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelEx, AdapterTemplateModel, 
 WrapperTemplateModel 
 {
     static final ModelFactory FACTORY =
@@ -31,15 +29,14 @@ WrapperTemplateModel
         {
             public TemplateModel create(Object object, ObjectWrapper wrapper)
             {
-                return new SimpleMapModel((Map)object, wrapper);
+                return new SimpleMapModel((Map)object);
             }
         };
 
     private final Map map;
     
-    public SimpleMapModel(Map map, ObjectWrapper wrapper)
+    public SimpleMapModel(Map map)
     {
-        super(wrapper);
         this.map = map;
     }
 
@@ -58,16 +55,16 @@ WrapperTemplateModel
                 return map.containsKey(key) ? Constants.JAVA_NULL : null;
             }
         }
-        return wrap(val);
+        return ObjectWrapper.instance().wrap(val);
     }
     
     public Object exec(List args) {
-        Object key = ((ObjectWrapper)getObjectWrapper()).unwrap((TemplateModel)args.get(0));
+        Object key = ((TemplateModel)args.get(0)).unwrap();
         Object value = map.get(key);
         if (value == null && !map.containsKey(key)) {
             return null;
         }
-        return wrap(value);
+        return ObjectWrapper.instance().wrap(value);
     }
 
     public boolean isEmpty() {
@@ -79,11 +76,11 @@ WrapperTemplateModel
     }
 
     public TemplateCollectionModel keys() {
-        return new CollectionAndSequence(new SimpleSequence(map.keySet(), getObjectWrapper()));
+        return new CollectionAndSequence(new SimpleSequence(map.keySet()));
     }
 
     public TemplateCollectionModel values() {
-        return new CollectionAndSequence(new SimpleSequence(map.values(), getObjectWrapper()));
+        return new CollectionAndSequence(new SimpleSequence(map.values()));
     }
     
     public Object getAdaptedObject(Class hint) {

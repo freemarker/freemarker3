@@ -32,7 +32,7 @@ public class ObjectConstructor implements TemplateMethodModelEx
         catch (Exception e) {
             throw new TemplateModelException(e.getMessage());
         }
-        ObjectWrapper bw = ObjectWrapper.getDefaultInstance();
+        ObjectWrapper bw = ObjectWrapper.instance();
         Object obj = bw.newInstance(cl, args.subList(1, args.size()));
         return bw.wrap(obj);
     }

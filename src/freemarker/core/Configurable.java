@@ -75,7 +75,7 @@ public class Configurable
         falseFormat = "false";
         templateExceptionHandler = TemplateExceptionHandler.DEBUG_HANDLER;
         arithmeticEngine = ArithmeticEngine.BIGDECIMAL_ENGINE;
-        objectWrapper = ObjectWrapper.getDefaultInstance();
+        objectWrapper = ObjectWrapper.instance();
         // outputEncoding and urlEscapingCharset defaults to null,
         // which means "not specified"
         
@@ -339,7 +339,7 @@ public class Configurable
      * Retrieves the object wrapper used to wrap objects to template models.
      */
     public ObjectWrapper getObjectWrapper() {
-        return ObjectWrapper.getDefaultInstance();
+        return ObjectWrapper.instance();
 //        return objectWrapper != null
 //                ? objectWrapper : parent.getObjectWrapper();
     }
@@ -489,7 +489,7 @@ public class Configurable
                 }
             } else if (OBJECT_WRAPPER_KEY.equals(key)) {
                 if (value.indexOf('.') == -1) {
-                    setObjectWrapper(ObjectWrapper.getDefaultInstance());
+                    setObjectWrapper(ObjectWrapper.instance());
                 } else {
                     setObjectWrapper((ObjectWrapper) Class.forName(value)
                             .newInstance());

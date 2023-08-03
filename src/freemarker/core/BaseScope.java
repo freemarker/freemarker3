@@ -40,11 +40,11 @@ public class BaseScope extends AbstractScope {
     }
 
     public TemplateCollectionModel keys() {
-        return new SimpleCollection(variables.keySet(), ObjectWrapper.getDefaultInstance());
+        return new SimpleCollection(variables.keySet());
     }
 
     public TemplateCollectionModel values() {
-        return new SimpleCollection(variables.values(), ObjectWrapper.getDefaultInstance());
+        return new SimpleCollection(variables.values());
     }
 
 

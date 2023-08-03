@@ -337,7 +337,7 @@ public class ObjectWrapper
      * default instance is not caching, uses the <code>EXPOSE_SAFE</code>
      * exposure level, and uses null reference as the null model.
      */
-    public static final ObjectWrapper getDefaultInstance()
+    public static final ObjectWrapper instance()
     {
         return INSTANCE;
     }

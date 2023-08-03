@@ -966,10 +966,10 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     }
     
     public TemplateCollectionModel keys() {
-    	return new SimpleCollection(variables.keySet(), getObjectWrapper());
+    	return new SimpleCollection(variables.keySet());
     }
     
     public TemplateCollectionModel values() {
-    	return new SimpleCollection(variables.values(), getObjectWrapper());
+    	return new SimpleCollection(variables.values());
     }
 }

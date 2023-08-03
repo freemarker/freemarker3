@@ -1180,7 +1180,7 @@ public final class Environment extends Configurable implements Scope {
         for (String varname : globalVariables.keySet()) {
             aggregate.add(new SimpleScalar(varname));
         }
-        return new SimpleCollection(aggregate, getObjectWrapper());
+        return new SimpleCollection(aggregate);
     }
 
     public TemplateCollectionModel values() {
@@ -1203,7 +1203,7 @@ public final class Environment extends Configurable implements Scope {
         for (Object value : globalVariables.values()) {
             aggregate.add(value);
         }
-        return new SimpleCollection(aggregate, getObjectWrapper());
+        return new SimpleCollection(aggregate);
     }
 
     /**

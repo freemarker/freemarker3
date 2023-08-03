@@ -22,8 +22,7 @@ import freemarker.ext.beans.ObjectWrapper;
  *
  * @version $Id: SimpleCollection.java,v 1.13 2004/11/27 14:49:57 ddekany Exp $
  */
-public class SimpleCollection extends WrappingTemplateModel
-implements TemplateCollectionModel {
+public class SimpleCollection implements TemplateCollectionModel {
 
     private boolean iteratorDirty;
     private Iterator iterator;
@@ -34,16 +33,6 @@ implements TemplateCollectionModel {
     }
 
     public SimpleCollection(Collection collection) {
-        this.collection = collection;
-    }
-
-    public SimpleCollection(Iterator iterator, ObjectWrapper wrapper) {
-        super(wrapper);
-        this.iterator = iterator;
-    }
-
-    public SimpleCollection(Collection collection, ObjectWrapper wrapper) {
-        super(wrapper);
         this.collection = collection;
     }
 
@@ -90,7 +79,7 @@ implements TemplateCollectionModel {
             }
             
             Object value  = iterator.next();
-            return wrap(value);
+            return ObjectWrapper.instance().wrap(value);
         }
 
         public boolean hasNext() {

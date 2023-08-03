@@ -288,7 +288,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 Pattern pattern = getPattern(splitString, flags);
                 result = pattern.split(string);
             } 
-            return ObjectWrapper.getDefaultInstance().wrap(result);
+            return ObjectWrapper.instance().wrap(result);
         }
     }
 

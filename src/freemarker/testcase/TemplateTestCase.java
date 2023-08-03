@@ -85,7 +85,7 @@ public class TemplateTestCase extends TestCase {
             }
         }
         else if ("object_wrapper".equals(param)) {
-            ObjectWrapper ow = ObjectWrapper.getDefaultInstance();
+            ObjectWrapper ow = ObjectWrapper.instance();
             conf.setObjectWrapper(ow);
         }
         else if ("input_encoding".equals(param)) {
@@ -110,13 +110,13 @@ public class TemplateTestCase extends TestCase {
         dataModel.put("message", "Hello, world!");
         
         if (testName.equals("bean-maps")) {
-            ObjectWrapper w1 = ObjectWrapper.getDefaultInstance();
-            ObjectWrapper w2 = ObjectWrapper.getDefaultInstance();
-            ObjectWrapper w3 = ObjectWrapper.getDefaultInstance();
-            ObjectWrapper w4 = ObjectWrapper.getDefaultInstance();
-            ObjectWrapper w5 = ObjectWrapper.getDefaultInstance();
-            ObjectWrapper w6 = ObjectWrapper.getDefaultInstance();
-            ObjectWrapper w7 = ObjectWrapper.getDefaultInstance();
+            ObjectWrapper w1 = ObjectWrapper.instance();
+            ObjectWrapper w2 = ObjectWrapper.instance();
+            ObjectWrapper w3 = ObjectWrapper.instance();
+            ObjectWrapper w4 = ObjectWrapper.instance();
+            ObjectWrapper w5 = ObjectWrapper.instance();
+            ObjectWrapper w6 = ObjectWrapper.instance();
+            ObjectWrapper w7 = ObjectWrapper.instance();
             w1.setSimpleMapWrapper(false);
             w2.setSimpleMapWrapper(false);
             w3.setSimpleMapWrapper(false);
@@ -167,10 +167,10 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("map", tmap);
             dataModel.put("objKey", objKey);
             dataModel.put("obj", new freemarker.testcase.models.BeanTestClass());
-            dataModel.put("resourceBundle", new ResourceBundleModel(ResourceBundle.getBundle("freemarker.testcase.models.BeansTestResources"), ObjectWrapper.getDefaultInstance()));
+            dataModel.put("resourceBundle", new ResourceBundleModel(ResourceBundle.getBundle("freemarker.testcase.models.BeansTestResources"), ObjectWrapper.instance()));
             dataModel.put("date", new GregorianCalendar(1974, 10, 14).getTime());
-            dataModel.put("statics", ObjectWrapper.getDefaultInstance().getStaticModels());
-            dataModel.put("enums", ObjectWrapper.getDefaultInstance().getEnumModels());
+            dataModel.put("statics", ObjectWrapper.instance().getStaticModels());
+            dataModel.put("enums", ObjectWrapper.instance().getEnumModels());
         }
         
         else if (testName.equals("boolean")) {
