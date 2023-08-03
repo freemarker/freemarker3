@@ -7,7 +7,6 @@ import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelAdapter;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.utility.UndeclaredThrowableException;
 
 /**
@@ -34,7 +33,7 @@ class CollectionAdapter extends AbstractCollection implements TemplateModelAdapt
     public Iterator iterator() {
         try {
             return new Iterator() {
-                final TemplateModelIterator i = model.iterator();
+                final Iterator<TemplateModel> i = model.iterator();
     
                 public boolean hasNext() {
                     try {

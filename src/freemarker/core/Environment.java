@@ -985,7 +985,7 @@ public final class Environment extends Configurable implements Scope {
     public Collection<String> getDirectVariableNames() {
         Collection<String> coll = new HashSet<String>(globalVariables.keySet());
         if (rootDataModel instanceof TemplateHashModelEx) {
-            TemplateModelIterator rootNames =
+            Iterator<TemplateModel> rootNames =
                 ((TemplateHashModelEx) rootDataModel).keys().iterator();
             while(rootNames.hasNext()) {
                 coll.add(((TemplateScalarModel)rootNames.next()).getAsString());
@@ -1172,11 +1172,11 @@ public final class Environment extends Configurable implements Scope {
         TemplateCollectionModel rootKeys = root.keys();
         TemplateCollectionModel sharedVariableKeys = getEnclosingScope().keys();
         LinkedHashSet<TemplateModel> aggregate = new LinkedHashSet<TemplateModel>();
-        for (TemplateModelIterator tmi = sharedVariableKeys.iterator(); tmi
+        for (Iterator<TemplateModel> tmi = sharedVariableKeys.iterator(); tmi
         .hasNext();) {
             aggregate.add(tmi.next());
         }
-        for (TemplateModelIterator tmi = rootKeys.iterator(); tmi.hasNext();) {
+        for (Iterator<TemplateModel> tmi = rootKeys.iterator(); tmi.hasNext();) {
             aggregate.add(tmi.next());
         }
         for (String varname : globalVariables.keySet()) {
@@ -1195,11 +1195,11 @@ public final class Environment extends Configurable implements Scope {
         TemplateCollectionModel sharedVariableValues = getEnclosingScope()
         .values();
         LinkedHashSet<TemplateModel> aggregate = new LinkedHashSet<TemplateModel>();
-        for (TemplateModelIterator tmi = sharedVariableValues.iterator(); tmi
+        for (Iterator<TemplateModel> tmi = sharedVariableValues.iterator(); tmi
         .hasNext();) {
             aggregate.add(tmi.next());
         }
-        for (TemplateModelIterator tmi = rootValues.iterator(); tmi.hasNext();) {
+        for (Iterator<TemplateModel> tmi = rootValues.iterator(); tmi.hasNext();) {
             aggregate.add(tmi.next());
         }
         for (TemplateModel value : globalVariables.values()) {

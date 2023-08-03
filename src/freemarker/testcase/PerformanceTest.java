@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -17,7 +18,6 @@ import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
 
@@ -64,9 +64,9 @@ public class PerformanceTest
     
     private static class TestSequence implements TemplateCollectionModel
     {
-        public TemplateModelIterator iterator()
+        public Iterator<TemplateModel> iterator()
         {
-            return new TemplateModelIterator()
+            return new Iterator<TemplateModel>()
             {
                 private int i = 0;
                 

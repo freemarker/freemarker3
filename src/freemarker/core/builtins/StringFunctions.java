@@ -3,6 +3,7 @@ package freemarker.core.builtins;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -25,7 +26,6 @@ import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
@@ -350,7 +350,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
         private void initSequence() {
             data = new ArrayList<TemplateModel>();
-            TemplateModelIterator it = iterator();
+            Iterator<TemplateModel> it = iterator();
             while (it.hasNext()) {
                 data.add(it.next());
             }
@@ -380,9 +380,9 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return groups;
         }
 
-        public TemplateModelIterator iterator() {
+        public Iterator<TemplateModel> iterator() {
             matcher.reset();
-            return new TemplateModelIterator() {
+            return new Iterator<TemplateModel>() {
                 boolean hasFindInfo = matcher.find();
 
                 public boolean hasNext() {

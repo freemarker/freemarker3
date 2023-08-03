@@ -1,15 +1,15 @@
 package freemarker.ext.beans;
 
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 
 /**
- * <p>A class that adds {@link TemplateModelIterator} functionality to the
+ * <p>A class that adds Iterator functionality to the
  * {@link Enumeration} interface implementers. 
  * </p> <p>Using the model as a collection model is NOT thread-safe, as 
  * enumerations are inherently not thread-safe.
@@ -24,7 +24,7 @@ public class EnumerationModel
 extends
     BeanModel
 implements
-    TemplateModelIterator,
+    Iterator<TemplateModel>,
     TemplateCollectionModel
 {
     private boolean accessed = false;
@@ -46,7 +46,7 @@ implements
      * This allows the enumeration to be used in a <tt>&lt;foreach></tt> block.
      * @return "this"
      */
-    public TemplateModelIterator iterator() throws TemplateModelException
+    public Iterator<TemplateModel> iterator() throws TemplateModelException
     {
         synchronized(this) {
             if(accessed) {

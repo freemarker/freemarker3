@@ -25,7 +25,7 @@ implements TemplateCollectionModel, TemplateSequenceModel, Serializable
         this.sequence = sequence;
     }
 
-    public TemplateModelIterator iterator() {
+    public Iterator<TemplateModel> iterator() {
         if (collection != null) {
             return collection.iterator();
         } else {
@@ -54,7 +54,7 @@ implements TemplateCollectionModel, TemplateSequenceModel, Serializable
     private void initSequence() {
         if (data == null) {
             data = new ArrayList<TemplateModel>();
-            TemplateModelIterator it = collection.iterator();
+            Iterator<TemplateModel> it = collection.iterator();
             while (it.hasNext()) {
                 data.add(it.next());
             }
@@ -62,7 +62,7 @@ implements TemplateCollectionModel, TemplateSequenceModel, Serializable
     }
 
     private static class SequenceIterator
-    implements TemplateModelIterator
+    implements Iterator<TemplateModel>
     {
         private final TemplateSequenceModel sequence;
         private final int size;

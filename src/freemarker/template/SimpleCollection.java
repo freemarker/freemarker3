@@ -15,7 +15,7 @@ import java.util.*;
  * variable for many times, <tt>SimpleSequence</tt> may gives better performance, as the
  * wrapping of non-<tt>TemplateModel</tt> objects happens only once.
  *
- * <p>This class is thread-safe. The returned <tt>TemplateModelIterator</tt>-s
+ * <p>This class is thread-safe. The returned Iterators 
  * are <em>not</em> thread-safe.
  *
  * @version $Id: SimpleCollection.java,v 1.13 2004/11/27 14:49:57 ddekany Exp $
@@ -49,13 +49,13 @@ implements TemplateCollectionModel, Serializable {
     /**
      * Retrieves a template model iterator that is used to iterate over the elements in this collection.
      *  
-     * <p>When you wrap an <tt>Iterator</tt> and you get <tt>TemplateModelIterator</tt> for multiple times,
-     * only on of the returned <tt>TemplateModelIterator</tt> instances can be really used. When you have called a
-     * method of a <tt>TemplateModelIterator</tt> instance, all other instance will throw a
+     * <p>When you wrap an <tt>Iterator</tt> and you get Iterator for multiple times,
+     * only on of the returned Iterator instances can be really used. When you have called a
+     * method of an Iterator instance, all other instance will throw a
      * <tt>TemplateModelException</tt> when you try to call their methods, since the wrapped <tt>Iterator</tt>
      * can't return the first element.
      */
-    public TemplateModelIterator iterator() {
+    public Iterator<TemplateModel> iterator() {
         if (iterator != null) {
             return new SimpleTemplateModelIterator(iterator, true);
         } else {
@@ -71,7 +71,7 @@ implements TemplateCollectionModel, Serializable {
      * SimpleTemplateModelIterator instance can wrap the same Iterator instance),
      * but the first thread which uses the shared Iterator will monopolize that.
      */
-    private class SimpleTemplateModelIterator implements TemplateModelIterator {
+    private class SimpleTemplateModelIterator implements Iterator<TemplateModel> {
         
         private Iterator iterator;
         private boolean iteratorShared;

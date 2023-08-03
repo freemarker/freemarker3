@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +24,6 @@ import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateScalarModel;
 
 /**
@@ -306,7 +306,7 @@ implements
     public TemplateCollectionModel values() throws TemplateModelException
     {
         List<TemplateModel> values = new ArrayList<TemplateModel>(size());
-        TemplateModelIterator it = keys().iterator();
+        Iterator<TemplateModel> it = keys().iterator();
         while (it.hasNext()) {
             String key = ((TemplateScalarModel)it.next()).getAsString();
             values.add(get(key));

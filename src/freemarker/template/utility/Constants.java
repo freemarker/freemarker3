@@ -1,12 +1,12 @@
 package freemarker.template.utility;
 
+import java.util.Iterator;
 import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
@@ -36,7 +36,7 @@ public class Constants {
     
     public static final TemplateNumberModel MINUS_ONE = new SimpleNumber(-1);
     
-    public static final TemplateModelIterator EMPTY_ITERATOR = new TemplateModelIterator() {
+    public static final Iterator<TemplateModel> EMPTY_ITERATOR = new Iterator<TemplateModel>() {
 
         public TemplateModel next() {
             throw new TemplateModelException("The collection has no more elements.");
@@ -50,7 +50,7 @@ public class Constants {
 
     public static final TemplateCollectionModel EMPTY_COLLECTION = new TemplateCollectionModel() {
 
-        public TemplateModelIterator iterator() {
+        public Iterator<TemplateModel> iterator() {
             return EMPTY_ITERATOR;
         }
         

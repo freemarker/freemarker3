@@ -1,5 +1,6 @@
 package freemarker.core.builtins;
 
+import java.util.Iterator;
 import java.util.List;
 
 import freemarker.core.Environment;
@@ -11,7 +12,6 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateSequenceModel;
 
 /**
@@ -60,7 +60,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             TemplateModel compareToThis = (TemplateModel) args.get(0);
             final ModelComparator modelComparator = new ModelComparator(Environment.getCurrentEnvironment());
             if (collection != null) {
-                TemplateModelIterator tmi = collection.iterator();
+                Iterator<TemplateModel> tmi = collection.iterator();
                 while (tmi.hasNext()) {
                     if (modelComparator.modelsEqual(tmi.next(), compareToThis)) {
                         return TemplateBooleanModel.TRUE;

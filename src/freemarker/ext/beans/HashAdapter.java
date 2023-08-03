@@ -11,7 +11,6 @@ import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelAdapter;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.utility.UndeclaredThrowableException;
 
 /**
@@ -64,7 +63,7 @@ public class HashAdapter extends AbstractMap implements TemplateModelAdapter {
         }
         return entrySet = new AbstractSet() {
             public Iterator iterator() {
-                final TemplateModelIterator i;
+                final Iterator<TemplateModel> i;
                 try {
                      i = getModelEx().keys().iterator();
                 }

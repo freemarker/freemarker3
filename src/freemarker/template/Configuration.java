@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -628,8 +629,8 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @see #setSharedVariable(String,TemplateModel)
      */
     public void setAllSharedVariables(TemplateHashModelEx hash) {
-        TemplateModelIterator keys = hash.keys().iterator();
-        TemplateModelIterator values = hash.values().iterator();
+        Iterator<TemplateModel> keys = hash.keys().iterator();
+        Iterator<TemplateModel> values = hash.values().iterator();
         while(keys.hasNext())
         {
             setSharedVariable(((TemplateScalarModel)keys.next()).getAsString(), values.next());

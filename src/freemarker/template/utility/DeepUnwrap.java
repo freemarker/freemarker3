@@ -1,6 +1,7 @@
 package freemarker.template.utility;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -12,7 +13,6 @@ import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
@@ -104,7 +104,7 @@ public class DeepUnwrap
         if(model instanceof TemplateCollectionModel) {
             TemplateCollectionModel coll = (TemplateCollectionModel)model;
             ArrayList<Object> list = new ArrayList<Object>();
-            TemplateModelIterator it = coll.iterator();            
+            Iterator<TemplateModel> it = coll.iterator();            
             while(it.hasNext()) {
                 list.add(unwrap(it.next(), permissive));
             }
@@ -113,7 +113,7 @@ public class DeepUnwrap
         if(model instanceof TemplateHashModelEx) {
             TemplateHashModelEx hash = (TemplateHashModelEx)model;
             Map map = new LinkedHashMap();
-            TemplateModelIterator keys = hash.keys().iterator();
+            Iterator<TemplateModel> keys = hash.keys().iterator();
             while(keys.hasNext()) {
                 String key = (String)unwrap(keys.next(), permissive); 
                 map.put(key, unwrap(hash.get(key), permissive));

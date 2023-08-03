@@ -1,12 +1,12 @@
 package freemarker.ext.beans;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import freemarker.ext.util.ModelFactory;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelIterator;
 
 /**
  * <p>A special case of {@link BeanModel} that can wrap Java collections
@@ -44,7 +44,7 @@ implements
         super(collection, wrapper);
     }
 
-    public TemplateModelIterator iterator()
+    public Iterator<TemplateModel> iterator()
     {
         return new IteratorModel(((Collection)object).iterator(), wrapper);
     }

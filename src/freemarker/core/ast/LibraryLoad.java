@@ -7,6 +7,9 @@ import freemarker.template.TemplateException;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.parser.ParseException;
+import freemarker.log.Logger;
+
+
 
 
 
@@ -74,6 +77,7 @@ public final class LibraryLoad extends TemplateElement {
         catch (ParseException pe) {
             String msg = "Error parsing imported template "
                         + templateNameString;
+            Logger.getLogger("freemarker.runtime").error(msg, pe);
             throw new TemplateException(msg, pe, env);
         }
         catch (IOException ioe) {

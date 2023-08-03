@@ -7,7 +7,6 @@ import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateSequenceModel;
 
 /**
@@ -55,7 +54,7 @@ implements
     }
 
 
-    public TemplateModelIterator iterator()
+    public java.util.Iterator<TemplateModel> iterator()
     {
         return new Iterator();
     }
@@ -78,7 +77,7 @@ implements
     private class Iterator
     implements 
         TemplateSequenceModel,
-        TemplateModelIterator
+        java.util.Iterator<TemplateModel>
     {
         private int position = 0;
 

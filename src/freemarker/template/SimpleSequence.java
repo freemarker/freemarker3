@@ -74,7 +74,7 @@ implements TemplateSequenceModel, Serializable {
      */
     public SimpleSequence(TemplateCollectionModel tcm) {
         ArrayList<Object> alist = new ArrayList<Object>();
-        for (TemplateModelIterator it = tcm.iterator(); it.hasNext();) {
+        for (Iterator<TemplateModel> it = tcm.iterator(); it.hasNext();) {
             alist.add(it.next());
         }
         alist.trimToSize();

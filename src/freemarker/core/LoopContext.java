@@ -1,6 +1,7 @@
 package freemarker.core;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import freemarker.core.ast.*;
 import freemarker.template.SimpleNumber;
@@ -8,7 +9,6 @@ import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateSequenceModel;
 
 /**
@@ -31,7 +31,7 @@ public class LoopContext extends BlockScope {
     	Environment env = getEnvironment();
         if (list instanceof TemplateCollectionModel) {
             TemplateCollectionModel baseListModel = (TemplateCollectionModel) list;
-            TemplateModelIterator it = baseListModel.iterator();
+            Iterator<TemplateModel> it = baseListModel.iterator();
             hasNext = it.hasNext();
             while (hasNext) {
             	clear();

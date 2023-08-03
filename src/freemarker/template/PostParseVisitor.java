@@ -43,7 +43,7 @@ public class PostParseVisitor extends ASTVisitor {
 				else if (key.equals("ns_prefixes")) {
 					TemplateHashModelEx prefixMap = (TemplateHashModelEx) header.getParameter("ns_prefixes");
 	                TemplateCollectionModel keys = prefixMap.keys();
-	                for (TemplateModelIterator it = keys.iterator(); it.hasNext();) {
+	                for (Iterator<TemplateModel> it = keys.iterator(); it.hasNext();) {
 	                    String prefix = ((TemplateScalarModel) it.next()).getAsString();
 	                    TemplateModel valueModel = prefixMap.get(prefix);
 	                    String nsURI = ((TemplateScalarModel) valueModel).getAsString();
@@ -53,7 +53,7 @@ public class PostParseVisitor extends ASTVisitor {
 				else if (key.equals("attributes")) {
 					TemplateHashModelEx attributeMap = (TemplateHashModelEx) header.getParameter("attributes");
 	                TemplateCollectionModel keys = attributeMap.keys();
-	                for (TemplateModelIterator it = keys.iterator(); it.hasNext();) {
+	                for (Iterator<TemplateModel> it = keys.iterator(); it.hasNext();) {
 	                    String attName = ((TemplateScalarModel) it.next()).getAsString();
 	                    Object attValue = DeepUnwrap.unwrap(attributeMap.get(attName));
 	                    template.setCustomAttribute(attName, attValue);

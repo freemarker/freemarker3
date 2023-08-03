@@ -195,7 +195,7 @@ public class AddConcatExpression extends Expression {
         private static void addKeys(Set<String> set, SimpleSequence keySeq, TemplateHashModelEx hash)
         throws TemplateModelException
         {
-            TemplateModelIterator it = hash.keys().iterator();
+            Iterator<TemplateModel> it = hash.keys().iterator();
             while (it.hasNext()) {
                 TemplateScalarModel tsm = (TemplateScalarModel)it.next();
                 if (set.add(tsm.getAsString())) {

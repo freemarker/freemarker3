@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -32,7 +33,6 @@ import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.utility.DeepUnwrap;
 import freemarker.template.utility.UndeclaredThrowableException;
@@ -389,7 +389,7 @@ abstract class FreeMarkerPageContext extends PageContext implements TemplateMode
     } 
     
     private static class TemplateHashModelExEnumeration implements Enumeration {
-        private final TemplateModelIterator it;
+        private final Iterator<TemplateModel> it;
             
         private TemplateHashModelExEnumeration(TemplateHashModelEx hashEx) {
             it = hashEx.keys().iterator();

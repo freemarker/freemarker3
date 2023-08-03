@@ -6,10 +6,9 @@ import java.util.NoSuchElementException;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelIterator;
 
 /**
- * <p>A class that adds {@link TemplateModelIterator} functionality to the
+ * <p>A class that adds Iterator functionality to the
  * {@link Iterator} interface implementers. 
  * </p>
  * <p>It differs from the {@link freemarker.template.SimpleCollection} in that 
@@ -28,7 +27,7 @@ public class IteratorModel
 extends
     BeanModel
 implements
-    TemplateModelIterator,
+    Iterator<TemplateModel>,
     TemplateCollectionModel
 {
     private boolean accessed = false;
@@ -50,7 +49,7 @@ implements
      * This allows the iterator to be used in a <tt>&lt;foreach></tt> block.
      * @return "this"
      */
-    public TemplateModelIterator iterator() throws TemplateModelException
+    public Iterator<TemplateModel> iterator() throws TemplateModelException
     {
         synchronized(this) {
             if(accessed) {
