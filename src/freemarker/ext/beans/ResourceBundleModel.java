@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import freemarker.ext.util.ModelFactory;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -41,7 +40,7 @@ public class ResourceBundleModel
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, BeansWrapper wrapper)
+            public TemplateModel create(Object object, ObjectWrapper wrapper)
             {
                 return new ResourceBundleModel((ResourceBundle)object, wrapper);
             }
@@ -49,7 +48,7 @@ public class ResourceBundleModel
 
     private Hashtable<String, MessageFormat> formats = null;
 
-    public ResourceBundleModel(ResourceBundle bundle, BeansWrapper wrapper)
+    public ResourceBundleModel(ResourceBundle bundle, ObjectWrapper wrapper)
     {
         super(bundle, wrapper);
     }

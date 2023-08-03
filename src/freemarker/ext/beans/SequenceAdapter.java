@@ -13,10 +13,10 @@ import freemarker.template.utility.UndeclaredThrowableException;
  * @version $Id: SequenceAdapter.java,v 1.2 2005/06/12 19:03:04 szegedia Exp $
  */
 class SequenceAdapter extends AbstractList implements TemplateModelAdapter {
-    private final BeansWrapper wrapper;
+    private final ObjectWrapper wrapper;
     private final TemplateSequenceModel model;
     
-    SequenceAdapter(TemplateSequenceModel model, BeansWrapper wrapper) {
+    SequenceAdapter(TemplateSequenceModel model, ObjectWrapper wrapper) {
         this.model = model;
         this.wrapper = wrapper;
     }

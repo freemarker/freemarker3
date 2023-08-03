@@ -1,6 +1,5 @@
-package freemarker.ext.util;
+package freemarker.ext.beans;
 
-import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateModel;
 
 /**
@@ -14,5 +13,5 @@ public interface ModelFactory
      * Create a wrapping model for the specified object that belongs to
      * the specified wrapper.
      */
-    TemplateModel create(Object object, BeansWrapper wrapper);
+    TemplateModel create(Object object, ObjectWrapper wrapper);
 }

@@ -33,7 +33,7 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
             varArgType = argTypes[argCount - 1].getComponentType(); 
         }
         
-        Object[] packArgs(Object[] args, List<TemplateModel> modelArgs, BeansWrapper w) 
+        Object[] packArgs(Object[] args, List<TemplateModel> modelArgs, ObjectWrapper w) 
         {
             final int actualArgCount = args.length;
             final int fixArgCount = argCount - 1;
@@ -43,7 +43,7 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
                 Object array = Array.newInstance(varArgType, actualArgCount - fixArgCount);
                 for(int i = fixArgCount; i < actualArgCount; ++i) {
                     Object val = w.unwrap(modelArgs.get(i), varArgType);
-                    if(val == BeansWrapper.CAN_NOT_UNWRAP) {
+                    if(val == ObjectWrapper.CAN_NOT_UNWRAP) {
                         return null;
                     }
                     Array.set(array, i - fixArgCount, val);
@@ -53,7 +53,7 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
             }
             else {
                 Object val = w.unwrap(modelArgs.get(fixArgCount), varArgType);
-                if(val == BeansWrapper.CAN_NOT_UNWRAP) {
+                if(val == ObjectWrapper.CAN_NOT_UNWRAP) {
                     return null;
                 }
                 Object array = Array.newInstance(varArgType, 1);
@@ -154,7 +154,7 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
         types[l1] = types[l1].getComponentType();
     }
     
-    Object getMemberAndArguments(List<TemplateModel> arguments, BeansWrapper w) 
+    Object getMemberAndArguments(List<TemplateModel> arguments, ObjectWrapper w) 
     {
         if(arguments == null) {
             // null is treated as empty args
@@ -178,7 +178,7 @@ outer:  for(int j = Math.min(l + 1, marshalTypes.length - 1); j >= 0; --j) {
             Iterator<TemplateModel> it = arguments.iterator();
             for(int i = 0; i < l; ++i) {
                 Object dst = w.unwrap(it.next(), i < j ? types[i] : types[j - 1]);
-                if(dst == BeansWrapper.CAN_NOT_UNWRAP) {
+                if(dst == ObjectWrapper.CAN_NOT_UNWRAP) {
                     continue outer;
                 }
                 if(dst != args[i]) {
@@ -195,7 +195,7 @@ outer:  for(int j = Math.min(l + 1, marshalTypes.length - 1); j >= 0; --j) {
             if(args == null) {
                 return NO_SUCH_METHOD;
             }
-            BeansWrapper.coerceBigDecimals(getSignature(member), args);
+            ObjectWrapper.coerceBigDecimals(getSignature(member), args);
             return new MemberAndArguments<T>(member, args);
         }
         return objMember; // either NOT_FOUND or AMBIGUOUS

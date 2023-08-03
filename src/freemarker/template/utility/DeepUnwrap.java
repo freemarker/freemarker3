@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import freemarker.ext.util.WrapperTemplateModel;
+import freemarker.ext.beans.WrapperTemplateModel;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
 import freemarker.template.TemplateBooleanModel;

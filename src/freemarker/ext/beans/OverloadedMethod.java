@@ -87,5 +87,5 @@ abstract class OverloadedMethod<T extends Member> {
     abstract void afterSignatureAdded(int l);
     
     abstract Object getMemberAndArguments(List<TemplateModel> arguments, 
-            BeansWrapper w) throws TemplateModelException;
+            ObjectWrapper w) throws TemplateModelException;
 }

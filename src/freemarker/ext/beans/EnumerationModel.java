@@ -32,12 +32,12 @@ implements
     /**
      * Creates a new model that wraps the specified enumeration object.
      * @param enumeration the enumeration object to wrap into a model.
-     * @param wrapper the {@link BeansWrapper} associated with this model.
-     * Every model has to have an associated {@link BeansWrapper} instance. The
+     * @param wrapper the {@link ObjectWrapper} associated with this model.
+     * Every model has to have an associated {@link ObjectWrapper} instance. The
      * model gains many attributes from its wrapper, including the caching 
      * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public EnumerationModel(Enumeration enumeration, BeansWrapper wrapper)
+    public EnumerationModel(Enumeration enumeration, ObjectWrapper wrapper)
     {
         super(enumeration, wrapper);
     }

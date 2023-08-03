@@ -28,7 +28,7 @@ class SimpleMemberModel<T extends Member>
         this.argTypes = argTypes;
     }
     
-    Object[] unwrapArguments(List arguments, BeansWrapper wrapper) throws TemplateModelException
+    Object[] unwrapArguments(List arguments, ObjectWrapper wrapper) throws TemplateModelException
     {
         if(arguments == null) {
             arguments = Collections.EMPTY_LIST;
@@ -49,7 +49,7 @@ class SimpleMemberModel<T extends Member>
          
         Object[] args = unwrapArguments(arguments, argTypes, wrapper);
         if(args != null) {
-            BeansWrapper.coerceBigDecimals(argTypes, args);
+            ObjectWrapper.coerceBigDecimals(argTypes, args);
             if(varArg && shouldPackVarArgs(args)) {
                 args = packVarArgs(args, argTypes);
             }
@@ -57,7 +57,7 @@ class SimpleMemberModel<T extends Member>
         return args;
     }
 
-    static Object[] unwrapArguments(List<TemplateModel> arguments, Class[] argTypes, BeansWrapper w) 
+    static Object[] unwrapArguments(List<TemplateModel> arguments, Class[] argTypes, ObjectWrapper w) 
     throws TemplateModelException
     {
         if(arguments == null) {
@@ -77,10 +77,10 @@ class SimpleMemberModel<T extends Member>
         return args;
     }
 
-    private static Object unwrapArgument(TemplateModel model, Class type, BeansWrapper w) 
+    private static Object unwrapArgument(TemplateModel model, Class type, ObjectWrapper w) 
     {
         Object val = w.unwrap(model, type);
-        if(val == BeansWrapper.CAN_NOT_UNWRAP) {
+        if(val == ObjectWrapper.CAN_NOT_UNWRAP) {
             throw new TemplateModelException("Can not unwrap argument " +
                     model + " to " + type.getName());
         }

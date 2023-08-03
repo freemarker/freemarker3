@@ -34,9 +34,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
-import freemarker.ext.util.ModelCache;
-import freemarker.ext.util.ModelFactory;
-import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
@@ -58,7 +55,7 @@ import freemarker.template.TemplateSequenceModel;
  * @author Attila Szegedi
  * @version $Id: BeansWrapper.java,v 1.95 2006/03/11 19:21:23 ddekany Exp $
  */
-public class BeansWrapper //implements ObjectWrapper
+public class ObjectWrapper 
 {
     public static final Object CAN_NOT_UNWRAP = new Object();
     private static final Class<java.math.BigInteger> BIGINTEGER_CLASS = java.math.BigInteger.class;
@@ -94,7 +91,7 @@ public class BeansWrapper //implements ObjectWrapper
     /**
      * The default instance of BeansWrapper
      */
-    private static final BeansWrapper INSTANCE = new BeansWrapper();
+    private static final ObjectWrapper INSTANCE = new ObjectWrapper();
 
     // Cache of hash maps that contain already discovered properties and methods
     // for a specified class. Each key is a Class, each value is a hash map. In
@@ -153,7 +150,7 @@ public class BeansWrapper //implements ObjectWrapper
     private boolean exposeFields = false;
     private int defaultDateType = TemplateDateModel.UNKNOWN;
 
-    private BeansWrapper outerIdentity = this;
+    private ObjectWrapper outerIdentity = this;
     private boolean simpleMapWrapper=true;
     private boolean strict = false;
     
@@ -163,7 +160,7 @@ public class BeansWrapper //implements ObjectWrapper
      * {@link #EXPOSE_SAFE} method exposure level, and will not cache
      * model instances.
      */
-    public BeansWrapper() {}
+    public ObjectWrapper() {}
 
     
     /**
@@ -207,7 +204,7 @@ public class BeansWrapper //implements ObjectWrapper
      * which will be used to wrap the sub-objects.
      * @param outerIdentity the aggregate ObjectWrapper
      */
-    public void setOuterIdentity(BeansWrapper outerIdentity)
+    public void setOuterIdentity(ObjectWrapper outerIdentity)
     {
         this.outerIdentity = outerIdentity;
     }
@@ -216,7 +213,7 @@ public class BeansWrapper //implements ObjectWrapper
      * By default returns <tt>this</tt>.
      * @see #setOuterIdentity(ObjectWrapper)
      */
-    public BeansWrapper getOuterIdentity()
+    public ObjectWrapper getOuterIdentity()
     {
         return outerIdentity;
     }
@@ -341,7 +338,7 @@ public class BeansWrapper //implements ObjectWrapper
      * default instance is not caching, uses the <code>EXPOSE_SAFE</code>
      * exposure level, and uses null reference as the null model.
      */
-    public static final BeansWrapper getDefaultInstance()
+    public static final ObjectWrapper getDefaultInstance()
     {
         return INSTANCE;
     }
@@ -376,19 +373,19 @@ public class BeansWrapper //implements ObjectWrapper
     }
     
     private final ModelFactory BOOLEAN_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object, BeansWrapper wrapper) {
+        public TemplateModel create(Object object, ObjectWrapper wrapper) {
             return (Boolean)object ? TRUE : FALSE; 
         }
     };
 
     private static final ModelFactory ITERATOR_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object, BeansWrapper wrapper) {
+        public TemplateModel create(Object object, ObjectWrapper wrapper) {
             return new IteratorModel((Iterator)object, wrapper); 
         }
     };
 
     private static final ModelFactory ENUMERATION_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object, BeansWrapper wrapper) {
+        public TemplateModel create(Object object, ObjectWrapper wrapper) {
             return new EnumerationModel((Enumeration)object, wrapper); 
         }
     };
@@ -1280,7 +1277,7 @@ public class BeansWrapper //implements ObjectWrapper
     private static final Set<Method> createUnsafeMethodsSet()
     {
         Properties props = new Properties();
-        InputStream in = BeansWrapper.class.getResourceAsStream("unsafeMethods.txt");
+        InputStream in = ObjectWrapper.class.getResourceAsStream("unsafeMethods.txt");
         if(in != null)
         {
             String methodSpec = null;

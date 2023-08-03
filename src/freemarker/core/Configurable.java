@@ -8,7 +8,7 @@ import java.util.*;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
 import freemarker.core.ast.ArithmeticEngine;
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.ObjectWrapper;
 
 /**
  * This is a common superclass of {@link freemarker.template.Configuration},
@@ -57,7 +57,7 @@ public class Configurable
     private String falseFormat;
     private TemplateExceptionHandler templateExceptionHandler;
     private ArithmeticEngine arithmeticEngine;
-    private BeansWrapper objectWrapper;
+    private ObjectWrapper objectWrapper;
     private String outputEncoding;
     private boolean outputEncodingSet;
     private String urlEscapingCharset;
@@ -75,7 +75,7 @@ public class Configurable
         falseFormat = "false";
         templateExceptionHandler = TemplateExceptionHandler.DEBUG_HANDLER;
         arithmeticEngine = ArithmeticEngine.BIGDECIMAL_ENGINE;
-        objectWrapper = BeansWrapper.getDefaultInstance();
+        objectWrapper = ObjectWrapper.getDefaultInstance();
         // outputEncoding and urlEscapingCharset defaults to null,
         // which means "not specified"
         
@@ -329,7 +329,7 @@ public class Configurable
      * @param objectWrapper the object wrapper used to wrap objects to template
      * models.
      */
-    public void setObjectWrapper(BeansWrapper objectWrapper) {
+    public void setObjectWrapper(ObjectWrapper objectWrapper) {
         if (objectWrapper == null) throw new IllegalArgumentException("Setting \"object_wrapper\" can't be null");
         this.objectWrapper = objectWrapper;
         properties.setProperty(OBJECT_WRAPPER_KEY, objectWrapper.getClass().getName());
@@ -338,8 +338,8 @@ public class Configurable
     /**
      * Retrieves the object wrapper used to wrap objects to template models.
      */
-    public BeansWrapper getObjectWrapper() {
-        return BeansWrapper.getDefaultInstance();
+    public ObjectWrapper getObjectWrapper() {
+        return ObjectWrapper.getDefaultInstance();
 //        return objectWrapper != null
 //                ? objectWrapper : parent.getObjectWrapper();
     }
@@ -489,9 +489,9 @@ public class Configurable
                 }
             } else if (OBJECT_WRAPPER_KEY.equals(key)) {
                 if (value.indexOf('.') == -1) {
-                    setObjectWrapper(new BeansWrapper());
+                    setObjectWrapper(new ObjectWrapper());
                 } else {
-                    setObjectWrapper((BeansWrapper) Class.forName(value)
+                    setObjectWrapper((ObjectWrapper) Class.forName(value)
                             .newInstance());
                 }
             } else if (BOOLEAN_FORMAT_KEY.equals(key)) {
@@ -516,10 +516,10 @@ public class Configurable
     }
     
     public void setStrictBeanModels(boolean strict) {
-    	if (!(objectWrapper instanceof BeansWrapper)) {
+    	if (!(objectWrapper instanceof ObjectWrapper)) {
     		throw new IllegalStateException("Not a beans wrapper");
     	}
-    	((BeansWrapper) objectWrapper).setStrict(strict);
+    	((ObjectWrapper) objectWrapper).setStrict(strict);
     }
     
     /**

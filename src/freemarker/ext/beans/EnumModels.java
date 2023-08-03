@@ -11,7 +11,7 @@ import freemarker.template.TemplateModel;
  */
 class EnumModels extends ClassBasedModelFactory {
 
-    EnumModels(BeansWrapper wrapper) {
+    EnumModels(ObjectWrapper wrapper) {
         super(wrapper);
     }
     

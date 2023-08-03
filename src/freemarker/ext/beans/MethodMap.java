@@ -11,16 +11,16 @@ import freemarker.template.TemplateModelException;
 class MethodMap<T extends Member>
 {
     private final String name;
-    private final BeansWrapper wrapper;
+    private final ObjectWrapper wrapper;
     private final OverloadedMethod<T> fixArgMethod = new OverloadedFixArgMethod<T>();
     private OverloadedMethod<T> varArgMethod;
     
-    MethodMap(String name, BeansWrapper wrapper) {
+    MethodMap(String name, ObjectWrapper wrapper) {
         this.name = name;
         this.wrapper = wrapper;
     }
     
-    BeansWrapper getWrapper() {
+    ObjectWrapper getWrapper() {
         return wrapper;
     }
     

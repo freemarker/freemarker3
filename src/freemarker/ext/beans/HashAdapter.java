@@ -18,11 +18,11 @@ import freemarker.template.utility.UndeclaredThrowableException;
  * @version $Id: HashAdapter.java,v 1.2 2005/06/12 19:03:04 szegedia Exp $
  */
 public class HashAdapter extends AbstractMap implements TemplateModelAdapter {
-    private final BeansWrapper wrapper;
+    private final ObjectWrapper wrapper;
     private final TemplateHashModel model;
     private Set entrySet;
     
-    HashAdapter(TemplateHashModel model, BeansWrapper wrapper) {
+    HashAdapter(TemplateHashModel model, ObjectWrapper wrapper) {
         this.model = model;
         this.wrapper = wrapper;
     }

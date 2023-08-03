@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import freemarker.ext.util.ModelFactory;
 import freemarker.template.Constants;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
@@ -34,7 +33,7 @@ implements
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, BeansWrapper wrapper)
+            public TemplateModel create(Object object, ObjectWrapper wrapper)
             {
                 return new MapModel((Map)object, wrapper);
             }
@@ -43,12 +42,12 @@ implements
     /**
      * Creates a new model that wraps the specified map object.
      * @param map the map object to wrap into a model.
-     * @param wrapper the {@link BeansWrapper} associated with this model.
-     * Every model has to have an associated {@link BeansWrapper} instance. The
+     * @param wrapper the {@link ObjectWrapper} associated with this model.
+     * Every model has to have an associated {@link ObjectWrapper} instance. The
      * model gains many attributes from its wrapper, including the caching 
      * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public MapModel(Map map, BeansWrapper wrapper)
+    public MapModel(Map map, ObjectWrapper wrapper)
     {
         super(map, wrapper);
     }

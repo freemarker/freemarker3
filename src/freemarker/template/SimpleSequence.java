@@ -3,7 +3,7 @@ package freemarker.template;
 import java.io.Serializable;
 import java.util.*;
 
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.ObjectWrapper;
 
 /**
  * <p>A convenient implementation of a list. This
@@ -40,16 +40,16 @@ implements TemplateSequenceModel, Serializable {
     /**
      * Constructs an empty simple sequence that will use the the default object 
      * wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)}.
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
      */
     public SimpleSequence() {
-        this((BeansWrapper) null);
+        this((ObjectWrapper) null);
     }
 
     /**
      * Constructs an empty simple sequence with preallocated capacity and using
      * the default object wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)}.
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
      */
     public SimpleSequence(int capacity) {
         list = new ArrayList<Object>(capacity);
@@ -59,7 +59,7 @@ implements TemplateSequenceModel, Serializable {
      * Constructs a simple sequence that will contain the elements
      * from the specified {@link Collection} and will use the the default 
      * object wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)}.
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
      * @param collection the collection containing initial values. Note that a
      * copy of the collection is made for internal use.
      */
@@ -70,7 +70,7 @@ implements TemplateSequenceModel, Serializable {
     /**
      * Constructs a simple sequence from the passed collection model using the
      * default object wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)}.
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
      */
     public SimpleSequence(TemplateCollectionModel tcm) {
         ArrayList<Object> alist = new ArrayList<Object>();
@@ -85,10 +85,10 @@ implements TemplateSequenceModel, Serializable {
      * Constructs an empty simple sequence using the specified object wrapper.
      * @param wrapper The object wrapper to use to wrap objects into
      * {@link TemplateModel} instances. If null, the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)} is
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)} is
      * used.
      */
-    public SimpleSequence(BeansWrapper wrapper) {
+    public SimpleSequence(ObjectWrapper wrapper) {
         super(wrapper);
         list = new ArrayList<Object>();
     }
@@ -104,7 +104,7 @@ implements TemplateSequenceModel, Serializable {
      * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)} is
      * used.
      */
-    public SimpleSequence(Collection<?> collection, BeansWrapper wrapper) {
+    public SimpleSequence(Collection<?> collection, ObjectWrapper wrapper) {
         super(wrapper);
         list = new ArrayList<Object>(collection);
     }
@@ -154,7 +154,7 @@ implements TemplateSequenceModel, Serializable {
             } catch (Exception e) {
                 throw new TemplateModelException("Error instantiating an object of type " + listClass.getName() + "\n" + e.getMessage());
             }
-            BeansWrapper bw = BeansWrapper.getDefaultInstance();
+            ObjectWrapper bw = ObjectWrapper.getDefaultInstance();
             for (int i=0; i<list.size(); i++) {
                 Object elem = list.get(i);
                 if (elem instanceof TemplateModel) {

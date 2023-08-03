@@ -24,7 +24,7 @@ import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.Scope;
 import freemarker.core.parser.ParseException;
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.utility.HtmlEscape;
 import freemarker.template.utility.NormalizeNewlines;
 import freemarker.template.utility.StandardCompress;
@@ -249,7 +249,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     	return env != null ? env.getConfiguration() : defaultConfig;
     }
     
-    static public BeansWrapper getCurrentObjectWrapper() {
+    static public ObjectWrapper getCurrentObjectWrapper() {
     	return getCurrentConfiguration().getObjectWrapper();
     }
     

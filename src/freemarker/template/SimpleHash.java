@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.ObjectWrapper;
 
 /**
  * <p>A simple implementation of the <tt>TemplateHashModelEx</tt>
@@ -36,16 +36,16 @@ implements TemplateHashModelEx, Serializable {
 
     /**
      * Constructs an empty hash that uses the default wrapper set in
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)}.
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
      */
     public SimpleHash() {
-        this((BeansWrapper)null);
+        this((ObjectWrapper)null);
     }
 
     /**
      * Creates a new simple hash with the copy of the underlying map and the
      * default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)}.
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
      * @param map The Map to use for the key/value pairs. It makes a copy for 
      * internal use. If the map implements the {@link SortedMap} interface, the
      * internal copy will be a {@link TreeMap}, otherwise it will be a 
@@ -59,10 +59,10 @@ implements TemplateHashModelEx, Serializable {
      * Creates an empty simple hash using the specified object wrapper.
      * @param wrapper The object wrapper to use to wrap objects into
      * {@link TemplateModel} instances. If null, the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)} is
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)} is
      * used.
      */
-    public SimpleHash(BeansWrapper wrapper) {
+    public SimpleHash(ObjectWrapper wrapper) {
         super(wrapper);
         map = new HashMap();
     }
@@ -70,17 +70,17 @@ implements TemplateHashModelEx, Serializable {
     /**
      * Creates a new simple hash with the copy of the underlying map and 
      * either the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)}, or
-     * the {@link freemarker.ext.beans.BeansWrapper JavaBeans wrapper}.
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}, or
+     * the {@link freemarker.ext.beans.ObjectWrapper JavaBeans wrapper}.
      * @param map The Map to use for the key/value pairs. It makes a copy for 
      * internal use. If the map implements the {@link SortedMap} interface, the
      * internal copy will be a {@link TreeMap}, otherwise it will be a 
      * @param wrapper The object wrapper to use to wrap objects into
      * {@link TemplateModel} instances. If null, the default wrapper set in 
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(BeansWrapper)} is
+     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)} is
      * used.
      */
-    public SimpleHash(Map map, BeansWrapper wrapper) {
+    public SimpleHash(Map map, ObjectWrapper wrapper) {
         super(wrapper);
         try {
             this.map = copyMap(map);
@@ -219,7 +219,7 @@ implements TemplateHashModelEx, Serializable {
             }
             // Create a copy to maintain immutability semantics and
             // Do nested unwrapping of elements if necessary.
-            BeansWrapper bw = BeansWrapper.getDefaultInstance();
+            ObjectWrapper bw = ObjectWrapper.getDefaultInstance();
             for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
                 Map.Entry entry = (Map.Entry) it.next();
                 Object key = entry.getKey();

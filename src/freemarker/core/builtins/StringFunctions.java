@@ -15,7 +15,7 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.TemplateNode;
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
 import freemarker.template.SimpleSequence;
@@ -288,7 +288,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 Pattern pattern = getPattern(splitString, flags);
                 result = pattern.split(string);
             } 
-            return BeansWrapper.getDefaultInstance().wrap(result);
+            return ObjectWrapper.getDefaultInstance().wrap(result);
         }
     }
 

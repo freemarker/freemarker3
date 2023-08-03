@@ -13,10 +13,10 @@ import freemarker.template.TemplateModelException;
  * @version $Id: ClassBasedModelFactory.java,v 1.1 2005/11/03 08:49:19 szegedia Exp $
  */
 abstract class ClassBasedModelFactory implements TemplateHashModel {
-    private final BeansWrapper wrapper;
+    private final ObjectWrapper wrapper;
     private final Map<String, TemplateModel> cache = new HashMap<String, TemplateModel>();
     
-    protected ClassBasedModelFactory(BeansWrapper wrapper) {
+    protected ClassBasedModelFactory(ObjectWrapper wrapper) {
         this.wrapper = wrapper;
     }
 
@@ -59,7 +59,7 @@ abstract class ClassBasedModelFactory implements TemplateHashModel {
     protected abstract TemplateModel createModel(Class clazz) 
     throws TemplateModelException;
     
-    protected BeansWrapper getWrapper() {
+    protected ObjectWrapper getWrapper() {
         return wrapper;
     }
 }

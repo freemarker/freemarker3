@@ -14,7 +14,7 @@ import freemarker.core.ast.LibraryLoad;
 import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.TemplateHeaderElement;
 import freemarker.core.parser.*;
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.ObjectWrapper;
 
 /**
  * <p>A core FreeMarker API that represents a compiled template.
@@ -248,7 +248,7 @@ public class Template extends TemplateCore {
      * @throws TemplateException if an exception occurs during template processing
      * @throws IOException if an I/O exception occurs during writing to the writer.
      */
-    public void process(Object rootMap, Writer out, BeansWrapper wrapper, TemplateNodeModel rootNode)
+    public void process(Object rootMap, Writer out, ObjectWrapper wrapper, TemplateNodeModel rootNode)
     throws TemplateException, IOException
     {
         Environment env = createProcessingEnvironment(rootMap, out, wrapper);
@@ -276,7 +276,7 @@ public class Template extends TemplateCore {
      * @throws TemplateException if an exception occurs during template processing
      * @throws IOException if an I/O exception occurs during writing to the writer.
      */
-    public void process(Object rootMap, Writer out, BeansWrapper wrapper)
+    public void process(Object rootMap, Writer out, ObjectWrapper wrapper)
     throws TemplateException, IOException
     {
         process(rootMap, out, wrapper, null);
@@ -325,7 +325,7 @@ public class Template extends TemplateCore {
     * @return the {@link freemarker.core.Environment Environment} object created for processing
     * @throws TemplateException if an exception occurs while setting up the Environment object.
     */
-    public Environment createProcessingEnvironment(Object rootMap, Writer out, BeansWrapper wrapper)
+    public Environment createProcessingEnvironment(Object rootMap, Writer out, ObjectWrapper wrapper)
     throws TemplateException
     {
         TemplateHashModel root = null;

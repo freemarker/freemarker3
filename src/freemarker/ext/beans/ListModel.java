@@ -3,7 +3,6 @@ package freemarker.ext.beans;
 import java.util.Collection;
 import java.util.List;
 
-import freemarker.ext.util.ModelFactory;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -20,7 +19,7 @@ public class ListModel extends CollectionModel implements TemplateSequenceModel 
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, BeansWrapper wrapper)
+            public TemplateModel create(Object object, ObjectWrapper wrapper)
             {
                 return new ListModel((List)object, wrapper);
             }
@@ -30,12 +29,12 @@ public class ListModel extends CollectionModel implements TemplateSequenceModel 
     /**
      * Creates a new model that wraps the specified collection object.
      * @param list the list object to wrap into a model.
-     * @param wrapper the {@link BeansWrapper} associated with this model.
-     * Every model has to have an associated {@link BeansWrapper} instance. The
+     * @param wrapper the {@link ObjectWrapper} associated with this model.
+     * Every model has to have an associated {@link ObjectWrapper} instance. The
      * model gains many attributes from its wrapper, including the caching 
      * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public ListModel(List list, BeansWrapper wrapper)
+    public ListModel(List list, ObjectWrapper wrapper)
     {
         super(list, wrapper);
     }

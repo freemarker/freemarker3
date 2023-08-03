@@ -1,4 +1,4 @@
-package freemarker.ext.util;
+package freemarker.ext.beans;
 
 import java.util.AbstractCollection;
 import java.util.AbstractMap;

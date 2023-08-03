@@ -27,7 +27,7 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
     TemplateSequenceModel
 {
     private final Object object;
-    private final BeansWrapper wrapper;
+    private final ObjectWrapper wrapper;
 
     /**
      * Creates a model for a specific method on a specific object.
@@ -36,7 +36,7 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
      * @param method the method that will be invoked.
      */
     SimpleMethodModel(Object object, Method method, Class[] argTypes, 
-            BeansWrapper wrapper)
+            ObjectWrapper wrapper)
     {
         super(method, argTypes);
         this.object = object;

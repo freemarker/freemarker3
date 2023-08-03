@@ -1,4 +1,4 @@
-package freemarker.ext.util;
+package freemarker.ext.beans;
 
 import freemarker.template.TemplateModel;
 

@@ -1,7 +1,7 @@
 package freemarker.template.utility;
 
 import java.util.List;
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.*;
 
 /**
@@ -32,7 +32,7 @@ public class ObjectConstructor implements TemplateMethodModelEx
         catch (Exception e) {
             throw new TemplateModelException(e.getMessage());
         }
-        BeansWrapper bw = BeansWrapper.getDefaultInstance();
+        ObjectWrapper bw = ObjectWrapper.getDefaultInstance();
         Object obj = bw.newInstance(cl, args.subList(1, args.size()));
         return bw.wrap(obj);
     }

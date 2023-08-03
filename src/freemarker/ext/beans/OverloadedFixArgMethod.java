@@ -23,7 +23,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
     void afterSignatureAdded(int l) {
     };
 
-    Object getMemberAndArguments(List<TemplateModel> arguments, BeansWrapper w) 
+    Object getMemberAndArguments(List<TemplateModel> arguments, ObjectWrapper w) 
     {
         if(arguments == null) {
             // null is treated as empty args
@@ -44,7 +44,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
         Iterator<TemplateModel> it = arguments.iterator();
         for(int i = 0; i < l; ++i) {
             Object obj = w.unwrap(it.next(), types[i]);
-            if(obj == BeansWrapper.CAN_NOT_UNWRAP) {
+            if(obj == ObjectWrapper.CAN_NOT_UNWRAP) {
                 return NO_SUCH_METHOD;
             }
             args[i] = obj;
@@ -53,7 +53,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
         Object objMember = getMemberForArgs(args, false);
         if(objMember instanceof Member) {
             T member = (T)objMember;
-            BeansWrapper.coerceBigDecimals(getSignature(member), args);
+            ObjectWrapper.coerceBigDecimals(getSignature(member), args);
             return new MemberAndArguments<T>(member, args);
         }
         return objMember; // either NO_SUCH_METHOD or AMBIGUOUS_METHOD

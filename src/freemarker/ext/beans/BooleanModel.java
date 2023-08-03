@@ -12,7 +12,7 @@ public class BooleanModel extends BeanModel implements TemplateBooleanModel
 {
     private final boolean value;
     
-    public BooleanModel(Boolean bool, BeansWrapper wrapper)
+    public BooleanModel(Boolean bool, ObjectWrapper wrapper)
     {
         super(bool, wrapper);
         value = bool.booleanValue();

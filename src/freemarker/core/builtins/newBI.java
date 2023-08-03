@@ -5,7 +5,7 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.*;
 
 /**
@@ -58,7 +58,7 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
         }
 
         public Object exec(List arguments) {
-            BeansWrapper ow = null;
+            ObjectWrapper ow = null;
             if (env != null) ow = env.getObjectWrapper();
             return ow.newInstance(cl, arguments);
         }

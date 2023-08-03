@@ -14,8 +14,6 @@ import java.util.Map;
 import java.util.Set;
 
 import freemarker.core.ast.CollectionAndSequence;
-import freemarker.ext.util.ModelFactory;
-import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
@@ -44,12 +42,12 @@ implements
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
-    protected final BeansWrapper wrapper;
+    protected final ObjectWrapper wrapper;
     
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, BeansWrapper wrapper)
+            public TemplateModel create(Object object, ObjectWrapper wrapper)
             {
                 return new BeanModel(object, wrapper);
             }
@@ -66,14 +64,14 @@ implements
      * enumeration, iterators, and maps. Note also that the superclass can be
      * used to wrap String objects if only scalar functionality is needed. You
      * can also choose to delegate the choice over which model class is used for
-     * wrapping to {@link BeansWrapper#wrap(Object)}.
+     * wrapping to {@link ObjectWrapper#wrap(Object)}.
      * @param object the object to wrap into a model.
-     * @param wrapper the {@link BeansWrapper} associated with this model.
-     * Every model has to have an associated {@link BeansWrapper} instance. The
+     * @param wrapper the {@link ObjectWrapper} associated with this model.
+     * Every model has to have an associated {@link ObjectWrapper} instance. The
      * model gains many attributes from its wrapper, including the caching 
      * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public BeanModel(Object object, BeansWrapper wrapper)
+    public BeanModel(Object object, ObjectWrapper wrapper)
     {
         this.object = object;
         this.wrapper = wrapper;
@@ -173,7 +171,7 @@ implements
      */
     
     protected boolean hasPlainGetMethod() {
-    	return wrapper.getClassKeyMap(object.getClass()).get(BeansWrapper.GENERIC_GET_KEY) != null;
+    	return wrapper.getClassKeyMap(object.getClass()).get(ObjectWrapper.GENERIC_GET_KEY) != null;
     }
     
     private Object invokeThroughDescriptor(Object desc, Map classInfo)
@@ -204,7 +202,7 @@ implements
                 ((IndexedPropertyDescriptor)desc).getIndexedReadMethod(); 
             retval = member = 
                 new SimpleMethodModel(object, readMethod, 
-                        BeansWrapper.getArgTypes(classInfo, readMethod), wrapper);
+                        ObjectWrapper.getArgTypes(classInfo, readMethod), wrapper);
         }
         else if(desc instanceof PropertyDescriptor)
         {
@@ -221,7 +219,7 @@ implements
         {
             Method method = (Method)desc;
             retval = member = new SimpleMethodModel(object, method, 
-                    BeansWrapper.getArgTypes(classInfo, method), wrapper);
+                    ObjectWrapper.getArgTypes(classInfo, method), wrapper);
         }
         else if(desc instanceof MethodMap)
         {
@@ -247,7 +245,7 @@ implements
         InvocationTargetException,
         TemplateModelException
     {
-        Method genericGet = (Method)keyMap.get(BeansWrapper.GENERIC_GET_KEY);
+        Method genericGet = (Method)keyMap.get(ObjectWrapper.GENERIC_GET_KEY);
         if(genericGet == null)
             return null;
 

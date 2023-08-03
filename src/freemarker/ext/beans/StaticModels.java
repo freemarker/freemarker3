@@ -14,7 +14,7 @@ import freemarker.template.TemplateModelException;
  */
 class StaticModels extends ClassBasedModelFactory {
     
-    StaticModels(BeansWrapper wrapper) {
+    StaticModels(ObjectWrapper wrapper) {
         super(wrapper);
     }
 

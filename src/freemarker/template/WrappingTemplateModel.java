@@ -2,7 +2,7 @@ package freemarker.template;
 
 import java.beans.Beans;
 
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.ObjectWrapper;
 
 /**
  * A base class for containers that wrap arbitrary Java objects into 
@@ -12,8 +12,8 @@ import freemarker.ext.beans.BeansWrapper;
  */
 abstract public class WrappingTemplateModel {
 
-    private static BeansWrapper defaultObjectWrapper = BeansWrapper.getDefaultInstance();
-    private BeansWrapper objectWrapper = BeansWrapper.getDefaultInstance();
+    private static ObjectWrapper defaultObjectWrapper = ObjectWrapper.getDefaultInstance();
+    private ObjectWrapper objectWrapper = ObjectWrapper.getDefaultInstance();
     
     /**
      * Sets the default object wrapper that is used when a wrapping template
@@ -23,7 +23,7 @@ abstract public class WrappingTemplateModel {
      * they rather use whatever object wrapper their 
      * {@link Configuration#getObjectWrapper()} method returns.
      */
-    public static void setDefaultObjectWrapper(BeansWrapper objectWrapper) {
+    public static void setDefaultObjectWrapper(ObjectWrapper objectWrapper) {
         defaultObjectWrapper = objectWrapper;
     }
 
@@ -35,7 +35,7 @@ abstract public class WrappingTemplateModel {
      * they rather use whatever object wrapper their 
      * {@link Configuration#getObjectWrapper()} method returns.
      */
-    public static BeansWrapper getDefaultObjectWrapper() {
+    public static ObjectWrapper getDefaultObjectWrapper() {
         return defaultObjectWrapper;
     }
     
@@ -53,22 +53,22 @@ abstract public class WrappingTemplateModel {
      * @param objectWrapper the wrapper to use. If null is passed, the default
      * object wrapper is used.
      */
-    protected WrappingTemplateModel(BeansWrapper objectWrapper) {
+    protected WrappingTemplateModel(ObjectWrapper objectWrapper) {
         this.objectWrapper = 
             objectWrapper != null ? objectWrapper : defaultObjectWrapper;
         if (this.objectWrapper == null) { // This is to address some weird static initializing bug
-            this.objectWrapper = defaultObjectWrapper =  new BeansWrapper();
+            this.objectWrapper = defaultObjectWrapper =  new ObjectWrapper();
         }
     }
     
     /**
      * Returns the object wrapper instance used by this wrapping template model.
      */
-    public BeansWrapper getObjectWrapper() {
+    public ObjectWrapper getObjectWrapper() {
         return objectWrapper;
     }
 
-    public void setObjectWrapper(BeansWrapper objectWrapper) {
+    public void setObjectWrapper(ObjectWrapper objectWrapper) {
         this.objectWrapper = objectWrapper;
     }
 

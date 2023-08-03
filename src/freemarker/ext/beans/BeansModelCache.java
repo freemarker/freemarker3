@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import freemarker.ext.util.ModelCache;
-import freemarker.ext.util.ModelFactory;
 import freemarker.template.TemplateModel;
 
 public class BeansModelCache extends ModelCache
@@ -15,9 +13,9 @@ public class BeansModelCache extends ModelCache
         new ConcurrentHashMap<Class,ModelFactory>();
     private final Set<String> mappedClassNames = new HashSet<String>();
 
-    private final BeansWrapper wrapper;
+    private final ObjectWrapper wrapper;
     
-    BeansModelCache(BeansWrapper wrapper) {
+    BeansModelCache(ObjectWrapper wrapper) {
         this.wrapper = wrapper;
     }
     

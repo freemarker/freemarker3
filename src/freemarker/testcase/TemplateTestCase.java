@@ -91,7 +91,7 @@ public class TemplateTestCase extends TestCase {
         else if ("object_wrapper".equals(param)) {
             try {
                 Class cl = Class.forName(value);
-                BeansWrapper ow = (BeansWrapper) cl.newInstance();
+                ObjectWrapper ow = (ObjectWrapper) cl.newInstance();
                 conf.setObjectWrapper(ow);
             } catch (Exception e) {
                 fail("Error setting object wrapper to " + value + "\n" + e.getMessage());
@@ -119,13 +119,13 @@ public class TemplateTestCase extends TestCase {
         dataModel.put("message", "Hello, world!");
         
         if (testName.equals("bean-maps")) {
-            BeansWrapper w1 = new BeansWrapper();
-            BeansWrapper w2 = new BeansWrapper();
-            BeansWrapper w3 = new BeansWrapper();
-            BeansWrapper w4 = new BeansWrapper();
-            BeansWrapper w5 = new BeansWrapper();
-            BeansWrapper w6 = new BeansWrapper();
-            BeansWrapper w7 = new BeansWrapper();
+            ObjectWrapper w1 = new ObjectWrapper();
+            ObjectWrapper w2 = new ObjectWrapper();
+            ObjectWrapper w3 = new ObjectWrapper();
+            ObjectWrapper w4 = new ObjectWrapper();
+            ObjectWrapper w5 = new ObjectWrapper();
+            ObjectWrapper w6 = new ObjectWrapper();
+            ObjectWrapper w7 = new ObjectWrapper();
             w1.setSimpleMapWrapper(false);
             w2.setSimpleMapWrapper(false);
             w3.setSimpleMapWrapper(false);
@@ -134,12 +134,12 @@ public class TemplateTestCase extends TestCase {
             w6.setSimpleMapWrapper(false);
             w7.setSimpleMapWrapper(false);
     
-            w1.setExposureLevel(BeansWrapper.EXPOSE_PROPERTIES_ONLY);
-            w2.setExposureLevel(BeansWrapper.EXPOSE_PROPERTIES_ONLY);
-            w3.setExposureLevel(BeansWrapper.EXPOSE_NOTHING);
-            w4.setExposureLevel(BeansWrapper.EXPOSE_NOTHING);
-            w5.setExposureLevel(BeansWrapper.EXPOSE_ALL);
-            w6.setExposureLevel(BeansWrapper.EXPOSE_ALL);
+            w1.setExposureLevel(ObjectWrapper.EXPOSE_PROPERTIES_ONLY);
+            w2.setExposureLevel(ObjectWrapper.EXPOSE_PROPERTIES_ONLY);
+            w3.setExposureLevel(ObjectWrapper.EXPOSE_NOTHING);
+            w4.setExposureLevel(ObjectWrapper.EXPOSE_NOTHING);
+            w5.setExposureLevel(ObjectWrapper.EXPOSE_ALL);
+            w6.setExposureLevel(ObjectWrapper.EXPOSE_ALL);
     
             w1.setMethodsShadowItems(true);
             w2.setMethodsShadowItems(false);
@@ -176,10 +176,10 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("map", tmap);
             dataModel.put("objKey", objKey);
             dataModel.put("obj", new freemarker.testcase.models.BeanTestClass());
-            dataModel.put("resourceBundle", new ResourceBundleModel(ResourceBundle.getBundle("freemarker.testcase.models.BeansTestResources"), BeansWrapper.getDefaultInstance()));
+            dataModel.put("resourceBundle", new ResourceBundleModel(ResourceBundle.getBundle("freemarker.testcase.models.BeansTestResources"), ObjectWrapper.getDefaultInstance()));
             dataModel.put("date", new GregorianCalendar(1974, 10, 14).getTime());
-            dataModel.put("statics", BeansWrapper.getDefaultInstance().getStaticModels());
-            dataModel.put("enums", BeansWrapper.getDefaultInstance().getEnumModels());
+            dataModel.put("statics", ObjectWrapper.getDefaultInstance().getStaticModels());
+            dataModel.put("enums", ObjectWrapper.getDefaultInstance().getEnumModels());
         }
         
         else if (testName.equals("boolean")) {

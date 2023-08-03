@@ -15,7 +15,7 @@ import freemarker.template.TemplateModelException;
 /**
  * Wraps the static fields and methods of a class in a
  * {@link freemarker.template.TemplateHashModel}.
- * Fields are wrapped using {@link BeansWrapper#wrap(Object)}, and
+ * Fields are wrapped using {@link ObjectWrapper#wrap(Object)}, and
  * methods are wrapped into an appropriate 
  * {@link freemarker.template.TemplateMethodModelEx} instance.
  * Unfortunately, there is currently no support for bean property-style
@@ -27,10 +27,10 @@ final class StaticModel implements TemplateHashModelEx
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     private final Class clazz;
-    private final BeansWrapper wrapper;
+    private final ObjectWrapper wrapper;
     private final Map<String, Object> map = new HashMap<String, Object>();
 
-    StaticModel(Class clazz, BeansWrapper wrapper) throws TemplateModelException
+    StaticModel(Class clazz, ObjectWrapper wrapper) throws TemplateModelException
     {
         this.clazz = clazz;
         this.wrapper = wrapper;
@@ -101,7 +101,7 @@ final class StaticModel implements TemplateHashModelEx
                 "Can't wrap the non-public class " + clazz.getName());
         }
         
-        if(wrapper.getExposureLevel() == BeansWrapper.EXPOSE_NOTHING)
+        if(wrapper.getExposureLevel() == ObjectWrapper.EXPOSE_NOTHING)
         {
             return;
         }
@@ -133,7 +133,7 @@ final class StaticModel implements TemplateHashModelEx
                     map.put(field.getName(), field);
             }
         }
-        if(wrapper.getExposureLevel() < BeansWrapper.EXPOSE_PROPERTIES_ONLY)
+        if(wrapper.getExposureLevel() < ObjectWrapper.EXPOSE_PROPERTIES_ONLY)
         {
             Method[] methods = clazz.getMethods();
             for (int i = 0; i < methods.length; ++i)

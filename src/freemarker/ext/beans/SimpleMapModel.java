@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import freemarker.core.ast.CollectionAndSequence;
-import freemarker.ext.util.ModelFactory;
-import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
 import freemarker.template.SimpleSequence;
@@ -17,7 +15,7 @@ import freemarker.template.TemplateModelException;
 import freemarker.template.WrappingTemplateModel;
 
 /**
- * Model used by {@link BeansWrapper} when <tt>simpleMapWrapper</tt>
+ * Model used by {@link ObjectWrapper} when <tt>simpleMapWrapper</tt>
  * mode is enabled. Provides a simple hash model interface to the
  * underlying map (does not copy like {@link freemarker.template.SimpleHash}),
  * and a method interface to non-string keys.
@@ -31,7 +29,7 @@ WrapperTemplateModel
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, BeansWrapper wrapper)
+            public TemplateModel create(Object object, ObjectWrapper wrapper)
             {
                 return new SimpleMapModel((Map)object, wrapper);
             }
@@ -39,7 +37,7 @@ WrapperTemplateModel
 
     private final Map map;
     
-    public SimpleMapModel(Map map, BeansWrapper wrapper)
+    public SimpleMapModel(Map map, ObjectWrapper wrapper)
     {
         super(wrapper);
         this.map = map;
@@ -64,7 +62,7 @@ WrapperTemplateModel
     }
     
     public Object exec(List args) {
-        Object key = ((BeansWrapper)getObjectWrapper()).unwrap((TemplateModel)args.get(0));
+        Object key = ((ObjectWrapper)getObjectWrapper()).unwrap((TemplateModel)args.get(0));
         Object value = map.get(key);
         if (value == null && !map.containsKey(key)) {
             return null;

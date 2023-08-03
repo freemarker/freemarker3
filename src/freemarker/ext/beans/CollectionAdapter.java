@@ -14,10 +14,10 @@ import freemarker.template.utility.UndeclaredThrowableException;
  * @version $Id: CollectionAdapter.java,v 1.2 2005/06/12 19:03:04 szegedia Exp $
  */
 class CollectionAdapter extends AbstractCollection implements TemplateModelAdapter {
-    private final BeansWrapper wrapper;
+    private final ObjectWrapper wrapper;
     private final TemplateCollectionModel model;
     
-    CollectionAdapter(TemplateCollectionModel model, BeansWrapper wrapper) {
+    CollectionAdapter(TemplateCollectionModel model, ObjectWrapper wrapper) {
         this.model = model;
         this.wrapper = wrapper;
     }

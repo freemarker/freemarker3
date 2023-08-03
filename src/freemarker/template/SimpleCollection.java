@@ -3,7 +3,7 @@ package freemarker.template;
 import java.io.Serializable;
 import java.util.*;
 
-import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.ObjectWrapper;
 
 /**
  * A simple implementation of {@link TemplateCollectionModel}.
@@ -37,12 +37,12 @@ implements TemplateCollectionModel {
         this.collection = collection;
     }
 
-    public SimpleCollection(Iterator iterator, BeansWrapper wrapper) {
+    public SimpleCollection(Iterator iterator, ObjectWrapper wrapper) {
         super(wrapper);
         this.iterator = iterator;
     }
 
-    public SimpleCollection(Collection collection, BeansWrapper wrapper) {
+    public SimpleCollection(Collection collection, ObjectWrapper wrapper) {
         super(wrapper);
         this.collection = collection;
     }
