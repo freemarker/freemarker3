@@ -7,6 +7,7 @@ import java.util.Map;
 
 import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.template.AdapterTemplateModel;
+import freemarker.template.Constants;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateDateModel;
@@ -48,7 +49,7 @@ public class DeepUnwrap
      *   <li>If the object implements {@link TemplateHashModelEx}, then a
      *       <code>java.util.HashMap</code> is constructed from the subvariables, and each
      *       subvariable is unwrapped with the rules described here (recursive unwrapping).
-     *   <li>If the object is {@link TemplateModel#JAVA_NULL}, then null is returned.
+     *   <li>If the object is {@link Constants#JAVA_NULL}, then null is returned.
      *   <li>Throw a <code>TemplateModelException</code>, because it doesn't know how to
      *       unwrap the object.
      * </ol>
@@ -120,7 +121,7 @@ public class DeepUnwrap
             }
             return map;
         }
-        if(model == TemplateModel.JAVA_NULL) {
+        if(model == Constants.JAVA_NULL) {
             return null;
         }
         if (permissive) {

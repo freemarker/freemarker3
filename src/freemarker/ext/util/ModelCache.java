@@ -4,6 +4,7 @@ import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.util.Map;
 
+import freemarker.template.Constants;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelAdapter;
 
@@ -46,7 +47,7 @@ public abstract class ModelCache
     public TemplateModel getInstance(Object object)
     {
         if(object == null) {
-            return TemplateModel.JAVA_NULL;
+            return Constants.JAVA_NULL;
         }
         if(object instanceof TemplateModel) {
             return (TemplateModel)object;

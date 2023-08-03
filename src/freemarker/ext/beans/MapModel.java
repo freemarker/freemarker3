@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import freemarker.ext.util.ModelFactory;
+import freemarker.template.Constants;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
@@ -64,7 +65,7 @@ implements
         Map map = (Map) object;
         Object value = map.get(key);
         if (value == null) {
-        	return map.containsKey(key) ? JAVA_NULL : null;
+        	return map.containsKey(key) ? Constants.JAVA_NULL : null;
         }
         return wrap(value);
     }
@@ -82,11 +83,11 @@ implements
                 Character charKey = Character.valueOf(key.charAt(0));
                 val = map.get(charKey);
                 if (val == null) {
-                    return (map.containsKey(key) || map.containsKey(charKey)) ? JAVA_NULL : null;
+                    return (map.containsKey(key) || map.containsKey(charKey)) ? Constants.JAVA_NULL : null;
                 }
             }
             else {
-                return map.containsKey(key) ? JAVA_NULL : null;
+                return map.containsKey(key) ? Constants.JAVA_NULL : null;
             }
         }
         return wrap(val);

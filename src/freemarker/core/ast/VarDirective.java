@@ -17,7 +17,7 @@ public class VarDirective extends TemplateElement {
             Scope scope = env.getCurrentScope();
             if (exp == null) {
                 if (scope.get(varname) == null) {
-                    scope.put(varname, TemplateModel.JAVA_NULL);
+                    scope.put(varname, Constants.JAVA_NULL);
                 }
             } 
             else {

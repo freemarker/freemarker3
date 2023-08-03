@@ -7,6 +7,7 @@ import freemarker.core.ast.CollectionAndSequence;
 import freemarker.ext.util.ModelFactory;
 import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.template.AdapterTemplateModel;
+import freemarker.template.Constants;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateCollectionModel;
@@ -53,11 +54,11 @@ WrapperTemplateModel
                 Character charKey = Character.valueOf(key.charAt(0));
                 val = map.get(charKey);
                 if (val == null) {
-                    return (map.containsKey(key) || map.containsKey(charKey)) ? JAVA_NULL : null;
+                    return (map.containsKey(key) || map.containsKey(charKey)) ? Constants.JAVA_NULL : null;
                 }
             }
             else {
-                return map.containsKey(key) ? JAVA_NULL : null;
+                return map.containsKey(key) ? Constants.JAVA_NULL : null;
             }
         }
         return wrap(val);

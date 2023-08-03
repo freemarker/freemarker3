@@ -496,7 +496,7 @@ public class PostParseVisitor extends ASTVisitor {
         Object value = exp.literalValue();
 		if (value != null && !(value instanceof TemplateBooleanModel)) {
 			String msg;
-			if (value == TemplateModel.INVALID_EXPRESSION) {
+			if (value == Constants.INVALID_EXPRESSION) {
 				msg = "Invalid expression: " + exp.getSource();
 			} else {
 				msg = "Expression: " + exp.getSource() + " is not a boolean (true/false) value.";
@@ -509,7 +509,7 @@ public class PostParseVisitor extends ASTVisitor {
 		Object value = exp.literalValue();
 		if (value != null && !(value instanceof TemplateScalarModel)) {
 			String msg;
-			if (value == TemplateModel.INVALID_EXPRESSION) {
+			if (value == Constants.INVALID_EXPRESSION) {
 				msg = "Invalid expression: " + exp.getSource();
 			} else {
 				msg = "Expression: " + exp.getSource() + " is not a string.";
@@ -522,7 +522,7 @@ public class PostParseVisitor extends ASTVisitor {
 		Object value = exp.literalValue();
 		if (value != null && !(value instanceof TemplateNumberModel)) {
 			String msg;
-			if (value == TemplateModel.INVALID_EXPRESSION) {
+			if (value == Constants.INVALID_EXPRESSION) {
 				msg = "Invalid expression: " + exp.getSource();
 			} else {
 				msg = "Expression: " + exp.getSource() + " is not a numerical value.";
@@ -538,7 +538,7 @@ public class PostParseVisitor extends ASTVisitor {
 			&& !(value instanceof TemplateDateModel)) 
 		{
 			String msg;
-			if (value == TemplateModel.INVALID_EXPRESSION) {
+			if (value == Constants.INVALID_EXPRESSION) {
 				msg = "Invalid expression: " + exp.getSource();
 			} else {
 				msg = "Expression: " + exp.getSource() + " is not a string, date, or number.";

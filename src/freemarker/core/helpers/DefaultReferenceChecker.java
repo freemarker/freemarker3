@@ -3,7 +3,8 @@ package freemarker.core.helpers;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.Expression;
-import freemarker.template.TemplateModel;
+import freemarker.template.Constants;
+
 import java.util.*;
 
 public class DefaultReferenceChecker {
@@ -15,7 +16,7 @@ public class DefaultReferenceChecker {
 	
     public void assertNonNull(Object model, Expression exp, Environment env) throws InvalidReferenceException {
         assertIsDefined(model, exp, env);
-        if (model == TemplateModel.JAVA_NULL) {
+        if (model == Constants.JAVA_NULL) {
             throw new InvalidReferenceException(
                 "Expression " + exp + " is null " +
                 exp.getStartLocation() + ".", env);

@@ -7,6 +7,7 @@ import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Expression;
 import freemarker.core.ast.ParentheticalExpression;
+import freemarker.template.Constants;
 import freemarker.template.LazilyEvaluatableArguments;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateException;
@@ -37,7 +38,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
 
     public static final class DefaultBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
-            if(model == null || model == TemplateModel.JAVA_NULL) {
+            if(model == null || model == Constants.JAVA_NULL) {
                 return FirstDefined.INSTANCE;
             }
             return new TemplateMethodModelEx() {
@@ -50,13 +51,13 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
 
     public static class IfExistsBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
-            return model == null || model == TemplateModel.JAVA_NULL ? TemplateModel.NOTHING : model;
+            return model == null || model == Constants.JAVA_NULL ? Constants.NOTHING : model;
         }
     };
 
     public static class ExistsBuiltIn extends ExistenceBuiltIn {
         public TemplateModel apply(final Object model) {
-            return model == null || model == TemplateModel.JAVA_NULL ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
+            return model == null || model == Constants.JAVA_NULL ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
         }
     };
         
@@ -75,7 +76,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
         static final FirstDefined INSTANCE = new FirstDefined();
         public TemplateModel exec(List args) {
             for (Object arg : args) {
-                if (arg != null && arg != TemplateModel.JAVA_NULL) {
+                if (arg != null && arg != Constants.JAVA_NULL) {
                     return (TemplateModel) arg;
                 }
             }

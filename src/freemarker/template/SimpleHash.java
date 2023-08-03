@@ -123,7 +123,7 @@ implements TemplateHashModelEx, Serializable {
      * @param obj the object to store.
      */
     public void put(String key, Object obj) {
-    	if (obj == null) obj = JAVA_NULL;
+    	if (obj == null) obj = Constants.JAVA_NULL;
         map.put(key, obj);
         unwrappedMap = null;
     }
@@ -153,14 +153,14 @@ implements TemplateHashModelEx, Serializable {
                 Character charKey = Character.valueOf(key.charAt(0));
                 result = map.get(charKey);
                 if (result == null) {
-                    return map.containsKey(key) || map.containsKey(charKey) ? JAVA_NULL : null;
+                    return map.containsKey(key) || map.containsKey(charKey) ? Constants.JAVA_NULL : null;
                 }
                 else {
                     putKey = charKey;
                 }
             }
             else {
-                return map.containsKey(key) ? JAVA_NULL : null;
+                return map.containsKey(key) ? Constants.JAVA_NULL : null;
             }
         }
         else {

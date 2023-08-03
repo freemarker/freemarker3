@@ -45,7 +45,7 @@ public abstract class MacroBuiltins extends ExpressionEvaluatingBuiltIn {
                 throws TemplateModelException
         {
             TemplateModel result = env.getMacroContext(macro);
-            return result == null ? TemplateModel.JAVA_NULL : result;
+            return result == null ? Constants.JAVA_NULL : result;
         }
     }
 }

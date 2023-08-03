@@ -28,7 +28,7 @@ public class ExistsExpression extends Expression {
 				throw ire;
 			}
 		}
-		return tm == null || tm == TemplateModel.JAVA_NULL 
+		return tm == null || tm == Constants.JAVA_NULL 
 		       ? TemplateBooleanModel.FALSE 
 		       : TemplateBooleanModel.TRUE;
 	}

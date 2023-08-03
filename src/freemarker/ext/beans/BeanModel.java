@@ -18,6 +18,7 @@ import freemarker.ext.util.ModelFactory;
 import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
+import freemarker.template.Constants;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateCollectionModel;
@@ -132,7 +133,7 @@ implements
             else
             {
                 Object model = invokeGenericGet(classInfo, key);
-                if(model != null && model != JAVA_NULL)
+                if(model != null && model != Constants.JAVA_NULL)
                 {
                     return model;
                 }

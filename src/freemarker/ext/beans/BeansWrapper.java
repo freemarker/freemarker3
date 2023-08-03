@@ -39,6 +39,7 @@ import freemarker.ext.util.ModelFactory;
 import freemarker.ext.util.WrapperTemplateModel;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
+import freemarker.template.Constants;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
@@ -350,7 +351,7 @@ public class BeansWrapper implements ObjectWrapper
      * Wraps the object with a template model that is most specific for the object's
      * class. Specifically:
      * <ul>
-     * <li>if the object is null, returns {@link TemplateModel#JAVA_NULL}</li>
+     * <li>if the object is null, returns {@link Constants#JAVA_NULL}</li>
      * <li>if the object is already a {@link TemplateModel}, returns it unchanged,</li>
      * <li>if the object is a {@link TemplateModelAdapter}, returns its underlying model,</li>
      * <li>if the object is a Map, returns a {@link MapModel} for it
@@ -370,7 +371,7 @@ public class BeansWrapper implements ObjectWrapper
     public TemplateModel wrap(Object object) throws TemplateModelException
     {
         if(object == null) {
-            return TemplateModel.JAVA_NULL;
+            return Constants.JAVA_NULL;
         }
         return modelCache.getInstance(object);
     }
@@ -460,7 +461,7 @@ public class BeansWrapper implements ObjectWrapper
             throw new TemplateModelException("invalid reference");
         }
 
-        if (model == TemplateModel.JAVA_NULL) {
+        if (model == Constants.JAVA_NULL) {
             return null;
         }
         
@@ -719,7 +720,7 @@ public class BeansWrapper implements ObjectWrapper
     /**
      * Invokes the specified method, wrapping the return value. The specialty
      * of this method is that if the return value is null, and the return type
-     * of the invoked method is void, {@link TemplateModel#NOTHING} is returned.
+     * of the invoked method is void, {@link Constants#NOTHING} is returned.
      * @param object the object to invoke the method on
      * @param method the method to invoke 
      * @param args the arguments to the method
@@ -747,7 +748,7 @@ public class BeansWrapper implements ObjectWrapper
             // intuitive (as return value of a void method is undefined), but
             // this way we don't force people to write an additional ! operator
             // i.e. ${session.invalidate()!}
-            ? TemplateModel.NOTHING 
+            ? Constants.NOTHING 
             : getOuterIdentity().wrap(retval); 
     }
 

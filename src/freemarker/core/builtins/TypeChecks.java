@@ -55,7 +55,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = model instanceof TemplateNodeModel;
 		}
 		else if (builtInName == "is_null") {
-			result = model == TemplateModel.JAVA_NULL;
+			result = model == Constants.JAVA_NULL;
 		}
 		else if (builtInName == "is_transform") {
 			result = model instanceof TemplateTransformModel;

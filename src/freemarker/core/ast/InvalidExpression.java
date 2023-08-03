@@ -30,7 +30,7 @@ public class InvalidExpression extends Expression {
 
 	@Override
 	TemplateModel _getAsTemplateModel(Environment env) {
-		return TemplateModel.INVALID_EXPRESSION;
+		return Constants.INVALID_EXPRESSION;
 	}
 
 	@Override boolean isLiteral() {

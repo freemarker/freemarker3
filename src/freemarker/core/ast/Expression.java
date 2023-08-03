@@ -39,7 +39,7 @@ abstract public class Expression extends TemplateNode {
         	try {
         		constantValue = _getAsTemplateModel(null);
         	} catch (Exception e) {
-        		constantValue = TemplateModel.INVALID_EXPRESSION; // If we can't evaluate it, it must be invalid, no?
+        		constantValue = Constants.INVALID_EXPRESSION; // If we can't evaluate it, it must be invalid, no?
         	}
         }
     }

@@ -44,7 +44,7 @@ public class EvaluationUtil
         else if(model == null) {
             throw new InvalidReferenceException(expr + " is undefined.", env);
         }
-        else if(model == TemplateModel.JAVA_NULL) {
+        else if(model == Constants.JAVA_NULL) {
             throw new InvalidReferenceException(expr + " is null.", env);
         }
         else {

@@ -70,7 +70,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         public TemplateModel apply(Environment env, TemplateNodeModel node)
         {
             String ns = node.getNodeNamespace();
-            return ns == null ? TemplateModel.JAVA_NULL : new SimpleScalar(ns);
+            return ns == null ? Constants.JAVA_NULL : new SimpleScalar(ns);
         }
     }
 
@@ -79,7 +79,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         public Object apply(Environment env, TemplateNodeModel node)
         {
             String nt = node.getNodeType();
-            return nt == null ? TemplateModel.JAVA_NULL : new SimpleScalar(nt);
+            return nt == null ? Constants.JAVA_NULL : new SimpleScalar(nt);
         }
     }
     

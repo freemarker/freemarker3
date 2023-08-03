@@ -2,6 +2,7 @@
  package freemarker.core.ast;
 
 import freemarker.core.Environment;
+import freemarker.template.Constants;
 import freemarker.template.TemplateModel;
 
 public class NullLiteral extends Expression {
@@ -11,7 +12,7 @@ public class NullLiteral extends Expression {
     }
 
     TemplateModel _getAsTemplateModel(Environment env) {
-        return TemplateModel.JAVA_NULL;
+        return Constants.JAVA_NULL;
     }
 
     boolean isLiteral() {

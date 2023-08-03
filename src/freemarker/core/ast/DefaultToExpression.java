@@ -63,7 +63,7 @@ public class DefaultToExpression extends Expression {
 				throw ire;
 			}
 		}
-		if (left != null && left != TemplateModel.JAVA_NULL) return left;
+		if (left != null && left != Constants.JAVA_NULL) return left;
 		if (rhs == null) return EMPTY_STRING_AND_SEQUENCE;
 		return rhs.getAsTemplateModel(env);
 	}
