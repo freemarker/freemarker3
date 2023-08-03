@@ -1,7 +1,5 @@
 package freemarker.template;
 
-import java.io.Serializable;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;

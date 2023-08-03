@@ -10,7 +10,6 @@ import freemarker.template.TemplateException;
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  */
 public class NonNumericalException extends TemplateException {
-    private static final long serialVersionUID = 2755805472707645799L;
 
     public NonNumericalException(Environment env) {
         super("expecting numerical value here", env);

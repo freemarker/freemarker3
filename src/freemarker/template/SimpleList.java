@@ -11,7 +11,6 @@ package freemarker.template;
  */
 
 public class SimpleList extends SimpleSequence {
-    private static final long serialVersionUID = 4182243122246021718L;
 
     public SimpleList() {
     }

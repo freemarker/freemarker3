@@ -99,7 +99,6 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     }
 
     static class AncestorSequence extends SimpleSequence implements TemplateMethodModel {
-        private static final long serialVersionUID = 1L;
 
         public Object exec(List names) {
             if (names == null || names.isEmpty()) {

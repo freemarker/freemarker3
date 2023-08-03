@@ -8,7 +8,6 @@ import freemarker.template.TemplateException;
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  */
 public class InvalidReferenceException extends TemplateException {
-    private static final long serialVersionUID = -6378001659580354057L;
 
     public InvalidReferenceException(Environment env) {
         super("invalid reference", env);

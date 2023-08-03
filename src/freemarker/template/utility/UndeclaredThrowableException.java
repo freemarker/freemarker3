@@ -10,10 +10,6 @@ import java.io.PrintWriter;
  */
 public class UndeclaredThrowableException extends RuntimeException
 {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -6786680925871320389L;
 	private final Throwable t;
     
     public UndeclaredThrowableException(Throwable t)

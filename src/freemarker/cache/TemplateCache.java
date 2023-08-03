@@ -2,7 +2,6 @@ package freemarker.cache;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
@@ -668,10 +667,8 @@ public class TemplateCache
      * to serialize/replicate them; FreeMarker code itself doesn't rely on its
      * serializability.
      */
-    private static final class CachedTemplate implements Cloneable, Serializable
+    private static final class CachedTemplate implements Cloneable
     {
-        private static final long serialVersionUID = 1L;
-
         Object templateOrException;
         Object source;
         long lastChecked;

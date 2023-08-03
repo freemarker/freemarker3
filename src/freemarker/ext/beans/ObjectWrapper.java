@@ -48,12 +48,6 @@ import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 
-/**
- * Utility class that provides generic services to reflection classes.
- * It handles all polymorphism issues in the {@link #wrap(Object)} and {@link #unwrap(TemplateModel)} methods.
- * @author Attila Szegedi
- * @version $Id: BeansWrapper.java,v 1.95 2006/03/11 19:21:23 ddekany Exp $
- */
 public class ObjectWrapper 
 {
     public static final Object CAN_NOT_UNWRAP = new Object();
@@ -363,7 +357,7 @@ public class ObjectWrapper
      * <li>otherwise, returns a generic {@link StringModel} for it.
      * </ul>
      */
-    public TemplateModel wrap(Object object) throws TemplateModelException
+    public TemplateModel wrap(Object object) 
     {
         if(object == null) {
             return Constants.JAVA_NULL;
@@ -437,7 +431,7 @@ public class ObjectWrapper
      * {@link TemplateBooleanModel} instances into a Boolean.
      * All other objects are returned unchanged.
      */
-    public Object unwrap(Object model) throws TemplateModelException
+    public Object unwrap(Object model) 
     {
         return unwrap(model, OBJECT_CLASS);
     }

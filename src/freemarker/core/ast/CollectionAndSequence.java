@@ -2,16 +2,12 @@ package freemarker.core.ast;
 
 import freemarker.template.*;
 import java.util.*;
-import java.io.Serializable;
 
 /**
  * Add sequence capabilities to an existing collection, or
  * vice versa. Used by ?keys and ?values built-ins.
  */
-final public class CollectionAndSequence
-implements TemplateCollectionModel, TemplateSequenceModel, Serializable
-{
-    private static final long serialVersionUID = -4474902410323664315L;
+final public class CollectionAndSequence implements TemplateCollectionModel, TemplateSequenceModel {
 
     private TemplateCollectionModel collection;
     private TemplateSequenceModel sequence;

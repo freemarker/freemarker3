@@ -8,8 +8,7 @@ import freemarker.template.*;
  * descending. 
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  */
-class NumericalRange implements TemplateSequenceModel, java.io.Serializable {
-    private static final long serialVersionUID = 8329795189999011437L;
+class NumericalRange implements TemplateSequenceModel {
 
     private int lower, upper;
     private boolean descending, norhs; // if norhs is true, then we have a half-range, like n..

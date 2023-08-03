@@ -10,7 +10,6 @@ import freemarker.template.TemplateException;
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  */
 public class NonBooleanException extends TemplateException {
-    private static final long serialVersionUID = -4156311663232920403L;
 
     public NonBooleanException(Environment env) {
         super("expecting boolean value here", env);

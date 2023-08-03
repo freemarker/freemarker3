@@ -564,7 +564,6 @@ public class Configurable
     }
     
     public static class UnknownSettingException extends TemplateException {
-        private static final long serialVersionUID = 6904771126094186066L;
 
         private UnknownSettingException(String name, Environment env) {
             super("Unknown setting: " + name, env);

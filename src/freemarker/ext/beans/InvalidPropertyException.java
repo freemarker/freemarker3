@@ -9,7 +9,6 @@ import freemarker.template.TemplateModelException;
  */
 
 public class InvalidPropertyException extends TemplateModelException {
-    private static final long serialVersionUID = -7048196489726321719L;
 
     public InvalidPropertyException(String description) {
         super(description);

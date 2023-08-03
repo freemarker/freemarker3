@@ -9,7 +9,6 @@ import freemarker.core.Environment;
  * @version $Id: TemplateModelException.java,v 1.14 2003/04/22 21:03:22 revusky Exp $
  */
 public class TemplateModelException extends TemplateException {
-    private static final long serialVersionUID = -1707011064187135336L;
 
     /**
      * Constructs a <tt>TemplateModelException</tt> with no

@@ -9,10 +9,6 @@ import java.util.*;
  */
 public class LegacyList extends SimpleSequence {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 5113695891943970389L;
 	private Iterator iterator;
 
     /**

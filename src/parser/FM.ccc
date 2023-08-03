@@ -2,7 +2,8 @@ BASE_SRC_DIR="..";
 PARSER_PACKAGE="freemarker.core.parser";
 BASE_NODE_CLASS="TemplateNode";
 //TREE_BUILDING_ENABLED=false;
-NODE_DEFAULT_VOID;
+//NODE_DEFAULT_VOID;
+NODE_PREFIX="AST";
 
 INJECT PARSER_CLASS : 
     import freemarker.core.ast.*;

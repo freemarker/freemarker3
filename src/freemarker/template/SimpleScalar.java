@@ -1,7 +1,5 @@
 package freemarker.template;
 
-import java.io.Serializable;
-
 /**
  * A simple implementation of the <tt>TemplateScalarModel</tt>
  * interface, using a <tt>String</tt>.
@@ -13,13 +11,8 @@ import java.io.Serializable;
  * @see SimpleSequence
  * @see SimpleHash
  */
-public final class SimpleScalar 
-implements TemplateScalarModel, Serializable {
-    private static final long serialVersionUID = -5354606483655405575L;
-    /**
-     * @serial the value of this <tt>SimpleScalar</tt> if it wraps a
-     * <tt>String</tt>.
-     */
+public final class SimpleScalar implements TemplateScalarModel {
+    
     private String value;
 
     /**

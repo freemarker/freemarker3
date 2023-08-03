@@ -12,8 +12,6 @@ import freemarker.template.TemplateException;
 
 public class StopException extends TemplateException
 {
-    private static final long serialVersionUID = 5500173581027893102L;
-
     public StopException(Environment env) {
         super(env);
     }

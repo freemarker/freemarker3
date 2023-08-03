@@ -10,7 +10,6 @@ import freemarker.template.TemplateException;
  * @author Attila Szegedi
  */
 public class NonStringException extends TemplateException {
-    private static final long serialVersionUID = 102300358326821897L;
 
     public NonStringException(Environment env) {
         super("expecting string or numerical value here", env);

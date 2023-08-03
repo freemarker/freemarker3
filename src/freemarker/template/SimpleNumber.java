@@ -1,8 +1,5 @@
 package freemarker.template;
 
-import java.io.Serializable;
-
-
 /**
  * A simple implementation of the <tt>TemplateNumberModel</tt>
  * interface. Note that this class is immutable.
@@ -11,8 +8,7 @@ import java.io.Serializable;
  *
  * @author <A HREF="mailto:jon@revusky.com">Jonathan Revusky</A>
  */
-public final class SimpleNumber implements TemplateNumberModel, Serializable {
-    private static final long serialVersionUID = -9151122919191390917L;
+public final class SimpleNumber implements TemplateNumberModel {
 
     /**
      * @serial the value of this <tt>SimpleNumber</tt> 

@@ -1,6 +1,5 @@
 package freemarker.template;
 
-import java.io.Serializable;
 import java.util.*;
 
 import freemarker.ext.beans.ObjectWrapper;

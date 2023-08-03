@@ -17,12 +17,9 @@ import java.util.Set;
  * and not to values, i.e. {@link #containsValue(Object)} still uses {@link Object#equals(Object)}.
  * @author  Attila Szegedi
  */
-public class IdentityHashMap
-    extends AbstractMap
-    implements Map, Cloneable, java.io.Serializable
+public class IdentityHashMap extends AbstractMap implements Map, Cloneable
 {
 
-    public static final long serialVersionUID = 362498820763181265L;
     /**
      * The hash table data.
      */

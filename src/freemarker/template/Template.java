@@ -774,7 +774,6 @@ mainloop:
     }
 
     static public class WrongEncodingException extends RuntimeException {
-        private static final long serialVersionUID = 3716984277969927605L;
 
         public String specifiedEncoding;
 

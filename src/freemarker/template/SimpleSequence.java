@@ -1,6 +1,5 @@
 package freemarker.template;
 
-import java.io.Serializable;
 import java.util.*;
 
 import freemarker.ext.beans.ObjectWrapper;
@@ -152,41 +151,4 @@ public class SimpleSequence implements TemplateSequenceModel {
         return list.size();
     }
 
-    /**
-     * @return a synchronized wrapper for list.
-     */
-    public SimpleSequence synchronizedWrapper() {
-        return new SynchronizedSequence();
-    }
-    
-    public String toString() {
-        return list.toString();
-    }
-
-    private class SynchronizedSequence extends SimpleSequence {
-        private static final long serialVersionUID = 4787474310915789132L;
-
-        public void add(Object obj) {
-            synchronized (SimpleSequence.this) {
-                SimpleSequence.this.add(obj);
-            }
-        }
-
-        public Object get(int i) {
-            synchronized (SimpleSequence.this) {
-                return SimpleSequence.this.get(i);
-            }
-        }
-        
-        public int size() {
-            synchronized (SimpleSequence.this) {
-                return SimpleSequence.this.size();
-            }
-        }
-        public List toList() {
-            synchronized (SimpleSequence.this) {
-                return SimpleSequence.this.toList();
-            }
-        }
-    }
 }

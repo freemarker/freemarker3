@@ -363,10 +363,7 @@ public class TemplateTestCase extends TestCase {
     }
 
     public static class TestBean extends HashMap {
-        /**
-		 * 
-		 */
-		private static final long serialVersionUID = 2531504146861186823L;
+  
 		public String getName() {
             return "Christopher";
         }
