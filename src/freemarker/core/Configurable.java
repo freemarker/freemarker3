@@ -1,5 +1,6 @@
 package freemarker.core;
 
+import java.beans.Beans;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -74,7 +75,7 @@ public class Configurable
         falseFormat = "false";
         templateExceptionHandler = TemplateExceptionHandler.DEBUG_HANDLER;
         arithmeticEngine = ArithmeticEngine.BIGDECIMAL_ENGINE;
-        objectWrapper = new DefaultObjectWrapper();
+        objectWrapper = new BeansWrapper();
         // outputEncoding and urlEscapingCharset defaults to null,
         // which means "not specified"
         
@@ -487,16 +488,7 @@ public class Configurable
                 }
             } else if (OBJECT_WRAPPER_KEY.equals(key)) {
                 if (value.indexOf('.') == -1) {
-                    if ("default".equalsIgnoreCase(value)) {
-                        setObjectWrapper(new DefaultObjectWrapper());
-                    } else if ("simple".equalsIgnoreCase(value)) {
-                        setObjectWrapper(new SimpleObjectWrapper());
-                    } else if ("beans".equalsIgnoreCase(value)) {
-                        setObjectWrapper(new BeansWrapper());
-                    } else {
-                        throw invalidSettingValueException(key, value);
-                    }
-                    
+                    setObjectWrapper(new BeansWrapper());
                 } else {
                     setObjectWrapper((ObjectWrapper) Class.forName(value)
                             .newInstance());

@@ -16,23 +16,9 @@ public interface ObjectWrapper {
      */
     ObjectWrapper BEANS_WRAPPER = BeansWrapper.getDefaultInstance();
 
-    /**
-     * The default object wrapper implementation.
-     * Wraps Maps as SimpleHash and Lists as SimpleSequences, Strings and 
-     * Numbers as SimpleScalar and SimpleNumber respectively.
-     * Other objects are beans-wrapped, thus exposing reflection-based information.
-     */
-    ObjectWrapper DEFAULT_WRAPPER = DefaultObjectWrapper.instance;
+    ObjectWrapper DEFAULT_WRAPPER = BEANS_WRAPPER;
 
-    /**
-     * Object wrapper that uses SimpleXXX wrappers only.
-     * This wrapper has far more restrictive semantics. It 
-     * behaves like the DEFAULT_WRAPPER, but for objects
-     * that it does not know how to wrap as a SimpleXXX, it 
-     * throws an exception. It makes no use of reflection-based 
-     * exposure of methods. 
-     */
-    ObjectWrapper SIMPLE_WRAPPER = SimpleObjectWrapper.instance;
+    ObjectWrapper SIMPLE_WRAPPER = BEANS_WRAPPER;
     
     /**
      * @return a TemplateModel wrapper of the object passed in.

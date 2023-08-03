@@ -1,5 +1,7 @@
 package freemarker.template;
 
+import freemarker.ext.beans.BeansWrapper;
+
 /**
  * A base class for containers that wrap arbitrary Java objects into 
  * {@link TemplateModel} instances.
@@ -8,8 +10,7 @@ package freemarker.template;
  */
 abstract public class WrappingTemplateModel {
 
-    private static ObjectWrapper defaultObjectWrapper = 
-        DefaultObjectWrapper.instance;
+    private static ObjectWrapper defaultObjectWrapper = BeansWrapper.getDefaultInstance();
     private ObjectWrapper objectWrapper;
     
     /**
@@ -55,7 +56,7 @@ abstract public class WrappingTemplateModel {
         this.objectWrapper = 
             objectWrapper != null ? objectWrapper : defaultObjectWrapper;
         if (this.objectWrapper == null) { // This is to address some weird static initializing bug
-            this.objectWrapper = defaultObjectWrapper =  new DefaultObjectWrapper();
+            this.objectWrapper = defaultObjectWrapper =  new BeansWrapper();
         }
     }
     
