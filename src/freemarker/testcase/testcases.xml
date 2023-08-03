@@ -54,9 +54,6 @@
    <testcase name="comparisons" filename="test-comparisons.html" />
    <testcase name="compress" filename="test-compress.html"/>
    <testcase name="dateformat" filename="test-dateformat.html" />
-   <testcase name="default-xmlns" filename="test-defaultxmlns1.txt">
-      <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase>
    <testcase name="embed" filename="test-embed.ftl"/>
    <testcase name="encoding-builtins" filename="test-encodingbuiltins.txt" />
    <testcase name="escapes" filename="test-escapes.txt" />
@@ -68,8 +65,6 @@
    <testcase name="include" filename="test-include.html" />
    <testcase name="interpret" filename="test-interpret.html"/>
    <testcase name="iterators" filename="test-listiterators.html"/>
-   <!-- testcase name="jsptaglibs" filename="test-jsptaglibs.txt" 
-             class="freemarker.testcase.servlets.TestJspTaglibs"/ -->
    <testcase name="lastcharacter" filename="test-lastcharacter.html"/>
    <testcase name="list" filename="test-extlist.html" />
    <testcase name="listliteral" filename="test-listliteral.html" />
@@ -83,9 +78,6 @@
    <testcase name="nested" filename="test-nested1.txt" />
    <testcase name="newlines1" filename="test-newlines1.html" />
    <testcase name="newlines2" filename="test-newlines2.html" />
-   <!-- testcase name="nodelistmodel" filename="test-xml.html" >
-       <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase -->
    <testcase name="noparse" filename="test-noparse.html" />
    <testcase name="number-format" filename="test-numberformat.txt" />
    <testcase name="number-literal" filename="test-numberliteral.html" >
@@ -118,27 +110,6 @@
    <testcase name="variables" filename="test-variables.html"/>
    <testcase name="whitespace-trim" filename="test-wstrim.txt"/>
    <testcase name="wstrip-in-header" filename="test-wsstripinheader.txt"/>
-   <testcase name="xml-fragment" filename="test-xmlfragment.txt">
-      <config object_wrapper="freemarker.ext.beans.BeansWrapper"/> 
-   </testcase>
-   <testcase name="xmlns1" filename="test-xmlns.html">
-      <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase>
-   <testcase name="xmlns2" filename="test-xmlns.html">
-      <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase>
-   <testcase name="xmlns3" filename="test-xmlns3.html">
-      <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase>   
-   <testcase name="xmlns4" filename="test-xmlns4.html">
-      <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase>   
-   <testcase name="xmlns5" filename="test-xmlns5.txt">
-      <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase>
-   <!-- testcase name="xpath1" filename="test-xpath1.txt">
-      <config object_wrapper="freemarker.ext.beans.BeansWrapper"/>
-   </testcase -->
    <testcase name="duplicate-includeencoding" filename="test-duplicateincludeencoding.txt"
       class="freemarker.testcase.ParserTestCase" />
    <testcase name="duplicate-includeparse" filename="test-duplicateincludeparse.txt"

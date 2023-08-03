@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import freemarker.ext.dom.NodeModel;
 
 /**
  * <p>The default implementation of the ObjectWrapper
@@ -66,17 +65,10 @@ public class DefaultObjectWrapper extends freemarker.ext.beans.BeansWrapper {
      * Since 2.3, this falls back on XML wrapper and BeansWrapper functionality.
      */
     protected TemplateModel handleUnknownType(Object obj) {
-        if (obj instanceof org.w3c.dom.Node) {
-            return wrapDomNode(obj);
-        }
         return super.wrap(obj); 
     }
 
     
-    public TemplateModel wrapDomNode(Object obj) {
-        return NodeModel.wrap((org.w3c.dom.Node) obj);
-    }
-
     /**
      * Converts an array to a java.util.List
      */

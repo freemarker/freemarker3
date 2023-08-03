@@ -2,7 +2,6 @@ package freemarker.testcase;
 
 import freemarker.template.*;
 import freemarker.ext.beans.*;
-import freemarker.ext.dom.NodeModel;
 import freemarker.testcase.models.*;
 import freemarker.template.utility.*;
 import junit.framework.*;
@@ -213,13 +212,6 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("bigDecimal", new SimpleNumber(java.math.BigDecimal.valueOf(1)));
             dataModel.put("bigDecimal2", new SimpleNumber(java.math.BigDecimal.valueOf(1, 16)));
         }
-
-        else if (testName.equals("default-xmlns")) {
-            InputSource is = new InputSource(getClass().getResourceAsStream("test-defaultxmlns1.xml"));
-            NodeModel nm = NodeModel.parse(is);
-            dataModel.put("doc", nm);
-        }
-        
         else if (testName.equals("multimodels")) {
             dataModel.put("test", "selftest");
             dataModel.put("self", "self");
@@ -247,43 +239,6 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("x", 4);
             dataModel.put("z", 4);
             conf.setSharedVariable("y", 7);
-        }
-        
-        else if (testName.equals("xml-fragment")) {
-            DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
-            f.setNamespaceAware(true);
-            DocumentBuilder db = f.newDocumentBuilder();
-            org.w3c.dom.Document doc = db.parse(new InputSource(getClass().getResourceAsStream("test-xmlfragment.xml")));
-            dataModel.put("node", NodeModel.wrap(doc.getDocumentElement().getFirstChild().getFirstChild()));
-        }
-        
-        else if (testName.equals("xmlns1")) {
-            InputSource is = new InputSource(getClass().getResourceAsStream("test-xmlns.xml"));
-            NodeModel nm = NodeModel.parse(is);
-            dataModel.put("doc", nm);
-        }
-        
-        else if (testName.equals("xmlns2")) {
-            InputSource is = new InputSource(getClass().getResourceAsStream("test-xmlns2.xml"));
-            NodeModel nm = NodeModel.parse(is);
-            dataModel.put("doc", nm);
-        }
-        
-        else if (testName.equals("xmlns3") || testName.equals("xmlns4")) {
-            InputSource is = new InputSource(getClass().getResourceAsStream("test-xmlns3.xml"));
-            NodeModel nm = NodeModel.parse(is);
-            dataModel.put("doc", nm);
-        }
-        
-        else if (testName.equals("xmlns5")) {
-            InputSource is = new InputSource(getClass().getResourceAsStream("test-defaultxmlns1.xml"));
-            NodeModel nm = NodeModel.parse(is);
-            dataModel.put("doc", nm);
-        }
-        else if (testName.equals("xpath1")) {
-            InputSource is = new InputSource(getClass().getResourceAsStream("test-xpath1.xml"));
-            NodeModel nm = NodeModel.parse(is);
-            dataModel.put("doc", nm);
         }
     }
     

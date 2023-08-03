@@ -1,7 +1,7 @@
 package freemarker.testcase;
 
 import junit.framework.*;
-import freemarker.ext.dom.NodeModel;
+//import freemarker.ext.dom.NodeModel;
 import javax.xml.parsers.*;
 import java.util.*;
 import java.io.*;
