@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import freemarker.ext.beans.WrapperTemplateModel;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
 import freemarker.template.TemplateBooleanModel;
@@ -78,9 +77,6 @@ public class DeepUnwrap
     private static Object unwrap(Object model, boolean permissive) {
         if(model instanceof AdapterTemplateModel) {
             return ((AdapterTemplateModel)model).getAdaptedObject(OBJECT_CLASS);
-        }
-        if (model instanceof WrapperTemplateModel) {
-            return ((WrapperTemplateModel)model).getWrappedObject();
         }
         if(model instanceof TemplateScalarModel) {
             return ((TemplateScalarModel)model).getAsString();

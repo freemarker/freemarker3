@@ -492,22 +492,6 @@ public class ObjectWrapper
             }
         }
         
-        if(model instanceof WrapperTemplateModel) {
-            Object wrapped = ((WrapperTemplateModel)model).getWrappedObject();
-            if(requiredType.isInstance(wrapped)) {
-                return wrapped;
-            }
-            // Attempt numeric conversion 
-            if(wrapped instanceof Number && ((requiredType.isPrimitive() && !isChar && 
-                    !isBoolean) || NUMBER_CLASS.isAssignableFrom(requiredType))) {
-                Number number = convertUnwrappedNumber(requiredType,
-                        (Number)wrapped);
-                if(number != null) {
-                    return number;
-                }
-            }
-        }
-        
         // Translation of generic template models to POJOs. First give priority
         // to various model interfaces based on the hint class. This helps us
         // select the appropriate interface in multi-interface models when we

@@ -11,7 +11,6 @@ import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
 
 /**
  * Model used by {@link ObjectWrapper} when <tt>simpleMapWrapper</tt>
@@ -21,8 +20,7 @@ import freemarker.template.TemplateModelException;
  * @author Chris Nokleberg
  * @version $Id: SimpleMapModel.java,v 1.9 2005/06/12 19:03:04 szegedia Exp $
  */
-public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelEx, AdapterTemplateModel, 
-WrapperTemplateModel 
+public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelEx, AdapterTemplateModel 
 {
     static final ModelFactory FACTORY =
         new ModelFactory()

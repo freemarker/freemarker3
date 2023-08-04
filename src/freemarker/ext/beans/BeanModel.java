@@ -38,7 +38,7 @@ import freemarker.template.TemplateScalarModel;
 
 public class BeanModel
 implements
-    TemplateHashModelEx, AdapterTemplateModel, WrapperTemplateModel
+    TemplateHashModelEx, AdapterTemplateModel
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
