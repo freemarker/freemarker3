@@ -230,14 +230,11 @@ public class BeanModel implements TemplateHashModelEx, AdapterTemplateModel
     }
 
     protected Object wrap(Object obj)
-    throws TemplateModelException
     {
-        return ObjectWrapper.instance().getOuterIdentity().wrap(obj);
+        return ObjectWrapper.instance().wrap(obj);
     }
     
     protected Object unwrap(TemplateModel model)
-    throws
-        TemplateModelException
     {
         return ObjectWrapper.instance().unwrap(model);
     }

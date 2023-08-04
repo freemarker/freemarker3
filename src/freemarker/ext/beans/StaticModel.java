@@ -53,7 +53,7 @@ final class StaticModel implements TemplateHashModelEx
         {
             try
             {
-                return wrapper.getOuterIdentity().wrap(((Field) model).get(
+                return wrapper.wrap(((Field) model).get(
                         null));
             }
             catch (IllegalAccessException e)
@@ -83,13 +83,13 @@ final class StaticModel implements TemplateHashModelEx
     
     public TemplateCollectionModel keys() throws TemplateModelException
     {
-        return (TemplateCollectionModel)wrapper.getOuterIdentity().wrap(
+        return (TemplateCollectionModel)wrapper.wrap(
                 map.keySet());
     }
     
     public TemplateCollectionModel values() throws TemplateModelException
     {
-        return (TemplateCollectionModel)wrapper.getOuterIdentity().wrap(
+        return (TemplateCollectionModel)wrapper.wrap(
                 map.values());
     }
 
@@ -119,7 +119,7 @@ final class StaticModel implements TemplateHashModelEx
                         // public static final fields are evaluated once and
                         // stored in the map
                         map.put(field.getName(), 
-                                wrapper.getOuterIdentity().wrap(field.get(
+                                wrapper.wrap(field.get(
                                         null)));
                     }
                     catch (IllegalAccessException e)

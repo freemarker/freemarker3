@@ -96,9 +96,6 @@ public class ObjectWrapper
     private final ClassBasedModelFactory staticModels = new StaticModels(this);
     private final ClassBasedModelFactory enumModels = new EnumModels(this);
 
-//    private final BooleanModel FALSE = new BooleanModel(Boolean.FALSE);
-//    private final BooleanModel TRUE = new BooleanModel(Boolean.TRUE);
-
     /**
      * At this level of exposure, all methods and properties of the
      * wrapped objects are exposed to the template.
@@ -141,7 +138,6 @@ public class ObjectWrapper
     private boolean exposeFields = false;
     private int defaultDateType = TemplateDateModel.UNKNOWN;
 
-    private ObjectWrapper outerIdentity = this;
     private boolean simpleMapWrapper=true;
     private boolean strict = false;
     
@@ -184,29 +180,6 @@ public class ObjectWrapper
      */
     public void setStrict(boolean strict) {
     	this.strict = strict;
-    }
-
-    /**
-     * When wrapping an object, the BeansWrapper commonly needs to wrap
-     * "sub-objects", for example each element in a wrapped collection.
-     * Normally it wraps these objects using itself. However, this makes
-     * it difficult to delegate to a BeansWrapper as part of a custom
-     * aggregate ObjectWrapper. This method lets you set the ObjectWrapper
-     * which will be used to wrap the sub-objects.
-     * @param outerIdentity the aggregate ObjectWrapper
-     */
-    public void setOuterIdentity(ObjectWrapper outerIdentity)
-    {
-        this.outerIdentity = outerIdentity;
-    }
-
-    /**
-     * By default returns <tt>this</tt>.
-     * @see #setOuterIdentity(ObjectWrapper)
-     */
-    public ObjectWrapper getOuterIdentity()
-    {
-        return outerIdentity;
     }
 
     /**
@@ -665,10 +638,7 @@ public class ObjectWrapper
      * BeansWrapper never throws TemplateModelException).
      */
     Object invokeMethod(Object object, Method method, Object[] args)
-    throws
-        InvocationTargetException,
-        IllegalAccessException,
-        TemplateModelException
+    throws InvocationTargetException, IllegalAccessException
     {
         Object retval = method.invoke(object, args);
         return 
@@ -680,7 +650,7 @@ public class ObjectWrapper
             // this way we don't force people to write an additional ! operator
             // i.e. ${session.invalidate()!}
             ? Constants.NOTHING 
-            : getOuterIdentity().wrap(retval); 
+            : wrap(retval); 
     }
 
    /**

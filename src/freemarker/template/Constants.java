@@ -2,9 +2,6 @@ package freemarker.template;
 
 import java.util.Iterator;
 
-import freemarker.template.Constants.InvalidExpressionModel;
-import freemarker.template.Constants.JavaNull;
-
 /**
  * Frequently used constant {@link TemplateModel} values.
  * 
