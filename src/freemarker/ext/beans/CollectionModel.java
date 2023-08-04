@@ -44,6 +44,6 @@ implements
 
     public Iterator<Object> iterator()
     {
-        return new IteratorModel(((Collection)object).iterator(), wrapper);
+        return new IteratorModel(((Collection)object).iterator(), ObjectWrapper.instance());
     }
 }

@@ -121,7 +121,7 @@ public class ResourceBundleModel
                 params[i] = unwrap((TemplateModel)it.next());
     
             // Invoke format
-            return new StringModel(format(key, params), wrapper);
+            return new StringModel(format(key, params), ObjectWrapper.instance());
         }
         catch(MissingResourceException e)
         {

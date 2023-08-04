@@ -36,13 +36,11 @@ import freemarker.template.TemplateScalarModel;
  * @version $Id: BeanModel.java,v 1.51 2006/03/15 05:01:12 revusky Exp $
  */
 
-public class BeanModel
-implements
-    TemplateHashModelEx, AdapterTemplateModel
+public class BeanModel implements TemplateHashModelEx, AdapterTemplateModel
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
-    protected final ObjectWrapper wrapper;
+//    protected final ObjectWrapper wrapper;
     
     static final ModelFactory FACTORY =
         new ModelFactory()
@@ -74,11 +72,11 @@ implements
     public BeanModel(Object object, ObjectWrapper wrapper)
     {
         this.object = object;
-        this.wrapper = wrapper;
+//        this.wrapper = wrapper;
         if (object == null) {
             return;
         }
-        wrapper.introspectClass(object.getClass());
+//        ObjectWrapper.instance().introspectClass(object.getClass());
     }
 
     /**
@@ -112,12 +110,13 @@ implements
         TemplateModelException
     {
         Class clazz = object.getClass();
-        Map classInfo = wrapper.getClassKeyMap(clazz);
+        Map classInfo = ObjectWrapper.instance().getClassKeyMap(clazz);
         Object retval = null;
-        
+
+        ObjectWrapper.instance().introspectClass(object.getClass());
         try
         {
-            if(wrapper.isMethodsShadowItems())
+            if(ObjectWrapper.instance().isMethodsShadowItems())
             {
                 Object fd = classInfo.get(key);
                 if(fd != null)
@@ -140,7 +139,7 @@ implements
                 }
             }
             if (retval == null) {
-            	if (wrapper.isStrict()) {
+            	if (ObjectWrapper.instance().isStrict()) {
             		throw new InvalidPropertyException("No such bean property: " + key);
             	} else if (logger.isDebugEnabled()) {
             		logNoSuchKey(key, classInfo);
@@ -171,7 +170,7 @@ implements
      */
     
     protected boolean hasPlainGetMethod() {
-    	return wrapper.getClassKeyMap(object.getClass()).get(ObjectWrapper.GENERIC_GET_KEY) != null;
+    	return ObjectWrapper.instance().getClassKeyMap(object.getClass()).get(ObjectWrapper.GENERIC_GET_KEY) != null;
     }
     
     private Object invokeThroughDescriptor(Object desc, Map classInfo)
@@ -202,24 +201,24 @@ implements
                 ((IndexedPropertyDescriptor)desc).getIndexedReadMethod(); 
             retval = member = 
                 new SimpleMethodModel(object, readMethod, 
-                        ObjectWrapper.getArgTypes(classInfo, readMethod), wrapper);
+                        ObjectWrapper.getArgTypes(classInfo, readMethod), ObjectWrapper.instance());
         }
         else if(desc instanceof PropertyDescriptor)
         {
             PropertyDescriptor pd = (PropertyDescriptor)desc;
-            retval = wrapper.invokeMethod(object, pd.getReadMethod(), null);
+            retval = ObjectWrapper.instance().invokeMethod(object, pd.getReadMethod(), null);
             // (member == null) condition remains, as we don't cache these
         }
         else if(desc instanceof Field)
         {
-            retval = wrapper.wrap(((Field)desc).get(object));
+            retval = ObjectWrapper.instance().wrap(((Field)desc).get(object));
             // (member == null) condition remains, as we don't cache these
         }
         else if(desc instanceof Method)
         {
             Method method = (Method)desc;
             retval = member = new SimpleMethodModel(object, method, 
-                    ObjectWrapper.getArgTypes(classInfo, method), wrapper);
+                    ObjectWrapper.getArgTypes(classInfo, method), ObjectWrapper.instance());
         }
         else if(desc instanceof MethodMap)
         {
@@ -239,30 +238,27 @@ implements
         return retval;
     }
 
-    protected Object invokeGenericGet(Map keyMap, String key)
-    throws
-        IllegalAccessException,
-        InvocationTargetException,
-        TemplateModelException
+    protected Object invokeGenericGet(Map keyMap, String key) throws IllegalAccessException,
+        InvocationTargetException
     {
         Method genericGet = (Method)keyMap.get(ObjectWrapper.GENERIC_GET_KEY);
         if(genericGet == null)
             return null;
 
-        return wrapper.invokeMethod(object, genericGet, new Object[] { key });
+        return ObjectWrapper.instance().invokeMethod(object, genericGet, new Object[] { key });
     }
 
     protected Object wrap(Object obj)
     throws TemplateModelException
     {
-        return wrapper.getOuterIdentity().wrap(obj);
+        return ObjectWrapper.instance().getOuterIdentity().wrap(obj);
     }
     
     protected Object unwrap(TemplateModel model)
     throws
         TemplateModelException
     {
-        return wrapper.unwrap(model);
+        return ObjectWrapper.instance().unwrap(model);
     }
 
     /**
@@ -293,7 +289,7 @@ implements
     
     public int size()
     {
-        return wrapper.keyCount(object.getClass());
+        return ObjectWrapper.instance().keyCount(object.getClass());
     }
 
     public TemplateCollectionModel keys()
@@ -324,6 +320,6 @@ implements
      */
     protected Set keySet()
     {
-        return wrapper.keySet(object.getClass());
+        return ObjectWrapper.instance().keySet(object.getClass());
     }    
 }

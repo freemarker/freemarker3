@@ -84,7 +84,7 @@ public class ObjectWrapper
     /**
      * The default instance of BeansWrapper
      */
-    private static final ObjectWrapper INSTANCE = new ObjectWrapper();
+    private static ObjectWrapper instance;
 
     // Cache of hash maps that contain already discovered properties and methods
     // for a specified class. Each key is a Class, each value is a hash map. In
@@ -308,9 +308,12 @@ public class ObjectWrapper
      * default instance is not caching, uses the <code>EXPOSE_SAFE</code>
      * exposure level, and uses null reference as the null model.
      */
-    public static final ObjectWrapper instance()
+    public static ObjectWrapper instance()
     {
-        return INSTANCE;
+        if (instance == null) {
+            instance = new ObjectWrapper();
+        }
+        return instance;
     }
 
     /**
@@ -451,14 +454,12 @@ public class ObjectWrapper
     }
     
     public Object unwrap(Object model, Class requiredType) 
-    throws TemplateModelException
     {
         return unwrap(model, requiredType, null);
     }
     
     private Object unwrap(Object model, Class<?> requiredType, 
             Map<Object, Object> recursionStops) 
-    throws TemplateModelException
     {
         if(model == null) {
             throw new TemplateModelException("invalid reference");
@@ -466,6 +467,10 @@ public class ObjectWrapper
 
         if (model == Constants.JAVA_NULL) {
             return null;
+        }
+
+        if (!(model instanceof TemplateModel)) {
+            return model;
         }
         
         boolean isBoolean = Boolean.TYPE == requiredType;
@@ -846,6 +851,7 @@ public class ObjectWrapper
         String className = clazz.getName();
         if(cachedClassNames.contains(className))
         {
+            assert false;
             if(logger.isInfoEnabled())
             {
                 logger.info("Detected a reloaded class [" + className + 
