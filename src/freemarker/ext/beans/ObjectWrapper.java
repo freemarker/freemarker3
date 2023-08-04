@@ -342,20 +342,14 @@ public class ObjectWrapper
         if(object == null) {
             return Constants.JAVA_NULL;
         }
-        return getInstance(object);
-    }
-
-
-    public TemplateModel getInstance(Object object)
-    {
-        if(object == null) {
-            return Constants.JAVA_NULL;
-        }
         if(object instanceof TemplateModel) {
             return (TemplateModel)object;
         }
         if(object instanceof TemplateModelAdapter) {
             return ((TemplateModelAdapter)object).getTemplateModel();
+        }
+        if (object instanceof Number) {
+            return new NumberModel((Number)object);
         }
         return create(object);
     }
@@ -409,9 +403,6 @@ public class ObjectWrapper
         }
         if(Collection.class.isAssignableFrom(clazz)) {
             return CollectionModel.FACTORY;
-        }
-        if(Number.class.isAssignableFrom(clazz)) {
-            return NumberModel.FACTORY;
         }
         if(Date.class.isAssignableFrom(clazz)) {
             return DateModel.FACTORY;

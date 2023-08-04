@@ -14,14 +14,6 @@ extends
 implements
     TemplateNumberModel
 {
-    static final ModelFactory FACTORY =
-        new ModelFactory()
-        {
-            public TemplateModel create(Object object)
-            {
-                return new NumberModel((Number)object);
-            }
-        };
     /**
      * Creates a new model that wraps the specified number object.
      * @param number the number object to wrap into a model.
