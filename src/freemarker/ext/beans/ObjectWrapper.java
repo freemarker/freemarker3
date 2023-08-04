@@ -357,6 +357,9 @@ public class ObjectWrapper
         if (object instanceof Number) {
             return new NumberModel((Number)object);
         }
+        if (object instanceof Date) {
+            return new DateModel((Date) object);
+        }
         return create(object);
     }
 
@@ -403,9 +406,6 @@ public class ObjectWrapper
         }
         if(Collection.class.isAssignableFrom(clazz)) {
             return CollectionModel.FACTORY;
-        }
-        if(Date.class.isAssignableFrom(clazz)) {
-            return DateModel.FACTORY;
         }
         if(ResourceBundle.class.isAssignableFrom(clazz)) {
             return ResourceBundleModel.FACTORY;
