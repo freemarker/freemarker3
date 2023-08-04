@@ -25,7 +25,8 @@ import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 
 /**
- * A class that will wrap an arbitrary object into {@link freemarker.template.TemplateHashModel}
+ * A class that will wrap an arbitrary POJO (a.k.a. Plain Old Java Object)
+ * into {@link freemarker.template.TemplateHashModel}
  * interface allowing calls to arbitrary property getters and invocation of
  * accessible methods on the object from a template using the
  * <tt>object.foo</tt> to access properties and <tt>object.bar(arg1, arg2)</tt> to
@@ -36,7 +37,7 @@ import freemarker.template.TemplateScalarModel;
  * @version $Id: BeanModel.java,v 1.51 2006/03/15 05:01:12 revusky Exp $
  */
 
-public class BeanModel implements TemplateHashModelEx, AdapterTemplateModel
+public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
@@ -55,7 +56,7 @@ public class BeanModel implements TemplateHashModelEx, AdapterTemplateModel
      * wrapping to {@link ObjectWrapper#wrap(Object)}.
      * @param object the object to wrap into a model.
      */
-    public BeanModel(Object object)
+    public Pojo(Object object)
     {
         this.object = object;
     }

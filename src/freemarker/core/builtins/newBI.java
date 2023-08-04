@@ -15,7 +15,7 @@ import freemarker.template.*;
 public class newBI extends ExpressionEvaluatingBuiltIn {
 
     static final Class<TemplateModel> TM_CLASS = TemplateModel.class;
-    static final Class<freemarker.ext.beans.BeanModel> BEAN_MODEL_CLASS = freemarker.ext.beans.BeanModel.class;
+    static final Class<freemarker.ext.beans.Pojo> BEAN_MODEL_CLASS = freemarker.ext.beans.Pojo.class;
 
     @Override
     public boolean isSideEffectFree() {

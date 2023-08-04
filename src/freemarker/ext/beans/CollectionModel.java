@@ -6,7 +6,7 @@ import java.util.Iterator;
 import freemarker.template.TemplateCollectionModel;
 
 /**
- * <p>A special case of {@link BeanModel} that can wrap Java collections
+ * <p>A special case of {@link Pojo} that can wrap Java collections
  * and that implements the {@link TemplateCollectionModel} in order to be usable 
  * in a <tt>&lt;foreach></tt> block.</p>
  * @author Attila Szegedi

@@ -1,7 +1,7 @@
 package freemarker.core.ast;
 
 import freemarker.template.*;
-import freemarker.ext.beans.BeanModel;
+import freemarker.ext.beans.Pojo;
 import freemarker.core.Environment;
 
 /**
@@ -116,8 +116,8 @@ abstract public class Expression extends TemplateNode {
     
 	static public boolean isEmpty(Object model) throws TemplateModelException
     {
-        if (model instanceof BeanModel) {
-            return ((BeanModel) model).isEmpty();
+        if (model instanceof Pojo) {
+            return ((Pojo) model).isEmpty();
         } else if (model instanceof TemplateSequenceModel) {
             return ((TemplateSequenceModel) model).size() == 0;
         } else if (model instanceof TemplateScalarModel) {

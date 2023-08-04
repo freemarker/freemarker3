@@ -16,7 +16,7 @@ import freemarker.template.TemplateSequenceModel;
 /**
  * A class that will wrap a reflected method call into a
  * {@link freemarker.template.TemplateMethodModel} interface. 
- * It is used by {@link BeanModel} to wrap reflected method calls
+ * It is used by {@link Pojo} to wrap reflected method calls
  * for overloaded methods.
  * @author Attila Szegedi, szegedia at users dot sourceforge dot net
  * @version $Id: OverloadedMethodModel.java,v 1.25 2005/06/11 12:12:04 szegedia Exp $

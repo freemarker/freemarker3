@@ -8,7 +8,7 @@ import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 
 /**
- * <p>A special case of {@link BeanModel} that can wrap Java lists
+ * <p>A special case of {@link Pojo} that can wrap Java lists
  * and that implements the {@link TemplateCollectionModel} and 
  * {@link TemplateSequenceModel} in order to be usable in a <tt>&lt;foreach></tt> block.</p>
  * @author Attila Szegedi

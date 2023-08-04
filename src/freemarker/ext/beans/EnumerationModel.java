@@ -22,7 +22,7 @@ import freemarker.template.TemplateModelException;
 
 public class EnumerationModel
 extends
-    BeanModel
+    Pojo
 implements
     Iterator<Object>,
     TemplateCollectionModel

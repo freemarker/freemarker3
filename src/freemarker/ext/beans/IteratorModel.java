@@ -12,7 +12,7 @@ import freemarker.template.TemplateModelException;
  * {@link Iterator} interface implementers. 
  * </p>
  * <p>It differs from the {@link freemarker.template.SimpleCollection} in that 
- * it inherits from {@link BeanModel}, and therefore you can call methods on 
+ * it inherits from {@link Pojo}, and therefore you can call methods on 
  * it directly, even to the effect of calling <tt>iterator.remove()</tt> in 
  * the template.</p> <p>Using the model as a collection model is NOT 
  * thread-safe, as iterators are inherently not thread-safe.
@@ -23,7 +23,7 @@ import freemarker.template.TemplateModelException;
  * @version $Id: IteratorModel.java,v 1.26 2003/06/03 13:21:32 szegedia Exp $
  */
 
-public class IteratorModel extends BeanModel implements Iterator<Object>, TemplateCollectionModel
+public class IteratorModel extends Pojo implements Iterator<Object>, TemplateCollectionModel
 {
     private boolean accessed = false;
     

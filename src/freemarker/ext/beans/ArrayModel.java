@@ -14,7 +14,7 @@ import freemarker.template.TemplateSequenceModel;
  * @author Attila Szegedi
  * @version $Id: ArrayModel.java,v 1.26 2003/06/03 13:21:32 szegedia Exp $
  */
-public class ArrayModel extends BeanModel implements TemplateCollectionModel, TemplateSequenceModel
+public class ArrayModel extends Pojo implements TemplateCollectionModel, TemplateSequenceModel
 {
     // Cached length of the array
     private int length;

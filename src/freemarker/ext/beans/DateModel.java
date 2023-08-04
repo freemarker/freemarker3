@@ -9,7 +9,7 @@ import freemarker.template.TemplateDateModel;
  * Beside acting as a {@link TemplateDateModel}, you can call all Java methods
  * on these objects as well.
  */
-public class DateModel extends BeanModel implements TemplateDateModel
+public class DateModel extends Pojo implements TemplateDateModel
 {
     private final int type;
     
