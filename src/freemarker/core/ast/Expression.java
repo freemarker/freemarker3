@@ -90,6 +90,9 @@ abstract public class Expression extends TemplateNode {
 
     boolean isTrue(Environment env) {
         Object referent = getAsTemplateModel(env);
+        if (referent instanceof Boolean) {
+            return ((Boolean) referent);
+        }
         if (referent instanceof TemplateBooleanModel) {
             return ((TemplateBooleanModel) referent).getAsBoolean();
         }

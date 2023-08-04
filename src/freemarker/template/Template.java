@@ -334,7 +334,7 @@ public class Template extends TemplateCore {
         }
         else {
             if(wrapper == null) {
-                wrapper = getObjectWrapper();
+                wrapper = ObjectWrapper.instance();
             }
 
             try {

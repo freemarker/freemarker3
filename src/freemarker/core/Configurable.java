@@ -336,15 +336,6 @@ public class Configurable
     }
 
     /**
-     * Retrieves the object wrapper used to wrap objects to template models.
-     */
-    public ObjectWrapper getObjectWrapper() {
-        return ObjectWrapper.instance();
-//        return objectWrapper != null
-//                ? objectWrapper : parent.getObjectWrapper();
-    }
-    
-    /**
      * Sets the output encoding. Allows <code>null</code>, which means that the
      * output encoding is not known.
      */

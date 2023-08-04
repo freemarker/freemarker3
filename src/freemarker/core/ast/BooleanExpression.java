@@ -5,7 +5,7 @@ import freemarker.template.*;
 
 abstract class BooleanExpression extends Expression {
 
-    TemplateModel _getAsTemplateModel(Environment env) throws TemplateException 
+    Object _getAsTemplateModel(Environment env) throws TemplateException 
     {
         return isTrue(env) ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
     }

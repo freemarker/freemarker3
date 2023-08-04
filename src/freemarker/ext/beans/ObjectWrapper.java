@@ -96,11 +96,8 @@ public class ObjectWrapper
     private final ClassBasedModelFactory staticModels = new StaticModels(this);
     private final ClassBasedModelFactory enumModels = new EnumModels(this);
 
-    private final BooleanModel FALSE = new BooleanModel(Boolean.FALSE);
-    private final BooleanModel TRUE = new BooleanModel(Boolean.TRUE);
-
-    private final Set<String> mappedClassNames = new HashSet<String>();
-
+//    private final BooleanModel FALSE = new BooleanModel(Boolean.FALSE);
+//    private final BooleanModel TRUE = new BooleanModel(Boolean.TRUE);
 
     /**
      * At this level of exposure, all methods and properties of the
@@ -336,7 +333,7 @@ public class ObjectWrapper
      * <li>otherwise, returns a generic {@link StringModel} for it.
      * </ul>
      */
-    public TemplateModel wrap(Object object) 
+    public Object wrap(Object object) 
     {
         if(object == null) {
             return Constants.JAVA_NULL;
@@ -357,7 +354,8 @@ public class ObjectWrapper
             return new EnumerationModel((Enumeration)object);
         }
         if (object instanceof Boolean) {
-            return (Boolean)object ? TRUE : FALSE; 
+            return object;
+//            return (Boolean)object ? TRUE : FALSE; 
         }
         if (object.getClass().isArray()) {
             return new ArrayModel(object);

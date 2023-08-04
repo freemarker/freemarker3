@@ -38,6 +38,10 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         if (model instanceof SimpleScalar) {
             return model;
         }
+        if (model instanceof Boolean) {
+            TemplateBooleanModel tbm = ((Boolean) model) ? Constants.TRUE : Constants.FALSE;
+            return new BooleanFormatter(tbm, env);
+        }
         if (model instanceof TemplateBooleanModel) {
             return new BooleanFormatter((TemplateBooleanModel) model, env);
         }

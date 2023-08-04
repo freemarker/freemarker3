@@ -250,7 +250,8 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     }
     
     static public ObjectWrapper getCurrentObjectWrapper() {
-    	return getCurrentConfiguration().getObjectWrapper();
+    	Configuration r = getCurrentConfiguration();
+        return ObjectWrapper.instance();
     }
     
     
@@ -587,11 +588,11 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @see #setAllSharedVariables
      */
     public void setSharedVariable(String name, Object tm) {
-        variables.put(name, getObjectWrapper().wrap(tm));
+        variables.put(name, ObjectWrapper.instance().wrap(tm));
     }
 
     public void put(String key, Object obj) {
-        variables.put(key, getObjectWrapper().wrap(obj));
+        variables.put(key, ObjectWrapper.instance().wrap(obj));
     }
 
     /**

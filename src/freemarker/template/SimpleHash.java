@@ -2,7 +2,6 @@ package freemarker.template;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -27,12 +26,7 @@ import freemarker.ext.beans.ObjectWrapper;
 public class SimpleHash implements TemplateHashModelEx {
     private Map map;
     private boolean putFailed;
-    private Map unwrappedMap;
 
-    /**
-     * Constructs an empty hash that uses the default wrapper set in
-     * {@link WrappingTemplateModel#setDefaultObjectWrapper(ObjectWrapper)}.
-     */
     public SimpleHash() {
         map = new HashMap(); 
     }
@@ -50,21 +44,6 @@ public class SimpleHash implements TemplateHashModelEx {
         this.map = map;
     }
 
-    protected Map copyMap(Map map) {
-        if (map instanceof HashMap) {
-            return (Map) ((HashMap) map).clone();
-        }
-        if (map instanceof SortedMap) {
-            if (map instanceof TreeMap) {
-                return (Map) ((TreeMap) map).clone();
-            }
-            else {
-                return new TreeMap((SortedMap) map);
-            }
-        } 
-        return new LinkedHashMap(map);
-    }
-
     /**
      * Adds a key-value entry to the map.
      *
@@ -75,7 +54,6 @@ public class SimpleHash implements TemplateHashModelEx {
     public void put(String key, Object obj) {
     	if (obj == null) obj = Constants.JAVA_NULL;
         map.put(key, obj);
-        unwrappedMap = null;
     }
 
     /**
@@ -151,39 +129,6 @@ public class SimpleHash implements TemplateHashModelEx {
         }
     }
     
-    /**
-     * Note that this method creates and returns a deep-copy of the underlying hash used
-     * internally. This could be a gotcha for some people
-     * at some point who want to alter something in the data model,
-     * but we should maintain our immutability semantics (at least using default SimpleXXX wrappers) 
-     * for the data model. It will recursively unwrap the stuff in the underlying container. 
-     */
-    public Map toMap() {
-        if (unwrappedMap == null) {
-            Class mapClass = this.map.getClass();
-            Map m = null;
-            try {
-                m = (Map) mapClass.newInstance();
-            } catch (Exception e) {
-                throw new TemplateModelException("Error instantiating map of type " + mapClass.getName() + "\n" + e.getMessage());
-            }
-            // Create a copy to maintain immutability semantics and
-            // Do nested unwrapping of elements if necessary.
-            ObjectWrapper bw = ObjectWrapper.instance();
-            for (Iterator it = map.entrySet().iterator(); it.hasNext();) {
-                Map.Entry entry = (Map.Entry) it.next();
-                Object key = entry.getKey();
-                Object value = entry.getValue();
-                if (value instanceof TemplateModel) {
-                    value = bw.unwrap((TemplateModel) value);
-                }
-                m.put(key, value);
-            }
-            unwrappedMap=m;
-        }
-        return unwrappedMap;
-    }
-
     /**
      * Convenience method for returning the <tt>String</tt> value of the
      * underlying map.

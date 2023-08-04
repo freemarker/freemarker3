@@ -8,6 +8,7 @@ import java.util.List;
 import java.io.Writer;
 
 import freemarker.core.Environment;
+import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.*;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -45,7 +46,7 @@ public class MethodCall extends Expression {
             TemplateMethodModel targetMethod = (TemplateMethodModel)targetModel;
             List argumentStrings = arguments.getParameterSequence(targetMethod, env);
             Object result = targetMethod.exec(argumentStrings);
-            return env.getObjectWrapper().wrap(result);
+            return ObjectWrapper.instance().wrap(result);
         }
         else if (targetModel instanceof Macro) {
             Macro func = (Macro) targetModel;
@@ -68,7 +69,7 @@ public class MethodCall extends Expression {
             } finally {
                 env.setOut(prevOut);
             }
-            return sw != null ? env.getObjectWrapper().wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
+            return sw != null ? ObjectWrapper.instance().wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
         }
         else {
             throw invalidTypeException(targetModel, target, env, "method");

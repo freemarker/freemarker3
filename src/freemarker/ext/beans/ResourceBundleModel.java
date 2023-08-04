@@ -31,11 +31,7 @@ import freemarker.template.TemplateModelException;
  * @author Attila Szegedi
  * @version $Id: ResourceBundleModel.java,v 1.22 2004/01/06 17:06:42 szegedia Exp $
  */
-public class ResourceBundleModel
-    extends
-    BeanModel
-    implements
-    TemplateMethodModelEx
+public class ResourceBundleModel extends BeanModel implements TemplateMethodModelEx
 {
     private Hashtable<String, MessageFormat> formats = null;
 
