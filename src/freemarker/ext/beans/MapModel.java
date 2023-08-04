@@ -24,20 +24,8 @@ import freemarker.template.TemplateModelException;
  * @author Attila Szegedi
  * @version $Id: MapModel.java,v 1.28 2006/02/26 18:26:57 revusky Exp $
  */
-public class MapModel
-extends
-    StringModel
-implements
-    TemplateMethodModelEx
+public class MapModel extends StringModel implements TemplateMethodModelEx
 {
-    static final ModelFactory FACTORY =
-        new ModelFactory()
-        {
-            public TemplateModel create(Object object)
-            {
-                return new MapModel((Map)object);
-            }
-        };
 
     /**
      * Creates a new model that wraps the specified map object.

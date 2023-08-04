@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 
@@ -16,16 +15,6 @@ import freemarker.template.TemplateSequenceModel;
  * @version $Id: CollectionModel.java,v 1.22 2003/06/03 13:21:32 szegedia Exp $
  */
 public class ListModel extends CollectionModel implements TemplateSequenceModel {
-    static final ModelFactory FACTORY =
-        new ModelFactory()
-        {
-            public TemplateModel create(Object object)
-            {
-                return new ListModel((List)object);
-            }
-        };
-
-
     /**
      * Creates a new model that wraps the specified collection object.
      * @param list the list object to wrap into a model.

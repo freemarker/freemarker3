@@ -345,6 +345,12 @@ public class ObjectWrapper
         if(object instanceof TemplateModel) {
             return (TemplateModel)object;
         }
+        if (object instanceof Map) {
+            return new MapModel((Map) object);
+        }
+        if (object instanceof List) {
+            return new ListModel((List)object);
+        }
         if (object instanceof Boolean) {
             return (Boolean)object ? TRUE : FALSE; 
         }
@@ -398,9 +404,6 @@ public class ObjectWrapper
     };
 
     protected ModelFactory getModelFactory(Class clazz) {
-        if(Map.class.isAssignableFrom(clazz)) {
-            return simpleMapWrapper ? SimpleMapModel.FACTORY : MapModel.FACTORY;
-        }
         if(List.class.isAssignableFrom(clazz)) {
             return ListModel.FACTORY;
         }
