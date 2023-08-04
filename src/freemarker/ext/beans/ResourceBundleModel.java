@@ -37,15 +37,6 @@ public class ResourceBundleModel
     implements
     TemplateMethodModelEx
 {
-    static final ModelFactory FACTORY =
-        new ModelFactory()
-        {
-            public TemplateModel create(Object object)
-            {
-                return new ResourceBundleModel((ResourceBundle)object);
-            }
-        };
-
     private Hashtable<String, MessageFormat> formats = null;
 
     public ResourceBundleModel(ResourceBundle bundle)

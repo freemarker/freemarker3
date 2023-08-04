@@ -22,15 +22,6 @@ import freemarker.template.TemplateModel;
  */
 public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelEx, AdapterTemplateModel 
 {
-    static final ModelFactory FACTORY =
-        new ModelFactory()
-        {
-            public TemplateModel create(Object object)
-            {
-                return new SimpleMapModel((Map)object);
-            }
-        };
-
     private final Map map;
     
     public SimpleMapModel(Map map)

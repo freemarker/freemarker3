@@ -40,16 +40,6 @@ public class BeanModel implements TemplateHashModelEx, AdapterTemplateModel
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
-//    protected final ObjectWrapper wrapper;
-    
-    static final ModelFactory FACTORY =
-        new ModelFactory()
-        {
-            public TemplateModel create(Object object)
-            {
-                return new BeanModel(object);
-            }
-        };
 
     // Cached template models that implement member properties and methods for this
     // instance. Keys are FeatureDescriptor instances (from classCache values),

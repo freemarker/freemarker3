@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateModel;
 
 /**
  * <p>A special case of {@link BeanModel} that can wrap Java collections
@@ -15,16 +14,6 @@ import freemarker.template.TemplateModel;
  */
 public class CollectionModel extends StringModel implements TemplateCollectionModel
 {
-    static final ModelFactory FACTORY =
-        new ModelFactory()
-        {
-            public TemplateModel create(Object object)
-            {
-                return new CollectionModel((Collection)object);
-            }
-        };
-
-
     /**
      * Creates a new model that wraps the specified collection object.
      * @param collection the collection object to wrap into a model.

@@ -99,7 +99,6 @@ public class ObjectWrapper
     private final BooleanModel FALSE = new BooleanModel(Boolean.FALSE);
     private final BooleanModel TRUE = new BooleanModel(Boolean.TRUE);
 
-    private final Map<Class,ModelFactory> classToFactory = new ConcurrentHashMap<Class,ModelFactory>();
     private final Set<String> mappedClassNames = new HashSet<String>();
 
 
@@ -372,44 +371,13 @@ public class ObjectWrapper
         if (object instanceof Date) {
             return new DateModel((Date) object);
         }
-        return create(object);
-    }
-
-    TemplateModel create(Object object) {
-        Class clazz = object.getClass();
-        ModelFactory factory = classToFactory.get(clazz);
-        if(factory == null) {
-            synchronized(mappedClassNames) {
-                factory = classToFactory.get(clazz);
-                if(factory == null) {
-                    String className = clazz.getName();
-                    // clear mappings when class reloading is detected
-                    if(!mappedClassNames.add(className)) {
-                        classToFactory.clear();
-                        mappedClassNames.clear();
-                        mappedClassNames.add(className);
-                    }
-                    factory = ObjectWrapper.instance().getModelFactory(clazz);
-                    classToFactory.put(clazz, factory);
-                }
-            }
+        if (object instanceof Collection) {
+            return new CollectionModel((Collection)object);
         }
-        return factory.create(object);
-    }
-    
-    protected ModelFactory getModelFactory(Class clazz) {
-        if(Collection.class.isAssignableFrom(clazz)) {
-            return CollectionModel.FACTORY;
+        if (object instanceof ResourceBundle) {
+            return new ResourceBundleModel((ResourceBundle)object);
         }
-        if(ResourceBundle.class.isAssignableFrom(clazz)) {
-            return ResourceBundleModel.FACTORY;
-        }
-        return StringModel.FACTORY;
-    }
-
-    protected TemplateModel create(Object object, Object factory)
-    {
-        return ((ModelFactory)factory).create(object);
+        return new StringModel(object);
     }
 
     /**

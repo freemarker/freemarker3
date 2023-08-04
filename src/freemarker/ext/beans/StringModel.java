@@ -10,18 +10,7 @@ import freemarker.template.TemplateScalarModel;
  * @author Attila Szegedi
  * @version $Id: StringModel.java,v 1.9 2003/06/03 13:21:33 szegedia Exp $
  */
-public class StringModel extends BeanModel
-implements TemplateScalarModel
-{
-    static final ModelFactory FACTORY =
-        new ModelFactory()
-        {
-            public TemplateModel create(Object object)
-            {
-                return new StringModel(object);
-            }
-        };
-
+public class StringModel extends BeanModel implements TemplateScalarModel {
     /**
      * Creates a new model that wraps the specified object with BeanModel + scalar
      * functionality.
