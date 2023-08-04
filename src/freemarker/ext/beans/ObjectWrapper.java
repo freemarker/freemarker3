@@ -345,6 +345,12 @@ public class ObjectWrapper
         if(object instanceof TemplateModel) {
             return (TemplateModel)object;
         }
+        if (object instanceof Boolean) {
+            return (Boolean)object ? TRUE : FALSE; 
+        }
+        if (object.getClass().isArray()) {
+            return new ArrayModel(object);
+        }
         if(object instanceof TemplateModelAdapter) {
             return ((TemplateModelAdapter)object).getTemplateModel();
         }
@@ -376,12 +382,6 @@ public class ObjectWrapper
         return factory.create(object);
     }
     
-    private final ModelFactory BOOLEAN_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object) {
-            return (Boolean)object ? TRUE : FALSE; 
-        }
-    };
-
     private static final ModelFactory ITERATOR_FACTORY = new ModelFactory() {
         public TemplateModel create(Object object) {
             return new IteratorModel((Iterator)object); 
@@ -407,9 +407,6 @@ public class ObjectWrapper
         if(Date.class.isAssignableFrom(clazz)) {
             return DateModel.FACTORY;
         }
-        if(Boolean.class == clazz) { // Boolean is final 
-            return BOOLEAN_FACTORY;
-        }
         if(ResourceBundle.class.isAssignableFrom(clazz)) {
             return ResourceBundleModel.FACTORY;
         }
@@ -418,9 +415,6 @@ public class ObjectWrapper
         }
         if(Enumeration.class.isAssignableFrom(clazz)) {
             return ENUMERATION_FACTORY;
-        }
-        if(clazz.isArray()) {
-            return ArrayModel.FACTORY;
         }
         return StringModel.FACTORY;
     }

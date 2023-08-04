@@ -16,15 +16,6 @@ import freemarker.template.TemplateSequenceModel;
  */
 public class ArrayModel extends BeanModel implements TemplateCollectionModel, TemplateSequenceModel
 {
-    static final ModelFactory FACTORY =
-        new ModelFactory()
-        {
-            public TemplateModel create(Object object)
-            {
-                return new ArrayModel(object);
-            }
-        };
-        
     // Cached length of the array
     private int length;
 
