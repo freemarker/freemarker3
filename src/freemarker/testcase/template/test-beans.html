@@ -27,20 +27,6 @@ ${obj.varArgs()}
 ${obj.moreSpecific("someString")}
 ${resourceBundle.message}
 ${resourceBundle("format", date)}
-<#assign static = statics["freemarker.testcase.models.BeanTestClass"]>
-${static.staticMethod()}
-${static.staticMethod(arg="foobar")}
-${static.staticOverloaded[1]}
-${static.staticOverloaded("String")}
-${static.STATIC_FINAL_FIELD}
-${static.STATIC_FIELD}
-<#assign enum = enums["freemarker.testcase.models.EnumTestClass"]>
-${enum.ONE}
-${enum.TWO}
-${enum.THREE}
-${(enum.ONE == enum.ONE)?string("true", "false")}
-${(enum.ONE == enum.TWO)?string("true", "false")}
-${enums["freemarker.testcase.models.BeanTestClass"]?exists?string("true", "false")}
 
 
 ${obj.something}

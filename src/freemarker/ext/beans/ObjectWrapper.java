@@ -93,9 +93,6 @@ public class ObjectWrapper
     private final Map<Class<?>,Map> classCache = new ConcurrentHashMap<Class<?>, Map>();
     private Set<String> cachedClassNames = new HashSet<String>();
 
-    private final ClassBasedModelFactory staticModels = new StaticModels(this);
-    private final ClassBasedModelFactory enumModels = new EnumModels(this);
-
     /**
      * At this level of exposure, all methods and properties of the
      * wrapped objects are exposed to the template.
@@ -133,7 +130,6 @@ public class ObjectWrapper
     public static final int EXPOSE_NOTHING = 3;
 
     private int exposureLevel = EXPOSE_SAFE;
-//    private TemplateModel nullModel = TemplateModel.JAVA_NULL;
     private boolean methodsShadowItems = true;
     private boolean exposeFields = false;
     private int defaultDateType = TemplateDateModel.UNKNOWN;
@@ -633,49 +629,7 @@ public class ObjectWrapper
             : wrap(retval); 
     }
 
-   /**
-     * Returns a hash model that represents the so-called class static models.
-     * Every class static model is itself a hash through which you can call
-     * static methods on the specified class. To obtain a static model for a
-     * class, get the element of this hash with the fully qualified class name.
-     * For example, if you place this hash model inside the root data model
-     * under name "statics", you can use i.e. <code>statics["java.lang.
-     * System"]. currentTimeMillis()</code> to call the {@link 
-     * java.lang.System#currentTimeMillis()} method.
-     * @return a hash model whose keys are fully qualified class names, and
-     * that returns hash models whose elements are the static models of the
-     * classes.
-     */
-    public TemplateHashModel getStaticModels() {
-        return staticModels;
-    }
-    
-    /**
-     * Returns a hash model that represents the so-called class enum models.
-     * Every class' enum model is itself a hash through which you can access
-     * enum value declared by the specified class, assuming that class is an
-     * enumeration. To obtain an enum model for a class, get the element of this
-     * hash with the fully qualified class name. For example, if you place this 
-     * hash model inside the root data model under name "enums", you can use 
-     * i.e. <code>statics["java.math.RoundingMode"].UP</code> to access the 
-     * {@link java.math.RoundingMode#UP} value.
-     * @return a hash model whose keys are fully qualified class names, and
-     * that returns hash models whose elements are the enum models of the
-     * classes.
-     * @throws UnsupportedOperationException if this method is invoked on a 
-     * pre-1.5 JRE, as Java enums aren't supported there.
-     */
-    public TemplateHashModel getEnumModels() {
-        if(enumModels == null) {
-            throw new UnsupportedOperationException(
-                    "Enums not supported on pre-1.5 JRE");
-        }
-        return enumModels;
-    }
-
     public Object newInstance(Class<?> clazz, List<TemplateModel> arguments)
-    throws
-        TemplateModelException
     {
         try
         {
@@ -749,10 +703,6 @@ public class ObjectWrapper
             // Class reload detected, throw away caches
             classCache.clear();
             cachedClassNames = new HashSet<String>();
-            staticModels.clearCache();
-            if(enumModels != null) {
-                enumModels.clearCache();
-            }
         }
         classCache.put(clazz, populateClassMap(clazz));
         cachedClassNames.add(className);

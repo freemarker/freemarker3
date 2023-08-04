@@ -122,8 +122,8 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("obj", new freemarker.testcase.models.BeanTestClass());
             dataModel.put("resourceBundle", new ResourceBundleModel(ResourceBundle.getBundle("freemarker.testcase.models.BeansTestResources")));
             dataModel.put("date", new GregorianCalendar(1974, 10, 14).getTime());
-            dataModel.put("statics", ObjectWrapper.instance().getStaticModels());
-            dataModel.put("enums", ObjectWrapper.instance().getEnumModels());
+//            dataModel.put("statics", ObjectWrapper.instance().getStaticModels());
+//            dataModel.put("enums", ObjectWrapper.instance().getEnumModels());
         }
         
         else if (testName.equals("boolean")) {
