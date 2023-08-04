@@ -35,6 +35,15 @@ public class AddConcatExpression extends Expression {
     {
         Object leftModel = left.getAsTemplateModel(env);
         Object rightModel = right.getAsTemplateModel(env);
+        if (leftModel instanceof Number && rightModel instanceof Number) {
+            Number first = (Number) leftModel;
+            Number second = (Number) rightModel;
+            ArithmeticEngine ae =
+                env != null
+                    ? env.getArithmeticEngine()
+                    : getTemplate().getArithmeticEngine();
+            return new SimpleNumber(ae.add(first, second));
+        }
         if (leftModel instanceof TemplateNumberModel && rightModel instanceof TemplateNumberModel)
         {
             Number first = EvaluationUtil.getNumber((TemplateNumberModel) leftModel, left, env);

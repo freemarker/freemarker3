@@ -317,6 +317,7 @@ public class ObjectWrapper
         }
         if (object instanceof Number) {
             return new NumberModel((Number)object);
+//            return object;
         }
         if (object instanceof Date) {
             return new DateModel((Date) object);

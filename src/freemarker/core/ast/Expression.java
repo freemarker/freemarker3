@@ -55,11 +55,15 @@ abstract public class Expression extends TemplateNode {
     static boolean isDisplayableAsString(Object tm) {
     	return tm instanceof TemplateScalarModel
     	     ||tm instanceof TemplateNumberModel
+             || tm instanceof Number
     	     || tm instanceof TemplateDateModel;
     }
     
     static public String getStringValue(Object referentModel, Expression exp, Environment env)
     {
+        if (referentModel instanceof Number) {
+            return env.formatNumber((Number) referentModel);
+        }
         if (referentModel instanceof TemplateNumberModel) {
             return env.formatNumber(EvaluationUtil.getNumber((TemplateNumberModel) referentModel, exp, env));
         }

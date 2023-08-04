@@ -40,6 +40,10 @@ public class DynamicKeyName extends Expression {
         if(keyModel == null) {
             assertNonNull(keyModel, nameExpression, env);
         }
+        if (keyModel instanceof Number) {
+            int index = ((Number)keyModel).intValue();
+            return dealWithNumericalKey(targetModel, index, env);
+        }
         if (keyModel instanceof TemplateNumberModel) {
             int index = EvaluationUtil.getNumber(keyModel, nameExpression, env).intValue();
             return dealWithNumericalKey(targetModel, index, env);
