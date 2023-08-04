@@ -20,9 +20,6 @@ public interface TemplateBooleanModel extends TemplateModel {
         public boolean getAsBoolean() {
             return false;
         }
-        private Object readResolve() {
-            return FALSE;
-        }
     };
 
     /**
@@ -31,9 +28,6 @@ public interface TemplateBooleanModel extends TemplateModel {
     TemplateBooleanModel TRUE = new TemplateBooleanModel() {
         public boolean getAsBoolean() {
             return true;
-        }
-        private Object readResolve() {
-            return TRUE;
         }
     };
 }

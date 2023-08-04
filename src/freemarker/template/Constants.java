@@ -34,10 +34,6 @@ public class Constants {
     public static class JavaNull implements TemplateModel {
     
         JavaNull() {}
-        
-        private Object readResolve() {
-            return JAVA_NULL;
-        }
     }
 
     public static final TemplateBooleanModel TRUE = TemplateBooleanModel.TRUE;
