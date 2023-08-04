@@ -96,10 +96,12 @@ public class ObjectWrapper
     private final ClassBasedModelFactory staticModels = new StaticModels(this);
     private final ClassBasedModelFactory enumModels = new EnumModels(this);
 
-    private final ModelCache modelCache = new ModelCache();
-    
     private final BooleanModel FALSE = new BooleanModel(Boolean.FALSE, this);
     private final BooleanModel TRUE = new BooleanModel(Boolean.TRUE, this);
+
+    private final Map<Class,ModelFactory> classToFactory = new ConcurrentHashMap<Class,ModelFactory>();
+    private final Set<String> mappedClassNames = new HashSet<String>();
+
 
     /**
      * At this level of exposure, all methods and properties of the
@@ -337,7 +339,44 @@ public class ObjectWrapper
         if(object == null) {
             return Constants.JAVA_NULL;
         }
-        return modelCache.getInstance(object);
+        return getInstance(object);
+    }
+
+
+    public TemplateModel getInstance(Object object)
+    {
+        if(object == null) {
+            return Constants.JAVA_NULL;
+        }
+        if(object instanceof TemplateModel) {
+            return (TemplateModel)object;
+        }
+        if(object instanceof TemplateModelAdapter) {
+            return ((TemplateModelAdapter)object).getTemplateModel();
+        }
+        return create(object);
+    }
+
+    TemplateModel create(Object object) {
+        Class clazz = object.getClass();
+        ModelFactory factory = classToFactory.get(clazz);
+        if(factory == null) {
+            synchronized(mappedClassNames) {
+                factory = classToFactory.get(clazz);
+                if(factory == null) {
+                    String className = clazz.getName();
+                    // clear mappings when class reloading is detected
+                    if(!mappedClassNames.add(className)) {
+                        classToFactory.clear();
+                        mappedClassNames.clear();
+                        mappedClassNames.add(className);
+                    }
+                    factory = ObjectWrapper.instance().getModelFactory(clazz);
+                    classToFactory.put(clazz, factory);
+                }
+            }
+        }
+        return factory.create(object, ObjectWrapper.instance());
     }
     
     private final ModelFactory BOOLEAN_FACTORY = new ModelFactory() {
@@ -831,9 +870,6 @@ public class ObjectWrapper
             // Class reload detected, throw away caches
             classCache.clear();
             cachedClassNames = new HashSet<String>();
-            synchronized(this) {
-                modelCache.clearCache();
-            }
             staticModels.clearCache();
             if(enumModels != null) {
                 enumModels.clearCache();
