@@ -351,6 +351,12 @@ public class ObjectWrapper
         if (object instanceof List) {
             return new ListModel((List)object);
         }
+        if (object instanceof Iterator) {
+            return new IteratorModel((Iterator) object);
+        }
+        if (object instanceof Enumeration) {
+            return new EnumerationModel((Enumeration)object);
+        }
         if (object instanceof Boolean) {
             return (Boolean)object ? TRUE : FALSE; 
         }
@@ -391,33 +397,12 @@ public class ObjectWrapper
         return factory.create(object);
     }
     
-    private static final ModelFactory ITERATOR_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object) {
-            return new IteratorModel((Iterator)object); 
-        }
-    };
-
-    private static final ModelFactory ENUMERATION_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object) {
-            return new EnumerationModel((Enumeration)object); 
-        }
-    };
-
     protected ModelFactory getModelFactory(Class clazz) {
-        if(List.class.isAssignableFrom(clazz)) {
-            return ListModel.FACTORY;
-        }
         if(Collection.class.isAssignableFrom(clazz)) {
             return CollectionModel.FACTORY;
         }
         if(ResourceBundle.class.isAssignableFrom(clazz)) {
             return ResourceBundleModel.FACTORY;
-        }
-        if(Iterator.class.isAssignableFrom(clazz)) {
-            return ITERATOR_FACTORY;
-        }
-        if(Enumeration.class.isAssignableFrom(clazz)) {
-            return ENUMERATION_FACTORY;
         }
         return StringModel.FACTORY;
     }
