@@ -96,7 +96,7 @@ public class ObjectWrapper
     private final ClassBasedModelFactory staticModels = new StaticModels(this);
     private final ClassBasedModelFactory enumModels = new EnumModels(this);
 
-    private final ModelCache modelCache = new BeansModelCache(this);
+    private final ModelCache modelCache = new ModelCache();
     
     private final BooleanModel FALSE = new BooleanModel(Boolean.FALSE, this);
     private final BooleanModel TRUE = new BooleanModel(Boolean.TRUE, this);
@@ -295,31 +295,6 @@ public class ObjectWrapper
     protected synchronized int getDefaultDateType() {
         return defaultDateType;
     }
-    
-    /**
-     * Sets whether this wrapper caches model instances. Default is false.
-     * When set to true, calling {@link #wrap(Object)} multiple times for
-     * the same object will likely return the same model (although there is
-     * no guarantee as the cache items can be cleared anytime).
-     */
-    public void setUseCache(boolean useCache)
-    {
-        modelCache.setUseCache(useCache);
-    }
-    
-    /*
-     * Sets the null model. This model is returned from the
-     * {@link #wrap(Object)} method whenever the underlying object 
-     * reference is null. It defaults to returning TemplateModel.JAVA_NULL, 
-     * which is dealt with quite strictly on engine level, however you could 
-     * substitute an arbitrary (perhaps more lenient) model, such as 
-     * {@link freemarker.template.TemplateScalarModel#EMPTY_STRING}.
-     *//* I think it's too hairy to let the user set this. Speculative generality. (JR) */
-    /*
-    public void setNullModel(TemplateModel nullModel)
-    {
-        this.nullModel = nullModel;
-    }*/
     
     /**
      * Returns the default instance of the wrapper. This instance is used
@@ -839,20 +814,6 @@ public class ObjectWrapper
                 {
                     introspectClassInternal(clazz);
                 }
-            }
-        }
-    }
-
-    void removeIntrospectionInfo(Class clazz) {
-        synchronized(classCache) {
-            classCache.remove(clazz);
-            staticModels.removeIntrospectionInfo(clazz);
-            if(enumModels != null) {
-                enumModels.removeIntrospectionInfo(clazz);
-            }
-            cachedClassNames.remove(clazz.getName());
-            synchronized(this) {
-                modelCache.clearCache();
             }
         }
     }

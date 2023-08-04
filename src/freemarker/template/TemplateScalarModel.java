@@ -22,6 +22,4 @@ public interface TemplateScalarModel extends TemplateModel {
      * throw an exception if you return null from this method.
      */
     public String getAsString() throws TemplateModelException;
-
-
 }
