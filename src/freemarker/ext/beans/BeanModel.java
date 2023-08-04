@@ -45,9 +45,9 @@ public class BeanModel implements TemplateHashModelEx, AdapterTemplateModel
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object)
             {
-                return new BeanModel(object, wrapper);
+                return new BeanModel(object);
             }
         };
 
@@ -64,19 +64,10 @@ public class BeanModel implements TemplateHashModelEx, AdapterTemplateModel
      * can also choose to delegate the choice over which model class is used for
      * wrapping to {@link ObjectWrapper#wrap(Object)}.
      * @param object the object to wrap into a model.
-     * @param wrapper the {@link ObjectWrapper} associated with this model.
-     * Every model has to have an associated {@link ObjectWrapper} instance. The
-     * model gains many attributes from its wrapper, including the caching 
-     * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public BeanModel(Object object, ObjectWrapper wrapper)
+    public BeanModel(Object object)
     {
         this.object = object;
-//        this.wrapper = wrapper;
-        if (object == null) {
-            return;
-        }
-//        ObjectWrapper.instance().introspectClass(object.getClass());
     }
 
     /**

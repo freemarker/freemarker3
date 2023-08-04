@@ -16,9 +16,9 @@ implements TemplateScalarModel
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object)
             {
-                return new StringModel(object, wrapper);
+                return new StringModel(object);
             }
         };
 
@@ -31,9 +31,9 @@ implements TemplateScalarModel
      * model gains many attributes from its wrapper, including the caching 
      * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public StringModel(Object object, ObjectWrapper wrapper)
+    public StringModel(Object object)
     {
-        super(object, wrapper);
+        super(object);
     }
 
     /**

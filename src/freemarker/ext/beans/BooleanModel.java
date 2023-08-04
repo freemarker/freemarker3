@@ -12,9 +12,9 @@ public class BooleanModel extends BeanModel implements TemplateBooleanModel
 {
     private final boolean value;
     
-    public BooleanModel(Boolean bool, ObjectWrapper wrapper)
+    public BooleanModel(Boolean bool)
     {
-        super(bool, wrapper);
+        super(bool);
         value = bool.booleanValue();
     }
 

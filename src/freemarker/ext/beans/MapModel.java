@@ -33,9 +33,9 @@ implements
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object)
             {
-                return new MapModel((Map)object, wrapper);
+                return new MapModel((Map)object);
             }
         };
 
@@ -43,13 +43,10 @@ implements
      * Creates a new model that wraps the specified map object.
      * @param map the map object to wrap into a model.
      * @param wrapper the {@link ObjectWrapper} associated with this model.
-     * Every model has to have an associated {@link ObjectWrapper} instance. The
-     * model gains many attributes from its wrapper, including the caching 
-     * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public MapModel(Map map, ObjectWrapper wrapper)
+    public MapModel(Map map)
     {
-        super(map, wrapper);
+        super(map);
     }
 
     /**

@@ -13,5 +13,5 @@ public interface ModelFactory
      * Create a wrapping model for the specified object that belongs to
      * the specified wrapper.
      */
-    TemplateModel create(Object object, ObjectWrapper wrapper);
+    TemplateModel create(Object object);
 }

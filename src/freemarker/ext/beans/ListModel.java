@@ -19,9 +19,9 @@ public class ListModel extends CollectionModel implements TemplateSequenceModel 
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object)
             {
-                return new ListModel((List)object, wrapper);
+                return new ListModel((List)object);
             }
         };
 
@@ -34,9 +34,9 @@ public class ListModel extends CollectionModel implements TemplateSequenceModel 
      * model gains many attributes from its wrapper, including the caching 
      * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public ListModel(List list, ObjectWrapper wrapper)
+    public ListModel(List list)
     {
-        super(list, wrapper);
+        super(list);
     }
 
     /**

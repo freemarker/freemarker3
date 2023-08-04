@@ -13,18 +13,14 @@ import freemarker.template.TemplateModel;
  * @author Attila Szegedi
  * @version $Id: CollectionModel.java,v 1.22 2003/06/03 13:21:32 szegedia Exp $
  */
-public class CollectionModel
-extends
-    StringModel
-implements
-    TemplateCollectionModel
+public class CollectionModel extends StringModel implements TemplateCollectionModel
 {
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object)
             {
-                return new CollectionModel((Collection)object, wrapper);
+                return new CollectionModel((Collection)object);
             }
         };
 
@@ -32,18 +28,14 @@ implements
     /**
      * Creates a new model that wraps the specified collection object.
      * @param collection the collection object to wrap into a model.
-     * @param wrapper the {@link ObjectWrapper} associated with this model.
-     * Every model has to have an associated {@link ObjectWrapper} instance. The
-     * model gains many attributes from its wrapper, including the caching 
-     * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public CollectionModel(Collection collection, ObjectWrapper wrapper)
+    public CollectionModel(Collection collection)
     {
-        super(collection, wrapper);
+        super(collection);
     }
 
     public Iterator<Object> iterator()
     {
-        return new IteratorModel(((Collection)object).iterator(), ObjectWrapper.instance());
+        return new IteratorModel(((Collection)object).iterator());
     }
 }

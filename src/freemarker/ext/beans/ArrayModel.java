@@ -19,9 +19,9 @@ public class ArrayModel extends BeanModel implements TemplateCollectionModel, Te
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object)
             {
-                return new ArrayModel(object, wrapper);
+                return new ArrayModel(object);
             }
         };
         
@@ -37,9 +37,9 @@ public class ArrayModel extends BeanModel implements TemplateCollectionModel, Te
      * behavior, method exposure level, method-over-item shadowing policy etc.
      * @throws IllegalArgumentException if the passed object is not a Java array.
      */
-    public ArrayModel(Object array, ObjectWrapper wrapper)
+    public ArrayModel(Object array)
     {
-        super(array, wrapper);
+        super(array);
         Class clazz = array.getClass();
         if(!clazz.isArray())
             throw new IllegalArgumentException("Object is not an array, it is " + array.getClass().getName());

@@ -30,14 +30,10 @@ public class IteratorModel extends BeanModel implements Iterator<Object>, Templa
     /**
      * Creates a new model that wraps the specified iterator object.
      * @param iterator the iterator object to wrap into a model.
-     * @param wrapper the {@link ObjectWrapper} associated with this model.
-     * Every model has to have an associated {@link ObjectWrapper} instance. The
-     * model gains many attributes from its wrapper, including the caching 
-     * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public IteratorModel(Iterator iterator, ObjectWrapper wrapper)
+    public IteratorModel(Iterator iterator)
     {
-        super(iterator, wrapper);
+        super(iterator);
     }
 
     /**

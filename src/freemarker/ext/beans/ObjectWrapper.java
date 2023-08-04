@@ -96,8 +96,8 @@ public class ObjectWrapper
     private final ClassBasedModelFactory staticModels = new StaticModels(this);
     private final ClassBasedModelFactory enumModels = new EnumModels(this);
 
-    private final BooleanModel FALSE = new BooleanModel(Boolean.FALSE, this);
-    private final BooleanModel TRUE = new BooleanModel(Boolean.TRUE, this);
+    private final BooleanModel FALSE = new BooleanModel(Boolean.FALSE);
+    private final BooleanModel TRUE = new BooleanModel(Boolean.TRUE);
 
     private final Map<Class,ModelFactory> classToFactory = new ConcurrentHashMap<Class,ModelFactory>();
     private final Set<String> mappedClassNames = new HashSet<String>();
@@ -379,24 +379,24 @@ public class ObjectWrapper
                 }
             }
         }
-        return factory.create(object, ObjectWrapper.instance());
+        return factory.create(object);
     }
     
     private final ModelFactory BOOLEAN_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object, ObjectWrapper wrapper) {
+        public TemplateModel create(Object object) {
             return (Boolean)object ? TRUE : FALSE; 
         }
     };
 
     private static final ModelFactory ITERATOR_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object, ObjectWrapper wrapper) {
-            return new IteratorModel((Iterator)object, wrapper); 
+        public TemplateModel create(Object object) {
+            return new IteratorModel((Iterator)object); 
         }
     };
 
     private static final ModelFactory ENUMERATION_FACTORY = new ModelFactory() {
-        public TemplateModel create(Object object, ObjectWrapper wrapper) {
-            return new EnumerationModel((Enumeration)object, wrapper); 
+        public TemplateModel create(Object object) {
+            return new EnumerationModel((Enumeration)object); 
         }
     };
 
@@ -436,7 +436,7 @@ public class ObjectWrapper
 
     protected TemplateModel create(Object object, Object factory)
     {
-        return ((ModelFactory)factory).create(object, this);
+        return ((ModelFactory)factory).create(object);
     }
 
     /**

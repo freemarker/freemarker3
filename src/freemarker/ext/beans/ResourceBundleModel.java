@@ -40,17 +40,17 @@ public class ResourceBundleModel
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object)
             {
-                return new ResourceBundleModel((ResourceBundle)object, wrapper);
+                return new ResourceBundleModel((ResourceBundle)object);
             }
         };
 
     private Hashtable<String, MessageFormat> formats = null;
 
-    public ResourceBundleModel(ResourceBundle bundle, ObjectWrapper wrapper)
+    public ResourceBundleModel(ResourceBundle bundle)
     {
-        super(bundle, wrapper);
+        super(bundle);
     }
 
     /**
@@ -121,7 +121,7 @@ public class ResourceBundleModel
                 params[i] = unwrap((TemplateModel)it.next());
     
             // Invoke format
-            return new StringModel(format(key, params), ObjectWrapper.instance());
+            return new StringModel(format(key, params));
         }
         catch(MissingResourceException e)
         {

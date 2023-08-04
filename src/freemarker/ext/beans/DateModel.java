@@ -19,9 +19,9 @@ implements
     static final ModelFactory FACTORY =
         new ModelFactory()
         {
-            public TemplateModel create(Object object, ObjectWrapper wrapper)
+            public TemplateModel create(Object object)
             {
-                return new DateModel((Date)object, wrapper);
+                return new DateModel((Date)object);
             }
         };
 
@@ -35,9 +35,9 @@ implements
      * model gains many attributes from its wrapper, including the caching 
      * behavior, method exposure level, method-over-item shadowing policy etc.
      */
-    public DateModel(Date date, ObjectWrapper wrapper)
+    public DateModel(Date date)
     {
-        super(date, wrapper);
+        super(date);
         if(date instanceof java.sql.Date) {
             type = DATE;
         }
@@ -48,7 +48,7 @@ implements
             type = DATETIME;
         }
         else {
-            type = wrapper.getDefaultDateType();
+            type = ObjectWrapper.instance().getDefaultDateType();
         }
     }
 
