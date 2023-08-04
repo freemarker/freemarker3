@@ -138,7 +138,6 @@ public class ObjectWrapper
     private boolean exposeFields = false;
     private int defaultDateType = TemplateDateModel.UNKNOWN;
 
-    private boolean simpleMapWrapper=true;
     private boolean strict = false;
     
     /**
@@ -180,27 +179,6 @@ public class ObjectWrapper
      */
     public void setStrict(boolean strict) {
     	this.strict = strict;
-    }
-
-    /**
-     * By default the BeansWrapper wraps classes implementing
-     * java.util.Map using {@link MapModel}. Setting this flag will
-     * cause it to use a {@link SimpleMapModel} instead. The biggest
-     * difference is that when using a {@link SimpleMapModel}, the
-     * map will be visible as <code>TemplateHashModelEx</code>,
-     * and the subvariables will be the content of the map,
-     * without the other methods and properties of the map object.
-     * As of 2.4 this is on by default.
-     * @param simpleMapWrapper enable simple map wrapping
-     */
-    public void setSimpleMapWrapper(boolean simpleMapWrapper)
-    {
-        this.simpleMapWrapper = simpleMapWrapper;
-    }
-
-    public boolean isSimpleMapWrapper()
-    {
-        return simpleMapWrapper;
     }
 
     /**
@@ -292,7 +270,7 @@ public class ObjectWrapper
      * <li>if the object is null, returns {@link Constants#JAVA_NULL}</li>
      * <li>if the object is already a {@link TemplateModel}, returns it unchanged,</li>
      * <li>if the object is a {@link TemplateModelAdapter}, returns its underlying model,</li>
-     * <li>if the object is a Map, returns a {@link MapModel} for it
+     * <li>if the object is a Map, returns a {@link SimpleMapModel} for it
      * <li>if the object is a Collection, returns a {@link CollectionModel} for it
      * <li>if the object is an array, returns a {@link ArrayModel} for it
      * <li>if the object is a Number returns a {@link NumberModel} for it,</li>
@@ -315,7 +293,8 @@ public class ObjectWrapper
             return (TemplateModel)object;
         }
         if (object instanceof Map) {
-            return new MapModel((Map) object);
+            return  new SimpleMapModel((Map)object);
+            //return new MapModel((Map) object);
         }
         if (object instanceof List) {
             return new ListModel((List)object);
