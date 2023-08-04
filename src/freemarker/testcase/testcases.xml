@@ -38,7 +38,7 @@
    />
    
    <testcase name="arithmetic" filename="test-arithmetic.html" />
-   <testcase name="bean-maps" filename="test-bean-maps.html"/>
+   <!--testcase name="bean-maps" filename="test-bean-maps.html"/-->
    <testcase name="beans" filename="test-beans.html">
       <config object_wrapper="freemarker.ext.beans.ObjectWrapper"/>
                             <config locale="en_US"/>

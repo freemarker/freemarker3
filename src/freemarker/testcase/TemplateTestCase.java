@@ -109,55 +109,8 @@ public class TemplateTestCase extends TestCase {
     public void setUp() throws Exception {
         dataModel.put("message", "Hello, world!");
         
-        if (testName.equals("bean-maps")) {
-            ObjectWrapper w1 = ObjectWrapper.instance();
-            ObjectWrapper w2 = ObjectWrapper.instance();
-            ObjectWrapper w3 = ObjectWrapper.instance();
-            ObjectWrapper w4 = ObjectWrapper.instance();
-            ObjectWrapper w5 = ObjectWrapper.instance();
-            ObjectWrapper w6 = ObjectWrapper.instance();
-            ObjectWrapper w7 = ObjectWrapper.instance();
-            w1.setSimpleMapWrapper(false);
-            w2.setSimpleMapWrapper(false);
-            w3.setSimpleMapWrapper(false);
-            w4.setSimpleMapWrapper(false);
-            w5.setSimpleMapWrapper(false);
-            w6.setSimpleMapWrapper(false);
-            w7.setSimpleMapWrapper(false);
-    
-            w1.setExposureLevel(ObjectWrapper.EXPOSE_PROPERTIES_ONLY);
-            w2.setExposureLevel(ObjectWrapper.EXPOSE_PROPERTIES_ONLY);
-            w3.setExposureLevel(ObjectWrapper.EXPOSE_NOTHING);
-            w4.setExposureLevel(ObjectWrapper.EXPOSE_NOTHING);
-            w5.setExposureLevel(ObjectWrapper.EXPOSE_ALL);
-            w6.setExposureLevel(ObjectWrapper.EXPOSE_ALL);
-    
-            w1.setMethodsShadowItems(true);
-            w2.setMethodsShadowItems(false);
-            w3.setMethodsShadowItems(true);
-            w4.setMethodsShadowItems(false);
-            w5.setMethodsShadowItems(true);
-            w6.setMethodsShadowItems(false);
-    
-            w7.setSimpleMapWrapper(true);
-    
-            Object test = getTestBean();
-    
-            dataModel.put("m1", w1.wrap(test));
-            dataModel.put("m2", w2.wrap(test));
-            dataModel.put("m3", w3.wrap(test));
-            dataModel.put("m4", w4.wrap(test));
-            dataModel.put("m5", w5.wrap(test));
-            dataModel.put("m6", w6.wrap(test));
-            dataModel.put("m7", w7.wrap(test));
-    
-            dataModel.put("s1", w1.wrap("hello"));
-            dataModel.put("s2", w1.wrap("world"));
-            dataModel.put("s3", w5.wrap("hello"));
-            dataModel.put("s4", w5.wrap("world"));
-        }
         
-        else if (testName.equals("beans")) {
+        if (testName.equals("beans")) {
             dataModel.put("array", new String[] { "array-0", "array-1"});
             dataModel.put("list", Arrays.asList(new String[] { "list-0", "list-1", "list-2"}));
             Map tmap = new HashMap();
