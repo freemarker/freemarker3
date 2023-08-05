@@ -4,7 +4,7 @@ import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.ast.TemplateNode;
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
 
@@ -20,7 +20,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
             Object model) 
     {
         if (!(model instanceof TemplateNodeModel)) {
-            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "node");
+            throw BaseNode.invalidTypeException(model, caller.getTarget(), env, "node");
         }
         return apply(env, (TemplateNodeModel)model);
     }

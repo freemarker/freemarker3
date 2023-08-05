@@ -17,8 +17,8 @@ public class DynamicKeyName extends Expression {
     public DynamicKeyName(Expression target, Expression nameExpression) {
         this.target = target; 
         this.nameExpression = nameExpression;
-        target.parent = this;
-        nameExpression.parent = this;
+        target.setParent(this);
+        nameExpression.setParent(this);
     }
     
     public Expression getNameExpression() {

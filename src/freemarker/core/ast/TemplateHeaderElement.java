@@ -1,10 +1,12 @@
 package freemarker.core.ast;
 
 import java.util.*;
+
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.*;
 import static freemarker.template.utility.StringUtil.*;
 
-public class TemplateHeaderElement extends TemplateNode {
+public class TemplateHeaderElement extends BaseNode {
 
 	private Map<String,Expression> params;
 	private Map<String,Object> values = new HashMap<String, Object>();

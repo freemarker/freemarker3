@@ -1,7 +1,6 @@
 package freemarker.core.ast;
 
 import freemarker.core.Environment;
-import freemarker.template.TemplateException;
 
 public class NotExpression extends BooleanExpression {
 
@@ -9,7 +8,7 @@ public class NotExpression extends BooleanExpression {
 
     public NotExpression(Expression target) {
         this.target = target;
-        target.parent = this;
+        target.setParent(this);
     }
     
     public Expression getTarget() {

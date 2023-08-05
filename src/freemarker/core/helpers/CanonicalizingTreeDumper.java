@@ -2,6 +2,7 @@ package freemarker.core.helpers;
 
 import java.util.*;
 import freemarker.core.ast.*;
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.Template;
 
 /**
@@ -45,7 +46,7 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
     		List<String> declaredVariables = new ArrayList<String>(template.getDeclaredVariables());
     		// Now we get rid of the ones that are already declared, either
     		// via var or via macro.
-    		for (TemplateNode te : node.getNestedElements()) {
+    		for (BaseNode te : node.getNestedElements()) {
     			if (te instanceof Macro) {
     				String macroName = ((Macro) te).getName();
     				declaredVariables.remove(macroName);

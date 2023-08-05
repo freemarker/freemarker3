@@ -135,7 +135,7 @@ public class BuiltInExpression extends Expression {
 
     public BuiltInExpression(Expression target, String key) {
         this.target = target;
-        target.parent = this;
+        target.setParent(this);
         this.key = key.intern();
         this.bi = knownBuiltins.get(key);
     }

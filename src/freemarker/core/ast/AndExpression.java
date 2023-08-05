@@ -1,7 +1,6 @@
 package freemarker.core.ast;
 
 import freemarker.core.Environment;
-import freemarker.template.TemplateException;
 
 public class AndExpression extends BooleanExpression {
 
@@ -11,8 +10,8 @@ public class AndExpression extends BooleanExpression {
     public AndExpression(Expression left, Expression right) {
         this.left = left;
         this.right = right;
-        left.parent = this;
-        right.parent = this;
+        left.setParent(this);
+        right.setParent(this);
     }
     
     public Expression getLeft() {

@@ -490,7 +490,7 @@ public class Template extends TemplateCore {
      * @param beginLine the first line of the requested source, 1-based
      * @param endColumn the last column of the requested source, 1-based
      * @param endLine the last line of the requested source, 1-based
-     * @see freemarker.core.ast.TemplateNode#source()
+     * @see freemarker.core.ast.BaseNode#source()
      */
    	public String source(int beginColumn,
            int beginLine,

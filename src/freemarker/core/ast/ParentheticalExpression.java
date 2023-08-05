@@ -1,7 +1,6 @@
 package freemarker.core.ast;
 
 import freemarker.core.Environment;
-import freemarker.template.*;
 
 public class ParentheticalExpression extends Expression {
 
@@ -9,7 +8,7 @@ public class ParentheticalExpression extends Expression {
 
     public ParentheticalExpression(Expression nested) {
         this.nested = nested;
-        nested.parent = this;
+        nested.setParent(this);
     }
 
     boolean isTrue(Environment env) {

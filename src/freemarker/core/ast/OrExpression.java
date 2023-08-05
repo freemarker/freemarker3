@@ -11,7 +11,8 @@ public class OrExpression extends BooleanExpression {
     public OrExpression(Expression left, Expression right) {
         this.left = left;
         this.right = right;
-        left.parent = right.parent = this;
+        left.setParent(this);
+        right.setParent(this);
     }
     
     public Expression getLeft() {

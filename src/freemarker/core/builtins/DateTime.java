@@ -6,7 +6,7 @@ import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.ast.TemplateNode;
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.SimpleDate;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
@@ -57,7 +57,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
                     dateType, caller,  env);
         }
         else {
-            throw TemplateNode.invalidTypeException(model, caller, env, 
+            throw BaseNode.invalidTypeException(model, caller, env, 
                     "time/date or string");
         }
     }

@@ -15,7 +15,7 @@ import java.util.*;
 import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.*;
-
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.log.Logger;
 import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;
@@ -1097,14 +1097,14 @@ public final class Environment extends Configurable implements Scope {
         .listIterator(elementStack.size());
         if (iter.hasPrevious()) {
             pw.print("==> ");
-            TemplateNode prev = iter.previous();
+            BaseNode prev = iter.previous();
             pw.print(prev.getDescription());
             pw.print(" [");
             pw.print(prev.getStartLocation());
             pw.println("]");
         }
         while (iter.hasPrevious()) {
-            TemplateNode prev = iter.previous();
+            BaseNode prev = iter.previous();
             if (prev instanceof UnifiedCall || prev instanceof Include) {
                 String location = prev.getDescription() + " ["
                 + prev.getStartLocation() + "]";

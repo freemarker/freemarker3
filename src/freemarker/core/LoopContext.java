@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import freemarker.core.ast.*;
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateException;
@@ -62,7 +63,7 @@ public class LoopContext extends BlockScope {
             }
         }
         else {
-            throw TemplateNode.invalidTypeException(list, iteratorBlock.getListExpression(), env, "collection or sequence");
+            throw BaseNode.invalidTypeException(list, iteratorBlock.getListExpression(), env, "collection or sequence");
         }
     }
 }

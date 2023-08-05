@@ -8,7 +8,7 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.EvaluationUtil;
-import freemarker.core.ast.TemplateNode;
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.*;
 
 /**
@@ -48,7 +48,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         if (model instanceof TemplateScalarModel) {
             return new SimpleScalar(((TemplateScalarModel) model).getAsString());
         } 
-      	throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number, date, or string");
+      	throw BaseNode.invalidTypeException(model, caller.getTarget(), env, "number, date, or string");
     }
 	
 	

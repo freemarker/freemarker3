@@ -4,6 +4,7 @@ import freemarker.core.Configurable;
 import freemarker.core.ast.*;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.utility.DeepUnwrap;
 
 
@@ -307,7 +308,7 @@ public class PostParseVisitor extends ASTVisitor {
 	public void visit(SwitchBlock node) {
 		super.visit(node);
 		boolean foundDefaultCase = false;
-		for (TemplateNode te : node.getCases()) {
+		for (BaseNode te : node.getCases()) {
 			if (((Case) te).isDefault()) {
 				if (foundDefaultCase) {
 					template.addParsingProblem(new ParsingProblem("You can only have one default case in a switch construct.", node));
@@ -537,22 +538,22 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 	}
 	
-	static Macro getContainingMacro(TemplateNode node) {
-		TemplateNode parent = node;
+	static Macro getContainingMacro(BaseNode node) {
+		BaseNode parent = node;
 		while (parent != null && !(parent instanceof Macro)) {
 			parent = parent.getParentNode();
 		}
 		return (Macro) parent;
 	}
 	
-	private void markAsProducingOutput(TemplateNode node) {
+	private void markAsProducingOutput(BaseNode node) {
 		for (int i= node.getBeginLine(); i<=node.getEndLine(); i++) {
 			boolean inMacro = getContainingMacro(node) != null;
 			template.markAsOutputtingLine(i, inMacro);
 		}
 	}
 	
-    public String firstLine(TemplateNode node) {
+    public String firstLine(BaseNode node) {
     	String line = template.getLine(node.getBeginLine());
     	if (node.getBeginLine() == node.getEndLine()) {
     		line = line.substring(0, node.getEndColumn());
@@ -560,7 +561,7 @@ public class PostParseVisitor extends ASTVisitor {
     	return line.substring(node.getBeginColumn() -1);
     }
     
-    public String lastLine(TemplateNode node) {
+    public String lastLine(BaseNode node) {
     	String line = template.getLine(node.getEndLine());
     	line = line.substring(0, node.getEndColumn());
     	if (node.getBeginLine() == node.getEndLine()) {

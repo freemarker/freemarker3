@@ -29,8 +29,8 @@ public class ComparisonExpression extends BooleanExpression {
     public ComparisonExpression(Expression left, Expression right, String opString) {
         this.left = left;
         this.right = right;
-        left.parent = this;
-        right.parent = this;
+        left.setParent(this);
+        right.setParent(this);
         opString = opString.intern();
         this.opString = opString;
         if (opString == "==" || opString == "=") {

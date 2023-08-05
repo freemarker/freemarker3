@@ -16,11 +16,11 @@ public class HashLiteral extends Expression {
         keys.trimToSize();
         values.trimToSize();
         for (Expression exp : keys) {
-        	exp.parent = this;
+        	exp.setParent(this);
         }
         
         for (Expression exp : values) {
-        	exp.parent = this;
+        	exp.setParent(this);
         }
     }
 

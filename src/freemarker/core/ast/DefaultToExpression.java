@@ -42,8 +42,8 @@ public class DefaultToExpression extends Expression {
 	public DefaultToExpression(Expression lhs, Expression rhs) {
 		this.lhs = lhs;
 		this.rhs = rhs;
-		lhs.parent = this;
-		if (rhs != null) rhs.parent = this;
+		lhs.setParent(this);
+		if (rhs != null) rhs.setParent(this);
 	}
 	
 	public Expression getLeft() {

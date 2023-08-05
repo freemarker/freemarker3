@@ -12,7 +12,7 @@ public class ExistsExpression extends Expression {
 	
 	public ExistsExpression(Expression exp) {
 		this.exp = exp;
-		exp.parent = this;
+		exp.setParent(this);
 	}
 	
 	public Expression getExpression() {

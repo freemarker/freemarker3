@@ -5,6 +5,7 @@ import java.util.*;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;
+import freemarker.core.parser.ast.BaseNode;
 
 public class PositionalArgsList extends ArgsList {
 
@@ -16,7 +17,7 @@ public class PositionalArgsList extends ArgsList {
 
     public void addArg(Expression exp) {
         args.add(exp);
-        exp.parent = this;
+        exp.setParent(this);
     }
 
     Map<String, Object> getParameterMap(Object target, Environment env)
@@ -81,7 +82,7 @@ public class PositionalArgsList extends ArgsList {
     public Object getValueAt(int i, Environment env) {
         Expression exp = args.get(i);
         Object value = exp.getAsTemplateModel(env);
-        TemplateNode.assertIsDefined(value, exp, env);
+        BaseNode.assertIsDefined(value, exp, env);
         return value;
     }
 

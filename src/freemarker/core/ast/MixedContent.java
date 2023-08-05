@@ -48,7 +48,7 @@ public class MixedContent extends TemplateElement {
     }
 
     public String getDescription() {
-        if (parent == null) {
+        if (getParent() == null) {
             return "root element";
         }
         return "content"; // MixedContent is uninteresting in a stack trace.

@@ -21,7 +21,7 @@ public class ListLiteral extends Expression {
         this.values = values;
         values.trimToSize();
         for (Expression value : values) {
-        	value.parent = this;
+        	value.setParent(this);
         }
     }
     

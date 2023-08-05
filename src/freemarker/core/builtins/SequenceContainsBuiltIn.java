@@ -5,10 +5,9 @@ import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.ast.TemplateNode;
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateException;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -30,7 +29,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             Object model) 
     {
         if (!(model instanceof TemplateSequenceModel || model instanceof TemplateCollectionModel)) {
-            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "sequence or collection");
+            throw BaseNode.invalidTypeException(model, caller.getTarget(), env, "sequence or collection");
         }
         
         return new SequenceContainsFunction(model);

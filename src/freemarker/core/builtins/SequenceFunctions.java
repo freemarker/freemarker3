@@ -10,7 +10,7 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.ast.ArithmeticEngine;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.ast.TemplateNode;
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.SimpleNumber;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
@@ -42,7 +42,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             Object model) 
     {
         if (!(model instanceof TemplateSequenceModel)) {
-            throw TemplateNode.invalidTypeException(model,
+            throw BaseNode.invalidTypeException(model,
                     caller.getTarget(), env, "sequence");
         }
         return apply((TemplateSequenceModel) model);

@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
-
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.Template;
 
 
@@ -37,10 +37,10 @@ public abstract class ASTVisitor {
 	
 	protected StringBuilder errors = new StringBuilder(), warnings = new StringBuilder();
 	
-	public void visit(TemplateNode node) {
+	public void visit(BaseNode node) {
 		if (node == null) return;
     	try {
-    		Class<? extends TemplateNode> clazz = node.getClass();
+    		Class<? extends BaseNode> clazz = node.getClass();
         	Method visitMethod = this.getClass().getMethod("visit", new Class[] {clazz});
     		visitMethod.invoke(this, new Object[] {node});
     	}
@@ -361,7 +361,7 @@ public abstract class ASTVisitor {
 	
 	protected void recurse(TemplateElement node) {
         if (node.nestedElements != null) {
-        	for (TemplateNode te : node.nestedElements) {
+        	for (BaseNode te : node.nestedElements) {
         		visit(te);
         	}
         } else {

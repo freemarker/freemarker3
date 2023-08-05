@@ -18,8 +18,8 @@ public class AddConcatExpression extends Expression {
     public AddConcatExpression(Expression left, Expression right) {
         this.left = left;
         this.right = right;
-        left.parent = this;
-        right.parent = this;
+        left.setParent(this);
+        right.setParent(this);
     }
     
     public Expression getLeft() {

@@ -4,6 +4,7 @@ import java.util.*;
 import java.io.IOException;
 import freemarker.template.*;
 import freemarker.core.*;
+import freemarker.core.parser.ast.BaseNode;
 
 
 
@@ -12,7 +13,7 @@ import freemarker.core.*;
  * tree representation of the template necessarily 
  * descend from this abstract class.
  */
-abstract public class TemplateElement extends TemplateNode {
+abstract public class TemplateElement extends BaseNode {
 	
     TemplateElement nestedBlock;
 
@@ -35,7 +36,7 @@ abstract public class TemplateElement extends TemplateNode {
     }
     
     public TemplateElement getParent() {
-    	return (TemplateElement) parent;
+    	return (TemplateElement) super.getParent();
     }
     
     public boolean declaresVariable(String name) {
@@ -59,11 +60,6 @@ abstract public class TemplateElement extends TemplateNode {
     	this.nestedBlock = nestedBlock;
     }
     
-    public void setParent(TemplateElement parent) {
-    	this.parent = parent;
-    }
-    
-
     public TemplateSequenceModel getChildNodes() {
         if (nestedElements != null) {
             return new SimpleSequence(nestedElements);
@@ -76,7 +72,7 @@ abstract public class TemplateElement extends TemplateNode {
     }
     
     public void setParentRecursively(TemplateElement parent) {
-        this.parent = parent;
+        this.setParent(parent);
         int nestedSize = nestedElements == null ? 0 : nestedElements.size();
         for (int i = 0; i < nestedSize; i++) {
         	nestedElements.get(i).setParentRecursively(this);
@@ -116,7 +112,7 @@ abstract public class TemplateElement extends TemplateNode {
         if (prev != null) {
             return prev.getLastLeaf();
         }
-        else if (parent != null) {
+        else if (getParent() != null) {
             return getParent().prevTerminalNode();
         }
         return null;
@@ -127,7 +123,7 @@ abstract public class TemplateElement extends TemplateNode {
         if (next != null) {
             return next.getFirstLeaf();
         }
-        else if (parent != null) {
+        else if (getParent() != null) {
             return getParent().nextTerminalNode();
         }
         return null;
@@ -136,10 +132,10 @@ abstract public class TemplateElement extends TemplateNode {
 
 
     protected TemplateElement previousSib() {
-        if (parent == null) {
+        if (getParent() == null) {
             return null;
         }
-        TemplateElement parentElement = (TemplateElement) this.parent;
+        TemplateElement parentElement = (TemplateElement) this.getParent();
         List<TemplateElement> siblings = parentElement.nestedElements;
         if (siblings == null) {
             return null;
@@ -153,10 +149,10 @@ abstract public class TemplateElement extends TemplateNode {
     }
 
     protected TemplateElement nextSib() {
-        if (parent == null) {
+        if (getParent() == null) {
             return null;
         }
-        TemplateElement parent = (TemplateElement) this.parent;
+        TemplateElement parent = (TemplateElement) this.getParent();
         List<TemplateElement> siblings = parent.nestedElements;
         if (siblings == null) {
             return null;
@@ -268,7 +264,7 @@ abstract public class TemplateElement extends TemplateNode {
         else if(nestedBlock != null) {
             if(index == 0) {
                 nestedBlock = element;
-                element.parent = this;
+                element.setParent(this);
             }
             else {
                 throw new IndexOutOfBoundsException("invalid index");
@@ -276,7 +272,7 @@ abstract public class TemplateElement extends TemplateNode {
         }
         else if(nestedElements != null) {
             nestedElements.set(index, element);
-            element.parent = this;
+            element.setParent(this);
         }
         else {
             throw new IndexOutOfBoundsException("element has no children");
@@ -323,19 +319,19 @@ abstract public class TemplateElement extends TemplateNode {
      * @param current
      */
     
-    public void replace(TemplateNode prev, TemplateElement current) {
+    public void replace(BaseNode prev, TemplateElement current) {
     	if (nestedBlock != null) {
     		if (prev == nestedBlock) {
     			nestedBlock = current;
     		}
-    		current.parent = this;
+    		current.setParent(this);
     	} 
     	else if (nestedElements != null) {
     		for (int i=0; i<nestedElements.size(); i++) {
-    			TemplateNode nestedElement = nestedElements.get(i);
+    			BaseNode nestedElement = nestedElements.get(i);
     			if (nestedElement == prev) {
     				nestedElements.set(i, current);
-    				current.parent = this;
+    				current.setParent(this);
     			}
     		}
     	}

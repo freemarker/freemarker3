@@ -3,13 +3,13 @@ package freemarker.core.ast;
 import freemarker.template.*;
 import freemarker.ext.beans.Pojo;
 import freemarker.core.Environment;
-//import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.BaseNode;
 
 /**
  * An abstract class for nodes in the parse tree 
  * that represent a FreeMarker expression.
  */
-abstract public class Expression extends TemplateNode {
+abstract public class Expression extends BaseNode {
 
     abstract Object _getAsTemplateModel(Environment env) throws TemplateException;
     abstract boolean isLiteral();
@@ -87,7 +87,7 @@ abstract public class Expression extends TemplateNode {
     Expression deepClone(String name, Expression subst) {
         Expression clone = _deepClone(name, subst);
         clone.copyLocationFrom(this);
-        clone.parent = this.parent;
+        clone.setParent(this.getParent());
         return clone;
     }
 
@@ -111,7 +111,7 @@ abstract public class Expression extends TemplateNode {
 
 
     public Expression getParent() {
-	    return (Expression) parent;
+	    return (Expression) getParentNode();
 	}
     
     

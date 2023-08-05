@@ -7,6 +7,7 @@ import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.core.parser.*;
 import freemarker.core.parser.FMLexer.LexicalState;
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.ext.beans.SimpleMethodModel;
 
 /**
@@ -14,7 +15,7 @@ import freemarker.ext.beans.SimpleMethodModel;
  * @author revusky
  */
 
-abstract public class ArgsList extends TemplateNode {
+abstract public class ArgsList extends BaseNode {
 	
 	/**
 	 * Cache the retrieved annotation information, since it seems like 
@@ -108,7 +109,7 @@ abstract public class ArgsList extends TemplateNode {
 		return params;
 	}
 	
-	public void setLocationInfoIfAbsent(TemplateNode invoker) {
+	public void setLocationInfoIfAbsent(BaseNode invoker) {
 		if (getBeginLine() == 0) {
 			this.copyLocationFrom(invoker);
 			

@@ -12,7 +12,7 @@ public class UnaryPlusMinusExpression extends Expression {
     public UnaryPlusMinusExpression(Expression target, boolean isMinus) {
         this.target = target;
         this.isMinus = isMinus;
-        target.parent = this;
+        target.setParent(this);
     }
     
     public Expression getTarget() {
