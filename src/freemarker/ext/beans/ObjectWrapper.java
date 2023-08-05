@@ -1,52 +1,14 @@
 package freemarker.ext.beans;
 
-import java.beans.BeanInfo;
-import java.beans.IndexedPropertyDescriptor;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.MethodDescriptor;
-import java.beans.PropertyDescriptor;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.beans.*;
 import java.io.InputStream;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.concurrent.ConcurrentHashMap;
-
 import freemarker.log.Logger;
-import freemarker.template.AdapterTemplateModel;
-import freemarker.template.Constants;
-import freemarker.template.TemplateBooleanModel;
-import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateDateModel;
-import freemarker.template.TemplateHashModel;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelAdapter;
-import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateNumberModel;
-import freemarker.template.TemplateScalarModel;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.*;
 
 public class ObjectWrapper 
 {
@@ -58,8 +20,6 @@ public class ObjectWrapper
     private static final Class<Date> DATE_CLASS = Date.class;
     private static final Class<HashAdapter> HASHADAPTER_CLASS = HashAdapter.class;
     private static final Class<Iterable> ITERABLE_CLASS = Iterable.class;
-    private static final Class<List> LIST_CLASS = List.class;
-    private static final Class<Map> MAP_CLASS = Map.class;
     private static final Class<Number> NUMBER_CLASS = Number.class;
     private static final Class<Object> OBJECT_CLASS = Object.class;
     private static final Class<SequenceAdapter> SEQUENCEADAPTER_CLASS = SequenceAdapter.class;
@@ -419,13 +379,13 @@ public class ObjectWrapper
             return CAN_NOT_UNWRAP;
         }
 
-        if(MAP_CLASS == requiredType) {
+        if(requiredType == Map.class) {
             if(model instanceof TemplateHashModel) {
                 return new HashAdapter((TemplateHashModel)model, this);
             }
         }
         
-        if(LIST_CLASS == requiredType) {
+        if(requiredType == List.class) {
             if(model instanceof TemplateSequenceModel) {
                 return new SequenceAdapter((TemplateSequenceModel)model, this);
             }

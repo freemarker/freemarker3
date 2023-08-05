@@ -7,12 +7,12 @@ INJECT PARSER_CLASS :
     import freemarker.core.ast.*;
     import freemarker.template.*;
     import freemarker.template.utility.StringUtil;
+    import java.util.HashSet;
     import java.util.List;
-    import java.util.StringTokenizer;
+    import java.util.LinkedHashMap;
     import java.util.Map;
     import java.util.Set;
-    import java.util.HashSet;
-    import java.util.LinkedHashMap;
+    import java.util.StringTokenizer;
 {
     // Necessary for adding macros and setting location info.
     Template template;
@@ -475,6 +475,7 @@ Expression NumberLiteral :
        return result;
    }
 ;
+
 #Identifier :
 {
     Token t;
@@ -500,6 +501,7 @@ Expression IdentifierOrStringLiteral :
       return exp;
    }   
 ;
+
 #BuiltinVariable :
 {
    Token dot, name;

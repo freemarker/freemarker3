@@ -8,7 +8,6 @@ import freemarker.core.Environment;
 
 /**
  * A TemplateElement representing a block of plain text.
- * @version $Id: TextBlock.java,v 1.17 2004/01/06 17:06:42 szegedia Exp $
  */
 public final class TextBlock extends TemplateElement {
 	static public final TextBlock EMPTY_BLOCK = new TextBlock("");

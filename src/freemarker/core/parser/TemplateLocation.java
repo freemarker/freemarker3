@@ -86,27 +86,6 @@ public class TemplateLocation extends BaseNode {
               + templateName;
     }
     
-    /**
-     * @return whether the point in the template file specified by the 
-     * column and line numbers is contained within this template object.
-     */
-    public boolean contains(int column, int line) {
-        if (line < beginLine || line > endLine) {
-            return false;
-        }
-        if (line == beginLine) {
-            if (column < beginColumn) {
-                return false;
-            }
-        }
-        if (line == endLine) {
-            if (column > endColumn) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public Template getTemplate()
     {
         return template;
