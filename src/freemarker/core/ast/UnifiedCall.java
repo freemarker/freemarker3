@@ -66,7 +66,7 @@ public class UnifiedCall extends TemplateElement {
                         + " is a function. A function can only be called " +
                         "within the evaluation of an expression.", env);
             }    
-            env.render(macro, args, bodyParameters, nestedBlock);
+            env.render(macro, args, bodyParameters, getNestedBlock());
         }
         else if (tm instanceof TemplateDirectiveModel) {
             Map<String, Object> argMap
@@ -80,14 +80,14 @@ public class UnifiedCall extends TemplateElement {
             else {
                 paramNames = bodyParameters.getParamNames();
             }
-            env.render(nestedBlock, (TemplateDirectiveModel) tm, argMap, paramNames);
+            env.render(getNestedBlock(), (TemplateDirectiveModel) tm, argMap, paramNames);
         }
         else if (tm instanceof TemplateTransformModel) {
             Map<String, Object> argMap
                     = args != null
                             ? args.getParameterMap(tm, env)
                             : new HashMap<String, Object>();
-            env.render(nestedBlock, (TemplateTransformModel) tm, argMap);
+            env.render(getNestedBlock(), (TemplateTransformModel) tm, argMap);
         }
         else {
             assertNonNull(tm, nameExp, env);

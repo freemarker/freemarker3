@@ -12,12 +12,12 @@ import freemarker.template.TemplateException;
 public class NoEscapeBlock extends TemplateElement {
 
     public NoEscapeBlock(TemplateElement nestedBlock) {
-        this.nestedBlock = nestedBlock;
+        setNestedBlock(nestedBlock);
     }
     
     public void execute(Environment env) throws TemplateException, IOException {
-        if (nestedBlock != null) {
-            env.render(nestedBlock);
+        if (getNestedBlock() != null) {
+            env.render(getNestedBlock());
         }
     }
 

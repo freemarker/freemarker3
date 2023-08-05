@@ -24,7 +24,7 @@ public class BlockAssignment extends TemplateElement {
     private int type;
 
     public BlockAssignment(TemplateElement nestedBlock, String varName, int type, Expression namespaceExp) {
-        this.nestedBlock = nestedBlock;
+        this.setNestedBlock(nestedBlock);
         this.varName = varName;
         this.namespaceExp = namespaceExp;
         this.type = type;
@@ -61,8 +61,8 @@ public class BlockAssignment extends TemplateElement {
     		} 
     	}
     	CaptureOutput filter = new CaptureOutput();
-        if (nestedBlock != null) {
-            env.render(nestedBlock, filter, null);
+        if (getNestedBlock() != null) {
+            env.render(getNestedBlock(), filter, null);
         }
         String text = filter.capturedText;
     	if (scope != null) {

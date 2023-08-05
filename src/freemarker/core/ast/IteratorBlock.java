@@ -27,7 +27,7 @@ public class IteratorBlock extends TemplateElement {
         this.listExpression = listExpression;
         this.indexName = indexName;
         this.isForEach = isForEach;
-        this.nestedBlock = nestedBlock;
+        this.setNestedBlock(nestedBlock);
     }
     
     public String getIndexName() {

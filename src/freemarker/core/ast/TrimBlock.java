@@ -12,7 +12,7 @@ public class TrimBlock extends TemplateElement {
     public TrimBlock(TemplateElement block, boolean left, boolean right) {
     	this.left = left;
     	this.right = right;
-        this.nestedBlock = block;
+        this.setNestedBlock(block);
     }
     
     public boolean isLeft() {
@@ -25,8 +25,8 @@ public class TrimBlock extends TemplateElement {
 
     public void execute(Environment env) throws TemplateException, IOException 
     {
-    	if (nestedBlock != null) {
-    		env.render(nestedBlock);
+    	if (getNestedBlock() != null) {
+    		env.render(getNestedBlock());
     	}
     }
 

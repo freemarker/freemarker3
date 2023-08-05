@@ -16,8 +16,6 @@ import freemarker.core.parser.ast.TemplateNode;
  */
 abstract public class TemplateElement extends TemplateNode {
 	
-    TemplateElement nestedBlock;
-
     List<TemplateElement> nestedElements;
     
     // The scoped variables defined in this element.
@@ -42,15 +40,15 @@ abstract public class TemplateElement extends TemplateNode {
     }
     
     public TemplateElement getNestedBlock() {
-    	return nestedBlock;
+        return isEmpty() ? null : (TemplateElement) get(0);
+    }
+    
+    public void setNestedBlock(TemplateElement nestedBlock) {
+        add(nestedBlock);
     }
     
     public List<TemplateElement> getNestedElements() {
         return nestedElements;
-    }
-    
-    public void setNestedBlock(TemplateElement nestedBlock) {
-    	this.nestedBlock = nestedBlock;
     }
     
     public TemplateSequenceModel getChildNodes() {
@@ -58,8 +56,8 @@ abstract public class TemplateElement extends TemplateNode {
             return new SimpleSequence(nestedElements);
         }
         SimpleSequence result = new SimpleSequence();
-        if (nestedBlock != null) {
-            result.add(nestedBlock);
+        if (getNestedBlock() != null) {
+            result.add(getNestedBlock());
         } 
         return result;
     }
@@ -70,8 +68,8 @@ abstract public class TemplateElement extends TemplateNode {
         for (int i = 0; i < nestedSize; i++) {
         	nestedElements.get(i).setParentRecursively(this);
         }
-        if (nestedBlock != null) {
-            nestedBlock.setParentRecursively(this);
+        if (getNestedBlock() != null) {
+            getNestedBlock().setParentRecursively(this);
         }
     }
 
@@ -90,9 +88,9 @@ abstract public class TemplateElement extends TemplateNode {
     			((ArrayList) nestedElements).trimToSize();
     		}
     	}
-    	else if (nestedBlock != null) {
-    		if (nestedBlock.isIgnorable()) {
-    			nestedBlock = null;
+    	else if (getNestedBlock() != null) {
+    		if (getNestedBlock().isIgnorable()) {
+    			setNestedBlock(null);
     		}
     	}
     }
@@ -159,8 +157,8 @@ abstract public class TemplateElement extends TemplateNode {
     }
 
     private TemplateElement firstChild() {
-        if (nestedBlock != null) {
-            return nestedBlock;
+        if (getNestedBlock() != null) {
+            return getNestedBlock();
         }
         if (nestedElements != null && nestedElements.size() >0) {
             return nestedElements.get(0);
@@ -169,8 +167,8 @@ abstract public class TemplateElement extends TemplateNode {
     }
 
     private TemplateElement lastChild() {
-        if (nestedBlock != null) {
-            return nestedBlock;
+        if (getNestedBlock() != null) {
+            return getNestedBlock();
         }
         if (nestedElements != null && nestedElements.size() >0) {
             return nestedElements.get(nestedElements.size() -1);
@@ -179,11 +177,12 @@ abstract public class TemplateElement extends TemplateNode {
     }
     
     private boolean isLeaf() {
-    	return nestedBlock == null && (nestedElements == null || nestedElements.isEmpty());
+    	return getNestedBlock() == null && (nestedElements == null || nestedElements.isEmpty());
     }
     
 
     public int getIndex(TemplateElement node) {
+        TemplateElement nestedBlock = getNestedBlock();
         if (nestedBlock instanceof MixedContent) {
             return nestedBlock.getIndex(node);
         }
@@ -199,6 +198,7 @@ abstract public class TemplateElement extends TemplateNode {
     }
 
     public int getChildCount() {
+        TemplateElement nestedBlock = getNestedBlock();
         if (nestedBlock instanceof MixedContent) {
             return nestedBlock.getChildCount();
         }
@@ -222,6 +222,7 @@ abstract public class TemplateElement extends TemplateNode {
     };
 
     public Enumeration childrenE() {
+        TemplateElement nestedBlock = getNestedBlock();
         if (nestedBlock instanceof MixedContent) {
             return nestedBlock.childrenE();
         }
@@ -235,6 +236,7 @@ abstract public class TemplateElement extends TemplateNode {
     }
 
     public TemplateElement getChildAt(int index) {
+        TemplateElement nestedBlock = getNestedBlock();
         if (nestedBlock instanceof MixedContent) {
             return nestedBlock.getChildAt(index);
         }
@@ -251,6 +253,7 @@ abstract public class TemplateElement extends TemplateNode {
     }
 
     public void setChildAt(int index, TemplateElement element) {
+        TemplateElement nestedBlock = getNestedBlock();
         if(nestedBlock instanceof MixedContent) {
             nestedBlock.setChildAt(index, element);
         }
@@ -304,29 +307,5 @@ abstract public class TemplateElement extends TemplateNode {
             }
         }
         return null;
-    }
-    
-    /**
-     * Replace the child element prev with the current
-     * @param prev
-     * @param current
-     */
-    
-    public void replace(TemplateNode prev, TemplateElement current) {
-    	if (nestedBlock != null) {
-    		if (prev == nestedBlock) {
-    			nestedBlock = current;
-    		}
-    		current.setParent(this);
-    	} 
-    	else if (nestedElements != null) {
-    		for (int i=0; i<nestedElements.size(); i++) {
-    			TemplateNode nestedElement = nestedElements.get(i);
-    			if (nestedElement == prev) {
-    				nestedElements.set(i, current);
-    				current.setParent(this);
-    			}
-    		}
-    	}
     }
 }

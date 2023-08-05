@@ -14,12 +14,12 @@ import java.io.*;
 public class CompressedBlock extends TemplateElement {
 
     public CompressedBlock(TemplateElement nestedBlock) { 
-        this.nestedBlock = nestedBlock;
+        this.setNestedBlock(nestedBlock);
     }
 
     public void execute(Environment env) throws TemplateException, IOException {
-        if (nestedBlock != null) {
-            env.render(nestedBlock, StandardCompress.INSTANCE, null);
+        if (getNestedBlock() != null) {
+            env.render(getNestedBlock(), StandardCompress.INSTANCE, null);
         }
     }
 
@@ -28,7 +28,7 @@ public class CompressedBlock extends TemplateElement {
     }
 
     public boolean isIgnorable() {
-        return nestedBlock == null || nestedBlock.isIgnorable();
+        return getNestedBlock() == null || getNestedBlock().isIgnorable();
     }
 }
 

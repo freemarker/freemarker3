@@ -62,8 +62,8 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     }
     
     public void canonicalizeAssignments() {
-        if (createsScope() && (nestedBlock instanceof MixedContent)) {
-            MixedContent block = (MixedContent) nestedBlock;
+        if (createsScope() && (getNestedBlock() instanceof MixedContent)) {
+            MixedContent block = (MixedContent) getNestedBlock();
             VarDirective varDirective = null;
             Set<String> variables = new HashSet<String>();
             variables.addAll(params.getParamNames());

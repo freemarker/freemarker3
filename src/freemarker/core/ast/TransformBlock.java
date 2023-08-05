@@ -24,7 +24,7 @@ public class TransformBlock extends TemplateElement {
                    TemplateElement nestedBlock) {
         this.transformExpression = transformExpression;
         this.namedArgs = namedArgs;
-        this.nestedBlock = nestedBlock;
+        this.setNestedBlock(nestedBlock);
     }
     
     public Expression getTransformExpression() {
@@ -51,7 +51,7 @@ public class TransformBlock extends TemplateElement {
                     args.put(key, value);
                 }
             } 
-            env.render(nestedBlock, ttm, args);
+            env.render(getNestedBlock(), ttm, args);
         }
         else {
             Object tm = transformExpression.getAsTemplateModel((Environment)env);

@@ -365,7 +365,7 @@ public abstract class ASTVisitor {
         		visit(te);
         	}
         } else {
-        	visit(node.nestedBlock);
+        	visit(node.getNestedBlock());
         }
 	}
 	
