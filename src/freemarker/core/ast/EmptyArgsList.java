@@ -12,11 +12,6 @@ import freemarker.template.*;
 public class EmptyArgsList extends ArgsList {
 
     @Override
-    void addOOParamArg(OOParamElement param) {
-        throw new AssertionError();
-    }
-
-    @Override
     ArgsList deepClone(String name, Expression subst) {
         return this;
     }

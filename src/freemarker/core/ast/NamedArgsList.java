@@ -93,12 +93,4 @@ public class NamedArgsList extends ArgsList {
         }
         return result;
     }
-    
-    void addOOParamArg(OOParamElement param) {
-    	Expression exp = namedArgs.get(param.getName());
-    	if (exp != null) {
-    		
-    	}
-    	addNamedArg(param.getName(), param.asExp());
-    }
 }

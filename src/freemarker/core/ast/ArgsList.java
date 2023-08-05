@@ -117,8 +117,4 @@ abstract public class ArgsList extends TemplateNode {
 	}
 	
 	abstract ArgsList deepClone(String name, Expression subst);
-	
-	abstract void addOOParamArg(OOParamElement param) throws ParseException;
-	
-//	public abstract int size();
 }

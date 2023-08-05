@@ -289,23 +289,6 @@ public class PostParseVisitor extends ASTVisitor {
        	}
 	}
 	
-	public void visit(OOParamElement node) {
-		Node parent = node.getParent();
-		while (parent instanceof MixedContent 
-				|| parent instanceof EscapeBlock
-				|| parent instanceof NoEscapeBlock
-				|| parent instanceof TrimBlock) {
-			parent = parent.getParent();
-		}
-		if (!(parent instanceof UnifiedCall) && !(parent instanceof OOParamElement)) {
-			String msg = "A #param directive must be directly nested in a macro invocation or in another #param directive.";
-			template.addParsingProblem(new ParsingProblem(msg, node));
-		} else {
-			((TemplateElement)parent).declareVariable(node.getName());
-		}
-	}
-	
-	
 	public void visit(SwitchBlock node) {
 		super.visit(node);
 		boolean foundDefaultCase = false;
