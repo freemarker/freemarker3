@@ -9,7 +9,7 @@ import freemarker.core.Environment;
 /**
  * Encapsulates an array of <tt>TemplateElement</tt> objects. 
  */
-public class MixedContent extends TemplateElement implements Iterable<TemplateElement>{
+public class MixedContent extends TemplateElement {
 
     public MixedContent()
     {
@@ -30,7 +30,7 @@ public class MixedContent extends TemplateElement implements Iterable<TemplateEl
         this.nestedElements = newList;
     }
 
-    public Iterator<TemplateElement> iterator() {
+    public Iterator<TemplateElement> iteratorTE() {
     	return nestedElements.iterator();
     }
 

@@ -3,7 +3,6 @@ package freemarker.core.ast;
 import java.io.IOException;
 import java.util.*;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 import freemarker.core.*;
 
 /**
@@ -26,7 +25,7 @@ public class AssignmentInstruction extends TemplateElement {
         this.type = type;
     }
     
-    public int getType() {
+    public int getBlockType() {
     	return type;
     }
     

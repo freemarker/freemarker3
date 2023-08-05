@@ -2,6 +2,7 @@ package freemarker.core.parser;
 
 import java.util.Locale;
 
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.Template;
 
 /**
@@ -10,7 +11,7 @@ import freemarker.template.Template;
  * @author revusky
  */
 
-public class TemplateLocation {
+public class TemplateLocation extends BaseNode {
 	
 	protected int beginLine, beginColumn, endLine, endColumn;
 	protected Template template;

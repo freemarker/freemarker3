@@ -12,7 +12,7 @@ import freemarker.core.*;
  * tree representation of the template necessarily 
  * descend from this abstract class.
  */
-abstract public class TemplateElement extends TemplateNode implements Iterable<TemplateElement> {
+abstract public class TemplateElement extends TemplateNode {
 	
     protected TemplateElement nestedBlock;
 
@@ -75,15 +75,6 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
         return result;
     }
     
-    public Iterator<TemplateElement> iterator() {
-    	if (nestedElements != null) {
-    		return nestedElements.iterator();
-    	} 
-    	ArrayList<TemplateElement> l = new ArrayList<TemplateElement>();
-    	if (nestedBlock != null) l.add(nestedBlock);
-    	return l.iterator();
-    }
-    
     public void setParentRecursively(TemplateElement parent) {
         this.parent = parent;
         int nestedSize = nestedElements == null ? 0 : nestedElements.size();
@@ -94,7 +85,6 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
             nestedBlock.setParentRecursively(this);
         }
     }
-
 
     public boolean isIgnorable() {
         return false;
@@ -122,7 +112,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
 // and were introduced to support the whitespace cleanup feature in 2.2
 
     TemplateElement prevTerminalNode() {
-        TemplateElement prev = previousSibling();
+        TemplateElement prev = previousSib();
         if (prev != null) {
             return prev.getLastLeaf();
         }
@@ -133,7 +123,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     }
 
     protected TemplateElement nextTerminalNode() {
-        TemplateElement next = nextSibling();
+        TemplateElement next = nextSib();
         if (next != null) {
             return next.getFirstLeaf();
         }
@@ -145,7 +135,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
 
 
 
-    protected TemplateElement previousSibling() {
+    protected TemplateElement previousSib() {
         if (parent == null) {
             return null;
         }
@@ -162,7 +152,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
         return null;
     }
 
-    protected TemplateElement nextSibling() {
+    protected TemplateElement nextSib() {
         if (parent == null) {
             return null;
         }
@@ -179,7 +169,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
         return null;
     }
 
-    private TemplateElement getFirstChild() {
+    private TemplateElement firstChild() {
         if (nestedBlock != null) {
             return nestedBlock;
         }
@@ -189,7 +179,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
         return null;
     }
 
-    private TemplateElement getLastChild() {
+    private TemplateElement lastChild() {
         if (nestedBlock != null) {
             return nestedBlock;
         }
@@ -242,9 +232,9 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
     	}
     };
 
-    public Enumeration children() {
+    public Enumeration childrenE() {
         if (nestedBlock instanceof MixedContent) {
-            return nestedBlock.children();
+            return nestedBlock.childrenE();
         }
         if (nestedBlock != null) {
             return Collections.enumeration(Collections.singletonList(nestedBlock));
@@ -298,7 +288,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
         TemplateElement te = this;
         while (!te.isLeaf() && !(te instanceof Macro) && !(te instanceof BlockAssignment)) {
              // A macro or macro invocation is treated as a leaf here for special reasons
-            te = te.getFirstChild();
+            te = te.firstChild();
         }
         return te;
     }
@@ -307,7 +297,7 @@ abstract public class TemplateElement extends TemplateNode implements Iterable<T
         TemplateElement te = this;
         while (!te.isLeaf() && !(te instanceof Macro) && !(te instanceof BlockAssignment)) {
             // A macro or macro invocation is treated as a leaf here for special reasons
-            te = te.getLastChild();
+            te = te.lastChild();
         }
         return te;
     }

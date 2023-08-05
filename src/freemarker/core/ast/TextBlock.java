@@ -72,7 +72,7 @@ public final class TextBlock extends TemplateElement {
 		this.text = text.toCharArray();
 	}
 
-	public int getType() {
+	public int getBlockType() {
 		return type;
 	}
 

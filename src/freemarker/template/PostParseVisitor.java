@@ -96,16 +96,16 @@ public class PostParseVisitor extends ASTVisitor {
 	public void visit(AssignmentInstruction node) {
 		super.visit(node);
 		if (template.strictVariableDeclaration()) {
-			if (node.getType() == AssignmentInstruction.NAMESPACE) {
+			if (node.getBlockType() == AssignmentInstruction.NAMESPACE) {
 				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
-			if (node.getType() == AssignmentInstruction.LOCAL) {
+			if (node.getBlockType() == AssignmentInstruction.LOCAL) {
 				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 		}
-        if (node.getType() == AssignmentInstruction.LOCAL) {
+        if (node.getBlockType() == AssignmentInstruction.LOCAL) {
         	Macro macro = getContainingMacro(node);
         	if (macro == null) {
         		ParsingProblem problem = new ParsingProblem("The local directive can only be used inside a function or macro.", node);
@@ -122,16 +122,16 @@ public class PostParseVisitor extends ASTVisitor {
 	public void visit(BlockAssignment node) {
 		super.visit(node);
 		if (template.strictVariableDeclaration()) {
-			if (node.getType() == AssignmentInstruction.NAMESPACE) {
+			if (node.getBlockType() == AssignmentInstruction.NAMESPACE) {
 				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
-			if (node.getType() == AssignmentInstruction.LOCAL) {
+			if (node.getBlockType() == AssignmentInstruction.LOCAL) {
 				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 		}
-		if (node.getType() == AssignmentInstruction.LOCAL) {
+		if (node.getBlockType() == AssignmentInstruction.LOCAL) {
 			Macro macro = getContainingMacro(node);
 			if (macro == null) {
 				template.addParsingProblem(new ParsingProblem("The local directive can only be used inside a function or macro.", node));
@@ -328,7 +328,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(TextBlock node) {
-		int type = node.getType();
+		int type = node.getBlockType();
 		if (type == TextBlock.PRINTABLE_TEXT) {
 			for (int i = node.getBeginLine(); i<=node.getEndLine(); i++) {
 				boolean inMacro = getContainingMacro(node) != null;

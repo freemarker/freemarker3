@@ -21,7 +21,7 @@ public class NoParseBlock extends MixedContent {
 	}
 
 	public boolean isIgnorable() {
-		for (TemplateElement elem : this) {
+		for (TemplateElement elem : this.getNestedElements()) {
 			if (!elem.isIgnorable()) return false;
 		}
 		return true;

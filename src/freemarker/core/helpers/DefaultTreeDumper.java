@@ -96,7 +96,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(AssignmentInstruction node) {
-		switch (node.getType()) {
+		switch (node.getBlockType()) {
 			case AssignmentInstruction.GLOBAL : openDirective("global "); break;
 			case AssignmentInstruction.LOCAL : openDirective("local "); break;
 			case AssignmentInstruction.SET : openDirective("set "); break;
@@ -125,7 +125,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 		String varname = StringUtil.quoteStringIfNecessary(node.getVarName());
 		Expression nsExp = node.getNamespaceExpression();
 		String instruction = null;
-		switch(node.getType()) {
+		switch(node.getBlockType()) {
 			case AssignmentInstruction.GLOBAL : instruction = "global"; break;
 			case AssignmentInstruction.LOCAL : instruction = "local"; break;
 			case AssignmentInstruction.NAMESPACE : instruction = "assign"; break;

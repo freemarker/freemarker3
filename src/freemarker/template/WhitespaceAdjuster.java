@@ -55,7 +55,7 @@ public class WhitespaceAdjuster extends ASTVisitor {
 	}
 
 	public void visit(TextBlock node) {
-		int nodeType = node.getType();
+		int nodeType = node.getBlockType();
 		if (nodeType !=  TextBlock.OPENING_WS && nodeType != TextBlock.TRAILING_WS) {
 			return;
 		}

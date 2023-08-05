@@ -119,5 +119,5 @@ abstract public class ArgsList extends TemplateNode {
 	
 	abstract void addOOParamArg(OOParamElement param) throws ParseException;
 	
-	abstract int size();
+//	public abstract int size();
 }

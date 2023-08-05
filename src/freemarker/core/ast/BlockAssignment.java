@@ -38,7 +38,7 @@ public class BlockAssignment extends TemplateElement {
     	return varName;
     }
     
-    public int getType() {
+    public int getBlockType() {
     	return type;
     }
 

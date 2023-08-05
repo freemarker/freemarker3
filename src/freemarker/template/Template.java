@@ -758,7 +758,7 @@ public class Template extends TemplateCore {
 mainloop:
         while (element.contains(column, line)) {
             elements.add(element);
-            for (Enumeration enumeration = element.children(); enumeration.hasMoreElements();) {
+            for (Enumeration enumeration = element.childrenE(); enumeration.hasMoreElements();) {
                 TemplateElement elem = (TemplateElement) enumeration.nextElement();
                 if (elem.contains(column, line)) {
                     element = elem;

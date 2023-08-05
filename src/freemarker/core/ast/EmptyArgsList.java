@@ -38,5 +38,5 @@ public class EmptyArgsList extends ArgsList {
     }
 
     @Override
-    int size() {return 0;}
+    public int size() {return 0;}
 }

@@ -45,7 +45,7 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
     		List<String> declaredVariables = new ArrayList<String>(template.getDeclaredVariables());
     		// Now we get rid of the ones that are already declared, either
     		// via var or via macro.
-    		for (TemplateNode te : node) {
+    		for (TemplateNode te : node.getNestedElements()) {
     			if (te instanceof Macro) {
     				String macroName = ((Macro) te).getName();
     				declaredVariables.remove(macroName);
@@ -138,10 +138,10 @@ public class CanonicalizingTreeDumper extends DefaultTreeDumper {
             buffer.append (" in ");
             visit(namespaceExp);
         } else {
-            if (node.getType() == AssignmentInstruction.GLOBAL) {
+            if (node.getBlockType() == AssignmentInstruction.GLOBAL) {
                 buffer.append (" in .globals");
             }
-            if (node.getType() == AssignmentInstruction.NAMESPACE) {
+            if (node.getBlockType() == AssignmentInstruction.NAMESPACE) {
                 Macro enclosingMacro = node.getEnclosingMacro();
                 if (enclosingMacro != null) {
                     boolean declaredLocally = false;
