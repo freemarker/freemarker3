@@ -14,6 +14,6 @@ public interface TemplateNumberModel extends TemplateModel {
      *
      * @return the {@link Number} instance associated with this number model.
      */
-    public Number getAsNumber() throws TemplateModelException;
+    public Number getAsNumber();
     
 }

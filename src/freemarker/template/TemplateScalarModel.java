@@ -21,5 +21,5 @@ public interface TemplateScalarModel extends TemplateModel {
      * null into empty string, however in normal mode it will
      * throw an exception if you return null from this method.
      */
-    public String getAsString() throws TemplateModelException;
+    public String getAsString();
 }

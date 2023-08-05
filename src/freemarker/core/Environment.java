@@ -54,8 +54,7 @@ public final class Environment extends Configurable implements Scope {
 
     // Do not use this object directly; clone it first! DecimalFormat isn't
     // thread-safe.
-    private static final DecimalFormat C_NUMBER_FORMAT
-    = new DecimalFormat(
+    private static final DecimalFormat C_NUMBER_FORMAT = new DecimalFormat(
             "0.################",
             new DecimalFormatSymbols(Locale.US));
     static {
@@ -182,7 +181,7 @@ public final class Environment extends Configurable implements Scope {
      * "Visit" the template element.
      */
     public void render(TemplateElement element) throws TemplateException,
-    IOException {
+            IOException {
         pushElement(element);
         boolean createNewScope = element.createsScope();
         Scope prevScope = currentScope;
@@ -204,40 +203,37 @@ public final class Environment extends Configurable implements Scope {
     public void render(final TemplateElement element,
             TemplateDirectiveModel directiveModel, Map<String, Object> args,
             final List<String> bodyParameterNames)
-    throws TemplateException, IOException {
+            throws TemplateException, IOException {
         TemplateDirectiveBody nested = null;
         boolean createsNewScope = false;
-        if(element != null) {
-            createsNewScope = ((TemplateElement)element.getParent()).createsScope();
+        if (element != null) {
+            createsNewScope = ((TemplateElement) element.getParent()).createsScope();
             nested = new TemplateDirectiveBody() {
                 public void render(Writer newOut) throws TemplateException, IOException {
                     Writer prevOut = out;
                     out = newOut;
                     try {
                         Environment.this.render(element);
-                    }
-                    finally {
+                    } finally {
                         out = prevOut;
                     }
                 }
             };
         }
         final TemplateModel[] outArgs;
-        if(bodyParameterNames == null || bodyParameterNames.isEmpty()) {
+        if (bodyParameterNames == null || bodyParameterNames.isEmpty()) {
             outArgs = NO_OUT_ARGS;
-        }
-        else {
+        } else {
             outArgs = new TemplateModel[bodyParameterNames.size()];
         }
         final Scope scope = currentScope;
         if (createsNewScope) {
-            currentScope = new NamedParameterListScope(scope, 
+            currentScope = new NamedParameterListScope(scope,
                     bodyParameterNames, Arrays.asList(outArgs), true);
         }
         try {
             directiveModel.execute(this, args, outArgs, nested);
-        }
-        finally {
+        } finally {
             currentScope = scope;
         }
     }
@@ -247,53 +243,28 @@ public final class Environment extends Configurable implements Scope {
      * TemplateTransformModel
      * 
      * @param element
-     *            the element to visit through a transform
+     *                  the element to visit through a transform
      * @param transform
-     *            the transform to pass the element output through
+     *                  the transform to pass the element output through
      * @param args
-     *            optional arguments fed to the transform
+     *                  optional arguments fed to the transform
      */
     @SuppressWarnings("deprecation")
-	public void render(TemplateElement element,
-            TemplateTransformModel transform, Map<String, Object> args)
-    throws TemplateException, IOException {
+    public void render(TemplateElement element, 
+                       TemplateTransformModel transform, 
+                       Map<String, Object> args) throws IOException 
+    {
         try {
             Writer tw = transform.getWriter(out, args);
             if (tw == null)
                 tw = EMPTY_BODY_WRITER;
-            TransformControl tc = tw instanceof TransformControl ? (TransformControl) tw
-                    : null;
-
             Writer prevOut = out;
             out = tw;
             try {
-                if (tc == null || tc.onStart() != TransformControl.SKIP_BODY) {
-                    do {
-                        if (element != null) {
-                            render(element);
-                        }
-                    } while (tc != null
-                            && tc.afterBody() == TransformControl.REPEAT_EVALUATION);
+                if (element != null) {
+                    render(element);
                 }
-            } catch (Throwable t) {
-                try {
-                    if (tc != null) {
-                        tc.onError(t);
-                    } else {
-                        throw t;
-                    }
-                } catch (TemplateException e) {
-                    throw e;
-                } catch (IOException e) {
-                    throw e;
-                } catch (RuntimeException e) {
-                    throw e;
-                } catch (Error e) {
-                    throw e;
-                } catch (Throwable e) {
-                    throw new UndeclaredThrowableException(e);
-                }
-            } finally {
+            }  finally {
                 out = prevOut;
                 tw.close();
             }
@@ -325,7 +296,7 @@ public final class Environment extends Configurable implements Scope {
         }
         if (thrownException != null) {
             if (attemptLogger.isDebugEnabled()) {
-                logger.debug("Error in attempt block " + 
+                logger.debug("Error in attempt block " +
                         attemptBlock.getStartLocation(), thrownException);
             }
             try {
@@ -349,7 +320,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public void render(MacroInvocationBodyContext bctxt)
-    throws TemplateException, IOException {
+            throws TemplateException, IOException {
         MacroContext invokingMacroContext = getCurrentMacroContext();
         TemplateElement body = invokingMacroContext.body;
         if (body != null) {
@@ -390,8 +361,8 @@ public final class Environment extends Configurable implements Scope {
      */
 
     @SuppressWarnings("deprecation")
-	public void render(TemplateNodeModel node, TemplateSequenceModel namespaces)
-    throws TemplateException, IOException {
+    public void render(TemplateNodeModel node, TemplateSequenceModel namespaces)
+            throws TemplateException, IOException {
         if (nodeNamespaces == null) {
             SimpleSequence ss = new SimpleSequence(1);
             ss.add(getCurrentNamespace());
@@ -409,7 +380,7 @@ public final class Environment extends Configurable implements Scope {
         try {
             Object macroOrTransform = getNodeProcessor(node);
             if (macroOrTransform instanceof Macro) {
-                render((Macro) macroOrTransform, (ArgsList)null, null, null);
+                render((Macro) macroOrTransform, (ArgsList) null, null, null);
             } else if (macroOrTransform instanceof TemplateTransformModel) {
                 render(null, (TemplateTransformModel) macroOrTransform, null);
             } else {
@@ -438,10 +409,11 @@ public final class Environment extends Configurable implements Scope {
                         }
                         throw new TemplateException(
                                 "No macro or transform defined for node named "
-                                + node.getNodeName()
-                                + nsBit
-                                + ", and there is no fallback handler called @"
-                                + nodeType + " either.", this);
+                                        + node.getNodeName()
+                                        + nsBit
+                                        + ", and there is no fallback handler called @"
+                                        + nodeType + " either.",
+                                this);
                     }
                 } else {
                     String nsBit = "";
@@ -455,9 +427,9 @@ public final class Environment extends Configurable implements Scope {
                     }
                     throw new TemplateException(
                             "No macro or transform defined for node with name "
-                            + node.getNodeName()
-                            + nsBit
-                            + ", and there is no macro or transform called @default either.",
+                                    + node.getNodeName()
+                                    + nsBit
+                                    + ", and there is no macro or transform called @default either.",
                             this);
                 }
             }
@@ -470,24 +442,23 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    public <T> T runInScope(Scope scope, TemplateRunnable<T> runnable) 
-    throws TemplateException, IOException {
+    public <T> T runInScope(Scope scope, TemplateRunnable<T> runnable)
+            throws TemplateException, IOException {
         Scope currentScope = this.currentScope;
         this.currentScope = scope;
         try {
             return runnable.run();
-        }
-        finally {
+        } finally {
             this.currentScope = currentScope;
         }
     }
 
     @SuppressWarnings("deprecation")
-	public void fallback() throws IOException {
+    public void fallback() throws IOException {
         Object macroOrTransform = getNodeProcessor(currentNodeName,
                 currentNodeNS, nodeNamespaceIndex);
         if (macroOrTransform instanceof Macro) {
-            render((Macro) macroOrTransform, (ArgsList)null, null, null);
+            render((Macro) macroOrTransform, (ArgsList) null, null, null);
         } else if (macroOrTransform instanceof TemplateTransformModel) {
             render(null, (TemplateTransformModel) macroOrTransform, null);
         }
@@ -496,10 +467,10 @@ public final class Environment extends Configurable implements Scope {
     /**
      * "visit" a macro.
      */
-    public void render(Macro macro, ArgsList args, 
-            ParameterList bodyParameters, 
+    public void render(Macro macro, ArgsList args,
+            ParameterList bodyParameters,
             TemplateElement nestedBlock)
-    throws TemplateException, IOException {
+            throws TemplateException, IOException {
         if (macro == Macro.DO_NOTHING_MACRO) {
             return;
         }
@@ -542,7 +513,7 @@ public final class Environment extends Configurable implements Scope {
     public void visitMacroDef(Macro macro) {
         if (currentMacroContext == null) {
             macroToNamespaceLookup.put(macro, getCurrentNamespace());
-//          getCurrentNamespace().put(macro.getName(), macro);
+            // getCurrentNamespace().put(macro.getName(), macro);
             this.unqualifiedSet(macro.getName(), macro);
         }
     }
@@ -565,7 +536,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public void process(TemplateNodeModel node, TemplateSequenceModel namespaces)
-    throws TemplateException, IOException {
+            throws TemplateException, IOException {
         if (node == null) {
             node = this.getCurrentVisitorNode();
             if (node == null) {
@@ -588,8 +559,7 @@ public final class Environment extends Configurable implements Scope {
         return currentMacroContext;
     }
 
-    private void handleTemplateException(TemplateException te)
-    {
+    private void handleTemplateException(TemplateException te) {
         // Logic to prevent double-handling of the exception in
         // nested visit() calls.
         if (lastThrowable == te) {
@@ -643,7 +613,8 @@ public final class Environment extends Configurable implements Scope {
     }
 
     /*
-     * Note that altough it is not allowed to set this setting with the <tt>setting</tt>
+     * Note that altough it is not allowed to set this setting with the
+     * <tt>setting</tt>
      * directive, it still must be allowed to set it from Java code while the
      * template executes, since some frameworks allow templates to actually
      * change the output encoding on-the-fly.
@@ -700,7 +671,7 @@ public final class Environment extends Configurable implements Scope {
         DateFormat df = getDateFormatObject(type);
         if (df == null) {
             throw new TemplateModelException(
-            "Can't convert the date to string, because it is not known which parts of the date variable are in use. Use ?date, ?time or ?datetime built-in, or ?string.<format> or ?string(format) built-in with this date.");
+                    "Can't convert the date to string, because it is not known which parts of the date variable are in use. Use ?date, ?time or ?datetime built-in, or ?string.<format> or ?string(format) built-in with this date.");
         }
         return df.format(date);
     }
@@ -776,8 +747,7 @@ public final class Environment extends Configurable implements Scope {
         return format;
     }
 
-    public DateFormat getDateFormatObject(int dateType)
-    {
+    public DateFormat getDateFormatObject(int dateType) {
         switch (dateType) {
             case TemplateDateModel.UNKNOWN: {
                 return null;
@@ -808,8 +778,7 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    public DateFormat getDateFormatObject(int dateType, String pattern)
-    {
+    public DateFormat getDateFormatObject(int dateType, String pattern) {
         if (dateFormats == null) {
             dateFormats = new Map[4];
             dateFormats[TemplateDateModel.UNKNOWN] = new HashMap<String, DateFormat>();
@@ -842,11 +811,11 @@ public final class Environment extends Configurable implements Scope {
                         case TemplateDateModel.UNKNOWN: {
                             throw new TemplateModelException(
                                     "Can't convert the date to string using a "
-                                    + "built-in format, because it is not known which "
-                                    + "parts of the date variable are in use. Use "
-                                    + "?date, ?time or ?datetime built-in, or "
-                                    + "?string.<format> or ?string(<format>) built-in "
-                                    + "with explicit formatting pattern with this date.");
+                                            + "built-in format, because it is not known which "
+                                            + "parts of the date variable are in use. Use "
+                                            + "?date, ?time or ?datetime built-in, or "
+                                            + "?string.<format> or ?string(<format>) built-in "
+                                            + "with explicit formatting pattern with this date.");
                         }
                         case TemplateDateModel.TIME: {
                             format = DateFormat.getTimeInstance(style, locale);
@@ -920,9 +889,8 @@ public final class Environment extends Configurable implements Scope {
     public static NumberFormat getNewCNumberFormat() {
         return (NumberFormat) C_NUMBER_FORMAT.clone();
     }
-    
-    public TemplateTransformModel getTransform(Expression exp)
-    {
+
+    public TemplateTransformModel getTransform(Expression exp) {
         TemplateTransformModel ttm = null;
         Object tm = exp.getAsTemplateModel(this);
         if (tm instanceof TemplateTransformModel) {
@@ -983,10 +951,9 @@ public final class Environment extends Configurable implements Scope {
     public Collection<String> getDirectVariableNames() {
         Collection<String> coll = new HashSet<String>(globalVariables.keySet());
         if (rootDataModel instanceof TemplateHashModelEx) {
-            Iterator<Object> rootNames =
-                ((TemplateHashModelEx) rootDataModel).keys().iterator();
-            while(rootNames.hasNext()) {
-                coll.add(((TemplateScalarModel)rootNames.next()).getAsString());
+            Iterator<Object> rootNames = ((TemplateHashModelEx) rootDataModel).keys().iterator();
+            while (rootNames.hasNext()) {
+                coll.add(((TemplateScalarModel) rootNames.next()).getAsString());
             }
         }
         return coll;
@@ -1016,11 +983,12 @@ public final class Environment extends Configurable implements Scope {
      * <code><#local <i>name</i>=<i>model</i>></code>.
      * 
      * @param name
-     *            the identifier of the variable
+     *              the identifier of the variable
      * @param model
-     *            the value of the variable.
+     *              the value of the variable.
      * @throws IllegalStateException
-     *             if the environment is not executing a macro body.
+     *                               if the environment is not executing a macro
+     *                               body.
      */
     public void setLocalVariable(String name, TemplateModel model) {
         if (currentMacroContext == null) {
@@ -1034,9 +1002,9 @@ public final class Environment extends Configurable implements Scope {
      * unqualified #set instruction)
      * 
      * @param name
-     *            the identifier of the variable
+     *              the identifier of the variable
      * @param model
-     *            the value of the variable
+     *              the value of the variable
      */
     public void unqualifiedSet(String name, Object model) {
         Scope scope = this.currentScope;
@@ -1077,7 +1045,7 @@ public final class Environment extends Configurable implements Scope {
     public Collection<String> getKnownVariableNames() {
         Collection<String> coll = new HashSet<String>();
         Scope scope = currentScope;
-        while(scope != null) {
+        while (scope != null) {
             coll.addAll(scope.getDirectVariableNames());
             scope = scope.getEnclosingScope();
         }
@@ -1088,13 +1056,14 @@ public final class Environment extends Configurable implements Scope {
      * Outputs the instruction stack. Useful for debugging.
      * {@link TemplateException}s incorporate this information in their stack
      * traces.
+     * 
      * @see #getElementStack() which exposes the actual element stack
-     * so that you can write your own custom stack trace or error message
+     *      so that you can write your own custom stack trace or error message
      */
     public void outputInstructionStack(PrintWriter pw) {
         pw.println("----------");
         ListIterator<TemplateElement> iter = elementStack
-        .listIterator(elementStack.size());
+                .listIterator(elementStack.size());
         if (iter.hasPrevious()) {
             pw.print("==> ");
             TemplateNode prev = iter.previous();
@@ -1107,7 +1076,7 @@ public final class Environment extends Configurable implements Scope {
             TemplateNode prev = iter.previous();
             if (prev instanceof UnifiedCall || prev instanceof Include) {
                 String location = prev.getDescription() + " ["
-                + prev.getStartLocation() + "]";
+                        + prev.getStartLocation() + "]";
                 if (location != null && location.length() > 0) {
                     pw.print(" in ");
                     pw.println(location);
@@ -1133,7 +1102,7 @@ public final class Environment extends Configurable implements Scope {
     public boolean definesVariable(String name) {
         try {
             return globalVariables.containsKey(name)
-            || rootDataModel.get(name) != null;
+                    || rootDataModel.get(name) != null;
         } catch (TemplateModelException tme) {
             return false;
         }
@@ -1155,7 +1124,7 @@ public final class Environment extends Configurable implements Scope {
         if (rootDataModel instanceof TemplateHashModelEx) {
             TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
             return globalVariables.size() + root.size()
-            + getEnclosingScope().size();
+                    + getEnclosingScope().size();
         }
         throw new TemplateModelException(
                 "The size() method is not applicable because the root data model does not expose a size() method.");
@@ -1164,14 +1133,14 @@ public final class Environment extends Configurable implements Scope {
     public TemplateCollectionModel keys() {
         if (!(rootDataModel instanceof TemplateHashModelEx)) {
             throw new TemplateModelException(
-            "The keys() method is not applicable because the root data model does not expose a keys() method.");
+                    "The keys() method is not applicable because the root data model does not expose a keys() method.");
         }
         TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
         TemplateCollectionModel rootKeys = root.keys();
         TemplateCollectionModel sharedVariableKeys = getEnclosingScope().keys();
         LinkedHashSet<Object> aggregate = new LinkedHashSet<>();
         for (Iterator<Object> tmi = sharedVariableKeys.iterator(); tmi
-        .hasNext();) {
+                .hasNext();) {
             aggregate.add(tmi.next());
         }
         for (Iterator<Object> tmi = rootKeys.iterator(); tmi.hasNext();) {
@@ -1186,15 +1155,15 @@ public final class Environment extends Configurable implements Scope {
     public TemplateCollectionModel values() {
         if (!(rootDataModel instanceof TemplateHashModelEx)) {
             throw new TemplateModelException(
-            "The keys() method is not applicable because the root data model does not expose a keys() method.");
+                    "The keys() method is not applicable because the root data model does not expose a keys() method.");
         }
         TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
         TemplateCollectionModel rootValues = root.values();
         TemplateCollectionModel sharedVariableValues = getEnclosingScope()
-        .values();
+                .values();
         LinkedHashSet<Object> aggregate = new LinkedHashSet<>();
         for (Iterator<Object> tmi = sharedVariableValues.iterator(); tmi
-        .hasNext();) {
+                .hasNext();) {
             aggregate.add(tmi.next());
         }
         for (Iterator<Object> tmi = rootValues.iterator(); tmi.hasNext();) {
@@ -1210,11 +1179,11 @@ public final class Environment extends Configurable implements Scope {
      * Returns the name-space for the name if exists, or null.
      * 
      * @param name
-     *            the template path that you have used with the
-     *            <code>import</code> directive or
-     *            {@link #importLib(String, String)} call, in normalized form.
-     *            That is, the path must be an absolute path, and it must not
-     *            contain "/../" or "/./". The leading "/" is optional.
+     *             the template path that you have used with the
+     *             <code>import</code> directive or
+     *             {@link #importLib(String, String)} call, in normalized form.
+     *             That is, the path must be an absolute path, and it must not
+     *             contain "/../" or "/./". The leading "/" is optional.
      */
     public TemplateNamespace getNamespace(String name) {
         if (name.startsWith("/"))
@@ -1283,19 +1252,22 @@ public final class Environment extends Configurable implements Scope {
                 public boolean isEmpty() {
                     return result.isEmpty();
                 }
+
                 public Object get(String key) {
                     return result.get(key);
                 }
 
-                //NB: The methods below do not take into account
+                // NB: The methods below do not take into account
                 // configuration shared variables even though
                 // the hash will return them, if only for BWC reasons
                 public TemplateCollectionModel values() {
                     return ((TemplateHashModelEx) rootDataModel).values();
                 }
+
                 public TemplateCollectionModel keys() {
                     return ((TemplateHashModelEx) rootDataModel).keys();
                 }
+
                 public int size() {
                     return ((TemplateHashModelEx) rootDataModel).size();
                 }
@@ -1328,8 +1300,7 @@ public final class Environment extends Configurable implements Scope {
         currentVisitorNode = node;
     }
 
-    Object getNodeProcessor(TemplateNodeModel node)
-    {
+    Object getNodeProcessor(TemplateNodeModel node) {
         String nodeName = node.getNodeName();
         if (nodeName == null) {
             throw new TemplateException("Node name is null.", this);
@@ -1468,29 +1439,31 @@ public final class Environment extends Configurable implements Scope {
      * @see #include(Template includedTemplate, boolean freshNamespace)
      */
     public void include(String name, String encoding, boolean parse)
-    throws IOException, TemplateException {
+            throws IOException, TemplateException {
         include(getTemplateForInclusion(name, encoding, parse), false);
     }
 
     /**
      * Gets a template for inclusion; used with
-     * {@link #include(Template includedTemplate, boolean freshNamespace)}. The advantage over simply
+     * {@link #include(Template includedTemplate, boolean freshNamespace)}. The
+     * advantage over simply
      * using <code>config.getTemplate(...)</code> is that it chooses the
      * default encoding as the <code>include</code> directive does.
      * 
      * @param name
-     *            the name of the template, relatively to the template root
-     *            directory (not the to the directory of the currently executing
-     *            template file!). (Note that you can use
-     *            {@link freemarker.cache.TemplateCache#getFullTemplatePath} to
-     *            convert paths to template root relative paths.)
+     *                 the name of the template, relatively to the template root
+     *                 directory (not the to the directory of the currently
+     *                 executing
+     *                 template file!). (Note that you can use
+     *                 {@link freemarker.cache.TemplateCache#getFullTemplatePath} to
+     *                 convert paths to template root relative paths.)
      * @param encoding
-     *            the encoding of the obtained template. If null, the encoding
-     *            of the Template that is currently being processed in this
-     *            Environment is used.
+     *                 the encoding of the obtained template. If null, the encoding
+     *                 of the Template that is currently being processed in this
+     *                 Environment is used.
      * @param parse
-     *            whether to process a parsed template or just include the
-     *            unparsed template source.
+     *                 whether to process a parsed template or just include the
+     *                 unparsed template source.
      */
     public Template getTemplateForInclusion(String name, String encoding,
             boolean parse) throws IOException {
@@ -1509,12 +1482,13 @@ public final class Environment extends Configurable implements Scope {
      * including its output in the <code>Environment</code>'s Writer.
      * 
      * @param includedTemplate
-     *            the template to process. Note that it does <em>not</em> need
-     *            to be a template returned by
-     *            {@link #getTemplateForInclusion(String name, String encoding, boolean parse)}.
+     *                         the template to process. Note that it does
+     *                         <em>not</em> need
+     *                         to be a template returned by
+     *                         {@link #getTemplateForInclusion(String name, String encoding, boolean parse)}.
      */
     public void include(Template includedTemplate, boolean freshNamespace) throws TemplateException,
-    IOException {
+            IOException {
         Template prevTemplate = getTemplate();
         setParent(includedTemplate);
         Scope prevScope = this.currentScope;
@@ -1548,22 +1522,23 @@ public final class Environment extends Configurable implements Scope {
      * @see #importLib(Template includedTemplate, String namespace, boolean global)
      */
     public TemplateNamespace importLib(String name, String namespace)
-    throws IOException, TemplateException {
+            throws IOException, TemplateException {
         return importLib(getTemplateForImporting(name), namespace, true);
     }
 
     /**
      * Gets a template for importing; used with
-     * {@link #importLib(Template importedTemplate, String namespace, boolean global)}. The
+     * {@link #importLib(Template importedTemplate, String namespace, boolean global)}.
+     * The
      * advantage over simply using <code>config.getTemplate(...)</code> is
      * that it chooses the encoding as the <code>import</code> directive does.
      * 
      * @param name
-     *            the name of the template, relatively to the template root
-     *            directory (not the to the directory of the currently executing
-     *            template file!). (Note that you can use
-     *            {@link freemarker.cache.TemplateCache#getFullTemplatePath} to
-     *            convert paths to template root relative paths.)
+     *             the name of the template, relatively to the template root
+     *             directory (not the to the directory of the currently executing
+     *             template file!). (Note that you can use
+     *             {@link freemarker.cache.TemplateCache#getFullTemplatePath} to
+     *             convert paths to template root relative paths.)
      */
     public Template getTemplateForImporting(String name) throws IOException {
         return getTemplateForInclusion(name, null, true);
@@ -1573,12 +1548,13 @@ public final class Environment extends Configurable implements Scope {
      * Emulates <code>import</code> directive.
      * 
      * @param loadedTemplate
-     *            the template to import. Note that it does <em>not</em> need
-     *            to be a template returned by
-     *            {@link #getTemplateForImporting(String name)}.
+     *                       the template to import. Note that it does <em>not</em>
+     *                       need
+     *                       to be a template returned by
+     *                       {@link #getTemplateForImporting(String name)}.
      */
     public TemplateNamespace importLib(Template loadedTemplate, String namespace, boolean global)
-    throws IOException, TemplateException {
+            throws IOException, TemplateException {
         if (loadedLibs == null) {
             loadedLibs = new HashMap<String, TemplateNamespace>();
         }
@@ -1599,7 +1575,7 @@ public final class Environment extends Configurable implements Scope {
                 }
                 if (getCurrentNamespace() == mainNamespace) {
                     // We make libs imported into the main namespace globally visible
-                    // for least surprise reasons. (Is this right???) 
+                    // for least surprise reasons. (Is this right???)
                     this.put(namespace, newNamespace);
                 }
             }
@@ -1611,7 +1587,7 @@ public final class Environment extends Configurable implements Scope {
             this.out = NULL_WRITER;
             setParent(loadedTemplate);
             try {
-                render(loadedTemplate.getRootElement()); 
+                render(loadedTemplate.getRootElement());
             } finally {
                 this.out = prevOut;
                 currentScope = prevScope;
@@ -1622,7 +1598,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public String renderElementToString(TemplateElement te) throws IOException,
-    TemplateException {
+            TemplateException {
         Writer prevOut = out;
         try {
             StringWriter sw = new StringWriter();
@@ -1635,8 +1611,8 @@ public final class Environment extends Configurable implements Scope {
     }
 
     void importMacros(Template template) {
-          for (Macro macro : ((TemplateCore)template).getMacros().values()) {
-        	  visitMacroDef(macro);
+        for (Macro macro : ((TemplateCore) template).getMacros().values()) {
+            visitMacroDef(macro);
         }
     }
 
@@ -1646,7 +1622,7 @@ public final class Environment extends Configurable implements Scope {
      */
     public String getNamespaceForPrefix(String prefix) {
         return getCurrentNamespace().getTemplate()
-        .getNamespaceForPrefix(prefix);
+                .getNamespaceForPrefix(prefix);
     }
 
     public String getPrefixForNamespace(String nsURI) {
@@ -1704,15 +1680,15 @@ public final class Environment extends Configurable implements Scope {
             if (o instanceof DateFormatKey) {
                 DateFormatKey fk = (DateFormatKey) o;
                 return dateType == fk.dateType && fk.pattern.equals(pattern)
-                && fk.locale.equals(locale)
-                && fk.timeZone.equals(timeZone);
+                        && fk.locale.equals(locale)
+                        && fk.timeZone.equals(timeZone);
             }
             return false;
         }
 
         public int hashCode() {
             return dateType ^ pattern.hashCode() ^ locale.hashCode()
-            ^ timeZone.hashCode();
+                    ^ timeZone.hashCode();
         }
     }
 

@@ -2198,7 +2198,7 @@ TemplateElement Content :
         contentNesting--;
         if (elem == null) elem = text.get(text.size() -1);
         nodes.setLocation(template, begin, elem);
-	    return nodes;
+	     return nodes;
     }
 ;
 

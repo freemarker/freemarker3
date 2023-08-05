@@ -62,9 +62,6 @@ public interface TemplateTransformModel extends TemplateModel {
       * {@link DeepUnwrap} class.
       * @return a writer to which the engine will feed the transformation 
       * input, or null if the transform does not support nested content (body).
-      * The returned writer can implement the {@link TransformControl}
-      * interface if it needs advanced control over the evaluation of the 
-      * transformation body.
       */
      Writer getWriter(Writer out, Map<String, Object> args) 
          throws IOException;
