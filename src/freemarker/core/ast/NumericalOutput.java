@@ -119,7 +119,7 @@ public class NumericalOutput extends TemplateElement {
 	}
 
 	public String getDescription() {
-		return getSource();
+		return source();
 	}
 
 	private static class FormatHolder {

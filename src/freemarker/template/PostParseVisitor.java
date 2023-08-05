@@ -40,16 +40,6 @@ public class PostParseVisitor extends ASTVisitor {
 				if (key.equals("strip_whitespace")) {
 					template.setStripWhitespace(header.getBooleanParameter("strip_whitespace"));
 				} 
-				else if (key.equals("ns_prefixes")) {
-					TemplateHashModelEx prefixMap = (TemplateHashModelEx) header.getParameter("ns_prefixes");
-	                TemplateCollectionModel keys = prefixMap.keys();
-	                for (Iterator<Object> it = keys.iterator(); it.hasNext();) {
-	                    String prefix = ((TemplateScalarModel) it.next()).getAsString();
-	                    Object valueModel = prefixMap.get(prefix);
-	                    String nsURI = ((TemplateScalarModel) valueModel).getAsString();
-	                    template.addPrefixNSMapping(prefix, nsURI);
-	                }
-				}
 				else if (key.equals("attributes")) {
 					TemplateHashModelEx attributeMap = (TemplateHashModelEx) header.getParameter("attributes");
 	                TemplateCollectionModel keys = attributeMap.keys();
@@ -83,7 +73,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(InvalidExpression node) {
-		template.addParsingProblem(new ParsingProblem(node.getMessage() + " " + node.getSource(), node));
+		template.addParsingProblem(new ParsingProblem(node.getMessage() + " " + node.source(), node));
 	}
 	
 	public void visit(AndExpression node) {
@@ -380,7 +370,7 @@ public class PostParseVisitor extends ASTVisitor {
 		super.visit(node);
 		Object target = node.getTarget().literalValue();
 		if (target != null && !(target instanceof TemplateHashModel)) {
-			template.addParsingProblem(new ParsingProblem("Expression " + node.getTarget().getSource() + " is not a hash type.", node.getTarget()));
+			template.addParsingProblem(new ParsingProblem("Expression " + node.getTarget().source() + " is not a hash type.", node.getTarget()));
 		}
 	}
 	
@@ -388,7 +378,7 @@ public class PostParseVisitor extends ASTVisitor {
 		super.visit(node);
 		Object target = node.getTarget().literalValue();
 		if (target != null && !(target instanceof TemplateHashModel) && !(target instanceof TemplateSequenceModel)) {
-			String msg = "Expression: " + node.getTarget().getSource() + " is not a hash or sequence type.";
+			String msg = "Expression: " + node.getTarget().source() + " is not a hash or sequence type.";
 			template.addParsingProblem(new ParsingProblem(msg, node.getTarget()));
 		}
 		if (!(node.getNameExpression() instanceof Range)) {
@@ -497,9 +487,9 @@ public class PostParseVisitor extends ASTVisitor {
 		if (value != null && !(value instanceof TemplateBooleanModel)) {
 			String msg;
 			if (value == Constants.INVALID_EXPRESSION) {
-				msg = "Invalid expression: " + exp.getSource();
+				msg = "Invalid expression: " + exp.source();
 			} else {
-				msg = "Expression: " + exp.getSource() + " is not a boolean (true/false) value.";
+				msg = "Expression: " + exp.source() + " is not a boolean (true/false) value.";
 			}
 			template.addParsingProblem(new ParsingProblem(msg, exp));
 		}
@@ -510,9 +500,9 @@ public class PostParseVisitor extends ASTVisitor {
 		if (value != null && !(value instanceof TemplateScalarModel)) {
 			String msg;
 			if (value == Constants.INVALID_EXPRESSION) {
-				msg = "Invalid expression: " + exp.getSource();
+				msg = "Invalid expression: " + exp.source();
 			} else {
-				msg = "Expression: " + exp.getSource() + " is not a string.";
+				msg = "Expression: " + exp.source() + " is not a string.";
 			}
 			template.addParsingProblem(new ParsingProblem(msg, exp));
 		}
@@ -523,9 +513,9 @@ public class PostParseVisitor extends ASTVisitor {
 		if (value != null && !(value instanceof TemplateNumberModel)) {
 			String msg;
 			if (value == Constants.INVALID_EXPRESSION) {
-				msg = "Invalid expression: " + exp.getSource();
+				msg = "Invalid expression: " + exp.source();
 			} else {
-				msg = "Expression: " + exp.getSource() + " is not a numerical value.";
+				msg = "Expression: " + exp.source() + " is not a numerical value.";
 			}
 			template.addParsingProblem(new ParsingProblem(msg, exp));
 		}
@@ -539,9 +529,9 @@ public class PostParseVisitor extends ASTVisitor {
 		{
 			String msg;
 			if (value == Constants.INVALID_EXPRESSION) {
-				msg = "Invalid expression: " + exp.getSource();
+				msg = "Invalid expression: " + exp.source();
 			} else {
-				msg = "Expression: " + exp.getSource() + " is not a string, date, or number.";
+				msg = "Expression: " + exp.source() + " is not a string, date, or number.";
 			}
 			template.addParsingProblem(new ParsingProblem(msg, exp));
 		}

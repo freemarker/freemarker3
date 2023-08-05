@@ -65,7 +65,7 @@ public final class TextBlock extends TemplateElement {
 	}
 
 	public String getText() {
-		return text != null ? new String(text) : getSource();
+		return text != null ? new String(text) : source();
 	}
 
 	public void setText(String text) {

@@ -479,11 +479,20 @@ public class Template extends TemplateCore {
     	return strictVariableDeclaration;
     }
     
-   public void setStrictVariableDeclaration(boolean strictVariableDeclaration) {
+    public void setStrictVariableDeclaration(boolean strictVariableDeclaration) {
     	this.strictVariableDeclaration = strictVariableDeclaration;
     }
-   
-   	public String getSource(int beginColumn,
+
+     /**
+     * Returns the template source at the location
+     * specified by the coordinates given.
+     * @param beginColumn the first column of the requested source, 1-based
+     * @param beginLine the first line of the requested source, 1-based
+     * @param endColumn the last column of the requested source, 1-based
+     * @param endLine the last line of the requested source, 1-based
+     * @see freemarker.core.ast.TemplateNode#source()
+     */
+   	public String source(int beginColumn,
            int beginLine,
            int endColumn,
            int endLine)
@@ -498,6 +507,7 @@ public class Template extends TemplateCore {
    		int numChars = 1+endOffset - startOffset;
    		return new String(templateText, startOffset, numChars);
    	}
+
    
     public String getLine(int lineNumber) {
     	lineNumber--;
@@ -627,20 +637,6 @@ public class Template extends TemplateCore {
     	return (lineInfoTable[i] & bitMask) != 0;
     }
     
-    
-     
-
-    
-    /**
-     * Returns the template source at the location
-     * specified by the coordinates given.
-     * @param beginColumn the first column of the requested source, 1-based
-     * @param beginLine the first line of the requested source, 1-based
-     * @param endColumn the last column of the requested source, 1-based
-     * @param endLine the last line of the requested source, 1-based
-     * @see freemarker.core.ast.TemplateNode#getSource()
-     */
-
     /**
      *  @return the root TemplateElement object.
      */
@@ -718,29 +714,6 @@ public class Template extends TemplateCore {
             return "";
         }
         return namespaceURIToPrefixLookup.get(nsURI);
-    }
-    
-    /**
-     * @return the prefixed name, based on the ns_prefixes defined
-     * in this template's header for the local name and node namespace
-     * passed in as parameters.
-     */
-    public String getPrefixedName(String localName, String nsURI) {
-        if (nsURI == null || nsURI.length() == 0) {
-            if (defaultNS != null) {
-                return NO_NS_PREFIX + ":" + localName;
-            } else {
-                return localName;
-            }
-        } 
-        if (nsURI.equals(defaultNS)) {
-            return localName;
-        } 
-        String prefix = getPrefixForNamespace(nsURI);
-        if (prefix == null) {
-            return null;
-        }
-        return prefix + ":" + localName;
     }
     
     static public class WrongEncodingException extends RuntimeException {

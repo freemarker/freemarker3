@@ -38,7 +38,7 @@ public class Interpolation extends TemplateElement {
     }
 
     public String getDescription() {
-        return this.getSource()  +
+        return this.source()  +
         (expression == escapedExpression 
             ? "" 
             : " escaped ${" + escapedExpression.getCanonicalForm() + "}");

@@ -1,7 +1,5 @@
 package freemarker.core.parser;
 
-import java.util.Locale;
-
 import freemarker.core.parser.ast.BaseNode;
 import freemarker.template.Template;
 
@@ -26,20 +24,24 @@ public class TemplateLocation extends BaseNode {
 		return (template == null) ? beginColumn 
                 : template.getTabAdjustedColumn(beginLine, beginColumn, TAB_SIZE);
 	}
-	
+
+    @Override
 	public int getBeginColumn() {
 		return beginColumn;
 	}
 	
 
+    @Override
 	public int getBeginLine() {
 		return beginLine;
 	}
 	
+    @Override
 	public int getEndLine() {
 		return endLine;
 	}
 	
+    @Override
 	public int getEndColumn() {
 		return endColumn;
 	}
@@ -50,12 +52,8 @@ public class TemplateLocation extends BaseNode {
 			
 	}
 	
-	public String getSource() {
-		return template.getSource(beginColumn, beginLine, endColumn, endLine);
-	}
-	
-	public String toString(Locale locale) {
-		return toString(); //TODO at some point
+	public String source() {
+		return template.source(beginColumn, beginLine, endColumn, endLine);
 	}
 	
 	public String toString() {

@@ -14,9 +14,9 @@ import freemarker.core.*;
  */
 abstract public class TemplateElement extends TemplateNode {
 	
-    protected TemplateElement nestedBlock;
+    TemplateElement nestedBlock;
 
-    protected List<TemplateElement> nestedElements;
+    List<TemplateElement> nestedElements;
     
     // The scoped variables defined in this element.
     

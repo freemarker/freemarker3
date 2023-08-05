@@ -21,9 +21,9 @@ public abstract class TemplateNode extends TemplateLocation {
 	
 	TemplateNode parent;
 	
-	public String getSource() {
+	public String source() {
         if (template != null) {
-            return template.getSource(getBeginColumn(), getBeginLine(), getEndColumn(), getEndLine());
+            return template.source(getBeginColumn(), getBeginLine(), getEndColumn(), getEndLine());
         } else {
             return getCanonicalForm();
         }
@@ -31,7 +31,7 @@ public abstract class TemplateNode extends TemplateLocation {
 
     public String toString() {
     	try {
-    		return getSource();
+    		return source();
     	} catch (Exception e) { // REVISIT: A bit of a hack? (JR)
     		return getCanonicalForm();
     	}
