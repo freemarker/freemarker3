@@ -70,13 +70,8 @@
     </delete>     
   </target>
 
-  <target name="test" depends="compile">
-      <junit haltonfailure="off">
-      <!--classpath>
-          <dirset dir="src"/>
-          <dirset dir="build"/>
-          <path refid="class.path"/>
-      </classpath-->
+  <target name="test" depends="jar">
+      <junit fork="true">
       <classpath>
           <pathelement location="libs/junit4.jar"/>
           <pathelement location="freemarker.jar"/>
@@ -89,6 +84,7 @@
         name="freemarker.testcase.TemplateTestSuite"
         todir="build"
       />
+      <assertions><enable/></assertions>
     </junit>
 
   </target>

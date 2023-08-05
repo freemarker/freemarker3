@@ -743,36 +743,6 @@ public class Template extends TemplateCore {
         return prefix + ":" + localName;
     }
     
-    /**
-     * @return an array of the elements containing the given column and line numbers.
-     * @param column the column
-     * @param line the line
-     * @throws SecurityException if the getConfiguration().isSecureTemplates()
-     * returns true, there is a security manager in the JVM, and the caller
-     * of this method does not posess the "modifyTemplate" FreeMarker 
-     * permission.
-     */
-    public List<TemplateElement> containingElements(int column, int line) {
-        ArrayList<TemplateElement> elements = new ArrayList<TemplateElement>();
-        TemplateElement element = getRootElement();
-mainloop:
-        while (element.contains(column, line)) {
-            elements.add(element);
-            for (Enumeration enumeration = element.childrenE(); enumeration.hasMoreElements();) {
-                TemplateElement elem = (TemplateElement) enumeration.nextElement();
-                if (elem.contains(column, line)) {
-                    element = elem;
-                    continue mainloop;
-                }
-            }
-            break;
-        }
-        if (elements.isEmpty()) {
-            return null;
-        }
-        return elements;
-    }
-
     static public class WrongEncodingException extends RuntimeException {
 
         public String specifiedEncoding;

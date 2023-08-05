@@ -18,10 +18,6 @@ public class TemplateLocation extends BaseNode {
 	
 	static public int TAB_SIZE = 8;
 	
-	public final String getDescription(Locale locale) {
-		return "";
-	}
-
 	public String getDescription() {
 		return "";
 	}

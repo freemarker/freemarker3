@@ -2,7 +2,6 @@ package freemarker.core.ast;
 
 import java.util.*;
 import freemarker.template.*;
-import freemarker.template.utility.UndeclaredThrowableException;
 import freemarker.core.Environment;
 
 
@@ -24,18 +23,6 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     
     public void setName(String name) {
     	this.name = name;
-    }
-    
-    Macro createCurriedMacro(ParameterList curriedParams, Environment env) {
-        try {
-            Macro curried = (Macro)super.clone();
-            curried.params = curriedParams;
-            env.setCurriedMacroNamespace(curried, this);
-            return curried;
-        } catch (CloneNotSupportedException e)
-        {
-            throw new UndeclaredThrowableException(e);
-        }
     }
     
     public void setParams(ParameterList params) {
