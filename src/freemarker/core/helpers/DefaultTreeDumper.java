@@ -591,7 +591,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 		openDirective("switch ");
 		buffer.append(render(node.getTestExpression()));
 		buffer.append(CLOSE_BRACKET);
-		List<TemplateElement> cases = node.getCases();
+		List<Case> cases = node.getCases();
 		if (cases != null) for (TemplateNode cas : node.getCases()) {
 			visit(cas);
 		}

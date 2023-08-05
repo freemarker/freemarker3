@@ -15,21 +15,20 @@ public class IfBlock extends TemplateElement {
 
     public IfBlock(ConditionalBlock block)
     {
-        nestedElements = new ArrayList<TemplateElement>();
         addBlock(block);
     }
 
     public void addBlock(ConditionalBlock block) {
-        nestedElements.add(block);
+        add(block);
     }
     
     public List<TemplateElement> getSubBlocks() {
-    	return Collections.unmodifiableList(nestedElements);
+    	return Collections.unmodifiableList(childrenOfType(TemplateElement.class));
     }
     
     public void execute(Environment env) throws TemplateException, IOException {
     	
-        for (TemplateNode te : nestedElements) {
+        for (TemplateNode te : childrenOfType(TemplateElement.class)) {
             ConditionalBlock cblock = (ConditionalBlock) te;
             Expression condition = cblock.getCondition();
             if (condition == null || condition.isTrue(env)) {

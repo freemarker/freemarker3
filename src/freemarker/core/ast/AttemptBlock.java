@@ -12,17 +12,16 @@ public class AttemptBlock extends TemplateElement {
     private List<ParsingProblem> parsingProblems = new ArrayList<ParsingProblem>();
     
     public AttemptBlock(TemplateElement attemptBlock, TemplateElement recoveryBlock) {
-        nestedElements = new ArrayList<TemplateElement>(2);
-        nestedElements.add(attemptBlock);
-        nestedElements.add(recoveryBlock);
+        add(attemptBlock);
+        add(recoveryBlock);
     }
     
     public TemplateElement getAttemptBlock() {
-    	return nestedElements.get(0);
+        return childrenOfType(TemplateElement.class).get(0);
     }
     
     public TemplateElement getRecoverBlock() {
-        return nestedElements.get(1);
+        return childrenOfType(TemplateElement.class).get(1);
     }
 
     public void execute(Environment env) throws TemplateException, IOException 
@@ -44,7 +43,7 @@ public class AttemptBlock extends TemplateElement {
     
     public void addParsingProblem(ParsingProblem problem) {
     	parsingProblems.add(problem);
-    	nestedElements.set(0, TextBlock.EMPTY_BLOCK);
+    	set(0, TextBlock.EMPTY_BLOCK);
     }
     
     public void setParsingProblems(List<ParsingProblem> parsingProblems) {

@@ -14,8 +14,6 @@ import freemarker.core.parser.ast.TemplateNode;
  */
 abstract public class TemplateElement extends TemplateNode {
 	
-    List<TemplateElement> nestedElements;
-    
     // The scoped variables defined in this element.
     
     private HashSet<String> declaredVariables;
@@ -50,28 +48,17 @@ abstract public class TemplateElement extends TemplateNode {
     }
     
     public List<TemplateElement> getNestedElements() {
-        return nestedElements;
+        return childrenOfType(TemplateElement.class);
     }
     
     public TemplateSequenceModel getChildNodes() {
-        if (nestedElements != null) {
-            return new SimpleSequence(nestedElements);
-        }
-        SimpleSequence result = new SimpleSequence();
-        if (getNestedBlock() != null) {
-            result.add(getNestedBlock());
-        } 
-        return result;
+        return new SimpleSequence(childrenOfType(TemplateElement.class));
     }
     
     public void setParentRecursively(TemplateElement parent) {
         this.setParent(parent);
-        int nestedSize = nestedElements == null ? 0 : nestedElements.size();
-        for (int i = 0; i < nestedSize; i++) {
-        	nestedElements.get(i).setParentRecursively(this);
-        }
-        if (getNestedBlock() != null) {
-            getNestedBlock().setParentRecursively(this);
+        for (TemplateElement te : childrenOfType(TemplateElement.class)) {
+        	te.setParentRecursively(this);
         }
     }
 
@@ -107,61 +94,24 @@ abstract public class TemplateElement extends TemplateNode {
 
 
     protected TemplateElement previousSib() {
-        if (getParent() == null) {
-            return null;
-        }
-        TemplateElement parentElement = (TemplateElement) this.getParent();
-        List<TemplateElement> siblings = parentElement.nestedElements;
-        if (siblings == null) {
-            return null;
-        }
-        for (int i = siblings.size() - 1; i>=0; i--) {
-            if (siblings.get(i) == this) {
-                return(i >0) ? siblings.get(i-1) : null;
-            }
-        }
-        return null;
+        return (TemplateElement) previousSibling();
     }
 
     protected TemplateElement nextSib() {
-        if (getParent() == null) {
-            return null;
-        }
-        TemplateElement parent = (TemplateElement) this.getParent();
-        List<TemplateElement> siblings = parent.nestedElements;
-        if (siblings == null) {
-            return null;
-        }
-        for (int i = 0; i < siblings.size(); i++) {
-            if (siblings.get(i) == this) {
-                return (i+1) < siblings.size() ? (TemplateElement) siblings.get(i+1) : null;
-            }
-        }
-        return null;
+        return (TemplateElement) nextSibling();
     }
 
     private TemplateElement firstChild() {
-        if (getNestedBlock() != null) {
-            return getNestedBlock();
-        }
-        if (nestedElements != null && nestedElements.size() >0) {
-            return nestedElements.get(0);
-        }
-        return null;
+        return size() ==0 ? null : (TemplateElement) get(0);
     }
 
     private TemplateElement lastChild() {
-        if (getNestedBlock() != null) {
-            return getNestedBlock();
-        }
-        if (nestedElements != null && nestedElements.size() >0) {
-            return nestedElements.get(nestedElements.size() -1);
-        }
-        return null;
+        List<TemplateElement> elements = childrenOfType(TemplateElement.class);
+        return elements.isEmpty() ? null : elements.get(elements.size()-1);
     }
     
     private boolean isLeaf() {
-    	return getNestedBlock() == null && (nestedElements == null || nestedElements.isEmpty());
+    	return size() == 0;
     }
     
 
@@ -170,15 +120,7 @@ abstract public class TemplateElement extends TemplateNode {
         if (nestedBlock instanceof MixedContent) {
             return nestedBlock.getIndex(node);
         }
-        if (nestedBlock != null) {
-            if (node == nestedBlock) {
-                return 0;
-            }
-        }
-        else if (nestedElements != null) {
-            return nestedElements.indexOf(node);
-        }
-        return -1;
+        return indexOf(node);
     }
 
     public int getChildCount() {
@@ -186,13 +128,7 @@ abstract public class TemplateElement extends TemplateNode {
         if (nestedBlock instanceof MixedContent) {
             return nestedBlock.getChildCount();
         }
-        if (nestedBlock != null) {
-            return 1;
-        }
-        else if (nestedElements != null) {
-            return nestedElements.size();
-        }
-        return 0;
+        return size();
     }
     
     static final Enumeration EMPTY_ENUMERATION = new Enumeration() {
@@ -205,20 +141,6 @@ abstract public class TemplateElement extends TemplateNode {
     	}
     };
 
-    public Enumeration childrenE() {
-        TemplateElement nestedBlock = getNestedBlock();
-        if (nestedBlock instanceof MixedContent) {
-            return nestedBlock.childrenE();
-        }
-        if (nestedBlock != null) {
-            return Collections.enumeration(Collections.singletonList(nestedBlock));
-        }
-        else if (nestedElements != null) {
-            return Collections.enumeration(nestedElements);
-        }
-        return EMPTY_ENUMERATION;
-    }
-
     public TemplateElement getChildAt(int index) {
         TemplateElement nestedBlock = getNestedBlock();
         if (nestedBlock instanceof MixedContent) {
@@ -230,10 +152,7 @@ abstract public class TemplateElement extends TemplateNode {
             }
             throw new ArrayIndexOutOfBoundsException("invalid index");
         }
-        else if (nestedElements != null) {
-            return nestedElements.get(index);
-        }
-        throw new ArrayIndexOutOfBoundsException("element has no children");
+        return (TemplateElement) get(index);
     }
 
     public void setChildAt(int index, TemplateElement element) {
@@ -250,12 +169,9 @@ abstract public class TemplateElement extends TemplateNode {
                 throw new IndexOutOfBoundsException("invalid index");
             }
         }
-        else if(nestedElements != null) {
-            nestedElements.set(index, element);
-            element.setParent(this);
-        }
         else {
-            throw new IndexOutOfBoundsException("element has no children");
+            set(index, element);
+            element.setParent(this);
         }
     }    
 

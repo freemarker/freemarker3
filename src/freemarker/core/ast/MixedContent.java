@@ -11,27 +11,17 @@ import freemarker.core.Environment;
  */
 public class MixedContent extends TemplateElement {
 
-    public MixedContent()
-    {
-        nestedElements = new ArrayList<TemplateElement>();
-    }
-
     public void addElement(TemplateElement element) {
-        nestedElements.add(element);
+        add(element);
     }
     
     void prependElement(TemplateElement element) {
+        add(0, element);
         element.setParent(this);
-        List<TemplateElement> newList = new ArrayList<TemplateElement>();
-        newList.add(element);
-        for (TemplateElement te : nestedElements) {
-            newList.add(te);
-        }
-        this.nestedElements = newList;
     }
 
     public Iterator<TemplateElement> iteratorTE() {
-    	return nestedElements.iterator();
+    	return childrenOfType(TemplateElement.class).iterator();
     }
 
     /**
@@ -41,8 +31,7 @@ public class MixedContent extends TemplateElement {
     public void execute(Environment env) 
         throws TemplateException, IOException 
     {
-        for (int i=0; i<nestedElements.size(); i++) {
-            TemplateElement element = nestedElements.get(i);
+        for (TemplateElement element : childrenOfType(TemplateElement.class)) {
             env.render(element);
         }
     }
@@ -55,6 +44,6 @@ public class MixedContent extends TemplateElement {
     }
 
     public boolean isIgnorable() {
-        return nestedElements == null || nestedElements.size() == 0;
+        return size() == 0;
     }
 }

@@ -360,13 +360,9 @@ public abstract class ASTVisitor {
 	}
 	
 	protected void recurse(TemplateElement node) {
-        if (node.nestedElements != null) {
-        	for (TemplateNode te : node.nestedElements) {
-        		visit(te);
-        	}
-        } else {
-        	visit(node.getNestedBlock());
-        }
+		for (TemplateElement te : node.childrenOfType(TemplateElement.class)) {
+			visit(te);
+		}
 	}
 	
 	public ASTVisitor clone() {

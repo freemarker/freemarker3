@@ -19,18 +19,17 @@ public class SwitchBlock extends TemplateElement {
      */
     public SwitchBlock(Expression testExpression) {
         this.testExpression = testExpression;
-        nestedElements = new LinkedList<TemplateElement>();
     }
 
     /**
      * @param cas a Case element.
      */
     public void addCase(Case cas) {
-        nestedElements.add(cas);
+        add(cas);
     }
     
-    public List<TemplateElement> getCases() {
-    	return nestedElements;
+    public List<Case> getCases() {
+    	return childrenOfType(Case.class);
     }
     
     public Expression getTestExpression() {
@@ -41,7 +40,7 @@ public class SwitchBlock extends TemplateElement {
         throws TemplateException, IOException 
     {
         boolean processedCase = false;
-        Iterator iterator = nestedElements.iterator();
+        Iterator<TemplateElement> iterator = childrenOfType(TemplateElement.class).iterator();
         try {
             Case defaultCase = null;
             while (iterator.hasNext()) {
