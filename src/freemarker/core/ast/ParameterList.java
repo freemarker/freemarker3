@@ -15,7 +15,7 @@ import freemarker.core.Scope;
 import freemarker.core.TemplateRunnable;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.helpers.NamedParameterMapScope;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.SimpleHash;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateException;
@@ -31,7 +31,7 @@ import freemarker.template.TemplateModelException;
 
 //TODO: Improve the error detail messages maybe
 
-public class ParameterList extends BaseNode {
+public class ParameterList extends TemplateNode {
 
     List<String> params = new ArrayList<String>();
     private Map<String, Expression> defaults;
@@ -271,7 +271,7 @@ public class ParameterList extends BaseNode {
             Expression argExp = argsMap.remove(paramName);
             if (argExp != null) {
                 Object value = argExp.getAsTemplateModel(env);
-                BaseNode.assertIsDefined(value, argExp, env);
+                TemplateNode.assertIsDefined(value, argExp, env);
                 result.put(paramName, value);
             }
             else if(defaults != null && defaults.containsKey(paramName)) {

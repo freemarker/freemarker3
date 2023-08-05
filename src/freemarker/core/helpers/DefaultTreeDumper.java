@@ -1,7 +1,7 @@
 package freemarker.core.helpers;
 
 import freemarker.core.ast.*;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 
 import java.util.*;
 import freemarker.template.*;
@@ -36,7 +36,7 @@ public class DefaultTreeDumper extends ASTVisitor {
         return render(template.getHeaderElement()) + render(template.getRootTreeNode());
     }
     
-    public String render(BaseNode node) {
+    public String render(TemplateNode node) {
     	StringBuilder prevBuf = this.buffer;
     	this.buffer = new StringBuilder();
     	visit(node);
@@ -320,7 +320,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(IfBlock node) {
-		for (BaseNode block : node.getSubBlocks()) {
+		for (TemplateNode block : node.getSubBlocks()) {
 			visit(block);
 			
 		}
@@ -592,7 +592,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 		buffer.append(render(node.getTestExpression()));
 		buffer.append(CLOSE_BRACKET);
 		List<TemplateElement> cases = node.getCases();
-		if (cases != null) for (BaseNode cas : node.getCases()) {
+		if (cases != null) for (TemplateNode cas : node.getCases()) {
 			visit(cas);
 		}
 		closeDirective("switch");

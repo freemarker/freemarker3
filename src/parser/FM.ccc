@@ -1,6 +1,7 @@
 BASE_SRC_DIR="..";
 PARSER_PACKAGE="freemarker.core.parser";
 NODE_DEFAULT_VOID;
+BASE_NODE_CLASS=TemplateNode;
 //NODE_PREFIX="AST";
 
 INJECT BASE_NODE_CLASS :
@@ -88,7 +89,7 @@ INJECT BASE_NODE_CLASS :
         return template;
     }
 
-    public BaseNode copyLocationFrom(BaseNode from)
+    public TemplateNode copyLocationFrom(TemplateNode from)
     {
         template = from.template;
         beginColumn = from.beginColumn;
@@ -103,17 +104,17 @@ INJECT BASE_NODE_CLASS :
         setLocation(template, begin.getBeginColumn(), begin.getBeginLine(), end.getEndColumn(), end.getEndLine());
     }
     
-    public final void setLocation(Template template, Token begin, BaseNode end)
+    public final void setLocation(Template template, Token begin, TemplateNode end)
     {
         setLocation(template, begin.getBeginColumn(), begin.getBeginLine(), end.getEndColumn(), end.getEndLine());
     }
 
-    public final void setLocation(Template template, BaseNode begin, Token end)
+    public final void setLocation(Template template, TemplateNode begin, Token end)
     {
         setLocation(template, begin.getBeginColumn(), begin.getBeginLine(), end.getEndColumn(), end.getEndLine());
     }
 
-    public final void setLocation(Template template, BaseNode begin, BaseNode end)
+    public final void setLocation(Template template, TemplateNode begin, TemplateNode end)
     {
         setLocation(template, begin.getBeginColumn(), begin.getBeginLine(), end.getEndColumn(), end.getEndLine());
     }
@@ -169,8 +170,8 @@ INJECT BASE_NODE_CLASS :
     	return canonicalTreeRenderer.render(this);
     }
     
-    public BaseNode getParentNode() {
-    	return (BaseNode) parent;
+    public TemplateNode getParentNode() {
+    	return (TemplateNode) parent;
     }    
 }
 
@@ -272,11 +273,10 @@ INJECT PARSER_CLASS :
     }
 
 }
-
  
  INJECT ParseException  : 
     import java.util.*;
-    import freemarker.core.parser.ast.BaseNode;
+    import freemarker.core.parser.ast.TemplateNode;
 {
     int lineNumber, columnNumber;
     String templateName;
@@ -288,7 +288,7 @@ INJECT PARSER_CLASS :
         this.columnNumber = columnNumber;
     }
 
-    public ParseException(String message, BaseNode tobj) {
+    public ParseException(String message, TemplateNode tobj) {
         super(message);
         this.lineNumber = tobj.getBeginLine();
         this.columnNumber = tobj.getBeginColumn();

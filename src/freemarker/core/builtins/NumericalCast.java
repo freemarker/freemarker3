@@ -3,7 +3,7 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;
 
 import java.math.BigDecimal;
@@ -26,7 +26,7 @@ public class NumericalCast extends ExpressionEvaluatingBuiltIn {
         try {
             return new SimpleNumber(getNumber(((TemplateNumberModel) model).getAsNumber(), caller.getName()));
         } catch (ClassCastException cce) {
-            throw BaseNode.invalidTypeException(model, caller.getTarget(), env, "number");
+            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number");
         } catch (NullPointerException npe) {
             throw new InvalidReferenceException("Undefined number", env);
         }

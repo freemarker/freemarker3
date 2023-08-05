@@ -3,7 +3,6 @@ package freemarker.core;
 import java.util.*;
 
 import freemarker.core.ast.*;
-import freemarker.template.TemplateModel;
 
 /**
  * Represents the context or scope when a macro executes
@@ -19,7 +18,7 @@ public class MacroInvocationBodyContext extends BlockScope {
         invokingMacroContext = env.getCurrentMacroContext();
         block = invokingMacroContext.body;
         if (invokingMacroContext.body != null) {
-        	enclosingDirective = invokingMacroContext.body.getParent();
+        	enclosingDirective = (TemplateElement) invokingMacroContext.body.getParent();
         }
         ParameterList bodyParameters = invokingMacroContext.bodyParameters;
         if (bodyParameters != null) {

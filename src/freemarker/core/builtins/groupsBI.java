@@ -2,7 +2,7 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.builtins.StringFunctions.RegexMatchModel;
 
 /**
@@ -21,7 +21,7 @@ public class groupsBI extends ExpressionEvaluatingBuiltIn
             return ((RegexMatchModel.Match) model).subs;
         }
         else {
-            throw BaseNode.invalidTypeException(model, caller.getTarget(), env, "regular expression matcher");
+            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "regular expression matcher");
         }
     }
 }

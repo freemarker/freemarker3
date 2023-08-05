@@ -3,7 +3,7 @@ package freemarker.core.ast;
 import java.util.*;
 import freemarker.template.*;
 import freemarker.core.Environment;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 
 
 /**
@@ -67,7 +67,7 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
             VarDirective varDirective = null;
             Set<String> variables = new HashSet<String>();
             variables.addAll(params.getParamNames());
-            for (BaseNode te : block.getNestedElements()) {
+            for (TemplateNode te : block.getNestedElements()) {
                 if (te instanceof VarDirective) {
                     VarDirective sdir = (VarDirective) te; 
                     if (varDirective == null){

@@ -14,7 +14,7 @@ import java.util.regex.PatternSyntaxException;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.SimpleNumber;
 import freemarker.template.SimpleScalar;
@@ -91,7 +91,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             String string = ((TemplateScalarModel) model).getAsString();
             return apply(string, env, caller);
         } catch (ClassCastException cce) {
-            throw BaseNode.invalidTypeException(model, caller.getTarget(), env, "string");
+            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "string");
         } catch (NullPointerException npe) {
             throw new InvalidReferenceException("String is undefined", env);
         }

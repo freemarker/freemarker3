@@ -4,7 +4,7 @@ import java.util.*;
 import java.io.IOException;
 import freemarker.template.TemplateException;
 import freemarker.core.Environment;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 
 /**
  * A instruction that handles if-elseif-else blocks.
@@ -29,7 +29,7 @@ public class IfBlock extends TemplateElement {
     
     public void execute(Environment env) throws TemplateException, IOException {
     	
-        for (BaseNode te : nestedElements) {
+        for (TemplateNode te : nestedElements) {
             ConditionalBlock cblock = (ConditionalBlock) te;
             Expression condition = cblock.getCondition();
             if (condition == null || condition.isTrue(env)) {

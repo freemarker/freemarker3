@@ -4,7 +4,7 @@ import java.util.*;
 
 import freemarker.core.Environment;
 import freemarker.core.parser.ParseException;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;
 
 public class NamedArgsList extends ArgsList {
@@ -40,7 +40,7 @@ public class NamedArgsList extends ArgsList {
             for (String paramName : namedArgs.keySet()) {
                 Expression exp = namedArgs.get(paramName);
                 Object value = exp.getAsTemplateModel(env);
-                BaseNode.assertIsDefined(value, exp, env);
+                TemplateNode.assertIsDefined(value, exp, env);
                 result.put(paramName, value);
             }
         }

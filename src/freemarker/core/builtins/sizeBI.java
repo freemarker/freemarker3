@@ -2,7 +2,7 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;
 
 /**
@@ -23,7 +23,7 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
             size = ((TemplateHashModelEx) model).size();
         }
         else {
-            throw BaseNode.invalidTypeException(model, caller.getTarget(), env, "a sequence or extended hash");
+            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "a sequence or extended hash");
         }
         return new SimpleNumber(Integer.valueOf(size));
     }

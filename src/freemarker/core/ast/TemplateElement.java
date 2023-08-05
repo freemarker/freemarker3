@@ -4,7 +4,8 @@ import java.util.*;
 import java.io.IOException;
 import freemarker.template.*;
 import freemarker.core.*;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.Node;
+import freemarker.core.parser.ast.TemplateNode;
 
 
 
@@ -13,7 +14,7 @@ import freemarker.core.parser.ast.BaseNode;
  * tree representation of the template necessarily 
  * descend from this abstract class.
  */
-abstract public class TemplateElement extends BaseNode {
+abstract public class TemplateElement extends TemplateNode {
 	
     TemplateElement nestedBlock;
 
@@ -31,14 +32,6 @@ abstract public class TemplateElement extends BaseNode {
      */
     abstract public void execute(Environment env) throws TemplateException, IOException;
 
-    public Scope createLocalScope(Scope enclosingScope) {
-    	return new BlockScope(this, enclosingScope);
-    }
-    
-    public TemplateElement getParent() {
-    	return (TemplateElement) super.getParent();
-    }
-    
     public boolean declaresVariable(String name) {
     	return declaredVariables != null && declaredVariables.contains(name);
     }
@@ -113,7 +106,7 @@ abstract public class TemplateElement extends BaseNode {
             return prev.getLastLeaf();
         }
         else if (getParent() != null) {
-            return getParent().prevTerminalNode();
+            return ((TemplateElement)getParent()).prevTerminalNode();
         }
         return null;
     }
@@ -124,7 +117,7 @@ abstract public class TemplateElement extends BaseNode {
             return next.getFirstLeaf();
         }
         else if (getParent() != null) {
-            return getParent().nextTerminalNode();
+            return ((TemplateElement)getParent()).nextTerminalNode();
         }
         return null;
     }
@@ -303,7 +296,7 @@ abstract public class TemplateElement extends BaseNode {
     }
     
     public Macro getEnclosingMacro() {
-        TemplateElement parent = this;
+        Node parent = this;
         while (parent != null) {
             parent = parent.getParent();
             if (parent instanceof Macro) {
@@ -319,7 +312,7 @@ abstract public class TemplateElement extends BaseNode {
      * @param current
      */
     
-    public void replace(BaseNode prev, TemplateElement current) {
+    public void replace(TemplateNode prev, TemplateElement current) {
     	if (nestedBlock != null) {
     		if (prev == nestedBlock) {
     			nestedBlock = current;
@@ -328,7 +321,7 @@ abstract public class TemplateElement extends BaseNode {
     	} 
     	else if (nestedElements != null) {
     		for (int i=0; i<nestedElements.size(); i++) {
-    			BaseNode nestedElement = nestedElements.get(i);
+    			TemplateNode nestedElement = nestedElements.get(i);
     			if (nestedElement == prev) {
     				nestedElements.set(i, current);
     				current.setParent(this);

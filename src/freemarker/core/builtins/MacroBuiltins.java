@@ -3,7 +3,7 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Macro;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;
 
 /**
@@ -22,7 +22,7 @@ public abstract class MacroBuiltins extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
             Object model) {
         if (!(model instanceof Macro)) {
-            throw BaseNode.invalidTypeException(model, caller.getTarget(), env, "macro");
+            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "macro");
         }
         return apply(env, (Macro)model);
     }

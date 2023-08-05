@@ -15,7 +15,7 @@ import java.util.*;
 import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.*;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.log.Logger;
 import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;
@@ -187,7 +187,7 @@ public final class Environment extends Configurable implements Scope {
         boolean createNewScope = element.createsScope();
         Scope prevScope = currentScope;
         if (createNewScope) {
-            currentScope = element.createLocalScope(currentScope);
+            currentScope = new BlockScope(element, currentScope);
         }
         try {
             element.execute(this);
@@ -208,7 +208,7 @@ public final class Environment extends Configurable implements Scope {
         TemplateDirectiveBody nested = null;
         boolean createsNewScope = false;
         if(element != null) {
-            createsNewScope = element.getParent().createsScope();
+            createsNewScope = ((TemplateElement)element.getParent()).createsScope();
             nested = new TemplateDirectiveBody() {
                 public void render(Writer newOut) throws TemplateException, IOException {
                     Writer prevOut = out;
@@ -1097,14 +1097,14 @@ public final class Environment extends Configurable implements Scope {
         .listIterator(elementStack.size());
         if (iter.hasPrevious()) {
             pw.print("==> ");
-            BaseNode prev = iter.previous();
+            TemplateNode prev = iter.previous();
             pw.print(prev.getDescription());
             pw.print(" [");
             pw.print(prev.getStartLocation());
             pw.println("]");
         }
         while (iter.hasPrevious()) {
-            BaseNode prev = iter.previous();
+            TemplateNode prev = iter.previous();
             if (prev instanceof UnifiedCall || prev instanceof Include) {
                 String location = prev.getDescription() + " ["
                 + prev.getStartLocation() + "]";

@@ -2,9 +2,10 @@ package freemarker.template;
 
 import freemarker.core.Configurable;
 import freemarker.core.ast.*;
+import freemarker.core.parser.Node;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.utility.DeepUnwrap;
 
 
@@ -178,11 +179,11 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 		if (template.strictVariableDeclaration()) {
 			template.declareVariable(macroName);
-			TemplateElement parent=node.getParent();
+			Node parent=node.getParent();
 			while (parent != null) {
 				parent = parent.getParent();
 				if (parent != null && !(parent instanceof EscapeBlock) && !(parent instanceof NoEscapeBlock) && !(parent instanceof MixedContent)) {
-					ParsingProblem problem = new ParsingProblem("Macro " + macroName + " is within a " + parent.getDescription() + ". It must be a top-level element.");
+					ParsingProblem problem = new ParsingProblem("Macro " + macroName + " is within a " + ((TemplateNode)parent).getDescription() + ". It must be a top-level element.");
 					template.addParsingProblem(problem);
 				}
 			}
@@ -192,7 +193,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(NoEscapeBlock node) {
-		TemplateElement parent = node;
+		Node parent = node;
 		while (parent != null && !(parent instanceof EscapeBlock)) {
 			parent = parent.getParent();
 		}
@@ -227,7 +228,7 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(BreakInstruction node) {
 		super.visit(node);
-		TemplateElement parent = node;
+		Node parent = node;
 		while (parent != null && !(parent instanceof SwitchBlock) && !(parent instanceof IteratorBlock)) { 
 			parent = parent.getParent();
 		}
@@ -246,7 +247,7 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(ReturnInstruction node) {
 		super.visit(node);
-		TemplateElement parent = node;
+		Node parent = node;
 		while (parent != null && !(parent instanceof Macro)) {
 			parent = parent.getParent();
 		}
@@ -264,7 +265,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(VarDirective node) {
-        TemplateElement parent = node.getParent();
+        Node parent = node.getParent();
         while (parent instanceof MixedContent 
         		|| parent instanceof EscapeBlock 
         		|| parent instanceof NoEscapeBlock
@@ -275,7 +276,7 @@ public class PostParseVisitor extends ASTVisitor {
        		if (parent == null) {
        			template.declareVariable(key);
        		} else {
-       			if (parent.declaresVariable(key)) {
+       			if (((TemplateElement)parent).declaresVariable(key)) {
        				String msg = "The variable " + key + " has already been declared in this block.";
        				if (parent instanceof Macro) {
        					String macroName = ((Macro) parent).getName();
@@ -283,13 +284,13 @@ public class PostParseVisitor extends ASTVisitor {
        				}
        				template.addParsingProblem(new ParsingProblem(msg, node));
        			}
-       			parent.declareVariable(key);
+       			((TemplateElement)parent).declareVariable(key);
        		}
        	}
 	}
 	
 	public void visit(OOParamElement node) {
-		TemplateElement parent = node.getParent();
+		Node parent = node.getParent();
 		while (parent instanceof MixedContent 
 				|| parent instanceof EscapeBlock
 				|| parent instanceof NoEscapeBlock
@@ -300,7 +301,7 @@ public class PostParseVisitor extends ASTVisitor {
 			String msg = "A #param directive must be directly nested in a macro invocation or in another #param directive.";
 			template.addParsingProblem(new ParsingProblem(msg, node));
 		} else {
-			parent.declareVariable(node.getName());
+			((TemplateElement)parent).declareVariable(node.getName());
 		}
 	}
 	
@@ -308,7 +309,7 @@ public class PostParseVisitor extends ASTVisitor {
 	public void visit(SwitchBlock node) {
 		super.visit(node);
 		boolean foundDefaultCase = false;
-		for (BaseNode te : node.getCases()) {
+		for (TemplateNode te : node.getCases()) {
 			if (((Case) te).isDefault()) {
 				if (foundDefaultCase) {
 					template.addParsingProblem(new ParsingProblem("You can only have one default case in a switch construct.", node));
@@ -538,22 +539,22 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 	}
 	
-	static Macro getContainingMacro(BaseNode node) {
-		BaseNode parent = node;
+	static Macro getContainingMacro(TemplateNode node) {
+		TemplateNode parent = node;
 		while (parent != null && !(parent instanceof Macro)) {
 			parent = parent.getParentNode();
 		}
 		return (Macro) parent;
 	}
 	
-	private void markAsProducingOutput(BaseNode node) {
+	private void markAsProducingOutput(TemplateNode node) {
 		for (int i= node.getBeginLine(); i<=node.getEndLine(); i++) {
 			boolean inMacro = getContainingMacro(node) != null;
 			template.markAsOutputtingLine(i, inMacro);
 		}
 	}
 	
-    public String firstLine(BaseNode node) {
+    public String firstLine(TemplateNode node) {
     	String line = template.getLine(node.getBeginLine());
     	if (node.getBeginLine() == node.getEndLine()) {
     		line = line.substring(0, node.getEndColumn());
@@ -561,7 +562,7 @@ public class PostParseVisitor extends ASTVisitor {
     	return line.substring(node.getBeginColumn() -1);
     }
     
-    public String lastLine(BaseNode node) {
+    public String lastLine(TemplateNode node) {
     	String line = template.getLine(node.getEndLine());
     	line = line.substring(0, node.getEndColumn());
     	if (node.getBeginLine() == node.getEndLine()) {

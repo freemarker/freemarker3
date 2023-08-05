@@ -3,13 +3,13 @@ package freemarker.core.ast;
 import freemarker.template.*;
 import freemarker.ext.beans.Pojo;
 import freemarker.core.Environment;
-import freemarker.core.parser.ast.BaseNode;
+import freemarker.core.parser.ast.TemplateNode;
 
 /**
  * An abstract class for nodes in the parse tree 
  * that represent a FreeMarker expression.
  */
-abstract public class Expression extends BaseNode {
+abstract public class Expression extends TemplateNode {
 
     abstract Object _getAsTemplateModel(Environment env) throws TemplateException;
     abstract boolean isLiteral();
