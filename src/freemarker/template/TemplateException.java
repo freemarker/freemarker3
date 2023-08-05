@@ -10,7 +10,7 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.ast.Include;
 import freemarker.core.ast.UnifiedCall;
-import freemarker.core.parser.TemplateLocation;
+import freemarker.core.parser.ast.BaseNode;
 
 /**
  * The FreeMarker classes usually use this exception and its descendants to
@@ -27,7 +27,7 @@ public class TemplateException extends RuntimeException {
     /** The underlying cause of this exception, if any */
     private final Environment env;
     
-    private List<TemplateLocation> ftlStack;
+    private List<BaseNode> ftlStack;
 
 
     /**
@@ -72,8 +72,8 @@ public class TemplateException extends RuntimeException {
         super(getDescription(description, cause), cause);
         this.env = env;
         if(env != null) {
-            ftlStack = new ArrayList<TemplateLocation>();
-            for (TemplateLocation location : env.getElementStack()) {
+            ftlStack = new ArrayList<BaseNode>();
+            for (BaseNode location : env.getElementStack()) {
             	ftlStack.add(location);
             }
             Collections.reverse(ftlStack); // We put this in opposite order, as the trace is usually displayed that way.
@@ -116,7 +116,7 @@ public class TemplateException extends RuntimeException {
     	StringBuilder buf = new StringBuilder("----------\n");
     	if (ftlStack != null) {
         	boolean atFirstElement = true;
-    		for (TemplateLocation location : ftlStack) {
+    		for (BaseNode location : ftlStack) {
     			if (atFirstElement) {
     				atFirstElement = false;
     	            buf.append("==> ");
@@ -143,7 +143,7 @@ public class TemplateException extends RuntimeException {
      * @return the FTL call stack (starting with current element)
      */
     
-    public List<TemplateLocation> getFTLStack() {
+    public List<BaseNode> getFTLStack() {
     	if (ftlStack == null) {
     		return Collections.emptyList();
     	}

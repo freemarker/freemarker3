@@ -1,4 +1,5 @@
 package freemarker.core.parser;
+import freemarker.core.parser.ast.BaseNode;
 
 /**
  * An object that encapsulates a problem that occurs 
@@ -6,7 +7,7 @@ package freemarker.core.parser;
  * @author revusky
  */
 
-public class ParsingProblem extends TemplateLocation {
+public class ParsingProblem extends BaseNode {
 	
 	private String description;
 	
@@ -16,7 +17,7 @@ public class ParsingProblem extends TemplateLocation {
 		this.description = description;
 	}
 	
-	public ParsingProblem(String description, TemplateLocation location) {
+	public ParsingProblem(String description, BaseNode location) {
 		this.description = description;
 		this.copyLocationFrom(location);
 	}

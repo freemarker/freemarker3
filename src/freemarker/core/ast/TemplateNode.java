@@ -3,7 +3,7 @@ package freemarker.core.ast;
 import freemarker.template.*;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.core.parser.TemplateLocation;
+import freemarker.core.parser.ast.BaseNode;
 import freemarker.core.helpers.DefaultReferenceChecker;
 import freemarker.core.helpers.DefaultTreeDumper;
 
@@ -14,7 +14,7 @@ import freemarker.core.helpers.DefaultTreeDumper;
  * all descend from this abstract base class.
  */
 
-public abstract class TemplateNode extends TemplateLocation {
+public abstract class TemplateNode extends BaseNode {
 	
 	static private DefaultReferenceChecker referenceChecker = DefaultReferenceChecker.instance;
 	static private DefaultTreeDumper canonicalTreeRenderer = new DefaultTreeDumper(false);
