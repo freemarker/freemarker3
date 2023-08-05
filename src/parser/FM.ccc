@@ -274,7 +274,7 @@ INJECT PARSER_CLASS :
 
 }
  
- INJECT ParseException  : 
+INJECT ParseException  : 
     import java.util.*;
     import freemarker.core.parser.ast.TemplateNode;
 {
@@ -606,6 +606,7 @@ Expression OrExpression :
       return result;
    }
 ;
+
 #ListLiteral :
 {
    Expression exp;
@@ -1492,35 +1493,7 @@ LibraryLoad Import :
 		return result;
 	}
 ;
-#Param :
-{
-	Token start, end;
-	Expression nameExp;
-	String name;
-	ParameterList params;
-	TemplateElement block;
-}
-	start=<PARAM>
-	nameExp=IdentifierOrStringLiteral
-	{
-       name = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
-	}
-    [<OPEN_PAREN>]
-    params=ParameterList 
-    [<CLOSE_PAREN>]
-    (
-      end=<EMPTY_DIRECTIVE_END>
-      |
-      (
-         <DIRECTIVE_END>
-         block=OptionalBlock
-         end=CloseDirectiveBlock("param")
-      )
-    )
-	{
-		return null;
-	}
-;
+
 #Macro :
 {
    Macro result = new Macro();
