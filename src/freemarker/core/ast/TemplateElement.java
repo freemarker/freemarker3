@@ -7,8 +7,6 @@ import freemarker.core.*;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ast.TemplateNode;
 
-
-
 /**
  * Objects that represent elements in the compiled 
  * tree representation of the template necessarily 
@@ -20,7 +18,11 @@ abstract public class TemplateElement extends TemplateNode {
     
     // The scoped variables defined in this element.
     
-    HashSet<String> declaredVariables;
+    private HashSet<String> declaredVariables;
+
+    public Set<String> getDeclaredVariables() {
+        return declaredVariables;
+    }
 
     /**
      * Processes the contents of this <tt>TemplateElement</tt> and
@@ -40,7 +42,7 @@ abstract public class TemplateElement extends TemplateNode {
     }
     
     public TemplateElement getNestedBlock() {
-        return isEmpty() ? null : (TemplateElement) get(0);
+        return firstChildOfType(TemplateElement.class);
     }
     
     public void setNestedBlock(TemplateElement nestedBlock) {
@@ -77,24 +79,6 @@ abstract public class TemplateElement extends TemplateNode {
         return false;
     }
     
-    public void removeIgnorableChildren() {
-    	if (nestedElements != null) {
-    		Iterator<TemplateElement> it = nestedElements.iterator();
-    		while (it.hasNext()) {
-    			TemplateElement child = it.next();
-    			if (child.isIgnorable()) it.remove();
-    		}
-    		if (nestedElements instanceof ArrayList) {
-    			((ArrayList) nestedElements).trimToSize();
-    		}
-    	}
-    	else if (getNestedBlock() != null) {
-    		if (getNestedBlock().isIgnorable()) {
-    			setNestedBlock(null);
-    		}
-    	}
-    }
-
 // The following methods exist to support some fancier tree-walking 
 // and were introduced to support the whitespace cleanup feature in 2.2
 

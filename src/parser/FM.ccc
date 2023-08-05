@@ -2,6 +2,7 @@ BASE_SRC_DIR="..";
 PARSER_PACKAGE="freemarker.core.parser";
 NODE_DEFAULT_VOID;
 BASE_NODE_CLASS=TemplateNode;
+TOKENS_ARE_NODES=false;
 //NODE_PREFIX="AST";
 
 INJECT BASE_NODE_CLASS :
@@ -28,20 +29,36 @@ INJECT BASE_NODE_CLASS :
 	}
 
 	public int getBeginColumn() {
-		return beginColumn;
+      if (beginColumn > 0) {
+         return beginColumn;
+      }
+      TokenSource tokenSource = getTokenSource();
+      return tokenSource == null ? 0 : tokenSource.getCodePointColumnFromOffset(getBeginOffset());
 	}
 	
 
 	public int getBeginLine() {
-		return beginLine;
+      if (beginLine > 0) {
+         return beginLine;
+      }
+      TokenSource tokenSource = getTokenSource();
+      return tokenSource == null ? 0 : tokenSource.getLineFromOffset(getBeginOffset());
 	}
 	
 	public int getEndLine() {
-		return endLine;
+      if (endLine > 0) {
+         return endLine;
+      }
+      TokenSource tokenSource = getTokenSource();
+      return tokenSource == null ? 0 : tokenSource.getLineFromOffset(getEndOffset());
 	}
 	
 	public int getEndColumn() {
-		return endColumn;
+      if (endColumn > 0) {
+         return endColumn;
+      }
+      TokenSource tokenSource = getTokenSource();
+      return tokenSource == null ? 0 : tokenSource.getCodePointColumnFromOffset(getEndOffset());
 	}
 	
 	public int getEndColumnTabAdjusted() {
@@ -49,16 +66,6 @@ INJECT BASE_NODE_CLASS :
             : template.getTabAdjustedColumn(beginLine, endColumn, TAB_SIZE);
 			
 	}
-	
-/*	
-	public String source() {
-		return template.source(beginColumn, beginLine, endColumn, endLine);
-	}
-	public String toString() {
-		String templateName = template == null ? "input" : template.getName();
-        return "on line " + getBeginLine() + ", column " + beginColumn 
-        	+ " in " + templateName;
-	}*/
 	
     /**
      * Returns a string that indicates

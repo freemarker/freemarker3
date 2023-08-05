@@ -79,7 +79,7 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
                     }
                 }
             }
-            for (String varname : declaredVariables) {
+            for (String varname : getDeclaredVariables()) {
                 if (!variables.contains(varname)) {
                     if (varDirective == null) {
                         varDirective = new VarDirective();
