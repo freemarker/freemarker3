@@ -10,6 +10,8 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
     private TemplateElement interpolatedOutput;
     private String value;
     private boolean raw;
+
+    public StringLiteral() {}
     
     public StringLiteral(String value, boolean raw) {
         this.value = value;
@@ -19,9 +21,17 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
     public boolean isRaw() {
     	return raw;
     }
+
+    public void setRaw(boolean raw) {
+        this.raw = raw;
+    }
     
     public String getValue() {
     	return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
     
     public void checkInterpolation() {
@@ -78,21 +88,5 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
         StringLiteral cloned = new StringLiteral(value, raw);
         cloned.interpolatedOutput = this.interpolatedOutput;
         return cloned;
-    }
-
-    static public String escapeString(String s) {
-        if (s.indexOf('"') == -1) {
-            return s;
-        }
-        java.util.StringTokenizer st = new java.util.StringTokenizer(s, "\"", true);
-        StringBuilder buf = new StringBuilder();
-        while (st.hasMoreTokens()) {
-            String tok = st.nextToken();
-            if (tok.equals("\"")) {
-                buf.append('\\');
-            }
-            buf.append(tok);
-        }
-        return buf.toString();
     }
 }

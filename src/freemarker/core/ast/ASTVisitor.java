@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 import freemarker.core.parser.ast.NullLiteral;
+import freemarker.core.parser.ast.NumberLiteral;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.template.Template;

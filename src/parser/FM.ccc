@@ -636,25 +636,57 @@ Expression OrExpression :
     }
 ;
 
-Expression NumberLiteral :
-{
-   Token op = null, t;
-   Number number;
-}
+NumberLiteral# :
    (
-      t=<INTEGER>
+      <INTEGER>
       |
-      t=<DECIMAL>
+      <DECIMAL>
    )
    {
-       String s = t.getImage();
+       String s = lastConsumedToken.toString();
        Number n = template != null ? template.getArithmeticEngine().toNumber(s) : new java.math.BigDecimal(s);
-       Expression result = new NumberLiteral(n);
-       Token startToken = (op != null) ? op : t;
-       result.setLocation(template, startToken, t);
-       return result;
+       CURRENT_NODE.setValue(n);
    }
 ;
+
+INJECT NumberLiteral :
+  import freemarker.core.Environment;
+  import freemarker.core.ast.Expression;
+  import freemarker.template.*;
+  extends Expression
+{
+    @Property Number value;
+
+    public NumberLiteral() {}
+
+    public NumberLiteral(Number value) {
+        this.value = value;
+    }
+    
+    public TemplateModel _getAsTemplateModel(Environment env) {
+        return new SimpleNumber(value);
+    }
+    
+    public String getStringValue(Environment env) {
+        return env.formatNumber(value);
+    }
+
+    public Number getAsNumber() {
+        return value;
+    }
+    
+    String getName() {
+        return "the number: '" + value + "'";
+    }
+
+    public boolean isLiteral() {
+        return true; 
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        return new NumberLiteral(value);
+    }
+}
 
 Identifier# :
    <ID> 
@@ -875,18 +907,17 @@ MethodCall MethodArgs(Expression exp) :
      }
 ;
 
-Expression StringLiteral :
+Expression StringLiteral#freemarker.core.ast.StringLiteral :
 {
-  Token t;
   boolean raw = false;
 }
    (
-     t=<STRING_LITERAL>
+     <STRING_LITERAL>
      |
-     t=<RAW_STRING> {raw = true;}
+     <RAW_STRING> {raw = true;}
    )
    {
-       String s = t.getImage();
+       String s = lastConsumedToken.toString();
        // Get rid of the quotes.
        s = s.substring(1, s.length() -1);
        if (raw) {
@@ -896,12 +927,12 @@ Expression StringLiteral :
           s = StringUtil.FTLStringLiteralDec(s);
        } catch (ParseException pe) {
        	  InvalidExpression invalid = new InvalidExpression("Malformed string literal: " + pe.getMessage());
-       	  invalid.setLocation(template, t, t);
+       	  invalid.setLocation(template, lastConsumedToken, lastConsumedToken);
        	  return invalid;
        }
-       StringLiteral result = new StringLiteral(s, raw);
-       result.setLocation(template, t, t);
-       return result;
+       CURRENT_NODE.setRaw(raw);
+       CURRENT_NODE.setValue(s);
+       return CURRENT_NODE;
    }
 ;
 
