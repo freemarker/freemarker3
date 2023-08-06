@@ -53,7 +53,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
         }
     }
     
-    public TemplateModel _getAsTemplateModel(Environment env) {
+    public Object _getAsTemplateModel(Environment env) {
         return new SimpleScalar(getStringValue(env));
     }
 

@@ -23,7 +23,7 @@ public class UnaryPlusMinusExpression extends Expression {
     	return isMinus;
     }
     
-    public TemplateModel _getAsTemplateModel(Environment env) {
+    public Object _getAsTemplateModel(Environment env) {
         TemplateNumberModel targetModel = null;
         try {
             targetModel = (TemplateNumberModel) target.getAsTemplateModel(env);

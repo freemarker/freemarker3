@@ -41,7 +41,7 @@ public class ArithmeticExpression extends Expression {
         this.operation = operation;
     }
     
-    public TemplateModel _getAsTemplateModel(Environment env) throws TemplateException 
+    public Object _getAsTemplateModel(Environment env) throws TemplateException 
     {
         Object leftModel = getLeft().getAsTemplateModel(env);
         Object rightModel = getRight().getAsTemplateModel(env);

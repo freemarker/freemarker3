@@ -108,9 +108,9 @@ public class Template extends TemplateCore {
     
     
 	public Template(String name, Reader reader, Configuration cfg,
-			String encoding) throws IOException {
-       this(name, cfg);
-        
+			String encoding) throws IOException 
+    {
+        this(name, cfg);
         this.encoding = encoding;
         
         readInTemplateText(reader);

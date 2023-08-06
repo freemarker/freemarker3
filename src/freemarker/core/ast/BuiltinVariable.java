@@ -58,7 +58,7 @@ public class BuiltinVariable extends Expression {
     	return name;
     }
 
-    public TemplateModel _getAsTemplateModel(Environment env) {
+    public Object _getAsTemplateModel(Environment env) {
         if (name == NAMESPACE) {
             return env.getCurrentNamespace();
         }
