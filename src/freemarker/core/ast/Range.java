@@ -54,7 +54,7 @@ public class Range extends Expression {
         return constantValue != null || (left.isLiteral() && rightIsLiteral);
     }
     
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
         return new Range(left.deepClone(name, subst), right.deepClone(name, subst));
     }
 }

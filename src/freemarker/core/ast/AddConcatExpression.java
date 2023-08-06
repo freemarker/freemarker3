@@ -99,7 +99,7 @@ public class AddConcatExpression extends Expression {
         return constantValue != null || (getLeft().isLiteral() && getRight().isLiteral());
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	return new AddConcatExpression(getLeft().deepClone(name, subst), getRight().deepClone(name, subst));
     }
 

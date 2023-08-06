@@ -40,7 +40,7 @@ public class Identifier extends Expression {
         return false;
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
         if(this.name.equals(name)) {
         	return subst.deepClone(null, null);
         }

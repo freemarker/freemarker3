@@ -23,7 +23,7 @@ public class NotExpression extends BooleanExpression {
         return target.isLiteral();
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	return new NotExpression(target.deepClone(name, subst));
     }
 }

@@ -162,7 +162,7 @@ public class BuiltInExpression extends Expression {
 
     /*	
 	@Override
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
 		findImplementation();
     	try {
 	    	BuiltInExpression clone = (BuiltInExpression) this.clone();
@@ -175,7 +175,7 @@ public class BuiltInExpression extends Expression {
         }
     }*/
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
         return new BuiltInExpression(target.deepClone(name, subst), key);
     }
 

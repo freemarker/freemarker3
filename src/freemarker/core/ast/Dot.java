@@ -39,7 +39,7 @@ public class Dot extends Expression {
         return target.isLiteral();
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	return new Dot(target.deepClone(name, subst), key);
     }
 

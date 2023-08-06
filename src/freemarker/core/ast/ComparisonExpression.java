@@ -180,7 +180,7 @@ public class ComparisonExpression extends BooleanExpression {
         return constantValue != null || (left.isLiteral() && right.isLiteral());
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	return new ComparisonExpression(left.deepClone(name, subst), right.deepClone(name, subst), opString);
     }
 }

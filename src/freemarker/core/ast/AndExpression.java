@@ -30,7 +30,7 @@ public class AndExpression extends BooleanExpression {
         return constantValue != null || (left.isLiteral() && right.isLiteral());
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	return new AndExpression(left.deepClone(name, subst), right.deepClone(name, subst));
     }
 }

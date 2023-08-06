@@ -72,7 +72,7 @@ public class DefaultToExpression extends Expression {
 		return false;
 	}
 
-	Expression _deepClone(String name, Expression subst) {
+	public Expression _deepClone(String name, Expression subst) {
 		if (rhs == null) {
 			return new DefaultToExpression(lhs.deepClone(name, subst), null);
 		}

@@ -40,7 +40,7 @@ public class NumberLiteral extends Expression implements TemplateNumberModel {
         return true; 
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
         return new NumberLiteral(value);
     }
 

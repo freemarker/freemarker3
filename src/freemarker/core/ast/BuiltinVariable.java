@@ -121,7 +121,7 @@ public class BuiltinVariable extends Expression {
         return false;
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
         return this;
     }
 

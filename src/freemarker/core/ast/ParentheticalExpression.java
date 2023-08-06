@@ -27,7 +27,7 @@ public class ParentheticalExpression extends Expression {
         return nested.isLiteral();
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
         return new ParentheticalExpression(nested.deepClone(name, subst));
     }
 }

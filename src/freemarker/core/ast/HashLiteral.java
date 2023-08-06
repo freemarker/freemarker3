@@ -51,7 +51,7 @@ public class HashLiteral extends Expression {
     }
 
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	ArrayList<Expression> clonedKeys = new ArrayList<Expression>(keys.size());
     	for (Expression exp : keys) {
     		clonedKeys.add(exp.deepClone(name, subst));

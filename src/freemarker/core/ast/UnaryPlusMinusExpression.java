@@ -44,7 +44,7 @@ public class UnaryPlusMinusExpression extends Expression {
         return target.isLiteral();
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	return new UnaryPlusMinusExpression(target.deepClone(name, subst), isMinus);
     }
 }

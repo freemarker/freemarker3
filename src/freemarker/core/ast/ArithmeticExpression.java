@@ -82,7 +82,7 @@ public class ArithmeticExpression extends Expression {
         return constantValue != null || (getLeft().isLiteral() && getRight().isLiteral());
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	return new ArithmeticExpression(getLeft().deepClone(name, subst), getRight().deepClone(name, subst), operation);
     }
 }

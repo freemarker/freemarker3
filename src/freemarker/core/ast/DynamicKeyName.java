@@ -185,7 +185,7 @@ public class DynamicKeyName extends Expression {
         return constantValue != null || (target.isLiteral() && nameExpression.isLiteral());
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	return new DynamicKeyName(target.deepClone(name, subst), nameExpression.deepClone(name, subst));
     }
 }

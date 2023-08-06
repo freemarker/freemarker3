@@ -86,7 +86,7 @@ public class ListLiteral extends Expression {
         return result;
     }
     
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	ArrayList<Expression> clonedValues = new ArrayList<Expression>(values.size());
     	for (Expression exp : values) {
     		clonedValues.add(exp.deepClone(name, subst));

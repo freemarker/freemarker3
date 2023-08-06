@@ -24,7 +24,7 @@ public class InvalidExpression extends Expression {
 		return message;
 	}
 	
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	return this;
     }	
 

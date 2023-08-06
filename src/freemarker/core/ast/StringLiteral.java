@@ -74,7 +74,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
         return interpolatedOutput == null;
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
         StringLiteral cloned = new StringLiteral(value, raw);
         cloned.interpolatedOutput = this.interpolatedOutput;
         return cloned;

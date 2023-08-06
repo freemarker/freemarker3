@@ -37,7 +37,7 @@ public class ExistsExpression extends Expression {
 		return exp.isLiteral();
 	}
 
-	Expression _deepClone(String name, Expression subst) {
+	public Expression _deepClone(String name, Expression subst) {
 		return new ExistsExpression(exp.deepClone(name, subst));
 	}
 }

@@ -85,16 +85,14 @@ abstract public class Expression extends TemplateNode {
         throw new NonStringException(msg, env);
     }
 
-    Expression deepClone(String name, Expression subst) {
+    public Expression deepClone(String name, Expression subst) {
         Expression clone = _deepClone(name, subst);
         clone.copyLocationFrom(this);
         clone.setParent(this.getParent());
         return clone;
     }
 
-    Expression _deepClone(String name, Expression subst) {
-        return null;
-    }
+    public abstract Expression _deepClone(String name, Expression subst);
 
     boolean isTrue(Environment env) {
         Object referent = getAsTemplateModel(env);

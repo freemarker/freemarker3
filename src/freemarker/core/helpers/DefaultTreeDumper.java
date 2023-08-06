@@ -1,6 +1,7 @@
 package freemarker.core.helpers;
 
 import freemarker.core.ast.*;
+import freemarker.core.parser.ast.BooleanLiteral;
 import freemarker.core.parser.ast.NullLiteral;
 import freemarker.core.parser.ast.TemplateNode;
 
@@ -156,7 +157,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	}
 	
 	public void visit(BooleanLiteral node) {
-		buffer.append(node.getValue() ? "true" : "false"); 
+		buffer.append(node.isValue() ? "true" : "false"); 
 	}
 	
 	public void visit(BreakInstruction node) {

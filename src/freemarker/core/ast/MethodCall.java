@@ -84,7 +84,7 @@ public class MethodCall extends Expression {
         return false;
     }
 
-    Expression _deepClone(String name, Expression subst) {
+    public Expression _deepClone(String name, Expression subst) {
     	return new MethodCall(target.deepClone(name, subst), arguments.deepClone(name, subst));
     }
 
