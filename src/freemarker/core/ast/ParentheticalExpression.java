@@ -11,7 +11,7 @@ public class ParentheticalExpression extends Expression {
         nested.setParent(this);
     }
 
-    boolean isTrue(Environment env) {
+    public boolean isTrue(Environment env) {
         return nested.isTrue(env);
     }
     

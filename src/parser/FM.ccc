@@ -948,7 +948,7 @@ INJECT BooleanLiteral :
     public BooleanLiteral() {}
     public BooleanLiteral(boolean value) {this.value = value;}
 
-    boolean isTrue(Environment env) {
+    public boolean isTrue(Environment env) {
         return value;
     }
 

@@ -15,7 +15,7 @@ public class NotExpression extends BooleanExpression {
     	return target;
     }
 
-    boolean isTrue(Environment env) {
+    public boolean isTrue(Environment env) {
         return (!target.isTrue(env));
     }
 

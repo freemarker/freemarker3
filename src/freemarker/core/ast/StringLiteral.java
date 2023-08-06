@@ -61,7 +61,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
         return value;
     }
     
-    String getStringValue(Environment env) {
+    public String getStringValue(Environment env) {
         if (interpolatedOutput == null) {
             return value;
         } 

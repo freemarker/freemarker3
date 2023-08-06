@@ -22,7 +22,7 @@ public class AndExpression extends BooleanExpression {
     	return right;
     }
 
-    boolean isTrue(Environment env) {
+    public boolean isTrue(Environment env) {
         return left.isTrue(env) && right.isTrue(env);
     }
 
