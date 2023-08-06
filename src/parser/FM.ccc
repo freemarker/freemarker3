@@ -14,8 +14,8 @@ INJECT BASE_NODE_CLASS :
    import freemarker.core.parser.Token;
    import freemarker.core.ast.Expression;
 {
-	protected int beginLine, beginColumn, endLine, endColumn;
-	protected Template template;
+	private int beginLine, beginColumn, endLine, endColumn;
+	@Property Template template;
 	
 	static public int TAB_SIZE = 8;
 	
@@ -91,11 +91,6 @@ INJECT BASE_NODE_CLASS :
               + templateName;
     }
     
-    public Template getTemplate()
-    {
-        return template;
-    }
-
     public TemplateNode copyLocationFrom(TemplateNode from)
     {
         template = from.template;

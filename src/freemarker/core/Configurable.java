@@ -25,7 +25,7 @@ import freemarker.ext.beans.ObjectWrapper;
  * @version $Id: Configurable.java,v 1.24 2006/02/03 19:22:03 revusky Exp $
  * @author Attila Szegedi
  */
-public class Configurable extends TemplateNode
+abstract public class Configurable extends TemplateNode
 {
     public static final String LOCALE_KEY = "locale";
     public static final String NUMBER_FORMAT_KEY = "number_format";

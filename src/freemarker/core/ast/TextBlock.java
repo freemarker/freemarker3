@@ -91,7 +91,7 @@ public final class TextBlock extends TemplateElement {
 			out.write(text);
 		}
 		else {
-			template.writeTextAt(out, beginColumn, beginLine, endColumn, endLine);
+			getTemplate().writeTextAt(out, getBeginColumn(), getBeginLine(), getEndColumn(), getEndLine());
 		}
 	}
 
