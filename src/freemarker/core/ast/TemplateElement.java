@@ -28,7 +28,7 @@ abstract public class TemplateElement extends TemplateNode {
      *
      * @param env The runtime environment
      */
-    abstract public void execute(Environment env) throws TemplateException, IOException;
+    abstract public void execute(Environment env) throws IOException;
 
     public boolean declaresVariable(String name) {
     	return declaredVariables != null && declaredVariables.contains(name);
@@ -66,55 +66,6 @@ abstract public class TemplateElement extends TemplateNode {
         return false;
     }
     
-// The following methods exist to support some fancier tree-walking 
-// and were introduced to support the whitespace cleanup feature in 2.2
-
-    TemplateElement prevTerminalNode() {
-        TemplateElement prev = previousSib();
-        if (prev != null) {
-            return prev.getLastLeaf();
-        }
-        else if (getParent() != null) {
-            return ((TemplateElement)getParent()).prevTerminalNode();
-        }
-        return null;
-    }
-
-    protected TemplateElement nextTerminalNode() {
-        TemplateElement next = nextSib();
-        if (next != null) {
-            return next.getFirstLeaf();
-        }
-        else if (getParent() != null) {
-            return ((TemplateElement)getParent()).nextTerminalNode();
-        }
-        return null;
-    }
-
-
-
-    protected TemplateElement previousSib() {
-        return (TemplateElement) previousSibling();
-    }
-
-    protected TemplateElement nextSib() {
-        return (TemplateElement) nextSibling();
-    }
-
-    private TemplateElement firstChild() {
-        return size() ==0 ? null : (TemplateElement) get(0);
-    }
-
-    private TemplateElement lastChild() {
-        List<TemplateElement> elements = childrenOfType(TemplateElement.class);
-        return elements.isEmpty() ? null : elements.get(elements.size()-1);
-    }
-    
-    private boolean isLeaf() {
-    	return size() == 0;
-    }
-    
-
     public int getIndex(TemplateElement node) {
         TemplateElement nestedBlock = getNestedBlock();
         if (nestedBlock instanceof MixedContent) {
@@ -131,16 +82,6 @@ abstract public class TemplateElement extends TemplateNode {
         return size();
     }
     
-    static final Enumeration EMPTY_ENUMERATION = new Enumeration() {
-    	public boolean hasMoreElements() {
-    		return false;
-    	}
-    	
-    	public Object nextElement() {
-    		throw new NoSuchElementException();
-    	}
-    };
-
     public TemplateElement getChildAt(int index) {
         TemplateElement nestedBlock = getNestedBlock();
         if (nestedBlock instanceof MixedContent) {
@@ -174,25 +115,6 @@ abstract public class TemplateElement extends TemplateNode {
             element.setParent(this);
         }
     }    
-
-
-    private TemplateElement getFirstLeaf() {
-        TemplateElement te = this;
-        while (!te.isLeaf() && !(te instanceof Macro) && !(te instanceof BlockAssignment)) {
-             // A macro or macro invocation is treated as a leaf here for special reasons
-            te = te.firstChild();
-        }
-        return te;
-    }
-
-    private TemplateElement getLastLeaf() {
-        TemplateElement te = this;
-        while (!te.isLeaf() && !(te instanceof Macro) && !(te instanceof BlockAssignment)) {
-            // A macro or macro invocation is treated as a leaf here for special reasons
-            te = te.lastChild();
-        }
-        return te;
-    }
 
     public boolean createsScope() {
     	return declaredVariables != null && !declaredVariables.isEmpty();

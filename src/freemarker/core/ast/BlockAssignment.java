@@ -5,7 +5,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 
-import freemarker.template.TemplateModel;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.Scope;
@@ -74,10 +73,6 @@ public class BlockAssignment extends TemplateElement {
     
     private static class CaptureOutput implements TemplateTransformModel {
         String capturedText = ""; 
-        
-        public Writer getWriter(Writer out, List args) {
-        	return getWriter(out, (Map) null);
-        }
         
         public Writer getWriter(Writer out, Map<String, Object> args) {
             return new StringWriter() {

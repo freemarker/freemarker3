@@ -2,7 +2,6 @@ package freemarker.core.ast;
 
 import freemarker.core.Environment;
 import freemarker.core.ReturnException;
-import freemarker.template.TemplateException;
 
 /**
  * Represents a &lt;return&gt; instruction to jump out of a macro.
@@ -20,7 +19,7 @@ public class ReturnInstruction extends TemplateElement {
         if (returnExp != null) {
             env.setLastReturnValue(returnExp.getAsTemplateModel(env));
         }
-        if (nextSib() != null) {
+        if (nextSibling() != null) {
             // We need to jump out using an exception.
             throw ReturnException.INSTANCE;
         }
