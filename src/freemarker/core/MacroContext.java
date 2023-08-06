@@ -32,7 +32,7 @@ public class MacroContext extends BlockScope {
     }
     
     void runMacro() throws TemplateException, IOException { 
-        TemplateElement nestedBlock = macro.getNestedBlock();
+        TemplateElement nestedBlock = macro.firstChildOfType(TemplateElement.class);
         if (nestedBlock != null) {
             getEnvironment().render(nestedBlock);
         }

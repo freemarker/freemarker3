@@ -19,7 +19,7 @@ public class Case extends TemplateElement {
     public Case(Expression expression, TemplateElement nestedBlock, boolean isDefault) 
     {
         this.expression = expression;
-        this.setNestedBlock(nestedBlock);
+        this.add(nestedBlock);
         this.isDefault = isDefault;
     }
     
@@ -34,8 +34,8 @@ public class Case extends TemplateElement {
     public void execute(Environment env) 
         throws TemplateException, IOException 
     {
-        if (getNestedBlock() != null) {
-            env.render(getNestedBlock());
+        if (firstChildOfType(TemplateElement.class) != null) {
+            env.render(firstChildOfType(TemplateElement.class));
         }
     }
 

@@ -152,8 +152,8 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(IfBlock node) {
-        if (node.getChildCount() == 1) {
-            ConditionalBlock cblock = (ConditionalBlock) node.getChildAt(0);
+        if (node.size() == 1) {
+            ConditionalBlock cblock = (ConditionalBlock) node.get(0);
             cblock.setIsSimple(true);
            	cblock.setLocation(node.getTemplate(), cblock, node);
             node.getParent().replace(node, cblock);
@@ -209,13 +209,6 @@ public class PostParseVisitor extends ASTVisitor {
 		node.declareVariable(node.getIndexName());
 		node.declareVariable(node.getIndexName() + "_has_next");
 		node.declareVariable(node.getIndexName() + "_index");
-		super.visit(node);
-	}
-	
-	public void visit(MixedContent node) {
-		if (node.getChildCount() == 1 && node.getParent() != null) {
-			node.getParent().replace(node, node.getChildAt(0));
-		}
 		super.visit(node);
 	}
 	

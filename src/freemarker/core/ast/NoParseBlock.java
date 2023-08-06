@@ -9,7 +9,7 @@ public class NoParseBlock extends MixedContent {
 	public NoParseBlock(String startTag, String endTag, List<TextBlock> text) {
 		this.startTag = startTag;
 		this.endTag = endTag;
-		for (TextBlock tb : text) addElement(tb);
+		for (TextBlock tb : text) add(tb);
 	}
 	
 	public String getStartTag() {
@@ -21,9 +21,6 @@ public class NoParseBlock extends MixedContent {
 	}
 
 	public boolean isIgnorable() {
-		for (TemplateElement elem : this.getNestedElements()) {
-			if (!elem.isIgnorable()) return false;
-		}
-		return true;
+		return childrenOfType(TemplateElement.class).stream().anyMatch(elem->elem.isIgnorable());
 	}
 }

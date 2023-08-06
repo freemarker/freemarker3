@@ -1,6 +1,5 @@
 package freemarker.core;
 
-import java.beans.Beans;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -8,6 +7,7 @@ import java.util.*;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
 import freemarker.core.ast.ArithmeticEngine;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.ObjectWrapper;
 
 /**
@@ -25,7 +25,7 @@ import freemarker.ext.beans.ObjectWrapper;
  * @version $Id: Configurable.java,v 1.24 2006/02/03 19:22:03 revusky Exp $
  * @author Attila Szegedi
  */
-public class Configurable
+public class Configurable extends TemplateNode
 {
     public static final String LOCALE_KEY = "locale";
     public static final String NUMBER_FORMAT_KEY = "number_format";

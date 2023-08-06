@@ -1529,9 +1529,9 @@ LibraryLoad Import :
     end=CloseDirectiveBlock(functionOrMacro)
     {
 	   result.setName(name);
-	   result.setNestedBlock(block);
-       result.setLocation(template, start, end);
-       return result;
+	   result.add(block);
+      result.setLocation(template, start, end);
+      return result;
     }
 ;
 
@@ -1668,7 +1668,7 @@ TemplateElement UnifiedMacroTransform :
 	           throw new ParseException(msg + "\nExpecting </@> or </@" + directiveName + ">", end.getBeginLine(), end.getBeginColumn());
 	       }
 	    }
-	    result.setNestedBlock(nestedBlock);
+	    result.add(nestedBlock);
 	  }
       )
     )
@@ -2188,9 +2188,9 @@ TemplateElement Content :
                begin = elem == null ? text.get(0) : elem;
             }
             if (elem == null) {
-            	for (TextBlock tb : text) nodes.addElement(tb);
+            	for (TextBlock tb : text) nodes.add(tb);
             } else {
-            	nodes.addElement(elem);
+            	nodes.add(elem);
             }
       }
     )+
@@ -2226,9 +2226,9 @@ TemplateElement FreeMarkerText :
             begin = (elem == null) ? text.get(0) : elem;
          }
          if (elem != null) {
-         	nodes.addElement(elem);
+         	nodes.add(elem);
          } else {
-         	for (TextBlock tb : text) nodes.addElement(tb);
+         	for (TextBlock tb : text) nodes.add(tb);
          }
       }
     )+
@@ -2340,7 +2340,6 @@ TemplateElement Root :
    doc=OptionalBlock
    <EOF>
    {
-       doc.setParentRecursively(null);
        return doc;
    }
 ;

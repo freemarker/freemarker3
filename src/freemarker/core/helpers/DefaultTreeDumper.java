@@ -140,7 +140,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 			visit(nsExp);
 		}
 		buffer.append(CLOSE_BRACKET);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 		closeDirective(instruction);
 	}
 	
@@ -183,7 +183,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 			visit(node.getExpression());
 		}
 		buffer.append(CLOSE_BRACKET);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 	}
 	
 	public void visit(Comment node) {
@@ -229,7 +229,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	public void visit(CompressedBlock node) {
 		openDirective("compress");
 		buffer.append(CLOSE_BRACKET);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 		closeDirective("compress");
 	}
 	
@@ -246,7 +246,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 		}
 		visit(node.getCondition());
 		buffer.append(CLOSE_BRACKET);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 		if (node.isLoneIfBlock()) {
 			closeDirective("if");
 		}
@@ -283,7 +283,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 		buffer.append(" as ");
 		visit(node.getExpression());
 		buffer.append(CLOSE_BRACKET);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 		closeDirective("escape");
 	}
 	
@@ -355,7 +355,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 		buffer.append(" as ");
 		buffer.append(node.getIndexName());
 		buffer.append(CLOSE_BRACKET);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 		closeDirective("list");
 	}
 	
@@ -396,7 +396,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 			}
 		}
 		buffer.append(CLOSE_BRACKET);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 		if (node.isFunction()) {
 			closeDirective("function");
 		} else {
@@ -428,7 +428,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	public void visit(NoEscapeBlock node) {
 		openDirective("noescape");
 		buffer.append(CLOSE_BRACKET);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 		closeDirective("noescape");
 	}
 	
@@ -519,7 +519,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 	public void visit(RecoveryBlock node) {
 		openDirective("recover");
 		buffer.append(CLOSE_BRACKET);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 		closeDirective("attempt");
 	}
 	
@@ -626,7 +626,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 			visit(value);
 		}
 		buffer.append(CLOSE_BRACKET);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 		closeDirective("transform");
 	}
 	
@@ -656,7 +656,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 			tagName = "rt_lines";
 		}
 		openDirective(tagName);
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 		closeDirective(tagName);
 	}
 	
@@ -681,7 +681,7 @@ public class DefaultTreeDumper extends ASTVisitor {
 			buffer.append("; ");
 			visit(bodyParameters);
 		}
-		TemplateElement body = node.getNestedBlock();
+		TemplateElement body = node.firstChildOfType(TemplateElement.class);
 		if (body == null) {
 			buffer.append("/");
 			buffer.append(CLOSE_BRACKET);

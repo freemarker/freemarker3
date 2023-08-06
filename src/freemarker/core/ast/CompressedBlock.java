@@ -1,7 +1,6 @@
 package freemarker.core.ast;
 
 import freemarker.core.Environment;
-import freemarker.template.*;
 import freemarker.template.utility.StandardCompress;
 import java.io.*;
 
@@ -14,12 +13,12 @@ import java.io.*;
 public class CompressedBlock extends TemplateElement {
 
     public CompressedBlock(TemplateElement nestedBlock) { 
-        this.setNestedBlock(nestedBlock);
+        this.add(nestedBlock);
     }
 
-    public void execute(Environment env) throws TemplateException, IOException {
-        if (getNestedBlock() != null) {
-            env.render(getNestedBlock(), StandardCompress.INSTANCE, null);
+    public void execute(Environment env) throws IOException {
+        if (firstChildOfType(TemplateElement.class) != null) {
+            env.render(firstChildOfType(TemplateElement.class), StandardCompress.INSTANCE, null);
         }
     }
 
@@ -28,7 +27,7 @@ public class CompressedBlock extends TemplateElement {
     }
 
     public boolean isIgnorable() {
-        return getNestedBlock() == null || getNestedBlock().isIgnorable();
+        return firstChildOfType(TemplateElement.class) == null || firstChildOfType(TemplateElement.class).isIgnorable();
     }
 }
 

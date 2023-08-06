@@ -43,12 +43,12 @@ public class EscapeBlock extends TemplateElement {
     }
 
     public void setContent(TemplateElement nestedBlock) {
-        this.setNestedBlock(nestedBlock);
+        this.add(nestedBlock);
     }
 
     public void execute(Environment env) throws TemplateException, IOException {
-        if (getNestedBlock() != null) {
-            env.render(getNestedBlock());
+        if (firstChildOfType(TemplateElement.class) != null) {
+            env.render(firstChildOfType(TemplateElement.class));
         }
     }
 

@@ -19,7 +19,7 @@ public class ConditionalBlock extends TemplateElement {
     public ConditionalBlock(Expression condition, TemplateElement nestedBlock, boolean isFirst)
     {
         this.condition = condition;
-        this.setNestedBlock(nestedBlock);
+        this.add(nestedBlock);
         this.isFirst = isFirst;
     }
     
@@ -39,7 +39,7 @@ public class ConditionalBlock extends TemplateElement {
         if (isSimple && condition != null && !condition.isTrue(env)) {
         	return;
         }
-        env.render(getNestedBlock());
+        env.render(firstChildOfType(TemplateElement.class));
     }
     
     public boolean isLoneIfBlock() {

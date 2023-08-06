@@ -334,7 +334,7 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(TrimBlock node) {
-		visit(node.getNestedBlock());
+		visit(node.firstChildOfType(TemplateElement.class));
 	}
 
 	public void visit(TrimInstruction node) {}

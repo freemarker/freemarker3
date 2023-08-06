@@ -39,7 +39,7 @@ public class LoopContext extends BlockScope {
                 put(iteratorBlock.getIndexName(), loopVar);
                 put(iteratorBlock.getIndexName() + "_has_next", hasNext);
                 put(iteratorBlock.getIndexName() + "_index", new SimpleNumber(index));
-                TemplateElement nestedBlock = iteratorBlock.getNestedBlock();
+                TemplateElement nestedBlock = iteratorBlock.firstChildOfType(TemplateElement.class);
                 if (nestedBlock != null) {
                     env.render(nestedBlock);
                 }
@@ -56,7 +56,7 @@ public class LoopContext extends BlockScope {
                 hasNext = (size > index + 1);
                 put(iteratorBlock.getIndexName() + "_has_next", hasNext);
                 put(iteratorBlock.getIndexName() + "_index", new SimpleNumber(index));
-                TemplateElement nestedBlock = iteratorBlock.getNestedBlock();
+                TemplateElement nestedBlock = iteratorBlock.firstChildOfType(TemplateElement.class);
                 if (nestedBlock != null) {
                     env.render(nestedBlock);
                 }

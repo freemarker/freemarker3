@@ -3,7 +3,6 @@ package freemarker.core;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Writer;
-import java.security.Permission;
 import java.util.HashMap;
 import java.util.Map;
 

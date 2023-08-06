@@ -16,7 +16,7 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     static public final Macro DO_NOTHING_MACRO = new Macro();
     static {
     	DO_NOTHING_MACRO.setName(".pass");
-    	DO_NOTHING_MACRO.setNestedBlock(TextBlock.EMPTY_BLOCK);
+    	DO_NOTHING_MACRO.add((TemplateElement) TextBlock.EMPTY_BLOCK);
     }
     
     public Macro() {
@@ -62,12 +62,12 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     }
     
     public void canonicalizeAssignments() {
-        if (createsScope() && (getNestedBlock() instanceof MixedContent)) {
-            MixedContent block = (MixedContent) getNestedBlock();
+        if (createsScope() && (firstChildOfType(TemplateElement.class) instanceof MixedContent)) {
+            MixedContent block = (MixedContent) firstChildOfType(TemplateElement.class);
             VarDirective varDirective = null;
             Set<String> variables = new HashSet<String>();
             variables.addAll(params.getParamNames());
-            for (TemplateNode te : block.getNestedElements()) {
+            for (TemplateNode te : block.childrenOfType(TemplateElement.class)) {
                 if (te instanceof VarDirective) {
                     VarDirective sdir = (VarDirective) te; 
                     if (varDirective == null){
@@ -79,11 +79,11 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
                     }
                 }
             }
-            for (String varname : getDeclaredVariables()) {
+            for (String varname : declaredVariables()) {
                 if (!variables.contains(varname)) {
                     if (varDirective == null) {
                         varDirective = new VarDirective();
-                        block.prependElement(varDirective);
+                        block.add(0, varDirective);
                     }
                     varDirective.addVar(varname);
                 }

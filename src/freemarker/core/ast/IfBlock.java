@@ -32,7 +32,7 @@ public class IfBlock extends TemplateElement {
             ConditionalBlock cblock = (ConditionalBlock) te;
             Expression condition = cblock.getCondition();
             if (condition == null || condition.isTrue(env)) {
-                if (cblock.getNestedBlock() != null) {
+                if (cblock.firstChildOfType(TemplateElement.class) != null) {
                     env.render(cblock);
                 }
                 return;

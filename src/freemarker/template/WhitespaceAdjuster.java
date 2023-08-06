@@ -26,7 +26,7 @@ public class WhitespaceAdjuster extends ASTVisitor {
 		super.visit(node);
 		List<TemplateElement> childElements = new ArrayList<TemplateElement>();
 		TemplateElement prev = null;
-		for (TemplateElement elem : node.getNestedElements()) {
+		for (TemplateElement elem : node.childrenOfType(TemplateElement.class)) {
 			if (!elem.isIgnorable()) {
 				childElements.add(elem);
 			}
