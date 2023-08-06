@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
 /**
@@ -33,7 +32,7 @@ implements
      * Creates a new model that wraps the specified enumeration object.
      * @param enumeration the enumeration object to wrap into a model.
      */
-    public EnumerationModel(Enumeration enumeration)
+    public EnumerationModel(Enumeration<?> enumeration)
     {
         super(enumeration);
     }

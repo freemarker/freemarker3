@@ -50,7 +50,7 @@ public class ObjectWrapper
     // for a specified class. Each key is a Class, each value is a hash map. In
     // that hash map, each key is a property/method name, each value is a
     // MethodDescriptor or a PropertyDescriptor assigned to that property/method.
-    private final Map<Class<?>,Map> classCache = new ConcurrentHashMap<Class<?>, Map>();
+    private final Map<Class<?>,Map<String,Object>> classCache = new ConcurrentHashMap<>();
     private Set<String> cachedClassNames = new HashSet<String>();
 
     /**
@@ -91,7 +91,6 @@ public class ObjectWrapper
 
     private int exposureLevel = EXPOSE_SAFE;
     private boolean methodsShadowItems = true;
-    private boolean exposeFields = false;
     private int defaultDateType = TemplateDateModel.UNKNOWN;
 
     private boolean strict = false;
@@ -176,16 +175,6 @@ public class ObjectWrapper
         return methodsShadowItems;
     }
     
-    public void setExposeFields(boolean exposeFields)
-    {
-        this.exposeFields = exposeFields;
-    }
-    
-    public boolean isExposeFields()
-    {
-        return exposeFields;
-    }
-    
     /**
      * Sets the default date type to use for date models that result from
      * a plain <tt>java.util.Date</tt> instead of <tt>java.sql.Date</tt> or
@@ -249,21 +238,19 @@ public class ObjectWrapper
             return (TemplateModel)object;
         }
         if (object instanceof Map) {
-            return  new SimpleMapModel((Map)object);
-            //return new MapModel((Map) object);
+            return  new SimpleMapModel((Map<?,?>)object);
         }
         if (object instanceof List) {
-            return new ListModel((List)object);
+            return new ListModel((List<?>)object);
         }
         if (object instanceof Iterator) {
-            return new IteratorModel((Iterator) object);
+            return new IteratorModel((Iterator<?>) object);
         }
         if (object instanceof Enumeration) {
-            return new EnumerationModel((Enumeration)object);
+            return new EnumerationModel((Enumeration<?>)object);
         }
         if (object instanceof Boolean) {
             return object;
-//            return (Boolean)object ? TRUE : FALSE; 
         }
         if (object.getClass().isArray()) {
             return new ArrayModel(object);
@@ -273,7 +260,6 @@ public class ObjectWrapper
         }
         if (object instanceof Number) {
             return new NumberModel((Number)object);
-//            return object;
         }
         if (object instanceof Date) {
             return new DateModel((Date) object);
@@ -296,29 +282,29 @@ public class ObjectWrapper
      * {@link TemplateBooleanModel} instances into a Boolean.
      * All other objects are returned unchanged.
      */
-    public Object unwrap(Object model) 
+    public Object unwrap(Object object) 
     {
-        return unwrap(model, OBJECT_CLASS);
+        return unwrap(object, OBJECT_CLASS);
     }
     
-    public Object unwrap(Object model, Class requiredType) 
+    public Object unwrap(Object object, Class requiredType) 
     {
-        return unwrap(model, requiredType, null);
+        return unwrap(object, requiredType, null);
     }
     
-    private Object unwrap(Object model, Class<?> requiredType, 
+    private Object unwrap(Object object, Class<?> requiredType, 
             Map<Object, Object> recursionStops) 
     {
-        if(model == null) {
+        if(object == null) {
             throw new TemplateModelException("invalid reference");
         }
 
-        if (model == Constants.JAVA_NULL) {
+        if (object == Constants.JAVA_NULL) {
             return null;
         }
 
-        if (!(model instanceof TemplateModel)) {
-            return model;
+        if (!(object instanceof TemplateModel)) {
+            return object;
         }
         
         boolean isBoolean = Boolean.TYPE == requiredType;
@@ -328,8 +314,8 @@ public class ObjectWrapper
         // Passing the hint allows i.e. a Jython-aware method that declares a
         // PyObject as its argument to receive a PyObject from a JythonModel
         // passed as an argument to TemplateMethodModelEx etc.
-        if(model instanceof AdapterTemplateModel) {
-            Object adapted = ((AdapterTemplateModel)model).getAdaptedObject(
+        if(object instanceof AdapterTemplateModel) {
+            Object adapted = ((AdapterTemplateModel)object).getAdaptedObject(
                     requiredType);
             if(requiredType.isInstance(adapted)) {
                 return adapted;
@@ -351,8 +337,8 @@ public class ObjectWrapper
         // know what is expected as the return type.
 
         if(STRING_CLASS == requiredType) {
-            if(model instanceof TemplateScalarModel) {
-                return ((TemplateScalarModel)model).getAsString();
+            if(object instanceof TemplateScalarModel) {
+                return ((TemplateScalarModel)object).getAsString();
             }
             // String is final, so no other conversion will work
             return CAN_NOT_UNWRAP;
@@ -361,9 +347,9 @@ public class ObjectWrapper
         // Primitive numeric types & Number.class and its subclasses
         if((requiredType.isPrimitive() && !isChar && !isBoolean) 
                 || NUMBER_CLASS.isAssignableFrom(requiredType)) {
-            if(model instanceof TemplateNumberModel) {
+            if(object instanceof TemplateNumberModel) {
                 Number number = convertUnwrappedNumber(requiredType, 
-                        ((TemplateNumberModel)model).getAsNumber());
+                        ((TemplateNumberModel)object).getAsNumber());
                 if(number != null) {
                     return number;
                 }
@@ -371,8 +357,8 @@ public class ObjectWrapper
         }
         
         if(isBoolean || BOOLEAN_CLASS == requiredType) {
-            if(model instanceof TemplateBooleanModel) {
-                return ((TemplateBooleanModel)model).getAsBoolean() 
+            if(object instanceof TemplateBooleanModel) {
+                return ((TemplateBooleanModel)object).getAsBoolean() 
                 ? Boolean.TRUE : Boolean.FALSE;
             }
             // Boolean is final, no other conversion will work
@@ -380,39 +366,39 @@ public class ObjectWrapper
         }
 
         if(requiredType == Map.class) {
-            if(model instanceof TemplateHashModel) {
-                return new HashAdapter((TemplateHashModel)model, this);
+            if(object instanceof TemplateHashModel) {
+                return new HashAdapter((TemplateHashModel)object, this);
             }
         }
         
         if(requiredType == List.class) {
-            if(model instanceof TemplateSequenceModel) {
-                return new SequenceAdapter((TemplateSequenceModel)model, this);
+            if(object instanceof TemplateSequenceModel) {
+                return new SequenceAdapter((TemplateSequenceModel)object, this);
             }
         }
         
         if(SET_CLASS == requiredType) {
-            if(model instanceof TemplateCollectionModel) {
-                return new SetAdapter((TemplateCollectionModel)model, this);
+            if(object instanceof TemplateCollectionModel) {
+                return new SetAdapter((TemplateCollectionModel)object, this);
             }
         }
         
         if(COLLECTION_CLASS == requiredType 
                 || ITERABLE_CLASS == requiredType) {
-            if(model instanceof TemplateCollectionModel) {
-                return new CollectionAdapter((TemplateCollectionModel)model, 
+            if(object instanceof TemplateCollectionModel) {
+                return new CollectionAdapter((TemplateCollectionModel)object, 
                         this);
             }
-            if(model instanceof TemplateSequenceModel) {
-                return new SequenceAdapter((TemplateSequenceModel)model, this);
+            if(object instanceof TemplateSequenceModel) {
+                return new SequenceAdapter((TemplateSequenceModel)object, this);
             }
         }
         
         // TemplateSequenceModels can be converted to arrays
         if(requiredType.isArray()) {
-            if(model instanceof TemplateSequenceModel) {
+            if(object instanceof TemplateSequenceModel) {
                 if(recursionStops != null) {
-                    Object retval = recursionStops.get(model);
+                    Object retval = recursionStops.get(object);
                     if(retval != null) {
                         return retval;
                     }
@@ -420,10 +406,10 @@ public class ObjectWrapper
                     recursionStops = 
                         new IdentityHashMap<Object, Object>();
                 }
-                TemplateSequenceModel seq = (TemplateSequenceModel)model;
+                TemplateSequenceModel seq = (TemplateSequenceModel)object;
                 Class componentType = requiredType.getComponentType();
                 Object array = Array.newInstance(componentType, seq.size());
-                recursionStops.put(model, array);
+                recursionStops.put(object, array);
                 try {
                     int size = seq.size();
                     for (int i = 0; i < size; i++) {
@@ -435,7 +421,7 @@ public class ObjectWrapper
                         Array.set(array, i, val);
                     }
                 } finally {
-                    recursionStops.remove(model);
+                    recursionStops.remove(object);
                 }
                 return array;
             }
@@ -445,8 +431,8 @@ public class ObjectWrapper
         
         // Allow one-char strings to be coerced to characters
         if(isChar || requiredType == CHARACTER_CLASS) {
-            if(model instanceof TemplateScalarModel) {
-                String s = ((TemplateScalarModel)model).getAsString();
+            if(object instanceof TemplateScalarModel) {
+                String s = ((TemplateScalarModel)object).getAsString();
                 if(s.length() == 1) {
                     return Character.valueOf(s.charAt(0));
                 }
@@ -456,8 +442,8 @@ public class ObjectWrapper
         }
 
         if(DATE_CLASS.isAssignableFrom(requiredType)) {
-            if(model instanceof TemplateDateModel) {
-                Date date = ((TemplateDateModel)model).getAsDate();
+            if(object instanceof TemplateDateModel) {
+                Date date = ((TemplateDateModel)object).getAsDate();
                 if(requiredType.isInstance(date)) {
                     return date;
                 }
@@ -468,44 +454,44 @@ public class ObjectWrapper
         // no help initially, now use an admittedly arbitrary order of 
         // interfaces. Note we still test for isInstance and isAssignableFrom
         // to guarantee we return a compatible value. 
-        if(model instanceof TemplateNumberModel) {
-            Number number = ((TemplateNumberModel)model).getAsNumber();
+        if(object instanceof TemplateNumberModel) {
+            Number number = ((TemplateNumberModel)object).getAsNumber();
             if(requiredType.isInstance(number)) {
                 return number;
             }
         }
-        if(model instanceof TemplateDateModel) {
-            Date date = ((TemplateDateModel)model).getAsDate();
+        if(object instanceof TemplateDateModel) {
+            Date date = ((TemplateDateModel)object).getAsDate();
             if(requiredType.isInstance(date)) {
                 return date;
             }
         }
-        if(model instanceof TemplateScalarModel && 
+        if(object instanceof TemplateScalarModel && 
                 requiredType.isAssignableFrom(STRING_CLASS)) {
-            return ((TemplateScalarModel)model).getAsString();
+            return ((TemplateScalarModel)object).getAsString();
         }
-        if(model instanceof TemplateBooleanModel && 
+        if(object instanceof TemplateBooleanModel && 
                 requiredType.isAssignableFrom(BOOLEAN_CLASS)) {
-            return ((TemplateBooleanModel)model).getAsBoolean() 
+            return ((TemplateBooleanModel)object).getAsBoolean() 
             ? Boolean.TRUE : Boolean.FALSE;
         }
-        if(model instanceof TemplateHashModel && requiredType.isAssignableFrom(
+        if(object instanceof TemplateHashModel && requiredType.isAssignableFrom(
                 HASHADAPTER_CLASS)) {
-            return new HashAdapter((TemplateHashModel)model, this);
+            return new HashAdapter((TemplateHashModel)object, this);
         }
-        if(model instanceof TemplateSequenceModel 
+        if(object instanceof TemplateSequenceModel 
                 && requiredType.isAssignableFrom(SEQUENCEADAPTER_CLASS)) {
-            return new SequenceAdapter((TemplateSequenceModel)model, this);
+            return new SequenceAdapter((TemplateSequenceModel)object, this);
         }
-        if(model instanceof TemplateCollectionModel && 
+        if(object instanceof TemplateCollectionModel && 
                 requiredType.isAssignableFrom(SETADAPTER_CLASS)) {
-            return new SetAdapter((TemplateCollectionModel)model, this);
+            return new SetAdapter((TemplateCollectionModel)object, this);
         }
 
         // Last ditch effort - is maybe the model itself instance of the 
         // required type?
-        if(requiredType.isInstance(model)) {
-            return model;
+        if(requiredType.isInstance(object)) {
+            return object;
         }
         
         return CAN_NOT_UNWRAP;
@@ -594,7 +580,7 @@ public class ObjectWrapper
         try
         {
             introspectClass(clazz);
-            Map classInfo = classCache.get(clazz);
+            Map<String,Object> classInfo = classCache.get(clazz);
             Object ctors = classInfo.get(CONSTRUCTORS);
             if(ctors == null)
             {
@@ -635,7 +621,7 @@ public class ObjectWrapper
         }
     }
     
-    void introspectClass(Class clazz)
+    void introspectClass(Class<?> clazz)
     {
         if(!classCache.containsKey(clazz))
         {
@@ -649,7 +635,7 @@ public class ObjectWrapper
         }
     }
 
-    private void introspectClassInternal(Class clazz)
+    private void introspectClassInternal(Class<?> clazz)
     {
         String className = clazz.getName();
         if(cachedClassNames.contains(className))
@@ -668,9 +654,9 @@ public class ObjectWrapper
         cachedClassNames.add(className);
     }
 
-    Map getClassKeyMap(Class clazz)
+    Map<String,Object> getClassKeyMap(Class clazz)
     {
-        Map map = classCache.get(clazz);
+        Map<String, Object> map = classCache.get(clazz);
         if(map == null)
         {
             synchronized(classCache)
@@ -783,18 +769,6 @@ public class ObjectWrapper
     private Map<Object, Object> populateClassMapWithBeanInfo(Class clazz)
     {
         Map<Object, Object> classMap = new HashMap<Object, Object>();
-        if(exposeFields)
-        {
-            Field[] fields = clazz.getFields();
-            for (int i = 0; i < fields.length; i++)
-            {
-                Field field = fields[i];
-                if((field.getModifiers() & Modifier.STATIC) == 0)
-                {
-                    classMap.put(field.getName(), field);
-                }
-            }
-        }
         Map<MethodSignature, List<Method>> accessibleMethods = discoverAccessibleMethods(clazz);
         Method genericGet = getFirstAccessibleMethod(MethodSignature.GET_STRING_SIGNATURE, accessibleMethods);
         if(genericGet == null) {

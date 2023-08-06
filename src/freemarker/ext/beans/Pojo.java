@@ -91,8 +91,8 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
         throws
         TemplateModelException
     {
-        Class clazz = object.getClass();
-        Map classInfo = ObjectWrapper.instance().getClassKeyMap(clazz);
+        Class<?> clazz = object.getClass();
+        Map<String,Object> classInfo = ObjectWrapper.instance().getClassKeyMap(clazz);
         Object retval = null;
 
         ObjectWrapper.instance().introspectClass(object.getClass());
@@ -110,10 +110,10 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
             }
             else
             {
-                Object model = invokeGenericGet(classInfo, key);
-                if(model != null && model != Constants.JAVA_NULL)
+                Object object = invokeGenericGet(classInfo, key);
+                if(object != null && object != Constants.JAVA_NULL)
                 {
-                    return model;
+                    return object;
                 }
                 Object fd = classInfo.get(key);
                 if(fd != null) {
@@ -235,9 +235,9 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
         return ObjectWrapper.instance().wrap(obj);
     }
     
-    protected Object unwrap(TemplateModel model)
+    protected Object unwrap(TemplateModel object)
     {
-        return ObjectWrapper.instance().unwrap(model);
+        return ObjectWrapper.instance().unwrap(object);
     }
 
     /**
@@ -297,7 +297,7 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
      * interface. Subclasses that override <tt>invokeGenericGet</tt> to
      * provide additional hash keys should also override this method.
      */
-    protected Set keySet()
+    Set keySet()
     {
         return ObjectWrapper.instance().keySet(object.getClass());
     }    
