@@ -23,7 +23,7 @@ public class UnaryPlusMinusExpression extends Expression {
     	return isMinus;
     }
     
-    TemplateModel _getAsTemplateModel(Environment env) {
+    public TemplateModel _getAsTemplateModel(Environment env) {
         TemplateNumberModel targetModel = null;
         try {
             targetModel = (TemplateNumberModel) target.getAsTemplateModel(env);
@@ -40,7 +40,7 @@ public class UnaryPlusMinusExpression extends Expression {
         return new SimpleNumber(n);
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return target.isLiteral();
     }
 

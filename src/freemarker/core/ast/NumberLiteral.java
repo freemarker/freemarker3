@@ -16,7 +16,7 @@ public class NumberLiteral extends Expression implements TemplateNumberModel {
         this.value = value;
     }
     
-    TemplateModel _getAsTemplateModel(Environment env) {
+    public TemplateModel _getAsTemplateModel(Environment env) {
         return new SimpleNumber(value);
     }
     
@@ -36,7 +36,7 @@ public class NumberLiteral extends Expression implements TemplateNumberModel {
         return "the number: '" + value + "'";
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return true; 
     }
 

@@ -1,6 +1,7 @@
 package freemarker.core.helpers;
 
 import freemarker.core.ast.*;
+import freemarker.core.parser.ast.NullLiteral;
 import freemarker.core.parser.ast.TemplateNode;
 
 import java.util.*;

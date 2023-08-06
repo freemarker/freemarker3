@@ -19,11 +19,11 @@ public class ParentheticalExpression extends Expression {
     	return nested;
     }
     
-    Object _getAsTemplateModel(Environment env) {
+    public Object _getAsTemplateModel(Environment env) {
         return nested.getAsTemplateModel(env);
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return nested.isLiteral();
     }
 

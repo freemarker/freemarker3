@@ -15,49 +15,51 @@ public class ArithmeticExpression extends Expression {
     static public final int DIVISION = 2;
     static public final int MODULUS = 3;
 
-    private Expression left;
-    private Expression right;
     private int operation;
 
+    public ArithmeticExpression() {}
+
     public ArithmeticExpression(Expression left, Expression right, int operation) {
-        this.left = left;
-        this.right = right;
+        add(left);
+        add(right);
         this.operation = operation;
-        left.setParent(this);
-        right.setParent(this);
     }
     
     public Expression getLeft() {
-    	return left;
+    	return (Expression) get(0);
     }
     
     public Expression getRight() {
-    	return right;
+    	return (Expression) get(1);
     }
     
     public int getOperation() {
     	return operation;
     }
+
+    public void setOperation(int operation) {
+        this.operation = operation;
+    }
     
-    TemplateModel _getAsTemplateModel(Environment env) throws TemplateException 
+    public TemplateModel _getAsTemplateModel(Environment env) throws TemplateException 
     {
-        Object leftModel = left.getAsTemplateModel(env);
-        Object rightModel = right.getAsTemplateModel(env);
+        Object leftModel = getLeft().getAsTemplateModel(env);
+        Object rightModel = getRight().getAsTemplateModel(env);
         boolean leftIsNumber = (leftModel instanceof TemplateNumberModel);
         boolean rightIsNumber = (rightModel instanceof TemplateNumberModel);
         boolean bothNumbers = leftIsNumber && rightIsNumber;
         if (!bothNumbers) {
             String msg = "Error " + getStartLocation();
             if (!leftIsNumber) {
-                msg += "\nExpression " + left + " is not numerical";
+                msg += "\nExpression " + getLeft() + " is not numerical";
             }
             if (!rightIsNumber) {
-                msg += "\nExpression " + right + " is not numerical";
+                msg += "\nExpression " + getRight() + " is not numerical";
             }
             throw new NonNumericalException(msg, env);
         }
-        Number first = EvaluationUtil.getNumber(leftModel, left, env);
-        Number second = EvaluationUtil.getNumber(rightModel, right, env);
+        Number first = EvaluationUtil.getNumber(leftModel, getLeft(), env);
+        Number second = EvaluationUtil.getNumber(rightModel, getRight(), env);
         ArithmeticEngine ae = 
             env != null 
                 ? env.getArithmeticEngine()
@@ -76,11 +78,11 @@ public class ArithmeticExpression extends Expression {
         }
     }
 
-    boolean isLiteral() {
-        return constantValue != null || (left.isLiteral() && right.isLiteral());
+    public boolean isLiteral() {
+        return constantValue != null || (getLeft().isLiteral() && getRight().isLiteral());
     }
 
     Expression _deepClone(String name, Expression subst) {
-    	return new ArithmeticExpression(left.deepClone(name, subst), right.deepClone(name, subst), operation);
+    	return new ArithmeticExpression(getLeft().deepClone(name, subst), getRight().deepClone(name, subst), operation);
     }
 }

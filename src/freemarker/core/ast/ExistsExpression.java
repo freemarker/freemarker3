@@ -19,7 +19,7 @@ public class ExistsExpression extends Expression {
 		return exp;
 	}
 
-	Object _getAsTemplateModel(Environment env) {
+	public Object _getAsTemplateModel(Environment env) {
 		Object tm = null;
 		try {
 			tm = exp.getAsTemplateModel(env);
@@ -33,7 +33,7 @@ public class ExistsExpression extends Expression {
 		       : TemplateBooleanModel.TRUE;
 	}
 
-	boolean isLiteral() {
+	public boolean isLiteral() {
 		return exp.isLiteral();
 	}
 

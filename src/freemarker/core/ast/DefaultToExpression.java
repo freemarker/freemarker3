@@ -54,7 +54,7 @@ public class DefaultToExpression extends Expression {
 		return rhs;
 	}
 
-	Object _getAsTemplateModel(Environment env) {
+	public Object _getAsTemplateModel(Environment env) {
 		Object left = null;		
 		try {
 			left = lhs.getAsTemplateModel(env);
@@ -68,7 +68,7 @@ public class DefaultToExpression extends Expression {
 		return rhs.getAsTemplateModel(env);
 	}
 
-	boolean isLiteral() {
+	public boolean isLiteral() {
 		return false;
 	}
 

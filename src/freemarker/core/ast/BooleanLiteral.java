@@ -23,11 +23,11 @@ public class BooleanLiteral extends Expression {
         return value ? "true" : "false";
     }
 
-    Object _getAsTemplateModel(Environment env) {
+    public Object _getAsTemplateModel(Environment env) {
         return value ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return true;
     }
 

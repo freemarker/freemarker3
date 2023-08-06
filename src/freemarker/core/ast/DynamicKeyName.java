@@ -29,7 +29,7 @@ public class DynamicKeyName extends Expression {
     	return target;
     }
 
-    Object _getAsTemplateModel(Environment env) throws TemplateException
+    public Object _getAsTemplateModel(Environment env) throws TemplateException
     {
         Object targetModel = target.getAsTemplateModel(env);
         assertNonNull(targetModel, target, env);
@@ -181,7 +181,7 @@ public class DynamicKeyName extends Expression {
         }
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return constantValue != null || (target.isLiteral() && nameExpression.isLiteral());
     }
 

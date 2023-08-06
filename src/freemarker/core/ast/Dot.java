@@ -27,7 +27,7 @@ public class Dot extends Expression {
     	return key;
     }
 
-    Object _getAsTemplateModel(Environment env) {
+    public Object _getAsTemplateModel(Environment env) {
         Object leftModel = target.getAsTemplateModel(env);
         if(leftModel instanceof TemplateHashModel) {
             return ((TemplateHashModel) leftModel).get(key);
@@ -35,7 +35,7 @@ public class Dot extends Expression {
         throw invalidTypeException(leftModel, target, env, "hash");
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return target.isLiteral();
     }
 

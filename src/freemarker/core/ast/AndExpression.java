@@ -26,7 +26,7 @@ public class AndExpression extends BooleanExpression {
         return left.isTrue(env) && right.isTrue(env);
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return constantValue != null || (left.isLiteral() && right.isLiteral());
     }
 

@@ -12,29 +12,32 @@ import java.util.*;
  */
 public class AddConcatExpression extends Expression {
 
-    private Expression left;
-    private Expression right;
+//    private Expression left;
+//    private Expression right;
+    public AddConcatExpression() {}
 
     public AddConcatExpression(Expression left, Expression right) {
-        this.left = left;
-        this.right = right;
-        left.setParent(this);
-        right.setParent(this);
+//        this.left = left;
+//        this.right = right;
+        add(left);
+        add(right);
+//        left.setParent(this);
+//        right.setParent(this);
     }
     
     public Expression getLeft() {
-    	return left;
+    	return (Expression) get(0);
     }
     
     public Expression getRight() {
-    	return right;
+    	return (Expression) get(1);
     }
 
-    Object _getAsTemplateModel(Environment env)
+    public Object _getAsTemplateModel(Environment env)
             throws TemplateException
     {
-        Object leftModel = left.getAsTemplateModel(env);
-        Object rightModel = right.getAsTemplateModel(env);
+        Object leftModel = getLeft().getAsTemplateModel(env);
+        Object rightModel = getRight().getAsTemplateModel(env);
         if (leftModel instanceof Number && rightModel instanceof Number) {
             Number first = (Number) leftModel;
             Number second = (Number) rightModel;
@@ -46,8 +49,8 @@ public class AddConcatExpression extends Expression {
         }
         if (leftModel instanceof TemplateNumberModel && rightModel instanceof TemplateNumberModel)
         {
-            Number first = EvaluationUtil.getNumber((TemplateNumberModel) leftModel, left, env);
-            Number second = EvaluationUtil.getNumber((TemplateNumberModel) rightModel, right, env);
+            Number first = EvaluationUtil.getNumber((TemplateNumberModel) leftModel, getLeft(), env);
+            Number second = EvaluationUtil.getNumber((TemplateNumberModel) rightModel, getRight(), env);
             ArithmeticEngine ae =
                 env != null
                     ? env.getArithmeticEngine()
@@ -59,9 +62,9 @@ public class AddConcatExpression extends Expression {
             return new ConcatenatedSequence((TemplateSequenceModel)leftModel, (TemplateSequenceModel)rightModel);
         }
         else if (isDisplayableAsString(leftModel) && isDisplayableAsString(rightModel)) {
-            String s1 = getStringValue(leftModel, left, env);
+            String s1 = getStringValue(leftModel, getLeft(), env);
             if(s1 == null) s1 = "null";
-            String s2 = getStringValue(rightModel, right, env);
+            String s2 = getStringValue(rightModel, getRight(), env);
             if(s2 == null) s2 = "null";
             return new SimpleScalar(s1.concat(s2));
         }
@@ -85,19 +88,19 @@ public class AddConcatExpression extends Expression {
         throw new TemplateException(msg, env);
     }
 
-    boolean isLiteral() {
-    	if ((right instanceof StringLiteral && !(left instanceof StringLiteral))
-    		|| (!(right instanceof StringLiteral) && left instanceof StringLiteral))
+    public boolean isLiteral() {
+    	if ((getRight() instanceof StringLiteral && !(getLeft() instanceof StringLiteral))
+    		|| (!(getRight() instanceof StringLiteral) && getLeft() instanceof StringLiteral))
     		return false; // REVISIT (This is hacky, but the problem is that
     	                  // we can't do a parse-time optimization of, say,
     	                  // ${"The answer is: " + 1.1}
     	                  // since the display of the decimal number depends i18n
     	                  // considerations only known at render-time. (JR))
-        return constantValue != null || (left.isLiteral() && right.isLiteral());
+        return constantValue != null || (getLeft().isLiteral() && getRight().isLiteral());
     }
 
     Expression _deepClone(String name, Expression subst) {
-    	return new AddConcatExpression(left.deepClone(name, subst), right.deepClone(name, subst));
+    	return new AddConcatExpression(getLeft().deepClone(name, subst), getRight().deepClone(name, subst));
     }
 
     private static final class ConcatenatedSequence
@@ -113,10 +116,7 @@ public class AddConcatExpression extends Expression {
             this.right = right;
         }
 
-        public int size()
-        throws
-            TemplateModelException
-        {
+        public int size() {
             return left.size() + right.size();
         }
 

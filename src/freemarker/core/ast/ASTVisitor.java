@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import freemarker.core.parser.ast.NullLiteral;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.Template;
 

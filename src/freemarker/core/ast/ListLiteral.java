@@ -37,7 +37,7 @@ public class ListLiteral extends Expression {
     	return result;
     }
 
-    Object _getAsTemplateModel(Environment env) {
+    public Object _getAsTemplateModel(Environment env) {
         SimpleSequence list = new SimpleSequence(values.size());
         for (Iterator it = values.iterator(); it.hasNext();) {
             Expression exp = (Expression) it.next();
@@ -48,7 +48,7 @@ public class ListLiteral extends Expression {
         return list;
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         if (constantValue != null) {
             return true;
         }

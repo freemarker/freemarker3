@@ -11,8 +11,9 @@ import freemarker.core.parser.ast.TemplateNode;
  */
 abstract public class Expression extends TemplateNode {
 
-    abstract Object _getAsTemplateModel(Environment env) throws TemplateException;
-    abstract boolean isLiteral();
+    public abstract Object _getAsTemplateModel(Environment env);
+    public abstract boolean isLiteral();
+    
     
     public String getDescription() {
     	return "the expression: "  + this;
@@ -91,7 +92,9 @@ abstract public class Expression extends TemplateNode {
         return clone;
     }
 
-    abstract Expression _deepClone(String name, Expression subst);
+    Expression _deepClone(String name, Expression subst) {
+        return null;
+    }
 
     boolean isTrue(Environment env) {
         Object referent = getAsTemplateModel(env);

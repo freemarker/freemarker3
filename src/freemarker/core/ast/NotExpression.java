@@ -19,7 +19,7 @@ public class NotExpression extends BooleanExpression {
         return (!target.isTrue(env));
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return target.isLiteral();
     }
 

@@ -39,7 +39,7 @@ public class MethodCall extends Expression {
     	return target;
     }
     
-    Object _getAsTemplateModel(Environment env) throws TemplateException
+    public Object _getAsTemplateModel(Environment env) throws TemplateException
     {
         Object targetModel = target.getAsTemplateModel(env);
         if (targetModel instanceof TemplateMethodModel) {
@@ -80,7 +80,7 @@ public class MethodCall extends Expression {
         return null;
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return false;
     }
 

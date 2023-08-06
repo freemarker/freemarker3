@@ -18,7 +18,7 @@ public class Identifier extends Expression {
     	return name;
     }
 
-    Object _getAsTemplateModel(Environment env) {
+    public Object _getAsTemplateModel(Environment env) {
         try {
             return env.getVariable(name);
         } catch (NullPointerException e) {
@@ -36,7 +36,7 @@ public class Identifier extends Expression {
         return name;
     }
 
-    boolean isLiteral() {
+    public boolean isLiteral() {
         return false;
     }
 

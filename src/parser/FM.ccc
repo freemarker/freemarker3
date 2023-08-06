@@ -451,7 +451,7 @@ Expression AdditiveExpression :
            // plus is treated separately, since it is also
            // used for concatenation.
              result = new AddConcatExpression(lhs, rhs);
-         }
+         } 
          else {
              result = new ArithmeticExpression(lhs, rhs,
                                             ArithmeticExpression.SUBTRACTION);
@@ -882,17 +882,34 @@ Expression BooleanLiteral :
    }
 ;
 
-Expression NullLiteral :
-{
-   Token t;
-}
-   t=<NULL>
-   {
-       Expression result = new NullLiteral();
-       result.setLocation(template, t, t);
-       return result;
-   }
+NullLiteral# :
+   <NULL>
 ;
+
+INJECT NullLiteral : 
+   import freemarker.core.Environment;
+   import freemarker.template.Constants;
+   import freemarker.template.TemplateModel;
+   import freemarker.core.ast.Expression;
+   extends Expression
+{
+    public String toString() {
+    	return "null";
+    }
+
+    public TemplateModel _getAsTemplateModel(Environment env) {
+        return Constants.JAVA_NULL;
+    }
+
+    public boolean isLiteral() {
+    	return true;
+    }
+
+//    Expression _deepClone(String name, Expression subst) {
+//    	return new NullLiteral();
+//    }
+}
+
 #HashLiteral :
 {
    Token begin, end;
