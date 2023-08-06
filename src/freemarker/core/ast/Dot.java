@@ -1,6 +1,7 @@
 package freemarker.core.ast;
 
 import freemarker.core.Environment;
+import freemarker.core.parser.ast.Identifier;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModel;

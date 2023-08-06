@@ -16,6 +16,7 @@ import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.*;
 import freemarker.core.parser.ast.TemplateNode;
+import freemarker.core.parser.ast.Identifier;
 import freemarker.log.Logger;
 import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;

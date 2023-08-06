@@ -42,6 +42,7 @@ INJECT BASE_NODE_CLASS :
          return beginLine;
       }
       TokenSource tokenSource = getTokenSource();
+      //return tokenSource.getLineFromOffset(getBeginOffset());
       return tokenSource == null ? 0 : tokenSource.getLineFromOffset(getBeginOffset());
 	}
 	
@@ -64,7 +65,6 @@ INJECT BASE_NODE_CLASS :
 	public int getEndColumnTabAdjusted() {
 		return template==null ? endColumn 
             : template.getTabAdjustedColumn(beginLine, endColumn, TAB_SIZE);
-			
 	}
 	
     /**
@@ -72,9 +72,9 @@ INJECT BASE_NODE_CLASS :
      * where in the template source, this object is.
      */
     public String getStartLocation() {
-        String templateName = template != null ? template.getName() : "input";
+        String templateName = template != null ? template.getName() : getInputSource();
         return "on line " 
-              + beginLine 
+              + getBeginLine() 
               + ", column " 
               + getBeginColumn()
               + " in "
@@ -82,7 +82,7 @@ INJECT BASE_NODE_CLASS :
     }
 
     public String getEndLocation() {
-        String templateName = template != null ? template.getName() : "input";
+        String templateName = template != null ? template.getName() : getInputSource();
         return "on line " 
               + endLine
               + ", column "
@@ -656,17 +656,56 @@ Expression NumberLiteral :
    }
 ;
 
-#Identifier :
-{
-    Token t;
-}
-    t=<ID>
-    {
-        Identifier id = new Identifier(t.getImage());
-        id.setLocation(template, t, t);
-        return id;
-    }
+Identifier# :
+   <ID> 
+   {
+      CURRENT_NODE.setName(lastConsumedToken.toString());
+   } 
 ;
+
+INJECT Identifier :
+    import freemarker.template.TemplateException;
+    import freemarker.core.Environment;
+    import freemarker.core.ast.Expression;
+    extends Expression
+{
+    @Property String name;
+
+    public Identifier() {}
+
+    public Identifier(String name) {
+        this.name = name;
+    }
+    
+    public Object _getAsTemplateModel(Environment env) {
+        try {
+            return env.getVariable(name);
+        } catch (NullPointerException e) {
+            if (env == null) {
+                throw new TemplateException("Variables are not available "
+                + "(certainly you are in a parse-time executed directive). The name of the variable "
+                + "you tried to read: " + name, null);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    public String toString() {
+        return name;
+    }
+
+    public boolean isLiteral() {
+        return false;
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        if(this.name.equals(name)) {
+        	return subst.deepClone(null, null);
+        }
+        return new Identifier(this.name);
+    }
+}
 
 Expression IdentifierOrStringLiteral :
 {
@@ -922,7 +961,7 @@ INJECT NullLiteral :
     	return "null";
     }
 
-    public TemplateModel _getAsTemplateModel(Environment env) {
+    public Object _getAsTemplateModel(Environment env) {
         return Constants.JAVA_NULL;
     }
 

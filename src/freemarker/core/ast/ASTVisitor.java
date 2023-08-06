@@ -6,6 +6,7 @@ import java.util.*;
 
 import freemarker.core.parser.ast.NullLiteral;
 import freemarker.core.parser.ast.TemplateNode;
+import freemarker.core.parser.ast.Identifier;
 import freemarker.template.Template;
 
 
