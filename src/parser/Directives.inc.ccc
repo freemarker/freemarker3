@@ -1,0 +1,1382 @@
+/**
+ * A production representing the ${...}
+ * that outputs a variable.
+ */
+TemplateElement StringOutput :
+{
+   Expression exp;
+   Token begin, end;
+   boolean unclosed = false;
+}
+   begin=<OUTPUT_ESCAPE> 
+   exp=Expression
+	end=<CLOSE_BRACE>
+   {
+   	TemplateElement result = new Interpolation(exp);
+      result.setLocation(template, begin, end);
+      return result;
+   }
+;
+
+TemplateElement If :
+{
+    Token start, end, t;
+    Expression condition;
+    TemplateElement block;
+    IfBlock ifBlock;
+    ConditionalBlock cblock;
+}
+   start=<IF>
+   condition=Expression
+   <DIRECTIVE_END>
+   block=OptionalBlock
+   {
+      cblock = new ConditionalBlock(condition, block, true);
+      cblock.setLocation(template, start, block);
+      ifBlock = new IfBlock(cblock);
+   }
+   (
+       t=<ELSE_IF>
+       condition=Expression
+       LooseDirectiveEnd
+       block=OptionalBlock
+       {
+          cblock = new ConditionalBlock(condition, block, false);
+          cblock.setLocation(template, t, block);
+          ifBlock.addBlock(cblock);
+       }
+   )*
+   [
+         t=<ELSE>
+         block=OptionalBlock
+         {
+            cblock = new ConditionalBlock(null, block, false);
+            cblock.setLocation(template, t, block);
+            ifBlock.addBlock(cblock);
+         }
+   ]
+   end=CloseDirectiveBlock("if")
+   {
+       ifBlock.setLocation(template, start, end);
+       return ifBlock;
+   }
+;
+
+AttemptBlock Attempt :
+{
+   Token start, end;
+   TemplateElement block=null, recoveryBlock;
+   ParseException problem = null;
+}
+   start=<_ATTEMPT>
+   block=OptionalBlock
+   recoveryBlock=Recover
+   end=CloseDirectiveBlock("attempt, recover")
+   {
+      AttemptBlock result = new AttemptBlock(block, recoveryBlock);
+      result.setLocation(template, start, end);
+      if (problem != null) {
+      	ParsingProblem pp = new ParsingProblem(problem.getMessage(), result);
+      	result.addParsingProblem(pp);
+      }
+      return result;
+   }
+;
+
+RecoveryBlock Recover : 
+{
+   Token start;
+   TemplateElement block;
+}
+   start=<_RECOVER>
+   block=OptionalBlock
+   {
+      RecoveryBlock result = new RecoveryBlock(block);
+      result.setLocation(template, start, block);
+      return result;
+   }
+;
+
+TemplateElement List :
+{
+    Expression exp;
+    Token index, start, end, as=null, directiveEnd=null;
+    TemplateElement block;
+}
+   start=<LIST> 
+   exp=Expression
+   <AS>
+   index=<ID>
+   <DIRECTIVE_END>
+   block=OptionalBlock
+   end=CloseDirectiveBlock("list")
+   {
+     IteratorBlock result = new IteratorBlock(exp,
+                                              index.getImage(),
+                                              block,
+                                              false);
+     result.setLocation(template, start, end);
+     return result;
+   }
+;
+
+IteratorBlock ForEach :
+{
+     Expression exp;
+     Token index, start, end;
+     TemplateElement block;
+}
+   start=<FOREACH> 
+   index=<ID>
+   <IN>
+   exp=Expression
+   <DIRECTIVE_END>
+   block=OptionalBlock
+   end=CloseDirectiveBlock("foreach")
+   {
+     IteratorBlock result = new IteratorBlock(exp,
+                                              index.getImage(),
+                                              block,
+                                              true);
+     result.setLocation(template, start, end);
+     return result;
+   }
+;
+
+VisitNode Visit :
+{
+   Token start, end;
+   Expression targetNode, namespaces=null;
+}
+   start=<VISIT>
+   targetNode=Expression
+   [
+       <USING>
+       namespaces=Expression
+   ]
+   end=LooseDirectiveEnd
+   {
+       VisitNode result = new VisitNode(targetNode, namespaces);
+       result.setLocation(template, start, end);
+       return result;
+   }
+;
+
+RecurseNode Recurse :
+{
+   Token start, end = null;
+   Expression node=null, namespaces=null;
+}
+   (
+      start=<SIMPLE_RECURSE>
+      |
+      (
+         start=<RECURSE>
+         [
+            node=Expression
+         ]
+         [
+            <USING>
+            namespaces=Expression
+         ]
+         end=LooseDirectiveEnd
+      )
+   )
+   {
+       if (end == null) end = start;
+       RecurseNode result = new RecurseNode(node, namespaces);
+       result.setLocation(template, start, end);
+       return result;
+   }
+;
+
+FallbackInstruction FallBack :
+{
+   Token tok;
+}
+   tok=<FALLBACK>
+   {
+      FallbackInstruction result = new FallbackInstruction();
+      result.setLocation(template, tok, tok);
+      return result;
+   }
+;
+
+/**
+ * Production used to break out of a loop or a switch block.
+ */
+BreakInstruction Break :
+{
+   Token start;
+}
+    start=<BREAK>
+    {
+       BreakInstruction result = new BreakInstruction();
+       result.setLocation(template, start, start);
+       return result;
+    }
+;
+
+/**
+ * Production used to jump out of a macro.
+ * The stop instruction terminates the rendering of the template.
+ */
+ReturnInstruction Return :
+{
+   Token start, end=null;
+   Expression exp = null;
+}
+   (
+      start=<SIMPLE_RETURN>{end = start;}
+      |
+      start=<RETURN> 
+      exp=Expression 
+      end=LooseDirectiveEnd
+   )
+   {
+      ReturnInstruction result = new ReturnInstruction(exp);
+      result.setLocation(template, start, end);
+      return result;
+   }
+;
+
+StopInstruction Stop :
+{
+   Token start = null;
+   Expression exp = null;
+}
+    (
+      start=<HALT>
+      |
+      start=<STOP> exp=Expression LooseDirectiveEnd
+    )
+    {
+       StopInstruction result = new StopInstruction(exp);
+       result.setLocation(template, start, start);
+       return result;
+    }
+;
+
+TemplateElement Nested :
+{
+  Token t, end;
+  PositionalArgsList args=null;
+  BodyInstruction result = null;
+}
+   (
+      (
+         t=<SIMPLE_NESTED>
+         {
+            result = new BodyInstruction(null);
+            result.setLocation(template, t, t);
+         }
+      )
+      |
+      (
+          t=<NESTED>
+          args=PositionalArgsList
+          end=LooseDirectiveEnd
+          {
+             result = new BodyInstruction(args);
+             result.setLocation(template, t, end);
+          }
+      )
+   )
+   {
+       return result;
+   }
+;
+
+TemplateElement Flush :
+{
+  Token t;
+}
+   t=<FLUSH>
+   {
+       FlushInstruction result = new FlushInstruction();
+       result.setLocation(template, t, t);
+       return result;
+   }
+;
+
+TemplateElement Trim :
+{
+  Token t;
+  TrimInstruction result=null;
+}
+   (
+     t=<TRIM> {result = new TrimInstruction(true, true);}
+     |
+     t=<LTRIM> {result = new TrimInstruction(true, false);}
+     |
+     t=<RTRIM> {result = new TrimInstruction(false, true);}
+     |
+     t=<NOTRIM> {result = new TrimInstruction(false, false);}
+   )
+   {
+       result.setLocation(template, t, t);
+       return result;
+   }
+;
+
+TemplateElement Assign :
+{
+   Token start, end;
+   int type;
+   Token id=null;
+   Expression nameExp, exp, nsExp=null;
+   String varName;
+   TemplateElement block;
+   Map<String, Expression> assignments = new LinkedHashMap<>();
+   String assignmentType;
+   AssignmentInstruction result;
+}
+    (
+      start=<ASSIGN> {type = AssignmentInstruction.NAMESPACE; assignmentType="assign";}
+      |
+      start=<GLOBALASSIGN>{type = AssignmentInstruction.GLOBAL; assignmentType = "global";}
+      |
+      start=<LOCALASSIGN> {type = AssignmentInstruction.LOCAL; assignmentType = "local";}
+      |
+      start=<SET> {type = AssignmentInstruction.SET; assignmentType = "set";}
+    )
+    {result = new AssignmentInstruction(type);}
+    nameExp=IdentifierOrStringLiteral
+    {
+       varName = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
+    }
+    ((
+       <EQUALS>
+       exp=Expression {assignments.put(varName, exp);}
+       (
+   //      SCAN [<COMMA>](<ID>|<STRING_LITERAL>)<EQUALS> =>
+            [<COMMA>]
+            nameExp=IdentifierOrStringLiteral
+            {
+               varName = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
+            }
+            <EQUALS> =>||
+            exp=Expression
+            {
+            	assignments.put(varName, exp);
+            } 
+       )*
+       [
+          id=<IN>
+          nsExp=Expression {if (type != AssignmentInstruction.SET && type != AssignmentInstruction.NAMESPACE) {
+          	   ParsingProblem problem = new ParsingProblem("Can only assign to namespace with #set or #assign.", result);
+          	   template.addParsingProblem(problem);
+            } 
+          }
+       ]
+       end=LooseDirectiveEnd
+       {
+           result.setNamespaceExp(nsExp);
+		   for (Map.Entry<String,Expression> entry : assignments.entrySet()) {
+           	    result.addAssignment(entry.getKey(), entry.getValue());
+           }
+           result.setLocation(template, start, end);
+           return result;
+       }
+    )
+    |
+    (
+       [
+          id=<IN>
+          nsExp=Expression {if (type != AssignmentInstruction.NAMESPACE && type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.getBeginLine(), id.getBeginColumn());}
+       ]
+       <DIRECTIVE_END>
+       block=OptionalBlock
+       end=CloseDirectiveBlock(assignmentType)
+       {
+       	  String name = end.getImage().substring(3, end.getImage().length() -1);
+       	  switch (type) {
+       	   	   case AssignmentInstruction.LOCAL : if (name.length() >0 && !name.equals("local")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.getBeginLine(), end.getBeginColumn()); break;
+       	   	   case AssignmentInstruction.NAMESPACE : if (name.length() >0 && !name.equals("assign")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.getBeginLine(), end.getBeginColumn()); break;
+       	   	   case AssignmentInstruction.GLOBAL : if (name.length() >0 && !name.equals("global")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.getBeginLine(), end.getBeginColumn()); break;
+       	   	   case AssignmentInstruction.SET : if (name.length() >0 && !name.equals("set")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.getBeginLine(), end.getBeginColumn()); break;
+       	  }
+          BlockAssignment ba = new BlockAssignment(block, varName, type, nsExp);
+          ba.setLocation(template, start, end);
+          return ba;
+       }
+    ))
+;
+#Include :
+{
+   Token att, start, end;
+   Expression nameExp, exp, parseExp = null, encodingExp = null;
+   boolean freshNamespace;
+}
+    (
+        start=<_INCLUDE> {freshNamespace = false;}
+        |
+        start=<EMBED> {freshNamespace=true;}
+    )
+    nameExp=Expression
+    [<SEMICOLON>]
+    (
+	  att=<ID>
+	  <EQUALS>
+	  exp=Expression
+	  {
+	     String attString = att.getImage();
+	     if (attString.equalsIgnoreCase("parse")) {
+	        if (parseExp != null) {
+	           String msg = getErrorStart(att)
+	                 + "\nparse may not be specified more than once.";
+	           throw new ParseException(msg, att.getBeginLine(), att.getBeginColumn());
+	        }
+	        parseExp = exp;
+	     }
+	     else if (attString.equalsIgnoreCase("encoding")) {
+	        if (encodingExp != null) {
+	           String msg = getErrorStart(att)
+	                 + "\nencoding may not be specified more than once.";
+	           throw new ParseException(msg, att.getBeginLine(), att.getBeginColumn());
+	        }
+	        encodingExp = exp;
+	     }
+	     else {
+	         String msg = getErrorStart(att)
+	               + "\nexpecting parse= or encoding= to be specified.";
+	         throw new ParseException(msg, att.getBeginLine(), att.getBeginColumn());
+	     }
+	  }
+	)*
+    end=LooseDirectiveEnd
+    {
+       Include result = new Include(template, nameExp, freshNamespace, encodingExp, parseExp);
+       result.setLocation(template, start, end);
+       return result;
+    }
+;
+
+LibraryLoad Import :
+{
+   Token start, end, ns;
+   Expression nameExp;
+}
+   start=<IMPORT>
+   nameExp=Expression
+   <AS>
+   ns=<ID>
+   end=LooseDirectiveEnd
+   {
+       LibraryLoad result = new LibraryLoad(template, nameExp, ns.getImage());
+       result.setLocation(template, start, end);
+       if (template != null) template.addImport(result);
+       return result;
+   }
+;
+#ParameterList :
+{
+	Token arg=null, firstArg=null, ellipsis = null;
+	Expression defValue = null;
+	ParameterList result = new ParameterList();
+	String catchAll = null;
+	boolean isCatchAll = false, hasDefaults = false;
+	Set<String> paramNames = new HashSet<String>();
+}
+    (
+          arg=<ID> 
+          {
+          	if (firstArg == null) firstArg = arg;
+          	defValue = null;
+          	if (paramNames.contains(arg.getImage())) {
+          		throw new ParseException(getErrorStart(arg) + "\nThe parameter " + arg.getImage() + " cannot be repeated.");
+          	}
+          	paramNames.add(arg.getImage());
+          }
+          [
+             ellipsis=<ELLIPSIS> { isCatchAll = true; }
+          ]
+          [
+            <EQUALS>
+          	defValue=Expression
+            {
+		      hasDefaults = true;
+            }
+          ]
+          [<COMMA>]
+	  {
+          if (catchAll != null) {
+              throw new ParseException(getErrorStart(arg)
+                + "\nThere may only be one \"catch-all\" parameter in a macro declaration, "
+                + "and it must be the last parameter.", arg.getBeginLine(), arg.getEndLine());
+          }
+          if (isCatchAll) {
+              if (defValue != null) {
+                  throw new ParseException(getErrorStart(arg)
+                    + "\n\"Catch-all\" macro parameter may not have a default value.",
+                    arg.getBeginLine(), arg.getEndLine());
+              }
+              result.setCatchAll(arg.getImage());
+          } 
+          else if (defValue == null) {
+             if (hasDefaults) {
+                  throw new ParseException(getErrorStart(arg)
+                    + "\nIn a macro declaration, parameters without a default value "
+                    + "must all occur before the parameters with default values.",
+                    arg.getBeginLine(), arg.getEndLine());
+             }
+          	 result.addParam(arg.getImage());
+          }
+          else {
+              result.addParam(arg.getImage(), defValue);
+          	  hasDefaults = true;
+          }
+	  }
+    )*
+	{
+		if (ellipsis != null) {
+			result.setLocation(template, firstArg, ellipsis);
+		}
+		else if (defValue != null) {
+			result.setLocation(template, firstArg, defValue);
+		}
+		else if (firstArg != null) {
+			result.setLocation(template, firstArg, arg);
+		}
+		return result;
+	}
+;
+
+#Macro :
+{
+   Macro result = new Macro();
+   Token arg, start, end;
+   Expression nameExp;
+   String name;
+   TemplateElement block;
+   ParameterList params;
+   String functionOrMacro;
+}
+    (
+        start=<MACRO> {functionOrMacro = "macro";}
+        |
+        start=<FUNCTION> {result.setFunction(true); functionOrMacro = "function";}
+    )
+    nameExp=IdentifierOrStringLiteral
+    {
+       name = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
+       result.setName(name);
+    }
+    [<OPEN_PAREN>]
+    params=ParameterList {result.setParams(params);}
+    [<CLOSE_PAREN>]
+    <DIRECTIVE_END>
+    block=OptionalBlock
+    end=CloseDirectiveBlock(functionOrMacro)
+    {
+	   result.setName(name);
+	   result.add(block);
+      result.setLocation(template, start, end);
+      return result;
+    }
+;
+
+
+CompressedBlock Compress :
+{
+   TemplateElement block;
+   Token start, end;
+}
+    start=<COMPRESS>
+    block=OptionalBlock
+    end=CloseDirectiveBlock("compress")
+    {
+       CompressedBlock cb = new CompressedBlock(block);
+       cb.setLocation(template, start, end);
+       return cb;
+    }
+;
+#PositionalArgsList : 
+{
+	Expression firstArg=null, arg=null;
+	PositionalArgsList result = new PositionalArgsList();
+}
+	firstArg=Expression {result.addArg(firstArg); arg=firstArg;}
+	(
+	   [<COMMA>]
+	   arg=Expression {result.addArg(arg);}
+	)*
+	{
+		if (firstArg != null)
+		result.setLocation(template, firstArg, arg);
+		return result;
+	}
+;
+#NamedArgsList :
+{
+	Token firstParam, id;
+	Expression arg;
+	NamedArgsList result = new NamedArgsList();
+}
+	firstParam=<ID>
+	<EQUALS> 
+	arg=Expression  
+	{
+		result.addNamedArg(firstParam.getImage(), arg);
+	}
+	(
+	   [<COMMA>]
+	   id=<ID>
+	   <EQUALS>
+	   arg=Expression
+	   {result.addNamedArg(id.getImage(), arg);}
+	)*
+	{
+		token_source.inInvocation = false;
+		result.setLocation(template, firstParam, arg);
+		return result;
+	}
+;
+#ArgsList :
+{
+	ArgsList result = null;
+	Token id;
+	Expression exp = null;
+}
+	(
+	   SCAN <ID><EQUALS> =>
+       result=NamedArgsList
+       |
+       result=PositionalArgsList
+    )
+	{
+		return result;
+	}
+;
+
+
+
+TemplateElement UnifiedMacroTransform :
+{
+   Token start=null, end, t;
+   Map<String, Expression> namedArgs = null;
+   ArrayList<Expression> positionalArgs = null;
+   String directiveName = null;
+   TemplateElement nestedBlock = null;
+   Expression exp;
+   UnifiedCall result = new UnifiedCall();
+   ArgsList args = null;
+   ParameterList bodyParameters = null;
+}
+    start=<UNIFIED_CALL>
+    exp=Expression
+    {
+        if (exp instanceof Identifier || (exp instanceof Dot && ((Dot) exp).onlyHasIdentifiers())) {
+           directiveName = exp.getCanonicalForm();
+	    }
+	    result.setNameExp(exp);
+    }
+    [<TERMINATING_WHITESPACE>]
+    [args=ArgsList]
+    {
+        if(args == null)
+        {
+            args = new EmptyArgsList();
+        }
+        result.setArgs(args);
+    }
+    [
+       <SEMICOLON>[<TERMINATING_WHITESPACE>]
+       bodyParameters=ParameterList
+       {
+           result.setBodyParameters(bodyParameters);
+       }
+    ]
+    (
+      end=<EMPTY_DIRECTIVE_END>
+      |
+      (
+        <DIRECTIVE_END>
+		nestedBlock=OptionalBlock
+		end=<UNIFIED_CALL_END>
+		{
+           String s=end.getImage().substring(2);;
+           if (s.charAt(0) == '@') {
+              s = s.substring(1);
+           }
+	       s = s.substring(0, s.length() -1).trim();
+           if (s.length() >0 && !s.equals(directiveName)) {
+           String msg = getErrorStart(end);
+           if (directiveName == null) {
+                throw new ParseException(msg + "\nExpecting </@>", end.getBeginLine(), end.getBeginColumn());
+	       }
+	       else {
+	           throw new ParseException(msg + "\nExpecting </@> or </@" + directiveName + ">", end.getBeginLine(), end.getBeginColumn());
+	       }
+	    }
+	    result.add(nestedBlock);
+	  }
+      )
+    )
+    {
+       result.setLocation(template, start, end);
+       return result;
+    }
+;
+
+TemplateElement Call :
+{
+   Token start, end;
+   Identifier id;
+   String macroName= null;
+   UnifiedCall result = new UnifiedCall();
+   ArgsList args = null;
+}
+    start=<CALL>
+    id=Identifier {result.setNameExp(id);}
+    [
+	    <OPEN_PAREN>
+	]
+    args=ArgsList {result.setArgs(args);}
+    [<CLOSE_PAREN>]
+    end=LooseDirectiveEnd
+    {
+       result.setLocation(template, start, end);
+       args.setLocationInfoIfAbsent(result);
+       return result;
+    }
+;
+
+Map<String, Expression> NamedArgs :
+{
+    Map<String, Expression> result = new LinkedHashMap<String, Expression>();
+    Token t;
+    Expression exp;
+}
+  (
+     t=<ID>
+     <EQUALS>
+     exp=Expression
+     {
+        if (result.containsKey(t.getImage())) {
+           throw new ParseException(getErrorStart(t)
+              + "\nValue of named parameter '" + t.getImage()
+              + "' may only be specified once.", t.getBeginLine(), t.getEndLine());
+        }
+        result.put(t.getImage(), exp);
+     }
+  )+
+  {
+     return result;
+  }
+;
+
+Comment TerseComment :
+{
+	Token start, end, t;
+	StringBuilder buf = new StringBuilder();
+}
+	start=<TERSE_COMMENT>
+	(
+	   t=<PRINTABLE_CHARS> {buf.append(t.getImage());}
+	)*
+	end=<TERSE_COMMENT_END>
+	{
+		Comment result = new Comment(buf.toString());
+		result.setLocation(template, start, end);
+		return result;
+	}
+;
+#Comment :
+{
+   Token start, end, t;
+   StringBuilder buf = new StringBuilder();
+}
+    start=<COMMENT>
+    (
+       t=<PRINTABLE_CHARS> {buf.append(t.getImage());}
+    )*
+    end=<COMMENT_END>
+    {
+       Comment result = new Comment(buf.toString());
+       result.setLocation(template, start, end);
+       return result;
+    }
+;
+
+NoParseBlock NoParse :
+{
+   Token start, end, t;
+   StringBuilder buf = new StringBuilder();
+}
+    start=<NOPARSE>
+    (
+       t=<PRINTABLE_CHARS> {buf.append(t.getImage());}
+    )*
+    end=<NOPARSE_END>
+    {
+    	int beginColumn = start.getBeginColumn();
+    	int beginLine = start.getBeginLine();
+    	char lastChar = 0;
+    	for (char c : start.getImage().toCharArray()) {
+    		switch (c) {
+    			case '\n' : if (lastChar == '\r') break;
+    			case '\r' : beginColumn = 1; beginLine++; break;   
+    			default : ++beginColumn;
+    		}
+    		lastChar = c;
+    	}
+       	List<TextBlock> text = TextBlock.breakIntoBlocks(buf.toString(), template, beginColumn, beginLine);
+        NoParseBlock result = new NoParseBlock(start.getImage(), end.getImage(), text);
+        result.setLocation(template, start, end);
+        return result;
+    }
+;
+
+
+TransformBlock Transform :
+{
+   Token start, end, argName;
+   Expression exp, argExp;
+   TemplateElement content = null;
+   HashMap<String, Expression> args = null;
+}
+    start=<TRANSFORM>
+    exp=Expression
+    [<SEMICOLON>]
+    (
+       argName=<ID>
+       <EQUALS>
+       argExp=Expression
+       {
+           if (args == null) args = new HashMap<String, Expression>();
+           args.put(argName.getImage(), argExp);
+       }
+    )*
+    (
+       end=<EMPTY_DIRECTIVE_END>
+       |
+       (
+          <DIRECTIVE_END>
+          content=OptionalBlock
+          end=CloseDirectiveBlock("transform")
+       )
+    )
+    {
+       TransformBlock result = new TransformBlock(exp, args, content);
+       result.setLocation(template, start, end);
+       return result;
+    }
+;
+
+SwitchBlock Switch :
+{
+    SwitchBlock switchBlock;
+    Case caseIns;
+    Expression switchExp;
+    Token start, end;
+    boolean defaultFound = false;
+}
+   start=<SWITCH>
+   switchExp=Expression
+   <DIRECTIVE_END>
+   (<WHITESPACE>|Comment)*   
+   {
+      switchBlock = new SwitchBlock(switchExp);
+   }
+   (
+     SCAN 2 => caseIns=Case
+     {
+       if (caseIns.isDefault()) {
+	   if (defaultFound) {
+                String msg = getErrorStart(start)
+                            + "\nYou can only have one default case in a switch statement";
+                throw new ParseException(msg, start.getBeginLine(), start.getBeginColumn());
+	   }
+	   defaultFound = true;
+	}
+        switchBlock.addCase(caseIns);
+     }
+   )*
+   end=CloseDirectiveBlock("switch")
+   {
+      switchBlock.setLocation(template, start, end);
+      return switchBlock;
+   }
+;
+#Case :
+{
+    Expression exp = null;
+    TemplateElement block;
+    boolean isDefault = false;
+    Token start;
+}
+   (
+      start=<CASE> 
+      exp=Expression 
+      <DIRECTIVE_END>
+      |
+      start=<DEFAUL>{isDefault = true;}
+   )
+   block=OptionalBlock
+   {
+       Case result = new Case(exp, block, isDefault);
+       result.setLocation(template, start, block);
+       return result;
+   }
+;
+#TrimBlock :
+{
+	Token start, end;
+	TemplateElement content;
+	boolean left = false, right = false;
+	String closeTag = null;
+}
+	(
+	   start=<BLOCKTRIM> {closeTag = "t_lines"; left = right = true;}
+	   |
+	   start=<BLOCKTRIML> {closeTag = "lt_lines"; left = true;}
+	   |
+	   start=<BLOCKTRIMR> {closeTag = "rt_lines"; right = true;}
+	   |
+	   start=<BLOCKNOTRIM> {closeTag = "nt_lines";}
+	) 
+	{trimBlockNesting++;}
+	content=OptionalBlock
+	end=CloseDirectiveBlock(closeTag)
+	{
+		TrimBlock result = new TrimBlock(content, left, right);
+		result.setLocation(template, start, end);
+		trimBlockNesting--;
+		return result;
+	}
+;
+	
+
+EscapeBlock Escape :
+{
+    Token variable, start, end;
+    Expression escapeExpr;
+    TemplateElement content;
+}
+    start=<ESCAPE>
+    variable=<ID>
+    <AS>
+    escapeExpr=Expression
+    <DIRECTIVE_END>
+    {
+        EscapeBlock result = new EscapeBlock(variable.getImage(), escapeExpr);
+    }
+    content=OptionalBlock
+    {
+        result.setContent(content);
+    }
+    end=CloseDirectiveBlock("escape")
+    {
+       result.setLocation(template, start, end);
+       return result;
+    }
+;
+
+NoEscapeBlock NoEscape :
+{
+    Token start, end;
+    TemplateElement content;
+}
+    start=<NOESCAPE>
+    content=OptionalBlock
+    end=CloseDirectiveBlock("noescape")
+    {
+       NoEscapeBlock result = new NoEscapeBlock(content);
+       result.setLocation(template, start, end);
+       return result;
+    }
+;
+
+
+Token CloseDirectiveBlock(String expectedTags) :
+{
+	Token t;
+}
+    t=<CLOSE_DIRECTIVE_BLOCK>
+	{
+		String name = t.getImage();
+		name = name.substring(3, name.length() -1);
+		if (name.length()>0) {
+			StringTokenizer st = new StringTokenizer(expectedTags, ", ");
+			boolean found = false;
+			while (st.hasMoreTokens()) {
+				if (st.nextToken().equals(name.trim())) found = true;
+			}
+			if (!found) {
+				throw new ParseException(getErrorStart(t) + " Expecting " + t.getImage().substring(0,3) + expectedTags + t.getImage().charAt(t.getImage().length() -1));
+			}
+		}
+		return t;
+	}
+;
+
+
+/**
+ * Production to terminate potentially empty elements. Either a ">" or "/>"
+ */
+
+Token LooseDirectiveEnd :
+{
+    Token t;
+}
+   (
+      t=<DIRECTIVE_END>
+      |
+      t=<EMPTY_DIRECTIVE_END>
+   )
+   {
+      return t;
+   }
+;
+
+PropertySetting Setting :
+{
+   Token start, end, key;
+   Expression value;
+}
+   start=<SETTING>
+   key=<ID>
+   <EQUALS>
+   value=Expression
+   end=LooseDirectiveEnd
+   {
+      PropertySetting result = new PropertySetting(key.getImage(), value);
+      result.setLocation(template, start, end);
+      return result;
+   }
+;
+
+VarDirective Var :
+{
+    Token start, end;
+    Expression var, valueExp = null;
+    VarDirective result = new VarDirective();
+}
+   start=<VAR>
+   (
+     var=IdentifierOrStringLiteral
+     [
+       <EQUALS>
+       valueExp=Expression
+     ]
+   )
+   {
+      result.addVar(var, valueExp);
+      valueExp = null;
+   }
+   (
+      (
+        [<COMMA>]
+        var=IdentifierOrStringLiteral
+        [
+           <EQUALS>
+           valueExp=Expression
+        ]
+      )
+      {
+         result.addVar(var, valueExp);
+         valueExp = null;
+      }
+   )*
+   end=LooseDirectiveEnd
+   {
+      result.setLocation(template, start, end);
+      return result;
+   }
+;
+
+/**
+ * A production for FreeMarker directives.
+ */
+TemplateElement FreemarkerDirective :
+{
+   TemplateElement tp;
+}
+   (
+     tp=If
+     |
+     tp=List
+     |
+     tp=ForEach
+     |
+     tp=Assign
+     |
+     tp=Include
+     |
+     tp=Import
+     |
+     tp=Macro
+     |
+     tp=Compress
+     |
+     tp=UnifiedMacroTransform
+     |
+     tp=Call
+     |
+     tp=TerseComment
+     |
+     tp=Comment
+     |
+     tp=NoParse
+     |
+     tp=Transform
+     |
+     tp=Switch
+     |
+     tp=Setting
+     |
+     tp=Var
+     |
+     tp=Break
+     |
+     tp=Return
+     |
+     tp=Stop
+     |
+     tp=Flush
+     |
+     tp=Trim
+     |
+     tp=Nested
+     |
+     tp=Escape
+     |
+     tp=NoEscape
+     |
+     tp=TrimBlock
+     |
+     tp=Visit
+     |
+     tp=Recurse
+     |
+     tp=FallBack
+     |
+     tp=Attempt
+   )
+   {
+      return tp;
+   }
+;
+
+/**
+ * Production for a block of raw text
+ * i.e. text that contains no
+ * FreeMarker directives.
+ */
+
+List<TextBlock> PCData :
+{
+    StringBuilder buf = new StringBuilder();
+    Token t=null, start=null, prevToken = null;
+    List<TextBlock> result = new ArrayList<TextBlock>();
+}
+    (
+      SCAN <WHITESPACE>|<PRINTABLE_CHARS> =>
+      (
+         {prevToken = t;}         
+         t=<PRINTABLE_CHARS> 
+         |
+         t=<WHITESPACE> 
+      )
+      {
+         buf.append(t.getImage());
+         if (start == null) start = t;
+         //if (prevToken != null) prevToken.setNext(null);
+         if (prevToken != null) token_source.uncacheTokens(prevToken);
+      }
+    )+
+    {
+         if (stripText && contentNesting == 1) {
+             result.add(TextBlock.EMPTY_BLOCK);
+             return result;
+         }
+    	 if (trimBlockNesting>0) {
+    		result = TextBlock.breakIntoBlocksLineByLine(buf.toString(), template, start.getBeginColumn(), start.getBeginLine()); 
+    	 } else {
+            result = TextBlock.breakIntoBlocks(buf.toString(), template, start.getBeginColumn(), start.getBeginLine());
+    	 }
+         return result;
+    }
+;
+
+/**
+ * Production for dealing with unparsed content,
+ * i.e. what is inside a comment or noparse tag.
+ * It returns the ending token. The content
+ * of the tag is put in buf.
+ */
+
+TemplateElement Content :
+{
+    MixedContent nodes = new MixedContent();
+    TemplateElement elem=null, begin=null;
+    contentNesting++;
+    List<TextBlock> text = null;
+}
+    (
+      (
+         text=PCData {elem = null;}
+         |
+         elem=StringOutput
+         |
+         elem=FreemarkerDirective
+      )
+      {
+            if (begin == null) {
+               begin = elem == null ? text.get(0) : elem;
+            }
+            if (elem == null) {
+            	for (TextBlock tb : text) nodes.add(tb);
+            } else {
+            	nodes.add(elem);
+            }
+      }
+    )+
+    {
+        contentNesting--;
+        if (elem == null) elem = text.get(text.size() -1);
+        nodes.setLocation(template, begin, elem);
+	     return nodes;
+    }
+;
+
+/**
+ * A production freemarker text that may contain
+ * ${...} but no directives.
+ */
+
+TemplateElement FreeMarkerText :
+{
+     MixedContent nodes = new MixedContent();
+     TemplateElement elem = null, begin = null;
+     List<TextBlock> text = null;
+}
+    (
+      (
+        text=PCData {elem = null;}
+        |
+        elem=StringOutput
+      )
+      {
+         if (begin == null) {
+            begin = (elem == null) ? text.get(0) : elem;
+         }
+         if (elem != null) {
+         	nodes.add(elem);
+         } else {
+         	for (TextBlock tb : text) nodes.add(tb);
+         }
+      }
+    )+
+    {
+       if (elem == null) elem = text.get(text.size() -1);
+       nodes.setLocation(template, begin, elem);
+       return nodes;
+    }
+;
+
+/**
+ * A production for a block of optional content.
+ * Returns an empty Text block if there is no
+ * content.
+ */
+
+TemplateElement OptionalBlock :
+{
+   TemplateElement tp = TextBlock.EMPTY_BLOCK;
+}
+   [
+         tp=Content
+   ]
+   {
+      return tp;
+   }
+;
+
+
+TemplateHeaderElement HeaderElement : 
+{
+	Token key, start, end;
+	Expression exp;
+	Map<String,Expression> params = new LinkedHashMap<String,Expression>();
+}
+   [<WHITESPACE>]
+   (
+     start=<TRIVIAL_FTL_HEADER> {end=start;}
+     |
+     (
+       start=<FTL_HEADER>
+       (
+          key=<ID>
+          <EQUALS>
+          exp=Expression {params.put(key.getImage().toLowerCase(), exp);}
+       )*
+       end=LooseDirectiveEnd
+     )
+   )
+   {
+   	   TemplateHeaderElement header = new TemplateHeaderElement(params);
+   	   header.setLocation(template, start, end);
+   	   return header;
+   }
+;
+
+Map<String,Expression> ParamList :
+{
+   Identifier id;
+   Expression exp;
+   Map<String,Expression> result = new HashMap<String,Expression>();
+}
+   (
+      id=Identifier
+      <EQUALS>
+      exp=Expression {result.put(id.toString(), exp);}
+      [<COMMA>]
+   )+
+   {
+       return result;
+   }
+;
+
+
+/**
+ * Root production to be used when parsing
+ * an entire file.
+ */
+TemplateElement Root :
+{
+   TemplateHeaderElement header;
+   TemplateElement doc;
+}
+   [
+      SCAN [<WHITESPACE>](<TRIVIAL_FTL_HEADER>|<FTL_HEADER>) =>
+       header=HeaderElement
+       {
+       	   template.setHeaderElement(header);
+       	   String templateEncoding = template.getEncoding();
+       	   if (templateEncoding != null && header.hasParameter("encoding")) {
+       	   	  String encoding = null;
+       	   	  try {
+       	   	     encoding = header.getStringParameter("encoding");
+       	   	  } catch (Exception e) {}
+       	   	  if (encoding != null && !encoding.equals(templateEncoding)) {
+       	   	  	throw new Template.WrongEncodingException(encoding);
+       	   	  }
+       	   }
+       	   if (header.hasParameter("strip_text")) {
+       	   	  try {
+       	   	  	 this.stripText = header.getBooleanParameter("strip_text");
+       	   	  } catch (Exception e) {
+       	   	  	throw new ParseException(e.getMessage());
+       	   	  }
+       	   }
+       	   	
+       }
+   ]
+   doc=OptionalBlock
+   <EOF>
+   {
+       return doc;
+   }
+   ;

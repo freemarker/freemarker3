@@ -1,0 +1,738 @@
+#Expression :
+{
+	Expression exp;
+}
+	 exp=OrExpression {return exp;}
+;
+
+/**
+ * Lowest level expression, a literal, a variable,
+ * or a possibly more complex expression bounded
+ * by parentheses.
+ */
+Expression PrimaryExpression :
+{
+   Expression exp;
+}
+   (
+      exp=NumberLiteral
+      |
+      exp=HashLiteral
+      |
+      exp=StringLiteral
+      |
+      exp=BooleanLiteral
+      |
+      exp=NullLiteral
+      |
+      exp=ListLiteral
+      |
+      exp=Identifier
+      |
+      exp=ParentheticalExpression
+      |
+      exp=BuiltinVariable
+  )
+  (
+      exp=AddSubExpression(exp)
+  )*
+  {
+     return exp;
+  }
+;
+
+Expression ParentheticalExpression# :
+{
+   Expression exp;
+}
+    <OPEN_PAREN> 
+    exp=Expression 
+    {
+      clearNodeScope();
+      pushNode(exp);
+    }
+    <CLOSE_PAREN>
+    {
+       return CURRENT_NODE;
+    }
+;
+
+INJECT ParentheticalExpression :
+   import freemarker.core.Environment;
+   import freemarker.core.ast.Expression;
+   extends Expression
+{
+   public Expression getNested() {
+        return firstChildOfType(Expression.class);
+    }
+
+    public boolean isTrue(Environment env) {
+        return getNested().isTrue(env);
+    }
+    
+    public Object getAsTemplateModel(Environment env) {
+        return getNested().getAsTemplateModel(env);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        ParentheticalExpression result = new ParentheticalExpression();
+        result.add(getNested().deepClone(name, subst));
+        return result;
+    }   
+}
+
+/**
+ * A primary expression preceded by zero or
+ * more unary operators. 
+ */
+Expression UnaryExpression :
+{
+   Expression result;
+}
+  (
+   result=UnaryPlusMinusExpression
+   |
+   result=NotExpression
+   |
+   result=PrimaryExpression
+  )
+  {
+     return result;
+  }
+;
+
+Expression NotExpression : 
+{
+   Token t;
+   Expression exp, result=null;
+   List<Token> nots = new ArrayList<Token>();
+}
+   (
+      t=<EXCLAM> {nots.add(t);}
+   )+
+   exp=PrimaryExpression 
+   {
+      for (int i=0; i<nots.size(); i++) {
+         result = new NotExpression(exp);
+         Token tok = nots.get(nots.size() -i -1);
+         result.setLocation(template, tok, exp);
+         exp = result;
+      }
+      return result;
+   }
+;
+
+Expression UnaryPlusMinusExpression :
+{
+   Expression exp, result;
+   boolean isMinus = false;
+   Token t;
+}
+   (
+      t=<PLUS>
+      |
+      t=<MINUS> {isMinus = true;}
+   )
+   exp=PrimaryExpression 
+   {
+      result = new UnaryPlusMinusExpression(exp, isMinus);  
+      result.setLocation(template, t, exp);
+      return result;
+   }
+;
+
+Expression AdditiveExpression :
+{
+   Expression lhs, rhs, result;
+   boolean plus;
+}
+   lhs=MultiplicativeExpression {result = lhs;}
+   (
+      (
+         <PLUS> {plus = true;}
+         |
+         <MINUS> {plus = false;}
+      )
+      rhs=MultiplicativeExpression
+      {
+         if (plus) {
+           // plus is treated separately, since it is also
+           // used for concatenation.
+             result = new AddConcatExpression(lhs, rhs);
+         } 
+         else {
+             result = new ArithmeticExpression(lhs, rhs,
+                                            ArithmeticExpression.SUBTRACTION);
+         }
+         result.setLocation(template, lhs, rhs);
+         lhs = result;
+      }
+   )*
+   {
+      return result;
+   }
+;
+
+/**
+ * A unary expression followed by zero or more
+ * unary expressions with operators in between.
+ */
+Expression MultiplicativeExpression :
+{
+   Expression lhs, rhs, result;
+   int operation = ArithmeticExpression.MULTIPLICATION;
+}
+   lhs=UnaryExpression {result = lhs;}
+   (
+      (
+         <TIMES> {operation = ArithmeticExpression.MULTIPLICATION;}
+         |
+         <DIVIDE> {operation = ArithmeticExpression.DIVISION;}
+         |
+         <PERCENT>{operation = ArithmeticExpression.MODULUS;}
+      )
+      rhs=UnaryExpression
+      {
+         result = new ArithmeticExpression(lhs, rhs, operation);
+         result.setLocation(template, lhs, rhs);
+         lhs = result;
+      }
+   )*
+   {
+      return result;
+   }
+;
+
+
+Expression EqualityExpression :
+{
+   Expression lhs, rhs, result;
+   Token t;
+}
+   lhs=RelationalExpression {result = lhs;}
+   [
+     (
+      t=<NOT_EQUALS> 
+      |
+      t=<EQUALS> 
+      |
+      t=<DOUBLE_EQUALS>
+     )
+     rhs=RelationalExpression
+     {
+        result = new ComparisonExpression(lhs, rhs, t.getImage());
+        result.setLocation(template, lhs, rhs);
+     }
+   ]
+   {
+      return result;
+   }
+;
+
+Expression RelationalExpression :
+{
+   Expression lhs, rhs, result;
+   Token t;
+}
+   lhs=RangeExpression {result = lhs;}
+   [
+     (
+      t=<GREATER_THAN_EQUALS>
+      |
+      t=<ESCAPED_GTE>
+      |
+      t=<GREATER_THAN>
+      |
+      t=<ESCAPED_GT>
+      |
+      t=<LESS_THAN_EQUALS>
+      |
+      t=<LESS_THAN>
+     )
+     rhs=RangeExpression
+     {
+        result = new ComparisonExpression(lhs, rhs, t.getImage());
+        result.setLocation(template, lhs, rhs);
+     }
+   ]
+   {
+      return result;
+   }
+;
+
+Expression RangeExpression :
+{
+   Expression lhs, rhs=null, result;
+}
+    lhs=AdditiveExpression {result = lhs;}
+    [
+      <DOT_DOT>
+       [ rhs=AdditiveExpression =>|| 
+       ]
+       {
+           Range range = new Range(lhs, rhs);
+           if (rhs != null) {
+               range.setLocation(template, lhs, rhs);
+           } else {
+              range.setLocation(template, lhs, lhs);
+           }
+           result = range;
+        }
+    ]
+    {
+        return result;
+    }
+;
+
+Expression AndExpression :
+{
+   Expression lhs, rhs, result;
+}
+   lhs=EqualityExpression {result = lhs;}
+   (
+      <AND>
+      rhs=EqualityExpression
+      {
+         result = new AndExpression(lhs, rhs);
+         result.setLocation(template, lhs, rhs);
+         lhs = result;
+      }
+   )*
+   {
+      return result;
+   }
+;
+
+Expression OrExpression :
+{
+   Expression lhs, rhs, result;
+}
+   lhs=AndExpression {result = lhs;}
+   (
+      <OR>
+      rhs=AndExpression
+      {
+         result = new OrExpression(lhs, rhs);
+         result.setLocation(template, lhs, rhs);
+         lhs = result;
+      }
+   )*
+   {
+      return result;
+   }
+;
+
+#ListLiteral :
+{
+   Expression exp;
+   ArrayList<Expression> values = new ArrayList<Expression>();
+   Token begin, end;
+}
+    begin=<OPEN_BRACKET>
+    [
+      exp=Expression {values.add(exp);}
+      (
+         [<COMMA>]
+         exp=Expression {values.add(exp);}
+      )*
+    ]
+    end=<CLOSE_BRACKET>
+    {
+        ListLiteral result = new ListLiteral(values);
+        result.setLocation(template, begin, end);
+        return result;
+    }
+;
+
+NumberLiteral# :
+   (
+      <INTEGER>
+      |
+      <DECIMAL>
+   )
+   {
+       String s = lastConsumedToken.toString();
+       Number n = template != null ? template.getArithmeticEngine().toNumber(s) : new java.math.BigDecimal(s);
+       CURRENT_NODE.setValue(n);
+   }
+;
+
+INJECT NumberLiteral :
+  import freemarker.core.Environment;
+  import freemarker.core.ast.Expression;
+  import freemarker.template.*;
+  import freemarker.ext.beans.NumberModel;
+  extends Expression
+{
+    @Property Number value;
+
+    public NumberLiteral() {}
+
+    public NumberLiteral(Number value) {
+        this.value = value;
+    }
+    
+    public TemplateModel getAsTemplateModel(Environment env) {
+        return new NumberModel(value);
+    }
+    
+    public String getStringValue(Environment env) {
+        return env.formatNumber(value);
+    }
+
+    public Number getAsNumber() {
+        return value;
+    }
+    
+    String getName() {
+        return "the number: '" + value + "'";
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        return new NumberLiteral(value);
+    }
+}
+
+Identifier# :
+   <ID> 
+   {
+      CURRENT_NODE.setName(lastConsumedToken.toString());
+   } 
+;
+
+INJECT Identifier :
+    import freemarker.template.TemplateException;
+    import freemarker.core.Environment;
+    import freemarker.core.ast.Expression;
+    extends Expression
+{
+    @Property String name;
+
+    public Identifier() {}
+
+    public Identifier(String name) {
+        this.name = name;
+    }
+    
+    public Object getAsTemplateModel(Environment env) {
+        try {
+            return env.getVariable(name);
+        } catch (NullPointerException e) {
+            if (env == null) {
+                throw new TemplateException("Variables are not available "
+                + "(certainly you are in a parse-time executed directive). The name of the variable "
+                + "you tried to read: " + name, null);
+            } else {
+                throw e;
+            }
+        }
+    }
+
+    public String toString() {
+        return name;
+    }
+
+    public boolean isLiteral() {
+        return false;
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        if(this.name.equals(name)) {
+        	return subst.deepClone(null, null);
+        }
+        return new Identifier(this.name);
+    }
+}
+
+Expression IdentifierOrStringLiteral :
+{
+   Expression exp;
+}
+   (
+      exp=Identifier
+      |
+      exp=StringLiteral
+   )
+   {
+      return exp;
+   }   
+;
+
+#BuiltinVariable :
+{
+   Token dot, name;
+}
+   dot=<DOT>
+   name=<ID>
+   {
+      BuiltinVariable result = null;
+      try {
+          result = new BuiltinVariable(name.getImage());
+      } catch (ParseException pe) {
+          pe.lineNumber = dot.getBeginLine();
+          pe.columnNumber = dot.getBeginColumn();
+          throw pe;
+      }
+      result.setLocation(template, dot, name);
+      return result;
+   }
+;
+
+/**
+ * Production that builds up an expression
+ * using the dot or dynamic key name
+ * or the args list if this is a method invocation.
+ */
+Expression AddSubExpression(Expression exp) :
+{
+   Expression result = null;
+}
+     (
+       result=DotVariable(exp)
+       |
+       result=DynamicKey(exp)
+       |
+       result=MethodArgs(exp)
+       |
+       result=BuiltIn(exp)
+       |
+       result=Exists(exp)
+       |
+       result=DefaultTo(exp)
+     )
+     {
+        return result;
+     }
+;
+
+Expression DefaultTo(Expression exp) :
+{
+   Expression rhs = null;
+   Token t;
+}
+   (
+       t=<EXCLAM>
+       [
+         SCAN {getToken(1).getType() != TokenType.ID || getToken(2).getType() != TokenType.EQUALS}
+         => rhs=PrimaryExpression =>|| 
+       ]
+   )
+   {
+      DefaultToExpression result = new DefaultToExpression(exp, rhs);
+      if (rhs ==null) {
+          result.setLocation(template, exp, t);
+      }
+      else {
+          result.setLocation(template, exp, rhs);
+      }
+      return result;
+   }
+;
+
+Expression Exists(Expression exp) :
+{
+   Token t;
+}
+   t=<EXISTS>
+   {
+       ExistsExpression result = new ExistsExpression(exp);
+       result.setLocation(template, exp, t);
+       return result;
+   }
+;
+
+Expression BuiltIn(Expression exp) :
+{
+   Token t=null;
+}
+   <BUILT_IN>
+   t=<ID>
+   {
+   	   BuiltInExpression result = new BuiltInExpression(exp, t.getImage());
+         if (result.getBuiltIn() == null) {
+            fail("Unknown builtin ",t);
+           //throw new ParseException(this, "Unknown builtin " + t.getImage());
+         }
+   	   result.setLocation(template, exp, t);
+   	   return result;
+   }
+;
+
+/**
+ * production for when a key is specified by <DOT> + keyname
+ */
+Expression DotVariable(Expression exp) :
+{
+  Token t;
+}
+     <DOT>{token_source.justAfterDot = true;}
+     t=<ID>{token_source.justAfterDot = false;}
+     {
+         Dot dot = new Dot(exp, t.getImage());
+         dot.setLocation(template, exp, t);
+         return dot;
+     }
+;
+
+/**
+ * production for when the key is specified
+ * in brackets.
+ */
+Expression DynamicKey(Expression exp) :
+{
+   Expression arg;
+   Token t;
+}
+   <OPEN_BRACKET>
+   arg=Expression
+   t=<CLOSE_BRACKET>
+   {
+       DynamicKeyName dkn = new DynamicKeyName(exp, arg);
+       dkn.setLocation(template, exp, t);
+       return dkn;
+   }
+;
+
+/**
+ * production for an arglist part of a method invocation.
+ */
+MethodCall MethodArgs(Expression exp) :
+{
+     ArgsList args = new PositionalArgsList();
+     Token end;
+}
+     <OPEN_PAREN>
+     [args=ArgsList]
+     end=<CLOSE_PAREN>
+     {
+        MethodCall result = new MethodCall(exp, args);
+        result.setLocation(template, exp, end);
+	    args.setLocationInfoIfAbsent(result);        
+        return result;
+     }
+;
+
+Expression StringLiteral#freemarker.core.ast.StringLiteral :
+{
+  boolean raw = false;
+}
+   (
+     <STRING_LITERAL>
+     |
+     <RAW_STRING> {raw = true;}
+   )
+   {
+       String s = lastConsumedToken.toString();
+       // Get rid of the quotes.
+       s = s.substring(1, s.length() -1);
+       if (raw) {
+           s=s.substring(1);
+       }
+       else try {
+          s = StringUtil.FTLStringLiteralDec(s);
+       } catch (ParseException pe) {
+       	  InvalidExpression invalid = new InvalidExpression("Malformed string literal: " + pe.getMessage());
+       	  invalid.setLocation(template, lastConsumedToken, lastConsumedToken);
+       	  return invalid;
+       }
+       CURRENT_NODE.setRaw(raw);
+       CURRENT_NODE.setValue(s);
+       return CURRENT_NODE;
+   }
+;
+
+BooleanLiteral# :
+   <FALSE>
+   |
+   <TRUE> {CURRENT_NODE.setValue(true);}
+;
+
+INJECT BooleanLiteral :
+    import freemarker.core.Environment;
+    import freemarker.template.*;
+    import freemarker.core.ast.Expression;
+    extends Expression
+{
+    @Property boolean value;
+
+    public BooleanLiteral() {}
+    public BooleanLiteral(boolean value) {this.value = value;}
+
+    public boolean isTrue(Environment env) {
+        return value;
+    }
+
+    public String toString() {
+        return value ? "true" : "false";
+    }
+
+    public Object getAsTemplateModel(Environment env) {
+        return value ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        BooleanLiteral result = new BooleanLiteral();
+        result.setValue(value);
+        return result;
+    }
+
+}
+
+NullLiteral# :
+   <NULL>
+;
+
+INJECT NullLiteral : 
+   import freemarker.core.Environment;
+   import freemarker.template.Constants;
+   import freemarker.template.TemplateModel;
+   import freemarker.core.ast.Expression;
+   extends Expression
+{
+    public String toString() {
+    	return "null";
+    }
+
+    public Object getAsTemplateModel(Environment env) {
+        return Constants.JAVA_NULL;
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+    	return new NullLiteral();
+    }
+}
+
+#HashLiteral :
+{
+   Token begin, end;
+   Expression key, value;
+   ArrayList<Expression> keys = new ArrayList<Expression>();
+   ArrayList<Expression> values = new ArrayList<Expression>();
+}
+   begin=<OPEN_BRACE>
+   [
+       key=Expression
+       (<COMMA>|<COLON>)
+       value=Expression
+       {
+          keys.add(key);
+          values.add(value);
+       }
+       (
+          <COMMA>
+           key=Expression
+           (<COMMA>|<COLON>)
+           value=Expression
+           {
+               keys.add(key);
+               values.add(value);
+           }
+       )*
+   ]
+   end=<CLOSE_BRACE>
+   {
+      HashLiteral result = new HashLiteral(keys, values);
+      result.setLocation(template, begin, end);
+      return result;
+   }
+;
