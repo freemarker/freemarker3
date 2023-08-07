@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import freemarker.ext.beans.StringModel;
 import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.*;
@@ -19,7 +20,6 @@ import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.log.Logger;
 import freemarker.template.*;
-import freemarker.template.utility.UndeclaredThrowableException;
 
 /**
  * Object that represents the runtime environment during template processing.
@@ -1148,7 +1148,7 @@ public final class Environment extends Configurable implements Scope {
             aggregate.add(tmi.next());
         }
         for (String varname : globalVariables.keySet()) {
-            aggregate.add(new SimpleScalar(varname));
+            aggregate.add(new StringModel(varname));
         }
         return new SimpleCollection(aggregate);
     }

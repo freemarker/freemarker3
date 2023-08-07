@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
+import freemarker.ext.beans.StringModel;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.
@@ -28,7 +29,7 @@ public class MultiModel4 implements TemplateSequenceModel, TemplateHashModel {
      */
     public TemplateModel get(String key) {
         if( key.equals( "size" )) {
-            return new SimpleScalar( "Key size, not the listSize method." );
+            return new StringModel( "Key size, not the listSize method." );
         } else {
             return null;
         }

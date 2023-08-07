@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
+import freemarker.ext.beans.StringModel;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.
@@ -13,7 +14,7 @@ public class MultiModel5 implements TemplateSequenceModel, TemplateHashModel {
 
     /** Creates new MultiModel5 */
     public MultiModel5() {
-        m_cList.add( new SimpleScalar( "Dummy to make list non-empty" ));
+        m_cList.add( new StringModel( "Dummy to make list non-empty" ));
     }
 
     /**
@@ -44,7 +45,7 @@ public class MultiModel5 implements TemplateSequenceModel, TemplateHashModel {
      */
     public TemplateModel get(String key) {
         if( key.equals( "empty" )) {
-            return new SimpleScalar( "Dummy hash value, for test purposes." );
+            return new StringModel( "Dummy hash value, for test purposes." );
         } else {
             return null;
         }

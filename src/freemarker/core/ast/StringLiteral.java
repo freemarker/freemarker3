@@ -3,6 +3,7 @@ package freemarker.core.ast;
 import freemarker.template.*;
 import freemarker.core.Environment;
 import freemarker.core.parser.*;
+import freemarker.ext.beans.StringModel;
 import java.io.*;
 
 public class StringLiteral extends Expression implements TemplateScalarModel {
@@ -54,7 +55,7 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
     }
     
     public Object _getAsTemplateModel(Environment env) {
-        return new SimpleScalar(getStringValue(env));
+        return new StringModel(getStringValue(env));
     }
 
     public String getAsString() {

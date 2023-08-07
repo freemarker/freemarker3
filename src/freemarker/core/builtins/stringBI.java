@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 
+import freemarker.ext.beans.StringModel;
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.EvaluationUtil;
@@ -35,7 +36,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             int dateType = dm.getDateType();
             return new DateFormatter(EvaluationUtil.getDate(dm, caller.getTarget(), env), dateType, env);
         }
-        if (model instanceof SimpleScalar) {
+        if (model instanceof StringModel) {
             return model;
         }
         if (model instanceof Boolean) {
@@ -46,7 +47,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             return new BooleanFormatter((TemplateBooleanModel) model, env);
         }
         if (model instanceof TemplateScalarModel) {
-            return new SimpleScalar(((TemplateScalarModel) model).getAsString());
+            return new StringModel(((TemplateScalarModel) model).getAsString());
         } 
       	throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number, date, or string");
     }
@@ -78,7 +79,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
                         "boolean?string(...) requires exactly "
                         + "2 arguments.");
             }
-            return new SimpleScalar(
+            return new StringModel(
                 (String) arguments.get(bool.getAsBoolean() ? 0 : 1));
         }
     }
@@ -113,7 +114,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         throws
             TemplateModelException
         {
-            return new SimpleScalar(env.getDateFormatObject(dateType, key).format(date));
+            return new StringModel(env.getDateFormatObject(dateType, key).format(date));
         }
         
         public Object exec(List arguments)
@@ -154,7 +155,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
 
         public TemplateModel get(String key)
         {
-            return new SimpleScalar(env.getNumberFormatObject(key).format(number));
+            return new StringModel(env.getNumberFormatObject(key).format(number));
         }
         
         @Parameters("format")

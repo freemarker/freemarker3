@@ -13,7 +13,7 @@ public interface TemplateScalarModel extends TemplateModel {
     /**
      * A constant value to use as the empty string.
      */
-    public TemplateModel EMPTY_STRING = new SimpleScalar("");
+    public TemplateModel EMPTY_STRING = new StringModel("");
 
     /**
      * Returns the string representation of this model. In general, avoid

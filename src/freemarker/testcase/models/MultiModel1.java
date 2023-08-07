@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
+import freemarker.ext.beans.StringModel;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.
@@ -39,13 +40,13 @@ public class MultiModel1 implements TemplateHashModel,
         } else if( key.equals( "modellist" )) {
             return m_cListModel;
         } else if( key.equals( "selftest" )) {
-            return new SimpleScalar( "Selftest of a hash from MultiModel1" );
+            return new StringModel( "Selftest of a hash from MultiModel1" );
         } else if( key.equals( "one" )) {
             return m_cListHashModel1;
         } else if( key.equals( "two" )) {
             return m_cListHashModel2;
         } else if( key.equals( "size" )) {
-            return new SimpleScalar( "Nasty!" );
+            return new StringModel( "Nasty!" );
         } else if( key.equals( "nesting1" )) {
             return m_cHashModel;
         } else {

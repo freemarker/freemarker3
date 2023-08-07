@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
+import freemarker.ext.beans.StringModel;
 
 /**
  * A unary operator that uses the string value of an expression as a hash key.
@@ -36,23 +37,23 @@ public class DynamicKeyName extends Expression {
         if (nameExpression instanceof Range) {
             return dealWithRangeKey(targetModel, (Range) nameExpression, env);
         }
-        Object keyModel = nameExpression.getAsTemplateModel(env);
-        if(keyModel == null) {
-            assertNonNull(keyModel, nameExpression, env);
+        Object key = nameExpression.getAsTemplateModel(env);
+        if(key == null) {
+            assertNonNull(key, nameExpression, env);
         }
-        if (keyModel instanceof Number) {
-            int index = ((Number)keyModel).intValue();
+        if (key instanceof Number) {
+            int index = ((Number)key).intValue();
             return dealWithNumericalKey(targetModel, index, env);
         }
-        if (keyModel instanceof TemplateNumberModel) {
-            int index = EvaluationUtil.getNumber(keyModel, nameExpression, env).intValue();
+        if (key instanceof TemplateNumberModel) {
+            int index = EvaluationUtil.getNumber(key, nameExpression, env).intValue();
             return dealWithNumericalKey(targetModel, index, env);
         }
-        if (keyModel instanceof TemplateScalarModel) {
-            String key = EvaluationUtil.getString((TemplateScalarModel)keyModel, nameExpression, env);
-            return dealWithStringKey(targetModel, key, env);
+        if (key instanceof TemplateScalarModel) {
+            String keyString = EvaluationUtil.getString((TemplateScalarModel)key, nameExpression, env);
+            return dealWithStringKey(targetModel, keyString, env);
         }
-        throw invalidTypeException(keyModel, nameExpression, env, "number, range, or string");
+        throw invalidTypeException(key, nameExpression, env, "number, range, or string");
     }
 
 
@@ -73,7 +74,7 @@ public class DynamicKeyName extends Expression {
         {
             String s = target.getStringValue(env);
             try {
-               return new SimpleScalar(s.substring(index, index+1));
+               return new StringModel(s.substring(index, index+1));
             } catch (RuntimeException re) {
                 throw new TemplateException("", re, env);
             }
@@ -169,7 +170,7 @@ public class DynamicKeyName extends Expression {
                 throw new TemplateException(msg, env);
             }
             try {
-                return new SimpleScalar(s.substring(start, end+1));
+                return new StringModel(s.substring(start, end+1));
             } catch (RuntimeException re) {
                 String msg = "Error " + getStartLocation();
                 throw new TemplateException(msg, re, env);

@@ -24,7 +24,7 @@ import freemarker.ext.beans.ObjectWrapper;
  *
  * @version $Id: SimpleSequence.java,v 1.53 2005/06/21 18:17:54 ddekany Exp $
  * @see SimpleHash
- * @see SimpleScalar
+ * @see StringModel
  */
 public class SimpleSequence implements TemplateSequenceModel {
 

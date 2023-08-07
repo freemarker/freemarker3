@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
+import freemarker.ext.beans.StringModel;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.
@@ -35,9 +36,9 @@ public class MultiModel3 implements TemplateScalarModel, TemplateHashModel {
      */
     public TemplateModel get(String key) {
         if( key.equals( "selftest" )) {
-            return new SimpleScalar( "Selftest from MultiModel3!" );
+            return new StringModel( "Selftest from MultiModel3!" );
         } else if( key.equals( "message" )) {
-            return new SimpleScalar( "Hello world from MultiModel3!" );
+            return new StringModel( "Hello world from MultiModel3!" );
         } else {
             return null;
         }

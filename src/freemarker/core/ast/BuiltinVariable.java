@@ -3,6 +3,7 @@ package freemarker.core.ast;
 import freemarker.template.*;
 import freemarker.core.Environment;
 import freemarker.core.parser.ParseException;
+import freemarker.ext.beans.StringModel;
 
 /**
  * A reference to a built-in identifier, such as .root
@@ -82,10 +83,10 @@ public class BuiltinVariable extends Expression {
             return new VarsHash(env);
         }
         if (name == LOCALE) {
-            return new SimpleScalar(env.getLocale().toString());
+            return new StringModel(env.getLocale().toString());
         }
         if (name == LANG) {
-            return new SimpleScalar(env.getLocale().getLanguage());
+            return new StringModel(env.getLocale().getLanguage());
         }
         if (name == CURRENT_NODE || name == NODE) {
             return env.getCurrentVisitorNode();
@@ -94,21 +95,21 @@ public class BuiltinVariable extends Expression {
             return Macro.DO_NOTHING_MACRO;
         }
         if (name == TEMPLATE_NAME) {
-            return new SimpleScalar(env.getTemplate().getName());
+            return new StringModel(env.getTemplate().getName());
         }
         if (name == VERSION) {
-            return new SimpleScalar(Configuration.getVersionNumber());
+            return new StringModel(Configuration.getVersionNumber());
         }
         if (name == OUTPUT_ENCODING) {
             String s = env.getOutputEncoding();
-            return s != null ? new SimpleScalar(s) : null;
+            return s != null ? new StringModel(s) : null;
         }
         if (name == URL_ESCAPING_CHARSET) {
             String s = env.getURLEscapingCharset();
-            return s != null ? new SimpleScalar(s) : null;
+            return s != null ? new StringModel(s) : null;
         }
         if (name == ERROR) {
-            return new SimpleScalar(env.getCurrentRecoveredErrorMessage());
+            return new StringModel(env.getCurrentRecoveredErrorMessage());
         }
         throw new TemplateException("Invalid built-in variable: " + this, env);
     }

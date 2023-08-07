@@ -17,7 +17,7 @@ import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.SimpleNumber;
-import freemarker.template.SimpleScalar;
+import freemarker.ext.beans.StringModel;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
@@ -229,7 +229,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 Matcher matcher = pattern.matcher(string);
                 result = firstOnly ? matcher.replaceFirst(second) : matcher.replaceAll(second);
             } 
-            return new SimpleScalar(result);
+            return new StringModel(result);
         }
     }
 
@@ -257,9 +257,9 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 throw new TemplateModelException("Expecting numerical arguments for ?substring(...)");
             }
             if (argCount == 1) {
-                return new SimpleScalar(string.substring(left));
+                return new StringModel(string.substring(left));
             } 
-            return new SimpleScalar(string.substring(left, right));
+            return new StringModel(string.substring(left, right));
         }
     }
 
@@ -366,7 +366,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                     public TemplateModel get(int i) {
                         try {
-                            return new SimpleScalar(matcher.group(i));
+                            return new StringModel(matcher.group(i));
                         }
                         catch (Exception e) {
                             throw new TemplateModelException(e);
@@ -447,7 +447,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 }
                 String filling = ((TemplateScalarModel) obj).getAsString();
                 try {
-                    return new SimpleScalar(StringUtil.leftPad(string, width, filling));
+                    return new StringModel(StringUtil.leftPad(string, width, filling));
                 } catch (IllegalArgumentException e) {
                     if (filling.length() == 0) {
                         throw new TemplateModelException(
@@ -460,7 +460,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 }
             } else {
-                return new SimpleScalar(StringUtil.leftPad(string, width));
+                return new StringModel(StringUtil.leftPad(string, width));
             }
         }
     }
@@ -502,7 +502,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 }
                 String filling = ((TemplateScalarModel) obj).getAsString();
                 try {
-                    return new SimpleScalar(StringUtil.rightPad(string, width, filling));
+                    return new StringModel(StringUtil.rightPad(string, width, filling));
                 } catch (IllegalArgumentException e) {
                     if (filling.length() == 0) {
                         throw new TemplateModelException(
@@ -515,7 +515,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 }
             } else {
-                return new SimpleScalar(StringUtil.rightPad(string, width));
+                return new StringModel(StringUtil.rightPad(string, width));
             }
         }
     }
@@ -562,7 +562,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                         + "needs exactly 1 parameter, the charset.");
             }	
             try {
-                return new SimpleScalar(
+                return new StringModel(
                         StringUtil.URLEnc(target, (String) args.get(0)));
             } catch (UnsupportedEncodingException e) {
                 throw new TemplateModelException(

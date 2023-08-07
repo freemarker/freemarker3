@@ -1,6 +1,6 @@
 package freemarker.core.ast;
 
-import freemarker.template.SimpleScalar;
+import freemarker.ext.beans.StringModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
@@ -30,7 +30,7 @@ public class StringArraySequence implements TemplateSequenceModel {
         }
         TemplateScalarModel result = array[index];
         if (result == null) {
-            result = new SimpleScalar(stringArray[index]);
+            result = new StringModel(stringArray[index]);
             array[index] = result;
         }
         return result;

@@ -61,27 +61,27 @@ abstract public class Expression extends TemplateNode {
     	     || tm instanceof TemplateDateModel;
     }
     
-    public static String getStringValue(Object referentModel, Expression exp, Environment env)
+    public static String getStringValue(Object referent, Expression exp, Environment env)
     {
-        if (referentModel instanceof Number) {
-            return env.formatNumber((Number) referentModel);
+        if (referent instanceof Number) {
+            return env.formatNumber((Number) referent);
         }
-        if (referentModel instanceof TemplateNumberModel) {
-            return env.formatNumber(EvaluationUtil.getNumber((TemplateNumberModel) referentModel, exp, env));
+        if (referent instanceof TemplateNumberModel) {
+            return env.formatNumber(EvaluationUtil.getNumber((TemplateNumberModel) referent, exp, env));
         }
-        if (referentModel instanceof TemplateDateModel) {
-            TemplateDateModel dm = (TemplateDateModel) referentModel;
+        if (referent instanceof TemplateDateModel) {
+            TemplateDateModel dm = (TemplateDateModel) referent;
             return env.formatDate(EvaluationUtil.getDate(dm, exp, env), dm.getDateType());
         }
-        if (referentModel instanceof TemplateScalarModel) {
-            return EvaluationUtil.getString((TemplateScalarModel) referentModel, exp, env);
+        if (referent instanceof TemplateScalarModel) {
+            return EvaluationUtil.getString((TemplateScalarModel) referent, exp, env);
         }
-        assertNonNull(referentModel, exp, env);
+        assertNonNull(referent, exp, env);
         String msg = "Error " + exp.getStartLocation()
                      +"\nExpecting a string, " 
                      + "date or number here, Expression " + exp 
                      + " is instead a " 
-                     + referentModel.getClass().getName();
+                     + referent.getClass().getName();
         throw new NonStringException(msg, env);
     }
 

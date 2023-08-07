@@ -8,7 +8,7 @@ import java.util.*;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.Scope;
-import freemarker.template.SimpleScalar;
+import freemarker.ext.beans.StringModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateTransformModel;
 
@@ -65,9 +65,9 @@ public class BlockAssignment extends TemplateElement {
         }
         String text = filter.capturedText;
     	if (scope != null) {
-    		scope.put(varName, new SimpleScalar(text));
+    		scope.put(varName, new StringModel(text));
     	} else {
-    		env.unqualifiedSet(varName, new SimpleScalar(text));
+    		env.unqualifiedSet(varName, new StringModel(text));
     	}
     }
     

@@ -2,6 +2,7 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
+import freemarker.ext.beans.StringModel;
 import freemarker.template.*;
 
 /**
@@ -13,6 +14,6 @@ public class sourceBI extends BuiltIn {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller)
     {
-        return new SimpleScalar(caller.getTarget().getCanonicalForm());
+        return new StringModel(caller.getTarget().getCanonicalForm());
     }
 }

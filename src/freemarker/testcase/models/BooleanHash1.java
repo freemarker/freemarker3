@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
+import freemarker.ext.beans.StringModel;
 
 /**
  * Tests the impact that the isEmpty() has on template hash models.
@@ -20,11 +21,11 @@ public class BooleanHash1 implements TemplateHashModel {
      */
     public TemplateModel get(String key) {
         if( key.equals( "temp" )) {
-            return new SimpleScalar( "Hello, world." );
+            return new StringModel( "Hello, world." );
         } else if( key.equals( "boolean" )) {
             return TemplateBooleanModel.FALSE;
         } else {
-            return new SimpleScalar( "Just another key..." );
+            return new StringModel( "Just another key..." );
         }
     }
 

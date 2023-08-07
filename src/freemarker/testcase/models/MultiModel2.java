@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
+import freemarker.ext.beans.StringModel;
 import java.util.*;
 
 /**
@@ -35,6 +36,6 @@ public class MultiModel2 implements TemplateScalarModel, TemplateMethodModel {
             aResults.append( "<br />" );
         }
 
-        return new SimpleScalar( aResults.toString() );
+        return new StringModel( aResults.toString() );
     }
 }

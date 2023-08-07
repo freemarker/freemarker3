@@ -2,6 +2,7 @@ package freemarker.core.ast;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
+import freemarker.ext.beans.StringModel;
 import java.util.*;
 
 /**
@@ -66,7 +67,7 @@ public class AddConcatExpression extends Expression {
             if(s1 == null) s1 = "null";
             String s2 = getStringValue(rightModel, getRight(), env);
             if(s2 == null) s2 = "null";
-            return new SimpleScalar(s1.concat(s2));
+            return new StringModel(s1.concat(s2));
         }
         else if (leftModel instanceof TemplateHashModel && rightModel instanceof TemplateHashModel) {
             if (leftModel instanceof TemplateHashModelEx && rightModel instanceof TemplateHashModelEx) {

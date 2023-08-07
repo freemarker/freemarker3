@@ -3,7 +3,7 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.template.SimpleScalar;
+import freemarker.ext.beans.StringModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateNumberModel;
@@ -28,9 +28,9 @@ public class cBI extends ExpressionEvaluatingBuiltIn {
         }
         if (num instanceof Integer) {
             // We accelerate this fairly common case
-            return new SimpleScalar(num.toString());
+            return new StringModel(num.toString());
         } else {
-            return new SimpleScalar((env == null ? Environment.getNewCNumberFormat() : env.getCNumberFormat()).format(num));
+            return new StringModel((env == null ? Environment.getNewCNumberFormat() : env.getCNumberFormat()).format(num));
         }
     }
 }
