@@ -7,7 +7,8 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.template.SimpleDate;
+import freemarker.ext.beans.DateModel;
+//import freemarker.template.SimpleDate;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
@@ -46,7 +47,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
             }
             // unknown and datetime can be coerced into any date type
             if(dtype == TemplateDateModel.UNKNOWN || dtype == TemplateDateModel.DATETIME) {
-                return new SimpleDate(dmodel.getAsDate(), dateType);
+                return new DateModel(dmodel.getAsDate(), dateType);
             }
             throw new TemplateException(
                     "Cannot convert " + TemplateDateModel.TYPE_NAMES.get(dtype)
@@ -98,7 +99,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
         }
 
         public TemplateModel get(String pattern) {
-            return new SimpleDate(
+            return new DateModel(
                     parse(env.getDateFormatObject(dateType, pattern)),
                     dateType);
         }

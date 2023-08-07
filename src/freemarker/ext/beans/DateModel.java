@@ -11,7 +11,7 @@ import freemarker.template.TemplateDateModel;
  */
 public class DateModel extends Pojo implements TemplateDateModel
 {
-    private final int type;
+    private int type;
     
     /**
      * Creates a new model that wraps the specified date object.
@@ -36,6 +36,11 @@ public class DateModel extends Pojo implements TemplateDateModel
         else {
             type = ObjectWrapper.instance().getDefaultDateType();
         }
+    }
+
+    public DateModel(Date date, int type) {
+        this(date);
+        this.type = type;
     }
 
     public Date getAsDate() {

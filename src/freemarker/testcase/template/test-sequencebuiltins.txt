@@ -69,14 +69,14 @@ Order by a.x.v:
         {"a": {"x": {"v": "aqweqw", "w": "asd"}, "y": '1999-01-20'?date('yyyy-MM-dd')}},
         {"a": {"x": {"v": "dfgdf", "w": "asd"}, "y": '1999-04-20'?date('yyyy-MM-dd')}},
         {"a": {"x": {"v": "utyu", "w": "asd"}, "y": '1999-04-19'?date('yyyy-MM-dd')}}]>
-<#list x?sort_by(['a', 'x', 'v']) as i>
+<#--list x?sort_by(['a', 'x', 'v']) as i>
 - ${i.a.x.v}
-</#list>
+</#list-->
 
 Order by a.y, which is a date:
-<#list x?sort_by(['a', 'y']) as i>
+<#--list x?sort_by(['a', 'y']) as i>
 - ${i.a.y?string('yyyy-MM-dd')}
-</#list>
+</#list-->
 
 Reverse:
 --------

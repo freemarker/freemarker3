@@ -143,8 +143,8 @@ public class TemplateTestCase extends TestCase {
         else if (testName.equals("dateformat")) {
             GregorianCalendar cal = new GregorianCalendar(2002, 10, 15, 14, 54, 13);
             cal.setTimeZone(TimeZone.getTimeZone("GMT"));
-            dataModel.put("date", new SimpleDate(cal.getTime(), TemplateDateModel.DATETIME));
-            dataModel.put("unknownDate", new SimpleDate(cal.getTime(), TemplateDateModel.UNKNOWN));
+            dataModel.put("date", new DateModel(cal.getTime(), TemplateDateModel.DATETIME));
+            dataModel.put("unknownDate", new DateModel(cal.getTime(), TemplateDateModel.UNKNOWN));
         }
     
         else if (testName.equals("number-format")) {
