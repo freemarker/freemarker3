@@ -6,7 +6,7 @@ import java.util.List;
 
 import freemarker.core.AbstractScope;
 import freemarker.core.Scope;
-import freemarker.template.SimpleCollection;
+import freemarker.ext.beans.CollectionModel;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModel;
@@ -63,7 +63,7 @@ public class NamedParameterListScope extends AbstractScope {
                 nonNullValueKeys.add(new StringModel(paramNames.get(i)));
             }
         }
-        return new SimpleCollection(nonNullValueKeys);
+        return new CollectionModel(nonNullValueKeys);
     }
     
     public int size() {
@@ -86,7 +86,7 @@ public class NamedParameterListScope extends AbstractScope {
                 nonNullValues.add(value);
             }
         }
-        return new SimpleCollection(nonNullValues);
+        return new CollectionModel(nonNullValues);
     }
 
     public Object get(String key) {

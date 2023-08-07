@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import freemarker.core.Environment;
 import freemarker.core.TemplateNamespace;
+import freemarker.ext.beans.ListModel;
 import freemarker.template.*;
 
 
@@ -42,7 +43,7 @@ public class VisitNode extends TemplateElement {
         }
         if (nss != null) {
             if (nss instanceof TemplateNamespace) {
-                SimpleSequence ss = new SimpleSequence(1);
+                ListModel ss = new ListModel();
                 ss.add(nss);
                 nss = ss;
             }

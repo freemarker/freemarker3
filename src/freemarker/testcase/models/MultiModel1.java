@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
+import freemarker.ext.beans.ListModel;
 import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.SimpleMapModel;
 
@@ -15,15 +16,15 @@ public class MultiModel1 implements TemplateHashModel,
     private TemplateModel m_cSubModel = new MultiModel2();
     private TemplateModel m_cListHashModel1 = new MultiModel4();
     private TemplateModel m_cListHashModel2 = new MultiModel5();
-    private TemplateSequenceModel m_cListModel = new SimpleSequence();
+    private TemplateSequenceModel m_cListModel = new ListModel();
     private TemplateHashModel m_cHashModel = new SimpleMapModel();
 
     /** Creates new MultiModel1 */
     public MultiModel1() {
         for( int i = 0; i < 10; i++ ) {
-            ((SimpleSequence)m_cListModel).add( "Model1 value: " + Integer.toString( i ));
+            ((ListModel)m_cListModel).add( "Model1 value: " + Integer.toString( i ));
         }
-        ((SimpleSequence)m_cListModel).add( new MultiModel3() );
+        ((ListModel)m_cListModel).add( new MultiModel3() );
         ((SimpleMapModel)m_cHashModel).put( "nested", new MultiModel3() );
     }
 

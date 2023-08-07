@@ -1,9 +1,8 @@
 package freemarker.core;
 
-import java.beans.Beans;
 import java.util.*;
 
-import freemarker.ext.beans.ObjectWrapper;
+import freemarker.ext.beans.CollectionModel;
 import freemarker.template.*;
 
 /**
@@ -40,11 +39,11 @@ public class BaseScope extends AbstractScope {
     }
 
     public TemplateCollectionModel keys() {
-        return new SimpleCollection(variables.keySet());
+        return new CollectionModel(variables.keySet());
     }
 
     public TemplateCollectionModel values() {
-        return new SimpleCollection(variables.values());
+        return new CollectionModel(variables.values());
     }
 
 

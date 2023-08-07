@@ -4,6 +4,7 @@ import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.NumberModel;
+import freemarker.ext.beans.ListModel;
 import java.util.*;
 
 /**
@@ -191,15 +192,15 @@ public class AddConcatExpression extends Expression {
         {
             if (keys == null) {
                 HashSet<String> keySet = new HashSet<String>();
-                SimpleSequence keySeq = new SimpleSequence(32);
+                ListModel keySeq = new ListModel();
                 addKeys(keySet, keySeq, (TemplateHashModelEx)this.left);
                 addKeys(keySet, keySeq, (TemplateHashModelEx)this.right);
                 size = keySet.size();
-                keys = new CollectionAndSequence(keySeq);
+                keys = new CollectionAndSequence((TemplateSequenceModel)keySeq);
             }
         }
 
-        private static void addKeys(Set<String> set, SimpleSequence keySeq, TemplateHashModelEx hash)
+        private static void addKeys(Set<String> set, ListModel keySeq, TemplateHashModelEx hash)
         throws TemplateModelException
         {
             Iterator<Object> it = hash.keys().iterator();
@@ -217,14 +218,14 @@ public class AddConcatExpression extends Expression {
         throws TemplateModelException
         {
             if (values == null) {
-                SimpleSequence seq = new SimpleSequence(size());
+                ListModel seq = new ListModel();
                 // Note: size() invokes initKeys() if needed.
             
                 int ln = keys.size();
                 for (int i  = 0; i < ln; i++) {
                     seq.add(get(((TemplateScalarModel)keys.get(i)).getAsString()));
                 }
-                values = new CollectionAndSequence(seq);
+                values = new CollectionAndSequence((TemplateSequenceModel)seq);
             }
         }
     }

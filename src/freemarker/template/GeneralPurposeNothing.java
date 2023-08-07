@@ -16,7 +16,7 @@ implements TemplateBooleanModel, TemplateScalarModel, TemplateSequenceModel, Tem
 
     private static final TemplateModel instance = new GeneralPurposeNothing();
       
-    private static final TemplateCollectionModel EMPTY_COLLECTION = new SimpleCollection(new ArrayList(0));
+    private static final TemplateCollectionModel EMPTY_COLLECTION = new CollectionModel(new ArrayList(0));
 
     private GeneralPurposeNothing() {
     }

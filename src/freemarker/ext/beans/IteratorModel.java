@@ -11,7 +11,7 @@ import freemarker.template.TemplateModelException;
  * <p>A class that adds Iterator functionality to the
  * {@link Iterator} interface implementers. 
  * </p>
- * <p>It differs from the {@link freemarker.template.SimpleCollection} in that 
+ * <p>It differs from the {@link freemarker.template.CollectionModel} in that 
  * it inherits from {@link Pojo}, and therefore you can call methods on 
  * it directly, even to the effect of calling <tt>iterator.remove()</tt> in 
  * the template.</p> <p>Using the model as a collection model is NOT 

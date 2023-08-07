@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import freemarker.ext.beans.StringModel;
+import freemarker.ext.beans.ListModel;
+import freemarker.ext.beans.CollectionModel;
 import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.*;
@@ -365,7 +367,7 @@ public final class Environment extends Configurable implements Scope {
     public void render(TemplateNodeModel node, TemplateSequenceModel namespaces)
             throws TemplateException, IOException {
         if (nodeNamespaces == null) {
-            SimpleSequence ss = new SimpleSequence(1);
+            ListModel ss = new ListModel();
             ss.add(getCurrentNamespace());
             nodeNamespaces = ss;
         }
@@ -1150,7 +1152,7 @@ public final class Environment extends Configurable implements Scope {
         for (String varname : globalVariables.keySet()) {
             aggregate.add(new StringModel(varname));
         }
-        return new SimpleCollection(aggregate);
+        return new CollectionModel(aggregate);
     }
 
     public TemplateCollectionModel values() {
@@ -1173,7 +1175,7 @@ public final class Environment extends Configurable implements Scope {
         for (Object value : globalVariables.values()) {
             aggregate.add(value);
         }
-        return new SimpleCollection(aggregate);
+        return new CollectionModel(aggregate);
     }
 
     /**

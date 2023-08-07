@@ -2,12 +2,12 @@ package freemarker.ext.beans;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import freemarker.core.ast.CollectionAndSequence;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateMethodModelEx;
@@ -74,11 +74,11 @@ public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelE
     }
 
     public TemplateCollectionModel keys() {
-        return new CollectionAndSequence(new SimpleSequence(map.keySet()));
+        return new CollectionAndSequence(new ListModel(new ArrayList(map.keySet())));
     }
 
     public TemplateCollectionModel values() {
-        return new CollectionAndSequence(new SimpleSequence(map.values()));
+        return new CollectionAndSequence(new ListModel(new ArrayList(map.values())));
     }
     
     public Object getAdaptedObject(Class hint) {

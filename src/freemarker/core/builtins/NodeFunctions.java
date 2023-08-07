@@ -6,6 +6,7 @@ import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.StringModel;
+import freemarker.ext.beans.ListModel;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
 
@@ -99,7 +100,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class AncestorSequence extends SimpleSequence implements TemplateMethodModel {
+    static class AncestorSequence extends ListModel implements TemplateMethodModel {
 
         public Object exec(List names) {
             if (names == null || names.isEmpty()) {

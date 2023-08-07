@@ -18,7 +18,7 @@ import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.ObjectWrapper;
 import freemarker.ext.beans.NumberModel;
 import freemarker.ext.beans.StringModel;
-import freemarker.template.SimpleSequence;
+import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateMethodModel;
@@ -187,7 +187,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         @Override
         public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
             StringTokenizer st = new StringTokenizer(string);
-            SimpleSequence result = new SimpleSequence();
+            ListModel result = new ListModel();
             while (st.hasMoreTokens()) {
                 result.add(st.nextToken());
             }
@@ -397,7 +397,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
         class Match implements TemplateScalarModel {
             String match;
-            SimpleSequence subs = new SimpleSequence();
+            ListModel subs = new ListModel();
             Match() {
                 match = input.substring(matcher.start(), matcher.end());
                 for (int i=0; i< matcher.groupCount() + 1; i++) {

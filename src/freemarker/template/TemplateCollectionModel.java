@@ -9,8 +9,8 @@ import java.util.Iterator;
  * your collection does not support index-based access and possibly,
  * the size cannot be known in advance. If you need index-based
  * access, use a {@link TemplateSequenceModel} instead.
- * @see SimpleSequence
- * @see SimpleCollection
+ * @see ListModel
+ * @see CollectionModel
  *
  * @author Attila Szegedi, szegedia at users dot sourceforge dot net
  * @version $Id: TemplateCollectionModel.java,v 1.10 2003/01/12 23:40:21 revusky Exp $

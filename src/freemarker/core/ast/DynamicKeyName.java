@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
+import freemarker.ext.beans.ListModel;
 import freemarker.ext.beans.StringModel;
 
 /**
@@ -142,7 +143,7 @@ public class DynamicKeyName extends Expression {
                     list.add(sequence.get(i));
                 }
             }
-            return new SimpleSequence(list);
+            return new ListModel(list);
         }
         
         try

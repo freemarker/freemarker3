@@ -1,6 +1,7 @@
 package freemarker.core.ast;
 
 import freemarker.core.Environment;
+import freemarker.ext.beans.ListModel;
 import freemarker.template.*;
 import java.util.*;
 
@@ -81,8 +82,8 @@ public class HashLiteral extends Expression {
                 keyList.add(key);
                 valueList.add(value);
             }
-            keyCollection = new CollectionAndSequence(new SimpleSequence(keyList));
-            valueCollection = new CollectionAndSequence(new SimpleSequence(valueList));
+            keyCollection = new CollectionAndSequence(new ListModel(keyList));
+            valueCollection = new CollectionAndSequence(new ListModel(valueList));
         }
 
         public int size() {

@@ -1,5 +1,6 @@
 package freemarker.core.ast;
 
+import freemarker.ext.beans.ListModel;
 import freemarker.template.*;
 import java.util.*;
 
@@ -19,6 +20,10 @@ final public class CollectionAndSequence implements TemplateCollectionModel, Tem
 
     public CollectionAndSequence(TemplateSequenceModel sequence) {
         this.sequence = sequence;
+    }
+    
+    public CollectionAndSequence(ListModel listModel) {
+        this.sequence = listModel;
     }
 
     public Iterator<Object> iterator() {

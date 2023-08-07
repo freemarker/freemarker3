@@ -3,11 +3,12 @@ package freemarker.core.ast;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
+import freemarker.ext.beans.CollectionModel;
 import freemarker.template.*;
 
 public class DefaultToExpression extends Expression {
 	
-    private static final TemplateCollectionModel EMPTY_COLLECTION = new SimpleCollection(new java.util.ArrayList(0));
+    private static final TemplateCollectionModel EMPTY_COLLECTION = new CollectionModel(new java.util.ArrayList(0));
     
 	static private class EmptyStringAndSequence 
 	  implements TemplateScalarModel, TemplateSequenceModel, TemplateHashModelEx {

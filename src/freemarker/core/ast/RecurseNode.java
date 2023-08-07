@@ -3,6 +3,7 @@ package freemarker.core.ast;
 import java.io.IOException;
 
 import freemarker.core.Environment;
+import freemarker.ext.beans.ListModel;
 import freemarker.template.*;
 
 
@@ -40,7 +41,7 @@ public class RecurseNode extends TemplateElement {
         }
         if (nss != null) {
             if (nss instanceof TemplateHashModel) {
-                SimpleSequence ss = new SimpleSequence(1);
+                ListModel ss = new ListModel();
                 ss.add(nss);
                 nss = ss;
             }
