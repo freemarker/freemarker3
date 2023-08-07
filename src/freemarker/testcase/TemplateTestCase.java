@@ -133,7 +133,7 @@ public class TemplateTestCase extends TestCase {
             dataModel.put( "boolean4", TemplateBooleanModel.TRUE);
             dataModel.put( "boolean5", TemplateBooleanModel.FALSE);
             
-            dataModel.put( "list1", new BooleanList1() );
+            dataModel.put( "list1", new ListModel() );
             dataModel.put( "list2", new BooleanList2() );
     
             dataModel.put( "hash1", new BooleanHash1() );

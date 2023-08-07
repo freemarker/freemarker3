@@ -1,5 +1,6 @@
 package freemarker.ext.beans;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,6 +23,14 @@ public class ListModel extends CollectionModel implements TemplateSequenceModel 
     public ListModel(List list)
     {
         super(list);
+    }
+
+    public ListModel() {
+        this(new ArrayList());
+    }
+
+    public void add(Object obj) {
+        ((List)this.getWrappedObject()).add(obj);
     }
 
     /**

@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
+import freemarker.ext.beans.ListModel;
 import freemarker.ext.beans.StringModel;
 
 /**
@@ -10,13 +11,13 @@ import freemarker.ext.beans.StringModel;
  */
 public class MultiModel4 implements TemplateSequenceModel, TemplateHashModel {
 
-    private LegacyList m_cList = new LegacyList();
+    private ListModel listModel = new ListModel();
 
     /**
      * @return the specified index in the list
      */
     public Object get(int i) {
-        return m_cList.get( i );
+        return listModel.get( i );
     }
 
     /**
@@ -37,7 +38,7 @@ public class MultiModel4 implements TemplateSequenceModel, TemplateHashModel {
 
 
     public int size() {
-        return m_cList.size();
+        return listModel.size();
     }
 
     public boolean isEmpty() {

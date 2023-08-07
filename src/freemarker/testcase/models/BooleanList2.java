@@ -1,5 +1,6 @@
 package freemarker.testcase.models;
 
+import freemarker.ext.beans.ListModel;
 import freemarker.template.*;
 
 /**
@@ -11,11 +12,11 @@ import freemarker.template.*;
  */
 public class BooleanList2 implements TemplateSequenceModel {
 
-    private LegacyList  cList;
+    private ListModel  cList;
 
     /** Creates new BooleanList2 */
     public BooleanList2() {
-        cList = new LegacyList();
+        cList = new ListModel();
     }
 
     /**
