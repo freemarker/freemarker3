@@ -177,6 +177,12 @@ INJECT BASE_NODE_CLASS :
     }    
 }
 
+INJECT Node : 
+   import freemarker.template.Template;
+{
+   default void setTemplate(Template template) {}
+}
+
 INJECT PARSER_CLASS : 
     import freemarker.core.ast.*;
     import freemarker.template.*;
@@ -189,13 +195,17 @@ INJECT PARSER_CLASS :
     import java.util.StringTokenizer;
 {
     // Necessary for adding macros and setting location info.
-    Template template;
+    @Property Template template;
     private String templateName;
     private boolean stripText;
     // variables that keep track of whether we are in a loop or a switch.
     private int contentNesting;
     // for stripText
     private int trimBlockNesting;
+
+    void OPEN_NODE_HOOK(Node n) {
+         n.setTemplate(template);
+    }
 
     /**
     * Create an FM expression parser using a string.
@@ -237,10 +247,6 @@ INJECT PARSER_CLASS :
          if (syntaxSetting != Configuration.AUTO_DETECT_TAG_SYNTAX) {
             token_source.setAltDirectiveSyntax(syntaxSetting == Configuration.SQUARE_BRACKET_TAG_SYNTAX);
         }
-    }
-
-    public void setTemplate(Template t) {
-        this.template = t;
     }
 
     private String getErrorStart(Token t) {

@@ -10,7 +10,6 @@ import freemarker.core.Environment;
 import freemarker.core.TemplateNamespace;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateSequenceModel;
 
 public class ListLiteral extends Expression {
