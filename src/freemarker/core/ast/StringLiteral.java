@@ -50,11 +50,10 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
                 e.setTemplateName(getTemplate().getName());
                 throw e;
             }
-            this.constantValue = null;
         }
     }
     
-    public Object _getAsTemplateModel(Environment env) {
+    public Object getAsTemplateModel(Environment env) {
         return new StringModel(getStringValue(env));
     }
 
@@ -79,10 +78,6 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
                 env.setTemplateExceptionHandler(teh);
             }
         }
-    }
-
-    public boolean isLiteral() {
-        return interpolatedOutput == null;
     }
 
     public Expression _deepClone(String name, Expression subst) {

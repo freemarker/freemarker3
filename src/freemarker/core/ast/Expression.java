@@ -11,45 +11,13 @@ import freemarker.core.parser.ast.TemplateNode;
  */
 abstract public class Expression extends TemplateNode {
 
-    public abstract Object _getAsTemplateModel(Environment env);
-    public abstract boolean isLiteral();
+    public abstract Object getAsTemplateModel(Environment env);
     
     
     public String getDescription() {
     	return "the expression: "  + this;
     }
 
-    // Used to store a constant return value for this expression. Only if it
-    // is possible, of course.
-    
-    Object constantValue;
-    
-    /**
-     * @return the value of the expression if it is a literal, null otherwise.
-     */
-    
-    public final Object literalValue() {
-    	return constantValue;
-    }
-    
-    // Hook in here to set the constant value if possible.
-    
-    public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine)
-    {
-        super.setLocation(template, beginColumn, beginLine, endColumn, endLine);
-        if (isLiteral()) {
-        	try {
-        		constantValue = _getAsTemplateModel(null);
-        	} catch (Exception e) {
-        		constantValue = Constants.INVALID_EXPRESSION; // If we can't evaluate it, it must be invalid, no?
-        	}
-        }
-    }
-    
-    public final Object getAsTemplateModel(Environment env) {
-        return constantValue != null ? constantValue : _getAsTemplateModel(env);
-    }
-    
     public String getStringValue(Environment env) {
         return getStringValue(getAsTemplateModel(env), this, env);
     }

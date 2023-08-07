@@ -26,10 +26,6 @@ public class AndExpression extends BooleanExpression {
         return left.isTrue(env) && right.isTrue(env);
     }
 
-    public boolean isLiteral() {
-        return constantValue != null || (left.isLiteral() && right.isLiteral());
-    }
-
     public Expression _deepClone(String name, Expression subst) {
     	return new AndExpression(left.deepClone(name, subst), right.deepClone(name, subst));
     }

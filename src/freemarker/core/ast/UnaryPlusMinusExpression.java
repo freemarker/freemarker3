@@ -24,7 +24,7 @@ public class UnaryPlusMinusExpression extends Expression {
     	return isMinus;
     }
     
-    public Object _getAsTemplateModel(Environment env) {
+    public Object getAsTemplateModel(Environment env) {
         TemplateNumberModel targetModel = null;
         try {
             targetModel = (TemplateNumberModel) target.getAsTemplateModel(env);
@@ -39,10 +39,6 @@ public class UnaryPlusMinusExpression extends Expression {
         Number n = targetModel.getAsNumber();
         n = ArithmeticEngine.CONSERVATIVE_ENGINE.multiply(MINUS_ONE, n);
         return new NumberModel(n);
-    }
-
-    public boolean isLiteral() {
-        return target.isLiteral();
     }
 
     public Expression _deepClone(String name, Expression subst) {

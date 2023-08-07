@@ -665,7 +665,7 @@ INJECT NumberLiteral :
         this.value = value;
     }
     
-    public TemplateModel _getAsTemplateModel(Environment env) {
+    public TemplateModel getAsTemplateModel(Environment env) {
         return new NumberModel(value);
     }
     
@@ -679,10 +679,6 @@ INJECT NumberLiteral :
     
     String getName() {
         return "the number: '" + value + "'";
-    }
-
-    public boolean isLiteral() {
-        return true; 
     }
 
     public Expression _deepClone(String name, Expression subst) {
@@ -711,7 +707,7 @@ INJECT Identifier :
         this.name = name;
     }
     
-    public Object _getAsTemplateModel(Environment env) {
+    public Object getAsTemplateModel(Environment env) {
         try {
             return env.getVariable(name);
         } catch (NullPointerException e) {
@@ -963,12 +959,8 @@ INJECT BooleanLiteral :
         return value ? "true" : "false";
     }
 
-    public Object _getAsTemplateModel(Environment env) {
+    public Object getAsTemplateModel(Environment env) {
         return value ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
-    }
-
-    public boolean isLiteral() {
-        return true;
     }
 
     public Expression _deepClone(String name, Expression subst) {
@@ -994,12 +986,8 @@ INJECT NullLiteral :
     	return "null";
     }
 
-    public Object _getAsTemplateModel(Environment env) {
+    public Object getAsTemplateModel(Environment env) {
         return Constants.JAVA_NULL;
-    }
-
-    public boolean isLiteral() {
-    	return true;
     }
 
     public Expression _deepClone(String name, Expression subst) {

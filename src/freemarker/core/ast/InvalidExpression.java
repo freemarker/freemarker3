@@ -29,13 +29,7 @@ public class InvalidExpression extends Expression {
     }	
 
 	@Override
-	public Object _getAsTemplateModel(Environment env) {
+	public Object getAsTemplateModel(Environment env) {
 		return Constants.INVALID_EXPRESSION;
 	}
-
-	@Override public boolean isLiteral() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 }

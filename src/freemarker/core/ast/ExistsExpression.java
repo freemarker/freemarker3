@@ -19,7 +19,7 @@ public class ExistsExpression extends Expression {
 		return exp;
 	}
 
-	public Object _getAsTemplateModel(Environment env) {
+	public Object getAsTemplateModel(Environment env) {
 		Object tm = null;
 		try {
 			tm = exp.getAsTemplateModel(env);
@@ -31,10 +31,6 @@ public class ExistsExpression extends Expression {
 		return tm == null || tm == Constants.JAVA_NULL 
 		       ? TemplateBooleanModel.FALSE 
 		       : TemplateBooleanModel.TRUE;
-	}
-
-	public boolean isLiteral() {
-		return exp.isLiteral();
 	}
 
 	public Expression _deepClone(String name, Expression subst) {

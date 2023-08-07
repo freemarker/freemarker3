@@ -51,25 +51,6 @@ public class Include extends TemplateElement {
         if(parseExp == null) {
             parse = true;
         }
-        else if(parseExp.isLiteral()) {
-            try {
-                if (parseExp instanceof StringLiteral) {
-                    parse = StringUtil.getYesNo(parseExp.getStringValue(null));
-                }
-                else {
-                    try {
-                        parse = parseExp.isTrue(null);
-                    }
-                    catch(NonBooleanException e) {
-                        throw new ParseException("Expected a boolean or string as the value of the parse attribute", parseExp);
-                    }
-                }
-            }
-            catch(TemplateException e) {
-                // evaluation of literals must not throw a TemplateException
-                throw new UndeclaredThrowableException(e);
-            }
-        }
         else {
             this.parseExp = parseExp;
         }

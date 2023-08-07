@@ -2,9 +2,7 @@ package freemarker.core.ast;
 
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.Identifier;
-import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
-import freemarker.template.TemplateModel;
 
 /**
  * The dot operator. Used to reference items inside a
@@ -28,16 +26,12 @@ public class Dot extends Expression {
     	return key;
     }
 
-    public Object _getAsTemplateModel(Environment env) {
+    public Object getAsTemplateModel(Environment env) {
         Object leftModel = target.getAsTemplateModel(env);
         if(leftModel instanceof TemplateHashModel) {
             return ((TemplateHashModel) leftModel).get(key);
         }
         throw invalidTypeException(leftModel, target, env, "hash");
-    }
-
-    public boolean isLiteral() {
-        return target.isLiteral();
     }
 
     public Expression _deepClone(String name, Expression subst) {

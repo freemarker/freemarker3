@@ -26,17 +26,17 @@ public interface TemplateHashModelEx extends TemplateHashModel {
     /**
      * @return the number of key/value mappings in the hash.
      */
-    int size() throws TemplateModelException;
+    int size();
 
     /**
      * @return a collection containing the keys in the hash. Every element of 
      * the returned collection must implement the {@link TemplateScalarModel}
      * (as the keys of hashes are always strings).
      */
-    TemplateCollectionModel keys() throws TemplateModelException;
+    TemplateCollectionModel keys();
 
     /**
      * @return a collection containing the values in the hash.
      */
-    TemplateCollectionModel values() throws TemplateModelException;
+    TemplateCollectionModel values();
 }

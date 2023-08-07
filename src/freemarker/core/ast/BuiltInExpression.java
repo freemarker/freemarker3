@@ -144,7 +144,7 @@ public class BuiltInExpression extends Expression {
         return bi;
     }
 
-    public Object _getAsTemplateModel(Environment env) {
+    public Object getAsTemplateModel(Environment env) {
         return bi.get(env, this);
     }
 
@@ -154,10 +154,6 @@ public class BuiltInExpression extends Expression {
 
     public String getName() {
         return key;
-    }
-
-    public boolean isLiteral() {
-        return target.isLiteral() && bi.isSideEffectFree();
     }
 
     /*	

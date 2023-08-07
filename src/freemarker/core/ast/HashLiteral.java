@@ -25,7 +25,7 @@ public class HashLiteral extends Expression {
         }
     }
 
-    public Object _getAsTemplateModel(Environment env) {
+    public Object getAsTemplateModel(Environment env) {
         return new SequenceHash(env);
     }
     
@@ -36,21 +36,6 @@ public class HashLiteral extends Expression {
     public List<Expression> getValues() {
     	return Collections.unmodifiableList(values);
     }
-
-    public boolean isLiteral() {
-        if (constantValue != null) {
-            return true;
-        }
-        for (int i = 0; i < size; i++) {
-            Expression key = keys.get(i);
-            Expression value = values.get(i);
-            if (!key.isLiteral() || !value.isLiteral()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
     public Expression _deepClone(String name, Expression subst) {
     	ArrayList<Expression> clonedKeys = new ArrayList<Expression>(keys.size());

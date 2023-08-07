@@ -31,7 +31,7 @@ public class DynamicKeyName extends Expression {
     	return target;
     }
 
-    public Object _getAsTemplateModel(Environment env) throws TemplateException
+    public Object getAsTemplateModel(Environment env) throws TemplateException
     {
         Object targetModel = target.getAsTemplateModel(env);
         assertNonNull(targetModel, target, env);
@@ -181,10 +181,6 @@ public class DynamicKeyName extends Expression {
         {
             throw invalidTypeException(target.getAsTemplateModel(env), target, env, "number, scalar, or sequence");
         }
-    }
-
-    public boolean isLiteral() {
-        return constantValue != null || (target.isLiteral() && nameExpression.isLiteral());
     }
 
     public Expression _deepClone(String name, Expression subst) {

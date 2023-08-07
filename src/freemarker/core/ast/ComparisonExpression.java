@@ -176,10 +176,6 @@ public class ComparisonExpression extends BooleanExpression {
         }
     }
 
-    public boolean isLiteral() {
-        return constantValue != null || (left.isLiteral() && right.isLiteral());
-    }
-
     public Expression _deepClone(String name, Expression subst) {
     	return new ComparisonExpression(left.deepClone(name, subst), right.deepClone(name, subst), opString);
     }

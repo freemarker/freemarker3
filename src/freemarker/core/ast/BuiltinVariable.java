@@ -59,7 +59,7 @@ public class BuiltinVariable extends Expression {
     	return name;
     }
 
-    public Object _getAsTemplateModel(Environment env) {
+    public Object getAsTemplateModel(Environment env) {
         if (name == NAMESPACE) {
             return env.getCurrentNamespace();
         }
@@ -116,10 +116,6 @@ public class BuiltinVariable extends Expression {
 
     public String toString() {
         return "." + name;
-    }
-
-    public boolean isLiteral() {
-        return false;
     }
 
     public Expression _deepClone(String name, Expression subst) {

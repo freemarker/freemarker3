@@ -206,7 +206,7 @@ public final class Environment extends Configurable implements Scope {
     public void render(final TemplateElement element,
             TemplateDirectiveModel directiveModel, Map<String, Object> args,
             final List<String> bodyParameterNames)
-            throws TemplateException, IOException {
+            throws IOException {
         TemplateDirectiveBody nested = null;
         boolean createsNewScope = false;
         if (element != null) {

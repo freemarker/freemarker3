@@ -42,7 +42,7 @@ public class ArithmeticExpression extends Expression {
         this.operation = operation;
     }
     
-    public Object _getAsTemplateModel(Environment env) throws TemplateException 
+    public Object getAsTemplateModel(Environment env) throws TemplateException 
     {
         Object leftModel = getLeft().getAsTemplateModel(env);
         Object rightModel = getRight().getAsTemplateModel(env);
@@ -77,10 +77,6 @@ public class ArithmeticExpression extends Expression {
             default:
                 throw new TemplateException("unknown operation : " + operation, env);
         }
-    }
-
-    public boolean isLiteral() {
-        return constantValue != null || (getLeft().isLiteral() && getRight().isLiteral());
     }
 
     public Expression _deepClone(String name, Expression subst) {

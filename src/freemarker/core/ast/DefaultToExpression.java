@@ -55,7 +55,7 @@ public class DefaultToExpression extends Expression {
 		return rhs;
 	}
 
-	public Object _getAsTemplateModel(Environment env) {
+	public Object getAsTemplateModel(Environment env) {
 		Object left = null;		
 		try {
 			left = lhs.getAsTemplateModel(env);
@@ -67,10 +67,6 @@ public class DefaultToExpression extends Expression {
 		if (left != null && left != Constants.JAVA_NULL) return left;
 		if (rhs == null) return EMPTY_STRING_AND_SEQUENCE;
 		return rhs.getAsTemplateModel(env);
-	}
-
-	public boolean isLiteral() {
-		return false;
 	}
 
 	public Expression _deepClone(String name, Expression subst) {

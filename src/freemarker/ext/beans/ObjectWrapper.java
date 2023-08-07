@@ -103,6 +103,49 @@ public class ObjectWrapper
      */
     private ObjectWrapper() {}
 
+    public static boolean isMap(Object obj) {
+        if (obj instanceof TemplateHashModel) {
+            return true;
+        }
+        if (obj instanceof Pojo) {
+            obj = ((Pojo)obj).getWrappedObject();
+        }
+        return obj instanceof Map;
+    }
+
+    public static boolean isList(Object obj) {
+        if (obj instanceof TemplateSequenceModel) {
+            return true;
+        }
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        return obj instanceof List;
+    }
+
+    public static boolean isString(Object obj) {
+        if (obj instanceof TemplateScalarModel) {
+            return true;
+        }
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        return obj instanceof CharSequence;
+    }
+
+    public String asString(Object obj) {
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        if (obj instanceof TemplateScalarModel) {
+            return ((TemplateScalarModel) obj).getAsString();
+        }
+        if (obj instanceof CharSequence) {
+            return ((CharSequence) obj).toString();
+        }
+        throw new TemplateModelException("not a string");
+    }
+
     
     /**
      * @see #setStrict(boolean)

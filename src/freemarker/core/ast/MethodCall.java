@@ -39,7 +39,7 @@ public class MethodCall extends Expression {
     	return target;
     }
     
-    public Object _getAsTemplateModel(Environment env) throws TemplateException
+    public Object getAsTemplateModel(Environment env) throws TemplateException
     {
         Object targetModel = target.getAsTemplateModel(env);
         if (targetModel instanceof TemplateMethodModel) {
@@ -78,10 +78,6 @@ public class MethodCall extends Expression {
 
     TemplateModel getConstantValue() {
         return null;
-    }
-
-    public boolean isLiteral() {
-        return false;
     }
 
     public Expression _deepClone(String name, Expression subst) {

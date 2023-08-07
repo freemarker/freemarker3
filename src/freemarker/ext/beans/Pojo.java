@@ -17,7 +17,6 @@ import freemarker.core.ast.CollectionAndSequence;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;

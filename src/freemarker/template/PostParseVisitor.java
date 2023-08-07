@@ -80,9 +80,7 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(AndExpression node) {
 		visit(node.getLeft());
-		checkLiteralInBooleanContext(node.getLeft());
 		visit(node.getRight());
-		checkLiteralInBooleanContext(node.getRight());
 	}
 	
 	public void visit(AssignmentInstruction node) {
@@ -148,7 +146,6 @@ public class PostParseVisitor extends ASTVisitor {
 		markAsProducingOutput(node);
 		Expression escapedExpression = escapedExpression(node.getExpression());
 		node.setEscapedExpression(escapedExpression);
-		checkLiteralInScalarContext(escapedExpression);
 	}
 	
 	public void visit(IfBlock node) {
@@ -312,23 +309,17 @@ public class PostParseVisitor extends ASTVisitor {
 	
 	public void visit(OrExpression node) {
 		visit(node.getLeft());
-		checkLiteralInBooleanContext(node.getLeft());
 		visit(node.getRight());
-		checkLiteralInBooleanContext(node.getRight());
 	}
 	
 	public void visit(ArithmeticExpression node) {
 		visit(node.getLeft());
-		checkLiteralInNumericalContext(node.getLeft());
 		visit(node.getRight());
-		checkLiteralInNumericalContext(node.getRight());
 	}
 	
 	public void visit(ComparisonExpression node) {
 		visit(node.getLeft());
-		checkLiteralInScalarContext(node.getLeft());
 		visit(node.getRight());
-		checkLiteralInScalarContext(node.getRight());
 	}
 	
 	public void visit(NumericalOutput node) {
@@ -341,34 +332,6 @@ public class PostParseVisitor extends ASTVisitor {
 			template.addParsingProblem(problem);
 		}
 		markAsProducingOutput(node);
-		checkLiteralInNumericalContext(node.getExpression());
-	}
-	
-	public void visit(Dot node) {
-		super.visit(node);
-		Object target = node.getTarget().literalValue();
-		if (target != null && !(target instanceof TemplateHashModel)) {
-			template.addParsingProblem(new ParsingProblem("Expression " + node.getTarget().source() + " is not a hash type.", node.getTarget()));
-		}
-	}
-	
-	public void visit(DynamicKeyName node) {
-		super.visit(node);
-		Object target = node.getTarget().literalValue();
-		if (target != null && !(target instanceof TemplateHashModel) && !(target instanceof TemplateSequenceModel)) {
-			String msg = "Expression: " + node.getTarget().source() + " is not a hash or sequence type.";
-			template.addParsingProblem(new ParsingProblem(msg, node.getTarget()));
-		}
-		if (!(node.getNameExpression() instanceof Range)) {
-			checkLiteralInScalarContext(node.getNameExpression());
-		}
-	}
-	
-	public void visit(HashLiteral node) {
-		for (Expression key : node.getKeys()) {
-			checkLiteralInStringContext(key);
-		}
-		super.visit(node);
 	}
 	
 	public void visit(StringLiteral node) {
@@ -394,20 +357,6 @@ public class PostParseVisitor extends ASTVisitor {
 		super.visit(node);
 	}
 
-	public void visit(Range node) {
-		super.visit(node);
-		checkLiteralInNumericalContext(node.getLeft());
-		if (node.getRight() != null) {
-			checkLiteralInNumericalContext(node.getRight());
-		}
-	}
-	
-	
-	public void visit(UnaryPlusMinusExpression node) {
-		checkLiteralInNumericalContext(node.getTarget());
-		super.visit(node);
-	}
-	
 	public void visit(TrimInstruction node) {
 		for (int i = node.getBeginLine(); i<= node.getEndLine(); i++) {
 			if (node.isLeft())
@@ -459,61 +408,6 @@ public class PostParseVisitor extends ASTVisitor {
         		template.addParsingProblem(problem);
             }
     }
-	
-	private void checkLiteralInBooleanContext(Expression exp) {
-        Object value = exp.literalValue();
-		if (value != null && !(value instanceof TemplateBooleanModel)) {
-			String msg;
-			if (value == Constants.INVALID_EXPRESSION) {
-				msg = "Invalid expression: " + exp.source();
-			} else {
-				msg = "Expression: " + exp.source() + " is not a boolean (true/false) value.";
-			}
-			template.addParsingProblem(new ParsingProblem(msg, exp));
-		}
-	}
-	
-	private void checkLiteralInStringContext(Expression exp) {
-		Object value = exp.literalValue();
-		if (value != null && !(value instanceof TemplateScalarModel)) {
-			String msg;
-			if (value == Constants.INVALID_EXPRESSION) {
-				msg = "Invalid expression: " + exp.source();
-			} else {
-				msg = "Expression: " + exp.source() + " is not a string.";
-			}
-			template.addParsingProblem(new ParsingProblem(msg, exp));
-		}
-	}
-	
-	private void checkLiteralInNumericalContext(Expression exp) {
-		Object value = exp.literalValue();
-		if (value != null && !(value instanceof TemplateNumberModel)) {
-			String msg;
-			if (value == Constants.INVALID_EXPRESSION) {
-				msg = "Invalid expression: " + exp.source();
-			} else {
-				msg = "Expression: " + exp.source() + " is not a numerical value.";
-			}
-			template.addParsingProblem(new ParsingProblem(msg, exp));
-		}
-	}
-	
-	private void checkLiteralInScalarContext(Expression exp) {
-		Object value = exp.literalValue();
-		if (value != null && !(value instanceof TemplateScalarModel)
-			&& !(value instanceof TemplateNumberModel)
-			&& !(value instanceof TemplateDateModel)) 
-		{
-			String msg;
-			if (value == Constants.INVALID_EXPRESSION) {
-				msg = "Invalid expression: " + exp.source();
-			} else {
-				msg = "Expression: " + exp.source() + " is not a string, date, or number.";
-			}
-			template.addParsingProblem(new ParsingProblem(msg, exp));
-		}
-	}
 	
 	static Macro getContainingMacro(TemplateNode node) {
 		TemplateNode parent = node;

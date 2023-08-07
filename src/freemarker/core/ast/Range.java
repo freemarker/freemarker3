@@ -30,7 +30,7 @@ public class Range extends Expression {
         return right != null;
     }
 
-    public Object _getAsTemplateModel(Environment env) 
+    public Object getAsTemplateModel(Environment env) 
         throws TemplateException
     {
         int min = EvaluationUtil.getNumber(left, env).intValue();
@@ -49,11 +49,6 @@ public class Range extends Expression {
         throw new NonBooleanException(msg, env);
     }
 
-    public boolean isLiteral() {
-        boolean rightIsLiteral = right == null || right.isLiteral();
-        return constantValue != null || (left.isLiteral() && rightIsLiteral);
-    }
-    
     public Expression _deepClone(String name, Expression subst) {
         return new Range(left.deepClone(name, subst), right.deepClone(name, subst));
     }

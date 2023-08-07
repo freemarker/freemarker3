@@ -36,7 +36,7 @@ public class AddConcatExpression extends Expression {
     	return (Expression) get(1);
     }
 
-    public Object _getAsTemplateModel(Environment env)
+    public Object getAsTemplateModel(Environment env)
             throws TemplateException
     {
         Object leftModel = getLeft().getAsTemplateModel(env);
@@ -89,17 +89,6 @@ public class AddConcatExpression extends Expression {
         }
         String msg = this.getStartLocation() + ": Cannot add or concatenate";
         throw new TemplateException(msg, env);
-    }
-
-    public boolean isLiteral() {
-    	if ((getRight() instanceof StringLiteral && !(getLeft() instanceof StringLiteral))
-    		|| (!(getRight() instanceof StringLiteral) && getLeft() instanceof StringLiteral))
-    		return false; // REVISIT (This is hacky, but the problem is that
-    	                  // we can't do a parse-time optimization of, say,
-    	                  // ${"The answer is: " + 1.1}
-    	                  // since the display of the decimal number depends i18n
-    	                  // considerations only known at render-time. (JR))
-        return constantValue != null || (getLeft().isLiteral() && getRight().isLiteral());
     }
 
     public Expression _deepClone(String name, Expression subst) {

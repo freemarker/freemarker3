@@ -36,7 +36,7 @@ public class ListLiteral extends Expression {
     	return result;
     }
 
-    public Object _getAsTemplateModel(Environment env) {
+    public Object getAsTemplateModel(Environment env) {
         ListModel list = new ListModel();
         for (Iterator it = values.iterator(); it.hasNext();) {
             Expression exp = (Expression) it.next();
@@ -46,21 +46,6 @@ public class ListLiteral extends Expression {
         }
         return list;
     }
-
-    public boolean isLiteral() {
-        if (constantValue != null) {
-            return true;
-        }
-        for (int i = 0; i<values.size(); i++) {
-            Expression exp = values.get(i);
-            if (!exp.isLiteral()) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    
 
     // A hacky routine used by VisitNode and RecurseNode
     
