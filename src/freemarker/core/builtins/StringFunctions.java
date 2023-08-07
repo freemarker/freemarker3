@@ -16,7 +16,7 @@ import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.ObjectWrapper;
-import freemarker.template.SimpleNumber;
+import freemarker.ext.beans.NumberModel;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateBooleanModel;
@@ -102,7 +102,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
     public static class Length extends StringFunctions {
         @Override
         public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
-            return new SimpleNumber(Integer.valueOf(string.length()));
+            return new NumberModel(Integer.valueOf(string.length()));
         }
     }
 
@@ -656,7 +656,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             } else {
                 index = s.indexOf(sub, fidx);
             }
-            return new SimpleNumber(index);
+            return new NumberModel(index);
         }
     }
 

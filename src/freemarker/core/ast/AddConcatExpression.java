@@ -3,6 +3,7 @@ package freemarker.core.ast;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.ext.beans.StringModel;
+import freemarker.ext.beans.NumberModel;
 import java.util.*;
 
 /**
@@ -46,7 +47,7 @@ public class AddConcatExpression extends Expression {
                 env != null
                     ? env.getArithmeticEngine()
                     : getTemplate().getArithmeticEngine();
-            return new SimpleNumber(ae.add(first, second));
+            return new NumberModel(ae.add(first, second));
         }
         if (leftModel instanceof TemplateNumberModel && rightModel instanceof TemplateNumberModel)
         {
@@ -56,7 +57,7 @@ public class AddConcatExpression extends Expression {
                 env != null
                     ? env.getArithmeticEngine()
                     : getTemplate().getArithmeticEngine();
-            return new SimpleNumber(ae.add(first, second));
+            return new NumberModel(ae.add(first, second));
         }
         else if(leftModel instanceof TemplateSequenceModel && rightModel instanceof TemplateSequenceModel)
         {

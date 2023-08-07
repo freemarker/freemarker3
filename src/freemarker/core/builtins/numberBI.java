@@ -5,7 +5,7 @@ import freemarker.core.ast.ArithmeticEngine;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.NonNumericalException;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.template.SimpleNumber;
+import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
@@ -32,7 +32,7 @@ public class numberBI extends ExpressionEvaluatingBuiltIn
         }
         ArithmeticEngine e = env == null ? caller.getTemplate().getArithmeticEngine() : env.getArithmeticEngine();
         try {
-            return new SimpleNumber(e.toNumber(string));
+            return new NumberModel(e.toNumber(string));
         } catch(NumberFormatException nfe) {
                 String mess = "Error: " + caller.getStartLocation()
                 + "\nExpecting a number in string here, found: " + string;

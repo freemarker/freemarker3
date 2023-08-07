@@ -148,13 +148,13 @@ public class TemplateTestCase extends TestCase {
         }
     
         else if (testName.equals("number-format")) {
-            dataModel.put("int", new SimpleNumber(Integer.valueOf(1)));
-            dataModel.put("double", new SimpleNumber(Double.valueOf(1.0)));
-            dataModel.put("double2", new SimpleNumber(Double.valueOf(1 + 1e-15)));
-            dataModel.put("double3", new SimpleNumber(Double.valueOf(1e-16)));
-            dataModel.put("double4", new SimpleNumber(Double.valueOf(-1e-16)));
-            dataModel.put("bigDecimal", new SimpleNumber(java.math.BigDecimal.valueOf(1)));
-            dataModel.put("bigDecimal2", new SimpleNumber(java.math.BigDecimal.valueOf(1, 16)));
+            dataModel.put("int", new NumberModel(Integer.valueOf(1)));
+            dataModel.put("double", new NumberModel(Double.valueOf(1.0)));
+            dataModel.put("double2", new NumberModel(Double.valueOf(1 + 1e-15)));
+            dataModel.put("double3", new NumberModel(Double.valueOf(1e-16)));
+            dataModel.put("double4", new NumberModel(Double.valueOf(-1e-16)));
+            dataModel.put("bigDecimal", new NumberModel(java.math.BigDecimal.valueOf(1)));
+            dataModel.put("bigDecimal2", new NumberModel(java.math.BigDecimal.valueOf(1, 16)));
         }
         else if (testName.equals("multimodels")) {
             dataModel.put("test", "selftest");

@@ -1,6 +1,7 @@
 package freemarker.core.ast;
 
 import freemarker.core.Environment;
+import freemarker.ext.beans.NumberModel;
 import freemarker.template.*;
 
 public class UnaryPlusMinusExpression extends Expression {
@@ -37,7 +38,7 @@ public class UnaryPlusMinusExpression extends Expression {
         }
         Number n = targetModel.getAsNumber();
         n = ArithmeticEngine.CONSERVATIVE_ENGINE.multiply(MINUS_ONE, n);
-        return new SimpleNumber(n);
+        return new NumberModel(n);
     }
 
     public boolean isLiteral() {

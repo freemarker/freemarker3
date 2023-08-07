@@ -37,12 +37,6 @@ public class Constants {
 
     public static final TemplateBooleanModel FALSE = TemplateBooleanModel.FALSE;
     
-    public static final TemplateNumberModel ZERO = new SimpleNumber(0);
-    
-    public static final TemplateNumberModel ONE = new SimpleNumber(1);
-    
-    public static final TemplateNumberModel MINUS_ONE = new SimpleNumber(-1);
-    
     public static final Iterator<Object> EMPTY_ITERATOR = new Iterator<Object>() {
 
         public TemplateModel next() {

@@ -11,7 +11,7 @@ import freemarker.core.Environment;
 import freemarker.core.ast.ArithmeticEngine;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.template.SimpleNumber;
+import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
@@ -594,7 +594,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             if (reverse) {
                 for (int i = startIndex; i > -1; --i) {
                     if (comparator.modelsEqual(sequence.get(i), compareToThis)) {
-                        return new SimpleNumber(i); 
+                        return new NumberModel(i); 
                     }
                 }
             }
@@ -602,11 +602,11 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 final int s = sequence.size();
                 for (int i = startIndex; i < s; ++i) {
                     if (comparator.modelsEqual(sequence.get(i), compareToThis)) {
-                        return new SimpleNumber(i); 
+                        return new NumberModel(i); 
                     }
                 }
             }
-            return new SimpleNumber(-1);
+            return new NumberModel(-1);
         }
     }
 

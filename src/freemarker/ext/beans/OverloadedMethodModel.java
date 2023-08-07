@@ -7,7 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 
-import freemarker.template.SimpleNumber;
+import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -88,7 +88,7 @@ implements
     public TemplateModel get(int index) throws TemplateModelException
     {
         return (TemplateModel) exec(Collections.singletonList(new 
-                SimpleNumber(Integer.valueOf(index))));
+                NumberModel(Integer.valueOf(index))));
     }
 
     public int size() throws TemplateModelException

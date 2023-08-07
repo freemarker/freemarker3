@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import freemarker.core.ast.*;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.template.SimpleNumber;
+import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateSequenceModel;
@@ -38,7 +38,7 @@ public class LoopContext extends BlockScope {
                 hasNext = it.hasNext();
                 put(iteratorBlock.getIndexName(), loopVar);
                 put(iteratorBlock.getIndexName() + "_has_next", hasNext);
-                put(iteratorBlock.getIndexName() + "_index", new SimpleNumber(index));
+                put(iteratorBlock.getIndexName() + "_index", new NumberModel(index));
                 TemplateElement nestedBlock = iteratorBlock.firstChildOfType(TemplateElement.class);
                 if (nestedBlock != null) {
                     env.render(nestedBlock);
@@ -55,7 +55,7 @@ public class LoopContext extends BlockScope {
                 put(iteratorBlock.getIndexName(), loopVar);
                 hasNext = (size > index + 1);
                 put(iteratorBlock.getIndexName() + "_has_next", hasNext);
-                put(iteratorBlock.getIndexName() + "_index", new SimpleNumber(index));
+                put(iteratorBlock.getIndexName() + "_index", new NumberModel(index));
                 TemplateElement nestedBlock = iteratorBlock.firstChildOfType(TemplateElement.class);
                 if (nestedBlock != null) {
                     env.render(nestedBlock);
