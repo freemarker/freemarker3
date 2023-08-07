@@ -7,6 +7,7 @@ import freemarker.core.parser.ast.NullLiteral;
 import freemarker.core.parser.ast.NumberLiteral;
 import freemarker.core.parser.ast.ParentheticalExpression;
 import freemarker.core.parser.ast.Identifier;
+import freemarker.core.parser.ast.ListLiteral;
 import freemarker.core.parser.ast.TemplateNode;
 
 import java.util.*;
