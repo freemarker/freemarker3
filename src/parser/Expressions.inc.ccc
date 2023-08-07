@@ -335,7 +335,7 @@ Expression OrExpression :
     [
       exp=Expression {values.add(exp);}
       (
-         [<COMMA>]
+         <COMMA>
          exp=Expression {values.add(exp);}
       )*
     ]
