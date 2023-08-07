@@ -44,7 +44,7 @@ Expression PrimaryExpression :
   }
 ;
 
-Expression ParentheticalExpression# :
+ParentheticalExpression# :
 {
    Expression exp;
 }
@@ -55,9 +55,6 @@ Expression ParentheticalExpression# :
       pushNode(exp);
     }
     <CLOSE_PAREN>
-    {
-       return CURRENT_NODE;
-    }
 ;
 
 INJECT ParentheticalExpression :
@@ -457,13 +454,12 @@ Expression IdentifierOrStringLiteral :
    }   
 ;
 
-#BuiltinVariable#(true) :
+BuiltinVariable#(true) :
    <DOT>
    <ID>
    {
       clearNodeScope();
       CURRENT_NODE.setName(lastConsumedToken.toString());
-      return CURRENT_NODE;
    }
 ;
 

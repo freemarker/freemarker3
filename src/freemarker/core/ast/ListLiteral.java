@@ -2,8 +2,6 @@ package freemarker.core.ast;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import freemarker.core.Environment;
@@ -23,14 +21,6 @@ public class ListLiteral extends Expression {
         return childrenOfType(Expression.class);
     }
     
-    PositionalArgsList getAsArgsList() {
-    	PositionalArgsList result = new PositionalArgsList();
-    	for (Expression exp: getElements()) {
-    		result.addArg(exp);
-    	}
-    	return result;
-    }
-
     public Object getAsTemplateModel(Environment env) {
         ListModel list = new ListModel();
         for (Expression exp: getElements()) {
