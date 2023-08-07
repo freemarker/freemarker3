@@ -1,3 +1,6 @@
+// This file defines the expression
+// grammar. It is INCLUDEd from the main template.
+
 #Expression :
 {
 	Expression exp;
@@ -432,10 +435,6 @@ INJECT Identifier :
         return name;
     }
 
-    public boolean isLiteral() {
-        return false;
-    }
-
     public Expression _deepClone(String name, Expression subst) {
         if(this.name.equals(name)) {
         	return subst.deepClone(null, null);
@@ -458,25 +457,81 @@ Expression IdentifierOrStringLiteral :
    }   
 ;
 
-#BuiltinVariable :
-{
-   Token dot, name;
-}
-   dot=<DOT>
-   name=<ID>
+#BuiltinVariable#(true) :
+   <DOT>
+   <ID>
    {
-      BuiltinVariable result = null;
-      try {
-          result = new BuiltinVariable(name.getImage());
-      } catch (ParseException pe) {
-          pe.lineNumber = dot.getBeginLine();
-          pe.columnNumber = dot.getBeginColumn();
-          throw pe;
-      }
-      result.setLocation(template, dot, name);
-      return result;
+      clearNodeScope();
+      CURRENT_NODE.setName(lastConsumedToken.toString());
+      return CURRENT_NODE;
    }
 ;
+
+INJECT BuiltinVariable :
+    import freemarker.template.*;
+    import freemarker.core.Environment;
+    import freemarker.core.parser.ParseException;
+    import freemarker.ext.beans.StringModel;
+    import freemarker.core.ast.Expression;
+    import freemarker.core.ast.Macro;
+    extends Expression
+{
+    private String name;
+
+    public void setName(String name) {
+      this.name = name.intern();
+    }
+    
+    public String getName() {
+        return name;
+    }
+
+    public Object getAsTemplateModel(Environment env) {
+        switch (name) {
+           case "namespace" : return env.getCurrentNamespace();
+           case "main" : return env.getMainNamespace();
+           case "globals" : return env;
+           case "locals" : return env.getCurrentMacroContext();
+           case "data_model" : return env.getDataModel();
+           case "scope" : return env.getCurrentScope();
+           case "vars" : return new VarsHash(env);
+           case "locale" : return new StringModel(env.getLocale().toString());
+           case "lang" : return new StringModel(env.getLocale().getLanguage());
+           case "current_node" :
+           case "node" : return env.getCurrentVisitorNode();
+           case "pass" : return Macro.DO_NOTHING_MACRO;
+           case "name" : return new StringModel(env.getTemplate().getName()); 
+           case "version" : return new StringModel(Configuration.getVersionNumber());
+           case "output_encoding" : String s = env.getOutputEncoding();
+                                    return s != null ? new StringModel(s) : null;
+           case "url_escaping_charset" : s = env.getURLEscapingCharset();
+                                         return s != null ? new StringModel(s) : null;
+           case "error" : return new StringModel(env.getCurrentRecoveredErrorMessage());
+        }
+        throw new TemplateException("Invalid built-in variable: " + this, env);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        return this;
+    }
+
+    static class VarsHash implements TemplateHashModel {
+        
+        private final Environment env;
+        
+        VarsHash(Environment env) {
+            this.env = env;
+        }
+        
+        public Object get(String key) {
+            return env.getVariable(key);
+        }
+        
+        public boolean isEmpty() {
+            return false;
+        }
+    }
+}
 
 /**
  * Production that builds up an expression

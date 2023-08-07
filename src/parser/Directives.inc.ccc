@@ -1,3 +1,7 @@
+// This file defines the various 
+// template elements. It is INCLUDEd
+// from the main template.
+
 /**
  * A production representing the ${...}
  * that outputs a variable.
