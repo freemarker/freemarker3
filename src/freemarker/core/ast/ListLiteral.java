@@ -13,24 +13,19 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateSequenceModel;
 
 public class ListLiteral extends Expression {
-
-    private final ArrayList<Expression> values;
+    public ListLiteral() {}
 
     public ListLiteral(ArrayList<Expression> values) {
-        this.values = values;
-        values.trimToSize();
-        for (Expression value : values) {
-        	value.setParent(this);
-        }
+        addAll(values);
     }
     
     public List<Expression> getElements() {
-    	return Collections.unmodifiableList(values);
+        return childrenOfType(Expression.class);
     }
     
     PositionalArgsList getAsArgsList() {
     	PositionalArgsList result = new PositionalArgsList();
-    	for (Expression exp: values) {
+    	for (Expression exp: getElements()) {
     		result.addArg(exp);
     	}
     	return result;
@@ -38,8 +33,7 @@ public class ListLiteral extends Expression {
 
     public Object getAsTemplateModel(Environment env) {
         ListModel list = new ListModel();
-        for (Iterator it = values.iterator(); it.hasNext();) {
-            Expression exp = (Expression) it.next();
+        for (Expression exp: getElements()) {
             Object tm = exp.getAsTemplateModel(env);
             assertIsDefined(tm, exp, env);
             list.add(tm);
@@ -52,9 +46,9 @@ public class ListLiteral extends Expression {
     TemplateSequenceModel evaluateStringsToNamespaces(Environment env) {
         TemplateSequenceModel val = (TemplateSequenceModel) getAsTemplateModel(env);
         ListModel result = new ListModel();
-        for (int i=0; i<values.size(); i++) {
-            if (values.get(i) instanceof StringLiteral) {
-                String s = ((StringLiteral) values.get(i)).getAsString();
+        for (Expression exp : getElements()) {
+            if (exp instanceof StringLiteral) {
+                String s = ((StringLiteral) exp).getAsString();
                 try {
                     TemplateNamespace ns = env.importLib(s, null);
                     result.add(ns);
@@ -64,15 +58,15 @@ public class ListLiteral extends Expression {
                 }
             }
             else {
-                result.add(val.get(i));
+                result.add(exp);
             }
         }
         return result;
     }
     
     public Expression _deepClone(String name, Expression subst) {
-    	ArrayList<Expression> clonedValues = new ArrayList<Expression>(values.size());
-    	for (Expression exp : values) {
+    	ArrayList<Expression> clonedValues = new ArrayList<Expression>(size());
+    	for (Expression exp : getElements()) {
     		clonedValues.add(exp.deepClone(name, subst));
     	}
         return new ListLiteral(clonedValues);

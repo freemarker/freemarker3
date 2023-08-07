@@ -325,7 +325,7 @@ Expression OrExpression :
    }
 ;
 
-#ListLiteral :
+#ListLiteral#freemarker.core.ast.ListLiteral(false) :
 {
    Expression exp;
    ArrayList<Expression> values = new ArrayList<Expression>();
@@ -341,9 +341,9 @@ Expression OrExpression :
     ]
     end=<CLOSE_BRACKET>
     {
-        ListLiteral result = new ListLiteral(values);
-        result.setLocation(template, begin, end);
-        return result;
+        CURRENT_NODE.setLocation(template, begin, end);
+        CURRENT_NODE.addAll(values);
+        return CURRENT_NODE;
     }
 ;
 
