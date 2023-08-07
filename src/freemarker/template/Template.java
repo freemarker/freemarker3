@@ -395,7 +395,7 @@ public class Template extends TemplateCore {
      * Returns the Configuration object associated with this template.
      */
     public Configuration getConfiguration() {
-        return (Configuration) getParent();
+        return (Configuration) getFallback();
     }
     
     public List<ParsingProblem> getParsingProblems() {
@@ -651,10 +651,11 @@ public class Template extends TemplateCore {
      *  of this method does not posess the "modifyTemplate" FreeMarker 
      *  permission.
      */
+    /*
     @Override
-    public void setParent(Configurable parent) {
-        super.setParent(parent);
-    }
+    public void setFallback(Configurable fallback) {
+        super.setFallback(fallback);
+    }*/
 
     public List<LibraryLoad> getImports() {
         return imports;

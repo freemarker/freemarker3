@@ -127,7 +127,7 @@ abstract public class Configurable extends TemplateNode
      * @return the fallback <tt>Configurable</tt> object, or null, if this is
      *    the root <tt>Configurable</tt> object.
      */
-    public final Configurable getParent() {
+    public final Configurable getFallback() {
         return fallback;
     }
     
@@ -136,7 +136,7 @@ abstract public class Configurable extends TemplateNode
      * template - the included template becomes the fallback configurable during
      * its evaluation.
      */
-    public void setParent(Configurable fallback) {
+    public void setFallback(Configurable fallback) {
         this.fallback = fallback;
     }
     

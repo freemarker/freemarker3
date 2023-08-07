@@ -119,10 +119,10 @@ public class CustomAttribute
                 return c;
             }
             case SCOPE_TEMPLATE: {
-                return c.getParent();
+                return c.getFallback();
             }
             case SCOPE_CONFIGURATION: {
-                return c.getParent().getParent();
+                return c.getFallback().getFallback();
             }
             default: {
                 throw new Error();

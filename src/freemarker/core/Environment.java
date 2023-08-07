@@ -140,7 +140,7 @@ public final class Environment extends Configurable implements Scope {
      * Retrieves the currently processed template.
      */
     public Template getTemplate() {
-        return (Template) getParent();
+        return (Template) getFallback();
     }
 
     /**
@@ -328,16 +328,16 @@ public final class Environment extends Configurable implements Scope {
         TemplateElement body = invokingMacroContext.body;
         if (body != null) {
             this.currentMacroContext = invokingMacroContext.invokingMacroContext;
-            Configurable prevParent = getParent();
+            Configurable prevParent = getFallback();
             Scope prevScope = currentScope;
-            setParent(getCurrentNamespace().getTemplate());
+            setFallback(getCurrentNamespace().getTemplate());
             currentScope = bctxt;
             try {
                 render(body);
             } finally {
                 currentScope = prevScope;
                 this.currentMacroContext = invokingMacroContext;
-                setParent(prevParent);
+                setFallback(prevParent);
                 this.currentScope = prevScope;
             }
         }
@@ -491,7 +491,7 @@ public final class Environment extends Configurable implements Scope {
             }
             Scope prevScope = currentScope;
 
-            Configurable prevParent = getParent();
+            Configurable prevParent = getFallback();
             currentScope = currentMacroContext = mc;
             try {
                 mc.runMacro();
@@ -506,7 +506,7 @@ public final class Environment extends Configurable implements Scope {
                 }
                 currentMacroContext = mc.invokingMacroContext;
                 currentScope = prevScope;
-                setParent(prevParent);
+                setFallback(prevParent);
             }
         } finally {
             popElement();
@@ -1493,7 +1493,7 @@ public final class Environment extends Configurable implements Scope {
     public void include(Template includedTemplate, boolean freshNamespace) throws TemplateException,
             IOException {
         Template prevTemplate = getTemplate();
-        setParent(includedTemplate);
+        setFallback(includedTemplate);
         Scope prevScope = this.currentScope;
         if (freshNamespace) {
             this.currentScope = new TemplateNamespace(this, includedTemplate);
@@ -1506,7 +1506,7 @@ public final class Environment extends Configurable implements Scope {
             render(includedTemplate.getRootElement());
         } finally {
             this.currentScope = prevScope;
-            setParent(prevTemplate);
+            setFallback(prevTemplate);
         }
     }
 
@@ -1586,15 +1586,15 @@ public final class Environment extends Configurable implements Scope {
             Scope prevScope = currentScope;
             currentScope = newNamespace;
             Writer prevOut = out;
-            Configurable prevParent = getParent();
+            Configurable prevParent = getFallback();
             this.out = NULL_WRITER;
-            setParent(loadedTemplate);
+            setFallback(loadedTemplate);
             try {
                 render(loadedTemplate.getRootElement());
             } finally {
                 this.out = prevOut;
                 currentScope = prevScope;
-                setParent(prevParent);
+                setFallback(prevParent);
             }
         }
         return loadedLibs.get(templateName);
