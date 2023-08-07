@@ -2,6 +2,7 @@ package freemarker.ext.beans;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import freemarker.core.ast.CollectionAndSequence;
 import freemarker.template.AdapterTemplateModel;
@@ -15,7 +16,7 @@ import freemarker.template.TemplateModel;
 /**
  * Model used by {@link ObjectWrapper} when <tt>simpleMapWrapper</tt>
  * mode is enabled. Provides a simple hash model interface to the
- * underlying map (does not copy like {@link freemarker.template.SimpleHash}),
+ * underlying map (does not copy like {@link freemarker.template.SimpleMapModel}),
  * and a method interface to non-string keys.
  * @author Chris Nokleberg
  * @version $Id: SimpleMapModel.java,v 1.9 2005/06/12 19:03:04 szegedia Exp $
@@ -23,10 +24,18 @@ import freemarker.template.TemplateModel;
 public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelEx, AdapterTemplateModel 
 {
     private final Map map;
+
+    public SimpleMapModel() {
+        map = new HashMap();
+    }
     
     public SimpleMapModel(Map map)
     {
         this.map = map;
+    }
+
+    public Object put(String key, Object value) {
+        return map.put(key, value);
     }
 
     public Object get(String key) {

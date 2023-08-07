@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
+import freemarker.ext.beans.SimpleMapModel;
 import freemarker.template.utility.*;
 
 /**
@@ -11,14 +12,14 @@ import freemarker.template.utility.*;
 public class TransformHashWrapper implements TemplateHashModel,
         TemplateScalarModel {
 
-    private SimpleHash m_cHashModel = new SimpleHash();
+    private SimpleMapModel hash = new SimpleMapModel();
 
     /** Creates new TransformHashWrapper */
     public TransformHashWrapper() {
-        m_cHashModel.put( "htmlEscape", new HtmlEscape() );
-        m_cHashModel.put( "compress", new StandardCompress() );
-        m_cHashModel.put( "escape", new TransformMethodWrapper1() );
-        m_cHashModel.put( "special", new TransformMethodWrapper2() );
+        hash.put( "htmlEscape", new HtmlEscape() );
+        hash.put( "compress", new StandardCompress() );
+        hash.put( "escape", new TransformMethodWrapper1() );
+        hash.put( "special", new TransformMethodWrapper2() );
     }
 
     /**
@@ -30,7 +31,7 @@ public class TransformHashWrapper implements TemplateHashModel,
      * or null if not found.
      */
     public Object get(String key) {
-        return m_cHashModel.get( key );
+        return hash.get( key );
     }
 
     /**

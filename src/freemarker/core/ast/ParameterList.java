@@ -16,7 +16,7 @@ import freemarker.core.TemplateRunnable;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.helpers.NamedParameterMapScope;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.template.SimpleHash;
+import freemarker.ext.beans.SimpleMapModel;
 import freemarker.template.SimpleSequence;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
@@ -290,9 +290,9 @@ public class ParameterList extends TemplateNode {
             Scope scope = new NamedParameterMapScope(env.getCurrentScope(), result);
             fillInDefaults(env, scope, unresolvedParamNames);
         }
-        SimpleHash catchAllMap = null;
+        SimpleMapModel catchAllMap = null;
         if (catchall != null) {
-            catchAllMap = new SimpleHash();
+            catchAllMap = new SimpleMapModel();
             result.put(catchall, catchAllMap);
         }
         if (!argsMap.isEmpty()) {

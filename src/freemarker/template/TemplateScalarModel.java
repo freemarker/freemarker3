@@ -11,11 +11,6 @@ package freemarker.template;
 public interface TemplateScalarModel extends TemplateModel {
 
     /**
-     * A constant value to use as the empty string.
-     */
-    public TemplateModel EMPTY_STRING = new StringModel("");
-
-    /**
      * Returns the string representation of this model. In general, avoid
      * returning null. In compatibility mode the engine will convert
      * null into empty string, however in normal mode it will

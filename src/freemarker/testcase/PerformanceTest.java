@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Locale;
 
 import freemarker.template.Configuration;
-import freemarker.template.SimpleHash;
 import freemarker.template.Template;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
@@ -20,6 +19,7 @@ import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
+import freemarker.ext.beans.SimpleMapModel;
 
 /**
  * This class executes a FreeMarker template repeatedly in an endless loop.
@@ -42,7 +42,7 @@ public class PerformanceTest
         File f = File.createTempFile("fmPerfTest", ".txt");
         f.deleteOnExit();
         OutputStream nullStream = new NullStream();
-        SimpleHash h = new SimpleHash();
+        SimpleMapModel h = new SimpleMapModel();
         h.put("ii", new TestSequence());
         h.put("j", new TestHash());
         h.put("k", new TestMethod());

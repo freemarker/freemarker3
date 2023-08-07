@@ -2,6 +2,7 @@ package freemarker.testcase.models;
 
 import freemarker.template.*;
 import freemarker.ext.beans.StringModel;
+import freemarker.ext.beans.SimpleMapModel;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.
@@ -15,7 +16,7 @@ public class MultiModel1 implements TemplateHashModel,
     private TemplateModel m_cListHashModel1 = new MultiModel4();
     private TemplateModel m_cListHashModel2 = new MultiModel5();
     private TemplateSequenceModel m_cListModel = new SimpleSequence();
-    private TemplateHashModel m_cHashModel = new SimpleHash();
+    private TemplateHashModel m_cHashModel = new SimpleMapModel();
 
     /** Creates new MultiModel1 */
     public MultiModel1() {
@@ -23,7 +24,7 @@ public class MultiModel1 implements TemplateHashModel,
             ((SimpleSequence)m_cListModel).add( "Model1 value: " + Integer.toString( i ));
         }
         ((SimpleSequence)m_cListModel).add( new MultiModel3() );
-        ((SimpleHash)m_cHashModel).put( "nested", new MultiModel3() );
+        ((SimpleMapModel)m_cHashModel).put( "nested", new MultiModel3() );
     }
 
     /**

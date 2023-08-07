@@ -37,8 +37,6 @@ public class Constants {
 
     public static final TemplateBooleanModel FALSE = TemplateBooleanModel.FALSE;
     
-    public static final TemplateScalarModel EMPTY_STRING = (TemplateScalarModel) TemplateScalarModel.EMPTY_STRING;
-
     public static final TemplateNumberModel ZERO = new SimpleNumber(0);
     
     public static final TemplateNumberModel ONE = new SimpleNumber(1);

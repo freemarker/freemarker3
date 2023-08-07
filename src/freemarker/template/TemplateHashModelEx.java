@@ -18,7 +18,7 @@ package freemarker.template;
  * sequence will happen, thus there will be no overhead. 
  * 
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
- * @see SimpleHash
+ * @see SimpleMapModel
  * @version $Id: TemplateHashModelEx.java,v 1.13 2003/06/08 00:58:15 herbyderby Exp $
  */
 public interface TemplateHashModelEx extends TemplateHashModel {

@@ -15,6 +15,7 @@ import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.TemplateHeaderElement;
 import freemarker.core.parser.*;
 import freemarker.ext.beans.ObjectWrapper;
+import freemarker.ext.beans.SimpleMapModel;
 
 /**
  * <p>A core FreeMarker API that represents a compiled template.
@@ -340,7 +341,7 @@ public class Template extends TemplateCore {
             try {
                 root = rootMap != null
                     ? (TemplateHashModel)wrapper.wrap(rootMap)
-                    : new SimpleHash();
+                    : new SimpleMapModel();
                 if(root == null) {
                     throw new IllegalArgumentException(wrapper.getClass().getName() + " converted " + (rootMap == null ? "null" : rootMap.getClass().getName()) + " to null.");
                 }

@@ -23,7 +23,7 @@ import freemarker.ext.beans.ObjectWrapper;
  * To obtain a synchronized wrapper, call the {@link #synchronizedWrapper} method.</p>
  *
  * @version $Id: SimpleSequence.java,v 1.53 2005/06/21 18:17:54 ddekany Exp $
- * @see SimpleHash
+ * @see SimpleMapModel
  * @see StringModel
  */
 public class SimpleSequence implements TemplateSequenceModel {
