@@ -79,12 +79,6 @@ abstract public class Expression extends TemplateNode {
         throw new NonBooleanException(msg, env);
     }
 
-
-    public Expression getParent() {
-	    return (Expression) getParentNode();
-	}
-    
-    
 	static public boolean isEmpty(Object model) 
     {
         if (model instanceof Pojo) {

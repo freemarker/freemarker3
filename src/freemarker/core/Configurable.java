@@ -15,11 +15,11 @@ import freemarker.ext.beans.ObjectWrapper;
  * {@link freemarker.template.Template}, and {@link Environment} classes.
  * It provides settings that are common to each of them. FreeMarker
  * uses a three-level setting hierarchy - the return value of every setting
- * getter method on <code>Configurable</code> objects inherits its value from its parent 
+ * getter method on <code>Configurable</code> objects inherits its value from its fallback 
  * <code>Configurable</code> object, unless explicitly overridden by a call to a 
- * corresponding setter method on the object itself. The parent of an 
+ * corresponding setter method on the object itself. The fallback of an 
  * <code>Environment</code> object is a <code>Template</code> object, the
- * parent of a <code>Template</code> object is a <code>Configuration</code>
+ * fallback of a <code>Template</code> object is a <code>Configuration</code>
  * object.
  *
  * @version $Id: Configurable.java,v 1.24 2006/02/03 19:22:03 revusky Exp $
@@ -43,7 +43,7 @@ abstract public class Configurable extends TemplateNode
 
     private static final char COMMA = ',';
     
-    private Configurable parent;
+    private Configurable fallback;
     private Properties properties;
     private HashMap<Object, Object> customAttributes;
     
@@ -64,7 +64,7 @@ abstract public class Configurable extends TemplateNode
     private boolean urlEscapingCharsetSet;
     
     public Configurable() {
-        parent = null;
+        fallback = null;
         locale = Locale.getDefault();
         timeZone = TimeZone.getDefault();
         numberFormat = "number";
@@ -99,14 +99,14 @@ abstract public class Configurable extends TemplateNode
      * Creates a new instance. Normally you do not need to use this constructor,
      * as you don't use <code>Configurable</code> directly, but its subclasses.
      */
-    public Configurable(Configurable parent) {
-        this.parent = parent;
+    public Configurable(Configurable fallback) {
+        this.fallback = fallback;
         locale = null;
         numberFormat = null;
         trueFormat = null;
         falseFormat = null;
         templateExceptionHandler = null;
-        properties = new Properties(parent.properties);
+        properties = new Properties(fallback.properties);
         customAttributes = new HashMap<Object, Object>();
     }
 
@@ -118,26 +118,26 @@ abstract public class Configurable extends TemplateNode
     }
     
     /**
-     * Returns the parent <tt>Configurable</tt> object of this object.
-     * The parent stores the default values for this configurable. For example,
-     * the parent of the {@link freemarker.template.Template} object is the
+     * Returns the fallback <tt>Configurable</tt> object of this object.
+     * The fallback stores the default values for this configurable. For example,
+     * the fallback of the {@link freemarker.template.Template} object is the
      * {@link freemarker.template.Configuration} object, so setting values not
      * specfied on template level are specified by the confuration object.
      *
-     * @return the parent <tt>Configurable</tt> object, or null, if this is
+     * @return the fallback <tt>Configurable</tt> object, or null, if this is
      *    the root <tt>Configurable</tt> object.
      */
     public final Configurable getParent() {
-        return parent;
+        return fallback;
     }
     
     /**
-     * Reparenting support. This is used by Environment when it includes a
-     * template - the included template becomes the parent configurable during
+     * Refallbacking support. This is used by Environment when it includes a
+     * template - the included template becomes the fallback configurable during
      * its evaluation.
      */
-    public void setParent(Configurable parent) {
-        this.parent = parent;
+    public void setParent(Configurable fallback) {
+        this.fallback = fallback;
     }
     
     /**
@@ -155,7 +155,7 @@ abstract public class Configurable extends TemplateNode
      * system time zone.
      */
     public TimeZone getTimeZone() {
-        return timeZone != null ? timeZone : parent.getTimeZone();
+        return timeZone != null ? timeZone : fallback.getTimeZone();
     }
 
     /**
@@ -172,7 +172,7 @@ abstract public class Configurable extends TemplateNode
      * explicit requested locale. Defaults to system locale.
      */
     public Locale getLocale() {
-        return locale != null ? locale : parent.getLocale();
+        return locale != null ? locale : fallback.getLocale();
     }
 
     /**
@@ -189,7 +189,7 @@ abstract public class Configurable extends TemplateNode
      * Defaults to <tt>"number"</tt>
      */
     public String getNumberFormat() {
-        return numberFormat != null ? numberFormat : parent.getNumberFormat();
+        return numberFormat != null ? numberFormat : fallback.getNumberFormat();
     }
 
     public void setBooleanFormat(String booleanFormat) {
@@ -207,7 +207,7 @@ abstract public class Configurable extends TemplateNode
     
     public String getBooleanFormat() {
         if(trueFormat == null) {
-            return parent.getBooleanFormat(); 
+            return fallback.getBooleanFormat(); 
         }
         return trueFormat + COMMA + falseFormat;
     }
@@ -217,11 +217,11 @@ abstract public class Configurable extends TemplateNode
     }
     
     private String getTrueFormat() {
-        return trueFormat != null ? trueFormat : parent.getTrueFormat(); 
+        return trueFormat != null ? trueFormat : fallback.getTrueFormat(); 
     }
     
     private String getFalseFormat() {
-        return falseFormat != null ? falseFormat : parent.getFalseFormat(); 
+        return falseFormat != null ? falseFormat : fallback.getFalseFormat(); 
     }
 
     /**
@@ -240,7 +240,7 @@ abstract public class Configurable extends TemplateNode
      * Defaults to <tt>"time"</tt>
      */
     public String getTimeFormat() {
-        return timeFormat != null ? timeFormat : parent.getTimeFormat();
+        return timeFormat != null ? timeFormat : fallback.getTimeFormat();
     }
 
     /**
@@ -259,7 +259,7 @@ abstract public class Configurable extends TemplateNode
      * Defaults to <tt>"date"</tt>
      */
     public String getDateFormat() {
-        return dateFormat != null ? dateFormat : parent.getDateFormat();
+        return dateFormat != null ? dateFormat : fallback.getDateFormat();
     }
 
     /**
@@ -278,7 +278,7 @@ abstract public class Configurable extends TemplateNode
      * Defaults to <tt>"datetime"</tt>
      */
     public String getDateTimeFormat() {
-        return dateTimeFormat != null ? dateTimeFormat : parent.getDateTimeFormat();
+        return dateTimeFormat != null ? dateTimeFormat : fallback.getDateTimeFormat();
     }
 
     /**
@@ -299,7 +299,7 @@ abstract public class Configurable extends TemplateNode
      */
     public TemplateExceptionHandler getTemplateExceptionHandler() {
         return templateExceptionHandler != null
-                ? templateExceptionHandler : parent.getTemplateExceptionHandler();
+                ? templateExceptionHandler : fallback.getTemplateExceptionHandler();
     }
 
     /**
@@ -320,7 +320,7 @@ abstract public class Configurable extends TemplateNode
      */
     public ArithmeticEngine getArithmeticEngine() {
         return arithmeticEngine != null
-                ? arithmeticEngine : parent.getArithmeticEngine();
+                ? arithmeticEngine : fallback.getArithmeticEngine();
     }
 
     /**
@@ -357,7 +357,7 @@ abstract public class Configurable extends TemplateNode
     public String getOutputEncoding() {
         return outputEncodingSet
                 ? outputEncoding
-                : (parent != null ? parent.getOutputEncoding() : null);
+                : (fallback != null ? fallback.getOutputEncoding() : null);
     }
     
     /**
@@ -378,7 +378,7 @@ abstract public class Configurable extends TemplateNode
     public String getURLEscapingCharset() {
         return urlEscapingCharsetSet
                 ? urlEscapingCharset
-                : (parent != null ? parent.getURLEscapingCharset() : null);
+                : (fallback != null ? fallback.getURLEscapingCharset() : null);
     }
     
     /**
@@ -632,7 +632,7 @@ abstract public class Configurable extends TemplateNode
     /**
      * Returns an array with names of all custom attributes defined directly 
      * on this configurable. (That is, it doesn't contain the names of custom attributes
-     * defined indirectly on its parent configurables.) The returned array is never null,
+     * defined indirectly on its fallback configurables.) The returned array is never null,
      * but can be zero-length.
      * The order of elements in the returned array is not defined and can change
      * between invocations.  
@@ -655,7 +655,7 @@ abstract public class Configurable extends TemplateNode
      * is different than setting the custom attribute value to null. If you
      * set the value to null, {@link #getCustomAttribute(String)} will return
      * null, while if you remove the attribute, it will return the value of
-     * the attribute in the parent configurable (if there is a parent 
+     * the attribute in the fallback configurable (if there is a fallback 
      * configurable, that is). 
      *
      * @param name the name of the custom attribute
@@ -669,7 +669,7 @@ abstract public class Configurable extends TemplateNode
     /**
      * Retrieves a named custom attribute for this configurable. If the 
      * attribute is not present in the configurable, and the configurable has
-     * a parent, then the parent is looked up as well.
+     * a fallback, then the fallback is looked up as well.
      *
      * @param name the name of the custom attribute
      *
@@ -686,8 +686,8 @@ abstract public class Configurable extends TemplateNode
                 return null;
             }
         }
-        if(retval == null && parent != null) {
-            return parent.getCustomAttribute(name);
+        if(retval == null && fallback != null) {
+            return fallback.getCustomAttribute(name);
         }
         return retval;
     }
@@ -695,6 +695,6 @@ abstract public class Configurable extends TemplateNode
     protected void doAutoImportsAndIncludes(Environment env)
     throws TemplateException, IOException
     {
-        if(parent != null) parent.doAutoImportsAndIncludes(env);
+        if(fallback != null) fallback.doAutoImportsAndIncludes(env);
     }
 }
