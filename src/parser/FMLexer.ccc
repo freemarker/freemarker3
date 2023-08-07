@@ -334,8 +334,6 @@ TOKEN:
                       | (~["$", "<", "#", "[", "{", "\n", "\r", "\t", " "])+>
     |
     <OUTPUT_ESCAPE : "${" > : EXPRESSION
-    |
-    <NUMERICAL_ESCAPE : "#{" > : EXPRESSION
 ;
 
 <EXPRESSION> SKIP :

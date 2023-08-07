@@ -2,6 +2,6 @@
 <if i.if>
   ${j["" + i]}
 <else>
-  #{k(i)}
+  ${k(i)}
 </if>
 </foreach>

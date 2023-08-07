@@ -322,18 +322,6 @@ public class PostParseVisitor extends ASTVisitor {
 		visit(node.getRight());
 	}
 	
-	public void visit(NumericalOutput node) {
-		super.visit(node);
-		try {
-			node.parseFormat();
-		} catch (Exception e) {
-			String msg = e.getMessage();
-			ParsingProblem problem = new ParsingProblem(msg, node);
-			template.addParsingProblem(problem);
-		}
-		markAsProducingOutput(node);
-	}
-	
 	public void visit(StringLiteral node) {
 		if (!node.isRaw()) {
 			try {

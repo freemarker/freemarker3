@@ -258,10 +258,6 @@ public abstract class ASTVisitor {
 	
 	public void visit(NumberLiteral node) {}
 	
-	public void visit(NumericalOutput node) {
-		visit(node.getExpression());
-	}
-	
 	public void visit(OrExpression node) {
 		visit(node.getLeft());
 		visit(node.getRight());

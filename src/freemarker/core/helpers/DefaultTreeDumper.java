@@ -449,17 +449,6 @@ public class DefaultTreeDumper extends ASTVisitor {
 		buffer.append(node.getValue().toString());
 	}
 	
-	public void visit(NumericalOutput node) {
-		buffer.append("#{");
-		visit(node.getExpression());
-		String formatString = node.getFormatString();
-		if (formatString != null) {
-			buffer.append(" ; ");
-			buffer.append(formatString);
-		}
-		buffer.append("}");
-	}
-	
 	public void visit(OrExpression exp) {
 		visit(exp.getLeft());
 		buffer.append(" || ");

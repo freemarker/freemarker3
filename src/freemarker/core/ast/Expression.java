@@ -1,6 +1,7 @@
 package freemarker.core.ast;
 
 import freemarker.template.*;
+import freemarker.ext.beans.ObjectWrapper;
 import freemarker.ext.beans.Pojo;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.TemplateNode;
@@ -23,7 +24,7 @@ abstract public class Expression extends TemplateNode {
     }
     
     static public boolean isDisplayableAsString(Object tm) {
-    	return tm instanceof TemplateScalarModel
+    	return ObjectWrapper.isString(tm)
     	     ||tm instanceof TemplateNumberModel
              || tm instanceof Number
     	     || tm instanceof TemplateDateModel;

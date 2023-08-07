@@ -1049,25 +1049,6 @@ TemplateElement StringOutput :
       return result;
    }
 ;
-#NumericalOutput :
-{
-   Expression exp;
-   Token fmt = null, begin, end;
-}
-   begin=<NUMERICAL_ESCAPE>
-   exp=Expression
-   [
-      <SEMICOLON>
-      fmt=<ID>
-   ]
-   end=<CLOSE_BRACE>
-   {
-   	  String formatString = fmt == null ? null : fmt.getImage();
-      NumericalOutput result = new NumericalOutput(exp, formatString);
-      result.setLocation(template, begin, end);
-      return result;
-   }
-;
 
 TemplateElement If :
 {
@@ -2281,8 +2262,6 @@ TemplateElement Content :
          |
          elem=StringOutput
          |
-         elem=NumericalOutput
-         |
          elem=FreemarkerDirective
       )
       {
@@ -2306,7 +2285,7 @@ TemplateElement Content :
 
 /**
  * A production freemarker text that may contain
- * ${...} and #{...} but no directives.
+ * ${...} but no directives.
  */
 
 TemplateElement FreeMarkerText :
@@ -2320,8 +2299,6 @@ TemplateElement FreeMarkerText :
         text=PCData {elem = null;}
         |
         elem=StringOutput
-        |
-        elem=NumericalOutput
       )
       {
          if (begin == null) {
