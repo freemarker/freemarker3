@@ -5,6 +5,7 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.ext.beans.CollectionModel;
 import freemarker.template.*;
+import freemarker.core.parser.ast.ParentheticalExpression;
 
 public class DefaultToExpression extends Expression {
 	

@@ -359,20 +359,47 @@ Expression PrimaryExpression :
   }
 ;
 
-Expression Parenthesis :
+Expression Parenthesis#ParentheticalExpression :
 {
    Expression exp, result;
    Token start, end;
 }
-    start=<OPEN_PAREN>
-    exp=Expression
+    start=<OPEN_PAREN> 
+    exp=Expression 
+    {
+      clearNodeScope();
+      pushNode(exp);
+    }
     end=<CLOSE_PAREN>
     {
-       result = new ParentheticalExpression(exp);
-       result.setLocation(template, start, end);
-       return result;
+       //CURRENT_NODE.setLocation(template, start, end);
+       return CURRENT_NODE;
     }
 ;
+
+INJECT ParentheticalExpression :
+   import freemarker.core.Environment;
+   import freemarker.core.ast.Expression;
+   extends Expression
+{
+   public Expression getNested() {
+        return firstChildOfType(Expression.class);
+    }
+
+    public boolean isTrue(Environment env) {
+        return getNested().isTrue(env);
+    }
+    
+    public Object getAsTemplateModel(Environment env) {
+        return getNested().getAsTemplateModel(env);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        ParentheticalExpression result = new ParentheticalExpression();
+        result.add(getNested().deepClone(name, subst));
+        return result;
+    }   
+}
 
 /**
  * A primary expression preceded by zero or

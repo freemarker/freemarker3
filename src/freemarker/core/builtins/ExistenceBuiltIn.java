@@ -6,14 +6,12 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Expression;
-import freemarker.core.ast.ParentheticalExpression;
 import freemarker.template.Constants;
 import freemarker.template.LazilyEvaluatableArguments;
 import freemarker.template.TemplateBooleanModel;
-import freemarker.template.TemplateException;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import freemarker.core.parser.ast.ParentheticalExpression;
 
 /**
  * @author Attila Szegedi

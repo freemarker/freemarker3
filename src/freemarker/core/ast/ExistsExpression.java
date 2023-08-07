@@ -2,6 +2,7 @@ package freemarker.core.ast;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
+import freemarker.core.parser.ast.ParentheticalExpression;
 import freemarker.template.*;
 
 

@@ -4,6 +4,7 @@ import freemarker.core.ast.*;
 import freemarker.core.parser.ast.BooleanLiteral;
 import freemarker.core.parser.ast.NullLiteral;
 import freemarker.core.parser.ast.NumberLiteral;
+import freemarker.core.parser.ast.ParentheticalExpression;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.core.parser.ast.TemplateNode;
 
