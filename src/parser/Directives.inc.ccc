@@ -825,10 +825,10 @@ NoParseBlock NoParse :
     		}
     		lastChar = c;
     	}
-       	List<TextBlock> text = TextBlock.breakIntoBlocks(buf.toString(), template, beginColumn, beginLine);
-        NoParseBlock result = new NoParseBlock(start.getImage(), end.getImage(), text);
-        result.setLocation(template, token_source, start, end);
-        return result;
+      List<TextBlock> text = TextBlock.breakIntoBlocks(buf.toString(), template, beginColumn, beginLine);
+      NoParseBlock result = new NoParseBlock(start.getImage(), end.getImage(), text);
+      result.setLocation(template, token_source, start, end);
+      return result;
     }
 ;
 

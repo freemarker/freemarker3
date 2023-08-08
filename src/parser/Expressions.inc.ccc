@@ -272,7 +272,7 @@ Expression RangeExpression :
        {
            Range range = new Range(lhs, rhs);
            if (rhs != null) {
-               range.setLocation(template, lhs, rhs);
+               range.setLocation(template, token_source, lhs, rhs);
            } else {
               range.setLocation(template, token_source, lhs, lhs);
            }
