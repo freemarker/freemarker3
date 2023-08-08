@@ -17,7 +17,7 @@ TemplateElement StringOutput :
 	end=<CLOSE_BRACE>
    {
    	TemplateElement result = new Interpolation(exp);
-      result.setLocation(template, begin, end);
+      result.setLocation(template, token_source, begin, end);
       return result;
    }
 ;
@@ -36,7 +36,7 @@ TemplateElement If :
    block=OptionalBlock
    {
       cblock = new ConditionalBlock(condition, block, true);
-      cblock.setLocation(template, start, block);
+      cblock.setLocation(template, token_source, start, block);
       ifBlock = new IfBlock(cblock);
    }
    (
@@ -46,7 +46,7 @@ TemplateElement If :
        block=OptionalBlock
        {
           cblock = new ConditionalBlock(condition, block, false);
-          cblock.setLocation(template, t, block);
+          cblock.setLocation(template, token_source, t, block);
           ifBlock.addBlock(cblock);
        }
    )*
@@ -55,13 +55,13 @@ TemplateElement If :
          block=OptionalBlock
          {
             cblock = new ConditionalBlock(null, block, false);
-            cblock.setLocation(template, t, block);
+            cblock.setLocation(template, token_source, t, block);
             ifBlock.addBlock(cblock);
          }
    ]
    end=CloseDirectiveBlock("if")
    {
-       ifBlock.setLocation(template, start, end);
+       ifBlock.setLocation(template, token_source, start, end);
        return ifBlock;
    }
 ;
@@ -78,7 +78,7 @@ AttemptBlock Attempt :
    end=CloseDirectiveBlock("attempt, recover")
    {
       AttemptBlock result = new AttemptBlock(block, recoveryBlock);
-      result.setLocation(template, start, end);
+      result.setLocation(template, token_source, start, end);
       if (problem != null) {
       	ParsingProblem pp = new ParsingProblem(problem.getMessage(), result);
       	result.addParsingProblem(pp);
@@ -96,7 +96,7 @@ RecoveryBlock Recover :
    block=OptionalBlock
    {
       RecoveryBlock result = new RecoveryBlock(block);
-      result.setLocation(template, start, block);
+      result.setLocation(template, token_source, start, block);
       return result;
    }
 ;
@@ -119,7 +119,7 @@ TemplateElement List :
                                               index.getImage(),
                                               block,
                                               false);
-     result.setLocation(template, start, end);
+     result.setLocation(template, token_source, start, end);
      return result;
    }
 ;
@@ -142,7 +142,7 @@ IteratorBlock ForEach :
                                               index.getImage(),
                                               block,
                                               true);
-     result.setLocation(template, start, end);
+     result.setLocation(template, token_source, start, end);
      return result;
    }
 ;
@@ -161,7 +161,7 @@ VisitNode Visit :
    end=LooseDirectiveEnd
    {
        VisitNode result = new VisitNode(targetNode, namespaces);
-       result.setLocation(template, start, end);
+       result.setLocation(template, token_source, start, end);
        return result;
    }
 ;
@@ -189,7 +189,7 @@ RecurseNode Recurse :
    {
        if (end == null) end = start;
        RecurseNode result = new RecurseNode(node, namespaces);
-       result.setLocation(template, start, end);
+       result.setLocation(template, token_source, start, end);
        return result;
    }
 ;
@@ -201,7 +201,7 @@ FallbackInstruction FallBack :
    tok=<FALLBACK>
    {
       FallbackInstruction result = new FallbackInstruction();
-      result.setLocation(template, tok, tok);
+      result.setLocation(template, token_source, tok, tok);
       return result;
    }
 ;
@@ -216,7 +216,7 @@ BreakInstruction Break :
     start=<BREAK>
     {
        BreakInstruction result = new BreakInstruction();
-       result.setLocation(template, start, start);
+       result.setLocation(template, token_source, start, start);
        return result;
     }
 ;
@@ -239,7 +239,7 @@ ReturnInstruction Return :
    )
    {
       ReturnInstruction result = new ReturnInstruction(exp);
-      result.setLocation(template, start, end);
+      result.setLocation(template, token_source, start, end);
       return result;
    }
 ;
@@ -256,7 +256,7 @@ StopInstruction Stop :
     )
     {
        StopInstruction result = new StopInstruction(exp);
-       result.setLocation(template, start, start);
+       result.setLocation(template, token_source, start, start);
        return result;
     }
 ;
@@ -272,7 +272,7 @@ TemplateElement Nested :
          t=<SIMPLE_NESTED>
          {
             result = new BodyInstruction(null);
-            result.setLocation(template, t, t);
+            result.setLocation(template, token_source, t, t);
          }
       )
       |
@@ -282,7 +282,7 @@ TemplateElement Nested :
           end=LooseDirectiveEnd
           {
              result = new BodyInstruction(args);
-             result.setLocation(template, t, end);
+             result.setLocation(template, token_source, t, end);
           }
       )
    )
@@ -298,7 +298,7 @@ TemplateElement Flush :
    t=<FLUSH>
    {
        FlushInstruction result = new FlushInstruction();
-       result.setLocation(template, t, t);
+       result.setLocation(template, token_source, t, t);
        return result;
    }
 ;
@@ -318,7 +318,7 @@ TemplateElement Trim :
      t=<NOTRIM> {result = new TrimInstruction(false, false);}
    )
    {
-       result.setLocation(template, t, t);
+       result.setLocation(template, token_source, t, t);
        return result;
    }
 ;
@@ -379,7 +379,7 @@ TemplateElement Assign :
 		   for (Map.Entry<String,Expression> entry : assignments.entrySet()) {
            	    result.addAssignment(entry.getKey(), entry.getValue());
            }
-           result.setLocation(template, start, end);
+           result.setLocation(template, token_source, start, end);
            return result;
        }
     )
@@ -401,7 +401,7 @@ TemplateElement Assign :
        	   	   case AssignmentInstruction.SET : if (name.length() >0 && !name.equals("set")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.getBeginLine(), end.getBeginColumn()); break;
        	  }
           BlockAssignment ba = new BlockAssignment(block, varName, type, nsExp);
-          ba.setLocation(template, start, end);
+          ba.setLocation(template, token_source, start, end);
           return ba;
        }
     ))
@@ -451,7 +451,7 @@ TemplateElement Assign :
     end=LooseDirectiveEnd
     {
        Include result = new Include(template, nameExp, freshNamespace, encodingExp, parseExp);
-       result.setLocation(template, start, end);
+       result.setLocation(template, token_source, start, end);
        return result;
     }
 ;
@@ -468,7 +468,7 @@ LibraryLoad Import :
    end=LooseDirectiveEnd
    {
        LibraryLoad result = new LibraryLoad(template, nameExp, ns.getImage());
-       result.setLocation(template, start, end);
+       result.setLocation(template, token_source, start, end);
        if (template != null) template.addImport(result);
        return result;
    }
@@ -534,13 +534,13 @@ LibraryLoad Import :
     )*
 	{
 		if (ellipsis != null) {
-			result.setLocation(template, firstArg, ellipsis);
+			result.setLocation(template, token_source, firstArg, ellipsis);
 		}
 		else if (defValue != null) {
-			result.setLocation(template, firstArg, defValue);
+			result.setLocation(template, token_source, firstArg, defValue);
 		}
 		else if (firstArg != null) {
-			result.setLocation(template, firstArg, arg);
+			result.setLocation(template, token_source, firstArg, arg);
 		}
 		return result;
 	}
@@ -575,7 +575,7 @@ LibraryLoad Import :
     {
 	   result.setName(name);
 	   result.add(block);
-      result.setLocation(template, start, end);
+      result.setLocation(template, token_source, start, end);
       return result;
     }
 ;
@@ -591,7 +591,7 @@ CompressedBlock Compress :
     end=CloseDirectiveBlock("compress")
     {
        CompressedBlock cb = new CompressedBlock(block);
-       cb.setLocation(template, start, end);
+       cb.setLocation(template, token_source, start, end);
        return cb;
     }
 ;
@@ -607,7 +607,7 @@ CompressedBlock Compress :
 	)*
 	{
 		if (firstArg != null)
-		result.setLocation(template, firstArg, arg);
+		result.setLocation(template, token_source, firstArg, arg);
 		return result;
 	}
 ;
@@ -632,7 +632,7 @@ CompressedBlock Compress :
 	)*
 	{
 		token_source.inInvocation = false;
-		result.setLocation(template, firstParam, arg);
+		result.setLocation(template, token_source, firstParam, arg);
 		return result;
 	}
 ;
@@ -718,7 +718,7 @@ TemplateElement UnifiedMacroTransform :
       )
     )
     {
-       result.setLocation(template, start, end);
+       result.setLocation(template, token_source, start, end);
        return result;
     }
 ;
@@ -740,7 +740,7 @@ TemplateElement Call :
     [<CLOSE_PAREN>]
     end=LooseDirectiveEnd
     {
-       result.setLocation(template, start, end);
+       result.setLocation(template, token_source, start, end);
        args.setLocationInfoIfAbsent(result);
        return result;
     }
@@ -782,7 +782,7 @@ Comment TerseComment :
 	end=<TERSE_COMMENT_END>
 	{
 		Comment result = new Comment(buf.toString());
-		result.setLocation(template, start, end);
+		result.setLocation(template, token_source, start, end);
 		return result;
 	}
 ;
@@ -798,7 +798,7 @@ Comment TerseComment :
     end=<COMMENT_END>
     {
        Comment result = new Comment(buf.toString());
-       result.setLocation(template, start, end);
+       result.setLocation(template, token_source, start, end);
        return result;
     }
 ;
@@ -827,7 +827,7 @@ NoParseBlock NoParse :
     	}
        	List<TextBlock> text = TextBlock.breakIntoBlocks(buf.toString(), template, beginColumn, beginLine);
         NoParseBlock result = new NoParseBlock(start.getImage(), end.getImage(), text);
-        result.setLocation(template, start, end);
+        result.setLocation(template, token_source, start, end);
         return result;
     }
 ;
@@ -863,7 +863,7 @@ TransformBlock Transform :
     )
     {
        TransformBlock result = new TransformBlock(exp, args, content);
-       result.setLocation(template, start, end);
+       result.setLocation(template, token_source, start, end);
        return result;
     }
 ;
@@ -899,7 +899,7 @@ SwitchBlock Switch :
    )*
    end=CloseDirectiveBlock("switch")
    {
-      switchBlock.setLocation(template, start, end);
+      switchBlock.setLocation(template, token_source, start, end);
       return switchBlock;
    }
 ;
@@ -920,7 +920,7 @@ SwitchBlock Switch :
    block=OptionalBlock
    {
        Case result = new Case(exp, block, isDefault);
-       result.setLocation(template, start, block);
+       result.setLocation(template, token_source, start, block);
        return result;
    }
 ;
@@ -945,7 +945,7 @@ SwitchBlock Switch :
 	end=CloseDirectiveBlock(closeTag)
 	{
 		TrimBlock result = new TrimBlock(content, left, right);
-		result.setLocation(template, start, end);
+		result.setLocation(template, token_source, start, end);
 		trimBlockNesting--;
 		return result;
 	}
@@ -972,7 +972,7 @@ EscapeBlock Escape :
     }
     end=CloseDirectiveBlock("escape")
     {
-       result.setLocation(template, start, end);
+       result.setLocation(template, token_source, start, end);
        return result;
     }
 ;
@@ -987,7 +987,7 @@ NoEscapeBlock NoEscape :
     end=CloseDirectiveBlock("noescape")
     {
        NoEscapeBlock result = new NoEscapeBlock(content);
-       result.setLocation(template, start, end);
+       result.setLocation(template, token_source, start, end);
        return result;
     }
 ;
@@ -1046,7 +1046,7 @@ PropertySetting Setting :
    end=LooseDirectiveEnd
    {
       PropertySetting result = new PropertySetting(key.getImage(), value);
-      result.setLocation(template, start, end);
+      result.setLocation(template, token_source, start, end);
       return result;
    }
 ;
@@ -1085,7 +1085,7 @@ VarDirective Var :
    )*
    end=LooseDirectiveEnd
    {
-      result.setLocation(template, start, end);
+      result.setLocation(template, token_source, start, end);
       return result;
    }
 ;
@@ -1240,7 +1240,7 @@ TemplateElement Content :
     {
         contentNesting--;
         if (elem == null) elem = text.get(text.size() -1);
-        nodes.setLocation(template, begin, elem);
+        nodes.setLocation(template, token_source, begin, elem);
 	     return nodes;
     }
 ;
@@ -1275,7 +1275,7 @@ TemplateElement FreeMarkerText :
     )+
     {
        if (elem == null) elem = text.get(text.size() -1);
-       nodes.setLocation(template, begin, elem);
+       nodes.setLocation(template, token_source, begin, elem);
        return nodes;
     }
 ;
@@ -1321,7 +1321,7 @@ TemplateHeaderElement HeaderElement :
    )
    {
    	   TemplateHeaderElement header = new TemplateHeaderElement(params);
-   	   header.setLocation(template, start, end);
+   	   header.setLocation(template, token_source, start, end);
    	   return header;
    }
 ;

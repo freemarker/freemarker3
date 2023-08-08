@@ -645,18 +645,6 @@ public class Template extends TemplateCore {
         return getRootElement();
     }
 
-    /**
-     *  @throws SecurityException if the getConfiguration().isSecureTemplates()
-     *  returns true, there is a security manager in the JVM, and the caller
-     *  of this method does not posess the "modifyTemplate" FreeMarker 
-     *  permission.
-     */
-    /*
-    @Override
-    public void setFallback(Configurable fallback) {
-        super.setFallback(fallback);
-    }*/
-
     public List<LibraryLoad> getImports() {
         return imports;
     }

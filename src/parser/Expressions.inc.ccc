@@ -115,7 +115,7 @@ Expression NotExpression :
       for (int i=0; i<nots.size(); i++) {
          result = new NotExpression(exp);
          Token tok = nots.get(nots.size() -i -1);
-         result.setLocation(template, tok, exp);
+         result.setLocation(template, token_source, tok, exp);
          exp = result;
       }
       return result;
@@ -136,7 +136,7 @@ Expression UnaryPlusMinusExpression :
    exp=PrimaryExpression 
    {
       result = new UnaryPlusMinusExpression(exp, isMinus);  
-      result.setLocation(template, t, exp);
+      result.setLocation(template, token_source, t, exp);
       return result;
    }
 ;
@@ -164,7 +164,7 @@ Expression AdditiveExpression :
              result = new ArithmeticExpression(lhs, rhs,
                                             ArithmeticExpression.SUBTRACTION);
          }
-         result.setLocation(template, lhs, rhs);
+         result.setLocation(template, token_source, lhs, rhs);
          lhs = result;
       }
    )*
@@ -194,7 +194,7 @@ Expression MultiplicativeExpression :
       rhs=UnaryExpression
       {
          result = new ArithmeticExpression(lhs, rhs, operation);
-         result.setLocation(template, lhs, rhs);
+         result.setLocation(template, token_source, lhs, rhs);
          lhs = result;
       }
    )*
@@ -221,7 +221,7 @@ Expression EqualityExpression :
      rhs=RelationalExpression
      {
         result = new ComparisonExpression(lhs, rhs, t.getImage());
-        result.setLocation(template, lhs, rhs);
+        result.setLocation(template, token_source, lhs, rhs);
      }
    ]
    {
@@ -252,7 +252,7 @@ Expression RelationalExpression :
      rhs=RangeExpression
      {
         result = new ComparisonExpression(lhs, rhs, t.getImage());
-        result.setLocation(template, lhs, rhs);
+        result.setLocation(template, token_source, lhs, rhs);
      }
    ]
    {
@@ -274,7 +274,7 @@ Expression RangeExpression :
            if (rhs != null) {
                range.setLocation(template, lhs, rhs);
            } else {
-              range.setLocation(template, lhs, lhs);
+              range.setLocation(template, token_source, lhs, lhs);
            }
            result = range;
         }
@@ -294,7 +294,7 @@ Expression AndExpression :
       rhs=EqualityExpression
       {
          result = new AndExpression(lhs, rhs);
-         result.setLocation(template, lhs, rhs);
+         result.setLocation(template, token_source, lhs, rhs);
          lhs = result;
       }
    )*
@@ -313,7 +313,7 @@ Expression OrExpression :
       rhs=AndExpression
       {
          result = new OrExpression(lhs, rhs);
-         result.setLocation(template, lhs, rhs);
+         result.setLocation(template, token_source, lhs, rhs);
          lhs = result;
       }
    )*
@@ -338,7 +338,7 @@ Expression OrExpression :
     ]
     end=<CLOSE_BRACKET>
     {
-        CURRENT_NODE.setLocation(template, begin, end);
+        CURRENT_NODE.setLocation(template, token_source, begin, end);
         CURRENT_NODE.addAll(values);
         return CURRENT_NODE;
     }
@@ -631,10 +631,10 @@ Expression DefaultTo(Expression exp) :
    {
       DefaultToExpression result = new DefaultToExpression(exp, rhs);
       if (rhs ==null) {
-          result.setLocation(template, exp, t);
+          result.setLocation(template, token_source, exp, t);
       }
       else {
-          result.setLocation(template, exp, rhs);
+          result.setLocation(template, token_source, exp, rhs);
       }
       return result;
    }
@@ -647,7 +647,7 @@ Expression Exists(Expression exp) :
    t=<EXISTS>
    {
        ExistsExpression result = new ExistsExpression(exp);
-       result.setLocation(template, exp, t);
+       result.setLocation(template, token_source, exp, t);
        return result;
    }
 ;
@@ -664,7 +664,7 @@ Expression BuiltIn(Expression exp) :
             fail("Unknown builtin ",t);
            //throw new ParseException(this, "Unknown builtin " + t.getImage());
          }
-   	   result.setLocation(template, exp, t);
+   	   result.setLocation(template, token_source, exp, t);
    	   return result;
    }
 ;
@@ -680,7 +680,7 @@ Expression DotVariable(Expression exp) :
      t=<ID>{token_source.justAfterDot = false;}
      {
          Dot dot = new Dot(exp, t.getImage());
-         dot.setLocation(template, exp, t);
+         dot.setLocation(template, token_source, exp, t);
          return dot;
      }
 ;
@@ -699,7 +699,7 @@ Expression DynamicKey(Expression exp) :
    t=<CLOSE_BRACKET>
    {
        DynamicKeyName dkn = new DynamicKeyName(exp, arg);
-       dkn.setLocation(template, exp, t);
+       dkn.setLocation(template, token_source, exp, t);
        return dkn;
    }
 ;
@@ -717,8 +717,8 @@ MethodCall MethodArgs(Expression exp) :
      end=<CLOSE_PAREN>
      {
         MethodCall result = new MethodCall(exp, args);
-        result.setLocation(template, exp, end);
-	    args.setLocationInfoIfAbsent(result);        
+        result.setLocation(template, token_source, exp, end);
+	     args.setLocationInfoIfAbsent(result);        
         return result;
      }
 ;
@@ -743,7 +743,7 @@ Expression StringLiteral#freemarker.core.ast.StringLiteral :
           s = StringUtil.FTLStringLiteralDec(s);
        } catch (ParseException pe) {
        	  InvalidExpression invalid = new InvalidExpression("Malformed string literal: " + pe.getMessage());
-       	  invalid.setLocation(template, lastConsumedToken, lastConsumedToken);
+       	  invalid.setLocation(template, token_source, lastConsumedToken, lastConsumedToken);
        	  return invalid;
        }
        CURRENT_NODE.setRaw(raw);
@@ -843,7 +843,7 @@ INJECT NullLiteral :
    end=<CLOSE_BRACE>
    {
       HashLiteral result = new HashLiteral(keys, values);
-      result.setLocation(template, begin, end);
+      result.setLocation(template, token_source, begin, end);
       return result;
    }
 ;
