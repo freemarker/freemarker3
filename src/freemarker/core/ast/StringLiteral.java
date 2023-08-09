@@ -36,7 +36,8 @@ public class StringLiteral extends Expression implements TemplateScalarModel {
     }
     
     public void checkInterpolation() {
-    	String src = this.source();
+    	String src = this.getSource();
+//    	String src = this.source();
 //    	String src = value;
         if (src.length() >5 && (src.indexOf("${") >= 0)) {
             FMLexer token_source = new FMLexer("input", value, FMLexer.LexicalState.DEFAULT, getBeginLine(), getBeginColumn() +1);

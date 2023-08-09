@@ -75,7 +75,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(InvalidExpression node) {
-		template.addParsingProblem(new ParsingProblem(node.getMessage() + " " + node.source(), node));
+		template.addParsingProblem(new ParsingProblem(node.getMessage() + " " + node.getSource(), node));
 	}
 	
 	public void visit(AndExpression node) {
@@ -152,7 +152,7 @@ public class PostParseVisitor extends ASTVisitor {
         if (node.size() == 1) {
             ConditionalBlock cblock = (ConditionalBlock) node.get(0);
             cblock.setIsSimple(true);
-           	cblock.setLocation(node.getTemplate(), cblock, node);
+           	cblock.setLocation(node.getTemplate(), node.getTokenSource(), cblock, node);
             node.getParent().replace(node, cblock);
             visit(cblock);
         } else {
@@ -411,22 +411,4 @@ public class PostParseVisitor extends ASTVisitor {
 			template.markAsOutputtingLine(i, inMacro);
 		}
 	}
-	
-    public String firstLine(TemplateNode node) {
-    	String line = template.getLine(node.getBeginLine());
-    	if (node.getBeginLine() == node.getEndLine()) {
-    		line = line.substring(0, node.getEndColumn());
-    	}
-    	return line.substring(node.getBeginColumn() -1);
-    }
-    
-    public String lastLine(TemplateNode node) {
-    	String line = template.getLine(node.getEndLine());
-    	line = line.substring(0, node.getEndColumn());
-    	if (node.getBeginLine() == node.getEndLine()) {
-    		line = line.substring(node.getBeginColumn() -1);
-    	}
-    	return line;
-    }
-    
 }

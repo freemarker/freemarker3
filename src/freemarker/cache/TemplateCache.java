@@ -366,14 +366,7 @@ public class TemplateCache
         Reader reader = loader.getReader(source, encoding);
         try {
             if(parse) {
-                try {
-                    template = createTemplate(name, reader, config, encoding);
-                }
-                catch (Template.WrongEncodingException wee) {
-                    encoding = wee.specifiedEncoding;
-                    reader = loader.getReader(source, encoding);
-                    template = createTemplate(name, reader, config, encoding);
-                }
+                template = new Template(name, reader, config, encoding);
                 template.setLocale(locale);
             }
             else {
@@ -571,10 +564,6 @@ public class TemplateCache
             buf.append(path.get(i)).append('/');
         }
         return buf.toString();
-    }
-    
-    protected Template createTemplate(String name, Reader reader, Configuration config, String encoding ) throws IOException {
-    	return new Template(name, reader, config, encoding);
     }
     
     private static String normalizeName(String name) {

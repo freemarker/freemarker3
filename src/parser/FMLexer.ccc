@@ -1,4 +1,3 @@
-
 PARSER_PACKAGE="freemarker.core.parser";
 TREE_BUILDING_ENABLED=false;
 
@@ -67,13 +66,13 @@ INJECT LEXER_CLASS :
         directiveSyntaxEstablished = true;
     }
 
-    private Token tokenHook$FMLexer_javacc$77$16(Token token) {
-        if (token.getType() == TokenType.EOF) return token;
-        String tokText = token.getImage();
+    private Token TOKEN_HOOK(Token token) {
+        if (token.getType() == EOF) return token;
+        String tokText = token.toString();
         char firstChar = tokText.charAt(0);
         if (justAfterDot) {
             if (StringUtil.isFTLIdentifier(tokText) || tokText.equals("*") || tokText.equals("**")) {
-                token.setType(TokenType.ID);
+                token.setType(ID);
                 return token;
             }
         }
@@ -81,17 +80,17 @@ INJECT LEXER_CLASS :
             String chopFirst = tokText.substring(1);
             if (chopFirst.startsWith("#") || chopFirst.startsWith("/#") || chopFirst.startsWith("@") || chopFirst.startsWith("/@")) {
                 if (this.onlyTextOutput) {
-                    token.setType(TokenType.PRINTABLE_CHARS);
+                    token.setType(PRINTABLE_CHARS);
                     return token;
                 }
                 boolean squareBracket = firstChar == '[';
                 if (!directiveSyntaxEstablished) {
                     setAltDirectiveSyntax(squareBracket);
                 } else if (altDirectiveSyntax != squareBracket) {
-                    token.setType(TokenType.PRINTABLE_CHARS);
+                    token.setType(PRINTABLE_CHARS);
                     return token;
                 }
-                if (token.getType() == TokenType.UNKNOWN_DIRECTIVE) {
+                if (token.getType() == UNKNOWN_DIRECTIVE) {
                     int index = tokText.indexOf('#');
                     String s = tokText.substring(index);
                     String msg = "Unknown directive: " + s + " on line: " + token.getBeginLine() + ", column: " + token.getBeginColumn() + 1 + ", in template: " + templateName;
@@ -106,13 +105,13 @@ INJECT LEXER_CLASS :
                 break;
             case GREATER_THAN_EQUALS : case GREATER_THAN : 
                 if (parenthesisNesting == 0 && !altDirectiveSyntax) {
-                    if (token.getType() == TokenType.GREATER_THAN_EQUALS) {
+                    if (token.getType() == GREATER_THAN_EQUALS) {
                         //backup(1);
                         //token.setEndOffset(token.getEndOffset() - 1);
                         // So that the = doesn't get eaten.
                         token.truncate(1);
                     }
-                    token.setType(TokenType.DIRECTIVE_END);
+                    token.setType(DIRECTIVE_END);
                     switchTo(LexicalState.DEFAULT);
                 }
                 break;
@@ -130,7 +129,7 @@ INJECT LEXER_CLASS :
                 if (bracketNesting > 0) {
                     --bracketNesting;
                 } else {
-                    token.setType(TokenType.DIRECTIVE_END);
+                    token.setType(DIRECTIVE_END);
                     switchTo(LexicalState.DEFAULT);
                 }
                 break;
@@ -161,13 +160,13 @@ INJECT LEXER_CLASS :
                 break;
             case NOPARSE_END : 
                 if (noparseType != NOPARSE) {
-                    token.setType(TokenType.PRINTABLE_CHARS);
+                    token.setType(PRINTABLE_CHARS);
                     break;
                 }
             // deliberate fall-through to next case...
             case COMMENT_END : 
-                if (token.getType() == TokenType.COMMENT_END && noparseType != COMMENT) {
-                    token.setType(TokenType.PRINTABLE_CHARS);
+                if (token.getType() == COMMENT_END && noparseType != COMMENT) {
+                    token.setType(PRINTABLE_CHARS);
                 } else {
                     char lastChar = tokText.charAt(tokText.length() - 1);
                     char startTagChar = lastChar == ']' ? '[' : '<';
@@ -177,7 +176,7 @@ INJECT LEXER_CLASS :
                         // backup(tokText.length() - extraChars.length());
                         //token.setEndOffset(token.getEndOffset() - (tokText.length() - extraChars.length()));
                         token.truncate(extraChars.length());
-                        token.setType(TokenType.PRINTABLE_CHARS);
+                        token.setType(PRINTABLE_CHARS);
                     } else {
                         switchTo(LexicalState.DEFAULT);
                     }
@@ -185,7 +184,7 @@ INJECT LEXER_CLASS :
                 break;
             case TERSE_COMMENT_END : 
                 if (noparseType != TERSE_COMMENT) {
-                    token.setType(TokenType.PRINTABLE_CHARS);
+                    token.setType(PRINTABLE_CHARS);
                 } else if (tokText.length() == 3) {
                     switchTo(LexicalState.DEFAULT);
                 } else {
@@ -193,7 +192,7 @@ INJECT LEXER_CLASS :
                     //backup(3);
                     //token.setEndOffset(token.getEndOffset() - 3);
                     token.truncate(3);
-                    token.setType(TokenType.PRINTABLE_CHARS);
+                    token.setType(PRINTABLE_CHARS);
                 }
                 break;
             case FUNCTION : case MACRO : case PARAM : case NESTED : case TRANSFORM : case STOP : case RETURN : case CALL : case IF : case ELSE_IF : case VISIT : case RECURSE : case VAR : case SET : case ASSIGN : case LOCALASSIGN : case GLOBALASSIGN : case LIST : case FOREACH : case SWITCH : case CASE : case _INCLUDE : case IMPORT : case EMBED : case ESCAPE : case SETTING : 
@@ -449,8 +448,6 @@ TOKEN:
 <NO_SPACE_EXPRESSION> TOKEN :
     <TERMINATING_WHITESPACE :  (["\n", "\r", "\t", " "])+> : EXPRESSION
 ;
-
-
 
 <NO_PARSE> MORE:  <(~[])> ;
 

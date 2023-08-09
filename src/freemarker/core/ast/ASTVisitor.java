@@ -366,12 +366,12 @@ public abstract class ASTVisitor {
 			visit(te);
 		}
 	}
-	
+
 	public ASTVisitor clone() {
 		try {
 			return (ASTVisitor) super.clone();
 		} catch (CloneNotSupportedException cse) {
-			throw new IllegalStateException("You tried to clone a visitior implementation that was does not implement cloneable");
+			throw new IllegalStateException("You tried to clone a visitor implementation that was does not implement cloneable");
 		}
 	}
 }

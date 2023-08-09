@@ -60,9 +60,7 @@ public class Template extends TemplateCore {
 	private int[] lineStartOffsets;
 	private byte[] lineInfoTable; // contain bitsets that describe what happens
 	                              // on the line.
-	
-	
-    
+
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
     private Set<String> declaredVariables = new HashSet<String>();
@@ -74,11 +72,6 @@ public class Template extends TemplateCore {
     
     private List<ParsingProblem> parsingProblems = new ArrayList<>();
     private TemplateHeaderElement headerElement;
-    
-    public int getAbsoluteOffset(int line, int column) {
-    	return lineStartOffsets[line-1] +column -1;
-    }
-
     
     /**
      * A prime constructor to which all other constructors should
@@ -106,15 +99,47 @@ public class Template extends TemplateCore {
      * checked against the encoding specified in the FTL header -- assuming that is specified,
      * and if they don't match a WrongEncodingException is thrown.
      */
-    
-    
 	public Template(String name, Reader reader, Configuration cfg,
 			String encoding) throws IOException 
     {
         this(name, cfg);
         this.encoding = encoding;
-        
         readInTemplateText(reader);
+        try {
+            int syntaxSetting = getConfiguration().getTagSyntax();
+            this.stripWhitespace = getConfiguration().getWhitespaceStripping();
+            this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
+            FMParser parser = new FMParser(this, new String(templateText), syntaxSetting);
+            parser.setInputSource(getName());
+            setRootElement(parser.Root());
+            PostParseVisitor ppv = new PostParseVisitor(this);
+            ppv.visit(this);
+            if (stripWhitespace) {
+                WhitespaceAdjuster wadj = new WhitespaceAdjuster(this);
+                wadj.visit(this);
+            }
+            for (ASTVisitor visitor : cfg.getAutoVisitors()) {
+            	if (visitor instanceof Cloneable) {
+            		visitor = visitor.clone();
+            	}
+            	visitor.visit(this);
+            }
+        }
+        catch(ParseException e) {
+            e.setTemplateName(name);
+            throw e;
+        }
+        namespaceURIToPrefixLookup = Collections.unmodifiableMap(namespaceURIToPrefixLookup);
+        prefixToNamespaceURILookup = Collections.unmodifiableMap(prefixToNamespaceURILookup);
+	}
+
+	public Template(String name, CharSequence input, Configuration cfg,
+			String encoding) throws IOException 
+    {
+        this(name, cfg);
+        this.encoding = encoding;
+        
+        //readInTemplateText(reader);
         try {
             int syntaxSetting = getConfiguration().getTagSyntax();
             this.stripWhitespace = getConfiguration().getWhitespaceStripping();
@@ -140,6 +165,8 @@ public class Template extends TemplateCore {
         namespaceURIToPrefixLookup = Collections.unmodifiableMap(namespaceURIToPrefixLookup);
         prefixToNamespaceURILookup = Collections.unmodifiableMap(prefixToNamespaceURILookup);
 	}
+
+    
 	
 	protected void readInTemplateText(Reader reader) throws IOException {
         int charsRead = 0;
@@ -484,73 +511,28 @@ public class Template extends TemplateCore {
     	this.strictVariableDeclaration = strictVariableDeclaration;
     }
 
-     /**
-     * Returns the template source at the location
-     * specified by the coordinates given.
-     * @param beginColumn the first column of the requested source, 1-based
-     * @param beginLine the first line of the requested source, 1-based
-     * @param endColumn the last column of the requested source, 1-based
-     * @param endLine the last line of the requested source, 1-based
-     * @see freemarker.core.ast.TemplateNode#source()
-     */
-   	public String source(int beginColumn,
-           int beginLine,
-           int endColumn,
-           int endLine)
-   	{
-   		// Our container is zero-based, but location info is 1-based
-   		--beginLine;
-   		--beginColumn;
-   		--endColumn;
-   		--endLine;
-   		int startOffset = lineStartOffsets[beginLine] + beginColumn;
-   		int endOffset = lineStartOffsets[endLine] + endColumn;
-   		int numChars = 1+endOffset - startOffset;
-   		return new String(templateText, startOffset, numChars);
-   	}
+	int getOffset(int line, int column) {
+		return getTokenSource().getLineStartOffset(line) + column -1;
+	}
 
-   
-    public String getLine(int lineNumber) {
-    	lineNumber--;
-    	int lineStartOffset = lineStartOffsets[lineNumber];
-    	int numChars;
-    	if (lineNumber == lineStartOffsets.length-1) {
-    		numChars = templateText.length - lineStartOffset;
-    	} else {
-    		numChars = lineStartOffsets[lineNumber+1] - lineStartOffset;
-    	}
-     	return new String(templateText, lineStartOffset, numChars);
-    }
-    
-    public int getTabAdjustedColumn(int lineNumber, int column, int tabSize) {
-    	if (tabSize == 1 || column == 1) return column;
-    	int lineStartOffset = lineStartOffsets[lineNumber-1];
-    	int result = 1;
-    	char c=0;
-    	for (int i=0; i< column-1; i++) {
-    		c = templateText[lineStartOffset+i];
-    		if (c == '\t') 
-    			result += (tabSize - i%tabSize);
-    		else ++result;
-    	}
-    	return result;
-    }
-   
-   
     public void writeTextAt(Writer out, 
     					  int beginColumn,
     					  int beginLine, 
     					  int endColumn, 
 		                  int endLine) throws IOException 
     {
-    	--beginLine; --beginColumn; --endColumn; --endLine;
-   		int startOffset = lineStartOffsets[beginLine] + beginColumn;
-   		int endOffset = lineStartOffsets[endLine] + endColumn;
-   		out.write(templateText, startOffset, 1+endOffset - startOffset);
+//        int startOffset = getOffset(beginLine, beginColumn);
+//        int endOffset = getOffset(endLine, endColumn);
+   		int startOffset = lineStartOffsets[beginLine-1] + beginColumn-1;
+   		int endOffset = lineStartOffsets[endLine-1] + endColumn;
+        writeTextAt(out, startOffset, endOffset);
     }
-    
-    public void writeTemplateText(Writer out) throws IOException {
-    	out.write(templateText);
+
+    public void writeTextAt(Writer out, 
+    					  int startOffset, 
+		                  int endOffset) throws IOException 
+    {
+   		out.write(templateText, startOffset, endOffset - startOffset);
     }
     
     static private int countLines(char[] chars) {

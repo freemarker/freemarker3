@@ -54,9 +54,7 @@ public interface TemplateLoader
      * @throws IOException if there is an I/O exception while looking for the
      * template source
      */
-    public Object findTemplateSource(String name)
-    throws
-    	IOException;
+    public Object findTemplateSource(String name) throws IOException;
         
     /**
      * Returns the time of last modification of the specified template source.
@@ -84,9 +82,7 @@ public interface TemplateLoader
      * framework will call <code>close()</code>.
      * @throws IOException if an I/O error occurs while accessing the stream.
      */
-    public Reader getReader(Object templateSource, String encoding)
-    throws
-        IOException;
+    public Reader getReader(Object templateSource, String encoding) throws IOException;
     
     /**
      * Closes the template source. This is the last method that is called by
@@ -97,7 +93,5 @@ public interface TemplateLoader
      * @throws IOException if there is an I/O exception while closing the 
      * template source
      */
-    public void closeTemplateSource(Object templateSource)
-    throws
-        IOException;
+    public void closeTemplateSource(Object templateSource) throws IOException;
 }

@@ -1,8 +1,8 @@
 BASE_SRC_DIR="..";
 PARSER_PACKAGE="freemarker.core.parser";
-NODE_DEFAULT_VOID;
 BASE_NODE_CLASS=TemplateNode;
-TOKENS_ARE_NODES=false;
+NODE_DEFAULT_VOID;
+//TOKENS_ARE_NODES=false;
 //NODE_PREFIX="AST";
 
 INCLUDE "FMLexer.ccc"
@@ -18,7 +18,6 @@ INJECT BASE_NODE_CLASS :
    import freemarker.core.parser.Token;
    import freemarker.core.ast.Expression;
 {
-	private int beginLine, beginColumn, endLine, endColumn;
 	@Property Template template;
 	
 	static public int TAB_SIZE = 8;
@@ -27,48 +26,14 @@ INJECT BASE_NODE_CLASS :
 		return "";
 	}
 	
-	public int getBeginColumnTabAdjusted() {
-		return (template == null) ? beginColumn 
-                : template.getTabAdjustedColumn(beginLine, beginColumn, TAB_SIZE);
-	}
-
-	public int getBeginColumn() {
-      if (beginColumn > 0) {
-         return beginColumn;
-      }
-      TokenSource tokenSource = getTokenSource();
-      return tokenSource == null ? 0 : tokenSource.getCodePointColumnFromOffset(getBeginOffset());
-	}
-	
-
-	public int getBeginLine() {
-      if (beginLine > 0) {
-         return beginLine;
-      }
-      TokenSource tokenSource = getTokenSource();
-      //return tokenSource.getLineFromOffset(getBeginOffset());
-      return tokenSource == null ? 0 : tokenSource.getLineFromOffset(getBeginOffset());
-	}
-	
-	public int getEndLine() {
-      if (endLine > 0) {
-         return endLine;
-      }
+    public int getEndLine() {
       TokenSource tokenSource = getTokenSource();
       return tokenSource == null ? 0 : tokenSource.getLineFromOffset(getEndOffset());
 	}
 	
 	public int getEndColumn() {
-      if (endColumn > 0) {
-         return endColumn;
-      }
       TokenSource tokenSource = getTokenSource();
       return tokenSource == null ? 0 : tokenSource.getCodePointColumnFromOffset(getEndOffset());
-	}
-	
-	public int getEndColumnTabAdjusted() {
-		return template==null ? endColumn 
-            : template.getTabAdjustedColumn(beginLine, endColumn, TAB_SIZE);
 	}
 	
     /**
@@ -88,7 +53,7 @@ INJECT BASE_NODE_CLASS :
     public String getEndLocation() {
         String templateName = template != null ? template.getName() : getInputSource();
         return "on line " 
-              + endLine
+              + getEndLine()
               + ", column "
               + getEndColumn()
               + " in "
@@ -98,42 +63,18 @@ INJECT BASE_NODE_CLASS :
     public TemplateNode copyLocationFrom(TemplateNode from)
     {
         template = from.template;
-        beginColumn = from.beginColumn;
-        beginLine = from.beginLine;
-        endColumn = from.endColumn;
-        endLine = from.endLine;
+        beginOffset = from.getBeginOffset();
+        endOffset = from.getEndOffset();
         return this;
-    }
-
-    public final void setLocation(Template template, Node begin, Node end)
-    {
-        setLocation(template, begin.getBeginColumn(), begin.getBeginLine(), end.getEndColumn(), end.getEndLine());
-    }
-    
-    public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine)
-    {
-        this.template = template;
-        this.beginColumn = beginColumn;
-        this.beginLine = beginLine;
-        this.endColumn = endColumn;
-        this.endLine = endLine;
     }
 
 
 	static private DefaultReferenceChecker referenceChecker = DefaultReferenceChecker.instance;
 	static private DefaultTreeDumper canonicalTreeRenderer = new DefaultTreeDumper(false);
-	
-	public String source() {
-        if (template != null) {
-            return template.source(getBeginColumn(), getBeginLine(), getEndColumn(), getEndLine());
-        } else {
-            return getCanonicalForm();
-        }
-    }
 
     public String toString() {
     	try {
-    		return source();
+    		return getSource();
     	} catch (Exception e) { // REVISIT: A bit of a hack? (JR)
     		return getCanonicalForm();
     	}
@@ -228,6 +169,7 @@ INJECT PARSER_CLASS :
         this.template = template;
         this.templateName = template != null ? template.getName() : "";
         token_source.templateName = templateName;
+        template.setTokenSource(token_source);
     }
 
     public FMParser(Template template, Path path, int syntaxSetting) throws IOException {
@@ -244,6 +186,7 @@ INJECT PARSER_CLASS :
          if (syntaxSetting != Configuration.AUTO_DETECT_TAG_SYNTAX) {
             token_source.setAltDirectiveSyntax(syntaxSetting == Configuration.SQUARE_BRACKET_TAG_SYNTAX);
         }
+        template.setTokenSource(token_source);
     }
 
     private String getErrorStart(Token t) {

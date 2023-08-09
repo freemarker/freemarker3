@@ -51,8 +51,7 @@ public class FileTemplateLoader implements TemplateLoader {
     
     /**
      * Creates a new file template loader that will use the specified directory
-     * as the base directory for loading templates and a specified code source
-     * policy.
+     * as the base directory for loading templates.
      * @param baseDir the base directory for loading templates
      * @param allowLinking if true, it will allow following symlinks pointing
      * outside the baseDir

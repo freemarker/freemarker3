@@ -42,8 +42,15 @@ public final class TextBlock extends TemplateElement {
 		this.text = text.toCharArray();
 	}
 
+	int getOffset(int line, int column) {
+		return getTokenSource().getLineStartOffset(line) + column -1;
+	}
+
 	public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine) {
-		super.setLocation(template, beginColumn, beginLine, endColumn, endLine);
+        setTemplate(template);
+		setTokenSource(template.getTokenSource());
+		setBeginOffset(getOffset(beginLine, beginColumn));
+		setEndOffset(getOffset(endLine, endColumn));
 		boolean printable = false;
 		for (char c : text){
 			if (c != ' ' && c!='\t' && c!='\r' && c!='\n') printable = true;
@@ -64,7 +71,7 @@ public final class TextBlock extends TemplateElement {
 	}
 
 	public String getText() {
-		return text != null ? new String(text) : source();
+		return text != null ? new String(text) : getSource();
 	}
 
 	public void setText(String text) {
@@ -82,8 +89,7 @@ public final class TextBlock extends TemplateElement {
 	/**
 	 * Simply outputs the text.
 	 */
-	public void execute(Environment env) 
-	throws IOException
+	public void execute(Environment env) throws IOException
 	{
 		if (this.ignore) return;
 		Writer out = env.getOut();
@@ -92,6 +98,7 @@ public final class TextBlock extends TemplateElement {
 		}
 		else {
 			getTemplate().writeTextAt(out, getBeginColumn(), getBeginLine(), getEndColumn(), getEndLine());
+			//getTemplate().writeTextAt(out, getBeginOffset(), getEndOffset());
 		}
 	}
 
