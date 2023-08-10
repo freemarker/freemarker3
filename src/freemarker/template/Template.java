@@ -168,7 +168,7 @@ public class Template extends TemplateCore {
 
     
 	
-	protected void readInTemplateText(Reader reader) throws IOException {
+	private void readInTemplateText(Reader reader) throws IOException {
         int charsRead = 0;
         StringBuilder buf = new StringBuilder();
         char[] chars = new char[0x10000];
@@ -385,21 +385,6 @@ public class Template extends TemplateCore {
     {
         return createProcessingEnvironment(rootMap, out, null);
     }
-    
-    /**
-     * Returns a string representing the raw template
-     * text in canonical form.
-     */
-    public String toString() {
-        StringWriter sw = new StringWriter();
-        try {
-            dump(sw);
-        } catch (IOException ioe) {
-            throw new RuntimeException(ioe.getMessage());
-        }
-        return sw.toString();
-    }
-
 
     /**
      * The path of the template file relative to the directory what you use to store the templates.

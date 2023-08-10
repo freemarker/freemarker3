@@ -14,6 +14,6 @@ public class sourceBI extends BuiltIn {
     @Override
     public TemplateModel get(Environment env, BuiltInExpression caller)
     {
-        return new StringModel(caller.getTarget().getCanonicalForm());
+        return new StringModel(caller.getTarget().getSource()); //REVISIT
     }
 }

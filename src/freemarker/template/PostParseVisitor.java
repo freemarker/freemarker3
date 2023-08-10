@@ -398,9 +398,9 @@ public class PostParseVisitor extends ASTVisitor {
     }
 	
 	static Macro getContainingMacro(TemplateNode node) {
-		TemplateNode parent = node;
+		Node parent = node;
 		while (parent != null && !(parent instanceof Macro)) {
-			parent = parent.getParentNode();
+			parent = parent.getParent();
 		}
 		return (Macro) parent;
 	}

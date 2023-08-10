@@ -21,13 +21,7 @@ import freemarker.template.Template;
  * The base implementations of visit(....) simply invoke
  * visit(...) on the subnodes (or do nothing if the node is terminal.)
  * 
- * For some simple examples, see 
- * {@link freemarker.template.utility.HTMLEncodingASTVisitor}
- * or
- * {@link freemarker.template.utility.PickyPunctuationASTVisitor}
- * 
- * For more complex examples, see: 
- * {@link freemarker.core.helpers.DefaultTreeDumper} or
+ * For a fairly complex example, see: 
  * {@link freemarker.template.PostParseVisitor}
  * 
  * If your ASTVisitor implementation maintains state, and hence,

@@ -41,20 +41,6 @@ public abstract class TemplateCore extends Configurable
         return macros;
     }
     
-    /**
-     * Dump the raw template in canonical form.
-     */
-    public void dump(PrintStream ps) {
-        ps.print(rootElement.getCanonicalForm());
-    }
-
-    /**
-     * Dump the raw template in canonical form.
-     */
-    public void dump(Writer out) throws IOException {
-        out.write(rootElement.getCanonicalForm());
-    }
-    
     protected synchronized TemplateElement getRootElement() {
         return rootElement;
     }

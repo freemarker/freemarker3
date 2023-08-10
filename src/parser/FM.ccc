@@ -63,11 +63,7 @@ INJECT BASE_NODE_CLASS :
 	static private DefaultTreeDumper canonicalTreeRenderer = new DefaultTreeDumper(false);
 
     public String toString() {
-    	try {
-    		return getSource();
-    	} catch (Exception e) { // REVISIT: A bit of a hack? (JR)
-    		return getCanonicalForm();
-    	}
+    	return getSource();
     }
     
     static public TemplateException invalidTypeException(Object model, Expression exp, Environment env, String expected)
@@ -87,14 +83,6 @@ INJECT BASE_NODE_CLASS :
     static public void assertIsDefined(Object model, Expression exp, Environment env) throws InvalidReferenceException {
     	referenceChecker.assertIsDefined(model, exp, env);
     }
-    
-    public final String getCanonicalForm() {
-    	return canonicalTreeRenderer.render(this);
-    }
-    
-    public TemplateNode getParentNode() {
-    	return (TemplateNode) parent;
-    }    
 }
 
 INJECT Node : 

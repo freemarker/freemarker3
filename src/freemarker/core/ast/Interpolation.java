@@ -41,6 +41,6 @@ public class Interpolation extends TemplateElement {
         return this.getSource()  +
         (expression == escapedExpression 
             ? "" 
-            : " escaped ${" + escapedExpression.getCanonicalForm() + "}");
+            : " escaped ${" + escapedExpression.getDescription() + "}");
     }
 }
