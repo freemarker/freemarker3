@@ -653,7 +653,7 @@ Expression BuiltIn(Expression exp) :
 /**
  * production for when a key is specified by <DOT> + keyname
  */
-Expression DotVariable(Expression exp)#freemarker.core.ast.DotVariable :
+Expression DotVariable(Expression exp)# :
      {pushNode(exp);}
      <DOT>{token_source.justAfterDot = true;}
      <ID>{token_source.justAfterDot = false;}
@@ -661,6 +661,48 @@ Expression DotVariable(Expression exp)#freemarker.core.ast.DotVariable :
          return CURRENT_NODE;
      }
 ;
+
+INJECT DotVariable : 
+    import freemarker.core.Environment;
+    import freemarker.core.parser.Token;
+    import freemarker.template.TemplateHashModel;
+    import freemarker.core.ast.Expression;
+    extends Expression
+{
+    public Expression getTarget() {
+    	return (Expression) get(0);
+    }
+    
+    public String getKey() {
+    	return get(2).toString();
+    }
+
+    public Object getAsTemplateModel(Environment env) {
+        Object leftModel = getTarget().getAsTemplateModel(env);
+        if(leftModel instanceof TemplateHashModel) {
+            return ((TemplateHashModel) leftModel).get(getKey());
+        }
+        throw invalidTypeException(leftModel, getTarget(), env, "hash");
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        Expression clonedTarget = getTarget().deepClone(name, subst);
+        Token op = (Token) get(1);
+        Token key = (Token) get(2);
+        Expression result = new DotVariable();
+        result.add(clonedTarget);
+        result.add(op);
+        result.add(key);
+        return result;
+    }
+
+    public boolean onlyHasIdentifiers() {
+        Expression target = getTarget();
+        return (target instanceof Identifier) 
+               || ((target instanceof DotVariable) 
+               && ((DotVariable) target).onlyHasIdentifiers());
+    }    
+}
 
 /**
  * production for when the key is specified

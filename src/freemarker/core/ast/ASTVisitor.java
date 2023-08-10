@@ -9,6 +9,7 @@ import freemarker.core.parser.ast.NumberLiteral;
 import freemarker.core.parser.ast.ParentheticalExpression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.BuiltinVariable;
+import freemarker.core.parser.ast.DotVariable;
 import freemarker.core.parser.ast.HashLiteral;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.core.parser.ast.ListLiteral;
