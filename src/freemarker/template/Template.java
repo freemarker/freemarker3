@@ -2,7 +2,6 @@ package freemarker.template;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 
@@ -53,7 +52,6 @@ public class Template extends TemplateCore {
     public static final String DEFAULT_NAMESPACE_PREFIX = "D";
     public static final String NO_NS_PREFIX = "N";
 
-	private char[] templateText;
     private List<LibraryLoad> imports = new Vector<LibraryLoad>();
     private String encoding, defaultNS;
     private final String name;
@@ -104,12 +102,12 @@ public class Template extends TemplateCore {
     {
         this(name, cfg);
         this.encoding = encoding;
-        readInTemplateText(reader);
         try {
             int syntaxSetting = getConfiguration().getTagSyntax();
             this.stripWhitespace = getConfiguration().getWhitespaceStripping();
             this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
-            FMParser parser = new FMParser(this, new String(templateText), syntaxSetting);
+            CharSequence content = readInTemplateText(reader);
+            FMParser parser = new FMParser(this, content, syntaxSetting);
             parser.setInputSource(getName());
             setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
@@ -168,7 +166,7 @@ public class Template extends TemplateCore {
 
     
 	
-	private void readInTemplateText(Reader reader) throws IOException {
+	private CharSequence readInTemplateText(Reader reader) throws IOException {
         int charsRead = 0;
         StringBuilder buf = new StringBuilder();
         char[] chars = new char[0x10000];
@@ -181,8 +179,10 @@ public class Template extends TemplateCore {
         finally {
         	reader.close();
         }
-        this.templateText = new char[buf.length()];
-        buf.getChars(0, buf.length(), templateText, 0);
+        return buf;
+//        char[] result = new char[buf.length()];
+//        buf.getChars(0, buf.length(), result, 0);
+//        return result;
 	}    
     
     /**
