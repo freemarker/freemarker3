@@ -29,7 +29,7 @@ public final class TextBlock extends TemplateElement {
 	// using String.getChars(), and then calling Writer.write(char[]). By
 	// using Writer.write(char[]) directly, we avoid array copying on each 
 	// write. 
-	private char[] text;
+	private String text="";
 	private int type;
 	private boolean ignore;
 
@@ -39,11 +39,16 @@ public final class TextBlock extends TemplateElement {
 	public static final int TRAILING_WS = 3;
 
 	public TextBlock(String text) {
-		this.text = text.toCharArray();
+		if (text == null) text = "";
+		this.text = text;
 	}
 
 	int getOffset(int line, int column) {
 		return getTokenSource().getLineStartOffset(line) + column -1;
+	}
+
+	static boolean nonWS(int c) {
+		return c != ' ' && c!='\t' && c!='\r' && c!='\n';
 	}
 
 	public void setLocation(Template template, int beginColumn, int beginLine, int endColumn, int endLine) {
@@ -51,15 +56,12 @@ public final class TextBlock extends TemplateElement {
 		setTokenSource(template.getTokenSource());
 		setBeginOffset(getOffset(beginLine, beginColumn));
 		setEndOffset(getOffset(endLine, endColumn));
-		boolean printable = false;
-		for (char c : text){
-			if (c != ' ' && c!='\t' && c!='\r' && c!='\n') printable = true;
-		}
+		boolean printable = text.chars().anyMatch(TextBlock::nonWS);
 		if (printable) {
 			this.type = PRINTABLE_TEXT;
 		}
 		else {
-			char lastChar = text[text.length -1];
+			char lastChar = text.charAt(text.length()-1);
 			boolean containsEOL = (lastChar == '\n' || lastChar == '\r');
 			boolean containsStart = (beginColumn == 1);
 			if (containsEOL && containsStart) this.type = WHITE_SPACE;
@@ -74,9 +76,9 @@ public final class TextBlock extends TemplateElement {
 		return text != null ? new String(text) : getSource();
 	}
 
-	public void setText(String text) {
-		this.text = text.toCharArray();
-	}
+//	public void setText(String text) {
+//		this.text = text;
+//	}
 
 	public int getBlockType() {
 		return type;
@@ -121,10 +123,7 @@ public final class TextBlock extends TemplateElement {
 
 	public boolean isWhitespace() {
 		if (text == null) return this.type != PRINTABLE_TEXT;
-		for (char c : text) {
-			if (!isWhitespace(c)) return false;
-		}
-		return true;
+		return text.chars().anyMatch(TextBlock::nonWS);
 	}
 
 
