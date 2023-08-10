@@ -301,10 +301,7 @@ public class PostParseVisitor extends ASTVisitor {
 					template.markAsOutputtingLine(i, inMacro);
 				}
 			}
-		} else if (type == TextBlock.WHITE_SPACE) {
-			
-			
-		}
+		} 
 	}
 	
 	public void visit(OrExpression node) {

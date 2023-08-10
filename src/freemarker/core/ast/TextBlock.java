@@ -56,8 +56,7 @@ public final class TextBlock extends TemplateElement {
 		setTokenSource(template.getTokenSource());
 		setBeginOffset(getOffset(beginLine, beginColumn));
 		setEndOffset(getOffset(endLine, endColumn));
-		boolean printable = text.chars().anyMatch(TextBlock::nonWS);
-		if (printable) {
+		if (text.chars().anyMatch(TextBlock::nonWS)) {
 			this.type = PRINTABLE_TEXT;
 		}
 		else {
@@ -73,12 +72,9 @@ public final class TextBlock extends TemplateElement {
 	}
 
 	public String getText() {
-		return text != null ? new String(text) : getSource();
+		return getSource();
+		//return text != null ? new String(text) : getSource();
 	}
-
-//	public void setText(String text) {
-//		this.text = text;
-//	}
 
 	public int getBlockType() {
 		return type;
@@ -105,7 +101,7 @@ public final class TextBlock extends TemplateElement {
 	}
 
 	public String getDescription() {
-		String s = new String(getText()).trim();
+		String s = getText().trim();
 		if (s.length() == 0) {
 			return "whitespace";
 		}

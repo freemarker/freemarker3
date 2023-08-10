@@ -220,7 +220,7 @@ Expression EqualityExpression :
      )
      rhs=RelationalExpression
      {
-        result = new ComparisonExpression(lhs, rhs, t.getImage());
+        result = new ComparisonExpression(lhs, rhs, t.toString());
         result.setLocation(template, token_source, lhs, rhs);
      }
    ]
@@ -251,7 +251,7 @@ Expression RelationalExpression :
      )
      rhs=RangeExpression
      {
-        result = new ComparisonExpression(lhs, rhs, t.getImage());
+        result = new ComparisonExpression(lhs, rhs, t.toString());
         result.setLocation(template, token_source, lhs, rhs);
      }
    ]
@@ -659,10 +659,10 @@ Expression BuiltIn(Expression exp) :
    <BUILT_IN>
    t=<ID>
    {
-   	   BuiltInExpression result = new BuiltInExpression(exp, t.getImage());
+   	   BuiltInExpression result = new BuiltInExpression(exp, t.toString());
          if (result.getBuiltIn() == null) {
             fail("Unknown builtin ",t);
-           //throw new ParseException(this, "Unknown builtin " + t.getImage());
+           //throw new ParseException(this, "Unknown builtin " + t.toString());
          }
    	   result.setLocation(template, token_source, exp, t);
    	   return result;
@@ -679,7 +679,7 @@ Expression DotVariable(Expression exp) :
      <DOT>{token_source.justAfterDot = true;}
      t=<ID>{token_source.justAfterDot = false;}
      {
-         Dot dot = new Dot(exp, t.getImage());
+         Dot dot = new Dot(exp, t.toString());
          dot.setLocation(template, token_source, exp, t);
          return dot;
      }
