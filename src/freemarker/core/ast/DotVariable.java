@@ -10,22 +10,20 @@ import freemarker.template.TemplateHashModel;
  * <code>TemplateHashModel</code>.
  */
 public class DotVariable extends Expression {
-//    private Expression target;
-//    private String key;
-
+/*
     public DotVariable() {}
 
     public DotVariable(Expression target, Token key) {
         add(target);
         add(key);
-    }
+    }*/
     
     public Expression getTarget() {
     	return (Expression) get(0);
     }
     
     public String getKey() {
-    	return get(1).toString();
+    	return get(2).toString();
     }
 
     public Object getAsTemplateModel(Environment env) {
@@ -37,7 +35,15 @@ public class DotVariable extends Expression {
     }
 
     public Expression _deepClone(String name, Expression subst) {
-    	return new DotVariable(getTarget().deepClone(name, subst), (Token) get(1));
+        Expression clonedTarget = getTarget().deepClone(name, subst);
+        Token op = (Token) get(1);
+        Token key = (Token) get(2);
+        Expression result = new DotVariable();
+        result.add(clonedTarget);
+        result.add(op);
+        result.add(key);
+        return result;
+    	//return new DotVariable(getTarget().deepClone(name, subst), (Token) get(2));
     }
 
     public boolean onlyHasIdentifiers() {

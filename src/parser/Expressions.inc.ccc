@@ -653,16 +653,12 @@ Expression BuiltIn(Expression exp) :
 /**
  * production for when a key is specified by <DOT> + keyname
  */
-Expression DotVariable(Expression exp) :
-{
-     Token t;
-}
+Expression DotVariable(Expression exp)#freemarker.core.ast.DotVariable :
+     {pushNode(exp);}
      <DOT>{token_source.justAfterDot = true;}
-     t=<ID>{token_source.justAfterDot = false;}
+     <ID>{token_source.justAfterDot = false;}
      {
-         DotVariable dotVariable = new DotVariable(exp, t);
-         dotVariable.setLocation(template, token_source, exp, t);
-         return dotVariable;
+         return CURRENT_NODE;
      }
 ;
 
