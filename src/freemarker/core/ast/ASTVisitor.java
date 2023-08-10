@@ -12,6 +12,7 @@ import freemarker.core.parser.ast.BuiltinVariable;
 import freemarker.core.parser.ast.HashLiteral;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.core.parser.ast.ListLiteral;
+import freemarker.core.parser.ast.StringLiteral;
 import freemarker.template.Template;
 
 

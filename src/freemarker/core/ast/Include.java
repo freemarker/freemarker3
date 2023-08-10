@@ -5,10 +5,10 @@ import java.io.IOException;
 import freemarker.cache.TemplateCache;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
-import freemarker.template.utility.UndeclaredThrowableException;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.parser.ParseException;
+import freemarker.core.parser.ast.StringLiteral;
 
 /**
  * An instruction that gets another template

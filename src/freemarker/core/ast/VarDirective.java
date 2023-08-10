@@ -3,6 +3,7 @@ package freemarker.core.ast;
 import java.util.*;
 import freemarker.template.*;
 import freemarker.core.*;
+import freemarker.core.parser.ast.StringLiteral;
 
 /**
  * @author Jonathan Revusky

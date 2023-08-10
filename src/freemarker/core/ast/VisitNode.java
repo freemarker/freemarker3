@@ -6,6 +6,7 @@ import freemarker.core.Environment;
 import freemarker.core.TemplateNamespace;
 import freemarker.ext.beans.ListModel;
 import freemarker.core.parser.ast.ListLiteral;
+import freemarker.core.parser.ast.StringLiteral;
 import freemarker.template.*;
 
 
