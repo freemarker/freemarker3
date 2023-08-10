@@ -9,6 +9,7 @@ import freemarker.core.parser.ast.NumberLiteral;
 import freemarker.core.parser.ast.ParentheticalExpression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.BuiltinVariable;
+import freemarker.core.parser.ast.HashLiteral;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.core.parser.ast.ListLiteral;
 import freemarker.template.Template;
@@ -355,9 +356,9 @@ public abstract class ASTVisitor {
 		if (node.getNamespaces() != null) visit(node.getNamespaces());
 	}
 	
-	protected void recurse(TemplateElement node) {
-		for (TemplateElement te : node.childrenOfType(TemplateElement.class)) {
-			visit(te);
+	protected void recurse(TemplateNode node) {
+		for (TemplateNode tn : node.childrenOfType(TemplateNode.class)) {
+			visit(tn);
 		}
 	}
 

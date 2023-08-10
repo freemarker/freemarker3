@@ -472,10 +472,6 @@ public class Template extends TemplateCore {
     	this.strictVariableDeclaration = strictVariableDeclaration;
     }
 
-	int getOffset(int line, int column) {
-		return getTokenSource().getLineStartOffset(line) + column -1;
-	}
-
     public void setLineSaysLeftTrim(int i) {
         leftTrimLines.set(i);
     }

@@ -96,6 +96,10 @@ INJECT Node :
         setBeginOffset(begin.getBeginOffset());
         setEndOffset(end.getEndOffset());
     }
+
+	default int getOffset(int line, int column) {
+		return getTokenSource().getLineStartOffset(line) + column -1;
+	}
 }
 
 INJECT PARSER_CLASS : 

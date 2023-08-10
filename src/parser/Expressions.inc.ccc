@@ -514,11 +514,10 @@ Expression IdentifierOrStringLiteral :
    }   
 ;
 
-BuiltinVariable#(true) :
+BuiltinVariable# :
    <DOT>
    <ID>
    {
-      clearNodeScope();
       CURRENT_NODE.setName(lastConsumedToken.toString());
    }
 ;
@@ -813,17 +812,16 @@ INJECT NullLiteral :
     }
 }
 
-#HashLiteral :
+#HashLiteral# :
 {
-   Token begin, end;
    Expression key, value;
-   ArrayList<Expression> keys = new ArrayList<Expression>();
-   ArrayList<Expression> values = new ArrayList<Expression>();
+   ArrayList<Expression> keys = new ArrayList<>();
+   ArrayList<Expression> values = new ArrayList<>();
 }
-   begin=<OPEN_BRACE>
+   <OPEN_BRACE>
    [
        key=Expression
-       (<COMMA>|<COLON>)
+       <COLON>
        value=Expression
        {
           keys.add(key);
@@ -832,7 +830,7 @@ INJECT NullLiteral :
        (
           <COMMA>
            key=Expression
-           (<COMMA>|<COLON>)
+           <COLON>
            value=Expression
            {
                keys.add(key);
@@ -840,10 +838,105 @@ INJECT NullLiteral :
            }
        )*
    ]
-   end=<CLOSE_BRACE>
+   <CLOSE_BRACE>
    {
-      HashLiteral result = new HashLiteral(keys, values);
-      result.setLocation(template, token_source, begin, end);
-      return result;
+      clearNodeScope();
+      for (int i = 0; i<keys.size();i++) {
+         pushNode(keys.get(i));
+         pushNode(values.get(i));
+      }
+      return CURRENT_NODE;
    }
 ;
+
+
+INJECT HashLiteral :
+    import java.util.*;
+    import freemarker.core.Environment;
+    import freemarker.ext.beans.ListModel;
+    import freemarker.template.*;
+    import freemarker.core.ast.Expression;
+    import freemarker.core.ast.CollectionAndSequence;
+    extends Expression
+{
+    private List<Expression> keys = new ArrayList<>();
+    private List<Expression> values = new ArrayList<>();
+    
+    public void close() {
+        boolean justSawKey = false;
+        for (Expression exp : childrenOfType(Expression.class)) {
+            if (justSawKey) values.add(exp);
+            else keys.add(exp);
+            justSawKey = !justSawKey;
+       }
+       assert keys.size() == values.size() : getSource();
+    }
+    
+    public Object getAsTemplateModel(Environment env) {
+        return new SequenceHash(env);
+    }
+    
+    public List<Expression> getKeys() {
+    	return Collections.unmodifiableList(keys);
+    }
+    
+    public List<Expression> getValues() {
+    	return Collections.unmodifiableList(values);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+    	HashLiteral result = new HashLiteral();
+        for (int i = 0; i< keys.size(); i++) {
+            Expression keyClone = keys.get(i).deepClone(name, subst);
+            Expression valueClone = values.get(i).deepClone(name, subst);
+            result.keys.add(keyClone);
+            result.values.add(valueClone);
+        }
+        result.close();
+        return result;
+    }
+
+    private class SequenceHash implements TemplateHashModelEx {
+
+        private HashMap<String, Object> keyMap  = new HashMap<>(); // maps keys to integer offset
+        private TemplateCollectionModel keyCollection, valueCollection; // ordered lists of keys and values
+
+        SequenceHash(Environment env) {
+            ArrayList<String> keyList = new ArrayList<String>(keys.size());
+            ArrayList<Object> valueList = new ArrayList<>(keys.size());
+            for (int i = 0; i< keys.size(); i++) {
+                Expression keyExp = keys.get(i);
+                Expression valExp = values.get(i);
+                String key = keyExp.getStringValue(env);
+                Object value = valExp.getAsTemplateModel(env);
+                assertIsDefined(value, valExp, env);
+                keyMap.put(key, value);
+                keyList.add(key);
+                valueList.add(value);
+            }
+            keyCollection = new CollectionAndSequence(new ListModel(keyList));
+            valueCollection = new CollectionAndSequence(new ListModel(valueList));
+        }
+
+        public int size() {
+            return keys.size();
+        }
+
+        public TemplateCollectionModel keys() {
+            return keyCollection;
+        }
+
+        public TemplateCollectionModel values() {
+            return valueCollection;
+        }
+
+        public Object get(String key) {
+            return keyMap.get(key);
+        }
+
+        public boolean isEmpty() {
+            return size() == 0;
+        }
+    }
+}
+

@@ -24,13 +24,8 @@ public final class TextBlock extends TemplateElement {
 		return "";
 	}
 
-	// We're using char[] instead of String for storing the text block because
-	// Writer.write(String) involves copying the String contents to a char[] 
-	// using String.getChars(), and then calling Writer.write(char[]). By
-	// using Writer.write(char[]) directly, we avoid array copying on each 
-	// write. 
 	private String text="";
-	private int type;
+	private int textType;
 	private boolean ignore;
 
 	public static final int PRINTABLE_TEXT = 0;
@@ -43,10 +38,6 @@ public final class TextBlock extends TemplateElement {
 		this.text = text;
 	}
 
-	int getOffset(int line, int column) {
-		return getTokenSource().getLineStartOffset(line) + column -1;
-	}
-
 	static boolean nonWS(int c) {
 		return c != ' ' && c!='\t' && c!='\r' && c!='\n';
 	}
@@ -57,16 +48,16 @@ public final class TextBlock extends TemplateElement {
 		setBeginOffset(getOffset(beginLine, beginColumn));
 		setEndOffset(getOffset(endLine, endColumn));
 		if (text.chars().anyMatch(TextBlock::nonWS)) {
-			this.type = PRINTABLE_TEXT;
+			this.textType = PRINTABLE_TEXT;
 		}
 		else {
 			char lastChar = text.charAt(text.length()-1);
 			boolean containsEOL = (lastChar == '\n' || lastChar == '\r');
 			boolean containsStart = (beginColumn == 1);
-			if (containsEOL && containsStart) this.type = WHITE_SPACE;
-			else if (!containsEOL && !containsStart) this.type = WHITE_SPACE;
-			else if (containsEOL) this.type = TRAILING_WS;
-			else this.type = OPENING_WS;
+			if (containsEOL && containsStart) this.textType = WHITE_SPACE;
+			else if (!containsEOL && !containsStart) this.textType = WHITE_SPACE;
+			else if (containsEOL) this.textType = TRAILING_WS;
+			else this.textType = OPENING_WS;
 		}
 		this.text = null; // Now that we have location info, we don't need this. :-)
 	}
@@ -77,7 +68,7 @@ public final class TextBlock extends TemplateElement {
 	}
 
 	public int getBlockType() {
-		return type;
+		return textType;
 	}
 
 	public void setIgnore(boolean ignore) {
@@ -118,7 +109,7 @@ public final class TextBlock extends TemplateElement {
 	}
 
 	public boolean isWhitespace() {
-		if (text == null) return this.type != PRINTABLE_TEXT;
+		if (text == null) return this.textType != PRINTABLE_TEXT;
 		return text.chars().anyMatch(TextBlock::nonWS);
 	}
 
@@ -180,7 +171,7 @@ public final class TextBlock extends TemplateElement {
 				TextBlock tb = new TextBlock(line.substring(0, initWSLength));
 				tb.setLocation(template, beginColumn, beginLine, beginColumn+initWSLength-1, beginLine);
 				beginColumn += initWSLength;
-				tb.type = TextBlock.OPENING_WS;
+				tb.textType = TextBlock.OPENING_WS;
 				result.add(tb);
 			}
 			if (ltrim.length() >0) {
@@ -189,7 +180,7 @@ public final class TextBlock extends TemplateElement {
 				if (trimmed.length() >0) {
 					TextBlock tb = new TextBlock(trimmed);
 					tb.setLocation(template, beginColumn, beginLine, beginColumn + trimmed.length() -1, beginLine);
-					tb.type = TextBlock.PRINTABLE_TEXT;
+					tb.textType = TextBlock.PRINTABLE_TEXT;
 					result.add(tb);
 					beginColumn += trimmed.length();
 				}
@@ -197,7 +188,7 @@ public final class TextBlock extends TemplateElement {
 					String trailingWS = ltrim.substring(trimmed.length());
 					TextBlock tb = new TextBlock(trailingWS);
 					tb.setLocation(template, beginColumn, beginLine, beginColumn + trailingWSLength-1, beginLine); 
-					tb.type = TextBlock.TRAILING_WS;
+					tb.textType = TextBlock.TRAILING_WS;
 					result.add(tb);
 				}
 			}
