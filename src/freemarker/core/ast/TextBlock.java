@@ -97,8 +97,8 @@ public final class TextBlock extends TemplateElement {
 			out.write(text);
 		}
 		else {
-			getTemplate().writeTextAt(out, getBeginColumn(), getBeginLine(), getEndColumn(), getEndLine());
-			//getTemplate().writeTextAt(out, getBeginOffset(), getEndOffset());
+			String output = getTokenSource().getText(getBeginOffset(), getEndOffset()+1);
+			out.write(output);
 		}
 	}
 

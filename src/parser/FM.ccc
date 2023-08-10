@@ -169,7 +169,7 @@ INJECT PARSER_CLASS :
         }
     }
 
-    public FMParser(Template template, String input, int syntaxSetting) {
+    public FMParser(Template template, CharSequence input, int syntaxSetting) {
         this (input);
         this.template = template;
         this.templateName = template != null ? template.getName() : "";

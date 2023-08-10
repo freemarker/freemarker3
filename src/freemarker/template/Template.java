@@ -53,11 +53,10 @@ public class Template extends TemplateCore {
     public static final String DEFAULT_NAMESPACE_PREFIX = "D";
     public static final String NO_NS_PREFIX = "N";
 
-	protected char[] templateText;
+	private char[] templateText;
     private List<LibraryLoad> imports = new Vector<LibraryLoad>();
     private String encoding, defaultNS;
     private final String name;
-	private int[] lineStartOffsets;
     BitSet leftTrimLines = new BitSet();
     BitSet rightTrimLines = new BitSet();
     BitSet noTrimLines = new BitSet();
@@ -68,8 +67,6 @@ public class Template extends TemplateCore {
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
     private Set<String> declaredVariables = new HashSet<String>();
     
-    //This is necessary for backward compatibility
-    private Set<String> implicitlyDeclaredVariables = new HashSet<>();
     boolean stripWhitespace;
     private boolean strictVariableDeclaration;
     
@@ -147,7 +144,7 @@ public class Template extends TemplateCore {
             int syntaxSetting = getConfiguration().getTagSyntax();
             this.stripWhitespace = getConfiguration().getWhitespaceStripping();
             this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
-            FMParser parser = new FMParser(this, new String(templateText), syntaxSetting);
+            FMParser parser = new FMParser(this, input, syntaxSetting);
             parser.setInputSource(getName());
             setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
@@ -186,7 +183,6 @@ public class Template extends TemplateCore {
         }
         this.templateText = new char[buf.length()];
         buf.getChars(0, buf.length(), templateText, 0);
-        this.lineStartOffsets = createLineTable(templateText);
 	}    
     
     /**
@@ -222,12 +218,10 @@ public class Template extends TemplateCore {
      */
     static public Template getPlainTextTemplate(String name, String content, 
             Configuration config) {
-         Template template = new Template(name, config);
-        final char[] text = content.toCharArray();
-        template.templateText = text;
+        Template template = new Template(name, config);
         template.setRootElement(new TemplateElement() {
         	public void execute(Environment env) throws IOException {
-        		env.getOut().write(text);
+        		env.getOut().write(content);
         	}
         });
         return template;
@@ -485,26 +479,6 @@ public class Template extends TemplateCore {
     	declaredVariables.add(name);
     }
     
-    /**
-     * Used internally, this is a complication necessary for
-     * backward compatibility in includes.
-     */
-    public void setImplicitlyDeclaredVariables(Set<String> names) {
-    	implicitlyDeclaredVariables = names;
-    }
-    
-    /**
-     * only used internally, it says whether the variable
-     * was implicitly declared, that means not in a #var
-     * statement but either via a legacy #assign or as the 
-     * name of a macro or as the namespace name in an #import
-     * This is rather tricky and only necessary for backward
-     * compatibility with older style #include's 
-     */
-    public boolean isImplicitlyDeclared(String varname) {
-    	return implicitlyDeclaredVariables.contains(varname);
-    }
-    
     public boolean strictVariableDeclaration() {
     	return strictVariableDeclaration;
     }
@@ -517,59 +491,6 @@ public class Template extends TemplateCore {
 		return getTokenSource().getLineStartOffset(line) + column -1;
 	}
 
-    public void writeTextAt(Writer out, 
-    					  int beginColumn,
-    					  int beginLine, 
-    					  int endColumn, 
-		                  int endLine) throws IOException 
-    {
-//        int startOffset = getOffset(beginLine, beginColumn);
-//        int endOffset = getOffset(endLine, endColumn);
-   		int startOffset = lineStartOffsets[beginLine-1] + beginColumn-1;
-   		int endOffset = lineStartOffsets[endLine-1] + endColumn;
-        writeTextAt(out, startOffset, endOffset);
-    }
-
-    public void writeTextAt(Writer out, 
-    					  int startOffset, 
-		                  int endOffset) throws IOException 
-    {
-   		out.write(templateText, startOffset, endOffset - startOffset);
-    }
-    
-    static private int countLines(char[] chars) {
-     	if (chars == null || chars.length == 0) return 0;
-     	int numLines = 1;
-        for (int i=0; i<chars.length; i++) {
-         	boolean isLastChar = (i == chars.length-1);
-         	if (chars[i] =='\r') {
-         		if (!isLastChar && chars[i+1] != '\n') ++numLines;
-         	}
-         	else if (chars[i] == '\n') {
-         		if (!isLastChar) ++numLines;
-         	}
-         }
-         return numLines;
-    }
-     
-    static private int[] createLineTable(final char[] text) {
-     	int numLines = countLines(text);
-     	int[] table = new int[numLines];
-     	int lineNumber = 0;
-     	boolean newLine = true;
-     	for (int i=0; i<text.length; i++) {
-     		if (newLine) table[lineNumber++] = i;
-     		newLine = false;
-     		if (text[i] == '\r') {
-     			newLine = (i != text.length -1 && text[i+1] !='\n');
-     		}
-     		else if (text[i] == '\n') {
-     			newLine = true;
-     		}
-     	}
-     	return table;
-    }
-    
     public void setLineSaysLeftTrim(int i) {
         leftTrimLines.set(i);
     }
