@@ -37,7 +37,17 @@ Expression PrimaryExpression :
       exp=BuiltinVariable
   )
   (
-      exp=AddSubExpression(exp)
+      exp=DotVariable(exp)
+      |
+      exp=DynamicKey(exp)
+      |
+      exp=MethodArgs(exp)
+      |
+      exp=BuiltIn(exp)
+      |
+      exp=Exists(exp)
+      |
+      exp=DefaultTo(exp)
   )*
   {
      return exp;
@@ -587,33 +597,6 @@ INJECT BuiltinVariable :
     }
 }
 
-/**
- * Production that builds up an expression
- * using the dot or dynamic key name
- * or the args list if this is a method invocation.
- */
-Expression AddSubExpression(Expression exp) :
-{
-   Expression result = null;
-}
-     (
-       result=DotVariable(exp)
-       |
-       result=DynamicKey(exp)
-       |
-       result=MethodArgs(exp)
-       |
-       result=BuiltIn(exp)
-       |
-       result=Exists(exp)
-       |
-       result=DefaultTo(exp)
-     )
-     {
-        return result;
-     }
-;
-
 Expression DefaultTo(Expression exp) :
 {
    Expression rhs = null;
@@ -672,7 +655,7 @@ Expression BuiltIn(Expression exp) :
  */
 Expression DotVariable(Expression exp) :
 {
-  Token t;
+     Token t;
 }
      <DOT>{token_source.justAfterDot = true;}
      t=<ID>{token_source.justAfterDot = false;}
