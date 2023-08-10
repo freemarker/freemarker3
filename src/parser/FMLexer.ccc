@@ -66,7 +66,7 @@ INJECT LEXER_CLASS :
         directiveSyntaxEstablished = true;
     }
 
-    private Token TOKEN_HOOK(Token token) {
+    private BASE_TOKEN_CLASS TOKEN_HOOK(BASE_TOKEN_CLASS token) {
         if (token.getType() == EOF) return token;
         String tokText = token.toString();
         char firstChar = tokText.charAt(0);

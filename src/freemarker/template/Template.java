@@ -58,8 +58,11 @@ public class Template extends TemplateCore {
     private String encoding, defaultNS;
     private final String name;
 	private int[] lineStartOffsets;
-	private byte[] lineInfoTable; // contain bitsets that describe what happens
-	                              // on the line.
+    BitSet leftTrimLines = new BitSet();
+    BitSet rightTrimLines = new BitSet();
+    BitSet noTrimLines = new BitSet();
+    BitSet outputtingLines = new BitSet();
+    BitSet outputtingLinesInMacro = new BitSet();
 
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
@@ -184,7 +187,6 @@ public class Template extends TemplateCore {
         this.templateText = new char[buf.length()];
         buf.getChars(0, buf.length(), templateText, 0);
         this.lineStartOffsets = createLineTable(templateText);
-        this.lineInfoTable = new byte[lineStartOffsets.length];
 	}    
     
     /**
@@ -569,55 +571,44 @@ public class Template extends TemplateCore {
     }
     
     public void setLineSaysLeftTrim(int i) {
-    	--i;
-    	lineInfoTable[i] = (byte) (lineInfoTable[i] | 0x01);
+        leftTrimLines.set(i);
     }
     
     public void setLineSaysRightTrim(int i) {
-    	--i;
-    	lineInfoTable[i] = (byte) (lineInfoTable[i] | 0x02);
+        rightTrimLines.set(i);
     }
     
     public void setLineSaysTrim(int i) {
-    	--i;
-    	lineInfoTable[i] = (byte) (lineInfoTable[i] | 0x03);
+        leftTrimLines.set(i);
+        rightTrimLines.set(i);
     }
     
     public void setLineSaysNoTrim(int i) {
-    	--i;
-    	lineInfoTable[i] = (byte) (lineInfoTable[i] | 0x04);
+        noTrimLines.set(i);
     }
     
     public boolean lineSaysLeftTrim(int i) {
-    	--i;
-    	return (lineInfoTable[i] & 1) != 0;
+        return leftTrimLines.get(i);
     }
     
     public boolean lineSaysRightTrim(int i) {
-    	--i;
-    	return (lineInfoTable[i] & 2) != 0;
+        return rightTrimLines.get(i);
     }
     
     public boolean lineSaysNoTrim(int i) {
-    	--i;
-    	return (lineInfoTable[i] & 4) != 0;
+        return noTrimLines.get(i);
     }
     
     public void markAsOutputtingLine(int lineNumber, boolean inMacro) {
-    	--lineNumber;
-    	int bitMask = inMacro ? 0x10 : 0x08;
     	if (inMacro) {
-    		lineInfoTable[lineNumber] = (byte) (lineInfoTable[lineNumber] | bitMask);
-    		
+            outputtingLinesInMacro.set(lineNumber);
     	} else {
-    		lineInfoTable[lineNumber] = (byte) (lineInfoTable[lineNumber] | bitMask);
+            outputtingLines.set(lineNumber);
     	}
     }
     
     public boolean isOutputtingLine(int i, boolean inMacro) {
-    	--i;
-    	int bitMask = inMacro ? 0x10 : 0x08;
-    	return (lineInfoTable[i] & bitMask) != 0;
+        return inMacro ? outputtingLinesInMacro.get(i) : outputtingLines.get(i);
     }
     
     /**
