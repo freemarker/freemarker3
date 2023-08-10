@@ -156,7 +156,7 @@ public abstract class ASTVisitor {
 		visit(node.getEscapedExpression());
 	}
 	
-	public void visit(Dot node) {
+	public void visit(DotVariable node) {
 		visit(node.getTarget());
 	}
 	

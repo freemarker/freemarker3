@@ -9,13 +9,13 @@ import freemarker.template.TemplateHashModel;
  * The dot operator. Used to reference items inside a
  * <code>TemplateHashModel</code>.
  */
-public class Dot extends Expression {
+public class DotVariable extends Expression {
 //    private Expression target;
 //    private String key;
 
-    public Dot() {}
+    public DotVariable() {}
 
-    public Dot(Expression target, Token key) {
+    public DotVariable(Expression target, Token key) {
         add(target);
         add(key);
     }
@@ -37,13 +37,13 @@ public class Dot extends Expression {
     }
 
     public Expression _deepClone(String name, Expression subst) {
-    	return new Dot(getTarget().deepClone(name, subst), (Token) get(1));
+    	return new DotVariable(getTarget().deepClone(name, subst), (Token) get(1));
     }
 
     public boolean onlyHasIdentifiers() {
         Expression target = getTarget();
         return (target instanceof Identifier) 
-               || ((target instanceof Dot) 
-               && ((Dot) target).onlyHasIdentifiers());
+               || ((target instanceof DotVariable) 
+               && ((DotVariable) target).onlyHasIdentifiers());
     }
 }

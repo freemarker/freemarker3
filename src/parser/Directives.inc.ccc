@@ -670,7 +670,7 @@ TemplateElement UnifiedMacroTransform :
     start=<UNIFIED_CALL>
     exp=Expression
     {
-        if (exp instanceof Identifier || (exp instanceof Dot && ((Dot) exp).onlyHasIdentifiers())) {
+        if (exp instanceof Identifier || (exp instanceof DotVariable && ((DotVariable) exp).onlyHasIdentifiers())) {
            //directiveName = exp.getCanonicalForm();
            directiveName = exp.toString(); // REVISIT. Deal with whitespace diffs in dot-separated names
 	    }

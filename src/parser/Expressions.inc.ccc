@@ -660,9 +660,9 @@ Expression DotVariable(Expression exp) :
      <DOT>{token_source.justAfterDot = true;}
      t=<ID>{token_source.justAfterDot = false;}
      {
-         Dot dot = new Dot(exp, t);
-         dot.setLocation(template, token_source, exp, t);
-         return dot;
+         DotVariable dotVariable = new DotVariable(exp, t);
+         dotVariable.setLocation(template, token_source, exp, t);
+         return dotVariable;
      }
 ;
 
