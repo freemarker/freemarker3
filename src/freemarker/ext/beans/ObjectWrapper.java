@@ -180,11 +180,11 @@ public class ObjectWrapper
     }
 
     public static String asString(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         if (obj instanceof TemplateScalarModel) {
             return ((TemplateScalarModel) obj).getAsString();
+        }
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
         }
         return ((CharSequence) obj).toString();
     }

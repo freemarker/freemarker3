@@ -9,6 +9,8 @@ import freemarker.core.parser.ast.ListLiteral;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.template.*;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 
 /**
  * An instruction to visit an XML node.
@@ -38,7 +40,7 @@ public class VisitNode extends TemplateElement {
         }
         Object nss = namespaces == null ? null : namespaces.getAsTemplateModel(env);
         if (namespaces instanceof StringLiteral) {
-            nss = env.importLib(((TemplateScalarModel) nss).getAsString(), null);
+            nss = env.importLib(asString(nss), null);
         }
         else if (namespaces instanceof ListLiteral) {
             nss = ((ListLiteral) namespaces).evaluateStringsToNamespaces(env);

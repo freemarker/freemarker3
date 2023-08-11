@@ -191,11 +191,11 @@ public class AddConcatExpression extends Expression {
         {
             Iterator<Object> it = hash.keys().iterator();
             while (it.hasNext()) {
-                TemplateScalarModel tsm = (TemplateScalarModel)it.next();
-                if (set.add(tsm.getAsString())) {
+                String s = asString(it.next());
+                if (set.add(s)) {
                     // The first occurence of the key decides the index;
                     // this is consisten with stuff like java.util.LinkedHashSet.
-                    keySeq.add(tsm);
+                    keySeq.add(s);
                 }
             }
         }        
@@ -209,7 +209,7 @@ public class AddConcatExpression extends Expression {
             
                 int ln = keys.size();
                 for (int i  = 0; i < ln; i++) {
-                    seq.add(get(((TemplateScalarModel)keys.get(i)).getAsString()));
+                    seq.add(get(asString(keys.get(i))));
                 }
                 values = new CollectionAndSequence((TemplateSequenceModel)seq);
             }

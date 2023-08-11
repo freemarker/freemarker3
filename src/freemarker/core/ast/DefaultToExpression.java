@@ -3,41 +3,10 @@ package freemarker.core.ast;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.ext.beans.CollectionModel;
 import freemarker.template.*;
 import freemarker.core.parser.ast.ParentheticalExpression;
 
 public class DefaultToExpression extends Expression {
-	
-    private static final TemplateCollectionModel EMPTY_COLLECTION = new CollectionModel(new java.util.ArrayList(0));
-    
-	static private class EmptyStringAndSequence 
-	  implements TemplateScalarModel, TemplateSequenceModel, TemplateHashModelEx {
-		public String getAsString() {
-			return "";
-		}
-		public TemplateModel get(int i) {
-			return null;
-		}
-		public TemplateModel get(String s) {
-			return null;
-		}
-		public int size() {
-			return 0;
-		}
-		public boolean isEmpty() {
-			return true;
-		}
-		public TemplateCollectionModel keys() {
-			return EMPTY_COLLECTION;
-		}
-		public TemplateCollectionModel values() {
-			return EMPTY_COLLECTION;
-		}
-		
-	}
-	
-	static final TemplateModel EMPTY_STRING_AND_SEQUENCE = new EmptyStringAndSequence();
 	
 	private Expression lhs, rhs;
 	
@@ -66,7 +35,7 @@ public class DefaultToExpression extends Expression {
 			}
 		}
 		if (left != null && left != Constants.JAVA_NULL) return left;
-		if (rhs == null) return EMPTY_STRING_AND_SEQUENCE;
+		if (rhs == null) return Constants.NOTHING;
 		return rhs.getAsTemplateModel(env);
 	}
 
