@@ -9,6 +9,7 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ast.StringLiteral;
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * An instruction that gets another template
@@ -76,8 +77,8 @@ public class Include extends TemplateElement {
         if (parseExp != null) {
             Object tm = parseExp.getAsTemplateModel(env);
             assertNonNull(tm, parseExp, env);
-            if (tm instanceof TemplateScalarModel) {
-                parse = getYesNo(EvaluationUtil.getString((TemplateScalarModel)tm, parseExp, env));
+            if (isString(tm)) {
+                parse = getYesNo(asString(tm));
             }
             else {
                 parse = parseExp.isTrue(env);

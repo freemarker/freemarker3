@@ -3,6 +3,8 @@ package freemarker.core.ast;
 import freemarker.template.*;
 import freemarker.core.Environment;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 
 /**
  * An instruction that sets a property of the template rendering
@@ -29,12 +31,12 @@ public class PropertySetting extends TemplateElement {
     public void execute(Environment env) {
         Object mval = value.getAsTemplateModel(env);
         String strval;
-        if (mval instanceof TemplateScalarModel) {
-            strval = ((TemplateScalarModel) mval).getAsString();
-        } else if (mval instanceof TemplateBooleanModel) {
-            strval = ((TemplateBooleanModel) mval).getAsBoolean() ? "true" : "false";
-        } else if (mval instanceof TemplateNumberModel) {
-            strval = ((TemplateNumberModel) mval).getAsNumber().toString();
+        if (isString(mval)) {
+            strval = asString(mval);
+        } else if (isBoolean(mval)) {
+            strval = asBoolean(mval) ? "true" : "false";
+        } else if (isNumber(mval)) {
+            strval = asNumber(mval).toString();
         } else {
             strval = value.getStringValue(env);
         }

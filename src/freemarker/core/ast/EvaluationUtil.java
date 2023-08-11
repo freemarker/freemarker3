@@ -16,15 +16,6 @@ public class EvaluationUtil
     {
     }
     
-    static String getString(TemplateScalarModel model, Expression expr, Environment env)
-    {
-        String value = model.getAsString();
-        if(value == null) {
-            throw new TemplateException(expr + " evaluated to null string.", env);
-        }
-        return value;
-    }
-
     static Number getNumber(Expression expr, Environment env)
     {
         Object model = expr.getAsTemplateModel(env);

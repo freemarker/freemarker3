@@ -5,6 +5,7 @@ import freemarker.template.*;
 import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.NumberModel;
 import freemarker.ext.beans.ListModel;
+import static freemarker.ext.beans.ObjectWrapper.*;
 import java.util.*;
 
 /**
@@ -15,17 +16,11 @@ import java.util.*;
  */
 public class AddConcatExpression extends Expression {
 
-//    private Expression left;
-//    private Expression right;
     public AddConcatExpression() {}
 
     public AddConcatExpression(Expression left, Expression right) {
-//        this.left = left;
-//        this.right = right;
         add(left);
         add(right);
-//        left.setParent(this);
-//        right.setParent(this);
     }
     
     public Expression getLeft() {
@@ -52,8 +47,10 @@ public class AddConcatExpression extends Expression {
         }
         if (leftModel instanceof TemplateNumberModel && rightModel instanceof TemplateNumberModel)
         {
-            Number first = EvaluationUtil.getNumber((TemplateNumberModel) leftModel, getLeft(), env);
-            Number second = EvaluationUtil.getNumber((TemplateNumberModel) rightModel, getRight(), env);
+            //Number first = EvaluationUtil.getNumber((TemplateNumberModel) leftModel, getLeft(), env);
+            //Number second = EvaluationUtil.getNumber((TemplateNumberModel) rightModel, getRight(), env);
+            Number first = asNumber(leftModel);
+            Number second = asNumber(rightModel);
             ArithmeticEngine ae =
                 env != null
                     ? env.getArithmeticEngine()

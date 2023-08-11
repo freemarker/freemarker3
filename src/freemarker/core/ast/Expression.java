@@ -34,11 +34,8 @@ abstract public class Expression extends TemplateNode {
     
     public static String getStringValue(Object referent, Expression exp, Environment env)
     {
-        if (referent instanceof Number) {
-            return env.formatNumber((Number) referent);
-        }
-        if (referent instanceof TemplateNumberModel) {
-            return env.formatNumber(EvaluationUtil.getNumber((TemplateNumberModel) referent, exp, env));
+        if (isNumber(referent)) {
+            return env.formatNumber(asNumber(referent));
         }
         if (referent instanceof TemplateDateModel) {
             TemplateDateModel dm = (TemplateDateModel) referent;

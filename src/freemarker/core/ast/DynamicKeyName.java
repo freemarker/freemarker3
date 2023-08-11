@@ -57,9 +57,7 @@ public class DynamicKeyName extends Expression {
             return dealWithNumericalKey(targetModel, index, env);
         }
         if (isString(key)) {
-//            String keyString = EvaluationUtil.getString((TemplateScalarModel)key, nameExpression, env);
-            String keyString = asString(key);
-            return dealWithStringKey(targetModel, keyString, env);
+            return dealWithStringKey(targetModel, asString(key), env);
         }
         throw invalidTypeException(key, nameExpression, env, "number, range, or string");
     }
