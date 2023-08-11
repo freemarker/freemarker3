@@ -280,30 +280,6 @@ public class Template extends TemplateCore {
         env.process();
     }
     
-    /**
-     * Processes the template, using data from the root map object, and outputs
-     * the resulting text to the supplied writer, using the supplied
-     * object wrapper to convert map elements to template models.
-     * @param rootMap the root node of the data model.  If null, an
-     * empty data model is used. Can be any object that the effective object
-     * wrapper can turn into a <tt>TemplateHashModel</tt> Basically, simple and
-     * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes.
-     * Naturally, you can pass any object directly implementing
-     * <tt>TemplateHashModel</tt> as well.
-     * @param wrapper The object wrapper to use to wrap objects into
-     * {@link TemplateModel} instances. If null, the default wrapper retrieved
-     * by {@link Configurable#getObjectWrapper()} is used.
-     * @param out the writer to output the text to.
-     * 
-     * @throws TemplateException if an exception occurs during template processing
-     * @throws IOException if an I/O exception occurs during writing to the writer.
-     */
-    public void process(Object rootMap, Writer out, ObjectWrapper wrapper)
-    throws TemplateException, IOException
-    {
-        process(rootMap, out, (ObjectWrapper) null);
-    }
-    
    /**
     * Creates a {@link freemarker.core.Environment Environment} object,
     * using this template, the data model provided as the root map object, and

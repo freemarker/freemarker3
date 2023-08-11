@@ -16,6 +16,8 @@ import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * Implementation of ?interpret built-in 
  */
@@ -26,12 +28,12 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
             Object model) 
     {
         String id = null, interpretString = null;
-        if (model instanceof TemplateSequenceModel) {
+        if (isList(model)) {
             TemplateSequenceModel tsm = (TemplateSequenceModel) model;
             Object tm = tsm.get(1);
             if (tm != null) {
-                if(tm instanceof TemplateScalarModel) {
-                    id = ((TemplateScalarModel) tm).getAsString();
+                if (isString(tm)) {
+                    id = asString(tm);
                 }
                 else {
                     throw new TemplateModelException("Expecting string as second item of sequence of left of ?interpret built-in");
@@ -43,8 +45,8 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
             }
             interpretString = ((TemplateScalarModel) tm).getAsString();
         }
-        else if (model instanceof TemplateScalarModel) {
-            interpretString = ((TemplateScalarModel) model).getAsString();
+        else if (isString(model)) {
+            interpretString = asString(model);
         }
         if (id == null) id = "anonymous_interpreted";
         if (interpretString == null) {

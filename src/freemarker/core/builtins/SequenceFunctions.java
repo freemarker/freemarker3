@@ -25,6 +25,8 @@ import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * Implementations of builtins for standard functions that operate on sequences
  * TODO: refactor properly into subclasses
@@ -283,9 +285,9 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         int keyType;
-        if (item instanceof TemplateScalarModel) {
+        if (isString(item)) {
             keyType = KEY_TYPE_STRING;
-        } else if (item instanceof TemplateNumberModel) {
+        } else if (isNumber(item)) {
             keyType = KEY_TYPE_NUMBER;
         } else if (item instanceof TemplateDateModel) {
             keyType = KEY_TYPE_DATE;
@@ -300,10 +302,8 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 for (i = 0; i < ln; i++) {
                     item = seq.get(i);
                     try {
-                        res.add(new KVP(((TemplateScalarModel) item)
-                                .getAsString(), item));
+                        res.add(new KVP(asString(item), item));
                     } catch (ClassCastException e) {
-                        if (!(item instanceof TemplateScalarModel)) {
                             throw new TemplateModelException(
                                     "Failure of ?sort built-in: "
                                     + "All values in the sequence must be "
@@ -311,29 +311,21 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                                     + "was a string. "
                                     + "The value at index " + i
                                     + " is not string.");
-                        } else {
-                            throw e;
-                        }
                     }
                 }
             } else if (keyType == KEY_TYPE_NUMBER) {
                 for (i = 0; i < ln; i++) {
                     item = seq.get(i);
                     try {
-                        res.add(new KVP(((TemplateNumberModel) item)
-                                .getAsNumber(), item));
+                        res.add(new KVP(asNumber(item), item));
                     } catch (ClassCastException e) {
-                        if (!(item instanceof TemplateNumberModel)) {
-                            throw new TemplateModelException(
-                                    "sorting failed: " 
-                                    + "All values in the sequence must be "
-                                    + "numbers, because the first value "
-                                    + "was a number. "
-                                    + "The value at index " + i
-                                    + " is not number.");
-                        } else {
-                            throw e;
-                        }
+                        throw new TemplateModelException(
+                                "sorting failed: " 
+                                + "All values in the sequence must be "
+                                + "numbers, because the first value "
+                                + "was a number. "
+                                + "The value at index " + i
+                                + " is not number.");
                     }
                 }
             } else if (keyType == KEY_TYPE_DATE) {
@@ -391,10 +383,8 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 }
                 if (keyType == KEY_TYPE_STRING) {
                     try {
-                        res.add(new KVP(((TemplateScalarModel) key)
-                                .getAsString(), item));
+                        res.add(new KVP(asString(key), item));
                     } catch (ClassCastException e) {
-                        if (!(key instanceof TemplateScalarModel)) {
                             throw new TemplateModelException(
                                     "sorting failed: " 
                                     + "All key values in the sequence must be "
@@ -402,16 +392,11 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                                     + "value was a date/time. The key value at "
                                     + "index " + i
                                     + " is not a date/time.");
-                        } else {
-                            throw e;
-                        }
                     }
                 } else if (keyType == KEY_TYPE_NUMBER) {
                     try {
-                        res.add(new KVP(((TemplateNumberModel) key)
-                                .getAsNumber(), item));
+                        res.add(new KVP(asNumber(key), item));
                     } catch (ClassCastException e) {
-                        if (!(key instanceof TemplateNumberModel)) {
                             throw new TemplateModelException(
                                     "sorting failed: "
                                     + "All key values in the sequence must be "
@@ -419,7 +404,6 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                                     + "value was a number. The key value at "
                                     + "index " + i
                                     + " is not a number.");
-                        }
                     }
                 } else if (keyType == KEY_TYPE_DATE) {
                     try {
@@ -541,10 +525,9 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 for (int i = 0; i < ln; i++) {
                     Object item = seq.get(i);
                     try {
-                        subvars[i] = ((TemplateScalarModel) item)
-                        .getAsString();
+                        subvars[i] = asString(item);
                     } catch (ClassCastException e) {
-                        if (!(item instanceof TemplateScalarModel)) {
+                        if (!isString(item)) {
                             throw new TemplateModelException(
                                     "The argument to ?sort_by(key), when it "
                                     + "is a sequence, must be a sequence of "

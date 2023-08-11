@@ -28,6 +28,8 @@ import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * Implementations of ?substring and other 
  * standard functions that operate on strings
@@ -85,7 +87,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
     @Override 
     public Object get(Environment env, BuiltInExpression caller, Object model) {
-        String string = ObjectWrapper.asString(model);
+        String string = asString(model);
         return apply(string, env, caller);
     }
     
@@ -423,7 +425,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
 
             obj = args.get(0);
-            if (!(obj instanceof TemplateNumberModel)) {
+            if (!isNumber(obj)) {
                 throw new TemplateModelException(
                         "?left_pad(...) expects a number as "
                         + "its 1st argument.");
@@ -432,12 +434,12 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
             if (ln > 1) {
                 obj = args.get(1);
-                if (!(obj instanceof TemplateScalarModel)) {
+                if (!isString(obj)) {
                     throw new TemplateModelException(
                             "?left_pad(...) expects a string as "
                             + "its 2nd argument.");
                 }
-                String filling = ((TemplateScalarModel) obj).getAsString();
+                String filling = asString(obj);
                 try {
                     return new StringModel(StringUtil.leftPad(string, width, filling));
                 } catch (IllegalArgumentException e) {
@@ -487,12 +489,12 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
             if (ln > 1) {
                 obj = args.get(1);
-                if (!(obj instanceof TemplateScalarModel)) {
+                if (!isString(obj)) {
                     throw new TemplateModelException(
                             "?right_pad(...) expects a string as "
                             + "its 2nd argument.");
                 }
-                String filling = ((TemplateScalarModel) obj).getAsString();
+                String filling = asString(obj);
                 try {
                     return new StringModel(StringUtil.rightPad(string, width, filling));
                 } catch (IllegalArgumentException e) {
@@ -585,11 +587,11 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
 
             Object obj = args.get(0);
-            if (!(obj instanceof TemplateScalarModel)) {
+            if (!isString(obj)) {
                 throw new TemplateModelException(
                         getName() + "(...) expects a string argument");
             }
-            sub = ((TemplateScalarModel) obj).getAsString();
+            sub = asString(obj);
 
             boolean result = reverse ? string.endsWith(sub) : string.startsWith(sub);
             return result ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
@@ -623,19 +625,18 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
 
             obj = args.get(0);       
-            if (!(obj instanceof TemplateScalarModel)) {
-                throw new TemplateModelException(getName() + "(...) expects a string as "
-                        + "its first argument.");
+            if (!isString(obj)) {
+                throw new TemplateModelException(getName() + "(...) expects a string as its first argument.");
             }
             sub = ((TemplateScalarModel) obj).getAsString();
 
             if (ln > 1) {
                 obj = args.get(1);
-                if (!(obj instanceof TemplateNumberModel)) {
+                if (!isNumber(obj)) {
                     throw new TemplateModelException(getName() + "(...) expects a number as "
                             + "its second argument.");
                 }
-                fidx = ((TemplateNumberModel) obj).getAsNumber().intValue();
+                fidx = asNumber(obj).intValue();
             } else {
                 fidx = 0;
             }
@@ -670,7 +671,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
 
             obj = args.get(0);
-            if (!(obj instanceof TemplateScalarModel)) {
+            if (!isString(obj)) {
                 throw new TemplateModelException(
                         "?contains(...) expects a string as "
                         + "its first argument.");

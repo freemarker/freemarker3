@@ -7,6 +7,7 @@ import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.*;
 import static freemarker.template.utility.StringUtil.*;
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 public class TemplateHeaderElement extends TemplateNode {
 
@@ -54,14 +55,11 @@ public class TemplateHeaderElement extends TemplateNode {
 	
 	public String getStringParameter(String name) {
 		Object tm = getParameter(name);
-		if (tm instanceof TemplateScalarModel) {
-			try {
-				return ((TemplateScalarModel) tm).getAsString();
-			} catch (TemplateModelException tme) {
-				throw new IllegalArgumentException(tme);
-			}
-		} 
-		throw new IllegalArgumentException("Parameter " + name + " is not a string.");
+		try {
+			return asString(tm);
+		} catch (ClassCastException cce) {
+		    throw new IllegalArgumentException("Parameter " + name + " is not a string.");
+		}
 	}
 
 	public boolean getBooleanParameter(String name) {
@@ -69,16 +67,16 @@ public class TemplateHeaderElement extends TemplateNode {
 		if (tm == null) {
 			throw new IllegalArgumentException("No parameter " + name);
 		}
-		if (tm instanceof TemplateBooleanModel) {
+		if (isBoolean(tm)) {
 			try {
 				return ((TemplateBooleanModel) tm).getAsBoolean();
 			} catch (TemplateModelException te) {
 				throw new IllegalArgumentException(te);
 			}
 		}
-		if (tm instanceof TemplateScalarModel) {
+		if (isString(tm)) {
 			try {
-				return getYesNo(((TemplateScalarModel) tm).getAsString());
+				return getYesNo(asString(tm));
 			} catch (Exception e) {
 				throw new IllegalArgumentException(e);
 			}

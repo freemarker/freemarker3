@@ -6,6 +6,8 @@ import freemarker.ext.beans.Pojo;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.TemplateNode;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * An abstract class for nodes in the parse tree 
  * that represent a FreeMarker expression.
@@ -42,8 +44,8 @@ abstract public class Expression extends TemplateNode {
             TemplateDateModel dm = (TemplateDateModel) referent;
             return env.formatDate(EvaluationUtil.getDate(dm, exp, env), dm.getDateType());
         }
-        if (referent instanceof TemplateScalarModel) {
-            return EvaluationUtil.getString((TemplateScalarModel) referent, exp, env);
+        if (isString(referent)) {
+            return asString(referent);
         }
         assertNonNull(referent, exp, env);
         String msg = "Error " + exp.getStartLocation()
@@ -85,8 +87,8 @@ abstract public class Expression extends TemplateNode {
             return ((Pojo) model).isEmpty();
         } else if (model instanceof TemplateSequenceModel) {
             return ((TemplateSequenceModel) model).size() == 0;
-        } else if (model instanceof TemplateScalarModel) {
-            String s = ((TemplateScalarModel) model).getAsString();
+        } else if (isString(model)) {
+            String s = asString(model);
             return (s == null || s.length() == 0);
         } else if (model instanceof TemplateCollectionModel) {
             return !((TemplateCollectionModel) model).iterator().hasNext();

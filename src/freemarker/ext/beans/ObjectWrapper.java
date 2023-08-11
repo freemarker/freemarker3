@@ -123,12 +123,58 @@ public class ObjectWrapper
         return obj instanceof List;
     }
 
-    public static boolean isString(Object obj) {
-        if (obj instanceof TemplateScalarModel) {
-            return true;
-        }
+    public static List asList(Object obj) {
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
+        }
+        if (obj instanceof TemplateSequenceModel) {
+            TemplateSequenceModel tsm = (TemplateSequenceModel) obj;
+            List result = new ArrayList();
+            for (int i = 0; i < tsm.size() ; i++) result.add(tsm.get(i));
+            return result;
+        }
+        return (List) obj;
+    }
+
+    public static boolean isNumber(Object obj) {
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        if (obj instanceof Number) {
+            return true;
+        }
+        if (obj instanceof TemplateNumberModel) {
+            return true;
+        }
+        return false;
+    }
+
+    public static Number asNumber(Object obj) {
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        if (obj instanceof TemplateNumberModel) {
+            return ((TemplateNumberModel) obj).getAsNumber();
+        }
+        return (Number) obj;
+    }
+
+    public static Date asDate(Object obj) {
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        if (obj instanceof TemplateDateModel) {
+            return ((TemplateDateModel) obj).getAsDate();
+        }
+        return (Date) obj;
+    }
+
+    public static boolean isString(Object obj) {
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        if (obj instanceof TemplateScalarModel) {
+            return true;
         }
         return obj instanceof CharSequence;
     }
@@ -140,10 +186,27 @@ public class ObjectWrapper
         if (obj instanceof TemplateScalarModel) {
             return ((TemplateScalarModel) obj).getAsString();
         }
-        if (obj instanceof CharSequence) {
-            return ((CharSequence) obj).toString();
+        return ((CharSequence) obj).toString();
+    }
+
+    public static boolean isBoolean(Object obj) {
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
         }
-        throw new TemplateModelException("not a string");
+        if (obj instanceof TemplateBooleanModel) {
+            return true;
+        }
+        return obj instanceof Boolean;
+    }
+
+    public static boolean asBoolean(Object obj) {
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        if (obj instanceof TemplateBooleanModel) {
+            return ((TemplateBooleanModel) obj).getAsBoolean();
+        }
+        return (Boolean) obj;
     }
 
     

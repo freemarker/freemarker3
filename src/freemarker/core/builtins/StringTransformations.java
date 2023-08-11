@@ -5,8 +5,9 @@ import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.Expression;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.ext.beans.StringModel;
-import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
+
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * Implementations of ?cap_first, ?lower_case, ?upper_case and other
@@ -19,8 +20,8 @@ public abstract class StringTransformations extends ExpressionEvaluatingBuiltIn 
     public Object get(Environment env, BuiltInExpression caller,
             Object model) {
         String string = null;
-        if (model instanceof TemplateScalarModel) {
-            string = ((TemplateScalarModel) model).getAsString();
+        if (isString(model)) {
+            string = asString(model);
         }
         else {
             string = Expression.getStringValue(model, caller.getTarget(), env);

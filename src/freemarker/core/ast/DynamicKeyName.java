@@ -8,6 +8,8 @@ import freemarker.template.*;
 import freemarker.ext.beans.ListModel;
 import freemarker.ext.beans.StringModel;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * A unary operator that uses the string value of an expression as a hash key.
  * It associates with the <tt>Identifier</tt> or <tt>Dot</tt> to its left.
@@ -54,12 +56,9 @@ public class DynamicKeyName extends Expression {
             int index = EvaluationUtil.getNumber(key, nameExpression, env).intValue();
             return dealWithNumericalKey(targetModel, index, env);
         }
-        if (key instanceof CharSequence) {
-            String keyString = key.toString();
-            return dealWithStringKey(targetModel, keyString, env);
-        }
-        if (key instanceof TemplateScalarModel) {
-            String keyString = EvaluationUtil.getString((TemplateScalarModel)key, nameExpression, env);
+        if (isString(key)) {
+//            String keyString = EvaluationUtil.getString((TemplateScalarModel)key, nameExpression, env);
+            String keyString = asString(key);
             return dealWithStringKey(targetModel, keyString, env);
         }
         throw invalidTypeException(key, nameExpression, env, "number, range, or string");

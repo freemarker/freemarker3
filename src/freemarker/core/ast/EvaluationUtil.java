@@ -17,8 +17,6 @@ public class EvaluationUtil
     }
     
     static String getString(TemplateScalarModel model, Expression expr, Environment env)
-    throws
-        TemplateException
     {
         String value = model.getAsString();
         if(value == null) {

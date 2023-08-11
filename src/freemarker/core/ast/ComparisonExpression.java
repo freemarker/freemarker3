@@ -6,6 +6,8 @@ import java.util.Date;
 import freemarker.core.Environment;
 import freemarker.template.*;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * A class that handles comparisons.
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
@@ -68,11 +70,6 @@ public class ComparisonExpression extends BooleanExpression {
     	return right;
     }
     
-
-    
-
-    
-
     /*
      * WARNING! This algorithm is duplicated in SequenceBuiltins.modelsEqual.
      * Thus, if you update this method, then you have to update that too!
@@ -80,23 +77,12 @@ public class ComparisonExpression extends BooleanExpression {
     public boolean isTrue(Environment env) {
         Object ltm = left.getAsTemplateModel(env);
         Object rtm = right.getAsTemplateModel(env);
-/*
-  The following block that allows comparison of nulls is now commented out.        
-        if (ltm == TemplateModel.JAVA_NULL || rtm == TemplateModel.JAVA_NULL) {
-        	if (operation != EQUALS && operation != NOT_EQUALS) {
-        		throw new TemplateException("Cannot use operator " + opString + " to compare to null.", env);
-        	}
-        	if (ltm == null) assertNonNull(ltm, left, env);
-        	if (rtm == null) assertNonNull(rtm, right, env);
-        	return (operation == EQUALS) ? ltm == rtm : ltm != rtm;
-        }
-*/        
         assertNonNull(ltm, left, env);
        	assertNonNull(rtm, right, env);
         int comp = 0;
-        if(ltm instanceof TemplateNumberModel && rtm instanceof TemplateNumberModel) { 
-            Number first = EvaluationUtil.getNumber((TemplateNumberModel)ltm, left, env);
-            Number second = EvaluationUtil.getNumber((TemplateNumberModel)rtm, right, env);
+        if (isNumber(ltm) && isNumber(rtm)) { 
+            Number first = asNumber(ltm);
+            Number second = asNumber(rtm);
             ArithmeticEngine ae = 
                 env != null 
                     ? env.getArithmeticEngine()
@@ -129,12 +115,12 @@ public class ComparisonExpression extends BooleanExpression {
             Date second = EvaluationUtil.getDate(rtdm, right, env);
             comp = first.compareTo(second);
         }
-        else if(ltm instanceof TemplateScalarModel && rtm instanceof TemplateScalarModel) {
+        else if (isString(ltm) && isString(rtm)) {
             if(operation != EQUALS && operation != NOT_EQUALS) {
                 throw new TemplateException("Can not use operator " + opString + " on string values.", env);
             }
-            String first = EvaluationUtil.getString((TemplateScalarModel)ltm, left, env);
-            String second = EvaluationUtil.getString((TemplateScalarModel)rtm, right, env);
+            String first = asString(ltm);
+            String second = asString(rtm);
             Collator collator;
             if(env == null) {
                 collator = Collator.getInstance(getTemplate().getLocale());
