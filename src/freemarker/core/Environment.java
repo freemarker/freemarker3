@@ -959,7 +959,7 @@ public final class Environment extends Configurable implements Scope {
         if (rootDataModel instanceof TemplateHashModelEx) {
             Iterator<Object> rootNames = ((TemplateHashModelEx) rootDataModel).keys().iterator();
             while (rootNames.hasNext()) {
-                coll.add(((TemplateScalarModel) rootNames.next()).getAsString());
+                coll.add(asString(rootNames.next()));
             }
         }
         return coll;

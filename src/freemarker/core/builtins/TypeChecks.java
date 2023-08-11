@@ -5,6 +5,8 @@ import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Macro;
 import freemarker.template.*;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * Implementation of ?is_XXXX built-ins
  * TODO: refactor into subclasses
@@ -18,7 +20,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 		boolean result = false;
 		final String builtInName = caller.getName(); 
 		if (builtInName == "is_string") {
-			result = model instanceof TemplateScalarModel;
+			result = isString(model);
 		}
 		else if (builtInName == "is_number") {
 			result = model instanceof TemplateNumberModel;

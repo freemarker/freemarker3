@@ -8,7 +8,8 @@ import freemarker.core.parser.FMParser;
 import freemarker.core.parser.ParseException;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateScalarModel;
+
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * Implementation of ?eval built-in 
@@ -25,7 +26,7 @@ public class evalBI extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
         try {
-            return eval(((TemplateScalarModel) model).getAsString(), env, caller);
+            return eval(asString(model), env, caller);
         } catch (ClassCastException cce) {
             throw new TemplateModelException("Expecting string on left of ?eval built-in");
 

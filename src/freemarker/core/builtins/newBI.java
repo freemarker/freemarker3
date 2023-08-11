@@ -8,6 +8,8 @@ import freemarker.core.ast.BuiltInExpression;
 import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.*;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * Implementation of ?new built-in 
  */
@@ -26,8 +28,7 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
             Object model) {
         try {
-            String classString = ((TemplateScalarModel) model).getAsString();
-            return new ConstructorFunction(classString, env);
+            return new ConstructorFunction(asString(model), env);
         } catch (ClassCastException cce) {
             throw new TemplateModelException("Expecting string on left of ?new built-in");
 

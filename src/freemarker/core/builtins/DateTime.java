@@ -8,14 +8,14 @@ import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.DateModel;
-//import freemarker.template.SimpleDate;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateScalarModel;
+
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * Implementations of builtins for standard functions
@@ -53,9 +53,8 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
                     "Cannot convert " + TemplateDateModel.TYPE_NAMES.get(dtype)
                     + " into " + TemplateDateModel.TYPE_NAMES.get(dateType), env);
         }
-        else if (model instanceof TemplateScalarModel) {
-            return new DateParser(((TemplateScalarModel) model).getAsString(), 
-                    dateType, caller,  env);
+        else if (isString(model)) {
+            return new DateParser(asString(model), dateType, caller,  env);
         }
         else {
             throw TemplateNode.invalidTypeException(model, caller, env, 

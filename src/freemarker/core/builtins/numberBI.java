@@ -8,12 +8,9 @@ import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNumberModel;
-import freemarker.template.TemplateScalarModel;
 
-/**
- * @author Attila Szegedi
- * @version $Id: $
- */
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 public class numberBI extends ExpressionEvaluatingBuiltIn
 {
     @Override
@@ -25,7 +22,7 @@ public class numberBI extends ExpressionEvaluatingBuiltIn
         }
         final String string;
         try {
-            string = ((TemplateScalarModel) model).getAsString();
+            string = asString(model);
         }
         catch(ClassCastException ex) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "string or number");

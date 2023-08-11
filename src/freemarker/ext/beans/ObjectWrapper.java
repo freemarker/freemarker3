@@ -170,11 +170,11 @@ public class ObjectWrapper
     }
 
     public static boolean isString(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         if (obj instanceof TemplateScalarModel) {
             return true;
+        }
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
         }
         return obj instanceof CharSequence;
     }

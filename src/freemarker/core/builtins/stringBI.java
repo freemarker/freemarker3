@@ -12,6 +12,8 @@ import freemarker.core.ast.EvaluationUtil;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * Implementation of ?string built-in 
  */
@@ -28,8 +30,9 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
         Object model) 
     {
-        if (model instanceof TemplateNumberModel) {
-            return new NumberFormatter(EvaluationUtil.getNumber(model, caller.getTarget(), env), env);
+        if (isNumber(model)) {
+            //return new NumberFormatter(EvaluationUtil.getNumber(model, caller.getTarget(), env), env);
+            return new NumberFormatter(asNumber(model), env);
         }
         if (model instanceof TemplateDateModel) {
             TemplateDateModel dm = (TemplateDateModel) model;
@@ -46,8 +49,8 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         if (model instanceof TemplateBooleanModel) {
             return new BooleanFormatter((TemplateBooleanModel) model, env);
         }
-        if (model instanceof TemplateScalarModel) {
-            return new StringModel(((TemplateScalarModel) model).getAsString());
+        if (isString(model)) {
+            return new StringModel(asString(model));
         } 
       	throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number, date, or string");
     }
@@ -65,8 +68,8 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
 
         public String getAsString() {
-            if (bool instanceof TemplateScalarModel) {
-                return ((TemplateScalarModel) bool).getAsString();
+            if (isString(bool)) {
+                return (asString(bool));
             } else {
                 return env.getBooleanFormat(bool.getAsBoolean());
             }

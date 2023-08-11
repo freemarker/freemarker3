@@ -8,10 +8,10 @@ import freemarker.core.ast.ArithmeticEngine;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
-import freemarker.template.TemplateScalarModel;
+
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * @author Attila Szegedi
@@ -68,10 +68,8 @@ public class ModelComparator
             return first.compareTo(second) == 0;
         }
         
-        if(model1 instanceof TemplateScalarModel && model2 instanceof TemplateScalarModel) {
-            return collator.compare(
-                    ((TemplateScalarModel) model1).getAsString(), 
-                    ((TemplateScalarModel) model2).getAsString()) == 0;
+        if (isString(model1) && isString(model2)) {
+            return collator.compare( asString(model1), asString(model2)) == 0;
         }
         
         if(model1 instanceof TemplateBooleanModel && model2 instanceof TemplateBooleanModel) {

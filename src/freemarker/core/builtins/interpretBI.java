@@ -13,7 +13,6 @@ import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -40,10 +39,10 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
                 }
             }
             tm = tsm.get(0);
-            if (!(tm instanceof TemplateScalarModel)) {
+            if (!isString(tm)) {
                 throw new TemplateModelException("Expecting string as first item of sequence of left of ?interpret built-in");
             }
-            interpretString = ((TemplateScalarModel) tm).getAsString();
+            interpretString = asString(tm);
         }
         else if (isString(model)) {
             interpretString = asString(model);
