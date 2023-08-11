@@ -12,6 +12,7 @@ import freemarker.core.ast.ArithmeticEngine;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.NumberModel;
+import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
@@ -531,8 +532,8 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             }
             String[] subvars;
             Object obj = params.get(0);
-            if (obj instanceof TemplateScalarModel) {
-                subvars = new String[]{((TemplateScalarModel) obj).getAsString()};
+            if (ObjectWrapper.isString(obj)) {
+                subvars = new String[]{ObjectWrapper.asString(obj)};
             } else if (obj instanceof TemplateSequenceModel) {
                 TemplateSequenceModel seq = (TemplateSequenceModel) obj;
                 int ln = seq.size();

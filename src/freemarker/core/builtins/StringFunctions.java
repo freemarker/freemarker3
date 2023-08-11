@@ -12,9 +12,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
-import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.ObjectWrapper;
 import freemarker.ext.beans.NumberModel;
 import freemarker.ext.beans.StringModel;
@@ -85,18 +83,12 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
     }
 
 
-    @Override
+    @Override 
     public Object get(Environment env, BuiltInExpression caller, Object model) {
-        try {
-            String string = ((TemplateScalarModel) model).getAsString();
-            return apply(string, env, caller);
-        } catch (ClassCastException cce) {
-            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "string");
-        } catch (NullPointerException npe) {
-            throw new InvalidReferenceException("String is undefined", env);
-        }
+        String string = ObjectWrapper.asString(model);
+        return apply(string, env, caller);
     }
-
+    
     public abstract Object apply(final String string, final Environment env, final BuiltInExpression callingExpression);
     
     public static class Length extends StringFunctions {

@@ -133,7 +133,7 @@ public class ObjectWrapper
         return obj instanceof CharSequence;
     }
 
-    public String asString(Object obj) {
+    public static String asString(Object obj) {
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }

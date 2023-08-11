@@ -667,6 +667,7 @@ INJECT DotVariable :
     import freemarker.core.parser.Token;
     import freemarker.template.TemplateHashModel;
     import freemarker.core.ast.Expression;
+    import java.util.Map;
     extends Expression
 {
     public Expression getTarget() {
@@ -679,6 +680,9 @@ INJECT DotVariable :
 
     public Object getAsTemplateModel(Environment env) {
         Object leftModel = getTarget().getAsTemplateModel(env);
+        if (leftModel instanceof Map) {
+            return ((Map)leftModel).get(getKey());
+        }
         if(leftModel instanceof TemplateHashModel) {
             return ((TemplateHashModel) leftModel).get(getKey());
         }

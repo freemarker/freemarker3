@@ -13,6 +13,7 @@ import freemarker.core.ast.LibraryLoad;
 import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.TemplateHeaderElement;
 import freemarker.core.parser.*;
+import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.ObjectWrapper;
 import freemarker.ext.beans.SimpleMapModel;
 
@@ -263,19 +264,16 @@ public class Template extends TemplateCore {
      * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes.
      * Naturally, you can pass any object directly implementing
      * <tt>TemplateHashModel</tt> as well.
-     * @param wrapper The object wrapper to use to wrap objects into
-     * {@link TemplateModel} instances. If null, the default wrapper retrieved
-     * by {@link Configurable#getObjectWrapper()} is used.
      * @param out the writer to output the text to.
      * @param rootNode The root node for recursive processing, this may be null.
      * 
      * @throws TemplateException if an exception occurs during template processing
      * @throws IOException if an I/O exception occurs during writing to the writer.
      */
-    public void process(Object rootMap, Writer out, ObjectWrapper wrapper, TemplateNodeModel rootNode)
+    public void process(Object rootMap, Writer out, TemplateNodeModel rootNode)
     throws TemplateException, IOException
     {
-        Environment env = createProcessingEnvironment(rootMap, out, wrapper);
+        Environment env = createProcessingEnvironment(rootMap, out);
         if (rootNode != null) {
             env.setCurrentVisitorNode(rootNode);
         }
@@ -303,7 +301,7 @@ public class Template extends TemplateCore {
     public void process(Object rootMap, Writer out, ObjectWrapper wrapper)
     throws TemplateException, IOException
     {
-        process(rootMap, out, wrapper, null);
+        process(rootMap, out, (ObjectWrapper) null);
     }
     
    /**
@@ -342,9 +340,6 @@ public class Template extends TemplateCore {
     * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes.
     * Naturally, you can pass any object directly implementing
     * <tt>TemplateHashModel</tt> as well.
-    * @param wrapper The object wrapper to use to wrap objects into
-    * {@link TemplateModel} instances. If null, the default wrapper retrieved
-    * by {@link Configurable#getObjectWrapper()} is used.
     * @param out the writer to output the text to.
     * @return the {@link freemarker.core.Environment Environment} object created for processing
     * @throws TemplateException if an exception occurs while setting up the Environment object.

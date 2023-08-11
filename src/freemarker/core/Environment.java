@@ -14,6 +14,7 @@ import java.util.*;
 
 import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.ListModel;
+import freemarker.ext.beans.ObjectWrapper;
 import freemarker.ext.beans.CollectionModel;
 import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
@@ -22,6 +23,8 @@ import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.log.Logger;
 import freemarker.template.*;
+
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * Object that represents the runtime environment during template processing.
@@ -390,8 +393,8 @@ public final class Environment extends Configurable implements Scope {
                 String nodeType = node.getNodeType();
                 if (nodeType != null) {
                     // If the node's type is 'text', we just output it.
-                    if ((nodeType.equals("text") && node instanceof TemplateScalarModel)) {
-                        out.write(((TemplateScalarModel) node).getAsString());
+                    if ((nodeType.equals("text") && isString(node))) {
+                        out.write(asString(nodeType));
                     } else if (nodeType.equals("document")) {
                         process(node, namespaces);
                     }

@@ -1,6 +1,7 @@
 package freemarker.core.ast;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
@@ -15,6 +16,9 @@ public class DynamicKeyName extends Expression {
 
     private Expression nameExpression;
     private Expression target;
+
+    public DynamicKeyName() {
+    }
 
     public DynamicKeyName(Expression target, Expression nameExpression) {
         this.target = target; 
@@ -50,6 +54,10 @@ public class DynamicKeyName extends Expression {
             int index = EvaluationUtil.getNumber(key, nameExpression, env).intValue();
             return dealWithNumericalKey(targetModel, index, env);
         }
+        if (key instanceof CharSequence) {
+            String keyString = key.toString();
+            return dealWithStringKey(targetModel, keyString, env);
+        }
         if (key instanceof TemplateScalarModel) {
             String keyString = EvaluationUtil.getString((TemplateScalarModel)key, nameExpression, env);
             return dealWithStringKey(targetModel, keyString, env);
@@ -70,7 +78,6 @@ public class DynamicKeyName extends Expression {
             } catch (Exception e) {}
             return index<size ? tsm.get(index) : null;
         } 
-        
         try
         {
             String s = target.getStringValue(env);
@@ -91,6 +98,9 @@ public class DynamicKeyName extends Expression {
                                             String key,
                                             Environment env)
     {
+        if (targetModel instanceof Map) {
+            return ((Map) targetModel).get(key);
+        }
         if(targetModel instanceof TemplateHashModel) {
             return((TemplateHashModel) targetModel).get(key);
         }
