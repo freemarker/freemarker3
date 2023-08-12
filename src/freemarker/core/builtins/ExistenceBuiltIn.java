@@ -4,7 +4,7 @@ import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.ast.Expression;
 import freemarker.template.Constants;
 import freemarker.template.LazilyEvaluatableArguments;

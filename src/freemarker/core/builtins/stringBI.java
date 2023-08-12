@@ -7,7 +7,7 @@ import java.util.List;
 
 import freemarker.ext.beans.StringModel;
 import freemarker.core.Environment;
-import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.ast.EvaluationUtil;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;

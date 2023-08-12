@@ -3,7 +3,7 @@ package freemarker.core.builtins;
 import java.util.List;
 
 import freemarker.core.Environment;
-import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.ListModel;

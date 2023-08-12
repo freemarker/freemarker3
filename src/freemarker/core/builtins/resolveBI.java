@@ -4,7 +4,7 @@ import java.util.List;
 
 import freemarker.core.Scope;
 import freemarker.core.Environment;
-import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.template.*;
 
 /**

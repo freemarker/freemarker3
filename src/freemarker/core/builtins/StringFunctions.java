@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
-import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.ext.beans.ObjectWrapper;
 import freemarker.ext.beans.NumberModel;
 import freemarker.ext.beans.StringModel;

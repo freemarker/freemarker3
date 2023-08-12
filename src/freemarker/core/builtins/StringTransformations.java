@@ -3,7 +3,7 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.Expression;
-import freemarker.core.ast.BuiltInExpression;
+import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.utility.StringUtil;
 
