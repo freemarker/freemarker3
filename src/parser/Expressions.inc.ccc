@@ -45,7 +45,7 @@ Expression PrimaryExpression :
       |
       exp=BuiltInExpression(exp)
       |
-      exp=Exists(exp)
+      exp=ExistsExpression(exp)
       |
       exp=DefaultTo(exp)
   )*
@@ -621,17 +621,48 @@ Expression DefaultTo(Expression exp) :
    }
 ;
 
-Expression Exists(Expression exp) :
+#ExistsExpression(Expression exp)# :
 {
-   Token t;
+   pushNode(exp);
 }
-   t=<EXISTS>
+   <EXISTS>
    {
-       ExistsExpression result = new ExistsExpression(exp);
-       result.setLocation(template, token_source, exp, t);
-       return result;
+   //    ExistsExpression result = new ExistsExpression(exp);
+   //    result.setLocation(template, token_source, exp, t);
+       return CURRENT_NODE;
    }
 ;
+
+INJECT ExistsExpression :
+    import freemarker.core.Environment;
+    import freemarker.core.InvalidReferenceException;
+    import freemarker.core.parser.ast.ParentheticalExpression;
+    import freemarker.core.ast.Expression;
+    import static freemarker.template.Constants.JAVA_NULL;
+    extends Expression
+{
+	public Expression getExpression() {
+		return (Expression) get(0);
+	}
+
+	public Object evaluate(Environment env) {
+		Object value = null;
+		try {
+			value = getExpression().evaluate(env);
+		} catch (InvalidReferenceException ire) {
+			if (!(getExpression() instanceof ParentheticalExpression)) {
+				throw ire;
+			}
+		}
+		return value != null && value != JAVA_NULL;
+	}
+
+	public Expression _deepClone(String name, Expression subst) {
+		ExistsExpression result = new ExistsExpression();
+		result.add(getExpression().deepClone(name, subst));
+		return result;
+	}
+}
 
 BuiltInExpression(Expression exp)# :
 {
@@ -751,15 +782,6 @@ import java.util.HashMap;
     private String key;
     private BuiltIn bi;
 
-    public BuiltInExpression() {}
-
-    public BuiltInExpression(Expression target, Token keyTok) {
-        add(target);
-        add(keyTok);
-        this.key = keyTok.toString().intern();
-        this.bi = knownBuiltins.get(key);
-    }
-
     public void close() {
         key = getKeyTok().toString().intern();
         bi = knownBuiltins.get(key);
@@ -788,6 +810,7 @@ import java.util.HashMap;
     public Expression _deepClone(String name, Expression subst) {
         BuiltInExpression result = new BuiltInExpression();
         result.add(getTarget().deepClone(name, subst));
+        result.add(get(1));
         result.add(getKeyTok());
         result.key = key;
         result.bi = bi;
