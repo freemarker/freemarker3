@@ -58,6 +58,7 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
      */
     public Pojo(Object object)
     {
+        assert !(object instanceof TemplateModel);
         this.object = object;
     }
 

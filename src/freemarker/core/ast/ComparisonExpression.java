@@ -129,12 +129,12 @@ public class ComparisonExpression extends BooleanExpression {
             }
             comp = collator.compare(first, second);
         }
-        else if(ltm instanceof TemplateBooleanModel && rtm instanceof TemplateBooleanModel) {
+        else if(isBoolean(ltm) && isBoolean(rtm)) {
             if(operation != EQUALS && operation != NOT_EQUALS) {
                 throw new TemplateException("Can not use operator " + opString + " on boolean values.", env);
             }
-            boolean first = ((TemplateBooleanModel)ltm).getAsBoolean();
-            boolean second = ((TemplateBooleanModel)rtm).getAsBoolean();
+            boolean first = asBoolean(ltm);
+            boolean second = asBoolean(rtm);
             comp = (first ? 1 : 0) - (second ? 1 : 0);
         }
         else {

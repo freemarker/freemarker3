@@ -42,7 +42,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
                                  || model instanceof TemplateDirectiveModel;
 		}
 		else if (builtInName == "is_boolean") {
-			result = model instanceof TemplateBooleanModel;
+			result = isBoolean(model);
 		}
 		else if (builtInName == "is_hash") {
 			result = model instanceof TemplateHashModel;
@@ -65,6 +65,6 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 		else if (builtInName == "is_collection") {
 			result = model instanceof TemplateCollectionModel;
 		}
-		return result ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
+		return result;
 	}
 }

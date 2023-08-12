@@ -3,7 +3,7 @@ package freemarker.core.ast;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.parser.ast.ParentheticalExpression;
-import freemarker.template.*;
+import static freemarker.template.Constants.JAVA_NULL;
 
 
 public class ExistsExpression extends Expression {
@@ -29,9 +29,7 @@ public class ExistsExpression extends Expression {
 				throw ire;
 			}
 		}
-		return tm == null || tm == Constants.JAVA_NULL 
-		       ? TemplateBooleanModel.FALSE 
-		       : TemplateBooleanModel.TRUE;
+		return tm != null && tm != JAVA_NULL;
 	}
 
 	public Expression _deepClone(String name, Expression subst) {

@@ -18,11 +18,6 @@ import static freemarker.ext.beans.ObjectWrapper.*;
 public class evalBI extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public boolean isSideEffectFree() {
-        return false;
-    }
-
-    @Override
     public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
         try {

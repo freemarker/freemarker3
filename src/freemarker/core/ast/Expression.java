@@ -64,11 +64,8 @@ abstract public class Expression extends TemplateNode {
 
     public boolean isTrue(Environment env) {
         Object referent = evaluate(env);
-        if (referent instanceof Boolean) {
-            return ((Boolean) referent);
-        }
-        if (referent instanceof TemplateBooleanModel) {
-            return ((TemplateBooleanModel) referent).getAsBoolean();
+        if (isBoolean(referent)) {
+            return asBoolean(referent);
         }
         assertNonNull(referent, this, env);
         String msg = "Error " + getStartLocation()
@@ -91,9 +88,8 @@ abstract public class Expression extends TemplateNode {
             return !((TemplateCollectionModel) model).iterator().hasNext();
         } else if (model instanceof TemplateHashModel) {
             return ((TemplateHashModel) model).isEmpty();
-        } else if (model instanceof TemplateNumberModel
-                || model instanceof TemplateDateModel
-                || model instanceof TemplateBooleanModel) {
+        } else if (isNumber(model) || (model instanceof TemplateDateModel) ||
+                isBoolean(model)) {
             return false;
         } else {
             return true;

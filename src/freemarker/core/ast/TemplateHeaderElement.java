@@ -66,11 +66,7 @@ public class TemplateHeaderElement extends TemplateNode {
 			throw new IllegalArgumentException("No parameter " + name);
 		}
 		if (isBoolean(tm)) {
-			try {
-				return ((TemplateBooleanModel) tm).getAsBoolean();
-			} catch (TemplateModelException te) {
-				throw new IllegalArgumentException(te);
-			}
+			return asBoolean(tm);
 		}
 		if (isString(tm)) {
 			try {

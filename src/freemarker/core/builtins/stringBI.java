@@ -21,17 +21,10 @@ import static freemarker.ext.beans.ObjectWrapper.*;
 public class stringBI extends ExpressionEvaluatingBuiltIn {
 	
     @Override
-    public boolean isSideEffectFree() {
-        // For numbers, booleans, and dates, depends on actual format which can change. 
-        return false;
-    }
-    
-    @Override
     public Object get(Environment env, BuiltInExpression caller,
         Object model) 
     {
         if (isNumber(model)) {
-            //return new NumberFormatter(EvaluationUtil.getNumber(model, caller.getTarget(), env), env);
             return new NumberFormatter(asNumber(model), env);
         }
         if (model instanceof TemplateDateModel) {
@@ -39,18 +32,11 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             int dateType = dm.getDateType();
             return new DateFormatter(EvaluationUtil.getDate(dm, caller.getTarget(), env), dateType, env);
         }
-        if (model instanceof StringModel) {
-            return model;
-        }
-        if (model instanceof Boolean) {
-            TemplateBooleanModel tbm = ((Boolean) model) ? Constants.TRUE : Constants.FALSE;
-            return new BooleanFormatter(tbm, env);
-        }
         if (isBoolean(model)) {
             return new BooleanFormatter(model, env);
         }
         if (isString(model)) {
-            return new StringModel(asString(model));
+            return asString(model);
         } 
       	throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number, date, or string");
     }
@@ -94,7 +80,6 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         private final int dateType;
         private final Environment env;
         private final DateFormat defaultFormat;
-        private String cachedValue;
 
         DateFormatter(Date date, int dateType, Environment env) {
             this.date = date;
@@ -107,10 +92,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             if(dateType == TemplateDateModel.UNKNOWN) {
                 throw new TemplateModelException("Can't convert the date to string, because it is not known which parts of the date variable are in use. Use ?date, ?time or ?datetime built-in, or ?string.<format> or ?string(format) built-in with this date.");
             }
-            if(cachedValue == null) {
-                cachedValue = defaultFormat.format(date);
-            }
-            return cachedValue;
+            return defaultFormat.format(date);
         }
 
         public Object get(String key) 

@@ -29,11 +29,6 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
         this.dateType = dateType;
     }
 
-    @Override
-    public boolean isSideEffectFree() {
-        return false; // can depend on environment's date format
-    }
-    
     public Object get(Environment env, BuiltInExpression caller, 
             Object model) 
     {

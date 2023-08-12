@@ -5,11 +5,9 @@ import java.util.Date;
 
 import freemarker.core.Environment;
 import freemarker.core.ast.ArithmeticEngine;
-import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateNumberModel;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -33,11 +31,11 @@ public class ModelComparator
      */
     public boolean modelsEqual(Object model1, Object model2)
     {
-        if(model1 instanceof TemplateNumberModel && model2 instanceof TemplateNumberModel) {
+        if(isNumber(model1) && isNumber(model2)) {
             try {
                 return arithmeticEngine.compareNumbers(
-                        ((TemplateNumberModel) model1).getAsNumber(), 
-                        ((TemplateNumberModel) model2).getAsNumber()) == 0;
+                        asNumber(model1), 
+                        asNumber(model2)) == 0;
             } catch (TemplateException ex) {
                 throw new TemplateModelException(ex);
             }
@@ -72,8 +70,8 @@ public class ModelComparator
             return collator.compare( asString(model1), asString(model2)) == 0;
         }
         
-        if(model1 instanceof TemplateBooleanModel && model2 instanceof TemplateBooleanModel) {
-            return ((TemplateBooleanModel)model1).getAsBoolean() == ((TemplateBooleanModel)model2).getAsBoolean();
+        if(isBoolean(model1) && isBoolean(model2)) {
+            return asBoolean(model1) == asBoolean(model2);
         }
         return false;
     }

@@ -6,7 +6,6 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
@@ -17,11 +16,6 @@ import freemarker.template.TemplateSequenceModel;
  * @version $Id: $
  */
 public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
-
-    @Override
-    public boolean isSideEffectFree() {
-        return false; // can depend on locale and arithmetic engine 
-    }
 
     @Override
     public Object get(Environment env, BuiltInExpression caller,
@@ -51,7 +45,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public Object exec(List args) {
+        public Boolean exec(List args) {
             if (args.size() != 1) {
                 throw new TemplateModelException("Expecting exactly one argument for ?seq_contains(...)");
             }
@@ -61,18 +55,18 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
                 Iterator<Object> tmi = collection.iterator();
                 while (tmi.hasNext()) {
                     if (modelComparator.modelsEqual(tmi.next(), compareToThis)) {
-                        return TemplateBooleanModel.TRUE;
+                        return true;
                     }
                 }
-                return TemplateBooleanModel.FALSE;
+                return false;
             }
             else {
                 for (int i=0; i<sequence.size(); i++) {
                     if (modelComparator.modelsEqual(sequence.get(i), compareToThis)) {
-                        return TemplateBooleanModel.TRUE;
+                        return true;
                     }
                 }
-                return TemplateBooleanModel.FALSE;
+                return false;
             }
         }
     }

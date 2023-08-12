@@ -18,12 +18,12 @@ import freemarker.ext.beans.NumberModel;
 import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateBooleanModel;
+import freemarker.template.TemplateNumberModel;
+import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateNumberModel;
-import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
 
@@ -479,13 +479,12 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
 
             obj = args.get(0);
-            if (!(obj instanceof TemplateNumberModel)) {
+            if (!isNumber(obj)) {
                 throw new TemplateModelException(
                         "?right_pad(...) expects a number as "
                         + "its 1st argument.");
             }
-            int width = ((TemplateNumberModel) obj).getAsNumber().intValue();
-
+            int width = asNumber(obj).intValue();
             if (ln > 1) {
                 obj = args.get(1);
                 if (!isString(obj)) {
@@ -592,8 +591,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
             sub = asString(obj);
 
-            boolean result = reverse ? string.endsWith(sub) : string.startsWith(sub);
-            return result ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
+            return reverse ? string.endsWith(sub) : string.startsWith(sub);
         }
     }
 

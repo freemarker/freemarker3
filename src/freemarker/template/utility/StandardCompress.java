@@ -7,6 +7,8 @@ import java.util.Map;
 import freemarker.template.*;
 import freemarker.core.Environment;
 
+import static freemarker.ext.beans.ObjectWrapper.asBoolean;
+
 /**
  * <p>A filter that compresses each sequence of consecutive whitespace
  * to a single line break (if the sequence contains a line break) or a
@@ -88,9 +90,9 @@ public class StandardCompress implements TemplateTransformModel, TemplateDirecti
                 throw new TemplateModelException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
             }
             try {
-                TemplateBooleanModel flag = (TemplateBooleanModel)args.get(SINGLE_LINE_KEY);
-                if (flag != null)
-                    singleLine = flag.getAsBoolean();
+                singleLine = asBoolean(args.get(SINGLE_LINE_KEY));
+//                if (flag != null)
+//                    singleLine = flag.getAsBoolean();
             } catch (ClassCastException e) {
                 throw new TemplateModelException("Expecting boolean argument to " + SINGLE_LINE_KEY);
             }

@@ -73,22 +73,12 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class Sort extends SequenceFunctions {
         @Override
-        public boolean isSideEffectFree() {
-            return false; // depends on locale and arithmetic engine
-        }
-        
-        @Override
         public Object apply(TemplateSequenceModel sequence) {
             return sort(sequence, null);
         }
     }
 
     public static class SortBy extends SequenceFunctions {
-        @Override
-        public boolean isSideEffectFree() {
-            return false; // depends on locale and arithmetic engine
-        }
-
         @Override
         public Object apply(TemplateSequenceModel sequence) {
             return new SortByMethod(sequence);
@@ -104,22 +94,12 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class IndexOf extends SequenceFunctions {
         @Override
-        public boolean isSideEffectFree() {
-            return false; // can depend on locale and arithmetic engine 
-        }
-        
-        @Override
         public Object apply(TemplateSequenceModel sequence) {
             return new SequenceIndexOf(sequence, false);
         }
     }
 
     public static class LastIndexOf extends SequenceFunctions {
-        @Override
-        public boolean isSideEffectFree() {
-            return false; // can depend on locale and arithmetic engine 
-        }
-
         @Override
         public Object apply(TemplateSequenceModel sequence) {
             return new SequenceIndexOf(sequence, true);

@@ -889,8 +889,8 @@ INJECT BooleanLiteral :
         return value ? "true" : "false";
     }
 
-    public Object evaluate(Environment env) {
-        return value ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
+    public Boolean evaluate(Environment env) {
+        return value;
     }
 
     public Expression _deepClone(String name, Expression subst) {

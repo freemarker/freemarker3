@@ -1,12 +1,11 @@
 package freemarker.core.ast;
 
 import freemarker.core.Environment;
-import freemarker.template.*;
 
 abstract class BooleanExpression extends Expression {
 
-    public Object evaluate(Environment env) throws TemplateException 
+    public Object evaluate(Environment env)
     {
-        return isTrue(env) ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
+        return isTrue(env);
     }
 }

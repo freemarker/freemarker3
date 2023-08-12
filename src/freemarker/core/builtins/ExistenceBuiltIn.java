@@ -8,7 +8,6 @@ import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.ast.Expression;
 import freemarker.template.Constants;
 import freemarker.template.LazilyEvaluatableArguments;
-import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.core.parser.ast.ParentheticalExpression;
 
@@ -54,18 +53,19 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
 
     public static class ExistsBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
-            return model == null || model == Constants.JAVA_NULL ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
+            return model != null && model != Constants.JAVA_NULL;
         }
     };
         
     public static class HasContentBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
-            return model == null || Expression.isEmpty(model) ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
+            return model != null && !Expression.isEmpty(model);
         }
     };
+
     public static class IsDefinedBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
-            return model == null ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
+            return model != null;
         }
     };
 

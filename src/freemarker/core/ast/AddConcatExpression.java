@@ -3,7 +3,6 @@ package freemarker.core.ast;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.ext.beans.StringModel;
-import freemarker.ext.beans.NumberModel;
 import freemarker.ext.beans.ListModel;
 import static freemarker.ext.beans.ObjectWrapper.*;
 import java.util.*;
@@ -43,21 +42,19 @@ public class AddConcatExpression extends Expression {
                 env != null
                     ? env.getArithmeticEngine()
                     : getTemplate().getArithmeticEngine();
-            return new NumberModel(ae.add(first, second));
+            return ae.add(first, second);
         }
-        if (leftModel instanceof TemplateNumberModel && rightModel instanceof TemplateNumberModel)
+        if (isNumber(leftModel) && isNumber(rightModel))
         {
-            //Number first = EvaluationUtil.getNumber((TemplateNumberModel) leftModel, getLeft(), env);
-            //Number second = EvaluationUtil.getNumber((TemplateNumberModel) rightModel, getRight(), env);
             Number first = asNumber(leftModel);
             Number second = asNumber(rightModel);
             ArithmeticEngine ae =
                 env != null
                     ? env.getArithmeticEngine()
                     : getTemplate().getArithmeticEngine();
-            return new NumberModel(ae.add(first, second));
+            return ae.add(first, second);
         }
-        else if(leftModel instanceof TemplateSequenceModel && rightModel instanceof TemplateSequenceModel)
+        else if (leftModel instanceof TemplateSequenceModel && rightModel instanceof TemplateSequenceModel)
         {
             return new ConcatenatedSequence((TemplateSequenceModel)leftModel, (TemplateSequenceModel)rightModel);
         }
@@ -92,9 +89,7 @@ public class AddConcatExpression extends Expression {
     	return new AddConcatExpression(getLeft().deepClone(name, subst), getRight().deepClone(name, subst));
     }
 
-    private static final class ConcatenatedSequence
-    implements
-        TemplateSequenceModel
+    private static final class ConcatenatedSequence implements TemplateSequenceModel
     {
         private final TemplateSequenceModel left;
         private final TemplateSequenceModel right;
@@ -115,9 +110,7 @@ public class AddConcatExpression extends Expression {
         }
     }
 
-    private static class ConcatenatedHash
-    implements TemplateHashModel
-    {
+    private static class ConcatenatedHash implements TemplateHashModel {
         protected final TemplateHashModel left;
         protected final TemplateHashModel right;
 
@@ -140,9 +133,7 @@ public class AddConcatExpression extends Expression {
         }
     }
 
-    private static final class ConcatenatedHashEx
-    extends ConcatenatedHash
-    implements TemplateHashModelEx
+    private static final class ConcatenatedHashEx extends ConcatenatedHash implements TemplateHashModelEx
     {
         private CollectionAndSequence keys;
         private CollectionAndSequence values;
@@ -160,21 +151,18 @@ public class AddConcatExpression extends Expression {
         }
 
         public TemplateCollectionModel keys()
-        throws TemplateModelException
         {
             initKeys();
             return keys;
         }
 
         public TemplateCollectionModel values()
-        throws TemplateModelException
         {
             initValues();
             return values;
         }
 
         private void initKeys()
-        throws TemplateModelException
         {
             if (keys == null) {
                 HashSet<String> keySet = new HashSet<String>();

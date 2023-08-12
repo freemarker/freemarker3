@@ -13,11 +13,6 @@ import freemarker.template.Constants;
 public abstract class MacroBuiltins extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public boolean isSideEffectFree() {
-        return false;
-    }
-    
-    @Override
     public Object get(Environment env, BuiltInExpression caller,
             Object model) {
         if (!(model instanceof Macro)) {

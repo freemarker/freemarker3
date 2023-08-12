@@ -20,11 +20,6 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
     static final Class<freemarker.ext.beans.Pojo> BEAN_MODEL_CLASS = freemarker.ext.beans.Pojo.class;
 
     @Override
-    public boolean isSideEffectFree() {
-        return false;
-    }
-
-    @Override
     public Object get(Environment env, BuiltInExpression caller,
             Object model) {
         try {
