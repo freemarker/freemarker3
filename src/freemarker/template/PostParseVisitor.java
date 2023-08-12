@@ -9,7 +9,7 @@ import freemarker.core.parser.ast.StringLiteral;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.utility.DeepUnwrap;
 
-
+import static freemarker.ext.beans.ObjectWrapper.*;
 import java.util.*;
 
 /**
@@ -47,7 +47,7 @@ public class PostParseVisitor extends ASTVisitor {
 					TemplateHashModelEx attributeMap = (TemplateHashModelEx) header.getParameter("attributes");
 	                TemplateCollectionModel keys = attributeMap.keys();
 	                for (Iterator<Object> it = keys.iterator(); it.hasNext();) {
-	                    String attName = ((TemplateScalarModel) it.next()).getAsString();
+	                    String attName = asString(it.next());
 	                    Object attValue = DeepUnwrap.unwrap(attributeMap.get(attName));
 	                    template.setCustomAttribute(attName, attValue);
 	                }

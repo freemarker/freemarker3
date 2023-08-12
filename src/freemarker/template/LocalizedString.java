@@ -13,8 +13,8 @@ import java.util.Locale;
  *            String lang = locale.getLanguage();
  *            if "fr".equals(lang)
  *               return "oui";
- *            else if "de".equals(lang)
- *               return "s\u00ED";
+ *            else if "es".equals(lang)
+ *               return "sí";
  *            else
  *               return "yes";
  *        }
@@ -32,5 +32,5 @@ abstract public class LocalizedString implements TemplateScalarModel {
                 return getLocalizedString(locale);
         }
 
-        abstract public String getLocalizedString(Locale locale) throws TemplateModelException;
+        abstract public String getLocalizedString(Locale locale);
 }

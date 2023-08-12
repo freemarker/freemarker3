@@ -21,7 +21,8 @@ import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateScalarModel;
+
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * A class that will wrap an arbitrary POJO (a.k.a. Plain Old Java Object)
@@ -280,8 +281,7 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
         List<Object> values = new ArrayList<>(size());
         Iterator<Object> it = keys().iterator();
         while (it.hasNext()) {
-            String key = ((TemplateScalarModel)it.next()).getAsString();
-            values.add(get(key));
+            values.add(asString(it.next()));
         }
         return new CollectionAndSequence((TemplateCollectionModel)new ListModel(new ArrayList(values)));
     }

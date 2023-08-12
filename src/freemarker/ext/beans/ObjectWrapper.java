@@ -160,17 +160,17 @@ public class ObjectWrapper
     }
 
     public static Date asDate(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         if (obj instanceof TemplateDateModel) {
             return ((TemplateDateModel) obj).getAsDate();
+        }
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
         }
         return (Date) obj;
     }
 
     public static boolean isString(Object obj) {
-        if (obj instanceof TemplateScalarModel) {
+       if (obj instanceof TemplateScalarModel) {
             return true;
         }
         if (obj instanceof Pojo) {
@@ -190,21 +190,21 @@ public class ObjectWrapper
     }
 
     public static boolean isBoolean(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         if (obj instanceof TemplateBooleanModel) {
             return true;
+        }
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
         }
         return obj instanceof Boolean;
     }
 
     public static boolean asBoolean(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         if (obj instanceof TemplateBooleanModel) {
             return ((TemplateBooleanModel) obj).getAsBoolean();
+        }
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
         }
         return (Boolean) obj;
     }
@@ -341,7 +341,7 @@ public class ObjectWrapper
             return Constants.JAVA_NULL;
         }
         if(object instanceof TemplateModel) {
-            return (TemplateModel)object;
+            return object;
         }
         if (object instanceof Map) {
             return  new SimpleMapModel((Map<?,?>)object);
@@ -375,6 +375,9 @@ public class ObjectWrapper
         }
         if (object instanceof ResourceBundle) {
             return new ResourceBundleModel((ResourceBundle)object);
+        }
+        if (object instanceof CharSequence) {
+            return new Pojo(object);
         }
         return new StringModel(object);
     }

@@ -46,8 +46,8 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             TemplateBooleanModel tbm = ((Boolean) model) ? Constants.TRUE : Constants.FALSE;
             return new BooleanFormatter(tbm, env);
         }
-        if (model instanceof TemplateBooleanModel) {
-            return new BooleanFormatter((TemplateBooleanModel) model, env);
+        if (isBoolean(model)) {
+            return new BooleanFormatter(model, env);
         }
         if (isString(model)) {
             return new StringModel(asString(model));
@@ -59,10 +59,10 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     static class BooleanFormatter
     implements TemplateScalarModel, LazilyEvaluatableArguments  
     {
-        private final TemplateBooleanModel bool;
+        private final Object bool;
         private final Environment env;
         
-        BooleanFormatter(TemplateBooleanModel bool, Environment env) {
+        BooleanFormatter(Object bool, Environment env) {
             this.bool = bool;
             this.env = env;
         }
@@ -71,7 +71,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             if (isString(bool)) {
                 return (asString(bool));
             } else {
-                return env.getBooleanFormat(bool.getAsBoolean());
+                return env.getBooleanFormat(asBoolean(bool));
             }
         }
 
@@ -83,7 +83,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
                         + "2 arguments.");
             }
             return new StringModel(
-                (String) arguments.get(bool.getAsBoolean() ? 0 : 1));
+                (String) arguments.get(asBoolean(bool) ? 0 : 1));
         }
     }
     
@@ -162,7 +162,6 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
         
         @Parameters("format")
-        
         public Object exec(List arguments)
             {
             if (arguments.size() != 1) {

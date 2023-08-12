@@ -21,7 +21,6 @@ import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateModelListSequence;
 import freemarker.template.TemplateNumberModel;
-import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
 

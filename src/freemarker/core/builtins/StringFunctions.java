@@ -628,7 +628,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             if (!isString(obj)) {
                 throw new TemplateModelException(getName() + "(...) expects a string as its first argument.");
             }
-            sub = ((TemplateScalarModel) obj).getAsString();
+            sub = asString(obj);
 
             if (ln > 1) {
                 obj = args.get(1);
@@ -661,27 +661,19 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         public Object exec(List args) {
-            Object obj;
-            String sub;
-
             int ln  = args.size();
             if (ln != 1) {
                 throw new TemplateModelException(
                 "?contains(...) expects one argument.");
             }
 
-            obj = args.get(0);
-            if (!isString(obj)) {
+            Object firstArg = args.get(0);
+            if (!isString(firstArg)) {
                 throw new TemplateModelException(
                         "?contains(...) expects a string as "
                         + "its first argument.");
             }
-            sub = ((TemplateScalarModel) obj).getAsString();
-
-            return
-            (s.indexOf(sub) != -1) ?
-                    TemplateBooleanModel.TRUE :
-                        TemplateBooleanModel.FALSE;
+            return s.indexOf(asString(firstArg)) != -1;
         }
     }
 }

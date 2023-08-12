@@ -7,15 +7,14 @@ import java.util.Map;
 
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateNumberModel;
-import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
+
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * Utility methods for unwrapping {@link TemplateModel}-s.
@@ -33,14 +32,8 @@ public class DeepUnwrap
      *       of {@link AdapterTemplateModel#getAdaptedObject(Class)} for <tt>Object.class</tt> is returned.
      *   <li>If the object implements {@link WrapperTemplateModel}, then the result
      *       of {@link WrapperTemplateModel#getWrappedObject()} is returned.
-     *   <li>If the object implements {@link TemplateScalarModel}, then the result
-     *       of {@link TemplateScalarModel#getAsString()} is returned.
-     *   <li>If the object implements {@link TemplateNumberModel}, then the result
-     *       of {@link TemplateNumberModel#getAsNumber()} is returned.
      *   <li>If the object implements {@link TemplateDateModel}, then the result
      *       of {@link TemplateDateModel#getAsDate()} is returned.
-     *   <li>If the object implements {@link TemplateBooleanModel}, then the result
-     *       of {@link TemplateBooleanModel#getAsBoolean()} is returned.
      *   <li>If the object implements {@link TemplateSequenceModel} or
      *       {@link TemplateCollectionModel}, then a <code>java.util.ArrayList</code> is
      *       constructed from the subvariables, and each subvariable is unwrapped with
@@ -78,17 +71,17 @@ public class DeepUnwrap
         if(model instanceof AdapterTemplateModel) {
             return ((AdapterTemplateModel)model).getAdaptedObject(OBJECT_CLASS);
         }
-        if(model instanceof TemplateScalarModel) {
-            return ((TemplateScalarModel)model).getAsString();
+        if (isNumber(model)) {
+            return asNumber(model);
         }
-        if(model instanceof TemplateNumberModel) {
-            return ((TemplateNumberModel)model).getAsNumber();
+        if (isString(model)) {
+            return asString(model);
         }
         if(model instanceof TemplateDateModel) {
             return ((TemplateDateModel)model).getAsDate();
         }
-        if(model instanceof TemplateBooleanModel) {
-            return ((TemplateBooleanModel)model).getAsBoolean() ? Boolean.TRUE : Boolean.FALSE;
+        if (isBoolean(model)) {
+            return asBoolean(model);
         }
         if(model instanceof TemplateSequenceModel) {
             TemplateSequenceModel seq = (TemplateSequenceModel)model;

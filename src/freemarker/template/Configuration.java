@@ -34,6 +34,8 @@ import freemarker.template.utility.XmlEscape;
 import freemarker.core.ast.ASTVisitor;
 import freemarker.ext.beans.CollectionModel;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * Main entry point into the FreeMarker API, this class encapsulates the 
  * various configuration parameters with which FreeMarker is run, as well
@@ -624,7 +626,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
         Iterator<Object> values = hash.values().iterator();
         while(keys.hasNext())
         {
-            setSharedVariable(((TemplateScalarModel)keys.next()).getAsString(), values.next());
+            setSharedVariable(asString(keys.next()), values.next());
         }
     }
     

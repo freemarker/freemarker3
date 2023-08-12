@@ -9,8 +9,7 @@ import freemarker.template.utility.*;
  *
  * @version $Id: TransformHashWrapper.java,v 1.15 2005/06/16 18:13:59 ddekany Exp $
  */
-public class TransformHashWrapper implements TemplateHashModel,
-        TemplateScalarModel {
+public class TransformHashWrapper implements TemplateHashModel, TemplateScalarModel {
 
     private SimpleMapModel hash = new SimpleMapModel();
 
