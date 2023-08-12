@@ -26,7 +26,7 @@ public class Range extends Expression {
     	return right;
     }
     
-    boolean hasRhs() {
+    public boolean hasRhs() {
         return right != null;
     }
 

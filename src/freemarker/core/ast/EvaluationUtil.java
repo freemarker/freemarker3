@@ -15,11 +15,9 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  */
 public class EvaluationUtil
 {
-    private EvaluationUtil()
-    {
-    }
+    private EvaluationUtil() {}
     
-    static Number getNumber(Expression expr, Environment env)
+    static public Number getNumber(Expression expr, Environment env)
     {
         Object value = expr.evaluate(env);
         return getNumber(value, expr, env);
