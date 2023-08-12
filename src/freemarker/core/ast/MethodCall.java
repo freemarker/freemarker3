@@ -21,35 +21,30 @@ import java.io.StringWriter;
  */
 public class MethodCall extends Expression {
 
-    private Expression target;
-    private final ArgsList arguments;
-    
     public MethodCall(Expression target, ArgsList args) {
-    	this.target = target;
-    	target.setParent(this);
-    	this.arguments = args;
-    	args.setParent(this);
+        add(target);
+        add(args);
     }
-    
+
     public ArgsList getArgs() {
-    	return arguments;
+        return firstChildOfType(ArgsList.class);
     }
-    
+
     public Expression getTarget() {
-    	return target;
+    	return (Expression) get(0);
     }
     
     public Object evaluate(Environment env) throws TemplateException
     {
-        Object targetModel = target.evaluate(env);
-        if (targetModel instanceof TemplateMethodModel) {
-            TemplateMethodModel targetMethod = (TemplateMethodModel)targetModel;
-            List argumentStrings = arguments.getParameterSequence(targetMethod, env);
+        Object value = getTarget().evaluate(env);
+        if (value instanceof TemplateMethodModel) {
+            TemplateMethodModel targetMethod = (TemplateMethodModel)value;
+            List argumentStrings = getArgs().getParameterSequence(targetMethod, env);
             Object result = targetMethod.exec(argumentStrings);
             return ObjectWrapper.instance().wrap(result);
         }
-        else if (targetModel instanceof Macro) {
-            Macro func = (Macro) targetModel;
+        else if (value instanceof Macro) {
+            Macro func = (Macro) value;
             StringWriter sw = null;
             env.setLastReturnValue(null);
             Writer prevOut = env.getOut();
@@ -63,7 +58,7 @@ public class MethodCall extends Expression {
                     env.setOut(sw);
 //                    throw new TemplateException("A macro cannot be called in an expression.", env);
                  }
-                env.render(func, arguments, null, null);
+                env.render(func, getArgs(), null, null);
             } catch (IOException ioe) {
                 throw new InternalError("This should be impossible.");
             } finally {
@@ -72,12 +67,11 @@ public class MethodCall extends Expression {
             return sw != null ? ObjectWrapper.instance().wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
         }
         else {
-            throw invalidTypeException(targetModel, target, env, "method");
+            throw invalidTypeException(value, getTarget(), env, "method");
         }
     }
 
     public Expression _deepClone(String name, Expression subst) {
-    	return new MethodCall(target.deepClone(name, subst), arguments.deepClone(name, subst));
+    	return new MethodCall(getTarget().deepClone(name, subst), getArgs().deepClone(name, subst));
     }
-
 }

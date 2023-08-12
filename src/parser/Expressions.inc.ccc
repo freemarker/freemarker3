@@ -39,9 +39,9 @@ Expression PrimaryExpression :
   (
       exp=DotVariable(exp)
       |
-      exp=DynamicKey(exp)
+      exp=DynamicKeyName(exp)
       |
-      exp=MethodArgs(exp)
+      exp=MethodCall(exp)
       |
       exp=BuiltIn(exp)
       |
@@ -712,7 +712,7 @@ INJECT DotVariable :
  * production for when the key is specified
  * in brackets.
  */
-DynamicKey(Expression exp)#DynamicKeyName :
+DynamicKeyName(Expression exp)# :
 {
    pushNode(exp);
    Expression arg;
@@ -912,7 +912,7 @@ INJECT DynamicKeyName :
 /**
  * production for an arglist part of a method invocation.
  */
-MethodCall MethodArgs(Expression exp) :
+MethodCall MethodCall(Expression exp) : //#freemarker.core.ast.MethodCall :
 {
      ArgsList args = new PositionalArgsList();
      Token end;
