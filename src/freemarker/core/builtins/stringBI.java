@@ -113,9 +113,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             return cachedValue;
         }
 
-        public TemplateModel get(String key)
-        throws
-            TemplateModelException
+        public Object get(String key) 
         {
             return new StringModel(env.getDateFormatObject(dateType, key).format(date));
         }
@@ -156,7 +154,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             return cachedValue;
         }
 
-        public TemplateModel get(String key)
+        public Object get(String key)
         {
             return new StringModel(env.getNumberFormatObject(key).format(number));
         }

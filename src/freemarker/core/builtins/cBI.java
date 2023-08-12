@@ -5,7 +5,6 @@ import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateNumberModel;
 
 /**
@@ -14,8 +13,7 @@ import freemarker.template.TemplateNumberModel;
 public class cBI extends ExpressionEvaluatingBuiltIn {
     
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
-            Object model) 
+    public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
         final Number num;
         try {

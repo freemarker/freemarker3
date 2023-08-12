@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
 /**

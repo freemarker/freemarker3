@@ -441,7 +441,7 @@ INJECT NumberLiteral :
         this.value = value;
     }
     
-    public TemplateModel evaluate(Environment env) {
+    public Object evaluate(Environment env) {
         return new NumberModel(value);
     }
     

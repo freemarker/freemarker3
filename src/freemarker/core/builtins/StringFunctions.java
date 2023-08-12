@@ -21,7 +21,6 @@ import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
@@ -95,14 +94,14 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
     
     public static class Length extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new NumberModel(Integer.valueOf(string.length()));
         }
     }
 
     public static class StartsWith extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new StartsOrEndsWithMethod(string, false);
         }
     }
@@ -116,70 +115,70 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class Substring extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new SubstringMethod(string);
         }
     }
 
     public static class Replace extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new ReplaceMethod(string);
         }
     }
 
     public static class Split extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new SplitMethod(string);
         }
     }
 
     public static class Matches extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new MatcherBuilder(string);
         }
     }
 
     public static class IndexOf extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new IndexOfMethod(string, false);
         }
     }
 
     public static class LastIndexOf extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new IndexOfMethod(string, true);
         }
     }
 
     public static class Contains extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new ContainsMethod(string);
         }
     }
 
     public static class LeftPad extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new LeftPadMethod(string);
         }
     }
 
     public static class RightPad extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new RightPadMethod(string);
         }
     }
 
     public static class WordList extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             StringTokenizer st = new StringTokenizer(string);
             ListModel result = new ListModel();
             while (st.hasMoreTokens()) {
@@ -191,7 +190,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class Url extends StringFunctions {
         @Override
-        public TemplateModel apply(String string, Environment env, BuiltInExpression caller) {
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new urlBIResult(string, env);
         }
     }
@@ -347,7 +346,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public TemplateModel getGroups() {
+        public Object getGroups() {
             if (groups == null) {
                 groups = new TemplateSequenceModel() {
                     public int size() {
@@ -358,7 +357,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                             throw new TemplateModelException(e);
                         }
                     }
-                    public TemplateModel get(int i) {
+                    public Object get(int i) {
                         try {
                             return new StringModel(matcher.group(i));
                         }

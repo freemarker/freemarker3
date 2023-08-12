@@ -10,7 +10,6 @@ import freemarker.template.Constants;
 import freemarker.template.LazilyEvaluatableArguments;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
 import freemarker.core.parser.ast.ParentheticalExpression;
 
 /**
@@ -54,7 +53,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
     };
 
     public static class ExistsBuiltIn extends ExistenceBuiltIn {
-        public TemplateModel apply(final Object model) {
+        public Object apply(final Object model) {
             return model == null || model == Constants.JAVA_NULL ? TemplateBooleanModel.FALSE : TemplateBooleanModel.TRUE;
         }
     };
@@ -72,10 +71,10 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
 
     private static class FirstDefined implements TemplateMethodModelEx, LazilyEvaluatableArguments {
         static final FirstDefined INSTANCE = new FirstDefined();
-        public TemplateModel exec(List args) {
+        public Object exec(List args) {
             for (Object arg : args) {
                 if (arg != null && arg != Constants.JAVA_NULL) {
-                    return (TemplateModel) arg;
+                    return arg;
                 }
             }
             return null;

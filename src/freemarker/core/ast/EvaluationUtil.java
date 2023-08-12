@@ -18,8 +18,8 @@ public class EvaluationUtil
     
     static Number getNumber(Expression expr, Environment env)
     {
-        Object model = expr.evaluate(env);
-        return getNumber(model, expr, env);
+        Object value = expr.evaluate(env);
+        return getNumber(value, expr, env);
     }
 
     static public Number getNumber(Object model, Expression expr, Environment env)
@@ -42,7 +42,6 @@ public class EvaluationUtil
     }
 
     static Number getNumber(TemplateNumberModel model, Expression expr, Environment env)
-        throws TemplateModelException, TemplateException
     {
         Number value = model.getAsNumber();
         if(value == null) {
@@ -52,7 +51,6 @@ public class EvaluationUtil
     }
 
     static public Date getDate(TemplateDateModel model, Expression expr, Environment env)
-        throws TemplateModelException, TemplateException
     {
         Date value = model.getAsDate();
         if(value == null) {

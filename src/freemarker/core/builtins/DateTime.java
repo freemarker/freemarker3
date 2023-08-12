@@ -12,7 +12,6 @@ import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -76,8 +75,6 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
         private Date cachedValue;
 
         DateParser(String text, int dateType, BuiltInExpression caller, Environment env)
-        throws
-        TemplateModelException
         {
             this.text = text;
             this.env = env;
@@ -97,7 +94,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
             return dateType;
         }
 
-        public TemplateModel get(String pattern) {
+        public Object get(String pattern) {
             return new DateModel(
                     parse(env.getDateFormatObject(dateType, pattern)),
                     dateType);
@@ -117,9 +114,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
             return false;
         }
 
-        private Date parse(DateFormat df)
-        throws
-        TemplateModelException
+        private Date parse(DateFormat df) 
         {
             try {
                 return df.parse(text);

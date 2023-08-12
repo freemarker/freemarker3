@@ -10,10 +10,9 @@ import freemarker.core.ast.BuiltInExpression;
 import freemarker.template.Template;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateDirectiveModel;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
+import freemarker.template.TemplateException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -23,7 +22,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
 public class interpretBI extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public TemplateModel get(Environment env, BuiltInExpression caller,
+    public Object get(Environment env, BuiltInExpression caller,
             Object model) 
     {
         String id = null, interpretString = null;

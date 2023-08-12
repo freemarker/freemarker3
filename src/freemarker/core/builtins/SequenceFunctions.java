@@ -17,7 +17,6 @@ import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateSequenceModel;
@@ -67,7 +66,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class Reverse extends SequenceFunctions {
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) {
+        public Object apply(TemplateSequenceModel sequence) {
             return new ReverseSequence(sequence);
         }
     }
@@ -79,7 +78,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
         
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) {
+        public Object apply(TemplateSequenceModel sequence) {
             return sort(sequence, null);
         }
     }
@@ -91,14 +90,14 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) {
+        public Object apply(TemplateSequenceModel sequence) {
             return new SortByMethod(sequence);
         }
     }
 
     public static class Chunk extends SequenceFunctions {
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) {
+        public Object apply(TemplateSequenceModel sequence) {
             return new ChunkFunction(sequence);
         }
     }
@@ -110,7 +109,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
         
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) {
+        public Object apply(TemplateSequenceModel sequence) {
             return new SequenceIndexOf(sequence, false);
         }
     }
@@ -122,7 +121,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         @Override
-        public TemplateModel apply(TemplateSequenceModel sequence) {
+        public Object apply(TemplateSequenceModel sequence) {
             return new SequenceIndexOf(sequence, true);
         }
     }
@@ -167,7 +166,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
             return new ChunkedSequence(tsm, ((TemplateNumberModel) chunkSize)
                     .getAsNumber().intValue(),
-                    numArgs > 1 ? (TemplateModel) args.get(1) : null);
+                    numArgs > 1 ? args.get(1) : null);
         }
     }
 
@@ -556,7 +555,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.reverse = reverse;
         }
 
-        public TemplateModel exec(List args) {
+        public Object exec(List args) {
             final int argc = args.size();
             final int startIndex;
             if (argc != 1 && argc != 2) {
