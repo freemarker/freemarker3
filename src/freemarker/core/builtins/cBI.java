@@ -5,7 +5,8 @@ import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateNumberModel;
+
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * Implementation of ?c built-in 
@@ -15,9 +16,9 @@ public class cBI extends ExpressionEvaluatingBuiltIn {
     @Override
     public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
-        final Number num;
+        Number num;
         try {
-            num = ((TemplateNumberModel) model).getAsNumber();
+            num = asNumber(model);
         } catch (ClassCastException e) {
             throw new TemplateException(
                     "Expecting a number on the left side of ?c", env);

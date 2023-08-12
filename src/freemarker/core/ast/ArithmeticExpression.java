@@ -4,6 +4,8 @@ import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.ext.beans.NumberModel;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * An operator for arithmetic operations. Note that the + operator
  * also does string concatenation for backward compatibility.
@@ -46,8 +48,8 @@ public class ArithmeticExpression extends Expression {
     {
         Object leftModel = getLeft().evaluate(env);
         Object rightModel = getRight().evaluate(env);
-        boolean leftIsNumber = (leftModel instanceof TemplateNumberModel);
-        boolean rightIsNumber = (rightModel instanceof TemplateNumberModel);
+        boolean leftIsNumber = isNumber(leftModel);
+        boolean rightIsNumber = isNumber(rightModel);
         boolean bothNumbers = leftIsNumber && rightIsNumber;
         if (!bothNumbers) {
             String msg = "Error " + getStartLocation();

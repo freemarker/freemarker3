@@ -4,7 +4,10 @@ import java.util.Date;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.template.*;
+import freemarker.template.TemplateDateModel;
+import freemarker.template.TemplateException;
+import static freemarker.template.Constants.JAVA_NULL;;
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * @version 1.0
@@ -24,30 +27,18 @@ public class EvaluationUtil
 
     static public Number getNumber(Object model, Expression expr, Environment env)
     {
-        if (model instanceof Number) {
-            return (Number) model;
-        }
-        if(model instanceof TemplateNumberModel) {
-            return getNumber((TemplateNumberModel)model, expr, env);
+        if(isNumber(model)) {
+            return asNumber(model);
         }
         else if(model == null) {
             throw new InvalidReferenceException(expr + " is undefined.", env);
         }
-        else if(model == Constants.JAVA_NULL) {
+        else if(model == JAVA_NULL) {
             throw new InvalidReferenceException(expr + " is null.", env);
         }
         else {
             throw new NonNumericalException(expr + " is not a number, it is " + model.getClass().getName(), env);
         }
-    }
-
-    static Number getNumber(TemplateNumberModel model, Expression expr, Environment env)
-    {
-        Number value = model.getAsNumber();
-        if(value == null) {
-            throw new TemplateException(expr + " evaluated to null number.", env);
-        }
-        return value;
     }
 
     static public Date getDate(TemplateDateModel model, Expression expr, Environment env)

@@ -21,8 +21,7 @@ public class NumericalCast extends ExpressionEvaluatingBuiltIn {
     private static final MathContext mc = new MathContext(0, RoundingMode.FLOOR);
 
     @Override
-    public Object get(Environment env, BuiltInExpression caller,
-            Object model) 
+    public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
         try {
             return new NumberModel(getNumber(((TemplateNumberModel) model).getAsNumber(), caller.getName()));
