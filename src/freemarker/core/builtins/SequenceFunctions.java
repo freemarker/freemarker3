@@ -11,15 +11,14 @@ import freemarker.core.Environment;
 import freemarker.core.ast.ArithmeticEngine;
 import freemarker.core.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
+import freemarker.ext.beans.ListModel;
 import freemarker.ext.beans.NumberModel;
-import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateModelListSequence;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
@@ -241,7 +240,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             return seq;
         }
 
-        List<Object> res = new ArrayList<Object>(ln);
+        List<Object> result = new ArrayList<Object>(ln);
         Object item;
         item = seq.get(0);
         if (keys != null) {
@@ -301,7 +300,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 for (i = 0; i < ln; i++) {
                     item = seq.get(i);
                     try {
-                        res.add(new KVP(asString(item), item));
+                        result.add(new KVP(asString(item), item));
                     } catch (ClassCastException e) {
                             throw new TemplateModelException(
                                     "Failure of ?sort built-in: "
@@ -316,7 +315,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 for (i = 0; i < ln; i++) {
                     item = seq.get(i);
                     try {
-                        res.add(new KVP(asNumber(item), item));
+                        result.add(new KVP(asNumber(item), item));
                     } catch (ClassCastException e) {
                         throw new TemplateModelException(
                                 "sorting failed: " 
@@ -331,7 +330,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 for (i = 0; i < ln; i++) {
                     item = seq.get(i);
                     try {
-                        res.add(new KVP(((TemplateDateModel) item).getAsDate(),
+                        result.add(new KVP(((TemplateDateModel) item).getAsDate(),
                                 item));
                     } catch (ClassCastException e) {
                         if (!(item instanceof TemplateNumberModel)) {
@@ -382,7 +381,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 }
                 if (keyType == KEY_TYPE_STRING) {
                     try {
-                        res.add(new KVP(asString(key), item));
+                        result.add(new KVP(asString(key), item));
                     } catch (ClassCastException e) {
                             throw new TemplateModelException(
                                     "sorting failed: " 
@@ -394,7 +393,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 } else if (keyType == KEY_TYPE_NUMBER) {
                     try {
-                        res.add(new KVP(asNumber(key), item));
+                        result.add(new KVP(asNumber(key), item));
                     } catch (ClassCastException e) {
                             throw new TemplateModelException(
                                     "sorting failed: "
@@ -406,7 +405,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 } else if (keyType == KEY_TYPE_DATE) {
                     try {
-                        res.add(new KVP(((TemplateDateModel) key).getAsDate(),
+                        result.add(new KVP(((TemplateDateModel) key).getAsDate(),
                                 item));
                     } catch (ClassCastException e) {
                         if (!(key instanceof TemplateDateModel)) {
@@ -438,16 +437,18 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         try {
-            Collections.sort(res, cmprtr);
+            Collections.sort(result, cmprtr);
         } catch (ClassCastException exc) {
             throw new TemplateModelException("Unexpected error while sorting:" + exc, exc);
         }
 
         for (i = 0; i < ln; i++) {
-            res.set(i, ((KVP) res.get(i)).value);
+            result.set(i, ((KVP) result.get(i)).value);
         }
 
-        return new TemplateModelListSequence(res);
+        //return new TemplateModelListSequence(result);
+        //return ObjectWrapper.instance().wrap(result);
+        return new ListModel(result);
     }
 
     static class KVP {
@@ -515,8 +516,8 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             }
             String[] subvars;
             Object obj = params.get(0);
-            if (ObjectWrapper.isString(obj)) {
-                subvars = new String[]{ObjectWrapper.asString(obj)};
+            if (isString(obj)) {
+                subvars = new String[]{asString(obj)};
             } else if (obj instanceof TemplateSequenceModel) {
                 TemplateSequenceModel seq = (TemplateSequenceModel) obj;
                 int ln = seq.size();

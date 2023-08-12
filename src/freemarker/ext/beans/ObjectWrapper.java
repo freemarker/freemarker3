@@ -170,7 +170,7 @@ public class ObjectWrapper
     }
 
     public static boolean isString(Object obj) {
-       if (obj instanceof TemplateScalarModel) {
+        if (obj instanceof TemplateScalarModel) {
             return true;
         }
         if (obj instanceof Pojo) {
@@ -377,9 +377,9 @@ public class ObjectWrapper
             return new ResourceBundleModel((ResourceBundle)object);
         }
         if (object instanceof CharSequence) {
-            return new Pojo(object);
+            return object;
         }
-        return new StringModel(object);
+        return new Pojo(object);
     }
 
     /**

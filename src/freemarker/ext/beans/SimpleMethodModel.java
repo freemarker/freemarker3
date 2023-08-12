@@ -82,13 +82,12 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
         }
     }
     
-    public TemplateModel get(int index) throws TemplateModelException
+    public Object get(int index) throws TemplateModelException
     {
-        return (TemplateModel) exec(Collections.singletonList(new NumberModel(
-                Integer.valueOf(index))));
+        return exec(Collections.singletonList(new NumberModel(Integer.valueOf(index))));
     }
 
-    public int size() throws TemplateModelException
+    public int size() 
     {
         throw new TemplateModelException("?size is unsupported for: " + getClass().getName());
     }
