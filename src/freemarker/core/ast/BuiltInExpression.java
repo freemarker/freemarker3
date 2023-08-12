@@ -26,10 +26,6 @@ import freemarker.core.builtins.sizeBI;
 import freemarker.core.builtins.sourceBI;
 import freemarker.core.builtins.stringBI;
 import freemarker.template.TemplateDateModel;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
-
-
 
 public class BuiltInExpression extends Expression {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();
@@ -144,7 +140,7 @@ public class BuiltInExpression extends Expression {
         return bi;
     }
 
-    public Object getAsTemplateModel(Environment env) {
+    public Object evaluate(Environment env) {
         return bi.get(env, this);
     }
 

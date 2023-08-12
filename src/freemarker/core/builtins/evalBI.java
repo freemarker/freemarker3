@@ -48,6 +48,6 @@ public class evalBI extends ExpressionEvaluatingBuiltIn {
             pe.setTemplateName(caller.getTemplate().getName());
             throw new TemplateException(pe, env);
         }
-        return exp.getAsTemplateModel(env);
+        return exp.evaluate(env);
     }
 }

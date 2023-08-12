@@ -9,7 +9,6 @@ import freemarker.core.Scope;
 import freemarker.ext.beans.CollectionModel;
 import freemarker.ext.beans.StringModel;
 import freemarker.template.TemplateCollectionModel;
-import freemarker.template.TemplateModel;
 
 /**
  * @author Attila Szegedi
@@ -51,7 +50,7 @@ public class NamedParameterListScope extends AbstractScope {
         paramValues.set(i, value);
     }
 
-    public TemplateModel remove(String key) {
+    public Object remove(String key) {
         throw new UnsupportedOperationException();
     }
 

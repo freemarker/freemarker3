@@ -204,7 +204,7 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    private static final TemplateModel[] NO_OUT_ARGS = new TemplateModel[0];
+    private static final Object[] NO_OUT_ARGS = new Object[0];
 
     public void render(final TemplateElement element,
             TemplateDirectiveModel directiveModel, Map<String, Object> args,
@@ -226,11 +226,11 @@ public final class Environment extends Configurable implements Scope {
                 }
             };
         }
-        final TemplateModel[] outArgs;
+        final Object[] outArgs;
         if (bodyParameterNames == null || bodyParameterNames.isEmpty()) {
             outArgs = NO_OUT_ARGS;
         } else {
-            outArgs = new TemplateModel[bodyParameterNames.size()];
+            outArgs = new Object[bodyParameterNames.size()];
         }
         final Scope scope = currentScope;
         if (createsNewScope) {
@@ -898,7 +898,7 @@ public final class Environment extends Configurable implements Scope {
 
     public TemplateTransformModel getTransform(Expression exp) {
         TemplateTransformModel ttm = null;
-        Object tm = exp.getAsTemplateModel(this);
+        Object tm = exp.evaluate(this);
         if (tm instanceof TemplateTransformModel) {
             ttm = (TemplateTransformModel) tm;
         } else if (exp instanceof Identifier) {
@@ -969,7 +969,7 @@ public final class Environment extends Configurable implements Scope {
      * Sets a variable that is visible globally. This is correspondent to FTL
      * <code><#global <i>name</i>=<i>model</i>></code>.
      */
-    public void setGlobalVariable(String name, TemplateModel model) {
+    public void setGlobalVariable(String name, Object model) {
         globalVariables.put(name, model);
     }
 
@@ -979,7 +979,7 @@ public final class Environment extends Configurable implements Scope {
      * considered a convenient shorthand for: getCurrentNamespace().put(name,
      * model)
      */
-    public void setVariable(String name, TemplateModel model) {
+    public void setVariable(String name, Object model) {
         getCurrentNamespace().put(name, model);
     }
 
@@ -996,7 +996,7 @@ public final class Environment extends Configurable implements Scope {
      *                               if the environment is not executing a macro
      *                               body.
      */
-    public void setLocalVariable(String name, TemplateModel model) {
+    public void setLocalVariable(String name, Object model) {
         if (currentMacroContext == null) {
             throw new IllegalStateException("Not executing macro body");
         }
@@ -1349,34 +1349,6 @@ public final class Environment extends Configurable implements Scope {
         }
         return result;
     }
-
-    /*
-     * private TemplateModel getNodeProcessor(final String nodeName, final
-     * String nsURI, int startIndex) { TemplateModel
-     * result = null; TemplateSequenceModel nodeNamespaces =
-     * this.nodeNamespaces; if (currentMacroContext != null) { SimpleSequence ss =
-     * new SimpleSequence(); Macro.Context ctxt = currentMacroContext; while
-     * (ctxt != null) { ss.add(ctxt.getLocals()); ctxt =
-     * ctxt.invokingMacroContext; } for (int i=0; i<this.nodeNamespaces.size();
-     * i++) { ss.add(this.nodeNamespaces.get(i)); } nodeNamespaces = ss; } //
-     * This is a bit tricky/hacky, if startIndex is -1 this is taken to mean //
-     * that we are in a fallback from the inner macro to the outer namespace //
-     * REVISIT: what about falling back to an enclosing macro first? /* if
-     * (startIndex <0) { startIndex = 0; } else if (startIndex == 0 &&
-     * currentMacroContext != null) { FTLNamespace ns =
-     * currentMacroContext.getLocals(); result = getNodeProcessor(ns, nodeName,
-     * nsURI); }
-     */
-    /*
-     * int i; for (i = startIndex; i<nodeNamespaces.size(); i++) { FTLNamespace
-     * ns = null; try { ns = (FTLNamespace) nodeNamespaces.get(i); } catch
-     * (ClassCastException cce) { throw new InvalidReferenceException("A using
-     * clause should contain a sequence of namespaces or strings that indicate
-     * the location of importable macro libraries.", this); } result =
-     * getNodeProcessor(ns, nodeName, nsURI); if (result != null) break; } if
-     * (result != null) { this.nodeNamespaceIndex = i+1; this.currentNodeName =
-     * nodeName; this.currentNodeNS = nsURI; } return result; }
-     */
 
     private Object getNodeProcessor(TemplateNamespace ns,
             String localName, String nsURI) {

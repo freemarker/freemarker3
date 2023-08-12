@@ -80,8 +80,8 @@ INJECT ParentheticalExpression :
         return getNested().isTrue(env);
     }
     
-    public Object getAsTemplateModel(Environment env) {
-        return getNested().getAsTemplateModel(env);
+    public Object evaluate(Environment env) {
+        return getNested().evaluate(env);
     }
 
     public Expression _deepClone(String name, Expression subst) {
@@ -370,10 +370,10 @@ INJECT ListLiteral :
         return childrenOfType(Expression.class);
     }
     
-    public Object getAsTemplateModel(Environment env) {
+    public Object evaluate(Environment env) {
         ListModel list = new ListModel();
         for (Expression exp: getElements()) {
-            Object tm = exp.getAsTemplateModel(env);
+            Object tm = exp.evaluate(env);
             assertIsDefined(tm, exp, env);
             list.add(tm);
         }
@@ -441,7 +441,7 @@ INJECT NumberLiteral :
         this.value = value;
     }
     
-    public TemplateModel getAsTemplateModel(Environment env) {
+    public TemplateModel evaluate(Environment env) {
         return new NumberModel(value);
     }
     
@@ -483,7 +483,7 @@ INJECT Identifier :
         this.name = name;
     }
     
-    public Object getAsTemplateModel(Environment env) {
+    public Object evaluate(Environment env) {
         try {
             return env.getVariable(name);
         } catch (NullPointerException e) {
@@ -550,7 +550,7 @@ INJECT BuiltinVariable :
         return name;
     }
 
-    public Object getAsTemplateModel(Environment env) {
+    public Object evaluate(Environment env) {
         switch (name) {
            case "namespace" : return env.getCurrentNamespace();
            case "main" : return env.getMainNamespace();
@@ -678,8 +678,8 @@ INJECT DotVariable :
     	return get(2).toString();
     }
 
-    public Object getAsTemplateModel(Environment env) {
-        Object leftModel = getTarget().getAsTemplateModel(env);
+    public Object evaluate(Environment env) {
+        Object leftModel = getTarget().evaluate(env);
         if (leftModel instanceof Map) {
             return ((Map)leftModel).get(getKey());
         }
@@ -829,8 +829,9 @@ INJECT StringLiteral :
         }
     }
     
-    public Object getAsTemplateModel(Environment env) {
+    public Object evaluate(Environment env) {
         return new StringModel(getStringValue(env));
+        //return getStringValue(env);
     }
 
     public String getAsString() {
@@ -888,7 +889,7 @@ INJECT BooleanLiteral :
         return value ? "true" : "false";
     }
 
-    public Object getAsTemplateModel(Environment env) {
+    public Object evaluate(Environment env) {
         return value ? TemplateBooleanModel.TRUE : TemplateBooleanModel.FALSE;
     }
 
@@ -915,7 +916,7 @@ INJECT NullLiteral :
     	return "null";
     }
 
-    public Object getAsTemplateModel(Environment env) {
+    public Object evaluate(Environment env) {
         return Constants.JAVA_NULL;
     }
 
@@ -982,7 +983,7 @@ INJECT HashLiteral :
        assert keys.size() == values.size() : getSource();
     }
     
-    public Object getAsTemplateModel(Environment env) {
+    public Object evaluate(Environment env) {
         return new SequenceHash(env);
     }
     
@@ -1018,7 +1019,7 @@ INJECT HashLiteral :
                 Expression keyExp = keys.get(i);
                 Expression valExp = values.get(i);
                 String key = keyExp.getStringValue(env);
-                Object value = valExp.getAsTemplateModel(env);
+                Object value = valExp.evaluate(env);
                 assertIsDefined(value, valExp, env);
                 keyMap.put(key, value);
                 keyList.add(key);

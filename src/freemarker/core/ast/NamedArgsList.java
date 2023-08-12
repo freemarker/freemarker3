@@ -39,7 +39,7 @@ public class NamedArgsList extends ArgsList {
             result = new HashMap<String, Object>();
             for (String paramName : namedArgs.keySet()) {
                 Expression exp = namedArgs.get(paramName);
-                Object value = exp.getAsTemplateModel(env);
+                Object value = exp.evaluate(env);
                 TemplateNode.assertIsDefined(value, exp, env);
                 result.put(paramName, value);
             }

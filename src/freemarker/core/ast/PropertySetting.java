@@ -29,7 +29,7 @@ public class PropertySetting extends TemplateElement {
     }
 
     public void execute(Environment env) {
-        Object mval = value.getAsTemplateModel(env);
+        Object mval = value.evaluate(env);
         String strval;
         if (isString(mval)) {
             strval = asString(mval);

@@ -12,7 +12,7 @@ public abstract class ExpressionEvaluatingBuiltIn extends BuiltIn {
     @Override
     public Object get(Environment env, BuiltInExpression caller) 
     {
-        return get(env, caller, caller.getTarget().getAsTemplateModel(env));
+        return get(env, caller, caller.getTarget().evaluate(env));
     }
     
     public abstract Object get(Environment env, BuiltInExpression caller, 

@@ -54,7 +54,7 @@ public class AssignmentInstruction extends TemplateElement {
     	Scope scope = null;
     	if (namespaceExp != null) {
     		try {
-    			scope = (Scope) namespaceExp.getAsTemplateModel(env); 
+    			scope = (Scope) namespaceExp.evaluate(env); 
     		} catch (ClassCastException cce) {
                 throw new InvalidReferenceException(getStartLocation() + "\nInvalid reference to namespace: " + namespaceExp, env);
     		}
@@ -71,7 +71,7 @@ public class AssignmentInstruction extends TemplateElement {
     	for (int i=0; i< varNames.size(); i++) {
     		String varname = varNames.get(i);
     		Expression valueExp = values.get(i);
-    		Object value = valueExp.getAsTemplateModel(env);
+    		Object value = valueExp.evaluate(env);
     		assertIsDefined(value, valueExp, env);
     		if (scope != null) {
     			scope.put(varname, value);

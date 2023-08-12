@@ -14,7 +14,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  */
 abstract public class Expression extends TemplateNode {
 
-    public abstract Object getAsTemplateModel(Environment env);
+    public abstract Object evaluate(Environment env);
     
     
     public String getDescription() {
@@ -22,7 +22,7 @@ abstract public class Expression extends TemplateNode {
     }
 
     public String getStringValue(Environment env) {
-        return getStringValue(getAsTemplateModel(env), this, env);
+        return getStringValue(evaluate(env), this, env);
     }
     
     static public boolean isDisplayableAsString(Object tm) {
@@ -63,7 +63,7 @@ abstract public class Expression extends TemplateNode {
     public abstract Expression _deepClone(String name, Expression subst);
 
     public boolean isTrue(Environment env) {
-        Object referent = getAsTemplateModel(env);
+        Object referent = evaluate(env);
         if (referent instanceof Boolean) {
             return ((Boolean) referent);
         }

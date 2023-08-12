@@ -18,7 +18,7 @@ public class EvaluationUtil
     
     static Number getNumber(Expression expr, Environment env)
     {
-        Object model = expr.getAsTemplateModel(env);
+        Object model = expr.evaluate(env);
         return getNumber(model, expr, env);
     }
 

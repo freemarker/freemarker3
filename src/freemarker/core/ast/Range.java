@@ -30,7 +30,7 @@ public class Range extends Expression {
         return right != null;
     }
 
-    public Object getAsTemplateModel(Environment env) 
+    public Object evaluate(Environment env) 
         throws TemplateException
     {
         int min = EvaluationUtil.getNumber(left, env).intValue();

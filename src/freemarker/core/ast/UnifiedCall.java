@@ -57,7 +57,7 @@ public class UnifiedCall extends TemplateElement {
     }
 
     public void execute(Environment env) throws IOException {
-        Object tm = nameExp.getAsTemplateModel(env);
+        Object tm = nameExp.evaluate(env);
         if (tm == Macro.DO_NOTHING_MACRO) return; // shortcut here.
         if (tm instanceof Macro) {
             Macro macro = (Macro) tm;

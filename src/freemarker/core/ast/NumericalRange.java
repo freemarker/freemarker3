@@ -29,12 +29,13 @@ class NumericalRange implements TemplateSequenceModel {
         descending = (left != lower);
     }
 
-    public TemplateModel get(int i) {
+    public Object get(int i) {
         int index = descending ? (upper -i) : (lower + i);
         if ((norhs && index > upper) || index <lower) {
             throw new TemplateModelException("out of bounds of range");
         }
         return new NumberModel(index);
+        //return index;
     }
 
     public int size() {

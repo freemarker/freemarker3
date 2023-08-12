@@ -75,8 +75,8 @@ public class ComparisonExpression extends BooleanExpression {
      * Thus, if you update this method, then you have to update that too!
      */
     public boolean isTrue(Environment env) {
-        Object ltm = left.getAsTemplateModel(env);
-        Object rtm = right.getAsTemplateModel(env);
+        Object ltm = left.evaluate(env);
+        Object rtm = right.evaluate(env);
         assertNonNull(ltm, left, env);
        	assertNonNull(rtm, right, env);
         int comp = 0;

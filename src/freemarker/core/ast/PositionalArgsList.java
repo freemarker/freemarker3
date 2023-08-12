@@ -81,7 +81,7 @@ public class PositionalArgsList extends ArgsList {
 
     public Object getValueAt(int i, Environment env) {
         Expression exp = args.get(i);
-        Object value = exp.getAsTemplateModel(env);
+        Object value = exp.evaluate(env);
         TemplateNode.assertIsDefined(value, exp, env);
         return value;
     }
@@ -106,7 +106,7 @@ public class PositionalArgsList extends ArgsList {
 
         Object transform(Expression exp, Environment env) 
         {
-            return exp.getAsTemplateModel(env);
+            return exp.evaluate(env);
         }
     }
 

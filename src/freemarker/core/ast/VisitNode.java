@@ -33,12 +33,12 @@ public class VisitNode extends TemplateElement {
     }
 
     public void execute(Environment env) throws IOException, TemplateException {
-        Object node = targetNode.getAsTemplateModel(env);
+        Object node = targetNode.evaluate(env);
         assertNonNull(node, targetNode, env);
         if (!(node instanceof TemplateNodeModel)) {
             throw new TemplateException("Expecting an XML node here", env);
         }
-        Object nss = namespaces == null ? null : namespaces.getAsTemplateModel(env);
+        Object nss = namespaces == null ? null : namespaces.evaluate(env);
         if (namespaces instanceof StringLiteral) {
             nss = env.importLib(asString(nss), null);
         }

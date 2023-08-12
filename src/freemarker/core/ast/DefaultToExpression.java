@@ -25,10 +25,10 @@ public class DefaultToExpression extends Expression {
 		return rhs;
 	}
 
-	public Object getAsTemplateModel(Environment env) {
+	public Object evaluate(Environment env) {
 		Object left = null;		
 		try {
-			left = lhs.getAsTemplateModel(env);
+			left = lhs.evaluate(env);
 		} catch (InvalidReferenceException ire) {
 			if (!(lhs instanceof ParentheticalExpression)) {
 				throw ire;
@@ -36,7 +36,7 @@ public class DefaultToExpression extends Expression {
 		}
 		if (left != null && left != Constants.JAVA_NULL) return left;
 		if (rhs == null) return Constants.NOTHING;
-		return rhs.getAsTemplateModel(env);
+		return rhs.evaluate(env);
 	}
 
 	public Expression _deepClone(String name, Expression subst) {

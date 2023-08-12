@@ -24,10 +24,10 @@ public class UnaryPlusMinusExpression extends Expression {
     	return isMinus;
     }
     
-    public Object getAsTemplateModel(Environment env) {
+    public Object evaluate(Environment env) {
         TemplateNumberModel targetModel = null;
         try {
-            targetModel = (TemplateNumberModel) target.getAsTemplateModel(env);
+            targetModel = (TemplateNumberModel) target.evaluate(env);
         } catch (ClassCastException cce) {
             String msg = "Error " + getStartLocation();
             msg += "\nExpression " + target + " is not numerical.";

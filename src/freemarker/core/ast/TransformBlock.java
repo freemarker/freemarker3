@@ -47,14 +47,14 @@ public class TransformBlock extends TemplateElement {
                     Map.Entry entry = (Map.Entry) it.next();
                     String key = (String) entry.getKey();
                     Expression valueExp = (Expression) entry.getValue();
-                    Object value = valueExp.getAsTemplateModel(env);
+                    Object value = valueExp.evaluate(env);
                     args.put(key, value);
                 }
             } 
             env.render(firstChildOfType(TemplateElement.class), ttm, args);
         }
         else {
-            Object tm = transformExpression.getAsTemplateModel((Environment)env);
+            Object tm = transformExpression.evaluate((Environment)env);
             throw invalidTypeException(tm, transformExpression, env, "transform");
         }
     }

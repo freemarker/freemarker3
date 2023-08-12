@@ -26,8 +26,8 @@ abstract public class ArgsList extends TemplateNode {
 	private static final ParameterList NO_PARAM_LIST = new ParameterList();
         
 	/**
-	 * Given a target TemplateModel (this will be either a TemplateTranformModel or TemplateMethodModel)
-	 * it returns a key-value map of the arguments to be passed to the target.
+	 * The target will be either a TemplateTranformModel or TemplateMethodModel.
+	 * This returns a key-value map of the arguments to be passed to the target.
 	 * A TemplateException will be thrown if the target's parameters do not match
 	 * this ArgList in some way.
 	 */

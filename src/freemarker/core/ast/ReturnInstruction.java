@@ -17,7 +17,7 @@ public class ReturnInstruction extends TemplateElement {
 
     public void execute(Environment env) {
         if (returnExp != null) {
-            env.setLastReturnValue(returnExp.getAsTemplateModel(env));
+            env.setLastReturnValue(returnExp.evaluate(env));
         }
         if (nextSibling() != null) {
             // We need to jump out using an exception.

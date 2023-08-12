@@ -111,7 +111,7 @@ public class ParameterList extends TemplateNode {
                     Expression defaultExp = getDefaultExpression(paramName);
                     if (defaultExp != null) {
                         try {
-                            Object value = defaultExp.getAsTemplateModel(env);
+                            Object value = defaultExp.evaluate(env);
                             if(value == null) {
                                 if(!hasUnresolvedArg) {
                                     firstUnresolvedExpression = defaultExp;
@@ -207,7 +207,7 @@ public class ParameterList extends TemplateNode {
         for (String paramName : params) {
             Expression argExp = argsMap.remove(paramName);
             if (argExp != null) {
-                Object argModel = argExp.getAsTemplateModel(env);
+                Object argModel = argExp.evaluate(env);
                 assertIsDefined(argModel, argExp, env);
                 result.add(argModel);
             } else {
@@ -270,7 +270,7 @@ public class ParameterList extends TemplateNode {
         for (String paramName : params) {
             Expression argExp = argsMap.remove(paramName);
             if (argExp != null) {
-                Object value = argExp.getAsTemplateModel(env);
+                Object value = argExp.evaluate(env);
                 TemplateNode.assertIsDefined(value, argExp, env);
                 result.put(paramName, value);
             }
@@ -299,7 +299,7 @@ public class ParameterList extends TemplateNode {
             if(catchall != null) {
                 for (Map.Entry<String, Expression> entry : argsMap.entrySet()) {
                     Expression exp = entry.getValue();
-                    Object val = exp.getAsTemplateModel(env);
+                    Object val = exp.evaluate(env);
                     assertIsDefined(val, exp, env);
                     catchAllMap.put(entry.getKey(), val);
                 }

@@ -4,7 +4,6 @@ import java.util.*;
 
 import freemarker.core.parser.ast.Identifier;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.ext.beans.StringModel;
 import freemarker.template.*;
 import static freemarker.template.utility.StringUtil.*;
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -38,15 +37,14 @@ public class TemplateHeaderElement extends TemplateNode {
 		}
 		Expression exp = params.get(name);
 		try {
-			Object tm = exp.getAsTemplateModel(null);
+			Object tm = exp.evaluate(null);
 			values.put(name, tm);
 			return tm;
 		} catch (TemplateException te) {
 			if (exp instanceof Identifier) {
 				String s = ((Identifier) exp).getName();
-				TemplateModel result = new StringModel(s);
-				values.put(name, result);
-				return result;
+				values.put(name, s);
+                return s;
 			}
 			values.put(name, null);
 			return null;

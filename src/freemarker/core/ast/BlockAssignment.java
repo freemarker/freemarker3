@@ -45,7 +45,7 @@ public class BlockAssignment extends TemplateElement {
     	Scope scope = null;
     	if (namespaceExp != null) {
     		try {
-    			scope = (Scope) namespaceExp.getAsTemplateModel(env); 
+    			scope = (Scope) namespaceExp.evaluate(env); 
     		} catch (ClassCastException cce) {
                 throw new InvalidReferenceException(getStartLocation() + "\nInvalid reference to namespace: " + namespaceExp, env);
     		}

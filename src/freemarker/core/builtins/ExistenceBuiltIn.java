@@ -22,7 +22,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
     {
         final Expression target = caller.getTarget();
         try {
-            return apply(target.getAsTemplateModel(env));
+            return apply(target.evaluate(env));
         }
         catch(InvalidReferenceException e) {
             if(!(target instanceof ParentheticalExpression)) {

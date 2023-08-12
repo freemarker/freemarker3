@@ -42,10 +42,10 @@ public class ArithmeticExpression extends Expression {
         this.operation = operation;
     }
     
-    public Object getAsTemplateModel(Environment env) throws TemplateException 
+    public Object evaluate(Environment env) throws TemplateException 
     {
-        Object leftModel = getLeft().getAsTemplateModel(env);
-        Object rightModel = getRight().getAsTemplateModel(env);
+        Object leftModel = getLeft().evaluate(env);
+        Object rightModel = getRight().evaluate(env);
         boolean leftIsNumber = (leftModel instanceof TemplateNumberModel);
         boolean rightIsNumber = (rightModel instanceof TemplateNumberModel);
         boolean bothNumbers = leftIsNumber && rightIsNumber;

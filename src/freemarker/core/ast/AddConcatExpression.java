@@ -31,11 +31,11 @@ public class AddConcatExpression extends Expression {
     	return (Expression) get(1);
     }
 
-    public Object getAsTemplateModel(Environment env)
+    public Object evaluate(Environment env)
             throws TemplateException
     {
-        Object leftModel = getLeft().getAsTemplateModel(env);
-        Object rightModel = getRight().getAsTemplateModel(env);
+        Object leftModel = getLeft().evaluate(env);
+        Object rightModel = getRight().evaluate(env);
         if (leftModel instanceof Number && rightModel instanceof Number) {
             Number first = (Number) leftModel;
             Number second = (Number) rightModel;

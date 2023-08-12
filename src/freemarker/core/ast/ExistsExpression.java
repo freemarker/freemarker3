@@ -20,10 +20,10 @@ public class ExistsExpression extends Expression {
 		return exp;
 	}
 
-	public Object getAsTemplateModel(Environment env) {
+	public Object evaluate(Environment env) {
 		Object tm = null;
 		try {
-			tm = exp.getAsTemplateModel(env);
+			tm = exp.evaluate(env);
 		} catch (InvalidReferenceException ire) {
 			if (!(exp instanceof ParentheticalExpression)) {
 				throw ire;

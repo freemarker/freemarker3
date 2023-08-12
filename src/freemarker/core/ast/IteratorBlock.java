@@ -40,7 +40,7 @@ public class IteratorBlock extends TemplateElement {
 
     public void execute(Environment env) throws TemplateException, IOException 
     {
-        Object baseModel = listExpression.getAsTemplateModel(env);
+        Object baseModel = listExpression.evaluate(env);
         assertNonNull(baseModel, listExpression, env);
         env.process(new LoopContext(this, env.getCurrentScope(), baseModel)); // REVISIT
     }

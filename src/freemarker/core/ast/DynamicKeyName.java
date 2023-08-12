@@ -37,14 +37,14 @@ public class DynamicKeyName extends Expression {
     	return target;
     }
 
-    public Object getAsTemplateModel(Environment env) throws TemplateException
+    public Object evaluate(Environment env) throws TemplateException
     {
-        Object targetModel = target.getAsTemplateModel(env);
+        Object targetModel = target.evaluate(env);
         assertNonNull(targetModel, target, env);
         if (nameExpression instanceof Range) {
             return dealWithRangeKey(targetModel, (Range) nameExpression, env);
         }
-        Object key = nameExpression.getAsTemplateModel(env);
+        Object key = nameExpression.evaluate(env);
         if(key == null) {
             assertNonNull(key, nameExpression, env);
         }
@@ -186,7 +186,7 @@ public class DynamicKeyName extends Expression {
         }
         catch(NonStringException e)
         {
-            throw invalidTypeException(target.getAsTemplateModel(env), target, env, "number, scalar, or sequence");
+            throw invalidTypeException(target.evaluate(env), target, env, "number, scalar, or sequence");
         }
     }
 
