@@ -47,7 +47,7 @@ Expression PrimaryExpression :
       |
       exp=ExistsExpression(exp)
       |
-      exp=DefaultTo(exp)
+      exp=DefaultToExpression(exp)
   )*
   {
      return exp;
@@ -597,40 +597,41 @@ INJECT BuiltinVariable :
     }
 }
 
-Expression DefaultTo(Expression exp) :
+#DefaultToExpression(Expression exp)#freemarker.core.ast.DefaultToExpression :
 {
    Expression rhs = null;
    Token t;
+   pushNode(exp);
 }
    (
        t=<EXCLAM>
        [
          SCAN {getToken(1).getType() != TokenType.ID || getToken(2).getType() != TokenType.EQUALS}
          => rhs=PrimaryExpression =>|| 
+         {
+            while (currentNodeScope.size() > 2) currentNodeScope.remove(currentNodeScope.size()-1);
+            pushNode(rhs);
+         }
        ]
    )
    {
-      DefaultToExpression result = new DefaultToExpression(exp, rhs);
-      if (rhs ==null) {
-          result.setLocation(template, token_source, exp, t);
-      }
-      else {
-          result.setLocation(template, token_source, exp, rhs);
-      }
-      return result;
+      //DefaultToExpression result = new DefaultToExpression(exp, rhs);
+      //if (rhs ==null) {
+      //    result.setLocation(template, token_source, exp, t);
+      //}
+      //else {
+      //    result.setLocation(template, token_source, exp, rhs);
+      //}
+      //return result;
+      return CURRENT_NODE;
    }
 ;
 
-#ExistsExpression(Expression exp)# :
+ExistsExpression(Expression exp)# :
 {
    pushNode(exp);
 }
    <EXISTS>
-   {
-   //    ExistsExpression result = new ExistsExpression(exp);
-   //    result.setLocation(template, token_source, exp, t);
-       return CURRENT_NODE;
-   }
 ;
 
 INJECT ExistsExpression :

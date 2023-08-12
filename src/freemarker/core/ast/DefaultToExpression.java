@@ -8,41 +8,43 @@ import freemarker.core.parser.ast.ParentheticalExpression;
 
 public class DefaultToExpression extends Expression {
 	
-	private Expression lhs, rhs;
+	public DefaultToExpression() {}
 	
 	public DefaultToExpression(Expression lhs, Expression rhs) {
-		this.lhs = lhs;
-		this.rhs = rhs;
-		lhs.setParent(this);
-		if (rhs != null) rhs.setParent(this);
+		add(lhs);
+		if (rhs!=null) add(rhs);
 	}
 	
 	public Expression getLeft() {
-		return lhs;
+		return (Expression) get(0);
 	}
 	
 	public Expression getRight() {
-		return rhs;
+		return childrenOfType(Expression.class).size() == 2 ?
+		(Expression) getLastChild() : null;
 	}
 
 	public Object evaluate(Environment env) {
 		Object left = null;		
 		try {
-			left = lhs.evaluate(env);
+			left = getLeft().evaluate(env);
 		} catch (InvalidReferenceException ire) {
-			if (!(lhs instanceof ParentheticalExpression)) {
+			if (!(getLeft() instanceof ParentheticalExpression)) {
 				throw ire;
 			}
 		}
 		if (left != null && left != Constants.JAVA_NULL) return left;
-		if (rhs == null) return Constants.NOTHING;
-		return rhs.evaluate(env);
+		if (getRight() == null) return Constants.NOTHING;
+		return getRight().evaluate(env);
 	}
 
 	public Expression _deepClone(String name, Expression subst) {
-		if (rhs == null) {
-			return new DefaultToExpression(lhs.deepClone(name, subst), null);
+		DefaultToExpression result = new DefaultToExpression();
+		result.add(getLeft().deepClone(name, subst));
+		result.add(get(1));
+		if (getRight() != null) {
+			result.add(getRight().deepClone(name, subst));
 		}
-		return new DefaultToExpression(lhs.deepClone(name, subst), rhs.deepClone(name, subst));
+		return result;
 	}
 }
