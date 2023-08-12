@@ -50,7 +50,7 @@ public class NamedArgsList extends ArgsList {
         return result;
     }
 
-    List getParameterSequence(Object target, Environment env) {
+    public List getParameterSequence(Object target, Environment env) {
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             String msg = "Error at: " + getStartLocation() 
@@ -84,7 +84,7 @@ public class NamedArgsList extends ArgsList {
         return "";
     }
 
-    ArgsList deepClone(String name, Expression subst) {
+    public ArgsList deepClone(String name, Expression subst) {
         NamedArgsList result = new NamedArgsList();
         for (Map.Entry<String, Expression> entry : namedArgs.entrySet()) {
             try {

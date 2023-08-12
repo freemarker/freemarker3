@@ -34,7 +34,7 @@ abstract public class ArgsList extends TemplateNode {
 	
 	abstract Map<String, Object> getParameterMap(Object target, Environment env);
 	
-	abstract List getParameterSequence(Object target, Environment env);
+	public abstract List getParameterSequence(Object target, Environment env);
 	
 	static final ParameterList getParameterList(Object target) {
             String keyName = target.getClass().getName();
@@ -116,5 +116,5 @@ abstract public class ArgsList extends TemplateNode {
 		}
 	}
 	
-	abstract ArgsList deepClone(String name, Expression subst);
+	public abstract ArgsList deepClone(String name, Expression subst);
 }

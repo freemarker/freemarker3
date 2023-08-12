@@ -35,7 +35,7 @@ public class PositionalArgsList extends ArgsList {
         return result;
     }
 
-    List getParameterSequence(Object target, Environment env) {
+    public List getParameterSequence(Object target, Environment env) {
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             return target instanceof TemplateMethodModelEx ? 
@@ -198,7 +198,7 @@ public class PositionalArgsList extends ArgsList {
     }
 
 
-    ArgsList deepClone(String name, Expression subst) {
+    public ArgsList deepClone(String name, Expression subst) {
         PositionalArgsList result = new PositionalArgsList();
         for (Expression arg : args) {
             result.addArg(arg.deepClone(name, subst));

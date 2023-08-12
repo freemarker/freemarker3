@@ -14,6 +14,7 @@ import freemarker.core.parser.ast.DynamicKeyName;
 import freemarker.core.parser.ast.HashLiteral;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.core.parser.ast.ListLiteral;
+import freemarker.core.parser.ast.MethodCall;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.template.Template;
 

@@ -912,21 +912,102 @@ INJECT DynamicKeyName :
 /**
  * production for an arglist part of a method invocation.
  */
-MethodCall MethodCall(Expression exp) : //#freemarker.core.ast.MethodCall :
+MethodCall MethodCall(Expression exp)# : 
 {
      ArgsList args = new PositionalArgsList();
      Token end;
+     pushNode(exp);
 }
      <OPEN_PAREN>
-     [args=ArgsList]
+     [
+        args=ArgsList 
+        {
+            while (currentNodeScope.size() > 2) {
+                currentNodeScope.remove(currentNodeScope.size()-1);
+            }
+            pushNode(args);
+        }
+     ]
      end=<CLOSE_PAREN>
      {
-        MethodCall result = new MethodCall(exp, args);
-        result.setLocation(template, token_source, exp, end);
-	     args.setLocationInfoIfAbsent(result);        
-        return result;
+        return CURRENT_NODE;
      }
 ;
+
+INJECT MethodCall :
+    import java.util.ArrayList;
+    import java.util.List;
+    import java.io.Writer;
+    import freemarker.core.Environment;
+    import freemarker.ext.beans.ObjectWrapper;
+    import freemarker.template.*;
+    import java.io.IOException;
+    import java.io.StringWriter;
+    import freemarker.core.ast.ArgsList;
+    import freemarker.core.ast.Expression;
+    import freemarker.core.ast.Macro;
+    extends Expression;
+{
+
+    public ArgsList getArgs() {
+        return firstChildOfType(ArgsList.class);
+    }
+
+    public Expression getTarget() {
+    	return (Expression) get(0);
+    }
+    
+    public Object evaluate(Environment env) throws TemplateException
+    {
+        Object value = getTarget().evaluate(env);
+        if (value instanceof TemplateMethodModel) {
+            TemplateMethodModel targetMethod = (TemplateMethodModel)value;
+            ArgsList args = getArgs();
+            List argumentStrings = new ArrayList();
+            if (args !=null) {
+                argumentStrings = args.getParameterSequence(targetMethod, env);
+            }
+            Object result = targetMethod.exec(argumentStrings);
+            return ObjectWrapper.instance().wrap(result);
+        }
+        else if (value instanceof Macro) {
+            Macro func = (Macro) value;
+            StringWriter sw = null;
+            env.setLastReturnValue(null);
+            Writer prevOut = env.getOut();
+            try {
+                env.setOut(Environment.NULL_WRITER);
+                if (!func.isFunction()) {
+                    sw = new StringWriter();
+                    env.setOut(sw);
+                 }
+                env.render(func, getArgs(), null, null);
+            } catch (IOException ioe) {
+                throw new InternalError("This should be impossible.");
+            } finally {
+                env.setOut(prevOut);
+            }
+            return sw != null ? ObjectWrapper.instance().wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
+        }
+        else {
+            throw invalidTypeException(value, getTarget(), env, "method");
+        }
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        MethodCall result = new MethodCall();
+        result.add(getTarget().deepClone(name, subst));
+        result.add(get(1));
+        ArgsList args = getArgs();
+        if (args != null) {
+            result.add(getArgs().deepClone(name, subst));
+            result.add(get(3));
+        } else {
+            result.add(get(2));
+        }
+        return result;
+    }
+}
 
 Expression StringLiteral# :
 {

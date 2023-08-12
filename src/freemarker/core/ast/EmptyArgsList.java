@@ -12,7 +12,7 @@ import freemarker.template.*;
 public class EmptyArgsList extends ArgsList {
 
     @Override
-    ArgsList deepClone(String name, Expression subst) {
+    public ArgsList deepClone(String name, Expression subst) {
         return this;
     }
 
@@ -28,7 +28,7 @@ public class EmptyArgsList extends ArgsList {
     }
 
     @Override
-    List getParameterSequence(Object target, Environment env) {
+    public List getParameterSequence(Object target, Environment env) {
         throw new UnsupportedOperationException();
     }
 
