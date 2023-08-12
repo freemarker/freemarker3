@@ -20,7 +20,7 @@ public class TemplateNamespace extends BaseScope {
 		return template;
 	}
 
-	public void put(String name, TemplateModel var) {
+	public void put(String name, Object var) {
 		if (template.strictVariableDeclaration() && !template.declaresVariable(name)) {
 			throw new UndeclaredVariableException("Cannot set variable " + name + " since it is not declared.");
 		}

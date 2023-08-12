@@ -177,12 +177,12 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
         private final int chunkSize;
 
-        private final TemplateModel fillerItem;
+        private final Object fillerItem;
 
         private final int numberOfChunks;
 
         private ChunkedSequence(TemplateSequenceModel wrappedTsm,
-                int chunkSize, TemplateModel fillerItem)
+                int chunkSize, Object fillerItem)
         {
             if (chunkSize < 1) {
                 throw new TemplateModelException(
@@ -562,7 +562,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             if (argc != 1 && argc != 2) {
                 throw new TemplateModelException("Expecting one or two arguments for ?seq_" + (reverse ? "last_" : "") + "index_of");
             }
-            TemplateModel compareToThis = (TemplateModel) args.get(0);
+            Object compareToThis = args.get(0);
             if (argc == 2) {
                 try {
                     startIndex = ((TemplateNumberModel)args.get(1)).getAsNumber().intValue();

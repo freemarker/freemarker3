@@ -15,7 +15,7 @@ public class IncludedTemplateNamespace extends TemplateNamespace {
 		super(includingScope, template);
 	}
 	
-	public void put(String name, TemplateModel var) {
+	public void put(String name, Object var) {
 		if (template.declaresVariable(name)) {
 			super.put(name, var);
 		}

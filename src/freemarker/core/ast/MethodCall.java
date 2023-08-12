@@ -76,10 +76,6 @@ public class MethodCall extends Expression {
         }
     }
 
-    TemplateModel getConstantValue() {
-        return null;
-    }
-
     public Expression _deepClone(String name, Expression subst) {
     	return new MethodCall(target.deepClone(name, subst), arguments.deepClone(name, subst));
     }

@@ -52,11 +52,11 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public TemplateModel exec(List args) {
+        public Object exec(List args) {
             if (args.size() != 1) {
                 throw new TemplateModelException("Expecting exactly one argument for ?seq_contains(...)");
             }
-            TemplateModel compareToThis = (TemplateModel) args.get(0);
+            Object compareToThis = args.get(0);
             final ModelComparator modelComparator = new ModelComparator(Environment.getCurrentEnvironment());
             if (collection != null) {
                 Iterator<Object> tmi = collection.iterator();
