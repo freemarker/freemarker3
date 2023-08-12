@@ -314,6 +314,10 @@ public class ObjectWrapper
         return instance;
     }
 
+    public static Object wrap(Object obj) {
+        return instance()._wrap(obj);
+    }
+
     /**
      * Wraps the object with a template model that is most specific for the object's
      * class. Specifically:
@@ -335,7 +339,7 @@ public class ObjectWrapper
      * <li>otherwise, returns a generic {@link StringModel} for it.
      * </ul>
      */
-    public Object wrap(Object object) 
+    public Object _wrap(Object object) 
     {
         if(object == null) {
             return Constants.JAVA_NULL;
@@ -384,7 +388,7 @@ public class ObjectWrapper
 
     /**
      * Attempts to unwrap a model into underlying object. Generally, this
-     * method is the inverse of the {@link #wrap(Object)} method. In addition
+     * method is the inverse of the {@link #_wrap(Object)} method. In addition
      * it will unwrap arbitrary {@link TemplateNumberModel} instances into
      * a number, arbitrary {@link TemplateDateModel} instances into a date,
      * {@link TemplateScalarModel} instances into a String, and
@@ -681,7 +685,7 @@ public class ObjectWrapper
             // this way we don't force people to write an additional ! operator
             // i.e. ${session.invalidate()!}
             ? Constants.NOTHING 
-            : wrap(retval); 
+            : _wrap(retval); 
     }
 
     public Object newInstance(Class<?> clazz, List<TemplateModel> arguments)

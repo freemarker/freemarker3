@@ -53,7 +53,7 @@ public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelE
                 return map.containsKey(key) ? Constants.JAVA_NULL : null;
             }
         }
-        return ObjectWrapper.instance().wrap(val);
+        return ObjectWrapper.wrap(val);
     }
     
     public Object exec(List args) {
@@ -62,7 +62,7 @@ public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelE
         if (value == null && !map.containsKey(key)) {
             return null;
         }
-        return ObjectWrapper.instance().wrap(value);
+        return ObjectWrapper.wrap(value);
     }
 
     public boolean isEmpty() {

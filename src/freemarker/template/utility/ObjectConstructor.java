@@ -34,6 +34,6 @@ public class ObjectConstructor implements TemplateMethodModelEx
         }
         ObjectWrapper bw = ObjectWrapper.instance();
         Object obj = bw.newInstance(cl, args.subList(1, args.size()));
-        return bw.wrap(obj);
+        return bw._wrap(obj);
     }
 }

@@ -590,11 +590,11 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @see #setAllSharedVariables
      */
     public void setSharedVariable(String name, Object tm) {
-        variables.put(name, ObjectWrapper.instance().wrap(tm));
+        variables.put(name, ObjectWrapper.wrap(tm));
     }
 
     public void put(String key, Object obj) {
-        variables.put(key, ObjectWrapper.instance().wrap(obj));
+        variables.put(key, ObjectWrapper.wrap(obj));
     }
 
     /**

@@ -27,8 +27,7 @@ abstract public class Expression extends TemplateNode {
     
     static public boolean isDisplayableAsString(Object tm) {
     	return ObjectWrapper.isString(tm)
-    	     ||tm instanceof TemplateNumberModel
-             || tm instanceof Number
+    	     || ObjectWrapper.isNumber(tm)
     	     || tm instanceof TemplateDateModel;
     }
     

@@ -643,7 +643,6 @@ Expression BuiltIn(Expression exp) :
    	   BuiltInExpression result = new BuiltInExpression(exp, t.toString());
          if (result.getBuiltIn() == null) {
             fail("Unknown builtin ",t);
-           //throw new ParseException(this, "Unknown builtin " + t.toString());
          }
    	   result.setLocation(template, token_source, exp, t);
    	   return result;
@@ -912,7 +911,7 @@ INJECT DynamicKeyName :
 /**
  * production for an arglist part of a method invocation.
  */
-MethodCall MethodCall(Expression exp)# : 
+MethodCall(Expression exp)# : 
 {
      ArgsList args = new PositionalArgsList();
      Token end;
@@ -929,9 +928,6 @@ MethodCall MethodCall(Expression exp)# :
         }
      ]
      end=<CLOSE_PAREN>
-     {
-        return CURRENT_NODE;
-     }
 ;
 
 INJECT MethodCall :
@@ -968,7 +964,7 @@ INJECT MethodCall :
                 argumentStrings = args.getParameterSequence(targetMethod, env);
             }
             Object result = targetMethod.exec(argumentStrings);
-            return ObjectWrapper.instance().wrap(result);
+            return ObjectWrapper.wrap(result);
         }
         else if (value instanceof Macro) {
             Macro func = (Macro) value;
@@ -987,7 +983,7 @@ INJECT MethodCall :
             } finally {
                 env.setOut(prevOut);
             }
-            return sw != null ? ObjectWrapper.instance().wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
+            return sw != null ? ObjectWrapper.wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
         }
         else {
             throw invalidTypeException(value, getTarget(), env, "method");

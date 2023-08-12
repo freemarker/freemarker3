@@ -3,28 +3,7 @@ package freemarker.core.ast;
 import java.util.HashMap;
 
 import freemarker.core.Environment;
-import freemarker.core.builtins.BuiltIn;
-import freemarker.core.builtins.DateTime;
-import freemarker.core.builtins.ExistenceBuiltIn;
-import freemarker.core.builtins.HashBuiltin;
-import freemarker.core.builtins.MacroBuiltins;
-import freemarker.core.builtins.NodeFunctions;
-import freemarker.core.builtins.NumericalCast;
-import freemarker.core.builtins.SequenceContainsBuiltIn;
-import freemarker.core.builtins.SequenceFunctions;
-import freemarker.core.builtins.StringFunctions;
-import freemarker.core.builtins.StringTransformations;
-import freemarker.core.builtins.TypeChecks;
-import freemarker.core.builtins.cBI;
-import freemarker.core.builtins.evalBI;
-import freemarker.core.builtins.groupsBI;
-import freemarker.core.builtins.interpretBI;
-import freemarker.core.builtins.newBI;
-import freemarker.core.builtins.numberBI;
-import freemarker.core.builtins.resolveBI;
-import freemarker.core.builtins.sizeBI;
-import freemarker.core.builtins.sourceBI;
-import freemarker.core.builtins.stringBI;
+import freemarker.core.builtins.*;
 import freemarker.template.TemplateDateModel;
 
 public class BuiltInExpression extends Expression {
@@ -124,16 +103,17 @@ public class BuiltInExpression extends Expression {
         knownBuiltins.put("has_content", new ExistenceBuiltIn.HasContentBuiltIn());
         knownBuiltins.put("source", new sourceBI());
     }
-
-    private final Expression target;
-    private final String key;
-    private final BuiltIn bi;
+      private String key;
+      private final BuiltIn bi;
 
     public BuiltInExpression(Expression target, String key) {
-        this.target = target;
-        target.setParent(this);
+        add(target);
         this.key = key.intern();
         this.bi = knownBuiltins.get(key);
+    }
+
+    public Expression getTarget() {
+        return (Expression) get(0);
     }
 
     public BuiltIn getBuiltIn() {
@@ -144,31 +124,11 @@ public class BuiltInExpression extends Expression {
         return bi.get(env, this);
     }
 
-    public Expression getTarget() {
-        return target;
-    }
-
     public String getName() {
         return key;
     }
 
-    /*	
-	@Override
     public Expression _deepClone(String name, Expression subst) {
-		findImplementation();
-    	try {
-	    	BuiltInExpression clone = (BuiltInExpression) this.clone();
-	    	clone.target = target.deepClone(name, subst);
-	    	clone.bi = knownBuiltins.get(key);
-	    	return clone;
-        }
-        catch (CloneNotSupportedException e) {
-            throw new InternalError();
-        }
-    }*/
-
-    public Expression _deepClone(String name, Expression subst) {
-        return new BuiltInExpression(target.deepClone(name, subst), key);
+        return new BuiltInExpression(getTarget().deepClone(name, subst), key);
     }
-
 }

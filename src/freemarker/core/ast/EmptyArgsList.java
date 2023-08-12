@@ -2,7 +2,6 @@ package freemarker.core.ast;
 
 import java.util.*;
 import freemarker.core.Environment;
-import freemarker.template.*;
 
 /**
  * The abstract base class of both {@link NamedArgsList} and {@link PositionalArgsList}

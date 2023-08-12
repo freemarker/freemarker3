@@ -53,7 +53,7 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
      * enumeration, iterators, and maps. Note also that the superclass can be
      * used to wrap String objects if only scalar functionality is needed. You
      * can also choose to delegate the choice over which model class is used for
-     * wrapping to {@link ObjectWrapper#wrap(Object)}.
+     * wrapping to {@link ObjectWrapper#_wrap(Object)}.
      * @param object the object to wrap into a model.
      */
     public Pojo(Object object)
@@ -194,7 +194,7 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
         }
         else if(desc instanceof Field)
         {
-            retval = ObjectWrapper.instance().wrap(((Field)desc).get(object));
+            retval = ObjectWrapper.wrap(((Field)desc).get(object));
             // (member == null) condition remains, as we don't cache these
         }
         else if(desc instanceof Method)
@@ -233,7 +233,7 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
 
     protected Object wrap(Object obj)
     {
-        return ObjectWrapper.instance().wrap(obj);
+        return ObjectWrapper.wrap(obj);
     }
     
     protected Object unwrap(TemplateModel object)

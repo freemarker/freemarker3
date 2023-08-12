@@ -11,6 +11,8 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import freemarker.ext.beans.NumberModel;
 
+import static freemarker.ext.beans.ObjectWrapper.*;
+
 /**
  * Implementation of ?byte, ?int, ?double, ?float,
  * ?short and ?long built-ins 
@@ -24,7 +26,7 @@ public class NumericalCast extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
         try {
-            return new NumberModel(getNumber(((TemplateNumberModel) model).getAsNumber(), caller.getName()));
+            return new NumberModel(getNumber(asNumber(model), caller.getName()));
         } catch (ClassCastException cce) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number");
         } catch (NullPointerException npe) {

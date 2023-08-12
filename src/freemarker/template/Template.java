@@ -334,7 +334,7 @@ public class Template extends TemplateCore {
 
             try {
                 root = rootMap != null
-                    ? (TemplateHashModel)wrapper.wrap(rootMap)
+                    ? (TemplateHashModel)wrapper._wrap(rootMap)
                     : new SimpleMapModel();
                 if(root == null) {
                     throw new IllegalArgumentException(wrapper.getClass().getName() + " converted " + (rootMap == null ? "null" : rootMap.getClass().getName()) + " to null.");
