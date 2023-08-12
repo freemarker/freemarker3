@@ -57,7 +57,7 @@ class SimpleMemberModel<T extends Member>
         return args;
     }
 
-    static Object[] unwrapArguments(List<TemplateModel> arguments, Class[] argTypes, ObjectWrapper w) 
+    static Object[] unwrapArguments(List<Object> arguments, Class[] argTypes, ObjectWrapper w) 
     throws TemplateModelException
     {
         if(arguments == null) {
@@ -67,7 +67,7 @@ class SimpleMemberModel<T extends Member>
         int typeLen = argTypes.length;
         Object[] args = new Object[argsLen];
         int min = Math.min(argsLen, typeLen);
-        Iterator<TemplateModel> it = arguments.iterator();
+        Iterator<Object> it = arguments.iterator();
         for (int i = 0; i < min; i++) {
             args[i] = unwrapArgument(it.next(), argTypes[i], w);
         }
@@ -77,7 +77,7 @@ class SimpleMemberModel<T extends Member>
         return args;
     }
 
-    private static Object unwrapArgument(TemplateModel model, Class type, ObjectWrapper w) 
+    private static Object unwrapArgument(Object model, Class type, ObjectWrapper w) 
     {
         Object val = w.unwrap(model, type);
         if(val == ObjectWrapper.CAN_NOT_UNWRAP) {
