@@ -4,7 +4,6 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.ast.Expression;
 import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.ext.beans.StringModel;
 import freemarker.template.utility.StringUtil;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -29,7 +28,7 @@ public abstract class StringTransformations extends ExpressionEvaluatingBuiltIn 
         if (string == null) {
             throw new InvalidReferenceException("String is undefined", env);
         }
-        return new StringModel(apply(string));
+        return apply(string);
     }
 
     public abstract String apply(String string);

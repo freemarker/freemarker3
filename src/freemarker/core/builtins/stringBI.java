@@ -5,7 +5,6 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
 
-import freemarker.ext.beans.StringModel;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.ast.EvaluationUtil;
@@ -68,8 +67,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
                         "boolean?string(...) requires exactly "
                         + "2 arguments.");
             }
-            return new StringModel(
-                (String) arguments.get(asBoolean(bool) ? 0 : 1));
+            return arguments.get(asBoolean(bool) ? 0 : 1);
         }
     }
     

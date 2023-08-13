@@ -109,7 +109,7 @@ public class ResourceBundleModel extends Pojo implements TemplateMethodModelEx
                 params[i] = unwrap((TemplateModel)it.next());
     
             // Invoke format
-            return new StringModel(format(key, params));
+            return format(key, params);
         }
         catch(MissingResourceException e)
         {
