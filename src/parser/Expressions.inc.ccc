@@ -589,7 +589,6 @@ INJECT BuiltinVariable :
     import freemarker.template.*;
     import freemarker.core.Environment;
     import freemarker.core.parser.ParseException;
-    import freemarker.ext.beans.StringModel;
     import freemarker.core.ast.Expression;
     import freemarker.core.ast.Macro;
     extends Expression
@@ -613,18 +612,16 @@ INJECT BuiltinVariable :
            case "data_model" : return env.getDataModel();
            case "scope" : return env.getCurrentScope();
            case "vars" : return new VarsHash(env);
-           case "locale" : return new StringModel(env.getLocale().toString());
-           case "lang" : return new StringModel(env.getLocale().getLanguage());
+           case "locale" : return env.getLocale().toString();
+           case "lang" : return env.getLocale().getLanguage();
            case "current_node" :
            case "node" : return env.getCurrentVisitorNode();
            case "pass" : return Macro.DO_NOTHING_MACRO;
-           case "name" : return new StringModel(env.getTemplate().getName()); 
-           case "version" : return new StringModel(Configuration.getVersionNumber());
-           case "output_encoding" : String s = env.getOutputEncoding();
-                                    return s != null ? new StringModel(s) : null;
-           case "url_escaping_charset" : s = env.getURLEscapingCharset();
-                                         return s != null ? new StringModel(s) : null;
-           case "error" : return new StringModel(env.getCurrentRecoveredErrorMessage());
+           case "name" : return env.getTemplate().getName(); 
+           case "version" : return Configuration.getVersionNumber();
+           case "output_encoding" : return env.getOutputEncoding();
+           case "url_escaping_charset" : return env.getURLEscapingCharset();
+           case "error" : return env.getCurrentRecoveredErrorMessage();
         }
         throw new TemplateException("Invalid built-in variable: " + this, env);
     }
@@ -987,7 +984,6 @@ INJECT DynamicKeyName :
     import freemarker.core.Environment;
     import freemarker.template.*;
     import freemarker.ext.beans.ListModel;
-    import freemarker.ext.beans.StringModel;
     import static freemarker.ext.beans.ObjectWrapper.*;
     import freemarker.core.ast.Expression;
     import freemarker.core.ast.EvaluationUtil;
@@ -1042,7 +1038,7 @@ INJECT DynamicKeyName :
         {
             String s = getTarget().getStringValue(env);
             try {
-               return new StringModel(s.substring(index, index+1));
+               return s.substring(index, index+1);
             } catch (RuntimeException re) {
                 throw new TemplateException("", re, env);
             }
@@ -1140,7 +1136,7 @@ INJECT DynamicKeyName :
                 throw new TemplateException(msg, env);
             }
             try {
-                return new StringModel(s.substring(start, end+1));
+                return s.substring(start, end+1);
             } catch (RuntimeException re) {
                 String msg = "Error " + getStartLocation();
                 throw new TemplateException(msg, re, env);
