@@ -1,8 +1,10 @@
 package freemarker.core.ast;
 
 import java.io.IOException;
+import java.util.List;
 
 import freemarker.core.Environment;
+import freemarker.core.Scope;
 import freemarker.core.TemplateNamespace;
 import freemarker.ext.beans.ListModel;
 import freemarker.core.parser.ast.ListLiteral;
@@ -51,11 +53,11 @@ public class VisitNode extends TemplateElement {
                 ss.add(nss);
                 nss = ss;
             }
-            else if (!(nss instanceof TemplateSequenceModel)) {
+            else if (!isList(nss)) {
                 throw new TemplateException("Expecting a sequence of namespaces after 'using'", env);
             }
         }
-        env.render((TemplateNodeModel) node, (TemplateSequenceModel) nss);
+        env.render((TemplateNodeModel) node, (List<Scope>)nss);
     }
 
     public String getDescription() {

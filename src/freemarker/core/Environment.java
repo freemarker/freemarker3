@@ -108,7 +108,7 @@ public final class Environment extends Configurable implements Scope {
 
     private TemplateNodeModel currentVisitorNode;
 
-    private TemplateSequenceModel nodeNamespaces;
+    private List<Scope> nodeNamespaces;
 
     // Things we keep track of for the fallback mechanism.
     private int nodeNamespaceIndex;
@@ -367,17 +367,17 @@ public final class Environment extends Configurable implements Scope {
      */
 
     @SuppressWarnings("deprecation")
-    public void render(TemplateNodeModel node, TemplateSequenceModel namespaces)
+    public void render(TemplateNodeModel node, List<Scope> namespaces)
             throws TemplateException, IOException {
         if (nodeNamespaces == null) {
-            ListModel ss = new ListModel();
+            List<Scope> ss = new ArrayList<>();
             ss.add(getCurrentNamespace());
             nodeNamespaces = ss;
         }
         int prevNodeNamespaceIndex = this.nodeNamespaceIndex;
         String prevNodeName = this.currentNodeName;
         String prevNodeNS = this.currentNodeNS;
-        TemplateSequenceModel prevNodeNamespaces = nodeNamespaces;
+        List<Scope> prevNodeNamespaces = nodeNamespaces;
         TemplateNodeModel prevVisitorNode = currentVisitorNode;
         currentVisitorNode = node;
         if (namespaces != null) {
@@ -541,7 +541,7 @@ public final class Environment extends Configurable implements Scope {
         macroToNamespaceLookup.put(curriedMacro, tns);
     }
 
-    public void process(TemplateNodeModel node, TemplateSequenceModel namespaces)
+    public void process(TemplateNodeModel node, List<Scope> namespaces)
             throws TemplateException, IOException {
         if (node == null) {
             node = this.getCurrentVisitorNode();

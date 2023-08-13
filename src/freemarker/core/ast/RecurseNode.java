@@ -1,8 +1,11 @@
 package freemarker.core.ast;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import freemarker.core.Environment;
+import freemarker.core.Scope;
 import freemarker.ext.beans.ListModel;
 import freemarker.core.parser.ast.ListLiteral;
 import freemarker.core.parser.ast.StringLiteral;
@@ -45,15 +48,15 @@ public class RecurseNode extends TemplateElement {
         }
         if (nss != null) {
             if (nss instanceof TemplateHashModel) {
-                ListModel ss = new ListModel();
-                ss.add(nss);
+                List<Scope> ss = new ArrayList<>();
+                ss.add((Scope)nss);
                 nss = ss;
             }
-            else if (!(nss instanceof TemplateSequenceModel)) {
+            else if (!isList(nss)) {
                 throw new TemplateException("Expecting a sequence of namespaces after 'using'", env);
             }
         }
-        env.process((TemplateNodeModel) node, (TemplateSequenceModel) nss);
+        env.process((TemplateNodeModel) node, (List<Scope>)nss);
     }
 
     public String getDescription() {

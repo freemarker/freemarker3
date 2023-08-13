@@ -1,7 +1,6 @@
 package freemarker.core.ast;
 
 import freemarker.template.*;
-import freemarker.ext.beans.NumberModel;
 
 /**
  * A class that represents a Range between two integers.
@@ -13,7 +12,6 @@ class NumericalRange implements TemplateSequenceModel {
 
     private int lower, upper;
     private boolean descending, norhs; // if norhs is true, then we have a half-range, like n..
-    
     
     /**
      * Constructor for half-range, i.e. n..
@@ -34,8 +32,7 @@ class NumericalRange implements TemplateSequenceModel {
         if ((norhs && index > upper) || index <lower) {
             throw new TemplateModelException("out of bounds of range");
         }
-        return new NumberModel(index);
-        //return index;
+        return index;
     }
 
     public int size() {

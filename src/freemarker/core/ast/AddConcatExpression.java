@@ -54,8 +54,11 @@ public class AddConcatExpression extends Expression {
                     : getTemplate().getArithmeticEngine();
             return ae.add(first, second);
         }
-        else if (leftModel instanceof TemplateSequenceModel && rightModel instanceof TemplateSequenceModel)
-        {
+        else if (isList(leftModel) && isList(rightModel)) 
+        {/*
+            List merged = new ArrayList(asList(leftModel));
+            merged.addAll(asList(rightModel));
+            return merged;*/
             return new ConcatenatedSequence((TemplateSequenceModel)leftModel, (TemplateSequenceModel)rightModel);
         }
         else if (isDisplayableAsString(leftModel) && isDisplayableAsString(rightModel)) {
@@ -111,8 +114,8 @@ public class AddConcatExpression extends Expression {
     }
 
     private static class ConcatenatedHash implements TemplateHashModel {
-        protected final TemplateHashModel left;
-        protected final TemplateHashModel right;
+        final TemplateHashModel left;
+        final TemplateHashModel right;
 
         ConcatenatedHash(TemplateHashModel left, TemplateHashModel right)
         {
