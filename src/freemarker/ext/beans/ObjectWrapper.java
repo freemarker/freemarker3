@@ -381,7 +381,7 @@ public class ObjectWrapper
         if (object instanceof CharSequence) {
             return object;
         }
-        return new StringModel(object);
+        return new Pojo(object);
     }
 
     /**

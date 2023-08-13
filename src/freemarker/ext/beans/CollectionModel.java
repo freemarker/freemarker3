@@ -10,7 +10,7 @@ import java.util.Iterator;
  * @author Attila Szegedi
  * @version $Id: CollectionModel.java,v 1.22 2003/06/03 13:21:32 szegedia Exp $
  */
-public class CollectionModel extends StringModel implements Iterable
+public class CollectionModel extends Pojo implements Iterable<Object>
 {
     /**
      * Creates a new model that wraps the specified collection object.

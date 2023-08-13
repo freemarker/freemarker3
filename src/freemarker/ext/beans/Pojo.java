@@ -18,6 +18,7 @@ import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
+import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateModelException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -35,7 +36,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  * @version $Id: BeanModel.java,v 1.51 2006/03/15 05:01:12 revusky Exp $
  */
 
-public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
+public class Pojo implements TemplateScalarModel, TemplateHashModelEx, AdapterTemplateModel
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
