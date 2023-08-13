@@ -151,7 +151,6 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
     /**
      * Whether the model has a plain get(String) or get(Object) method
      */
-    
     protected boolean hasPlainGetMethod() {
     	return ObjectWrapper.instance().getClassKeyMap(object.getClass()).get(ObjectWrapper.GENERIC_GET_KEY) != null;
     }
@@ -231,10 +230,10 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
         return ObjectWrapper.instance().invokeMethod(object, genericGet, new Object[] { key });
     }
 
-    protected Object wrap(Object obj)
+    /*protected Object wrap(Object obj)
     {
         return ObjectWrapper.wrap(obj);
-    }
+    }*/
     
     protected Object unwrap(TemplateModel object)
     {

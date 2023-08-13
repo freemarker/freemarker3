@@ -8,6 +8,8 @@ import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 
+import static freemarker.ext.beans.ObjectWrapper.wrap;
+
 /**
  * <p>A special case of {@link Pojo} that can wrap Java lists
  * and that implements the {@link TemplateCollectionModel} and 

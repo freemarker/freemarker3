@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import static freemarker.ext.beans.ObjectWrapper.wrap;
 
 /**
  * <p>A hash model that wraps a resource bundle. Makes it convenient to store

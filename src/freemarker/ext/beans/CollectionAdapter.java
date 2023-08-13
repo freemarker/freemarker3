@@ -22,7 +22,7 @@ class CollectionAdapter extends AbstractCollection implements TemplateModelAdapt
         this.wrapper = wrapper;
     }
     
-    public TemplateModel getTemplateModel() {
+    public TemplateCollectionModel getTemplateModel() {
         return model;
     }
     

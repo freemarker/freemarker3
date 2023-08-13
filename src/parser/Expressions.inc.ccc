@@ -92,8 +92,8 @@ INJECT ParentheticalExpression :
 }
 
 /**
- * A primary expression preceded by zero or
- * more unary operators. 
+ * A primary expression preceded (optionally)
+ * by a unary operator
  */
 Expression UnaryExpression :
 {
@@ -146,7 +146,7 @@ INJECT NotExpression :
     }
 }
 
-Expression UnaryPlusMinusExpression# :
+UnaryPlusMinusExpression# :
  {Expression exp;}
    (
       <PLUS>
@@ -160,9 +160,6 @@ Expression UnaryPlusMinusExpression# :
       }
       pushNode(exp);
    } 
-   {
-      return CURRENT_NODE;
-   }
 ;
 
 INJECT UnaryPlusMinusExpression : 
@@ -243,7 +240,8 @@ Expression AdditiveExpression :
 
 /**
  * A unary expression followed by zero or more
- * unary expressions with operators in between.
+ * unary expressions with multiplicative 
+ * operators in between.
  */
 Expression MultiplicativeExpression :
 {

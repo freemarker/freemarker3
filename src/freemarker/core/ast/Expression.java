@@ -2,7 +2,6 @@ package freemarker.core.ast;
 
 import freemarker.template.*;
 import freemarker.ext.beans.ObjectWrapper;
-import freemarker.ext.beans.Pojo;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.TemplateNode;
 
@@ -72,26 +71,5 @@ abstract public class Expression extends TemplateNode {
                      + "\nExpression " + this + " does not evaluate to true/false "
                      + "\nit is an instance of " + referent.getClass().getName();
         throw new NonBooleanException(msg, env);
-    }
-
-	static public boolean isEmpty(Object model) 
-    {
-        if (model instanceof Pojo) {
-            return ((Pojo) model).isEmpty();
-        } else if (model instanceof TemplateSequenceModel) {
-            return ((TemplateSequenceModel) model).size() == 0;
-        } else if (isString(model)) {
-            String s = asString(model);
-            return (s == null || s.length() == 0);
-        } else if (model instanceof TemplateCollectionModel) {
-            return !((TemplateCollectionModel) model).iterator().hasNext();
-        } else if (model instanceof TemplateHashModel) {
-            return ((TemplateHashModel) model).isEmpty();
-        } else if (isNumber(model) || (model instanceof TemplateDateModel) ||
-                isBoolean(model)) {
-            return false;
-        } else {
-            return true;
-        }
     }
 }

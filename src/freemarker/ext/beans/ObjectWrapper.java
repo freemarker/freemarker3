@@ -46,12 +46,6 @@ public class ObjectWrapper
      */
     private static ObjectWrapper instance;
 
-    // Cache of hash maps that contain already discovered properties and methods
-    // for a specified class. Each key is a Class, each value is a hash map. In
-    // that hash map, each key is a property/method name, each value is a
-    // MethodDescriptor or a PropertyDescriptor assigned to that property/method.
-    private final Map<Class<?>,Map<String,Object>> classCache = new ConcurrentHashMap<>();
-    private Set<String> cachedClassNames = new HashSet<String>();
 
     /**
      * At this level of exposure, all methods and properties of the
@@ -88,6 +82,13 @@ public class ObjectWrapper
      * speed up map item retrieval.
      */
     public static final int EXPOSE_NOTHING = 3;
+
+    // Cache of hash maps that contain already discovered properties and methods
+    // for a specified class. Each key is a Class, each value is a hash map. In
+    // that hash map, each key is a property/method name, each value is a
+    // MethodDescriptor or a PropertyDescriptor assigned to that property/method.
+    private Map<Class<?>,Map<String,Object>> classCache = new ConcurrentHashMap<>();
+    private Set<String> cachedClassNames = new HashSet<String>();
 
     private int exposureLevel = EXPOSE_SAFE;
     private boolean methodsShadowItems = true;
@@ -383,7 +384,7 @@ public class ObjectWrapper
         if (object instanceof CharSequence) {
             return object;
         }
-        return new Pojo(object);
+        return new StringModel(object);
     }
 
     /**
@@ -1045,6 +1046,27 @@ public class ObjectWrapper
         return exposureLevel < EXPOSE_SAFE || !UNSAFE_METHODS.contains(method);
     }
     
+    static public boolean isEmpty(Object model) 
+    {
+        if (model instanceof Pojo) {
+            return ((Pojo) model).isEmpty();
+        } else if (model instanceof TemplateSequenceModel) {
+            return ((TemplateSequenceModel) model).size() == 0;
+        } else if (isString(model)) {
+            String s = asString(model);
+            return (s == null || s.length() == 0);
+        } else if (model instanceof TemplateCollectionModel) {
+            return !((TemplateCollectionModel) model).iterator().hasNext();
+        } else if (model instanceof TemplateHashModel) {
+            return ((TemplateHashModel) model).isEmpty();
+        } else if (isNumber(model) || (model instanceof TemplateDateModel) ||
+                isBoolean(model)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     /**
      * Retrieves mapping of methods to accessible methods for a class.
      * In case the class is not public, retrieves methods with same 

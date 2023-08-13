@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 
 import freemarker.template.TemplateCollectionModel;
 import freemarker.template.TemplateModelException;
+import static freemarker.ext.beans.ObjectWrapper.wrap;
 
 /**
  * <p>A class that adds Iterator functionality to the

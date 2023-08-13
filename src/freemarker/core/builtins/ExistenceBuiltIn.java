@@ -10,6 +10,7 @@ import freemarker.template.Constants;
 import freemarker.template.LazilyEvaluatableArguments;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.core.parser.ast.ParentheticalExpression;
+import freemarker.ext.beans.ObjectWrapper;
 
 /**
  * @author Attila Szegedi
@@ -59,7 +60,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
         
     public static class HasContentBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
-            return model != null && !Expression.isEmpty(model);
+            return model != null && !ObjectWrapper.isEmpty(model);
         }
     };
 

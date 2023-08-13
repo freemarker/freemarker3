@@ -5,6 +5,7 @@ import java.util.Date;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
+import freemarker.ext.beans.Pojo;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -136,6 +137,17 @@ public class ComparisonExpression extends BooleanExpression {
             boolean first = asBoolean(ltm);
             boolean second = asBoolean(rtm);
             comp = (first ? 1 : 0) - (second ? 1 : 0);
+        }
+        else if (ltm instanceof Pojo && rtm instanceof Pojo) {
+            Object left = ((Pojo)ltm).getWrappedObject();
+            Object right = ((Pojo)rtm).getWrappedObject();
+            if (operation == EQUALS) {
+                return left.equals(right);
+            }
+            if (operation == NOT_EQUALS) {
+                return !left.equals(right);
+            }
+            throw new UnsupportedOperationException();
         }
         else {
             throw new TemplateException(

@@ -1,6 +1,6 @@
 package freemarker.template;
 
-import java.util.Iterator;
+//import java.util.Iterator;
 
 /**
  * This interface can be implemented by a class to make a variable "foreach-able", 
@@ -15,11 +15,11 @@ import java.util.Iterator;
  * @author Attila Szegedi, szegedia at users dot sourceforge dot net
  * @version $Id: TemplateCollectionModel.java,v 1.10 2003/01/12 23:40:21 revusky Exp $
  */
-public interface TemplateCollectionModel extends TemplateModel {
+public interface TemplateCollectionModel extends TemplateModel, Iterable<Object> {
 
     /**
      * Retrieves a template model iterator that is used to iterate over
      * the elements in this collection.
      */
-    public Iterator<Object> iterator();
+    //public Iterator<Object> iterator();
 }
