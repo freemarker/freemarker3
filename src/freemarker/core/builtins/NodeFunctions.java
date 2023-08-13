@@ -5,7 +5,6 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateNodeModel;
@@ -64,7 +63,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         @Override
         public Object apply(Environment env, TemplateNodeModel node)
         {
-            return new StringModel(node.getNodeName());
+            return node.getNodeName();
         }
     }
 
@@ -73,7 +72,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         public Object apply(Environment env, TemplateNodeModel node)
         {
             String ns = node.getNodeNamespace();
-            return ns == null ? Constants.JAVA_NULL : new StringModel(ns);
+            return ns == null ? Constants.JAVA_NULL : ns;
         }
     }
 
@@ -82,7 +81,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         public Object apply(Environment env, TemplateNodeModel node)
         {
             String nt = node.getNodeType();
-            return nt == null ? Constants.JAVA_NULL : new StringModel(nt);
+            return nt == null ? Constants.JAVA_NULL : nt;
         }
     }
     

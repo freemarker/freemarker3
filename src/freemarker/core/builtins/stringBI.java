@@ -95,7 +95,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
 
         public Object get(String key) 
         {
-            return new StringModel(env.getDateFormatObject(dateType, key).format(date));
+            return env.getDateFormatObject(dateType, key).format(date);
         }
         
         public Object exec(List arguments)
@@ -136,12 +136,11 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
 
         public Object get(String key)
         {
-            return new StringModel(env.getNumberFormatObject(key).format(number));
+            return env.getNumberFormatObject(key).format(number);
         }
         
         @Parameters("format")
-        public Object exec(List arguments)
-            {
+        public Object exec(List arguments) {
             if (arguments.size() != 1) {
                 throw new TemplateModelException(
                         "number?string(...) requires exactly 1 argument.");
