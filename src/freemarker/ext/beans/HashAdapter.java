@@ -63,7 +63,7 @@ public class HashAdapter extends AbstractMap implements TemplateModelAdapter {
         }
         return entrySet = new AbstractSet() {
             public Iterator iterator() {
-                final Iterator<Object> i;
+                final Iterator<?> i;
                 try {
                      i = getModelEx().keys().iterator();
                 }

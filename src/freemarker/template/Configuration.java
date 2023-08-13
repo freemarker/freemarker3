@@ -622,8 +622,8 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @see #setSharedVariable(String,TemplateModel)
      */
     public void setAllSharedVariables(TemplateHashModelEx hash) {
-        Iterator<Object> keys = hash.keys().iterator();
-        Iterator<Object> values = hash.values().iterator();
+        Iterator<?> keys = hash.keys().iterator();
+        Iterator<?> values = hash.values().iterator();
         while(keys.hasNext())
         {
             setSharedVariable(asString(keys.next()), values.next());

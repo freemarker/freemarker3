@@ -103,7 +103,7 @@ public class DeepUnwrap
         if(model instanceof TemplateHashModelEx) {
             TemplateHashModelEx hash = (TemplateHashModelEx)model;
             Map map = new LinkedHashMap();
-            Iterator<Object> keys = hash.keys().iterator();
+            Iterator<?> keys = hash.keys().iterator();
             while(keys.hasNext()) {
                 String key = (String)unwrap(keys.next(), permissive); 
                 map.put(key, unwrap(hash.get(key), permissive));

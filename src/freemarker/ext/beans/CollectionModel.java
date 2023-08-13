@@ -18,13 +18,13 @@ public class CollectionModel extends StringModel implements Iterable
      * Creates a new model that wraps the specified collection object.
      * @param collection the collection object to wrap into a model.
      */
-    public CollectionModel(Collection collection)
+    public CollectionModel(Collection<?> collection)
     {
         super(collection);
     }
 
     public Iterator<Object> iterator()
     {
-        return new IteratorModel(((Collection)object).iterator());
+        return new IteratorModel(((Collection<?>)object).iterator());
     }
 }

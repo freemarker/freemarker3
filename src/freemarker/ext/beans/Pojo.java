@@ -273,7 +273,8 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
 
     public Iterable keys()
     {
-        return new CollectionAndSequence((Iterable)new ListModel(new ArrayList(keySet())));
+        return new ArrayList<Object>(keySet());
+        //return new CollectionAndSequence((Iterable)new ListModel(new ArrayList(keySet())));
     }
 
     public Iterable values() 

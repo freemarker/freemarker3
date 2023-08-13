@@ -957,7 +957,7 @@ public final class Environment extends Configurable implements Scope {
     public Collection<String> getDirectVariableNames() {
         Collection<String> coll = new HashSet<String>(globalVariables.keySet());
         if (rootDataModel instanceof TemplateHashModelEx) {
-            Iterator<Object> rootNames = ((TemplateHashModelEx) rootDataModel).keys().iterator();
+            Iterator<?> rootNames = ((TemplateHashModelEx) rootDataModel).keys().iterator();
             while (rootNames.hasNext()) {
                 coll.add(asString(rootNames.next()));
             }

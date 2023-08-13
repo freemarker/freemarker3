@@ -31,10 +31,10 @@ public interface TemplateHashModelEx extends TemplateHashModel {
     /**
      * @return a collection containing the keys in the hash. 
      */
-    Iterable keys();
+    Iterable<?> keys();
 
     /**
      * @return a collection containing the values in the hash.
      */
-    Iterable values();
+    Iterable<?> values();
 }

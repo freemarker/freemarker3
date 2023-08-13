@@ -74,11 +74,11 @@ public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelE
     }
 
     public Iterable keys() {
-        return new CollectionAndSequence(new ListModel(new ArrayList(map.keySet())));
+        return new CollectionAndSequence(new ArrayList(map.keySet()));
     }
 
     public Iterable values() {
-        return new CollectionAndSequence(new ListModel(new ArrayList(map.values())));
+        return new CollectionAndSequence(new ArrayList(map.values()));
     }
     
     public Object getAdaptedObject(Class hint) {

@@ -10,11 +10,11 @@ import java.util.*;
  */
 final public class CollectionAndSequence implements Iterable, TemplateSequenceModel {
 
-    private Iterable collection;
+    private Iterable<?> collection;
     private TemplateSequenceModel sequence;
     private ArrayList<Object> data;
 
-    public CollectionAndSequence(Iterable collection) {
+    public CollectionAndSequence(Iterable<?> collection) {
         this.collection = collection;
     }
 
@@ -26,7 +26,7 @@ final public class CollectionAndSequence implements Iterable, TemplateSequenceMo
         this.sequence = listModel;
     }
 
-    public Iterator<Object> iterator() {
+    public Iterator<?> iterator() {
         if (collection != null) {
             return collection.iterator();
         } else {
@@ -55,7 +55,7 @@ final public class CollectionAndSequence implements Iterable, TemplateSequenceMo
     private void initSequence() {
         if (data == null) {
             data = new ArrayList<Object>();
-            Iterator<Object> it = collection.iterator();
+            Iterator<?> it = collection.iterator();
             while (it.hasNext()) {
                 data.add(it.next());
             }

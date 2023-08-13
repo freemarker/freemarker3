@@ -22,13 +22,13 @@ public class ListModel extends CollectionModel implements TemplateSequenceModel 
      * Creates a new model that wraps the specified collection object.
      * @param list the list object to wrap into a model.
      */
-    public ListModel(List list)
+    public ListModel(List<?> list)
     {
         super(list);
     }
 
     public ListModel() {
-        this(new ArrayList());
+        this(new ArrayList<Object>());
     }
 
     public void add(Object obj) {
@@ -42,7 +42,7 @@ public class ListModel extends CollectionModel implements TemplateSequenceModel 
      */
     public Object get(int index) {
         try {
-            return wrap(((List)object).get(index));
+            return wrap(((List<?>)object).get(index));
         }
         catch(IndexOutOfBoundsException e) {
             return null; // This is better because it allows the use of existence built-ins, i.e. x[10]?? etcetera (JR)
@@ -51,6 +51,6 @@ public class ListModel extends CollectionModel implements TemplateSequenceModel 
     
     public int size()
     {
-        return ((Collection)object).size();
+        return ((Collection<?>)object).size();
     }
 }
