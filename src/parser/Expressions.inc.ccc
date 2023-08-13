@@ -146,24 +146,68 @@ INJECT NotExpression :
     }
 }
 
-Expression UnaryPlusMinusExpression :
-{
-   Expression exp, result;
-   boolean isMinus = false;
-   Token t;
-}
+Expression UnaryPlusMinusExpression# :
+ {Expression exp;}
    (
-      t=<PLUS>
+      <PLUS>
       |
-      t=<MINUS> {isMinus = true;}
+      <MINUS>
    )
-   exp=PrimaryExpression 
+   exp=PrimaryExpression
    {
-      result = new UnaryPlusMinusExpression(exp, isMinus);  
-      result.setLocation(template, token_source, t, exp);
-      return result;
+      while (currentNodeScope.size()>1) {
+         currentNodeScope.remove(currentNodeScope.size()-1);
+      }
+      pushNode(exp);
+   } 
+   {
+      return CURRENT_NODE;
    }
 ;
+
+INJECT UnaryPlusMinusExpression : 
+    import freemarker.core.Environment;
+    import freemarker.ext.beans.NumberModel;
+    import freemarker.core.ast.Expression;
+    import freemarker.core.ast.ArithmeticEngine;
+    import freemarker.core.ast.NonNumericalException;
+    import freemarker.template.*;
+    extends Expression
+{
+    private static final Integer MINUS_ONE = Integer.valueOf(-1); 
+
+    public Expression getTarget() {
+    	return firstChildOfType(Expression.class);
+    }
+    
+    public boolean isMinus() {
+    	return get(0).getType()==MINUS;
+    }
+    
+    public Object evaluate(Environment env) {
+        TemplateNumberModel targetModel = null;
+        try {
+            targetModel = (TemplateNumberModel) getTarget().evaluate(env);
+        } catch (ClassCastException cce) {
+            String msg = "Error " + getStartLocation();
+            msg += "\nExpression " + getTarget() + " is not numerical.";
+            throw new NonNumericalException(msg, env);
+        }
+        if (!isMinus()) {
+            return targetModel;
+        }
+        Number n = targetModel.getAsNumber();
+        n = ArithmeticEngine.CONSERVATIVE_ENGINE.multiply(MINUS_ONE, n);
+        return new NumberModel(n);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        UnaryPlusMinusExpression result = new UnaryPlusMinusExpression();
+        result.add(get(0));
+        result.add(getTarget().deepClone(name,subst));
+        return result;
+    }
+}
 
 Expression AdditiveExpression :
 {

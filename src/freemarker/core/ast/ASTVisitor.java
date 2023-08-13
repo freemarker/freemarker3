@@ -20,6 +20,7 @@ import freemarker.core.parser.ast.ListLiteral;
 import freemarker.core.parser.ast.MethodCall;
 import freemarker.core.parser.ast.NotExpression;
 import freemarker.core.parser.ast.StringLiteral;
+import freemarker.core.parser.ast.UnaryPlusMinusExpression;
 import freemarker.template.Template;
 
 
