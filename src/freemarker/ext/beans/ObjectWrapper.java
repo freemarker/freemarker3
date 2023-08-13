@@ -337,7 +337,7 @@ public class ObjectWrapper
      * <li>if the object is a ResourceBundle returns a {@link ResourceBundleModel} for it,</li>
      * <li>if the object is an Iterator, returns a {@link IteratorModel} for it
      * <li>if the object is an Enumeration, returns a {@link EnumerationModel} for it
-     * <li>otherwise, returns a generic {@link StringModel} for it.
+     * <li>otherwise, returns a generic {@link Pojo} for it.
      * </ul>
      */
     public Object _wrap(Object object) 

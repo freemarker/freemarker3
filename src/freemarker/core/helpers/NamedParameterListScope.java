@@ -7,7 +7,6 @@ import java.util.List;
 import freemarker.core.AbstractScope;
 import freemarker.core.Scope;
 import freemarker.ext.beans.CollectionModel;
-import freemarker.ext.beans.StringModel;
 
 /**
  * @author Attila Szegedi
@@ -55,13 +54,14 @@ public class NamedParameterListScope extends AbstractScope {
 
     public Iterable keys() {
         int size = Math.min(paramNames.size(), paramValues.size());
-        List<StringModel> nonNullValueKeys = new ArrayList<StringModel>(size);
+        List<String> nonNullValueKeys = new ArrayList<String>(size);
         for(int i = 0; i < size; ++i) {
             if(paramValues.get(i) != null) {
-                nonNullValueKeys.add(new StringModel(paramNames.get(i)));
+                nonNullValueKeys.add(paramNames.get(i));
             }
         }
-        return new CollectionModel(nonNullValueKeys);
+        return nonNullValueKeys;
+        //return new CollectionModel(nonNullValueKeys);
     }
     
     public int size() {
