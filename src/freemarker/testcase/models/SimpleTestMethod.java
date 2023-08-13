@@ -2,7 +2,6 @@ package freemarker.testcase.models;
 
 import java.util.List;
 
-import freemarker.ext.beans.StringModel;
 import freemarker.template.*;
 
 /**
@@ -21,11 +20,11 @@ public class SimpleTestMethod implements TemplateMethodModel {
      */
     public Object exec(List arguments) {
         if( arguments.size() == 0 ) {
-            return new StringModel( "Empty list provided" );
+            return "Empty list provided";
         } else if( arguments.size() > 1 ) {
-            return new StringModel( "Argument size is: " + arguments.size() );
+            return "Argument size is: " + arguments.size();
         } else {
-            return new StringModel( "Single argument value is: " + arguments.get(0) );
+            return "Single argument value is: " + arguments.get(0);
         }
     }
 }

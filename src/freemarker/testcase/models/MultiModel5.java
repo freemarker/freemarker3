@@ -1,7 +1,6 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
-import freemarker.ext.beans.StringModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ public class MultiModel5 implements TemplateSequenceModel, TemplateHashModel {
 
     /** Creates new MultiModel5 */
     public MultiModel5() {
-        list.add(new StringModel( "Dummy to make list non-empty" ));
+        list.add("Dummy to make list non-empty");
     }
 
     /**
