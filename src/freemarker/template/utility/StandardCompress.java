@@ -113,9 +113,8 @@ public class StandardCompress implements TemplateTransformModel, TemplateDirecti
         boolean singleLine = false;
         if (args != null) {
             try {
-                TemplateNumberModel num = (TemplateNumberModel)args.get(BUFFER_SIZE_KEY);
-                if (num != null)
-                    bufferSize = num.getAsNumber().intValue();
+                Number num = (Number) args.get(BUFFER_SIZE_KEY);
+                if (num != null) bufferSize = num.intValue();
             } catch (ClassCastException e) {
                 throw new TemplateModelException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
             }

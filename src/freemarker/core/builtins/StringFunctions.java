@@ -16,7 +16,6 @@ import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateBooleanModel;
-import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
@@ -237,11 +236,11 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 throw new TemplateModelException("Expecting 1 or 2 numerical arguments for ?substring(...)");
             }
             try {
-                TemplateNumberModel tnm = (TemplateNumberModel) args.get(0);
-                left = tnm.getAsNumber().intValue();
+                Number tnm = asNumber(args.get(0));
+                left = tnm.intValue();
                 if (argCount == 2) {
-                    tnm = (TemplateNumberModel) args.get(1);
-                    right = tnm.getAsNumber().intValue();
+                    tnm = asNumber(args.get(1));
+                    right = asNumber(tnm).intValue();
                 }
             } catch (ClassCastException cce) {
                 throw new TemplateModelException("Expecting numerical arguments for ?substring(...)");

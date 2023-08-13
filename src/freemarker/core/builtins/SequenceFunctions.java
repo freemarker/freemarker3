@@ -16,7 +16,6 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
 
@@ -138,16 +137,13 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 throw new TemplateModelException(
                 "?chunk(...) expects 1 or 2 arguments.");
             }
-
             Object chunkSize = args.get(0);
-            if (!(chunkSize instanceof TemplateNumberModel)) {
+            if (!isNumber(chunkSize)) {
                 throw new TemplateModelException(
                         "?chunk(...) expects a number as "
                         + "its 1st argument.");
             }
-
-            return new ChunkedSequence(tsm, ((TemplateNumberModel) chunkSize)
-                    .getAsNumber().intValue(),
+            return new ChunkedSequence(tsm, asNumber(chunkSize).intValue(),
                     numArgs > 1 ? args.get(1) : null);
         }
     }
@@ -314,7 +310,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                         result.add(new KVP(((TemplateDateModel) item).getAsDate(),
                                 item));
                     } catch (ClassCastException e) {
-                        if (!(item instanceof TemplateNumberModel)) {
+                        if (!isNumber(item)) {
                             throw new TemplateModelException(
                                     "sorting failed: " 
                                     + "All values in the sequence must be "
@@ -533,7 +529,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             Object compareToThis = args.get(0);
             if (argc == 2) {
                 try {
-                    startIndex = ((TemplateNumberModel)args.get(1)).getAsNumber().intValue();
+                    startIndex = asNumber(args.get(1)).intValue();
                 } catch (ClassCastException cce) {
                     throw new TemplateModelException("Expecting number as second argument to ?seq_" + (reverse ? "last_" : "") + "index_of");
                 }

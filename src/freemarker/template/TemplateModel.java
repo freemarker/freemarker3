@@ -8,14 +8,8 @@ import freemarker.ext.beans.ObjectWrapper;
  * 
  * @see TemplateHashModel
  * @see TemplateSequenceModel
- * @see Iterable
  * @see TemplateScalarModel
- * @see TemplateNumberModel
  * @see TemplateTransformModel
  *
  */
-public interface TemplateModel {
-   default Object unwrap() {
-      return ObjectWrapper.instance().unwrap(this);
-   }
-}
+public interface TemplateModel {}

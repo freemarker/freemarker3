@@ -54,7 +54,7 @@ public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelE
     }
     
     public Object exec(List args) {
-        Object key = ((TemplateModel)args.get(0)).unwrap();
+        Object key = ObjectWrapper.instance().unwrap(args.get(0));
         Object value = map.get(key);
         if (value == null && !map.containsKey(key)) {
             return null;
