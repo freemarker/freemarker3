@@ -18,6 +18,7 @@ import freemarker.core.parser.ast.HashLiteral;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.core.parser.ast.ListLiteral;
 import freemarker.core.parser.ast.MethodCall;
+import freemarker.core.parser.ast.NotExpression;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.template.Template;
 
@@ -252,7 +253,6 @@ public abstract class ASTVisitor {
 	
 	public void visit(NoParseBlock node) {
 		recurse(node);
-		
 	}
 	
 	public void visit(NotExpression node) {
