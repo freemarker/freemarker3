@@ -27,7 +27,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 		else if (builtInName == "is_date") {
 			result = value instanceof TemplateDateModel;
 		}
-		else if (builtInName == "is_enumerable") {
+		else if (builtInName == "is_enumerable" || builtInName == "is_collection") {
 			result = isIterable(value);
 		}
 		else if (builtInName == "is_sequence" || builtInName == "is_indexable") {
@@ -60,9 +60,6 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 		}
 		else if (builtInName == "is_transform") {
 			result = value instanceof TemplateTransformModel;
-		}
-		else if (builtInName == "is_collection") {
-			result = value instanceof Iterable;
 		}
 		return result;
 	}

@@ -334,7 +334,6 @@ public class ObjectWrapper
      * <li>if the object is already a {@link TemplateModel}, returns it unchanged,</li>
      * <li>if the object is a {@link TemplateModelAdapter}, returns its underlying model,</li>
      * <li>if the object is a Map, returns a {@link SimpleMapModel} for it
-     * <li>if the object is a Collection, returns a {@link CollectionModel} for it
      * <li>if the object is an array, returns a {@link ArrayModel} for it
      * <li>if the object is a Number returns a {@link NumberModel} for it,</li>
      * <li>if the object is a Date returns a {@link DateModel} for it,</li>
@@ -379,9 +378,9 @@ public class ObjectWrapper
         if (object instanceof Date) {
             return new DateModel((Date) object);
         }
-        if (object instanceof Collection) {
-            return new CollectionModel((Collection)object);
-        }
+        //if (object instanceof Collection) {
+        //    return new CollectionModel((Collection)object);
+        //}
         if (object instanceof ResourceBundle) {
             return new ResourceBundleModel((ResourceBundle)object);
         }

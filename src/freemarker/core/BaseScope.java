@@ -2,9 +2,6 @@ package freemarker.core;
 
 import java.util.*;
 
-import freemarker.ext.beans.CollectionModel;
-import freemarker.template.*;
-
 /**
  * A basic scope that stores variables locally in a hash map. 
  * @author Jonathan Revusky
@@ -39,11 +36,11 @@ public class BaseScope extends AbstractScope {
     }
 
     public Iterable keys() {
-        return new CollectionModel(variables.keySet());
+        return variables.keySet();
     }
 
     public Iterable values() {
-        return new CollectionModel(variables.values());
+        return variables.values();
     }
 
 

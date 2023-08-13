@@ -2,7 +2,6 @@ package freemarker.template;
 
 import java.util.List;
 import java.util.ArrayList;
-import freemarker.ext.beans.CollectionModel;
 
 /**
  * Singleton object representing nothing, used by ?if_exists built-in.
@@ -17,7 +16,7 @@ implements TemplateBooleanModel, TemplateScalarModel, TemplateSequenceModel, Tem
 
     private static final TemplateModel instance = new GeneralPurposeNothing();
       
-    private static final Iterable EMPTY_COLLECTION = new CollectionModel(new ArrayList(0));
+    private static final Iterable EMPTY_COLLECTION = new ArrayList(0);
 
     private GeneralPurposeNothing() {
     }

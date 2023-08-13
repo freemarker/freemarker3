@@ -16,7 +16,7 @@ import static freemarker.ext.beans.ObjectWrapper.wrap;
  * @author Attila Szegedi
  * @version $Id: CollectionModel.java,v 1.22 2003/06/03 13:21:32 szegedia Exp $
  */
-public class ListModel extends CollectionModel implements TemplateSequenceModel {
+public class ListModel extends Pojo implements TemplateSequenceModel {
     /**
      * Creates a new model that wraps the specified collection object.
      * @param list the list object to wrap into a model.
