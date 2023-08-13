@@ -2,7 +2,6 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.ast.CollectionAndSequence;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;
 
@@ -21,9 +20,9 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
                     caller.getTarget(), env, "extended hash");
         }
         final Iterable result = apply((TemplateHashModelEx) model);
-        if (!(result instanceof TemplateSequenceModel)) {
-            return new CollectionAndSequence(result);
-        } 
+//        if (!(result instanceof TemplateSequenceModel)) {
+//            return new CollectionAndSequence(result);
+//        } 
         return result;
     }
     

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import freemarker.core.ast.CollectionAndSequence;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
@@ -271,20 +270,20 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
         return ObjectWrapper.instance().keyCount(object.getClass());
     }
 
-    public Iterable keys()
+    public Iterable<?> keys()
     {
-        return new ArrayList<Object>(keySet());
-        //return new CollectionAndSequence((Iterable)new ListModel(new ArrayList(keySet())));
+        return keySet();
     }
 
-    public Iterable values() 
+    public Iterable<?> values() 
     {
+
         List<Object> values = new ArrayList<>(size());
-        Iterator<Object> it = keys().iterator();
+        Iterator<?> it = keys().iterator();
         while (it.hasNext()) {
             values.add(asString(it.next()));
         }
-        return new CollectionAndSequence((Iterable)new ListModel(new ArrayList(values)));
+        return values;
     }
     
     public String toString() {

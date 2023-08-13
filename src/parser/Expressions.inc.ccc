@@ -1525,11 +1525,12 @@ INJECT HashLiteral :
     private class SequenceHash implements TemplateHashModelEx {
 
         private HashMap<String, Object> keyMap  = new HashMap<>(); // maps keys to integer offset
-        private Iterable keyCollection, valueCollection; // ordered lists of keys and values
+        private Iterable<String> keyCollection;
+        private Iterable<Object> valueCollection; 
 
         SequenceHash(Environment env) {
-            ArrayList<String> keyList = new ArrayList<String>(keys.size());
-            ArrayList<Object> valueList = new ArrayList<>(keys.size());
+            List<String> keyList = new ArrayList<String>(keys.size());
+            List<Object> valueList = new ArrayList<>(keys.size());
             for (int i = 0; i< keys.size(); i++) {
                 Expression keyExp = keys.get(i);
                 Expression valExp = values.get(i);
@@ -1540,8 +1541,8 @@ INJECT HashLiteral :
                 keyList.add(key);
                 valueList.add(value);
             }
-            keyCollection = new CollectionAndSequence(new ListModel(keyList));
-            valueCollection = new CollectionAndSequence(new ListModel(valueList));
+            keyCollection = keyList;
+            valueCollection = valueList;
         }
 
         public int size() {

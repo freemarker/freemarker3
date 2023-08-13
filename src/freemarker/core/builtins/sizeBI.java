@@ -6,6 +6,7 @@ import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateSequenceModel;
+import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * Implementation of ?c built-in 
@@ -20,6 +21,9 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
         int size = -1;
         if (model instanceof TemplateSequenceModel) {
             size = ((TemplateSequenceModel) model).size();
+        }
+        else if (isList(model)) {
+            size=asList(model).size();
         }
         else if (model instanceof TemplateHashModelEx) {
             size = ((TemplateHashModelEx) model).size();

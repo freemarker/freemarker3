@@ -41,68 +41,75 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
             Object model) 
     {
-        if (!(model instanceof TemplateSequenceModel)) {
+        if (!isList(model)) {
             throw TemplateNode.invalidTypeException(model,
                     caller.getTarget(), env, "sequence");
         }
-        return apply((TemplateSequenceModel) model);
+        return apply(model);
     }
     
-    public abstract Object apply(TemplateSequenceModel model) throws TemplateException;
+    public abstract Object apply(Object model) throws TemplateException;
     
     public static class First extends SequenceFunctions {
         @Override
-        public Object apply(TemplateSequenceModel sequence) {
-            return sequence.size() > 0 ? sequence.get(0) : null;
+        public Object apply(Object sequence) {
+            List list = asList(sequence);
+            return list.size() > 0 ? list.get(0) : null;
         }
     }
 
     public static class Last extends SequenceFunctions {
         @Override
-        public Object apply(TemplateSequenceModel sequence) {
-            return sequence.size() > 0 ? sequence.get(sequence.size() - 1) : null;
+        public Object apply(Object sequence) {
+            List list = asList(sequence);
+            return list.size() > 0 ? list.get(list.size() - 1) : null;
         }
     }
 
     public static class Reverse extends SequenceFunctions {
         @Override
-        public Object apply(TemplateSequenceModel sequence) {
-            return new ReverseSequence(sequence);
+        public Object apply(Object sequence) {
+            List list = asList(sequence);
+            Collections.reverse(list);
+            return list;
+            //return new ReverseSequence(sequence);
         }
     }
 
     public static class Sort extends SequenceFunctions {
         @Override
-        public Object apply(TemplateSequenceModel sequence) {
-            return sort(sequence, null);
+        public Object apply(Object sequence) {
+            List list = asList(sequence);
+            return sort(asList(sequence), null);
         }
     }
 
     public static class SortBy extends SequenceFunctions {
         @Override
-        public Object apply(TemplateSequenceModel sequence) {
-            return new SortByMethod(sequence);
+        public Object apply(Object sequence) {
+            return new SortByMethod(asList(sequence));
         }
     }
 
     public static class Chunk extends SequenceFunctions {
         @Override
-        public Object apply(TemplateSequenceModel sequence) {
-            return new ChunkFunction(sequence);
+        public Object apply(Object sequence) {
+            return new ChunkFunction(asList(sequence));
         }
     }
 
     public static class IndexOf extends SequenceFunctions {
         @Override
-        public Object apply(TemplateSequenceModel sequence) {
-            return new SequenceIndexOf(sequence, false);
+        public Object apply(Object sequence) {
+            return new SequenceIndexOf(asList(sequence), false);
         }
     }
 
     public static class LastIndexOf extends SequenceFunctions {
         @Override
-        public Object apply(TemplateSequenceModel sequence) {
-            return new SequenceIndexOf(sequence, true);
+        public Object apply(Object sequence) {
+            List list = asList(sequence);
+            return new SequenceIndexOf(list, true);
         }
     }
 
@@ -124,9 +131,9 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
     static class ChunkFunction implements TemplateMethodModelEx {
 
-        private final TemplateSequenceModel tsm;
+        private final List tsm;
 
-        private ChunkFunction(TemplateSequenceModel tsm) {
+        private ChunkFunction(List tsm) {
             this.tsm = tsm;
         }
         
@@ -152,7 +159,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
     static class ChunkedSequence implements TemplateSequenceModel {
 
-        private final TemplateSequenceModel wrappedTsm;
+        private final List wrappedTsm;
 
         private final int chunkSize;
 
@@ -160,7 +167,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
         private final int numberOfChunks;
 
-        private ChunkedSequence(TemplateSequenceModel wrappedTsm,
+        private ChunkedSequence(List wrappedTsm,
                 int chunkSize, Object fillerItem)
         {
             if (chunkSize < 1) {
@@ -209,7 +216,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
     }
 
-    static TemplateSequenceModel sort(TemplateSequenceModel seq, String[] keys)
+    static Object sort(List seq, String[] keys)
     {
         int i;
         int keyCnt;
@@ -481,9 +488,9 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
     }
 
     static class SortByMethod implements TemplateMethodModelEx {
-        TemplateSequenceModel seq;
+        List seq;
 
-        SortByMethod(TemplateSequenceModel seq) {
+        SortByMethod(List seq) {
             this.seq = seq;
         }
 
@@ -527,10 +534,10 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
     static class SequenceIndexOf implements TemplateMethodModelEx {
 
-        private final TemplateSequenceModel sequence;
+        private final List sequence;
         private final boolean reverse;
 
-        SequenceIndexOf(TemplateSequenceModel sequence, boolean reverse) {
+        SequenceIndexOf(List sequence, boolean reverse) {
             this.sequence = sequence;
             this.reverse = reverse;
         }

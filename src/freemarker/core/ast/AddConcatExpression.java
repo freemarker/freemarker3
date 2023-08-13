@@ -135,8 +135,8 @@ public class AddConcatExpression extends Expression {
 
     private static final class ConcatenatedHashEx extends ConcatenatedHash implements TemplateHashModelEx
     {
-        private CollectionAndSequence keys;
-        private CollectionAndSequence values;
+        private Iterable<String> keys;
+        private Iterable<Object> values;
         private int size;
 
         ConcatenatedHashEx(TemplateHashModelEx left, TemplateHashModelEx right)
@@ -166,15 +166,15 @@ public class AddConcatExpression extends Expression {
         {
             if (keys == null) {
                 HashSet<String> keySet = new HashSet<String>();
-                ListModel keySeq = new ListModel();
+                List<String> keySeq = new ArrayList<>();
                 addKeys(keySet, keySeq, (TemplateHashModelEx)this.left);
                 addKeys(keySet, keySeq, (TemplateHashModelEx)this.right);
                 size = keySet.size();
-                keys = new CollectionAndSequence((TemplateSequenceModel)keySeq);
+                keys = keySeq;
             }
         }
 
-        private static void addKeys(Set<String> set, ListModel keySeq, TemplateHashModelEx hash)
+        private static void addKeys(Set<String> set, List<String> keySeq, TemplateHashModelEx hash)
         throws TemplateModelException
         {
             Iterator<?> it = hash.keys().iterator();
@@ -192,14 +192,11 @@ public class AddConcatExpression extends Expression {
         throws TemplateModelException
         {
             if (values == null) {
-                ListModel seq = new ListModel();
-                // Note: size() invokes initKeys() if needed.
-            
-                int ln = keys.size();
-                for (int i  = 0; i < ln; i++) {
-                    seq.add(get(asString(keys.get(i))));
+                List<Object> seq = new ArrayList<>();
+                for (String key : keys) {
+                    seq.add(get(key));
                 }
-                values = new CollectionAndSequence((TemplateSequenceModel)seq);
+                values = seq;
             }
         }
     }
