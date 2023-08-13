@@ -3,7 +3,6 @@ package freemarker.ext.beans;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-;
 import freemarker.template.TemplateModelException;
 import static freemarker.ext.beans.ObjectWrapper.wrap;
 

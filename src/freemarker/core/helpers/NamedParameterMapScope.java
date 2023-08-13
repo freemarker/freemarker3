@@ -6,7 +6,6 @@ import java.util.Map;
 import freemarker.core.AbstractScope;
 import freemarker.core.Scope;
 import freemarker.ext.beans.CollectionModel;
-;
 
 /**
  * @author Attila Szegedi

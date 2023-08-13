@@ -16,7 +16,6 @@ import java.util.Set;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;

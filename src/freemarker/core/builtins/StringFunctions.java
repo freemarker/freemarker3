@@ -13,13 +13,11 @@ import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.ext.beans.ObjectWrapper;
 import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
-;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;

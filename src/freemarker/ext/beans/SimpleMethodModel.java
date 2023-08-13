@@ -6,9 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Collections;
 
-import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.Parameters;

@@ -2,7 +2,6 @@ package freemarker.ext.beans;
 
 import java.lang.reflect.Array;
 
-;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 

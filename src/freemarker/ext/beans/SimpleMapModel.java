@@ -2,12 +2,10 @@ package freemarker.ext.beans;
 
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;

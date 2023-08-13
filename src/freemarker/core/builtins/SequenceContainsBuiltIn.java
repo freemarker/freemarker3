@@ -6,7 +6,6 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
-;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;

@@ -11,7 +11,6 @@ import freemarker.core.Environment;
 import freemarker.core.ast.ArithmeticEngine;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;

@@ -8,7 +8,6 @@ import freemarker.core.AbstractScope;
 import freemarker.core.Scope;
 import freemarker.ext.beans.CollectionModel;
 import freemarker.ext.beans.StringModel;
-;
 
 /**
  * @author Attila Szegedi

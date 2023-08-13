@@ -7,7 +7,6 @@ import java.util.Map;
 
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;

@@ -3,8 +3,6 @@ package freemarker.ext.beans;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 
-;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelAdapter;
 import freemarker.template.TemplateModelException;
 import freemarker.template.utility.UndeclaredThrowableException;

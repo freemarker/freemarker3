@@ -3,8 +3,6 @@ package freemarker.ext.beans;
 import java.util.Collection;
 import java.util.Iterator;
 
-;
-
 /**
  * <p>A special case of {@link Pojo} that can wrap Java collections
  * and that implements the {@link Iterable} in order to be usable 
