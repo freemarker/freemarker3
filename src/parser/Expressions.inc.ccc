@@ -1525,7 +1525,7 @@ INJECT HashLiteral :
     private class SequenceHash implements TemplateHashModelEx {
 
         private HashMap<String, Object> keyMap  = new HashMap<>(); // maps keys to integer offset
-        private TemplateCollectionModel keyCollection, valueCollection; // ordered lists of keys and values
+        private Iterable keyCollection, valueCollection; // ordered lists of keys and values
 
         SequenceHash(Environment env) {
             ArrayList<String> keyList = new ArrayList<String>(keys.size());
@@ -1548,11 +1548,11 @@ INJECT HashLiteral :
             return keys.size();
         }
 
-        public TemplateCollectionModel keys() {
+        public Iterable keys() {
             return keyCollection;
         }
 
-        public TemplateCollectionModel values() {
+        public Iterable values() {
             return valueCollection;
         }
 

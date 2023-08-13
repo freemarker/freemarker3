@@ -49,7 +49,7 @@ public class Constants {
         
     };
 
-    public static final TemplateCollectionModel EMPTY_COLLECTION = new TemplateCollectionModel() {
+    public static final Iterable EMPTY_COLLECTION = new Iterable() {
 
         public Iterator<Object> iterator() {
             return EMPTY_ITERATOR;
@@ -76,11 +76,11 @@ public class Constants {
             return 0;
         }
 
-        public TemplateCollectionModel keys() {
+        public Iterable keys() {
             return EMPTY_COLLECTION;
         }
 
-        public TemplateCollectionModel values() {
+        public Iterable values() {
             return EMPTY_COLLECTION;
         }
 

@@ -47,7 +47,7 @@ public class PostParseVisitor extends ASTVisitor {
 				} 
 				else if (key.equals("attributes")) {
 					TemplateHashModelEx attributeMap = (TemplateHashModelEx) header.getParameter("attributes");
-	                TemplateCollectionModel keys = attributeMap.keys();
+	                Iterable keys = attributeMap.keys();
 	                for (Iterator<Object> it = keys.iterator(); it.hasNext();) {
 	                    String attName = asString(it.next());
 	                    Object attValue = DeepUnwrap.unwrap(attributeMap.get(attName));

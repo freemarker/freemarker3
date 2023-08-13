@@ -6,7 +6,7 @@ import java.util.Iterator;
 import freemarker.core.ast.*;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.NumberModel;
-import freemarker.template.TemplateCollectionModel;
+;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateSequenceModel;
 
@@ -28,8 +28,8 @@ public class LoopContext extends BlockScope {
     public void runLoop() throws TemplateException, IOException {
     	IteratorBlock iteratorBlock = (IteratorBlock) block;
     	Environment env = getEnvironment();
-        if (list instanceof TemplateCollectionModel) {
-            TemplateCollectionModel baseListModel = (TemplateCollectionModel) list;
+        if (list instanceof Iterable) {
+            Iterable baseListModel = (Iterable) list;
             Iterator<Object> it = baseListModel.iterator();
             hasNext = it.hasNext();
             while (hasNext) {

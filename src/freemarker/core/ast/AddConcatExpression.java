@@ -150,13 +150,13 @@ public class AddConcatExpression extends Expression {
             return size;
         }
 
-        public TemplateCollectionModel keys()
+        public Iterable keys()
         {
             initKeys();
             return keys;
         }
 
-        public TemplateCollectionModel values()
+        public Iterable values()
         {
             initValues();
             return values;

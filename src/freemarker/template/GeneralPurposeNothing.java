@@ -17,7 +17,7 @@ implements TemplateBooleanModel, TemplateScalarModel, TemplateSequenceModel, Tem
 
     private static final TemplateModel instance = new GeneralPurposeNothing();
       
-    private static final TemplateCollectionModel EMPTY_COLLECTION = new CollectionModel(new ArrayList(0));
+    private static final Iterable EMPTY_COLLECTION = new CollectionModel(new ArrayList(0));
 
     private GeneralPurposeNothing() {
     }
@@ -54,11 +54,11 @@ implements TemplateBooleanModel, TemplateScalarModel, TemplateSequenceModel, Tem
         return null;
     }
     
-    public TemplateCollectionModel keys() {
+    public Iterable keys() {
         return EMPTY_COLLECTION;
     }
 
-    public TemplateCollectionModel values() {
+    public Iterable values() {
         return EMPTY_COLLECTION;
     }
 }

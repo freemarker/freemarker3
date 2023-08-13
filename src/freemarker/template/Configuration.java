@@ -968,11 +968,11 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     	return variables.size();
     }
     
-    public TemplateCollectionModel keys() {
+    public Iterable keys() {
     	return new CollectionModel(variables.keySet());
     }
     
-    public TemplateCollectionModel values() {
+    public Iterable values() {
     	return new CollectionModel(variables.values());
     }
 }

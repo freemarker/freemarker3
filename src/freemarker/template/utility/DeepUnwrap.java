@@ -7,7 +7,7 @@ import java.util.Map;
 
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-import freemarker.template.TemplateCollectionModel;
+;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
@@ -35,7 +35,7 @@ public class DeepUnwrap
      *   <li>If the object implements {@link TemplateDateModel}, then the result
      *       of {@link TemplateDateModel#getAsDate()} is returned.
      *   <li>If the object implements {@link TemplateSequenceModel} or
-     *       {@link TemplateCollectionModel}, then a <code>java.util.ArrayList</code> is
+     *       {@link Iterable}, then a <code>java.util.ArrayList</code> is
      *       constructed from the subvariables, and each subvariable is unwrapped with
      *       the rules described here (recursive unwrapping).
      *   <li>If the object implements {@link TemplateHashModelEx}, then a
@@ -91,8 +91,8 @@ public class DeepUnwrap
             }
             return list;
         }
-        if(model instanceof TemplateCollectionModel) {
-            TemplateCollectionModel coll = (TemplateCollectionModel)model;
+        if(model instanceof Iterable) {
+            Iterable coll = (Iterable)model;
             ArrayList<Object> list = new ArrayList<Object>();
             Iterator<Object> it = coll.iterator();            
             while(it.hasNext()) {

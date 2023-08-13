@@ -9,7 +9,7 @@ package freemarker.template;
  * <p>As of version 2.2.2, the engine will automatically wrap the
  * collections returned by <code>keys</code> and <code>values</code> to
  * present them as sequences to the template.  For performance, you may
- * wish to return objects that implement both TemplateCollectionModel
+ * wish to return objects that implement both Iterable
  * and {@link TemplateSequenceModel}. Note that the wrapping to sequence happens
  * on demand; if the template does not try to use the variable returned by
  * <code>?keys</code> or <code>?values</code> as sequence (<code>theKeys?size</code>, or <code>theKeys[x]</code>,
@@ -31,10 +31,10 @@ public interface TemplateHashModelEx extends TemplateHashModel {
     /**
      * @return a collection containing the keys in the hash. 
      */
-    TemplateCollectionModel keys();
+    Iterable keys();
 
     /**
      * @return a collection containing the values in the hash.
      */
-    TemplateCollectionModel values();
+    Iterable values();
 }

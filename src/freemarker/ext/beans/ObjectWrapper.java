@@ -492,15 +492,15 @@ public class ObjectWrapper
         }
         
         if(SET_CLASS == requiredType) {
-            if(object instanceof TemplateCollectionModel) {
-                return new SetAdapter((TemplateCollectionModel)object, this);
+            if(object instanceof Iterable) {
+                return new SetAdapter((Iterable)object, this);
             }
         }
         
         if(COLLECTION_CLASS == requiredType 
                 || ITERABLE_CLASS == requiredType) {
-            if(object instanceof TemplateCollectionModel) {
-                return new CollectionAdapter((TemplateCollectionModel)object, 
+            if(object instanceof Iterable) {
+                return new CollectionAdapter((Iterable)object, 
                         this);
             }
             if(object instanceof TemplateSequenceModel) {
@@ -597,9 +597,9 @@ public class ObjectWrapper
                 && requiredType.isAssignableFrom(SEQUENCEADAPTER_CLASS)) {
             return new SequenceAdapter((TemplateSequenceModel)object, this);
         }
-        if(object instanceof TemplateCollectionModel && 
+        if(object instanceof Iterable && 
                 requiredType.isAssignableFrom(SETADAPTER_CLASS)) {
-            return new SetAdapter((TemplateCollectionModel)object, this);
+            return new SetAdapter((Iterable)object, this);
         }
 
         // Last ditch effort - is maybe the model itself instance of the 
@@ -1055,8 +1055,8 @@ public class ObjectWrapper
         } else if (isString(model)) {
             String s = asString(model);
             return (s == null || s.length() == 0);
-        } else if (model instanceof TemplateCollectionModel) {
-            return !((TemplateCollectionModel) model).iterator().hasNext();
+        } else if (model instanceof Iterable) {
+            return !((Iterable) model).iterator().hasNext();
         } else if (model instanceof TemplateHashModel) {
             return ((TemplateHashModel) model).isEmpty();
         } else if (isNumber(model) || (model instanceof TemplateDateModel) ||

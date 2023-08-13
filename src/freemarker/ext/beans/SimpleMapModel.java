@@ -8,7 +8,7 @@ import java.util.HashMap;
 import freemarker.core.ast.CollectionAndSequence;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-import freemarker.template.TemplateCollectionModel;
+;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
@@ -73,11 +73,11 @@ public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelE
         return map.size();
     }
 
-    public TemplateCollectionModel keys() {
+    public Iterable keys() {
         return new CollectionAndSequence(new ListModel(new ArrayList(map.keySet())));
     }
 
-    public TemplateCollectionModel values() {
+    public Iterable values() {
         return new CollectionAndSequence(new ListModel(new ArrayList(map.values())));
     }
     

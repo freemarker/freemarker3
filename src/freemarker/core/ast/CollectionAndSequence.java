@@ -8,13 +8,13 @@ import java.util.*;
  * Add sequence capabilities to an existing collection, or
  * vice versa. Used by ?keys and ?values built-ins.
  */
-final public class CollectionAndSequence implements TemplateCollectionModel, TemplateSequenceModel {
+final public class CollectionAndSequence implements Iterable, TemplateSequenceModel {
 
-    private TemplateCollectionModel collection;
+    private Iterable collection;
     private TemplateSequenceModel sequence;
     private ArrayList<Object> data;
 
-    public CollectionAndSequence(TemplateCollectionModel collection) {
+    public CollectionAndSequence(Iterable collection) {
         this.collection = collection;
     }
 

@@ -3,7 +3,7 @@ package freemarker.ext.beans;
 import java.util.AbstractCollection;
 import java.util.Iterator;
 
-import freemarker.template.TemplateCollectionModel;
+;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelAdapter;
 import freemarker.template.TemplateModelException;
@@ -15,14 +15,14 @@ import freemarker.template.utility.UndeclaredThrowableException;
  */
 class CollectionAdapter extends AbstractCollection implements TemplateModelAdapter {
     private final ObjectWrapper wrapper;
-    private final TemplateCollectionModel model;
+    private final Iterable model;
     
-    CollectionAdapter(TemplateCollectionModel model, ObjectWrapper wrapper) {
+    CollectionAdapter(Iterable model, ObjectWrapper wrapper) {
         this.model = model;
         this.wrapper = wrapper;
     }
     
-    public TemplateCollectionModel getTemplateModel() {
+    public Iterable getTemplateModel() {
         return model;
     }
     

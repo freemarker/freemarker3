@@ -17,7 +17,7 @@ import freemarker.core.ast.CollectionAndSequence;
 import freemarker.log.Logger;
 import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
-import freemarker.template.TemplateCollectionModel;
+;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
@@ -271,19 +271,19 @@ public class Pojo implements TemplateHashModelEx, AdapterTemplateModel
         return ObjectWrapper.instance().keyCount(object.getClass());
     }
 
-    public TemplateCollectionModel keys()
+    public Iterable keys()
     {
-        return new CollectionAndSequence((TemplateCollectionModel)new ListModel(new ArrayList(keySet())));
+        return new CollectionAndSequence((Iterable)new ListModel(new ArrayList(keySet())));
     }
 
-    public TemplateCollectionModel values() 
+    public Iterable values() 
     {
         List<Object> values = new ArrayList<>(size());
         Iterator<Object> it = keys().iterator();
         while (it.hasNext()) {
             values.add(asString(it.next()));
         }
-        return new CollectionAndSequence((TemplateCollectionModel)new ListModel(new ArrayList(values)));
+        return new CollectionAndSequence((Iterable)new ListModel(new ArrayList(values)));
     }
     
     public String toString() {

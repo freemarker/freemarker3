@@ -1136,14 +1136,14 @@ public final class Environment extends Configurable implements Scope {
                 "The size() method is not applicable because the root data model does not expose a size() method.");
     }
 
-    public TemplateCollectionModel keys() {
+    public Iterable keys() {
         if (!(rootDataModel instanceof TemplateHashModelEx)) {
             throw new TemplateModelException(
                     "The keys() method is not applicable because the root data model does not expose a keys() method.");
         }
         TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
-        TemplateCollectionModel rootKeys = root.keys();
-        TemplateCollectionModel sharedVariableKeys = getEnclosingScope().keys();
+        Iterable rootKeys = root.keys();
+        Iterable sharedVariableKeys = getEnclosingScope().keys();
         LinkedHashSet<Object> aggregate = new LinkedHashSet<>();
         for (Iterator<Object> tmi = sharedVariableKeys.iterator(); tmi
                 .hasNext();) {
@@ -1158,14 +1158,14 @@ public final class Environment extends Configurable implements Scope {
         return new CollectionModel(aggregate);
     }
 
-    public TemplateCollectionModel values() {
+    public Iterable values() {
         if (!(rootDataModel instanceof TemplateHashModelEx)) {
             throw new TemplateModelException(
                     "The keys() method is not applicable because the root data model does not expose a keys() method.");
         }
         TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
-        TemplateCollectionModel rootValues = root.values();
-        TemplateCollectionModel sharedVariableValues = getEnclosingScope()
+        Iterable rootValues = root.values();
+        Iterable sharedVariableValues = getEnclosingScope()
                 .values();
         LinkedHashSet<Object> aggregate = new LinkedHashSet<>();
         for (Iterator<Object> tmi = sharedVariableValues.iterator(); tmi
@@ -1266,11 +1266,11 @@ public final class Environment extends Configurable implements Scope {
                 // NB: The methods below do not take into account
                 // configuration shared variables even though
                 // the hash will return them, if only for BWC reasons
-                public TemplateCollectionModel values() {
+                public Iterable values() {
                     return ((TemplateHashModelEx) rootDataModel).values();
                 }
 
-                public TemplateCollectionModel keys() {
+                public Iterable keys() {
                     return ((TemplateHashModelEx) rootDataModel).keys();
                 }
 

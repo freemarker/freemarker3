@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import freemarker.template.TemplateCollectionModel;
+;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 
@@ -12,7 +12,7 @@ import static freemarker.ext.beans.ObjectWrapper.wrap;
 
 /**
  * <p>A special case of {@link Pojo} that can wrap Java lists
- * and that implements the {@link TemplateCollectionModel} and 
+ * and that implements the {@link Iterable} and 
  * {@link TemplateSequenceModel} in order to be usable in a <tt>&lt;foreach></tt> block.</p>
  * @author Attila Szegedi
  * @version $Id: CollectionModel.java,v 1.22 2003/06/03 13:21:32 szegedia Exp $

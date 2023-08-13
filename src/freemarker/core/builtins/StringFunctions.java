@@ -20,7 +20,7 @@ import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateNumberModel;
 import freemarker.template.TemplateScalarModel;
-import freemarker.template.TemplateCollectionModel;
+;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
@@ -311,7 +311,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
 
     static class RegexMatchModel 
-    implements TemplateBooleanModel, TemplateCollectionModel, TemplateSequenceModel {
+    implements TemplateBooleanModel, Iterable, TemplateSequenceModel {
         Matcher matcher;
         String input;
         final boolean matches;

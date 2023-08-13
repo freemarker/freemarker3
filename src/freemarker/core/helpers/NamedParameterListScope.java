@@ -8,7 +8,7 @@ import freemarker.core.AbstractScope;
 import freemarker.core.Scope;
 import freemarker.ext.beans.CollectionModel;
 import freemarker.ext.beans.StringModel;
-import freemarker.template.TemplateCollectionModel;
+;
 
 /**
  * @author Attila Szegedi
@@ -54,7 +54,7 @@ public class NamedParameterListScope extends AbstractScope {
         throw new UnsupportedOperationException();
     }
 
-    public TemplateCollectionModel keys() {
+    public Iterable keys() {
         int size = Math.min(paramNames.size(), paramValues.size());
         List<StringModel> nonNullValueKeys = new ArrayList<StringModel>(size);
         for(int i = 0; i < size; ++i) {
@@ -76,7 +76,7 @@ public class NamedParameterListScope extends AbstractScope {
         return nonNullCount;
     }
 
-    public TemplateCollectionModel values()  {
+    public Iterable values()  {
         int size = Math.min(paramNames.size(), paramValues.size());
         List<Object> nonNullValues = new ArrayList<>(size);
         for(int i = 0; i < size; ++i) {

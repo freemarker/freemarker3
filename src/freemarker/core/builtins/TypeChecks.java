@@ -29,7 +29,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = model instanceof TemplateDateModel;
 		}
 		else if (builtInName == "is_enumerable") {
-			result = model instanceof TemplateSequenceModel || model instanceof TemplateCollectionModel;
+			result = model instanceof TemplateSequenceModel || model instanceof Iterable;
 		}
 		else if (builtInName == "is_sequence" || builtInName == "is_indexable") {
 			result = model instanceof TemplateSequenceModel;
@@ -63,7 +63,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = model instanceof TemplateTransformModel;
 		}
 		else if (builtInName == "is_collection") {
-			result = model instanceof TemplateCollectionModel;
+			result = model instanceof Iterable;
 		}
 		return result;
 	}

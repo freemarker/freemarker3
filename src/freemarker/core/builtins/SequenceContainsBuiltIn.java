@@ -6,7 +6,7 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.template.TemplateCollectionModel;
+;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
@@ -21,7 +21,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
             Object model) 
     {
-        if (!(model instanceof TemplateSequenceModel || model instanceof TemplateCollectionModel)) {
+        if (!(model instanceof TemplateSequenceModel || model instanceof Iterable)) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "sequence or collection");
         }
         
@@ -30,10 +30,10 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
 
     static class SequenceContainsFunction implements TemplateMethodModelEx {
         final TemplateSequenceModel sequence;
-        final TemplateCollectionModel collection;
+        final Iterable collection;
         SequenceContainsFunction(Object seqModel) {
-            if (seqModel instanceof TemplateCollectionModel) {
-                collection = (TemplateCollectionModel) seqModel;
+            if (seqModel instanceof Iterable) {
+                collection = (Iterable) seqModel;
                 sequence = null;
             }
             else if (seqModel instanceof TemplateSequenceModel) {

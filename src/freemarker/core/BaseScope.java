@@ -38,11 +38,11 @@ public class BaseScope extends AbstractScope {
         return variables.isEmpty();
     }
 
-    public TemplateCollectionModel keys() {
+    public Iterable keys() {
         return new CollectionModel(variables.keySet());
     }
 
-    public TemplateCollectionModel values() {
+    public Iterable values() {
         return new CollectionModel(variables.values());
     }
 

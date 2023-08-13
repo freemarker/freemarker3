@@ -2,20 +2,20 @@ package freemarker.ext.beans;
 
 import java.lang.reflect.Array;
 
-import freemarker.template.TemplateCollectionModel;
+;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 
 import static freemarker.ext.beans.ObjectWrapper.wrap;
 
 /**
- * <p>A class that will wrap an arbitrary array into {@link TemplateCollectionModel}
+ * <p>A class that will wrap an arbitrary array into {@link Iterable}
  * and {@link TemplateSequenceModel} interfaces. It supports element retrieval through the <tt>array[index]</tt>
  * syntax and can be iterated as a list.
  * @author Attila Szegedi
  * @version $Id: ArrayModel.java,v 1.26 2003/06/03 13:21:32 szegedia Exp $
  */
-public class ArrayModel extends Pojo implements TemplateCollectionModel, TemplateSequenceModel
+public class ArrayModel extends Pojo implements Iterable, TemplateSequenceModel
 {
     // Cached length of the array
     private int length;

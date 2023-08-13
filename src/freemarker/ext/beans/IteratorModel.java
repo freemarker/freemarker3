@@ -3,7 +3,7 @@ package freemarker.ext.beans;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import freemarker.template.TemplateCollectionModel;
+;
 import freemarker.template.TemplateModelException;
 import static freemarker.ext.beans.ObjectWrapper.wrap;
 
@@ -23,7 +23,7 @@ import static freemarker.ext.beans.ObjectWrapper.wrap;
  * @version $Id: IteratorModel.java,v 1.26 2003/06/03 13:21:32 szegedia Exp $
  */
 
-public class IteratorModel extends Pojo implements Iterator<Object>, TemplateCollectionModel
+public class IteratorModel extends Pojo implements Iterator<Object>, Iterable
 {
     private boolean accessed = false;
     

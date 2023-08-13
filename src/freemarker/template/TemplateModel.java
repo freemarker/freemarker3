@@ -8,7 +8,7 @@ import freemarker.ext.beans.ObjectWrapper;
  * 
  * @see TemplateHashModel
  * @see TemplateSequenceModel
- * @see TemplateCollectionModel
+ * @see Iterable
  * @see TemplateScalarModel
  * @see TemplateNumberModel
  * @see TemplateTransformModel
