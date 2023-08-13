@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import static freemarker.ext.beans.ObjectWrapper.asString;
 import static freemarker.ext.beans.ObjectWrapper.wrap;
 
 /**
@@ -94,7 +95,7 @@ public class ResourceBundleModel extends Pojo implements TemplateMethodModelEx
             throw new TemplateModelException("No message key was specified");
         // Read it
         Iterator it = arguments.iterator();
-        String key = unwrap((TemplateModel)it.next()).toString();
+        String key = asString(it.next());
         try
         {
             if(!it.hasNext())
