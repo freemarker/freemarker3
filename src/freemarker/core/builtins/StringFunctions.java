@@ -13,7 +13,6 @@ import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateScalarModel;
@@ -218,7 +217,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 Matcher matcher = pattern.matcher(string);
                 result = firstOnly ? matcher.replaceFirst(second) : matcher.replaceAll(second);
             } 
-            return new StringModel(result);
+            return result;
         }
     }
 
@@ -246,9 +245,9 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 throw new TemplateModelException("Expecting numerical arguments for ?substring(...)");
             }
             if (argCount == 1) {
-                return new StringModel(string.substring(left));
+                return string.substring(left);
             } 
-            return new StringModel(string.substring(left, right));
+            return string.substring(left, right);
         }
     }
 
@@ -355,7 +354,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                     public Object get(int i) {
                         try {
-                            return new StringModel(matcher.group(i));
+                            return matcher.group(i);
                         }
                         catch (Exception e) {
                             throw new TemplateModelException(e);
@@ -436,7 +435,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 }
                 String filling = asString(obj);
                 try {
-                    return new StringModel(StringUtil.leftPad(string, width, filling));
+                    return StringUtil.leftPad(string, width, filling);
                 } catch (IllegalArgumentException e) {
                     if (filling.length() == 0) {
                         throw new TemplateModelException(
@@ -449,7 +448,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 }
             } else {
-                return new StringModel(StringUtil.leftPad(string, width));
+                return StringUtil.leftPad(string, width);
             }
         }
     }
@@ -490,7 +489,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 }
                 String filling = asString(obj);
                 try {
-                    return new StringModel(StringUtil.rightPad(string, width, filling));
+                    return StringUtil.rightPad(string, width, filling);
                 } catch (IllegalArgumentException e) {
                     if (filling.length() == 0) {
                         throw new TemplateModelException(
@@ -503,7 +502,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 }
             } else {
-                return new StringModel(StringUtil.rightPad(string, width));
+                return StringUtil.rightPad(string, width);
             }
         }
     }
@@ -550,8 +549,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                         + "needs exactly 1 parameter, the charset.");
             }	
             try {
-                return new StringModel(
-                        StringUtil.URLEnc(target, (String) args.get(0)));
+                return StringUtil.URLEnc(target, (String) args.get(0));
             } catch (UnsupportedEncodingException e) {
                 throw new TemplateModelException(
                         "Failed to execute URL encoding.", e);

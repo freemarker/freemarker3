@@ -1,10 +1,9 @@
 package freemarker.core.ast;
 
+import java.util.*;
 import freemarker.core.Environment;
 import freemarker.template.*;
-import freemarker.ext.beans.StringModel;
 import static freemarker.ext.beans.ObjectWrapper.*;
-import java.util.*;
 
 /**
  * An operator for the + operator. Note that this is treated
@@ -65,7 +64,7 @@ public class AddConcatExpression extends Expression {
             if(s1 == null) s1 = "null";
             String s2 = getStringValue(rightModel, getRight(), env);
             if(s2 == null) s2 = "null";
-            return new StringModel(s1.concat(s2));
+            return s1.concat(s2);
         }
         else if (leftModel instanceof TemplateHashModel && rightModel instanceof TemplateHashModel) {
             if (leftModel instanceof TemplateHashModelEx && rightModel instanceof TemplateHashModelEx) {
