@@ -1288,7 +1288,6 @@ INJECT StringLiteral :
    import freemarker.template.*;
    import freemarker.core.Environment;
    import freemarker.core.parser.*;
-   import freemarker.ext.beans.StringModel;
    import freemarker.core.ast.Expression;
    import freemarker.core.ast.TemplateElement;
    import java.io.*;
@@ -1339,8 +1338,7 @@ INJECT StringLiteral :
     }
     
     public Object evaluate(Environment env) {
-        return new StringModel(getStringValue(env));
-        //return getStringValue(env);
+        return getStringValue(env);
     }
 
     public String getAsString() {
