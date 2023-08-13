@@ -210,6 +210,13 @@ public class ObjectWrapper
         return (Boolean) obj;
     }
 
+    public static boolean isIterable(Object obj) {
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        return obj instanceof Iterable || obj instanceof TemplateSequenceModel;
+    }
+
     
     /**
      * @see #setStrict(boolean)

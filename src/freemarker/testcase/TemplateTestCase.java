@@ -176,7 +176,7 @@ public class TemplateTestCase extends TestCase {
         else if (testName.equals("type-builtins")) {
             dataModel.put("testmethod", new TestMethod());
             dataModel.put("testnode", new TestNode());
-            dataModel.put("testcollection", new CollectionModel(new ArrayList()));
+            dataModel.put("testcollection", new ArrayList());
         }
         
         else if (testName.equals("var-layers")) {

@@ -28,10 +28,10 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = value instanceof TemplateDateModel;
 		}
 		else if (builtInName == "is_enumerable") {
-			result = value instanceof TemplateSequenceModel || value instanceof Iterable;
+			result = isIterable(value);
 		}
 		else if (builtInName == "is_sequence" || builtInName == "is_indexable") {
-			result = value instanceof TemplateSequenceModel;
+			result = isList(value);
 		}
 		else if (builtInName == "is_macro") {
 			result = (value instanceof Macro) && !((Macro) value).isFunction();
