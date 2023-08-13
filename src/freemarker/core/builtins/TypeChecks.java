@@ -15,55 +15,54 @@ import static freemarker.ext.beans.ObjectWrapper.*;
 public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 	
     @Override
-    public Object get(Environment env, BuiltInExpression caller,
-        Object model) {
+    public Object get(Environment env, BuiltInExpression caller, Object value) {
 		boolean result = false;
 		final String builtInName = caller.getName(); 
 		if (builtInName == "is_string") {
-			result = isString(model);
+			result = isString(value);
 		}
 		else if (builtInName == "is_number") {
-			result = model instanceof TemplateNumberModel;
+			result = isNumber(value);
 		}
 		else if (builtInName == "is_date") {
-			result = model instanceof TemplateDateModel;
+			result = value instanceof TemplateDateModel;
 		}
 		else if (builtInName == "is_enumerable") {
-			result = model instanceof TemplateSequenceModel || model instanceof Iterable;
+			result = value instanceof TemplateSequenceModel || value instanceof Iterable;
 		}
 		else if (builtInName == "is_sequence" || builtInName == "is_indexable") {
-			result = model instanceof TemplateSequenceModel;
+			result = value instanceof TemplateSequenceModel;
 		}
 		else if (builtInName == "is_macro") {
-			result = (model instanceof Macro) && !((Macro) model).isFunction();
+			result = (value instanceof Macro) && !((Macro) value).isFunction();
 		}
 		else if (builtInName == "is_directive") {
-			result = model instanceof Macro || model instanceof TemplateTransformModel
-                                 || model instanceof TemplateDirectiveModel;
+			result = value instanceof Macro || value instanceof TemplateTransformModel
+                                 || value instanceof TemplateDirectiveModel;
 		}
 		else if (builtInName == "is_boolean") {
-			result = isBoolean(model);
+			result = isBoolean(value);
 		}
 		else if (builtInName == "is_hash") {
-			result = model instanceof TemplateHashModel;
+			result = value instanceof TemplateHashModel;
 		}
 		else if (builtInName == "is_hash_ex") {
-			result = model instanceof TemplateHashModelEx;
+			result = value instanceof TemplateHashModelEx;
 		}
 		else if (builtInName == "is_method") {
-			result = model instanceof TemplateMethodModel;
+			result = value instanceof TemplateMethodModel;
 		}
 		else if (builtInName == "is_node") {
-			result = model instanceof TemplateNodeModel;
+			result = value instanceof TemplateNodeModel;
 		}
 		else if (builtInName == "is_null") {
-			result = model == Constants.JAVA_NULL;
+			result = value == Constants.JAVA_NULL;
 		}
 		else if (builtInName == "is_transform") {
-			result = model instanceof TemplateTransformModel;
+			result = value instanceof TemplateTransformModel;
 		}
 		else if (builtInName == "is_collection") {
-			result = model instanceof Iterable;
+			result = value instanceof Iterable;
 		}
 		return result;
 	}

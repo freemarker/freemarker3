@@ -342,6 +342,9 @@ public class ObjectWrapper
      */
     public Object _wrap(Object object) 
     {
+        if (object instanceof Boolean || object instanceof Number) {
+            return object;
+        }
         if(object == null) {
             return Constants.JAVA_NULL;
         }
@@ -360,17 +363,11 @@ public class ObjectWrapper
         if (object instanceof Enumeration) {
             return new EnumerationModel((Enumeration<?>)object);
         }
-        if (object instanceof Boolean) {
-            return object;
-        }
         if (object.getClass().isArray()) {
             return new ArrayModel(object);
         }
         if(object instanceof TemplateModelAdapter) {
             return ((TemplateModelAdapter)object).getTemplateModel();
-        }
-        if (object instanceof Number) {
-            return new NumberModel((Number)object);
         }
         if (object instanceof Date) {
             return new DateModel((Date) object);

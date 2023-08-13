@@ -3,7 +3,6 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateSequenceModel;
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -31,6 +30,6 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
         else {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "a sequence or extended hash");
         }
-        return new NumberModel(Integer.valueOf(size));
+        return size;
     }
 }

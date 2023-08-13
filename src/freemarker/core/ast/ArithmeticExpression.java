@@ -2,7 +2,6 @@ package freemarker.core.ast;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
-import freemarker.ext.beans.NumberModel;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -69,13 +68,13 @@ public class ArithmeticExpression extends Expression {
                 : getTemplate().getArithmeticEngine();
         switch (operation) {
             case SUBTRACTION : 
-                return new NumberModel(ae.subtract(first, second));
+                return ae.subtract(first, second);
             case MULTIPLICATION :
-                return new NumberModel(ae.multiply(first, second));
+                return ae.multiply(first, second);
             case DIVISION :
-                return new NumberModel(ae.divide(first, second));
+                return ae.divide(first, second);
             case MODULUS :
-                return new NumberModel(ae.modulus(first, second));
+                return ae.modulus(first, second);
             default:
                 throw new TemplateException("unknown operation : " + operation, env);
         }

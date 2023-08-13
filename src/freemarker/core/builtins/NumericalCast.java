@@ -9,7 +9,6 @@ import freemarker.template.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import freemarker.ext.beans.NumberModel;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -26,7 +25,7 @@ public class NumericalCast extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
         try {
-            return new NumberModel(getNumber(asNumber(model), caller.getName()));
+            return getNumber(asNumber(model), caller.getName());
         } catch (ClassCastException cce) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number");
         } catch (NullPointerException npe) {

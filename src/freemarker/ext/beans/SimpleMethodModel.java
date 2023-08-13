@@ -84,7 +84,7 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
     
     public Object get(int index) throws TemplateModelException
     {
-        return exec(Collections.singletonList(new NumberModel(Integer.valueOf(index))));
+        return exec(Collections.singletonList(Integer.valueOf(index)));
     }
 
     public int size() 

@@ -6,7 +6,6 @@ import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.Scope;
-import freemarker.ext.beans.ListModel;
 import freemarker.core.parser.ast.ListLiteral;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.template.*;

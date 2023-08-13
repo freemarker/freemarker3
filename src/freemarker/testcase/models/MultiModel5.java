@@ -2,7 +2,9 @@ package freemarker.testcase.models;
 
 import freemarker.template.*;
 import freemarker.ext.beans.StringModel;
-import freemarker.ext.beans.ListModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.
@@ -11,18 +13,18 @@ import freemarker.ext.beans.ListModel;
  */
 public class MultiModel5 implements TemplateSequenceModel, TemplateHashModel {
 
-    private ListModel  listModel = new ListModel();
+    private List  list = new ArrayList();
 
     /** Creates new MultiModel5 */
     public MultiModel5() {
-        listModel.add( new StringModel( "Dummy to make list non-empty" ));
+        list.add(new StringModel( "Dummy to make list non-empty" ));
     }
 
     /**
      * @return the specified index in the list
      */
     public Object get(int i) {
-        return listModel.get( i );
+        return list.get( i );
     }
 
     /**
@@ -33,7 +35,7 @@ public class MultiModel5 implements TemplateSequenceModel, TemplateHashModel {
     }
 
     public int size() {
-        return listModel.size();
+        return list.size();
     }
 
     /**
@@ -44,12 +46,11 @@ public class MultiModel5 implements TemplateSequenceModel, TemplateHashModel {
      * @return the <tt>TemplateModel</tt> referred to by the key,
      * or null if not found.
      */
-    public TemplateModel get(String key) {
+    public Object get(String key) {
         if( key.equals( "empty" )) {
-            return new StringModel( "Dummy hash value, for test purposes." );
-        } else {
-            return null;
-        }
+            return "Dummy hash value, for test purposes.";
+        } 
+        return null;
     }
 
 }

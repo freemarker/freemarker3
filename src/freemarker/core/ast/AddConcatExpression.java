@@ -3,7 +3,6 @@ package freemarker.core.ast;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.ext.beans.StringModel;
-import freemarker.ext.beans.ListModel;
 import static freemarker.ext.beans.ObjectWrapper.*;
 import java.util.*;
 
@@ -130,7 +129,6 @@ public class AddConcatExpression extends Expression {
         }
 
         public boolean isEmpty()
-        throws TemplateModelException
         {
             return left.isEmpty() && right.isEmpty();
         }
@@ -191,9 +189,7 @@ public class AddConcatExpression extends Expression {
             }
         }        
 
-        private void initValues()
-        throws TemplateModelException
-        {
+        private void initValues() {
             if (values == null) {
                 List<Object> seq = new ArrayList<>();
                 for (String key : keys) {

@@ -11,7 +11,6 @@ import freemarker.core.Environment;
 import freemarker.core.ast.ArithmeticEngine;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.ext.beans.ListModel;
 import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
@@ -26,10 +25,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * Implementations of builtins for standard functions that operate on sequences
- * TODO: refactor properly into subclasses
- * TODO: see whether various result models really need env field
  */
-
 public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
     static final int KEY_TYPE_STRING = 1;
@@ -421,20 +417,12 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         } else {
             throw new RuntimeException("FreeMarker bug: Bad key type");
         }
-
-        try {
-            Collections.sort(result, cmprtr);
-        } catch (ClassCastException exc) {
-            throw new TemplateModelException("Unexpected error while sorting:" + exc, exc);
-        }
+        Collections.sort(result, cmprtr);
 
         for (i = 0; i < ln; i++) {
             result.set(i, ((KVP) result.get(i)).value);
         }
-
-        //return new TemplateModelListSequence(result);
-        //return ObjectWrapper.instance().wrap(result);
-        return new ListModel(result);
+        return result;
     }
 
     static class KVP {
@@ -455,14 +443,9 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         public int compare(Object arg0, Object arg1) {
-            try {
-                return ae.compareNumbers(
-                        (Number) ((KVP) arg0).key,
-                        (Number) ((KVP) arg1).key);
-            } catch (TemplateException e) {
-                throw new ClassCastException(
-                        "Failed to compare numbers: " + e);
-            }
+            return ae.compareNumbers(
+               (Number) ((KVP) arg0).key,
+               (Number) ((KVP) arg1).key);
         }
     }
 
@@ -564,7 +547,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             if (reverse) {
                 for (int i = startIndex; i > -1; --i) {
                     if (comparator.modelsEqual(sequence.get(i), compareToThis)) {
-                        return new NumberModel(i); 
+                        return i; 
                     }
                 }
             }
@@ -572,11 +555,11 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 final int s = sequence.size();
                 for (int i = startIndex; i < s; ++i) {
                     if (comparator.modelsEqual(sequence.get(i), compareToThis)) {
-                        return new NumberModel(i); 
+                        return i;
                     }
                 }
             }
-            return new NumberModel(-1);
+            return -1;
         }
     }
 

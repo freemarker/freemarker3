@@ -164,11 +164,11 @@ UnaryPlusMinusExpression# :
 
 INJECT UnaryPlusMinusExpression : 
     import freemarker.core.Environment;
-    import freemarker.ext.beans.NumberModel;
     import freemarker.core.ast.Expression;
     import freemarker.core.ast.ArithmeticEngine;
     import freemarker.core.ast.NonNumericalException;
     import freemarker.template.*;
+    import static freemarker.ext.beans.ObjectWrapper.asNumber;
     extends Expression
 {
     private static final Integer MINUS_ONE = Integer.valueOf(-1); 
@@ -182,20 +182,18 @@ INJECT UnaryPlusMinusExpression :
     }
     
     public Object evaluate(Environment env) {
-        TemplateNumberModel targetModel = null;
+        Number value = null;
         try {
-            targetModel = (TemplateNumberModel) getTarget().evaluate(env);
+            value = asNumber(getTarget().evaluate(env));
         } catch (ClassCastException cce) {
             String msg = "Error " + getStartLocation();
             msg += "\nExpression " + getTarget() + " is not numerical.";
             throw new NonNumericalException(msg, env);
         }
         if (!isMinus()) {
-            return targetModel;
+            return value;
         }
-        Number n = targetModel.getAsNumber();
-        n = ArithmeticEngine.CONSERVATIVE_ENGINE.multiply(MINUS_ONE, n);
-        return new NumberModel(n);
+        return ArithmeticEngine.CONSERVATIVE_ENGINE.multiply(MINUS_ONE, value);
     }
 
     public Expression _deepClone(String name, Expression subst) {
@@ -485,7 +483,6 @@ NumberLiteral# :
 INJECT NumberLiteral :
   import freemarker.core.Environment;
   import freemarker.core.ast.Expression;
-  import freemarker.template.*;
   import freemarker.ext.beans.NumberModel;
   extends Expression
 {
@@ -498,7 +495,8 @@ INJECT NumberLiteral :
     }
     
     public Object evaluate(Environment env) {
-        return new NumberModel(value);
+        //return new NumberModel(value);
+        return value;
     }
     
     public String getStringValue(Environment env) {

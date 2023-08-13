@@ -14,7 +14,6 @@ import java.util.regex.PatternSyntaxException;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.ext.beans.ObjectWrapper;
-import freemarker.ext.beans.NumberModel;
 import freemarker.ext.beans.StringModel;
 import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateBooleanModel;
@@ -95,7 +94,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
     public static class Length extends StringFunctions {
         @Override
         public Object apply(String string, Environment env, BuiltInExpression caller) {
-            return new NumberModel(Integer.valueOf(string.length()));
+            return string.length();
         }
     }
 
@@ -429,7 +428,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                         "?left_pad(...) expects a number as "
                         + "its 1st argument.");
             }
-            int width = ((TemplateNumberModel) obj).getAsNumber().intValue();
+            int width = asNumber(obj).intValue();
 
             if (ln > 1) {
                 obj = args.get(1);
@@ -646,7 +645,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             } else {
                 index = s.indexOf(sub, fidx);
             }
-            return new NumberModel(index);
+            return index;
         }
     }
 

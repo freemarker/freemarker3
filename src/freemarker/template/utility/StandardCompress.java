@@ -8,6 +8,7 @@ import freemarker.template.*;
 import freemarker.core.Environment;
 
 import static freemarker.ext.beans.ObjectWrapper.asBoolean;
+import static freemarker.ext.beans.ObjectWrapper.asNumber;
 
 /**
  * <p>A filter that compresses each sequence of consecutive whitespace
@@ -83,9 +84,8 @@ public class StandardCompress implements TemplateTransformModel, TemplateDirecti
         boolean singleLine = false;
         if (args != null) {
             try {
-                TemplateNumberModel num = (TemplateNumberModel)args.get(BUFFER_SIZE_KEY);
-                if (num != null)
-                    bufferSize = num.getAsNumber().intValue();
+                Number num = asNumber(args.get(BUFFER_SIZE_KEY));
+                bufferSize = num.intValue();
             } catch (ClassCastException e) {
                 throw new TemplateModelException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
             }

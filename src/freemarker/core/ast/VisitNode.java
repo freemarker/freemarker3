@@ -1,12 +1,12 @@
 package freemarker.core.ast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.Scope;
 import freemarker.core.TemplateNamespace;
-import freemarker.ext.beans.ListModel;
 import freemarker.core.parser.ast.ListLiteral;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.template.*;
@@ -49,8 +49,8 @@ public class VisitNode extends TemplateElement {
         }
         if (nss != null) {
             if (nss instanceof TemplateNamespace) {
-                ListModel ss = new ListModel();
-                ss.add(nss);
+                List<Scope> ss = new ArrayList<>();
+                ss.add((Scope)nss);
                 nss = ss;
             }
             else if (!isList(nss)) {

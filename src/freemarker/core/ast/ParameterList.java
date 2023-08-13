@@ -17,7 +17,6 @@ import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.helpers.NamedParameterMapScope;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.SimpleMapModel;
-import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;
 
@@ -253,7 +252,7 @@ public class ParameterList extends TemplateNode {
             fillInDefaults(env, scope, params.subList(argsSize, paramsSize));
         }
         if(catchall != null) {
-            ListModel catchAllVars = new ListModel();
+            List catchAllVars = new ArrayList();
             result.put(catchall, catchAllVars);
             for (int i = paramsSize; i < argsSize; i++) {
                 catchAllVars.add(args.getValueAt(i, env));

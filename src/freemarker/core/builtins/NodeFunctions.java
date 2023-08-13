@@ -102,7 +102,6 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     }
 
     static class AncestorSequence extends ListModel implements TemplateMethodModel {
-
         public Object exec(List names) {
             if (names == null || names.isEmpty()) {
                 return this;

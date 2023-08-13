@@ -7,9 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 
-import freemarker.ext.beans.NumberModel;
 import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 
@@ -21,10 +19,7 @@ import freemarker.template.TemplateSequenceModel;
  * @author Attila Szegedi, szegedia at users dot sourceforge dot net
  * @version $Id: OverloadedMethodModel.java,v 1.25 2005/06/11 12:12:04 szegedia Exp $
  */
-class OverloadedMethodModel
-implements
-	TemplateMethodModelEx,
-	TemplateSequenceModel
+class OverloadedMethodModel implements TemplateMethodModelEx, TemplateSequenceModel
 {
     private final Object object;
     private final MethodMap<Method> methodMap;
@@ -43,8 +38,6 @@ implements
      * unambiguously.
      */
     public Object exec(List arguments)
-    throws
-        TemplateModelException
     {
         MemberAndArguments<Method> maa = methodMap.getMemberAndArguments(arguments);
         Method method = maa.getMember();
@@ -85,13 +78,12 @@ implements
         }
     }
 
-    public TemplateModel get(int index) throws TemplateModelException
+    public Object get(int index) 
     {
-        return (TemplateModel) exec(Collections.singletonList(new 
-                NumberModel(Integer.valueOf(index))));
+        return exec(Collections.singletonList(Integer.valueOf(index)));
     }
 
-    public int size() throws TemplateModelException
+    public int size() 
     {
         throw new TemplateModelException("?size is unsupported for: " + 
                 getClass().getName());

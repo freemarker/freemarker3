@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import freemarker.ext.beans.StringModel;
-import freemarker.ext.beans.ListModel;
 import freemarker.ext.beans.ObjectWrapper;
 import freemarker.ext.beans.CollectionModel;
 import freemarker.core.ast.*;
