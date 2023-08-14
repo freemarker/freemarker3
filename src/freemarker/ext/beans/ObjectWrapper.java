@@ -351,20 +351,21 @@ public class ObjectWrapper
      * {@link freemarker.template.TemplateBooleanModel#TRUE} or 
      * {@link freemarker.template.TemplateBooleanModel#FALSE}</li>
      * <li>if the object is a ResourceBundle returns a {@link ResourceBundleModel} for it,</li>
-     * <li>if the object is an Iterator, returns a {@link IteratorModel} for it
-     * <li>if the object is an Enumeration, returns a {@link EnumerationModel} for it
      * <li>otherwise, returns a generic {@link Pojo} for it.
      * </ul>
      */
-    public Object _wrap(Object object) 
+    private Object _wrap(Object object) 
     {
-        if (object instanceof Boolean || object instanceof Number || object instanceof String) {
-            return object;
-        }
         if(object == null) {
             return Constants.JAVA_NULL;
         }
-        if(object instanceof TemplateModel) {
+        if (object instanceof Boolean 
+           || object instanceof Number 
+           || object instanceof String 
+           || object instanceof Iterator
+           || object instanceof Enumeration
+           || object instanceof TemplateModel) 
+        {
             return object;
         }
         if (object instanceof Map) {
@@ -372,12 +373,6 @@ public class ObjectWrapper
         }
         if (object instanceof List) {
             return new ListModel((List<?>)object);
-        }
-        if (object instanceof Iterator) {
-            return new IteratorModel((Iterator<?>) object);
-        }
-        if (object instanceof Enumeration) {
-            return new EnumerationModel((Enumeration<?>)object);
         }
         if (object.getClass().isArray()) {
             return new ArrayModel(object);
@@ -388,9 +383,6 @@ public class ObjectWrapper
         if (object instanceof Date) {
             return new DateModel((Date) object);
         }
-        //if (object instanceof Collection) {
-        //    return new CollectionModel((Collection)object);
-        //}
         if (object instanceof ResourceBundle) {
             return new ResourceBundleModel((ResourceBundle)object);
         }
@@ -422,15 +414,12 @@ public class ObjectWrapper
         if(object == null) {
             throw new TemplateModelException("invalid reference");
         }
-
         if (object == Constants.JAVA_NULL) {
             return null;
         }
-
         if (!(object instanceof TemplateModel)) {
             return object;
         }
-        
         boolean isBoolean = Boolean.TYPE == requiredType;
         boolean isChar = Character.TYPE == requiredType;
         
@@ -490,12 +479,14 @@ public class ObjectWrapper
         }
 
         if(requiredType == Map.class) {
+            assert false : "FUCK";
             if(object instanceof TemplateHashModel) {
                 return new HashAdapter((TemplateHashModel)object, this);
             }
         }
         
         if(requiredType == List.class) {
+            assert false : "SUCK";
             if(object instanceof TemplateSequenceModel) {
                 return new SequenceAdapter((TemplateSequenceModel)object, this);
             }

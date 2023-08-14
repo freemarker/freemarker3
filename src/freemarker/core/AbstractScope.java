@@ -5,8 +5,6 @@ import freemarker.template.Template;
 /**
  * An abstract scope with no variable storage mechanism of its own; only 
  * provides enclosing scope and operations related to enclosing scope.
- * @author Attila Szegedi
- * @version $Id: $
  */
 public abstract class AbstractScope implements Scope
 {

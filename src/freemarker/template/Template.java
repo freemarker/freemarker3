@@ -13,10 +13,9 @@ import freemarker.core.ast.LibraryLoad;
 import freemarker.core.ast.TemplateElement;
 import freemarker.core.ast.TemplateHeaderElement;
 import freemarker.core.parser.*;
-import freemarker.core.parser.ast.TemplateNode;
-import freemarker.ext.beans.ObjectWrapper;
 import freemarker.ext.beans.SimpleMapModel;
 
+import static freemarker.ext.beans.ObjectWrapper.wrap;
 /**
  * <p>A core FreeMarker API that represents a compiled template.
  * Typically, you will use a {@link Configuration} object to instantiate a template.
@@ -238,20 +237,14 @@ public class Template extends TemplateCore {
      * map are converted to template models using the default object wrapper
      * returned by the {@link Configuration#getObjectWrapper() getObjectWrapper()}
      * method of the <tt>Configuration</tt>.
-     * @param rootMap the root node of the data model.  If null, an
-     * empty data model is used. Can be any object that the effective object
-     * wrapper can turn into a <tt>TemplateHashModel</tt>. Basically, simple and
-     * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes.
-     * Naturally, you can pass any object directly implementing
-     * <tt>TemplateHashModel</tt> as well.
+     * @param rootMap the root node of the data model.  
      * @param out a <tt>Writer</tt> to output the text to.
      * @throws TemplateException if an exception occurs during template processing
      * @throws IOException if an I/O exception occurs during writing to the writer.
      */
-    public void process(Object rootMap, Writer out)
-    throws TemplateException, IOException
+    public void process(Object rootMap, Writer out) throws IOException
     {
-        createProcessingEnvironment(rootMap, out, null).process();
+        createProcessingEnvironment(rootMap, out).process();
     }
 
     /**
@@ -320,41 +313,10 @@ public class Template extends TemplateCore {
     * @return the {@link freemarker.core.Environment Environment} object created for processing
     * @throws TemplateException if an exception occurs while setting up the Environment object.
     */
-    public Environment createProcessingEnvironment(Object rootMap, Writer out, ObjectWrapper wrapper)
+    public Environment createProcessingEnvironment(Object rootMap, Writer out)
     throws TemplateException
     {
-        TemplateHashModel root = null;
-        if(rootMap instanceof TemplateHashModel) {
-            root = (TemplateHashModel)rootMap;
-        }
-        else {
-            if(wrapper == null) {
-                wrapper = ObjectWrapper.instance();
-            }
-
-            try {
-                root = rootMap != null
-                    ? (TemplateHashModel)wrapper._wrap(rootMap)
-                    : new SimpleMapModel();
-                if(root == null) {
-                    throw new IllegalArgumentException(wrapper.getClass().getName() + " converted " + (rootMap == null ? "null" : rootMap.getClass().getName()) + " to null.");
-                }
-            }
-            catch(ClassCastException e) {
-                throw new IllegalArgumentException(wrapper.getClass().getName() + " could not convert " + (rootMap == null ? "null" : rootMap.getClass().getName()) + " to a TemplateHashModel.");
-            }
-        }
-        return new Environment(this, root, out);
-    }
-
-    /**
-     * Same as <code>createProcessingEnvironment(rootMap, out, null)</code>.
-     * @throws IOException 
-     */
-    public Environment createProcessingEnvironment(Object rootMap, Writer out)
-    throws TemplateException, IOException
-    {
-        return createProcessingEnvironment(rootMap, out, null);
+        return new Environment(this, (TemplateHashModel) wrap(rootMap), out);
     }
 
     /**

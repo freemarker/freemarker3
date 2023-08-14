@@ -52,7 +52,7 @@ public class Pojo implements TemplateScalarModel, TemplateHashModelEx, AdapterTe
      * enumeration, iterators, and maps. Note also that the superclass can be
      * used to wrap String objects if only scalar functionality is needed. You
      * can also choose to delegate the choice over which model class is used for
-     * wrapping to {@link ObjectWrapper#_wrap(Object)}.
+     * wrapping to {@link ObjectWrapper#wrap(Object)}.
      * @param object the object to wrap into a model.
      */
     public Pojo(Object object)

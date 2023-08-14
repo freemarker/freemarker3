@@ -8,7 +8,8 @@ import freemarker.template.AdapterTemplateModel;
 import freemarker.template.Constants;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateMethodModelEx;
-import freemarker.template.TemplateModel;
+
+import static freemarker.ext.beans.ObjectWrapper.wrap;
 
 /**
  * Model used by {@link ObjectWrapper} when <tt>simpleMapWrapper</tt>
@@ -50,7 +51,7 @@ public class SimpleMapModel implements TemplateHashModelEx, TemplateMethodModelE
                 return map.containsKey(key) ? Constants.JAVA_NULL : null;
             }
         }
-        return ObjectWrapper.wrap(val);
+        return wrap(val);
     }
     
     public Object exec(List args) {

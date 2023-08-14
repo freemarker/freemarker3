@@ -12,7 +12,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import freemarker.ext.beans.ObjectWrapper;
 import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.*;
@@ -40,7 +39,6 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  * <p>
  * If you need to modify or read this object before or after the
  * <tt>process</tt> call, use
- * {@link Template#createProcessingEnvironment(Object rootMap, Writer out, ObjectWrapper wrapper)}
  * 
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  * @author Attila Szegedi
@@ -127,7 +125,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public Environment(Template template,
-            final TemplateHashModel rootDataModel, Writer out) {
+           TemplateHashModel rootDataModel, Writer out) {
         super(template);
         this.currentScope = mainNamespace = new TemplateNamespace(
                 this, template);
