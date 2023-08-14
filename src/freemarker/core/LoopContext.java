@@ -9,6 +9,10 @@ import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateSequenceModel;
 
+import static freemarker.ext.beans.ObjectWrapper.isIterable;
+import static freemarker.ext.beans.ObjectWrapper.asIterator;
+import static freemarker.ext.beans.ObjectWrapper.wrap;
+
 /**
  * Represents the local context of an iterator block  
  */
@@ -28,14 +32,14 @@ public class LoopContext extends BlockScope {
     	IteratorBlock iteratorBlock = (IteratorBlock) block;
         TemplateElement nestedBlock = iteratorBlock.firstChildOfType(TemplateElement.class);
     	Environment env = getEnvironment();
-        if (list instanceof Iterable) {
-            Iterator<?> it = ((Iterable<?>) list).iterator();
+        if (isIterable(list)) {
+            Iterator<?> it = asIterator(list);
             hasNext = it.hasNext();
             while (hasNext) {
             	clear();
                 loopVar = it.next();
                 hasNext = it.hasNext();
-                put(iteratorBlock.getIndexName(), loopVar);
+                put(iteratorBlock.getIndexName(), wrap(loopVar));
                 put(iteratorBlock.getIndexName() + "_has_next", hasNext);
                 put(iteratorBlock.getIndexName() + "_index", index);
                 if (nestedBlock != null) {
@@ -50,7 +54,7 @@ public class LoopContext extends BlockScope {
             for (index =0; index <size; index++) {
             	clear();
                 loopVar = tsm.get(index);
-                put(iteratorBlock.getIndexName(), loopVar);
+                put(iteratorBlock.getIndexName(), wrap(loopVar));
                 hasNext = (size > index + 1);
                 put(iteratorBlock.getIndexName() + "_has_next", hasNext);
                 put(iteratorBlock.getIndexName() + "_index", index);

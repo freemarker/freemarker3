@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import freemarker.ext.beans.ObjectWrapper;
-import freemarker.ext.beans.CollectionModel;
 import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.*;
@@ -1153,7 +1152,7 @@ public final class Environment extends Configurable implements Scope {
         for (String varname : globalVariables.keySet()) {
             aggregate.add(varname);
         }
-        return new CollectionModel(aggregate);
+        return aggregate;
     }
 
     public Iterable values() {
@@ -1176,7 +1175,7 @@ public final class Environment extends Configurable implements Scope {
         for (Object value : globalVariables.values()) {
             aggregate.add(value);
         }
-        return new CollectionModel(aggregate);
+        return aggregate;
     }
 
     /**

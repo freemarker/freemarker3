@@ -5,7 +5,6 @@ import java.util.Map;
 
 import freemarker.core.AbstractScope;
 import freemarker.core.Scope;
-import freemarker.ext.beans.CollectionModel;
 
 /**
  * @author Attila Szegedi
@@ -37,7 +36,7 @@ public class NamedParameterMapScope extends AbstractScope {
     }
 
     public Iterable keys() {
-        return new CollectionModel(parameters.keySet());
+        return parameters.keySet();
     }
     
     public int size() {
@@ -45,7 +44,7 @@ public class NamedParameterMapScope extends AbstractScope {
     }
 
     public Iterable values()  {
-        return new CollectionModel(parameters.values());
+        return parameters.values();
     }
 
     public Object get(String key) {

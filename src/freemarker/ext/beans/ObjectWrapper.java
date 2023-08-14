@@ -214,7 +214,17 @@ public class ObjectWrapper
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
-        return obj instanceof Iterable || obj instanceof TemplateSequenceModel;
+        return obj instanceof Iterable;
+    }
+
+    public static Iterator asIterator(Object obj) {
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        if (obj instanceof Iterator) {
+            return (Iterator) obj;
+        }
+        return ((Iterable) obj).iterator();
     }
 
     
@@ -348,7 +358,7 @@ public class ObjectWrapper
      */
     public Object _wrap(Object object) 
     {
-        if (object instanceof Boolean || object instanceof Number) {
+        if (object instanceof Boolean || object instanceof Number || object instanceof String) {
             return object;
         }
         if(object == null) {
@@ -383,9 +393,6 @@ public class ObjectWrapper
         //}
         if (object instanceof ResourceBundle) {
             return new ResourceBundleModel((ResourceBundle)object);
-        }
-        if (object instanceof CharSequence) {
-            return object;
         }
         return new Pojo(object);
     }

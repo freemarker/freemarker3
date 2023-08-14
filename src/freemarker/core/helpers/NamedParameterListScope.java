@@ -6,7 +6,6 @@ import java.util.List;
 
 import freemarker.core.AbstractScope;
 import freemarker.core.Scope;
-import freemarker.ext.beans.CollectionModel;
 
 /**
  * @author Attila Szegedi
@@ -84,7 +83,7 @@ public class NamedParameterListScope extends AbstractScope {
                 nonNullValues.add(value);
             }
         }
-        return new CollectionModel(nonNullValues);
+        return nonNullValues;
     }
 
     public Object get(String key) {

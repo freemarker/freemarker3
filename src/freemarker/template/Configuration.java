@@ -32,7 +32,6 @@ import freemarker.template.utility.StringUtil;
 import freemarker.template.utility.XmlEscape;
 
 import freemarker.core.ast.ASTVisitor;
-import freemarker.ext.beans.CollectionModel;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -969,10 +968,10 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     }
     
     public Iterable keys() {
-    	return new CollectionModel(variables.keySet());
+    	return variables.keySet();
     }
     
     public Iterable values() {
-    	return new CollectionModel(variables.values());
+    	return variables.values();
     }
 }
