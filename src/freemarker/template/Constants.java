@@ -33,10 +33,6 @@ public class Constants {
         JavaNull() {}
     }
 
-    public static final TemplateBooleanModel TRUE = TemplateBooleanModel.TRUE;
-
-    public static final TemplateBooleanModel FALSE = TemplateBooleanModel.FALSE;
-    
     public static final Iterator<Object> EMPTY_ITERATOR = new Iterator<Object>() {
 
         public TemplateModel next() {

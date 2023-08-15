@@ -54,7 +54,7 @@ public class LoopContext extends BlockScope {
             for (index =0; index <size; index++) {
             	clear();
                 loopVar = tsm.get(index);
-                put(iteratorBlock.getIndexName(), wrap(loopVar));
+                put(iteratorBlock.getIndexName(), loopVar);
                 hasNext = (size > index + 1);
                 put(iteratorBlock.getIndexName() + "_has_next", hasNext);
                 put(iteratorBlock.getIndexName() + "_index", index);

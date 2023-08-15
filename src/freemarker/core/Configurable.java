@@ -324,18 +324,6 @@ abstract public class Configurable extends TemplateNode
     }
 
     /**
-     * Sets the object wrapper used to wrap objects to template models.
-     *
-     * @param objectWrapper the object wrapper used to wrap objects to template
-     * models.
-     */
-    public void setObjectWrapper(ObjectWrapper objectWrapper) {
-        if (objectWrapper == null) throw new IllegalArgumentException("Setting \"object_wrapper\" can't be null");
-        this.objectWrapper = objectWrapper;
-        properties.setProperty(OBJECT_WRAPPER_KEY, objectWrapper.getClass().getName());
-    }
-
-    /**
      * Sets the output encoding. Allows <code>null</code>, which means that the
      * output encoding is not known.
      */
@@ -478,14 +466,8 @@ abstract public class Configurable extends TemplateNode
                             (ArithmeticEngine) Class.forName(value)
                             .newInstance());
                 }
-            } else if (OBJECT_WRAPPER_KEY.equals(key)) {
-                if (value.indexOf('.') == -1) {
-                    setObjectWrapper(ObjectWrapper.instance());
-                } else {
-                    setObjectWrapper((ObjectWrapper) Class.forName(value)
-                            .newInstance());
-                }
-            } else if (BOOLEAN_FORMAT_KEY.equals(key)) {
+            } 
+            else if (BOOLEAN_FORMAT_KEY.equals(key)) {
                 setBooleanFormat(value);
             } else if (OUTPUT_ENCODING_KEY.equals(key)) {
                 setOutputEncoding(value);

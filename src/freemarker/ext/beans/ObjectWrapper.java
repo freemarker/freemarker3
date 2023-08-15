@@ -347,9 +347,6 @@ public class ObjectWrapper
      * <li>if the object is an array, returns a {@link ArrayModel} for it
      * <li>if the object is a Number returns a {@link NumberModel} for it,</li>
      * <li>if the object is a Date returns a {@link DateModel} for it,</li>
-     * <li>if the object is a Boolean returns 
-     * {@link freemarker.template.TemplateBooleanModel#TRUE} or 
-     * {@link freemarker.template.TemplateBooleanModel#FALSE}</li>
      * <li>if the object is a ResourceBundle returns a {@link ResourceBundleModel} for it,</li>
      * <li>otherwise, returns a generic {@link Pojo} for it.
      * </ul>

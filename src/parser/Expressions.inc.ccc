@@ -918,6 +918,7 @@ INJECT DotVariable :
     import freemarker.template.TemplateHashModel;
     import freemarker.core.ast.Expression;
     import java.util.Map;
+    import static freemarker.ext.beans.ObjectWrapper.wrap;
     extends Expression
 {
     public Expression getTarget() {
@@ -931,10 +932,10 @@ INJECT DotVariable :
     public Object evaluate(Environment env) {
         Object leftModel = getTarget().evaluate(env);
         if (leftModel instanceof Map) {
-            return ((Map)leftModel).get(getKey());
+            return wrap(((Map)leftModel).get(getKey()));
         }
         if(leftModel instanceof TemplateHashModel) {
-            return ((TemplateHashModel) leftModel).get(getKey());
+            return wrap(((TemplateHashModel) leftModel).get(getKey()));
         }
         throw invalidTypeException(leftModel, getTarget(), env, "hash");
     }
@@ -980,15 +981,17 @@ DynamicKeyName(Expression exp)# :
 
 INJECT DynamicKeyName :
     import java.util.ArrayList;
+    import java.util.List;
     import java.util.Map;
     import freemarker.core.Environment;
     import freemarker.template.*;
     import freemarker.ext.beans.ListModel;
-    import static freemarker.ext.beans.ObjectWrapper.*;
     import freemarker.core.ast.Expression;
     import freemarker.core.ast.EvaluationUtil;
     import freemarker.core.ast.NonStringException;
     import freemarker.core.ast.Range;
+    import static freemarker.ext.beans.ObjectWrapper.*;
+    import static freemarker.template.Constants.JAVA_NULL;
     extends Expression
 {
 
@@ -1034,6 +1037,13 @@ INJECT DynamicKeyName :
             } catch (Exception e) {}
             return index<size ? tsm.get(index) : null;
         } 
+        if (targetModel instanceof List) {
+            try {
+                return wrap(((List)targetModel).get(index));
+            } catch (ArrayIndexOutOfBoundsException ae) {
+                return JAVA_NULL;
+            }
+        }
         try
         {
             String s = getTarget().getStringValue(env);
@@ -1054,10 +1064,10 @@ INJECT DynamicKeyName :
                                             Environment env)
     {
         if (targetModel instanceof Map) {
-            return ((Map) targetModel).get(key);
+            return wrap(((Map) targetModel).get(key));
         }
         if(targetModel instanceof TemplateHashModel) {
-            return((TemplateHashModel) targetModel).get(key);
+            return wrap(((TemplateHashModel) targetModel).get(key));
         }
         throw invalidTypeException(targetModel, getTarget(), env, "hash");
     }

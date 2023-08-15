@@ -11,7 +11,7 @@ import java.io.*;
 public class TemplateTestCase extends TestCase {
     
     Template template;
-    HashMap<String,Object> dataModel = new HashMap<String, Object>();
+    Map<String,Object> dataModel = new HashMap<>();
     
     String filename, testName;
     String inputDir = "template";
@@ -84,10 +84,11 @@ public class TemplateTestCase extends TestCase {
                 conf.setLocale(loc);
             }
         }
+/*        
         else if ("object_wrapper".equals(param)) {
             ObjectWrapper ow = ObjectWrapper.instance();
             conf.setObjectWrapper(ow);
-        }
+        }*/
         else if ("input_encoding".equals(param)) {
             conf.setDefaultEncoding(value);
         }
@@ -122,16 +123,14 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("obj", new freemarker.testcase.models.BeanTestClass());
             dataModel.put("resourceBundle", new ResourceBundleModel(ResourceBundle.getBundle("freemarker.testcase.models.BeansTestResources")));
             dataModel.put("date", new GregorianCalendar(1974, 10, 14).getTime());
-//            dataModel.put("statics", ObjectWrapper.instance().getStaticModels());
-//            dataModel.put("enums", ObjectWrapper.instance().getEnumModels());
         }
         
         else if (testName.equals("boolean")) {
-            dataModel.put( "boolean1", TemplateBooleanModel.FALSE);
-            dataModel.put( "boolean2", TemplateBooleanModel.TRUE);
-            dataModel.put( "boolean3", TemplateBooleanModel.TRUE);
-            dataModel.put( "boolean4", TemplateBooleanModel.TRUE);
-            dataModel.put( "boolean5", TemplateBooleanModel.FALSE);
+            dataModel.put( "boolean1", false);
+            dataModel.put( "boolean2", true);
+            dataModel.put( "boolean3", true);
+            dataModel.put( "boolean4", true);
+            dataModel.put( "boolean5", false);
             
             dataModel.put( "list1", new ListModel() );
             dataModel.put( "list2", new BooleanList2() );
