@@ -3,6 +3,8 @@ package freemarker.core.ast;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.lang.reflect.*;
+
+import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.core.parser.*;

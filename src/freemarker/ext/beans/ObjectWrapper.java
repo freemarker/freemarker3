@@ -332,44 +332,31 @@ public class ObjectWrapper
         return instance;
     }
 
-    public static Object wrap(Object obj) {
-        return instance()._wrap(obj);
-    }
-
-    /**
-     * Wraps the object with a template model that is most specific for the object's
-     * class. Specifically:
-     * <ul>
-     * <li>if the object is null, returns {@link Constants#JAVA_NULL}</li>
-     * <li>if the object is already a {@link TemplateModel}, returns it unchanged,</li>
-     * <li>if the object is a {@link TemplateModelAdapter}, returns its underlying model,</li>
-     * <li>if the object is a Map, returns a {@link SimpleMapModel} for it
-     * <li>if the object is an array, returns a {@link ArrayModel} for it
-     * <li>if the object is a Number returns a {@link NumberModel} for it,</li>
-     * <li>if the object is a Date returns a {@link DateModel} for it,</li>
-     * <li>if the object is a ResourceBundle returns a {@link ResourceBundleModel} for it,</li>
-     * <li>otherwise, returns a generic {@link Pojo} for it.
-     * </ul>
-     */
-    private Object _wrap(Object object) 
-    {
+    public static Object wrap(Object object) {
         if(object == null) {
             return Constants.JAVA_NULL;
+        }
+        if (object instanceof TemplateModel) {
+            return object;
+        }
+        if (isMarkedAsPojo(object.getClass())) {
+            return new Pojo(object);
         }
         if (object instanceof Boolean 
            || object instanceof Number 
            || object instanceof String 
            || object instanceof Iterator
-           || object instanceof Enumeration
-           || object instanceof TemplateModel) 
+           || object instanceof Enumeration)
         {
             return object;
         }
-        if (object instanceof Map) {
-            return  new SimpleMapModel((Map<?,?>)object);
-        }
         if (object instanceof List) {
             return new ListModel((List<?>)object);
+            //return object;
+            //return new Pojo(object);
+        }
+        if (object instanceof Map) {
+            return  new SimpleMapModel((Map<?,?>)object);
         }
         if (object.getClass().isArray()) {
             return new ArrayModel(object);
@@ -386,9 +373,38 @@ public class ObjectWrapper
         return new Pojo(object);
     }
 
+    private static Map<Class<?>, Boolean> markedAsPojoLookup = new HashMap<>();
+
+    public static boolean isMarkedAsPojo(Class<?> clazz) {
+        Boolean lookupValue = markedAsPojoLookup.get(clazz);
+        if (lookupValue != null) return lookupValue;
+        if (clazz.getAnnotation(freemarker.annotations.Pojo.class) != null) {
+            markedAsPojoLookup.put(clazz, true);
+            return true;
+        }
+        for (Class<?> interf : clazz.getInterfaces()) {
+            if (isMarkedAsPojo(interf)) {
+                markedAsPojoLookup.put(clazz, true);
+                return true;
+            }
+        }
+        if (clazz.getSuperclass()!=null) {
+            lookupValue = isMarkedAsPojo(clazz.getSuperclass());
+        } else {
+            lookupValue = false;
+        }
+        markedAsPojoLookup.put(clazz,lookupValue);
+        return lookupValue;
+    }
+
+    public static void markAsPojo(Class<?> clazz, boolean b) {
+        markedAsPojoLookup.put(clazz, b);
+    }
+
+
     /**
      * Attempts to unwrap a model into underlying object. Generally, this
-     * method is the inverse of the {@link #_wrap(Object)} method. In addition
+     * method is the inverse of the {@link #wrap(Object)} method. In addition
      * it will unwrap arbitrary {@link TemplateNumberModel} instances into
      * a number, arbitrary {@link TemplateDateModel} instances into a date,
      * {@link TemplateScalarModel} instances into a String, and
@@ -684,7 +700,7 @@ public class ObjectWrapper
             // this way we don't force people to write an additional ! operator
             // i.e. ${session.invalidate()!}
             ? Constants.NOTHING 
-            : _wrap(retval); 
+            : wrap(retval); 
     }
 
     public Object newInstance(Class<?> clazz, List<TemplateModel> arguments)

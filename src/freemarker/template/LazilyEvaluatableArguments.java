@@ -1,5 +1,7 @@
 package freemarker.template;
 
+import freemarker.annotations.Parameters;
+
 /**
  * A marker interface that tells the FreeMarker that the method arguments can
  * be lazily evaluated. Method models implementing this interface declare that

@@ -6,10 +6,10 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.Collections;
 
+import freemarker.annotations.Parameters;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
-import freemarker.template.Parameters;
 
 /**
  * A class that will wrap a reflected method call into a

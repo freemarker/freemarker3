@@ -1,6 +1,7 @@
 package freemarker.testcase;
 
 import freemarker.template.*;
+import freemarker.annotations.Parameters;
 import freemarker.ext.beans.*;
 import freemarker.testcase.models.*;
 import freemarker.template.utility.*;
@@ -113,7 +114,9 @@ public class TemplateTestCase extends TestCase {
         
         if (testName.equals("beans")) {
             dataModel.put("array", new String[] { "array-0", "array-1"});
-            dataModel.put("list", Arrays.asList(new String[] { "list-0", "list-1", "list-2"}));
+// REVISIT            
+//            dataModel.put("list", new Pojo(Arrays.asList("list-0", "list-1", "list-2")));
+            dataModel.put("list", Arrays.asList("list-0", "list-1", "list-2"));
             Map tmap = new HashMap();
             tmap.put("key", "value");
             Object objKey = new Object();

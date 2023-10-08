@@ -1,5 +1,6 @@
 package freemarker.testcase.models;
 
+import freemarker.annotations.Parameters;
 import freemarker.template.*;
 import java.io.*;
 import java.util.Map;

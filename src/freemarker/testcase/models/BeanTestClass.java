@@ -32,7 +32,7 @@ public class BeanTestClass extends BeanTestSuperclass implements BeanTestInterfa
 	    return "overloaded-String-" + s;
 	}
     
-    @freemarker.template.Parameters("arg = 'default'")
+    @freemarker.annotations.Parameters("arg = 'default'")
 	
 	public static String staticMethod(String arg)
 	{
