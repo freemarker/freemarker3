@@ -34,7 +34,7 @@
  	       optimize="off"
          failonerror="true"
          fork="true"
-         target="1.8" source="1.8"
+         release="8"
     	   includeantruntime="false"
     >
       <classpath refid="class.path"/>

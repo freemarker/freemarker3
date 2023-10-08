@@ -353,34 +353,33 @@ Expression AndExpression :
    Expression lhs, rhs, result;
 }
    lhs=EqualityExpression {result = lhs;}
-   (
+   [
       <AND>
-      rhs=EqualityExpression
+      rhs=AndExpression
       {
          result = new AndExpression(lhs, rhs);
          result.setLocation(template, token_source, lhs, rhs);
-         lhs = result;
       }
-   )*
+   ]
    {
       return result;
    }
 ;
+
 
 Expression OrExpression :
 {
    Expression lhs, rhs, result;
 }
    lhs=AndExpression {result = lhs;}
-   (
+   [
       <OR>
-      rhs=AndExpression
+      rhs=OrExpression
       {
          result = new OrExpression(lhs, rhs);
          result.setLocation(template, token_source, lhs, rhs);
-         lhs = result;
       }
-   )*
+   ]
    {
       return result;
    }
