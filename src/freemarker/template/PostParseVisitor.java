@@ -5,10 +5,7 @@ import freemarker.core.ast.*;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
-import freemarker.core.parser.ast.AdditiveExpression;
 import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.parser.ast.MultiplicativeExpression;
-import freemarker.core.parser.ast.NotExpression;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.utility.DeepUnwrap;
@@ -307,27 +304,6 @@ public class PostParseVisitor extends ASTVisitor {
 				}
 			}
 		} 
-	}
-	
-	public void visit(OrExpression node) {
-		visit(node.getLeft());
-		visit(node.getRight());
-	}
-	
-	public void visit(AdditiveExpression node) {
-		visit(node.getLeft());
-		visit(node.getRight());
-	}
-
-	public void visit(MultiplicativeExpression node) {
-		visit(node.getLeft());
-		visit(node.getRight());
-	}
-	
-	
-	public void visit(ComparisonExpression node) {
-		visit(node.getLeft());
-		visit(node.getRight());
 	}
 	
 	public void visit(StringLiteral node) {

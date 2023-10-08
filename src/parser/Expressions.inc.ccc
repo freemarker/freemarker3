@@ -211,39 +211,6 @@ INJECT UnaryPlusMinusExpression :
         return result;
     }
 }
-#if false
-Expression AdditiveExpression :
-{
-   Expression lhs, rhs, result;
-   boolean plus;
-}
-   lhs=MultiplicativeExpression {result = lhs;}
-   [
-      (
-         <PLUS> {plus = true;}
-         |
-         <MINUS> {plus = false;}
-      )
-      rhs=AdditiveExpression
-      {
-         if (plus) {
-           // plus is treated separately, since it is also
-           // used for concatenation.
-             result = new AddConcatExpression(lhs, rhs);
-         } 
-         else {
-             result = new ArithmeticExpression(lhs, rhs,
-                                            ArithmeticExpression.SUBTRACTION);
-         }
-         result.setLocation(template, token_source, lhs, rhs);
-         lhs = result;
-      }
-   ]
-   {
-      return result;
-   }
-;
-#endif
 
 Expression AdditiveExpression#(>1) :
 {

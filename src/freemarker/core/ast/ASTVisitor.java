@@ -102,11 +102,6 @@ public abstract class ASTVisitor {
 		visit(node.getLeft());
 		visit(node.getRight());
 	}
-/*	
-	public void visit(ArithmeticExpression node) {
-		visit(node.getLeft());
-		visit(node.getRight());
-	}*/
 	
 	public void visit(AssignmentInstruction node) {
 		for (Expression e : node.getValues()) {
