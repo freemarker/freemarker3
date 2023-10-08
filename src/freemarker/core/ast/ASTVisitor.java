@@ -4,6 +4,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import freemarker.core.parser.ast.AdditiveExpression;
+import freemarker.core.parser.ast.MultiplicativeExpression;
 import freemarker.core.parser.ast.NullLiteral;
 import freemarker.core.parser.ast.NumberLiteral;
 import freemarker.core.parser.ast.ParentheticalExpression;
@@ -86,7 +88,12 @@ public abstract class ASTVisitor {
 	}
 	
 	
-	public void visit(AddConcatExpression node) {
+	public void visit(AdditiveExpression node) {
+		visit(node.getLeft());
+		visit(node.getRight());
+	}
+
+	public void visit(MultiplicativeExpression node) {
 		visit(node.getLeft());
 		visit(node.getRight());
 	}
@@ -95,11 +102,11 @@ public abstract class ASTVisitor {
 		visit(node.getLeft());
 		visit(node.getRight());
 	}
-	
+/*	
 	public void visit(ArithmeticExpression node) {
 		visit(node.getLeft());
 		visit(node.getRight());
-	}
+	}*/
 	
 	public void visit(AssignmentInstruction node) {
 		for (Expression e : node.getValues()) {

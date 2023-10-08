@@ -5,7 +5,9 @@ import freemarker.core.ast.*;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
+import freemarker.core.parser.ast.AdditiveExpression;
 import freemarker.core.parser.ast.BuiltInExpression;
+import freemarker.core.parser.ast.MultiplicativeExpression;
 import freemarker.core.parser.ast.NotExpression;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.core.parser.ast.TemplateNode;
@@ -312,10 +314,16 @@ public class PostParseVisitor extends ASTVisitor {
 		visit(node.getRight());
 	}
 	
-	public void visit(ArithmeticExpression node) {
+	public void visit(AdditiveExpression node) {
 		visit(node.getLeft());
 		visit(node.getRight());
 	}
+
+	public void visit(MultiplicativeExpression node) {
+		visit(node.getLeft());
+		visit(node.getRight());
+	}
+	
 	
 	public void visit(ComparisonExpression node) {
 		visit(node.getLeft());

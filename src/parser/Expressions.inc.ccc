@@ -211,20 +211,20 @@ INJECT UnaryPlusMinusExpression :
         return result;
     }
 }
-
+#if false
 Expression AdditiveExpression :
 {
    Expression lhs, rhs, result;
    boolean plus;
 }
    lhs=MultiplicativeExpression {result = lhs;}
-   (
+   [
       (
          <PLUS> {plus = true;}
          |
          <MINUS> {plus = false;}
       )
-      rhs=MultiplicativeExpression
+      rhs=AdditiveExpression
       {
          if (plus) {
            // plus is treated separately, since it is also
@@ -238,38 +238,6 @@ Expression AdditiveExpression :
          result.setLocation(template, token_source, lhs, rhs);
          lhs = result;
       }
-   )*
-   {
-      return result;
-   }
-;
-
-/**
- * A unary expression followed by zero or more
- * unary expressions with multiplicative 
- * operators in between.
- */
-#if false
-Expression MultiplicativeExpression :
-{
-   Expression lhs, rhs, result;
-   int operation = ArithmeticExpression.MULTIPLICATION;
-}
-   lhs=UnaryExpression {result = lhs;}
-   [
-      (
-         <TIMES> {operation = ArithmeticExpression.MULTIPLICATION;}
-         |
-         <DIVIDE> {operation = ArithmeticExpression.DIVISION;}
-         |
-         <PERCENT>{operation = ArithmeticExpression.MODULUS;}
-      )
-      rhs=MultiplicativeExpression
-      {
-         result = new ArithmeticExpression(lhs, rhs, operation);
-         result.setLocation(template, token_source, lhs, rhs);
-         lhs = result;
-      }
    ]
    {
       return result;
@@ -277,6 +245,236 @@ Expression MultiplicativeExpression :
 ;
 #endif
 
+Expression AdditiveExpression#(>1) :
+{
+   Expression lhs, rhs, result;
+   boolean plus;
+}
+   lhs=MultiplicativeExpression {result = lhs;}
+   {
+      result = lhs;
+      currentNodeScope.clear();
+      pushNode(lhs);
+   }
+   [
+      (
+         <PLUS> {plus = true;}
+         |
+         <MINUS> {plus = false;}
+      )
+      rhs=AdditiveExpression
+      {
+         while (nodeArity() > 2) popNode();
+         pushNode(rhs);
+      }
+   ]
+   {
+      if (nodeArity()>1) {
+        result = (Expression) CURRENT_NODE;
+      }
+      return result;
+   }
+;
+
+INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
+   import java.util.*;
+   import freemarker.template.*;
+   import freemarker.core.Environment;
+   import freemarker.core.ast.ArithmeticEngine;
+   import freemarker.core.ast.EvaluationUtil;
+   import freemarker.core.ast.Expression;
+   import static freemarker.ext.beans.ObjectWrapper.isNumber;   
+   import static freemarker.ext.beans.ObjectWrapper.isList;   
+   import static freemarker.ext.beans.ObjectWrapper.asString;   
+   extends Expression
+{
+    public boolean isPlus() {
+        return get(1).getType() == PLUS;
+    }
+
+    public Expression getLeft() {
+        return (Expression) get(0);
+    }
+
+    public Expression getRight() {
+        return (Expression) get(2);
+    }
+
+    public Object evaluate(Environment env) {
+        Object left = getLeft().evaluate(env);
+        Object right = getRight().evaluate(env);
+        ArithmeticEngine ae = 
+            env != null 
+                ? env.getArithmeticEngine()
+                : getTemplate().getArithmeticEngine();        
+        if (!isPlus()) {
+            Number first = EvaluationUtil.getNumber(left, getLeft(), env);
+            Number second = EvaluationUtil.getNumber(right, getRight(), env);
+            return ae.subtract(first, second);
+        }
+        boolean bothAreNumbers = isNumber(left) && isNumber(right);
+        if (bothAreNumbers) {
+            Number first = EvaluationUtil.getNumber(left, getLeft(), env);
+            Number second = EvaluationUtil.getNumber(right, getRight(), env);
+            return ae.add(first, second);
+        }
+        if (isList(left) && isList(right)) {
+            /*List merged = new ArrayList(asList(leftModel));
+            merged.addAll(asList(rightModel));
+            return merged;*/
+            return new ConcatenatedSequence((TemplateSequenceModel)left, (TemplateSequenceModel)right);            
+        }
+        if (isDisplayableAsString(left) && isDisplayableAsString(right)) {
+            String s1 = getStringValue(left, getLeft(), env);
+            if(s1 == null) s1 = "null";
+            String s2 = getStringValue(right, getRight(), env);
+            if(s2 == null) s2 = "null";
+            return s1.concat(s2);
+        }
+        if (left instanceof TemplateHashModel && right instanceof TemplateHashModel) {
+            if (left instanceof TemplateHashModelEx && right instanceof TemplateHashModelEx) {
+                TemplateHashModelEx leftModelEx = (TemplateHashModelEx)left;
+                TemplateHashModelEx rightModelEx = (TemplateHashModelEx)right;
+                if (leftModelEx.size() == 0) {
+                    return rightModelEx;
+                } else if (rightModelEx.size() == 0) {
+                    return leftModelEx;
+                } else {
+                    return new ConcatenatedHashEx(leftModelEx, rightModelEx);
+                }
+            } else {
+                return new ConcatenatedHash((TemplateHashModel)left,
+                                            (TemplateHashModel)right);
+            }
+        }
+        String msg = this.getStartLocation() + ": Cannot add or concatenate";
+        throw new TemplateException(msg, env);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        AdditiveExpression result = new AdditiveExpression();
+        result.add(getLeft().deepClone(name, subst));
+        result.add(get(1));
+        result.add(getRight().deepClone(name, subst));
+        return result;
+    	//return new AddConcatExpression(getLeft().deepClone(name, subst), getRight().deepClone(name, subst));
+    }
+
+    private static final class ConcatenatedSequence implements TemplateSequenceModel
+    {
+        private final TemplateSequenceModel left;
+        private final TemplateSequenceModel right;
+
+        ConcatenatedSequence(TemplateSequenceModel left, TemplateSequenceModel right)
+        {
+            this.left = left;
+            this.right = right;
+        }
+
+        public int size() {
+            return left.size() + right.size();
+        }
+
+        public Object get(int i) {
+            int ls = left.size();
+            return i < ls ? left.get(i) : right.get(i - ls);
+        }
+    }
+
+    private static class ConcatenatedHash implements TemplateHashModel {
+        final TemplateHashModel left;
+        final TemplateHashModel right;
+
+        ConcatenatedHash(TemplateHashModel left, TemplateHashModel right)
+        {
+            this.left = left;
+            this.right = right;
+        }
+        
+        public Object get(String key)
+        {
+            Object model = right.get(key);
+            return (model != null) ? model : left.get(key);
+        }
+
+        public boolean isEmpty()
+        {
+            return left.isEmpty() && right.isEmpty();
+        }
+    }
+
+    private static final class ConcatenatedHashEx extends ConcatenatedHash implements TemplateHashModelEx
+    {
+        private Iterable<String> keys;
+        private Iterable<Object> values;
+        private int size;
+
+        ConcatenatedHashEx(TemplateHashModelEx left, TemplateHashModelEx right)
+        {
+            super(left, right);
+        }
+        
+        public int size() throws TemplateModelException
+        {
+            initKeys();
+            return size;
+        }
+
+        public Iterable keys()
+        {
+            initKeys();
+            return keys;
+        }
+
+        public Iterable values()
+        {
+            initValues();
+            return values;
+        }
+
+        private void initKeys()
+        {
+            if (keys == null) {
+                HashSet<String> keySet = new HashSet<String>();
+                List<String> keySeq = new ArrayList<>();
+                addKeys(keySet, keySeq, (TemplateHashModelEx)this.left);
+                addKeys(keySet, keySeq, (TemplateHashModelEx)this.right);
+                size = keySet.size();
+                keys = keySeq;
+            }
+        }
+
+        private static void addKeys(Set<String> set, List<String> keySeq, TemplateHashModelEx hash)
+        throws TemplateModelException
+        {
+            Iterator<?> it = hash.keys().iterator();
+            while (it.hasNext()) {
+                String s = asString(it.next());
+                if (set.add(s)) {
+                    // The first occurence of the key decides the index;
+                    // this is consisten with stuff like java.util.LinkedHashSet.
+                    keySeq.add(s);
+                }
+            }
+        }        
+
+        private void initValues() {
+            if (values == null) {
+                List<Object> seq = new ArrayList<>();
+                for (String key : keys) {
+                    seq.add(get(key));
+                }
+                values = seq;
+            }
+        }
+    }
+}
+
+/**
+ * A unary expression followed by zero or more
+ * unary expressions with multiplicative 
+ * operators in between.
+ */
 Expression MultiplicativeExpression#(>1) :
 {
     Expression lhs, rhs, result;
@@ -299,9 +497,6 @@ Expression MultiplicativeExpression#(>1) :
       {
          while (nodeArity() > 2) popNode();
          pushNode(rhs);
-//         result = new ArithmeticExpression(lhs, rhs, operation);
-//         result.setLocation(template, token_source, lhs, rhs);
-//         lhs = result;
       }
    ]
    {
