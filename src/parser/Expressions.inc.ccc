@@ -116,7 +116,11 @@ NotExpression# :
     Expression exp;
 }
    <EXCLAM> 
-   exp=PrimaryExpression 
+   (
+      exp=PrimaryExpression 
+      |
+      exp=NotExpression
+   )
    {
       while (currentNodeScope.size()>1) {
          currentNodeScope.remove(currentNodeScope.size()-1);
@@ -132,7 +136,7 @@ INJECT NotExpression :
     extends BooleanExpression
 {
     public Expression getTarget() {
-    	return firstChildOfType(Expression.class);
+        return (Expression) get(1);
     }
 
     public boolean isTrue(Environment env) {
@@ -153,7 +157,11 @@ UnaryPlusMinusExpression# :
       |
       <MINUS>
    )
-   exp=PrimaryExpression
+   (
+      exp=UnaryPlusMinusExpression
+      |
+      exp=PrimaryExpression
+   )
    {
       while (currentNodeScope.size()>1) {
          currentNodeScope.remove(currentNodeScope.size()-1);
@@ -241,13 +249,14 @@ Expression AdditiveExpression :
  * unary expressions with multiplicative 
  * operators in between.
  */
+#if false
 Expression MultiplicativeExpression :
 {
    Expression lhs, rhs, result;
    int operation = ArithmeticExpression.MULTIPLICATION;
 }
    lhs=UnaryExpression {result = lhs;}
-   (
+   [
       (
          <TIMES> {operation = ArithmeticExpression.MULTIPLICATION;}
          |
@@ -255,17 +264,123 @@ Expression MultiplicativeExpression :
          |
          <PERCENT>{operation = ArithmeticExpression.MODULUS;}
       )
-      rhs=UnaryExpression
+      rhs=MultiplicativeExpression
       {
          result = new ArithmeticExpression(lhs, rhs, operation);
          result.setLocation(template, token_source, lhs, rhs);
          lhs = result;
       }
-   )*
+   ]
    {
       return result;
    }
 ;
+#endif
+
+Expression MultiplicativeExpression#(>1) :
+{
+    Expression lhs, rhs, result;
+}
+   lhs = UnaryExpression 
+   {
+    result = lhs;
+    currentNodeScope.clear();
+    pushNode(lhs);
+   }
+   [
+      (
+         <TIMES>
+         |
+         <DIVIDE>
+         |
+         <PERCENT>
+      )
+      rhs=MultiplicativeExpression
+      {
+         while (nodeArity() > 2) popNode();
+         pushNode(rhs);
+//         result = new ArithmeticExpression(lhs, rhs, operation);
+//         result.setLocation(template, token_source, lhs, rhs);
+//         lhs = result;
+      }
+   ]
+   {
+      if (nodeArity()>1) {
+        result = (Expression) CURRENT_NODE;
+      }
+      return result;
+   }
+;
+
+INJECT MultiplicativeExpression :
+   import freemarker.template.TemplateException;
+   import freemarker.core.Environment;
+   import freemarker.core.ast.ArithmeticEngine;
+   import freemarker.core.ast.EvaluationUtil;
+   import freemarker.core.ast.Expression;
+   import freemarker.core.ast.NonNumericalException;
+   import static freemarker.ext.beans.ObjectWrapper.isNumber;
+   extends freemarker.core.ast.Expression
+{
+    public Expression getLeft() {
+    	return (Expression) get(0);
+    }
+    
+    public Expression getRight() {
+    	return (Expression) get(2);
+    }
+    
+    public TokenType getOperation() {
+        return (TokenType) get(1).getType();
+    }
+
+//    public void setOperation(int operation) {
+//        this.operation = operation;
+//    }
+    
+    public Object evaluate(Environment env) throws TemplateException 
+    {
+        Object leftModel = getLeft().evaluate(env);
+        Object rightModel = getRight().evaluate(env);
+        boolean leftIsNumber = isNumber(leftModel);
+        boolean rightIsNumber = isNumber(rightModel);
+        boolean bothNumbers = leftIsNumber && rightIsNumber;
+        if (!bothNumbers) {
+            String msg = "Error " + getStartLocation();
+            if (!leftIsNumber) {
+                msg += "\nExpression " + getLeft() + " is not numerical";
+            }
+            if (!rightIsNumber) {
+                msg += "\nExpression " + getRight() + " is not numerical";
+            }
+            throw new NonNumericalException(msg, env);
+        }
+        Number first = EvaluationUtil.getNumber(leftModel, getLeft(), env);
+        Number second = EvaluationUtil.getNumber(rightModel, getRight(), env);
+        ArithmeticEngine ae = 
+            env != null 
+                ? env.getArithmeticEngine()
+                : getTemplate().getArithmeticEngine();
+        switch (getOperation()) {
+            case TIMES :
+                return ae.multiply(first, second);
+            case DIVIDE :
+                return ae.divide(first, second);
+            case PERCENT :
+                return ae.modulus(first, second);
+            default:
+                throw new TemplateException("unknown operation : " + getOperation(), env);
+        }
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        MultiplicativeExpression result = new MultiplicativeExpression();
+        result.add(getLeft().deepClone(name, subst));
+        result.add(get(1));
+        result.add(getRight().deepClone(name, subst));
+        return result;
+    }
+}
 
 
 Expression EqualityExpression :
