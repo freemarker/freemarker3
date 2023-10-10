@@ -496,10 +496,6 @@ INJECT MultiplicativeExpression :
         return (TokenType) get(1).getType();
     }
 
-//    public void setOperation(int operation) {
-//        this.operation = operation;
-//    }
-    
     public Object evaluate(Environment env) throws TemplateException 
     {
         Object leftModel = getLeft().evaluate(env);
@@ -803,7 +799,7 @@ INJECT RangeExpression :
     }
 }
 
-Expression AndExpression :
+Expression AndExpression#(>1) :
 {
    Expression lhs, rhs, result;
 }
@@ -811,15 +807,37 @@ Expression AndExpression :
    [
       <AND>
       rhs=AndExpression
-      {
-         result = new AndExpression(lhs, rhs);
-         result.setLocation(template, token_source, lhs, rhs);
-      }
    ]
    {
-      return result;
+      return nodeArity() > 1 ? CURRENT_NODE : lhs;
    }
 ;
+
+INJECT AndExpression :
+    import freemarker.core.Environment;
+    import freemarker.core.ast.Expression;
+    extends freemarker.core.ast.BooleanExpression
+{
+    public Expression getLeft() {
+    	return (Expression) get(0);
+    }
+    
+    public Expression getRight() {
+    	return (Expression) get(2);
+    }
+
+    public boolean isTrue(Environment env) {
+        return getLeft().isTrue(env) && getRight().isTrue(env);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        AndExpression result = new AndExpression();
+        result.add(getLeft().deepClone(name,subst));
+        result.add(get(1));
+        result.add(getRight().deepClone(name, subst));
+        return result;
+    }
+}
 
 
 Expression OrExpression :

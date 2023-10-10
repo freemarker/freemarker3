@@ -80,11 +80,6 @@ public class PostParseVisitor extends ASTVisitor {
 		template.addParsingProblem(new ParsingProblem(node.getMessage() + " " + node.getSource(), node));
 	}
 	
-	public void visit(AndExpression node) {
-		visit(node.getLeft());
-		visit(node.getRight());
-	}
-	
 	public void visit(AssignmentInstruction node) {
 		super.visit(node);
 		if (template.strictVariableDeclaration()) {
