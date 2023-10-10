@@ -1840,18 +1840,10 @@ Expression StringLiteral# :
    )
    {
        String s = lastConsumedToken.toString();
+       if (raw) s = s.substring(1);
        // Get rid of the quotes.
        s = s.substring(1, s.length() -1);
-       if (raw) {
-           s=s.substring(1);
-       }
-       else try {
-          s = StringUtil.FTLStringLiteralDec(s);
-       } catch (ParseException pe) {
-       	  InvalidExpression invalid = new InvalidExpression("Malformed string literal: " + pe.getMessage());
-       	  invalid.setLocation(template, token_source, lastConsumedToken, lastConsumedToken);
-       	  return invalid;
-       }
+       if (!raw) s = StringUtil.FTLStringLiteralDec(s);
        CURRENT_NODE.setRaw(raw);
        CURRENT_NODE.setValue(s);
        return CURRENT_NODE;

@@ -77,10 +77,6 @@ public class PostParseVisitor extends ASTVisitor {
 		super.visit(node);
 	}
 	
-	public void visit(InvalidExpression node) {
-		template.addParsingProblem(new ParsingProblem(node.getMessage() + " " + node.getSource(), node));
-	}
-	
 	public void visit(AssignmentInstruction node) {
 		super.visit(node);
 		if (template.strictVariableDeclaration()) {

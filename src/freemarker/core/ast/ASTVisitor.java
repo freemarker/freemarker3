@@ -216,9 +216,6 @@ public abstract class ASTVisitor {
 		}
 	}
 
-	public void visit(InvalidExpression node) {		
-	}
-	
 	public void visit(IteratorBlock node) {
 		visit(node.getListExpression());
 		recurse(node);
