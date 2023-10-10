@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import freemarker.core.Environment;
+import freemarker.core.parser.ast.Expression;
 import freemarker.template.*;
 
 /**

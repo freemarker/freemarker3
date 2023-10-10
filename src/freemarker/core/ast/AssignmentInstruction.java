@@ -2,6 +2,7 @@ package freemarker.core.ast;
 
 import java.io.IOException;
 import java.util.*;
+import freemarker.core.parser.ast.Expression;
 import freemarker.template.TemplateException;
 import freemarker.core.*;
 

@@ -7,6 +7,7 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.Scope;
 import freemarker.core.TemplateNamespace;
+import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.ListLiteral;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.template.*;

@@ -1,12 +1,83 @@
 // This file defines the expression
 // grammar. It is INCLUDEd from the main template.
 
-#Expression :
+#Expression#abstract :
 {
 	Expression exp;
 }
 	 exp=OrExpression {return exp;}
 ;
+
+INJECT Expression :
+   import freemarker.template.*;
+   import freemarker.ext.beans.ObjectWrapper;
+   import freemarker.core.Environment;
+   import freemarker.core.ast.EvaluationUtil;
+   import freemarker.core.ast.NonBooleanException;
+   import freemarker.core.ast.NonStringException;
+   import static freemarker.ext.beans.ObjectWrapper.*;
+   extends TemplateNode
+{
+    public abstract Object evaluate(Environment env);
+    
+    
+    public String getDescription() {
+    	return "the expression: "  + this;
+    }
+
+    public String getStringValue(Environment env) {
+        return getStringValue(evaluate(env), this, env);
+    }
+    
+    static public boolean isDisplayableAsString(Object tm) {
+    	return ObjectWrapper.isString(tm)
+    	     || ObjectWrapper.isNumber(tm)
+    	     || tm instanceof TemplateDateModel;
+    }
+    
+    public static String getStringValue(Object referent, Expression exp, Environment env)
+    {
+        if (isNumber(referent)) {
+            return env.formatNumber(asNumber(referent));
+        }
+        if (referent instanceof TemplateDateModel) {
+            TemplateDateModel dm = (TemplateDateModel) referent;
+            return env.formatDate(EvaluationUtil.getDate(dm, exp, env), dm.getDateType());
+        }
+        if (isString(referent)) {
+            return asString(referent);
+        }
+        assertNonNull(referent, exp, env);
+        String msg = "Error " + exp.getStartLocation()
+                     +"\nExpecting a string, " 
+                     + "date or number here, Expression " + exp 
+                     + " is instead a " 
+                     + referent.getClass().getName();
+        throw new NonStringException(msg, env);
+    }
+
+    public Expression deepClone(String name, Expression subst) {
+        Expression clone = _deepClone(name, subst);
+        clone.copyLocationFrom(this);
+        clone.setParent(this.getParent());
+        return clone;
+    }
+
+    public abstract Expression _deepClone(String name, Expression subst);
+
+    public boolean isTrue(Environment env) {
+        Object referent = evaluate(env);
+        if (isBoolean(referent)) {
+            return asBoolean(referent);
+        }
+        assertNonNull(referent, this, env);
+        String msg = "Error " + getStartLocation()
+                     + "\nExpecting a boolean (true/false) expression here"
+                     + "\nExpression " + this + " does not evaluate to true/false "
+                     + "\nit is an instance of " + referent.getClass().getName();
+        throw new NonBooleanException(msg, env);
+    }
+}
 
 /**
  * Lowest level expression, a literal, a variable,
@@ -69,7 +140,7 @@ ParentheticalExpression# :
 
 INJECT ParentheticalExpression :
    import freemarker.core.Environment;
-   import freemarker.core.ast.Expression;
+   import freemarker.core.parser.ast.Expression;
    extends Expression
 {
    public Expression getNested() {
@@ -131,7 +202,7 @@ NotExpression# :
 
 INJECT NotExpression :
     import freemarker.core.Environment;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     import freemarker.core.ast.BooleanExpression;
     extends BooleanExpression
 {
@@ -172,7 +243,7 @@ UnaryPlusMinusExpression# :
 
 INJECT UnaryPlusMinusExpression : 
     import freemarker.core.Environment;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     import freemarker.core.ast.ArithmeticEngine;
     import freemarker.core.ast.NonNumericalException;
     import freemarker.template.*;
@@ -249,7 +320,7 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
    import freemarker.core.Environment;
    import freemarker.core.ast.ArithmeticEngine;
    import freemarker.core.ast.EvaluationUtil;
-   import freemarker.core.ast.Expression;
+   import freemarker.core.parser.ast.Expression;
    import static freemarker.ext.beans.ObjectWrapper.isNumber;   
    import static freemarker.ext.beans.ObjectWrapper.isList;   
    import static freemarker.ext.beans.ObjectWrapper.asString;   
@@ -479,10 +550,10 @@ INJECT MultiplicativeExpression :
    import freemarker.core.Environment;
    import freemarker.core.ast.ArithmeticEngine;
    import freemarker.core.ast.EvaluationUtil;
-   import freemarker.core.ast.Expression;
+   import freemarker.core.parser.ast.Expression;
    import freemarker.core.ast.NonNumericalException;
    import static freemarker.ext.beans.ObjectWrapper.isNumber;
-   extends freemarker.core.ast.Expression
+   extends freemarker.core.parser.ast.Expression
 {
     public Expression getLeft() {
     	return (Expression) get(0);
@@ -594,7 +665,7 @@ INJECT ComparisonExpression :
    import freemarker.core.Environment;
    import freemarker.core.ast.ArithmeticEngine;
    import freemarker.core.ast.BooleanExpression;
-   import freemarker.core.ast.Expression;
+   import freemarker.core.parser.ast.Expression;
    import freemarker.core.ast.EvaluationUtil;
    import freemarker.ext.beans.Pojo;
    import static freemarker.ext.beans.ObjectWrapper.asBoolean;
@@ -754,7 +825,7 @@ INJECT RangeExpression :
    import freemarker.template.*;
    import freemarker.core.Environment;
    import freemarker.core.ast.EvaluationUtil;
-   import freemarker.core.ast.Expression;
+   import freemarker.core.parser.ast.Expression;
    import freemarker.core.ast.NonBooleanException;
    import freemarker.core.ast.NumericalRange;
    extends Expression
@@ -815,7 +886,7 @@ Expression AndExpression#(>1) :
 
 INJECT AndExpression :
     import freemarker.core.Environment;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     extends freemarker.core.ast.BooleanExpression
 {
     public Expression getLeft() {
@@ -855,7 +926,7 @@ Expression OrExpression#(>1) :
 
 INJECT OrExpression :
     import freemarker.core.Environment;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     extends freemarker.core.ast.BooleanExpression
 {
     public Expression getLeft() {
@@ -910,7 +981,7 @@ INJECT ListLiteral :
   import freemarker.ext.beans.ListModel;
   import freemarker.template.TemplateException;
   import freemarker.template.*;
-  import freemarker.core.ast.Expression;
+  import freemarker.core.parser.ast.Expression;
   extends Expression
 {
     public List<Expression> getElements() {
@@ -975,7 +1046,7 @@ NumberLiteral# :
 
 INJECT NumberLiteral :
   import freemarker.core.Environment;
-  import freemarker.core.ast.Expression;
+  import freemarker.core.parser.ast.Expression;
   import freemarker.ext.beans.NumberModel;
   extends Expression
 {
@@ -1019,7 +1090,7 @@ Identifier# :
 INJECT Identifier :
     import freemarker.template.TemplateException;
     import freemarker.core.Environment;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     extends Expression
 {
     @Property String name;
@@ -1082,7 +1153,7 @@ INJECT BuiltinVariable :
     import freemarker.template.*;
     import freemarker.core.Environment;
     import freemarker.core.parser.ParseException;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     import freemarker.core.ast.Macro;
     extends Expression
 {
@@ -1164,7 +1235,7 @@ INJECT DefaultToExpression :
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
     import freemarker.template.*;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     extends Expression
 {
 	public Expression getLeft() {
@@ -1212,7 +1283,7 @@ INJECT ExistsExpression :
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
     import freemarker.core.parser.ast.ParentheticalExpression;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     import static freemarker.template.Constants.JAVA_NULL;
     extends Expression
 {
@@ -1254,7 +1325,7 @@ import java.util.HashMap;
     import freemarker.core.Environment;
     import freemarker.core.builtins.*;
     import freemarker.template.TemplateDateModel;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     extends Expression;
 {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();
@@ -1409,7 +1480,7 @@ INJECT DotVariable :
     import freemarker.core.Environment;
     import freemarker.core.parser.Token;
     import freemarker.template.TemplateHashModel;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     import java.util.Map;
     import static freemarker.ext.beans.ObjectWrapper.wrap;
     extends Expression
@@ -1479,7 +1550,7 @@ INJECT DynamicKeyName :
     import freemarker.core.Environment;
     import freemarker.template.*;
     import freemarker.ext.beans.ListModel;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     import freemarker.core.ast.EvaluationUtil;
     import freemarker.core.ast.NonStringException;
     import freemarker.core.ast.Range;
@@ -1693,7 +1764,7 @@ INJECT MethodCall :
     import java.io.IOException;
     import java.io.StringWriter;
     import freemarker.core.ast.ArgsList;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     import freemarker.core.ast.Macro;
     extends Expression;
 {
@@ -1791,7 +1862,7 @@ INJECT StringLiteral :
    import freemarker.template.*;
    import freemarker.core.Environment;
    import freemarker.core.parser.*;
-   import freemarker.core.ast.Expression;
+   import freemarker.core.parser.ast.Expression;
    import freemarker.core.ast.TemplateElement;
    import java.io.*;
    extends Expression
@@ -1883,7 +1954,7 @@ BooleanLiteral# :
 INJECT BooleanLiteral :
     import freemarker.core.Environment;
     import freemarker.template.*;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     extends Expression
 {
     @Property boolean value;
@@ -1919,7 +1990,7 @@ INJECT NullLiteral :
    import freemarker.core.Environment;
    import freemarker.template.Constants;
    import freemarker.template.TemplateModel;
-   import freemarker.core.ast.Expression;
+   import freemarker.core.parser.ast.Expression;
    extends Expression
 {
     public String toString() {
@@ -1976,7 +2047,7 @@ INJECT HashLiteral :
     import freemarker.core.Environment;
     import freemarker.ext.beans.ListModel;
     import freemarker.template.*;
-    import freemarker.core.ast.Expression;
+    import freemarker.core.parser.ast.Expression;
     import freemarker.core.ast.CollectionAndSequence;
     extends Expression
 {

@@ -5,6 +5,7 @@ import java.util.*;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;
+import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.TemplateNode;
 
 public class PositionalArgsList extends ArgsList {

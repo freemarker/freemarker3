@@ -1,6 +1,7 @@
 package freemarker.core.ast;
 
 import java.util.*;
+import freemarker.core.parser.ast.Expression;
 import freemarker.core.Environment;
 
 /**

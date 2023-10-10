@@ -2,6 +2,7 @@ package freemarker.core.ast;
 
 import freemarker.core.Environment;
 import freemarker.core.ReturnException;
+import freemarker.core.parser.ast.Expression;
 
 /**
  * Represents a &lt;return&gt; instruction to jump out of a macro.

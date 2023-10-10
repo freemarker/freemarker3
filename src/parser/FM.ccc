@@ -18,7 +18,7 @@ INJECT BASE_NODE_CLASS :
    import freemarker.core.helpers.DefaultReferenceChecker;
    import freemarker.core.helpers.DefaultTreeDumper;
    import freemarker.core.parser.Token;
-   import freemarker.core.ast.Expression;
+   import freemarker.core.parser.ast.Expression;
 {
 	@Property Template template;
 	

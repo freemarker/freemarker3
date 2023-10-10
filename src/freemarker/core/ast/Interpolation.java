@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import freemarker.core.Environment;
 import freemarker.template.TemplateException;
+import freemarker.core.parser.ast.Expression;
 
 /**
  * An instruction that outputs the value of an <tt>Expression</tt>.

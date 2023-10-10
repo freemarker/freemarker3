@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.AdditiveExpression;
 import freemarker.core.parser.ast.AndExpression;
 import freemarker.core.parser.ast.OrExpression;

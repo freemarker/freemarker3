@@ -9,6 +9,7 @@ import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.core.parser.*;
 import freemarker.core.parser.FMLexer.LexicalState;
+import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.SimpleMethodModel;
 

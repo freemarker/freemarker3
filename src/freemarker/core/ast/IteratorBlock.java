@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import freemarker.template.*;
 import freemarker.core.*;
+import freemarker.core.parser.ast.Expression;
 
 /**
  * An instruction that processes a list or foreach block

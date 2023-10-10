@@ -1,7 +1,7 @@
 package freemarker.core.ast;
 
-import freemarker.template.*;
 import freemarker.core.Environment;
+import freemarker.core.parser.ast.Expression;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 

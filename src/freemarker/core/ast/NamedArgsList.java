@@ -4,6 +4,7 @@ import java.util.*;
 
 import freemarker.core.Environment;
 import freemarker.core.parser.ParseException;
+import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;
 

@@ -3,6 +3,7 @@ package freemarker.core.ast;
 import freemarker.core.Environment;
 import freemarker.core.StopException;
 import freemarker.template.TemplateException;
+import freemarker.core.parser.ast.Expression;
 
 /**
  * Represents a &lt;stop&gt; instruction to abort template processing.
