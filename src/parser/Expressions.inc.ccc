@@ -544,7 +544,7 @@ INJECT MultiplicativeExpression :
     }
 }
 
-
+#if false
 Expression EqualityExpression :
 {
    Expression lhs, rhs, result;
@@ -569,8 +569,29 @@ Expression EqualityExpression :
       return result;
    }
 ;
+#endif
 
-Expression RelationalExpression :
+Expression EqualityExpression#RelationalExpression(>1) :
+{
+   Expression lhs;
+}
+   lhs=RelationalExpression
+   [
+     (
+      <NOT_EQUALS> 
+      |
+      <EQUALS> 
+      |
+      <DOUBLE_EQUALS>
+     )
+     RelationalExpression
+   ]
+   {
+      return nodeArity() > 1 ? CURRENT_NODE : lhs;
+   }
+;
+
+Expression RelationalExpression#(>1) :
 {
    Expression lhs, rhs, result;
    Token t;
@@ -591,40 +612,157 @@ Expression RelationalExpression :
       t=<LESS_THAN>
      )
      rhs=RangeExpression
-     {
-        result = new ComparisonExpression(lhs, rhs, t.toString());
-        result.setLocation(template, token_source, lhs, rhs);
-     }
    ]
    {
-      return result;
+      return nodeArity() > 1 ? CURRENT_NODE : lhs;
    }
 ;
-#if false
-Expression RangeExpression :
+
+INJECT RelationalExpression :
+   import java.text.Collator;
+   import java.util.Date;
+   import freemarker.template.*;
+   import freemarker.core.Environment;
+   import freemarker.core.ast.ArithmeticEngine;
+   import freemarker.core.ast.BooleanExpression;
+   import freemarker.core.ast.Expression;
+   import freemarker.core.ast.EvaluationUtil;
+   import freemarker.ext.beans.Pojo;
+   import static freemarker.ext.beans.ObjectWrapper.asBoolean;
+   import static freemarker.ext.beans.ObjectWrapper.isBoolean;
+   import static freemarker.ext.beans.ObjectWrapper.asNumber;
+   import static freemarker.ext.beans.ObjectWrapper.isNumber;
+   import static freemarker.ext.beans.ObjectWrapper.asString;
+   import static freemarker.ext.beans.ObjectWrapper.isString;
+   extends BooleanExpression
 {
-   Expression lhs, rhs=null, result;
-}
-    lhs=AdditiveExpression {result = lhs;}
-    [
-      <DOT_DOT>
-       [ rhs=AdditiveExpression =>|| 
-       ]
-       {
-           Range range = new Range(lhs, rhs);
-           if (rhs != null) {
-               range.setLocation(template, token_source, lhs, rhs);
-           } else {
-              range.setLocation(template, token_source, lhs, lhs);
-           }
-           result = range;
-        }
-    ]
-    {
-        return result;
+    public Expression getLeft() {
+    	return (Expression) get(0);
     }
-;
-#endif
+    
+    public Expression getRight() {
+    	return (Expression) get(2);
+    }
+
+    public TokenType getOperation() {
+        return (TokenType) get(1).getType();
+    }
+    
+    /*
+     * WARNING! This algorithm is duplicated in SequenceBuiltins.modelsEqual.
+     * Thus, if you update this method, then you have to update that too!
+     */
+    public boolean isTrue(Environment env) {
+        TokenType operation = getOperation();
+        Object ltm = getLeft().evaluate(env);
+        Object rtm = getRight().evaluate(env);
+        assertNonNull(ltm, getLeft(), env);
+       	assertNonNull(rtm, getRight(), env);
+        int comp = 0;
+        if (isNumber(ltm) && isNumber(rtm)) { 
+            Number first = asNumber(ltm);
+            Number second = asNumber(rtm);
+            ArithmeticEngine ae = 
+                env != null 
+                    ? env.getArithmeticEngine()
+                    : getTemplate().getArithmeticEngine();
+            comp = ae.compareNumbers(first, second);
+        }
+        else if(ltm instanceof TemplateDateModel && rtm instanceof TemplateDateModel) {
+            TemplateDateModel ltdm = (TemplateDateModel)ltm;
+            TemplateDateModel rtdm = (TemplateDateModel)rtm;
+            int ltype = ltdm.getDateType();
+            int rtype = rtdm.getDateType();
+            if(ltype != rtype) {
+                throw new TemplateException(
+                    "Can not compare dates of different type. Left date is of "
+                    + TemplateDateModel.TYPE_NAMES.get(ltype)
+                    + " type, right date is of " 
+                    + TemplateDateModel.TYPE_NAMES.get(rtype) + " type.", 
+                    env);
+            }
+            if(ltype == TemplateDateModel.UNKNOWN) {
+                throw new TemplateException(
+                    "Left date is of UNKNOWN type, and can not be compared.", env);
+            }
+            if(rtype == TemplateDateModel.UNKNOWN) {
+                throw new TemplateException(
+                    "Right date is of UNKNOWN type, and can not be compared.", env);
+            }
+            
+            Date first = EvaluationUtil.getDate(ltdm, getLeft(), env);
+            Date second = EvaluationUtil.getDate(rtdm, getRight(), env);
+            comp = first.compareTo(second);
+        }
+        else if (isString(ltm) && isString(rtm)) {
+            if(operation != EQUALS && operation != DOUBLE_EQUALS && operation != NOT_EQUALS) {
+                throw new TemplateException("Can not use operator " + operation + " on string values.", env);
+            }
+            String first = asString(ltm);
+            String second = asString(rtm);
+            Collator collator;
+            if(env == null) {
+                collator = Collator.getInstance(getTemplate().getLocale());
+            } else {
+                collator = env.getCollator();
+            }
+            comp = collator.compare(first, second);
+        }
+        else if(isBoolean(ltm) && isBoolean(rtm)) {
+            if(operation != EQUALS && operation != NOT_EQUALS) {
+                throw new TemplateException("Can not use operator " + operation + " on boolean values.", env);
+            }
+            boolean first = asBoolean(ltm);
+            boolean second = asBoolean(rtm);
+            comp = (first ? 1 : 0) - (second ? 1 : 0);
+        }
+        else if (ltm instanceof Pojo && rtm instanceof Pojo) {
+            Object left = ((Pojo)ltm).getWrappedObject();
+            Object right = ((Pojo)rtm).getWrappedObject();
+            if (operation == EQUALS) {
+                return left.equals(right);
+            }
+            if (operation == NOT_EQUALS) {
+                return !left.equals(right);
+            }
+            throw new UnsupportedOperationException();
+        }
+        else {
+            throw new TemplateException(
+                  "The only legal comparisons are between two numbers, two strings, or two dates.\n"
+                + "Left  hand operand is a " + ltm.getClass().getName() + "\n"
+                + "Right hand operand is a " + rtm.getClass().getName() + "\n"
+                , env);
+        }
+        switch (getOperation()) {
+            case EQUALS:
+            case DOUBLE_EQUALS :
+                return comp == 0;
+            case NOT_EQUALS:
+                return comp != 0;
+            case LESS_THAN : 
+                return comp < 0;
+            case GREATER_THAN : 
+            case ESCAPED_GT :
+                return comp > 0;
+            case LESS_THAN_EQUALS :
+                return comp <= 0;
+            case GREATER_THAN_EQUALS :
+            case ESCAPED_GTE :
+                return comp >= 0;
+            default :
+                throw new TemplateException("unknown operation", env);
+        }
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        RelationalExpression result = new RelationalExpression();
+        result.add(getLeft().deepClone(name, subst));
+        result.add(get(1));
+        result.add(getRight().deepClone(name, subst));
+        return result;
+    }    
+}
 
 Expression RangeExpression#(>1) :
 {
