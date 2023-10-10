@@ -21,6 +21,7 @@ import freemarker.core.parser.ast.Identifier;
 import freemarker.core.parser.ast.ListLiteral;
 import freemarker.core.parser.ast.MethodCall;
 import freemarker.core.parser.ast.NotExpression;
+import freemarker.core.parser.ast.RangeExpression;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.core.parser.ast.UnaryPlusMinusExpression;
 import freemarker.template.Template;
@@ -295,7 +296,7 @@ public abstract class ASTVisitor {
 		visit(node.getValue());
 	}
 	
-	public void visit(Range node) {
+	public void visit(RangeExpression node) {
 		visit(node.getLeft());
 		if (node.getRight() != null) visit(node.getRight());
 	}

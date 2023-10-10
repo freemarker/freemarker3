@@ -600,7 +600,7 @@ Expression RelationalExpression :
       return result;
    }
 ;
-
+#if false
 Expression RangeExpression :
 {
    Expression lhs, rhs=null, result;
@@ -624,6 +624,73 @@ Expression RangeExpression :
         return result;
     }
 ;
+#endif
+
+Expression RangeExpression#(>1) :
+{
+   Expression lhs, rhs=null, result; 
+}
+   lhs=AdditiveExpression
+   [
+    <DOT_DOT>
+    [
+       rhs=AdditiveExpression
+    ]
+   ]
+   {
+      if (nodeArity() == 1) return lhs;
+      return CURRENT_NODE;
+   }
+;
+
+INJECT RangeExpression :
+   import freemarker.template.*;
+   import freemarker.core.Environment;
+   import freemarker.core.ast.EvaluationUtil;
+   import freemarker.core.ast.Expression;
+   import freemarker.core.ast.NonBooleanException;
+   import freemarker.core.ast.NumericalRange;
+   extends Expression
+{
+    public Expression getLeft() {
+        return (Expression) get(0);
+    }
+
+    public Expression getRight() {
+        return hasRhs() ? (Expression) get(2) : null;
+    }
+
+    public boolean hasRhs() {
+        return size()==3;
+    }
+    
+    public Object evaluate(Environment env) 
+        throws TemplateException
+    {
+        int min = EvaluationUtil.getNumber(getLeft(), env).intValue();
+        int max = 0;
+        if (hasRhs()) {
+            max = EvaluationUtil.getNumber(getRight(), env).intValue();
+            return new NumericalRange(min, max);
+        }
+        return new NumericalRange(min);
+    }
+    
+    public boolean isTrue(Environment env) {
+        String msg = "Error " + getStartLocation() + ". " 
+                    + "\nExpecting a boolean here."
+                    + " Expression " + this + " is a range.";
+        throw new NonBooleanException(msg, env);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        RangeExpression result = new RangeExpression();
+        result.add(getLeft().deepClone(name, subst));
+        result.add(get(1));
+        if (hasRhs()) result.add(getRight().deepClone(name, subst));
+        return result;
+    }
+}
 
 Expression AndExpression :
 {
@@ -1283,8 +1350,8 @@ INJECT DynamicKeyName :
     {
         Object value = getTarget().evaluate(env);
         assertNonNull(value, getTarget(), env);
-        if (getNameExpression() instanceof Range) {
-            return dealWithRangeKey(value, (Range) getNameExpression(), env);
+        if (getNameExpression() instanceof RangeExpression) {
+            return dealWithRangeKey(value, (RangeExpression) getNameExpression(), env);
         }
         Object key = getNameExpression().evaluate(env);
         if(key == null) {
@@ -1349,7 +1416,7 @@ INJECT DynamicKeyName :
     }
 
     private Object dealWithRangeKey(Object targetModel, 
-                                           Range range, 
+                                           RangeExpression range, 
                                            Environment env)
     {
         int start = EvaluationUtil.getNumber(range.getLeft(), env).intValue();
