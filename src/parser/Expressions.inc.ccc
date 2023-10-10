@@ -544,34 +544,7 @@ INJECT MultiplicativeExpression :
     }
 }
 
-#if false
-Expression EqualityExpression :
-{
-   Expression lhs, rhs, result;
-   Token t;
-}
-   lhs=RelationalExpression {result = lhs;}
-   [
-     (
-      t=<NOT_EQUALS> 
-      |
-      t=<EQUALS> 
-      |
-      t=<DOUBLE_EQUALS>
-     )
-     rhs=RelationalExpression
-     {
-        result = new ComparisonExpression(lhs, rhs, t.toString());
-        result.setLocation(template, token_source, lhs, rhs);
-     }
-   ]
-   {
-      return result;
-   }
-;
-#endif
-
-Expression EqualityExpression#RelationalExpression(>1) :
+Expression EqualityExpression#ComparisonExpression(>1) :
 {
    Expression lhs;
 }
@@ -591,7 +564,7 @@ Expression EqualityExpression#RelationalExpression(>1) :
    }
 ;
 
-Expression RelationalExpression#(>1) :
+Expression RelationalExpression#ComparisonExpression(>1) :
 {
    Expression lhs, rhs, result;
    Token t;
@@ -618,7 +591,7 @@ Expression RelationalExpression#(>1) :
    }
 ;
 
-INJECT RelationalExpression :
+INJECT ComparisonExpression :
    import java.text.Collator;
    import java.util.Date;
    import freemarker.template.*;
@@ -756,7 +729,7 @@ INJECT RelationalExpression :
     }
 
     public Expression _deepClone(String name, Expression subst) {
-        RelationalExpression result = new RelationalExpression();
+        ComparisonExpression result = new ComparisonExpression();
         result.add(getLeft().deepClone(name, subst));
         result.add(get(1));
         result.add(getRight().deepClone(name, subst));

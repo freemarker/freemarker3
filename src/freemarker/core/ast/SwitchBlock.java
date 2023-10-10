@@ -6,7 +6,7 @@ import java.io.IOException;
 import freemarker.core.Environment;
 import freemarker.core.parser.Token;
 import freemarker.core.parser.ast.EQUALS;
-import freemarker.core.parser.ast.RelationalExpression;
+import freemarker.core.parser.ast.ComparisonExpression;
 import freemarker.core.BreakException;
 import freemarker.template.*;
 
@@ -59,7 +59,7 @@ public class SwitchBlock extends TemplateElement {
                 else {
                     // Otherwise, if this case isn't the default, test it.
                     //ComparisonExpression equalsOp = new ComparisonExpression(testExpression, cas.getExpression(), "==");
-                    RelationalExpression equalsOp = new RelationalExpression();
+                    ComparisonExpression equalsOp = new ComparisonExpression();
                     equalsOp.add(testExpression);
                     equalsOp.add(Token.newToken(Token.TokenType.EQUALS, testExpression.getTokenSource(), 0, 0));
                     equalsOp.add(cas.getExpression());
