@@ -5,7 +5,7 @@
 {
 	Expression exp;
 }
-	 exp=OrExpression {return exp;}
+	 OrExpression {return (Expression) peekNode();}
 ;
 
 INJECT Expression :
@@ -19,7 +19,6 @@ INJECT Expression :
    extends TemplateNode
 {
     public abstract Object evaluate(Environment env);
-    
     
     public String getDescription() {
     	return "the expression: "  + this;
@@ -79,11 +78,6 @@ INJECT Expression :
     }
 }
 
-/**
- * Lowest level expression, a literal, a variable,
- * or a possibly more complex expression bounded
- * by parentheses.
- */
 PrimaryExpression :
    (
       NumberLiteral
@@ -545,7 +539,7 @@ INJECT MultiplicativeExpression :
     }
 }
 
-Expression EqualityExpression#ComparisonExpression(>1) :
+EqualityExpression#ComparisonExpression(>1) :
    RelationalExpression
    [
      (
@@ -557,9 +551,6 @@ Expression EqualityExpression#ComparisonExpression(>1) :
      )
      RelationalExpression
    ]
-   {
-      return nodeArity() > 1 ? CURRENT_NODE : (Expression) peekNode();
-   }
 ;
 
 RelationalExpression#ComparisonExpression(>1) :
@@ -728,7 +719,7 @@ INJECT ComparisonExpression :
     }    
 }
 
-Expression RangeExpression#(>1) :
+RangeExpression#(>1) :
    AdditiveExpression
    [
     <DOT_DOT>
@@ -736,10 +727,6 @@ Expression RangeExpression#(>1) :
        AdditiveExpression
     ]
    ]
-   {
-      if (nodeArity() == 1) return (Expression) peekNode();;
-      return CURRENT_NODE;
-   }
 ;
 
 INJECT RangeExpression :
@@ -791,18 +778,12 @@ INJECT RangeExpression :
     }
 }
 
-Expression AndExpression#(>1) :
-{
-   Expression lhs;
-}
-   lhs=EqualityExpression
+AndExpression#(>1) :
+   EqualityExpression 
    [
       <AND>
       AndExpression
    ]
-   {
-      return nodeArity() > 1 ? CURRENT_NODE : lhs;
-   }
 ;
 
 INJECT AndExpression :
@@ -831,18 +812,12 @@ INJECT AndExpression :
     }
 }
 
-Expression OrExpression#(>1) :
-{
-   Expression lhs;
-}
-   lhs=AndExpression
+OrExpression#(>1) :
+   AndExpression
    [
       <OR>
       OrExpression
    ]
-   {
-      return nodeArity() > 1 ? CURRENT_NODE : lhs;
-   }
 ;
 
 INJECT OrExpression :
@@ -2115,39 +2090,19 @@ INJECT NullLiteral :
 }
 
 HashLiteral# :
-{
-   Expression key, value;
-   ArrayList<Expression> keys = new ArrayList<>();
-   ArrayList<Expression> values = new ArrayList<>();
-}
    <OPEN_BRACE>
    [
-       key=Expression
+       Expression
        <COLON>
-       value=Expression
-       {
-          keys.add(key);
-          values.add(value);
-       }
+       Expression
        (
           <COMMA>
-           key=Expression
+           Expression
            <COLON>
-           value=Expression
-           {
-               keys.add(key);
-               values.add(value);
-           }
+           Expression
        )*
    ]
    <CLOSE_BRACE>
-   {
-      clearNodeScope();
-      for (int i = 0; i<keys.size();i++) {
-         pushNode(keys.get(i));
-         pushNode(values.get(i));
-      }
-   }
 ;
 
 INJECT HashLiteral :
