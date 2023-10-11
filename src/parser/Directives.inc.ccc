@@ -278,7 +278,7 @@ TemplateElement Nested :
       |
       (
           t=<NESTED>
-          args=PositionalArgsList
+          PositionalArgsList {args = (PositionalArgsList) peekNode();}
           end=LooseDirectiveEnd
           {
              result = new BodyInstruction(args);
@@ -916,7 +916,7 @@ TemplateElement UnifiedMacroTransform :
 	    result.setNameExp(exp);
     }
     [<TERMINATING_WHITESPACE>]
-    [args=ArgsList]
+    [ArgsList {args = (ArgsList)peekNode();}]
     {
         if(args == null)
         {
@@ -969,19 +969,18 @@ TemplateElement Call :
    Identifier id;
    String macroName= null;
    UnifiedCall result = new UnifiedCall();
-   ArgsList args = null;
 }
     start=<CALL>
     id=Identifier {result.setNameExp(id);}
     [
 	    <OPEN_PAREN>
 	]
-    args=ArgsList {result.setArgs(args);}
+    ArgsList {result.setArgs((ArgsList) peekNode());}
     [<CLOSE_PAREN>]
     end=LooseDirectiveEnd
     {
        result.setLocation(template, token_source, start, end);
-       args.setLocationInfoIfAbsent(result);
+       //args.setLocationInfoIfAbsent(result);
        return result;
     }
 ;

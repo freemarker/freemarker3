@@ -1628,15 +1628,12 @@ INJECT MethodCall :
     }
 }
 
-#PositionalArgsList# : 
+PositionalArgsList# : 
 	Expression 
 	(
 	   [<COMMA>]
 	   Expression 
 	)*
-    {
-        return CURRENT_NODE;
-    }
 ;
 
 INJECT PositionalArgsList :
@@ -1692,7 +1689,7 @@ INJECT PositionalArgsList :
     }    
 }
 
-#NamedArgsList# :
+NamedArgsList# :
 {
     String param;
 	Expression arg;
@@ -1710,10 +1707,6 @@ INJECT PositionalArgsList :
 	   arg=Expression
 	   {CURRENT_NODE.addNamedArg(param, arg);}
 	)*
-	{
-		token_source.inInvocation = false;
-		return CURRENT_NODE;
-	}
 ;
 
 INJECT NamedArgsList :
@@ -1789,21 +1782,13 @@ INJECT NamedArgsList :
     }
 }
 
-#ArgsList#abstract :
-{
-	ArgsList result = null;
-	Token id;
-	Expression exp = null;
-}
+ArgsList#abstract :
 	(
 	   SCAN <ID><EQUALS> =>
-       result=NamedArgsList
+       NamedArgsList
        |
-       result=PositionalArgsList
+       PositionalArgsList
     )
-	{
-		return result;
-	}
 ;
 
 INJECT ArgsList :

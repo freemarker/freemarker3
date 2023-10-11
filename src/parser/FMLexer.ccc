@@ -54,7 +54,7 @@ INJECT LEXER_CLASS :
     private int hashLiteralNesting;
     private int parenthesisNesting;
     private int bracketNesting;
-    boolean onlyTextOutput, directiveSyntaxEstablished, altDirectiveSyntax, inInvocation, justAfterDot;
+    boolean onlyTextOutput, directiveSyntaxEstablished, altDirectiveSyntax, justAfterDot;
     String templateName;
 
     public void setOnlyTextOutput(boolean b) {
