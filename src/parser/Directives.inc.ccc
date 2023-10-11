@@ -228,27 +228,11 @@ RecurseNode Recurse :
    }
 ;
 
-#if false
-FallbackInstruction FallBack#FallbackInstruction :
-{
-   Token tok;
-}
-   tok=<FALLBACK>
-   {
-      FallbackInstruction result = new FallbackInstruction();
-      result.setLocation(template, token_source, tok, tok);
-      return result;
-   }
-;
-#else
-FallbackInstruction FallBack#FallbackInstruction :
+Fallback# :
    <FALLBACK>
-   {
-      return CURRENT_NODE;
-   }
 ;
 
-INJECT FallbackInstruction :
+INJECT Fallback :
     import java.io.IOException;
     import freemarker.core.Environment;
     extends freemarker.core.ast.TemplateElement;
@@ -261,8 +245,6 @@ INJECT FallbackInstruction :
         return "fallback instruction";
     }
 }
-
-#endif
 
 /**
  * Production used to break out of a loop or a switch block.
@@ -349,17 +331,23 @@ TemplateElement Nested :
    }
 ;
 
-TemplateElement Flush :
-{
-  Token t;
-}
-   t=<FLUSH>
-   {
-       FlushInstruction result = new FlushInstruction();
-       result.setLocation(template, token_source, t, t);
-       return result;
-   }
+Flush# :
+   <FLUSH>
 ;
+
+INJECT Flush :
+   import java.io.IOException;
+   import freemarker.core.Environment;
+   extends freemarker.core.ast.TemplateElement
+{
+    public void execute(Environment env) throws IOException {
+        env.getOut().flush();
+    }
+
+    public String getDescription() {
+        return "flush instruction";
+    }
+}
 
 TemplateElement Trim :
 {
@@ -1451,7 +1439,7 @@ TemplateElement FreemarkerDirective :
      |
      tp=Recurse
      |
-     tp=FallBack
+     tp=Fallback
      |
      tp=Attempt
    )

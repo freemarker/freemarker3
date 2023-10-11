@@ -23,7 +23,8 @@ import freemarker.core.parser.ast.DefaultToExpression;
 import freemarker.core.parser.ast.DotVariable;
 import freemarker.core.parser.ast.DynamicKeyName;
 import freemarker.core.parser.ast.ExistsExpression;
-import freemarker.core.parser.ast.FallbackInstruction;
+import freemarker.core.parser.ast.Fallback;
+import freemarker.core.parser.ast.Flush;
 import freemarker.core.parser.ast.HashLiteral;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.core.parser.ast.ListLiteral;
@@ -192,9 +193,9 @@ public abstract class ASTVisitor {
 		visit(node.getExpression());
 	}
 	
-	public void visit(FallbackInstruction node) {}
+	public void visit(Fallback node) {}
 	
-	public void visit(FlushInstruction node) {}
+	public void visit(Flush node) {}
 	
 	public void visit(HashLiteral node) {
 		List<Expression> keys = node.getKeys();
