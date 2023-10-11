@@ -126,15 +126,8 @@ Expression PrimaryExpression :
 ;
 
 ParentheticalExpression# :
-{
-   Expression exp;
-}
     <OPEN_PAREN> 
-    exp=Expression 
-    {
-      clearNodeScope();
-      pushNode(exp);
-    }
+    Expression 
     <CLOSE_PAREN>
 ;
 
@@ -157,7 +150,9 @@ INJECT ParentheticalExpression :
 
     public Expression _deepClone(String name, Expression subst) {
         ParentheticalExpression result = new ParentheticalExpression();
+        result.add(get(0));
         result.add(getNested().deepClone(name, subst));
+        result.add(get(2));
         return result;
     }   
 }
@@ -183,21 +178,12 @@ Expression UnaryExpression :
 ;
 
 NotExpression# : 
-{
-    Expression exp;
-}
    <EXCLAM> 
    (
-      exp=PrimaryExpression 
+      PrimaryExpression 
       |
-      exp=NotExpression
+      NotExpression
    )
-   {
-      while (currentNodeScope.size()>1) {
-         currentNodeScope.remove(currentNodeScope.size()-1);
-      }
-      pushNode(exp);
-   }
 ;
 
 INJECT NotExpression :
@@ -222,23 +208,16 @@ INJECT NotExpression :
 }
 
 UnaryPlusMinusExpression# :
- {Expression exp;}
    (
       <PLUS>
       |
       <MINUS>
    )
    (
-      exp=UnaryPlusMinusExpression
+      UnaryPlusMinusExpression
       |
-      exp=PrimaryExpression
+      PrimaryExpression
    )
-   {
-      while (currentNodeScope.size()>1) {
-         currentNodeScope.remove(currentNodeScope.size()-1);
-      }
-      pushNode(exp);
-   } 
 ;
 
 INJECT UnaryPlusMinusExpression : 
@@ -285,32 +264,19 @@ INJECT UnaryPlusMinusExpression :
 
 Expression AdditiveExpression#(>1) :
 {
-   Expression lhs, rhs, result;
-   boolean plus;
+   Expression lhs;
 }
-   lhs=MultiplicativeExpression {result = lhs;}
-   {
-      result = lhs;
-      currentNodeScope.clear();
-      pushNode(lhs);
-   }
+   lhs=MultiplicativeExpression 
    [
       (
-         <PLUS> {plus = true;}
+         <PLUS> 
          |
-         <MINUS> {plus = false;}
+         <MINUS>
       )
-      rhs=AdditiveExpression
-      {
-         while (nodeArity() > 2) popNode();
-         pushNode(rhs);
-      }
+      AdditiveExpression
    ]
    {
-      if (nodeArity()>1) {
-        result = (Expression) CURRENT_NODE;
-      }
-      return result;
+      return nodeArity() > 1 ? CURRENT_NODE : lhs;
    }
 ;
 
@@ -532,10 +498,6 @@ Expression MultiplicativeExpression#(>1) :
          <PERCENT>
       )
       rhs=MultiplicativeExpression
-      {
-         while (nodeArity() > 2) popNode();
-         pushNode(rhs);
-      }
    ]
    {
       if (nodeArity()>1) {
@@ -806,13 +768,13 @@ INJECT ComparisonExpression :
 
 Expression RangeExpression#(>1) :
 {
-   Expression lhs, rhs=null, result; 
+   Expression lhs, result; 
 }
    lhs=AdditiveExpression
    [
     <DOT_DOT>
     [
-       rhs=AdditiveExpression
+       AdditiveExpression
     ]
    ]
    {
@@ -950,24 +912,17 @@ INJECT OrExpression :
     }
 }
 
-#ListLiteral#(false) :
-{
-   Expression exp;
-   ArrayList<Expression> values = new ArrayList<Expression>();
-   Token begin, end;
-}
-    begin=<OPEN_BRACKET>
+#ListLiteral# :
+    <OPEN_BRACKET>
     [
-      exp=Expression {values.add(exp);}
+      Expression 
       (
          <COMMA>
-         exp=Expression {values.add(exp);}
+         Expression 
       )*
     ]
-    end=<CLOSE_BRACKET>
+    <CLOSE_BRACKET>
     {
-        CURRENT_NODE.setLocation(template, token_source, begin, end);
-        CURRENT_NODE.addAll(values);
         return CURRENT_NODE;
     }
 ;
@@ -1021,13 +976,14 @@ INJECT ListLiteral :
     }
     
     public Expression _deepClone(String name, Expression subst) {
-    	ArrayList<Expression> clonedValues = new ArrayList<Expression>(size());
-    	for (Expression exp : getElements()) {
-    		clonedValues.add(exp.deepClone(name, subst));
-    	}
-      ListLiteral ll = new ListLiteral();
-      ll.addAll(clonedValues);
-      return ll;
+        ListLiteral result = new ListLiteral();
+        for (Node node : this) {
+            if (node instanceof Expression) {
+                node = ((Expression) node).deepClone(name, subst);
+            }
+            result.add(node);
+        }
+        return result;
     }
 }
 
@@ -1873,7 +1829,6 @@ INJECT PositionalArgsList :
 
     public Object getValueAt(int i, Environment env) {
         Expression exp = childrenOfType(Expression.class).get(i);
-//        Expression exp = args.get(i);
         Object value = exp.evaluate(env);
         TemplateNode.assertIsDefined(value, exp, env);
         return value;
