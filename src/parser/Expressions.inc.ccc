@@ -1890,57 +1890,28 @@ INJECT PositionalArgsList :
         return result;
     }    
 }
-#if false
-#NamedArgsList :
-{
-	Token firstParam, id;
-	Expression arg;
-	NamedArgsList result = new NamedArgsList();
-}
-	firstParam=<ID>
-	<EQUALS> 
-	arg=Expression  
-	{
-		result.addNamedArg(firstParam.toString(), arg);
-	}
-	(
-	   [<COMMA>]
-	   id=<ID>
-	   <EQUALS>
-	   arg=Expression
-	   {result.addNamedArg(id.toString(), arg);}
-	)*
-	{
-		token_source.inInvocation = false;
-		result.setLocation(template, token_source, firstParam, arg);
-		return result;
-	}
-;
-#else
 
 #NamedArgsList# :
 {
-	Token firstParam, id;
+    String param;
 	Expression arg;
-	NamedArgsList result = new NamedArgsList();
 }
-	firstParam=<ID>
+	<ID> {param = lastConsumedToken.toString();}
 	<EQUALS> 
 	arg=Expression  
 	{
-		result.addNamedArg(firstParam.toString(), arg);
+		CURRENT_NODE.addNamedArg(param, arg);
 	}
 	(
 	   [<COMMA>]
-	   id=<ID>
+	   <ID> {param = lastConsumedToken.toString();}
 	   <EQUALS>
 	   arg=Expression
-	   {result.addNamedArg(id.toString(), arg);}
+	   {CURRENT_NODE.addNamedArg(param, arg);}
 	)*
 	{
 		token_source.inInvocation = false;
-		result.setLocation(template, token_source, firstParam, arg);
-		return result;
+		return CURRENT_NODE;
 	}
 ;
 
@@ -2006,14 +1977,6 @@ INJECT NamedArgsList :
         return annotatedParameterList.getParameterSequence(this, env);
     }
 
-
-    public String getStartLocation() {
-        for (Expression exp : namedArgs.values()) {
-            return exp.getStartLocation();
-        }
-        return "";
-    }
-
     public ArgsList deepClone(String name, Expression subst) {
         NamedArgsList result = new NamedArgsList();
         for (Map.Entry<String, Expression> entry : namedArgs.entrySet()) {
@@ -2024,7 +1987,6 @@ INJECT NamedArgsList :
         return result;
     }
 }
-#endif
 
 #ArgsList#abstract :
 {
