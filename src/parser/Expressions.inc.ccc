@@ -108,20 +108,37 @@ Expression PrimaryExpression :
       exp=BuiltinVariable
   )
   (
-      exp=DotVariable(exp)
+      (
+        <DOT>
+        {token_source.justAfterDot = true;} 
+        <ID> 
+        {token_source.justAfterDot=false;}
+      ) #DotVariable(+1) 
+      {exp=(Expression)peekNode();}
       |
-      exp=DynamicKeyName(exp)
+      (<OPEN_BRACKET> Expression <CLOSE_BRACKET>) #DynamicKeyName(+1)
+      {exp=(Expression)peekNode();}
       |
-      exp=MethodCall(exp)
+      (<OPEN_PAREN> [ArgsList] <CLOSE_PAREN>) #MethodCall(+1)
+      {exp=(Expression)peekNode();}
       |
-      exp=BuiltInExpression(exp)
+      (<BUILT_IN><ID>) #BuiltInExpression(+1)
+      {exp=(Expression)peekNode();}
       |
-      exp=ExistsExpression(exp)
+      <EXISTS>#ExistsExpression(2) 
+      {exp=(Expression)peekNode();} 
       |
-      exp=DefaultToExpression(exp)
+      (
+        <EXCLAM>
+        [
+            SCAN {getToken(1).getType() != TokenType.ID || getToken(2).getType() != TokenType.EQUALS}
+            => PrimaryExpression =>||
+        ]
+      ) #DefaultToExpression(+1)
+      {exp=(Expression)peekNode();} 
   )*
   {
-     return exp;
+     return (Expression) peekNode();
   }
 ;
 
@@ -177,13 +194,22 @@ Expression UnaryExpression :
   }
 ;
 
-NotExpression# : 
-   <EXCLAM> 
+NotExpression# :
+{
+    Expression exp;
+}
+   <EXCLAM>
    (
-      PrimaryExpression 
+      exp=PrimaryExpression
       |
-      NotExpression
+      exp=NotExpression
    )
+   {
+      while (currentNodeScope.size()>1) {
+         currentNodeScope.remove(currentNodeScope.size()-1);
+      }
+      pushNode(exp);
+   }
 ;
 
 INJECT NotExpression :
@@ -1490,12 +1516,6 @@ DynamicKeyName(Expression exp)# :
 }
    <OPEN_BRACKET>
    arg=Expression 
-   {
-     while (currentNodeScope.size() > 2) {
-        currentNodeScope.remove(currentNodeScope.size()-1);
-     }
-     pushNode(arg);
-   }
    <CLOSE_BRACKET>
 ;
 
@@ -1693,18 +1713,11 @@ INJECT DynamicKeyName :
  */
 MethodCall(Expression exp)# : 
 {
-     ArgsList args;
      pushNode(exp);
 }
      <OPEN_PAREN>
      [
-        args=ArgsList 
-        {
-            while (currentNodeScope.size() > 2) {
-                currentNodeScope.remove(currentNodeScope.size()-1);
-            }
-            pushNode(args);
-        }
+        ArgsList 
      ]
      <CLOSE_PAREN>
 ;
