@@ -8,7 +8,7 @@ import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.Expression;
 import freemarker.template.Constants;
 import freemarker.template.LazilyEvaluatableArguments;
-import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateMethodModel;
 import freemarker.core.parser.ast.ParentheticalExpression;
 import freemarker.ext.beans.ObjectWrapper;
 
@@ -38,7 +38,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
             if(model == null || model == Constants.JAVA_NULL) {
                 return FirstDefined.INSTANCE;
             }
-            return new TemplateMethodModelEx() {
+            return new TemplateMethodModel() {
                 public Object exec(List arguments) {
                     return model;
                 }
@@ -70,7 +70,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
         }
     };
 
-    private static class FirstDefined implements TemplateMethodModelEx, LazilyEvaluatableArguments {
+    private static class FirstDefined implements LazilyEvaluatableArguments {
         static final FirstDefined INSTANCE = new FirstDefined();
         public Object exec(List args) {
             for (Object arg : args) {

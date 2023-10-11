@@ -39,7 +39,7 @@ public class PositionalArgsList extends ArgsList {
     public List getParameterSequence(Object target, Environment env) {
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
-            return target instanceof TemplateMethodModelEx ? 
+            return target instanceof TemplateMethodModel ? 
                     (target instanceof LazilyEvaluatableArguments ? 
                             getLazyModelList(env) :
                                 getModelList(env)) :
@@ -48,23 +48,7 @@ public class PositionalArgsList extends ArgsList {
                                                 getValueList(env));
         }
         // TODO: Attila's lazy evaluation machinery here as well, I guess FWIW...
-        List<Object> result = annotatedParameterList.getParameterSequence(this, env);
-        if ((target instanceof TemplateMethodModel) && !(target instanceof TemplateMethodModelEx)) {
-            List<String> strings = new ArrayList<String>();
-            for(int i = 0; i < result.size(); ++i) {
-                Object value = result.get(i);
-                Expression exp;
-                if(i < args.size()) {
-                    exp = args.get(i);
-                }
-                else {
-                    exp = annotatedParameterList.getDefaultExpression(i);
-                }
-                strings.add(Expression.getStringValue(value, exp, env));
-            }
-            return strings;
-        }
-        return result;
+        return annotatedParameterList.getParameterSequence(this, env);
     }
 
     public int size() {

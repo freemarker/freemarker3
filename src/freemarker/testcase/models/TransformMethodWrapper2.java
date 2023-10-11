@@ -2,6 +2,7 @@ package freemarker.testcase.models;
 
 import java.util.*;
 import freemarker.template.*;
+import static freemarker.ext.beans.ObjectWrapper.asString;
 
 /**
  * Another test of the interaction between MethodModels and TransformModels.
@@ -25,7 +26,7 @@ public class TransformMethodWrapper2 implements TemplateMethodModel {
         // passed into this method
 
         while( iArgument.hasNext() ) {
-            String  aArgument = (String)iArgument.next();
+            String  aArgument = asString(iArgument.next());
 
             if( aArgument.equals( "quote" )) {
                 cTransformer.setQuotes( true );

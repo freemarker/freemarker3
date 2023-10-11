@@ -13,7 +13,7 @@ import java.util.Collections;
  */
 
 final class GeneralPurposeNothing
-implements TemplateBooleanModel, TemplateScalarModel, TemplateSequenceModel, TemplateHashModelEx, TemplateMethodModelEx {
+implements TemplateBooleanModel, TemplateScalarModel, TemplateSequenceModel, TemplateHashModelEx, TemplateMethodModel {
 
     private static final TemplateModel instance = new GeneralPurposeNothing();
       

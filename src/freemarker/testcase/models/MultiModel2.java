@@ -2,6 +2,7 @@ package freemarker.testcase.models;
 
 import freemarker.template.*;
 import java.util.*;
+import static freemarker.ext.beans.ObjectWrapper.asString;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.
@@ -31,7 +32,7 @@ public class MultiModel2 implements TemplateScalarModel, TemplateMethodModel {
         Iterator    iList = arguments.iterator();
 
         while( iList.hasNext() ) {
-            aResults.append( (String)iList.next() );
+            aResults.append(asString(iList.next()));
             aResults.append( "<br />" );
         }
 

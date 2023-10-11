@@ -14,7 +14,7 @@ import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
-import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
@@ -123,7 +123,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ChunkFunction implements TemplateMethodModelEx {
+    static class ChunkFunction implements TemplateMethodModel {
 
         private final List tsm;
 
@@ -465,7 +465,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SortByMethod implements TemplateMethodModelEx {
+    static class SortByMethod implements TemplateMethodModel {
         List seq;
 
         SortByMethod(List seq) {
@@ -510,7 +510,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SequenceIndexOf implements TemplateMethodModelEx {
+    static class SequenceIndexOf implements TemplateMethodModel {
 
         private final List sequence;
         private final boolean reverse;

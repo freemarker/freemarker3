@@ -51,30 +51,14 @@ public class NamedArgsList extends ArgsList {
         return result;
     }
 
-    public List getParameterSequence(Object target, Environment env) {
+    public List<Object> getParameterSequence(Object target, Environment env) {
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             String msg = "Error at: " + getStartLocation() 
             + "\nCannot invoke method " + target + " with a key=value parameter list because it is not annotated.";
             throw new TemplateException(msg, env);
         }
-        List<Object> result = annotatedParameterList.getParameterSequence(this, env);
-        if ((target instanceof TemplateMethodModel) && !(target instanceof TemplateMethodModelEx)) {
-            List<String> strings = new ArrayList<String>();
-            List<String> paramNames = annotatedParameterList.getParamNames();
-            for(int i = 0; i < result.size(); ++i) {
-                Object value = result.get(i);
-                Expression exp;
-                String paramName = paramNames.get(i);
-                exp = namedArgs.get(paramName);
-                if(exp == null) {
-                    exp = annotatedParameterList.getDefaultExpression(paramName);
-                }
-                strings.add(Expression.getStringValue(value, exp, env));
-            }
-            return strings;
-        }
-        return result;
+        return annotatedParameterList.getParameterSequence(this, env);
     }
 
 

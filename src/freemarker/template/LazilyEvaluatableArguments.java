@@ -10,7 +10,7 @@ import freemarker.annotations.Parameters;
  * argument list by the model. While this interface extends 
  * {@link TemplateMethodModel} to reinforce the notion that it is to be applied
  * to method models, it can naturally be implemented by classes that implement
- * {@link TemplateMethodModelEx}. 
+ * {@link TemplateMethodModel}. 
  * Note that for the time being, there is a limitation in the FreeMarker 
  * implementation that prevents lazy evaluation of arguments of method models
  * that have a {@link Parameters} annotation on them. If your class 

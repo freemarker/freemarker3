@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Collections;
 
 import freemarker.annotations.Parameters;
-import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 
@@ -21,7 +21,7 @@ import freemarker.template.TemplateSequenceModel;
  */
 public final class SimpleMethodModel extends SimpleMemberModel<Method>
     implements
-    TemplateMethodModelEx,
+    TemplateMethodModel,
     TemplateSequenceModel
 {
     private final Object object;

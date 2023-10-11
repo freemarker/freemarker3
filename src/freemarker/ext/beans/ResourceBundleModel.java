@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import static freemarker.ext.beans.ObjectWrapper.asString;
@@ -33,7 +33,7 @@ import static freemarker.ext.beans.ObjectWrapper.wrap;
  * @author Attila Szegedi
  * @version $Id: ResourceBundleModel.java,v 1.22 2004/01/06 17:06:42 szegedia Exp $
  */
-public class ResourceBundleModel extends Pojo implements TemplateMethodModelEx
+public class ResourceBundleModel extends Pojo implements TemplateMethodModel
 {
     private Hashtable<String, MessageFormat> formats = null;
 

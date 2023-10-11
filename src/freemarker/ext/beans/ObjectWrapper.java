@@ -184,6 +184,9 @@ public class ObjectWrapper
         if (obj instanceof TemplateScalarModel) {
             return ((TemplateScalarModel) obj).getAsString();
         }
+        if (obj instanceof Number) {
+            return obj.toString();
+        }
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
@@ -439,7 +442,7 @@ public class ObjectWrapper
         // This is for transparent interop with other wrappers (and ourselves)
         // Passing the hint allows i.e. a Jython-aware method that declares a
         // PyObject as its argument to receive a PyObject from a JythonModel
-        // passed as an argument to TemplateMethodModelEx etc.
+        // passed as an argument to TemplateMethodModel etc.
         if(object instanceof AdapterTemplateModel) {
             Object adapted = ((AdapterTemplateModel)object).getAdaptedObject(
                     requiredType);

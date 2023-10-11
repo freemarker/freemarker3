@@ -7,7 +7,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 
-import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 
@@ -19,7 +19,7 @@ import freemarker.template.TemplateSequenceModel;
  * @author Attila Szegedi, szegedia at users dot sourceforge dot net
  * @version $Id: OverloadedMethodModel.java,v 1.25 2005/06/11 12:12:04 szegedia Exp $
  */
-class OverloadedMethodModel implements TemplateMethodModelEx, TemplateSequenceModel
+class OverloadedMethodModel implements TemplateMethodModel, TemplateSequenceModel
 {
     private final Object object;
     private final MethodMap<Method> methodMap;

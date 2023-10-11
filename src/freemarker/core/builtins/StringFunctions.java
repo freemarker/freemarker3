@@ -17,7 +17,6 @@ import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
@@ -221,7 +220,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SubstringMethod implements TemplateMethodModelEx {
+    static class SubstringMethod implements TemplateMethodModel {
 
         private final String string;
 
@@ -398,7 +397,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class LeftPadMethod implements TemplateMethodModelEx {
+    static class LeftPadMethod implements TemplateMethodModel {
         private String string;
 
         LeftPadMethod(String s) {
@@ -453,7 +452,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class RightPadMethod implements TemplateMethodModelEx {
+    static class RightPadMethod implements TemplateMethodModel {
         private String string;
 
         private RightPadMethod(String string) {
@@ -557,7 +556,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class StartsOrEndsWithMethod implements TemplateMethodModelEx {
+    static class StartsOrEndsWithMethod implements TemplateMethodModel {
         private final String string;
         private final boolean reverse;
 
@@ -589,7 +588,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class IndexOfMethod implements TemplateMethodModelEx {
+    static class IndexOfMethod implements TemplateMethodModel {
         private final String s;
         private final boolean reverse;
 
@@ -644,7 +643,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ContainsMethod implements TemplateMethodModelEx {
+    static class ContainsMethod implements TemplateMethodModel {
         private String s;
 
         private ContainsMethod(String s) {

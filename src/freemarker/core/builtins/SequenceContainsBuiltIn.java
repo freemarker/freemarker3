@@ -6,7 +6,7 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.template.TemplateMethodModelEx;
+import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;
 
@@ -27,7 +27,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
         return new SequenceContainsFunction(model);
     }
 
-    static class SequenceContainsFunction implements TemplateMethodModelEx {
+    static class SequenceContainsFunction implements TemplateMethodModel {
         final TemplateSequenceModel sequence;
         final Iterable collection;
         SequenceContainsFunction(Object seqModel) {

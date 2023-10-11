@@ -68,7 +68,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
                         "boolean?string(...) requires exactly "
                         + "2 arguments.");
             }
-            return arguments.get(asBoolean(bool) ? 0 : 1);
+            return asString(arguments.get(asBoolean(bool) ? 0 : 1));
         }
     }
     
@@ -146,7 +146,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
                 throw new TemplateModelException(
                         "number?string(...) requires exactly 1 argument.");
             }
-            return get((String) arguments.get(0));
+            return get(asString(arguments.get(0)));
         }
 
         public boolean isEmpty()
