@@ -4,6 +4,7 @@ import java.util.*;
 
 import freemarker.core.Environment;
 import freemarker.core.parser.ParseException;
+import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;
@@ -33,7 +34,7 @@ public class NamedArgsList extends ArgsList {
         return (Map<String,Expression>)namedArgs.clone();
     }
 
-    Map<String, Object> getParameterMap(Object tm, Environment env) {
+    public Map<String, Object> getParameterMap(Object tm, Environment env) {
         Map<String, Object> result = null; 
         ParameterList annotatedParameterList = ArgsList.getParameterList(tm);
         if (annotatedParameterList == null) {

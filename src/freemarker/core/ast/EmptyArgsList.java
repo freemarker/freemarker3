@@ -3,6 +3,7 @@ package freemarker.core.ast;
 import java.util.*;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.Environment;
+import freemarker.core.parser.ast.ArgsList;
 
 /**
  * The abstract base class of both {@link NamedArgsList} and {@link PositionalArgsList}
@@ -17,7 +18,7 @@ public class EmptyArgsList extends ArgsList {
     }
 
     @Override
-    Map<String, Object> getParameterMap(Object tm, Environment env) {
+    public Map<String, Object> getParameterMap(Object tm, Environment env) {
         ParameterList annotatedParameterList = ArgsList.getParameterList(tm);
         if (annotatedParameterList == null) {
             return new HashMap<String, Object>();
@@ -28,10 +29,7 @@ public class EmptyArgsList extends ArgsList {
     }
 
     @Override
-    public List getParameterSequence(Object target, Environment env) {
+    public List<Object> getParameterSequence(Object target, Environment env) {
         throw new UnsupportedOperationException();
     }
-
-    //@Override
-    public int size() {return 0;}
 }

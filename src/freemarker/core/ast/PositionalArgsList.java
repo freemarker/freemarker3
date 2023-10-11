@@ -5,6 +5,7 @@ import java.util.*;
 import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;
+import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.TemplateNode;
 
@@ -21,7 +22,7 @@ public class PositionalArgsList extends ArgsList {
         exp.setParent(this);
     }
 
-    Map<String, Object> getParameterMap(Object target, Environment env)
+    public Map<String, Object> getParameterMap(Object target, Environment env)
     {
         Map<String, Object> result = new HashMap<String, Object>();
         ParameterList annotatedParameterList = getParameterList(target);

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import freemarker.core.*;
 import freemarker.template.*;
+import freemarker.core.parser.ast.ArgsList;
 
 /**
  * An instruction that processes the nested block within a macro instruction.

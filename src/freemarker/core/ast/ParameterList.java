@@ -15,6 +15,7 @@ import freemarker.core.Scope;
 import freemarker.core.TemplateRunnable;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.helpers.NamedParameterMapScope;
+import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.SimpleMapModel;
