@@ -228,7 +228,8 @@ RecurseNode Recurse :
    }
 ;
 
-FallbackInstruction FallBack :
+#if false
+FallbackInstruction FallBack#FallbackInstruction :
 {
    Token tok;
 }
@@ -239,6 +240,29 @@ FallbackInstruction FallBack :
       return result;
    }
 ;
+#else
+FallbackInstruction FallBack#FallbackInstruction :
+   <FALLBACK>
+   {
+      return CURRENT_NODE;
+   }
+;
+
+INJECT FallbackInstruction :
+    import java.io.IOException;
+    import freemarker.core.Environment;
+    extends freemarker.core.ast.TemplateElement;
+{
+    public void execute(Environment env) throws IOException {
+        env.fallback();
+    }
+
+    public String getDescription() {
+        return "fallback instruction";
+    }
+}
+
+#endif
 
 /**
  * Production used to break out of a loop or a switch block.
