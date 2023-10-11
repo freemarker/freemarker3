@@ -624,7 +624,7 @@ TemplateElement UnifiedMacroTransform :
     {
         if(args == null)
         {
-            args = new EmptyArgsList();
+            args = new PositionalArgsList();
         }
         result.setArgs(args);
     }

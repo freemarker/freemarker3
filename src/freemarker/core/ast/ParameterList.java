@@ -332,9 +332,6 @@ public class ParameterList extends TemplateNode {
         if(args instanceof PositionalArgsList) {
             return getParameterMap((PositionalArgsList) args, env, false);
         }
-        if (args instanceof EmptyArgsList) {
-            return getParameterMapForEmptyArgs(env);
-        } 
         throw new AssertionError();
     }
 

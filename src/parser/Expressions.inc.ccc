@@ -1840,6 +1840,7 @@ INJECT MethodCall :
 	{
 		if (firstArg != null)
 		result.setLocation(template, token_source, firstArg, arg);
+        assert result != null;
 		return result;
 	}
 ;
