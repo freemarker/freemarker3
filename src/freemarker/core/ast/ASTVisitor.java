@@ -9,6 +9,7 @@ import freemarker.core.parser.ast.AdditiveExpression;
 import freemarker.core.parser.ast.AndExpression;
 import freemarker.core.parser.ast.OrExpression;
 import freemarker.core.parser.ast.MultiplicativeExpression;
+import freemarker.core.parser.ast.NamedArgsList;
 import freemarker.core.parser.ast.NullLiteral;
 import freemarker.core.parser.ast.NumberLiteral;
 import freemarker.core.parser.ast.ParentheticalExpression;

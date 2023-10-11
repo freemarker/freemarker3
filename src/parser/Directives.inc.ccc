@@ -546,7 +546,6 @@ INJECT ParameterList :
    import freemarker.core.TemplateRunnable;
    import freemarker.core.helpers.NamedParameterListScope;
    import freemarker.core.helpers.NamedParameterMapScope;
-   import freemarker.core.ast.NamedArgsList;
    import freemarker.ext.beans.SimpleMapModel;
    import freemarker.template.TemplateException;
    import freemarker.template.TemplateModelException;
