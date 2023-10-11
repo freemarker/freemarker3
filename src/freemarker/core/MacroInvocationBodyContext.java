@@ -4,6 +4,7 @@ import java.util.*;
 
 import freemarker.core.ast.*;
 import freemarker.core.parser.ast.ParameterList;
+import freemarker.core.parser.ast.PositionalArgsList;
 
 /**
  * Represents the context or scope when a macro executes

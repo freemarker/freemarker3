@@ -13,6 +13,7 @@ import freemarker.core.parser.ast.NullLiteral;
 import freemarker.core.parser.ast.NumberLiteral;
 import freemarker.core.parser.ast.ParentheticalExpression;
 import freemarker.core.parser.ast.ParameterList;
+import freemarker.core.parser.ast.PositionalArgsList;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.BuiltinVariable;
 import freemarker.core.parser.ast.BuiltInExpression;
@@ -289,7 +290,7 @@ public abstract class ASTVisitor {
 	
 	
 	public void visit(PositionalArgsList node) {
-		for (Expression exp : node.args) {
+		for (Expression exp : node.childrenOfType(Expression.class)) {
 			visit(exp);
 		}
 	}

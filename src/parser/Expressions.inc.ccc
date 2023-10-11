@@ -1826,7 +1826,7 @@ INJECT MethodCall :
     }
 }
 
-#if true
+#if false
 #PositionalArgsList : 
 {
 	Expression firstArg=null, arg=null;
@@ -1863,8 +1863,43 @@ INJECT PositionalArgsList :
     import freemarker.core.Environment;
     import freemarker.template.*;
     import freemarker.template.utility.UndeclaredThrowableException;
-    extends freemarker.core.ast.ArgsList
+    extends ArgsList
 {
+   public List getParameterSequence(Object target, Environment env) {
+        ParameterList annotatedParameterList = getParameterList(target);
+        if (annotatedParameterList == null) {
+            List<Object> result = new ArrayList<>();
+            for (Expression exp : childrenOfType(Expression.class)) {
+               result.add(exp.evaluate(env));
+            }
+            return result;
+        }
+        return annotatedParameterList.getParameterSequence(this, env);
+    }
+
+    public Map<String, Object> getParameterMap(Object target, Environment env)
+    {
+        Map<String, Object> result = new HashMap<String, Object>();
+        ParameterList annotatedParameterList = getParameterList(target);
+        if (annotatedParameterList == null) {
+            if (firstChildOfType(Expression.class) != null) {
+                throw new TemplateModelException("Cannot pass positional arguments to this TemplateTransformModel");
+            }
+        }
+        else {
+            result = annotatedParameterList.getParameterMap(this, env, false);
+        }
+        return result;
+    }
+
+    public Object getValueAt(int i, Environment env) {
+        Expression exp = childrenOfType(Expression.class).get(i);
+//        Expression exp = args.get(i);
+        Object value = exp.evaluate(env);
+        TemplateNode.assertIsDefined(value, exp, env);
+        return value;
+    }
+
     public PositionalArgsList deepClone(String name, Expression subst) {
         PositionalArgsList result = new PositionalArgsList();
         for (Node node : this) {
