@@ -84,28 +84,25 @@ INJECT Expression :
  * or a possibly more complex expression bounded
  * by parentheses.
  */
-Expression PrimaryExpression :
-{
-   Expression exp;
-}
+PrimaryExpression :
    (
-      exp=NumberLiteral
+      NumberLiteral
       |
-      exp=HashLiteral
+      HashLiteral
       |
-      exp=StringLiteral
+      StringLiteral
       |
-      exp=BooleanLiteral
+      BooleanLiteral
       |
-      exp=NullLiteral
+      NullLiteral
       |
-      exp=ListLiteral
+      ListLiteral
       |
-      exp=Identifier
+      Identifier
       |
-      exp=ParentheticalExpression
+      ParentheticalExpression
       |
-      exp=BuiltinVariable
+      BuiltinVariable
   )
   (
       (
@@ -114,19 +111,14 @@ Expression PrimaryExpression :
         <ID> 
         {token_source.justAfterDot=false;}
       ) #DotVariable(+1) 
-      {exp=(Expression)peekNode();}
       |
       (<OPEN_BRACKET> Expression <CLOSE_BRACKET>) #DynamicKeyName(+1)
-      {exp=(Expression)peekNode();}
       |
       (<OPEN_PAREN> [ArgsList] <CLOSE_PAREN>) #MethodCall(+1)
-      {exp=(Expression)peekNode();}
       |
       (<BUILT_IN><ID>) #BuiltInExpression(+1)
-      {exp=(Expression)peekNode();}
       |
       <EXISTS>#ExistsExpression(2) 
-      {exp=(Expression)peekNode();} 
       |
       (
         <EXCLAM>
@@ -135,11 +127,7 @@ Expression PrimaryExpression :
             => PrimaryExpression =>||
         ]
       ) #DefaultToExpression(+1)
-      {exp=(Expression)peekNode();} 
   )*
-  {
-     return (Expression) peekNode();
-  }
 ;
 
 ParentheticalExpression# :
@@ -178,38 +166,21 @@ INJECT ParentheticalExpression :
  * A primary expression preceded (optionally)
  * by a unary operator
  */
-Expression UnaryExpression :
-{
-   Expression result;
-}
-  (
-   result=UnaryPlusMinusExpression
+UnaryExpression :
+   UnaryPlusMinusExpression
    |
-   result=NotExpression
+   NotExpression 
    |
-   result=PrimaryExpression
-  )
-  {
-     return result;
-  }
+   PrimaryExpression 
 ;
 
 NotExpression# :
-{
-    Expression exp;
-}
    <EXCLAM>
    (
-      exp=PrimaryExpression
+      PrimaryExpression 
       |
-      exp=NotExpression
+      NotExpression 
    )
-   {
-      while (currentNodeScope.size()>1) {
-         currentNodeScope.remove(currentNodeScope.size()-1);
-      }
-      pushNode(exp);
-   }
 ;
 
 INJECT NotExpression :
@@ -289,10 +260,7 @@ INJECT UnaryPlusMinusExpression :
 }
 
 Expression AdditiveExpression#(>1) :
-{
-   Expression lhs;
-}
-   lhs=MultiplicativeExpression 
+   MultiplicativeExpression 
    [
       (
          <PLUS> 
@@ -302,7 +270,7 @@ Expression AdditiveExpression#(>1) :
       AdditiveExpression
    ]
    {
-      return nodeArity() > 1 ? CURRENT_NODE : lhs;
+      return nodeArity() > 1 ? CURRENT_NODE : (Expression) peekNode();
    }
 ;
 
@@ -500,21 +468,8 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
     }
 }
 
-/**
- * A unary expression followed by zero or more
- * unary expressions with multiplicative 
- * operators in between.
- */
-Expression MultiplicativeExpression#(>1) :
-{
-    Expression lhs, rhs, result;
-}
-   lhs = UnaryExpression 
-   {
-    result = lhs;
-    currentNodeScope.clear();
-    pushNode(lhs);
-   }
+MultiplicativeExpression#(>1) :
+   UnaryExpression 
    [
       (
          <TIMES>
@@ -523,14 +478,8 @@ Expression MultiplicativeExpression#(>1) :
          |
          <PERCENT>
       )
-      rhs=MultiplicativeExpression
+      MultiplicativeExpression
    ]
-   {
-      if (nodeArity()>1) {
-        result = (Expression) CURRENT_NODE;
-      }
-      return result;
-   }
 ;
 
 INJECT MultiplicativeExpression :
@@ -1194,25 +1143,6 @@ INJECT BuiltinVariable :
     }
 }
 
-DefaultToExpression(Expression exp)# :
-{
-   Expression rhs = null;
-   Token t;
-   pushNode(exp);
-}
-   (
-       t=<EXCLAM>
-       [
-         SCAN {getToken(1).getType() != TokenType.ID || getToken(2).getType() != TokenType.EQUALS}
-         => rhs=PrimaryExpression =>|| 
-         {
-            while (currentNodeScope.size() > 2) currentNodeScope.remove(currentNodeScope.size()-1);
-            pushNode(rhs);
-         }
-       ]
-   )
-;
-
 INJECT DefaultToExpression : 
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
@@ -1254,13 +1184,6 @@ INJECT DefaultToExpression :
 	}
 }
 
-ExistsExpression(Expression exp)# :
-{
-   pushNode(exp);
-}
-   <EXISTS>
-;
-
 INJECT ExistsExpression :
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
@@ -1291,15 +1214,6 @@ INJECT ExistsExpression :
 		return result;
 	}
 }
-
-BuiltInExpression(Expression exp)# :
-{
-   Token t=null;
-   pushNode(exp);
-}
-   <BUILT_IN>
-   t=<ID>
-;
 
 INJECT BuiltInExpression :
 import java.util.HashMap;
@@ -1446,18 +1360,6 @@ import java.util.HashMap;
     }
 }
 
-/**
- * production for when a key is specified by <DOT> + keyname
- */
-Expression DotVariable(Expression exp)# :
-     {pushNode(exp);}
-     <DOT>{token_source.justAfterDot = true;}
-     <ID>{token_source.justAfterDot = false;}
-     {
-         return CURRENT_NODE;
-     }
-;
-
 INJECT DotVariable : 
     import freemarker.core.Environment;
     import freemarker.core.parser.Token;
@@ -1504,20 +1406,6 @@ INJECT DotVariable :
                && ((DotVariable) target).onlyHasIdentifiers());
     }    
 }
-
-/**
- * production for when the key is specified
- * in brackets.
- */
-DynamicKeyName(Expression exp)# :
-{
-   pushNode(exp);
-   Expression arg;
-}
-   <OPEN_BRACKET>
-   arg=Expression 
-   <CLOSE_BRACKET>
-;
 
 INJECT DynamicKeyName :
     import java.util.ArrayList;
@@ -1707,20 +1595,6 @@ INJECT DynamicKeyName :
         return result;
     }
 }
-
-/**
- * production for an arglist part of a method invocation.
- */
-MethodCall(Expression exp)# : 
-{
-     pushNode(exp);
-}
-     <OPEN_PAREN>
-     [
-        ArgsList 
-     ]
-     <CLOSE_PAREN>
-;
 
 INJECT MethodCall :
     import java.util.ArrayList;
@@ -2382,4 +2256,3 @@ INJECT HashLiteral :
         }
     }
 }
-
