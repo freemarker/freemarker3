@@ -7,6 +7,7 @@ import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.BuiltInExpression;
+import freemarker.core.parser.ast.Interpolation;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.utility.DeepUnwrap;

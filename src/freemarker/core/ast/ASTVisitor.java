@@ -7,6 +7,7 @@ import java.util.*;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.AdditiveExpression;
 import freemarker.core.parser.ast.AndExpression;
+import freemarker.core.parser.ast.Interpolation;
 import freemarker.core.parser.ast.OrExpression;
 import freemarker.core.parser.ast.MultiplicativeExpression;
 import freemarker.core.parser.ast.NamedArgsList;
