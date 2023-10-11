@@ -3,6 +3,7 @@ package freemarker.core;
 import java.io.IOException;
 
 import freemarker.core.ast.*;
+import freemarker.core.parser.ast.ParameterList;
 import freemarker.template.*;
 
 /**

@@ -7,6 +7,7 @@ import freemarker.template.*;
 import freemarker.template.utility.UndeclaredThrowableException;
 import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.ParameterList;
 import freemarker.core.parser.ast.TemplateNode;
 
 public class PositionalArgsList extends ArgsList {

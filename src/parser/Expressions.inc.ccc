@@ -1931,7 +1931,6 @@ INJECT ArgsList :
     import freemarker.template.*;
     import freemarker.core.parser.*;
     import freemarker.core.parser.FMLexer.LexicalState;
-    import freemarker.core.ast.ParameterList;
     import freemarker.ext.beans.SimpleMethodModel;
 {
 	/**
@@ -1951,7 +1950,7 @@ INJECT ArgsList :
 	
 	public abstract Map<String, Object> getParameterMap(Object target, Environment env);
 	
-	public abstract List getParameterSequence(Object target, Environment env);
+	public abstract List<Object> getParameterSequence(Object target, Environment env);
 	
 	public static ParameterList getParameterList(Object target) {
             String keyName = target.getClass().getName();

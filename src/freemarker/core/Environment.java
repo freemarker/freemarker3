@@ -17,6 +17,7 @@ import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.*;
 import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.ParameterList;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.Identifier;
 import freemarker.log.Logger;

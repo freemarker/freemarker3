@@ -3,6 +3,7 @@ package freemarker.core;
 import java.util.*;
 
 import freemarker.core.ast.*;
+import freemarker.core.parser.ast.ParameterList;
 
 /**
  * Represents the context or scope when a macro executes

@@ -3,6 +3,7 @@ package freemarker.core.ast;
 import java.util.*;
 import freemarker.template.*;
 import freemarker.core.Environment;
+import freemarker.core.parser.ast.ParameterList;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.TemplateNode;
 
@@ -29,7 +30,7 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
     
     public void setParams(ParameterList params) {
     	this.params = params;
-    	for (String paramName : params.params) {
+    	for (String paramName : params.getParams()) {
     		declareVariable(paramName);
     	}
     	String catchallVar = params.getCatchAll();

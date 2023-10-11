@@ -12,6 +12,7 @@ import freemarker.core.parser.ast.MultiplicativeExpression;
 import freemarker.core.parser.ast.NullLiteral;
 import freemarker.core.parser.ast.NumberLiteral;
 import freemarker.core.parser.ast.ParentheticalExpression;
+import freemarker.core.parser.ast.ParameterList;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.BuiltinVariable;
 import freemarker.core.parser.ast.BuiltInExpression;

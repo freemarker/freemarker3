@@ -9,6 +9,7 @@ import java.util.Map;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.ParameterList;
 import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateTransformModel;
@@ -48,7 +49,7 @@ public class UnifiedCall extends TemplateElement {
     public void setBodyParameters(ParameterList bodyParameters) {
     	this.bodyParameters = bodyParameters;
     	if (bodyParameters != null) {
-    		for (String paramName : bodyParameters.params) {
+    		for (String paramName : bodyParameters.getParams()) {
     			declareVariable(paramName);
     		}
     		String catchallParam = bodyParameters.getCatchAll();

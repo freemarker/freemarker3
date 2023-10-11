@@ -6,6 +6,7 @@ import freemarker.core.Environment;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.ParameterList;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;
 
@@ -30,7 +31,7 @@ public class NamedArgsList extends ArgsList {
         return namedArgs.size();
     }
 
-    Map<String,Expression> getCopyOfMap() {
+    public Map<String,Expression> getCopyOfMap() {
         return (Map<String,Expression>)namedArgs.clone();
     }
 
