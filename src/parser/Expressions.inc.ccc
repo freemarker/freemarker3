@@ -180,11 +180,14 @@ NotExpression# :
 INJECT NotExpression :
     import freemarker.core.Environment;
     import freemarker.core.parser.ast.Expression;
-    import freemarker.core.ast.BooleanExpression;
-    extends BooleanExpression
+    extends Expression
 {
     public Expression getTarget() {
         return (Expression) get(1);
+    }
+
+    public Object evaluate(Environment env) {
+        return isTrue(env);
     }
 
     public boolean isTrue(Environment env) {
@@ -589,7 +592,7 @@ INJECT ComparisonExpression :
    import static freemarker.ext.beans.ObjectWrapper.isNumber;
    import static freemarker.ext.beans.ObjectWrapper.asString;
    import static freemarker.ext.beans.ObjectWrapper.isString;
-   extends BooleanExpression
+   extends Expression
 {
     public Expression getLeft() {
     	return (Expression) get(0);
@@ -602,6 +605,12 @@ INJECT ComparisonExpression :
     public TokenType getOperation() {
         return (TokenType) get(1).getType();
     }
+
+    public Object evaluate(Environment env)
+    {
+        return isTrue(env);
+    }
+    
     
     /*
      * WARNING! This algorithm is duplicated in SequenceBuiltins.modelsEqual.
@@ -789,7 +798,7 @@ AndExpression#(>1) :
 INJECT AndExpression :
     import freemarker.core.Environment;
     import freemarker.core.parser.ast.Expression;
-    extends freemarker.core.ast.BooleanExpression
+    extends Expression
 {
     public Expression getLeft() {
     	return (Expression) get(0);
@@ -797,6 +806,10 @@ INJECT AndExpression :
     
     public Expression getRight() {
     	return (Expression) get(2);
+    }
+
+    public Object evaluate(Environment env) {
+        return isTrue(env);
     }
 
     public boolean isTrue(Environment env) {
@@ -823,7 +836,7 @@ OrExpression#(>1) :
 INJECT OrExpression :
     import freemarker.core.Environment;
     import freemarker.core.parser.ast.Expression;
-    extends freemarker.core.ast.BooleanExpression
+    extends Expression
 {
     public Expression getLeft() {
     	return (Expression) get(0);
@@ -831,6 +844,10 @@ INJECT OrExpression :
     
     public Expression getRight() {
     	return (Expression) get(2);
+    }
+
+    public Object evaluate(Environment env) {
+        return isTrue(env);
     }
 
     public boolean isTrue(Environment env) {

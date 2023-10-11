@@ -135,9 +135,6 @@ public abstract class ASTVisitor {
 	}
 	
 	
-	public void visit(BooleanExpression node) {}
-	
-	
 	public void visit(BreakInstruction node) {}
 	
 	public void visit(BuiltinVariable node) {}
