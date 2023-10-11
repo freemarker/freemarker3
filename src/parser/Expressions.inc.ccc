@@ -259,7 +259,7 @@ INJECT UnaryPlusMinusExpression :
     }
 }
 
-Expression AdditiveExpression#(>1) :
+AdditiveExpression#(>1) :
    MultiplicativeExpression 
    [
       (
@@ -269,9 +269,6 @@ Expression AdditiveExpression#(>1) :
       )
       AdditiveExpression
    ]
-   {
-      return nodeArity() > 1 ? CURRENT_NODE : (Expression) peekNode();
-   }
 ;
 
 INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
@@ -549,10 +546,7 @@ INJECT MultiplicativeExpression :
 }
 
 Expression EqualityExpression#ComparisonExpression(>1) :
-{
-   Expression lhs;
-}
-   lhs=RelationalExpression
+   RelationalExpression
    [
      (
       <NOT_EQUALS> 
@@ -564,35 +558,28 @@ Expression EqualityExpression#ComparisonExpression(>1) :
      RelationalExpression
    ]
    {
-      return nodeArity() > 1 ? CURRENT_NODE : lhs;
+      return nodeArity() > 1 ? CURRENT_NODE : (Expression) peekNode();
    }
 ;
 
-Expression RelationalExpression#ComparisonExpression(>1) :
-{
-   Expression lhs, rhs, result;
-   Token t;
-}
-   lhs=RangeExpression {result = lhs;}
+RelationalExpression#ComparisonExpression(>1) :
+   RangeExpression 
    [
      (
-      t=<GREATER_THAN_EQUALS>
+      <GREATER_THAN_EQUALS>
       |
-      t=<ESCAPED_GTE>
+      <ESCAPED_GTE>
       |
-      t=<GREATER_THAN>
+      <GREATER_THAN>
       |
-      t=<ESCAPED_GT>
+      <ESCAPED_GT>
       |
-      t=<LESS_THAN_EQUALS>
+      <LESS_THAN_EQUALS>
       |
-      t=<LESS_THAN>
+      <LESS_THAN>
      )
-     rhs=RangeExpression
+     RangeExpression
    ]
-   {
-      return nodeArity() > 1 ? CURRENT_NODE : lhs;
-   }
 ;
 
 INJECT ComparisonExpression :
@@ -742,10 +729,7 @@ INJECT ComparisonExpression :
 }
 
 Expression RangeExpression#(>1) :
-{
-   Expression lhs, result; 
-}
-   lhs=AdditiveExpression
+   AdditiveExpression
    [
     <DOT_DOT>
     [
@@ -753,7 +737,7 @@ Expression RangeExpression#(>1) :
     ]
    ]
    {
-      if (nodeArity() == 1) return lhs;
+      if (nodeArity() == 1) return (Expression) peekNode();;
       return CURRENT_NODE;
    }
 ;
