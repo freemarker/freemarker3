@@ -595,63 +595,6 @@ CompressedBlock Compress :
        return cb;
     }
 ;
-#PositionalArgsList : 
-{
-	Expression firstArg=null, arg=null;
-	PositionalArgsList result = new PositionalArgsList();
-}
-	firstArg=Expression {result.addArg(firstArg); arg=firstArg;}
-	(
-	   [<COMMA>]
-	   arg=Expression {result.addArg(arg);}
-	)*
-	{
-		if (firstArg != null)
-		result.setLocation(template, token_source, firstArg, arg);
-		return result;
-	}
-;
-#NamedArgsList :
-{
-	Token firstParam, id;
-	Expression arg;
-	NamedArgsList result = new NamedArgsList();
-}
-	firstParam=<ID>
-	<EQUALS> 
-	arg=Expression  
-	{
-		result.addNamedArg(firstParam.toString(), arg);
-	}
-	(
-	   [<COMMA>]
-	   id=<ID>
-	   <EQUALS>
-	   arg=Expression
-	   {result.addNamedArg(id.toString(), arg);}
-	)*
-	{
-		token_source.inInvocation = false;
-		result.setLocation(template, token_source, firstParam, arg);
-		return result;
-	}
-;
-#ArgsList :
-{
-	ArgsList result = null;
-	Token id;
-	Expression exp = null;
-}
-	(
-	   SCAN <ID><EQUALS> =>
-       result=NamedArgsList
-       |
-       result=PositionalArgsList
-    )
-	{
-		return result;
-	}
-;
 
 
 

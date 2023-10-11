@@ -1737,8 +1737,7 @@ INJECT DynamicKeyName :
  */
 MethodCall(Expression exp)# : 
 {
-     ArgsList args = new PositionalArgsList();
-     Token end;
+     ArgsList args;
      pushNode(exp);
 }
      <OPEN_PAREN>
@@ -1751,7 +1750,7 @@ MethodCall(Expression exp)# :
             pushNode(args);
         }
      ]
-     end=<CLOSE_PAREN>
+     <CLOSE_PAREN>
 ;
 
 INJECT MethodCall :
@@ -1828,6 +1827,100 @@ INJECT MethodCall :
         return result;
     }
 }
+
+#if true
+#PositionalArgsList : 
+{
+	Expression firstArg=null, arg=null;
+	PositionalArgsList result = new PositionalArgsList();
+}
+	firstArg=Expression {result.addArg(firstArg); arg=firstArg;}
+	(
+	   [<COMMA>]
+	   arg=Expression {result.addArg(arg);}
+	)*
+	{
+		if (firstArg != null)
+		result.setLocation(template, token_source, firstArg, arg);
+		return result;
+	}
+;
+
+#else
+
+#PositionalArgsList# : 
+	Expression 
+	(
+	   [<COMMA>]
+	   Expression 
+	)*
+    {
+        return CURRENT_NODE;
+    }
+;
+
+INJECT PositionalArgsList :
+    import java.util.*;
+    import freemarker.core.Environment;
+    import freemarker.template.*;
+    import freemarker.template.utility.UndeclaredThrowableException;
+    extends freemarker.core.ast.ArgsList
+{
+    public PositionalArgsList deepClone(String name, Expression subst) {
+        PositionalArgsList result = new PositionalArgsList();
+        for (Node node : this) {
+            if (node instanceof Expression) {
+                node = ((Expression)node).deepClone(name, subst);
+            }
+            result.add(node);
+        }
+        return result;
+    }    
+}
+#endif
+
+#NamedArgsList :
+{
+	Token firstParam, id;
+	Expression arg;
+	NamedArgsList result = new NamedArgsList();
+}
+	firstParam=<ID>
+	<EQUALS> 
+	arg=Expression  
+	{
+		result.addNamedArg(firstParam.toString(), arg);
+	}
+	(
+	   [<COMMA>]
+	   id=<ID>
+	   <EQUALS>
+	   arg=Expression
+	   {result.addNamedArg(id.toString(), arg);}
+	)*
+	{
+		token_source.inInvocation = false;
+		result.setLocation(template, token_source, firstParam, arg);
+		return result;
+	}
+;
+
+#ArgsList :
+{
+	ArgsList result = null;
+	Token id;
+	Expression exp = null;
+}
+	(
+	   SCAN <ID><EQUALS> =>
+       result=NamedArgsList
+       |
+       result=PositionalArgsList
+    )
+	{
+		return result;
+	}
+;
 
 Expression StringLiteral# :
 {
