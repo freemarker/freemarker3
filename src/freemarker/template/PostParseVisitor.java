@@ -242,10 +242,10 @@ public class PostParseVisitor extends ASTVisitor {
        		template.addParsingProblem(new ParsingProblem("The return directive can only be used inside a function or macro.", node));
 		} else {
 			Macro macro = (Macro) parent;
-			if (!macro.isFunction() && node.returnExp != null) {
+			if (!macro.isFunction() && node.size() > 1) {
 				template.addParsingProblem(new ParsingProblem("Can only return a value from a function, not a macro", node));
 			}
-			else if (macro.isFunction() && node.returnExp == null) {
+			else if (macro.isFunction() && node.size() ==1) {
 				template.addParsingProblem(new ParsingProblem("A function must return a value.", node));
 			}
 		}

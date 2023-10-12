@@ -286,7 +286,9 @@ public abstract class ASTVisitor {
 	}
 	
 	public void visit(ReturnInstruction node) {
-		visit(node.returnExp);
+		if (node.size() > 1) {
+			visit((TemplateNode)node.get(1));
+		}
 	}
 	
 	public void visit(VarDirective node) {
