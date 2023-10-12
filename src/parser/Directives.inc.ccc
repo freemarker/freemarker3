@@ -1102,34 +1102,18 @@ INJECT Comment :
     }   
 }
 
-NoParseBlock NoParse :
-{
-   Token start, end, t;
-   StringBuilder buf = new StringBuilder();
-}
-    start=<NOPARSE>
+NoParseBlock# :
+    <NOPARSE>
     (
-       t=<PRINTABLE_CHARS> {buf.append(t.toString());}
+       <PRINTABLE_CHARS> 
     )*
-    end=<NOPARSE_END>
-    {
-    	int beginColumn = start.getBeginColumn();
-    	int beginLine = start.getBeginLine();
-    	char lastChar = 0;
-    	for (char c : start.toString().toCharArray()) {
-    		switch (c) {
-    			case '\n' : if (lastChar == '\r') break;
-    			case '\r' : beginColumn = 1; beginLine++; break;   
-    			default : ++beginColumn;
-    		}
-    		lastChar = c;
-    	}
-      List<TextBlock> text = TextBlock.breakIntoBlocks(buf.toString(), template, beginColumn, beginLine);
-      NoParseBlock result = new NoParseBlock(start.toString(), end.toString(), text);
-      result.setLocation(template, token_source, start, end);
-      return result;
-    }
+    <NOPARSE_END>
 ;
+
+INJECT NoParseBlock :
+   extends freemarker.core.ast.MixedContent
+{
+}
 
 
 TransformBlock Transform :
@@ -1421,7 +1405,7 @@ TemplateElement FreemarkerDirective :
      |
      tp=Comment
      |
-     tp=NoParse
+     tp=NoParseBlock
      |
      tp=Transform
      |
