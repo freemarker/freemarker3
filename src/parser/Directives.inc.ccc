@@ -1342,13 +1342,11 @@ INJECT PropertySetting :
     }    
 }
 
-VarDirective Var :
+#VarDirective# :
 {
-    Token start, end;
     Expression var, valueExp = null;
-    VarDirective result = new VarDirective();
 }
-   start=<VAR>
+   <VAR>
    (
      var=IdentifierOrStringLiteral
      [
@@ -1357,7 +1355,7 @@ VarDirective Var :
      ]
    )
    {
-      result.addVar(var, valueExp);
+      CURRENT_NODE.addVar(var, valueExp);
       valueExp = null;
    }
    (
@@ -1370,16 +1368,62 @@ VarDirective Var :
         ]
       )
       {
-         result.addVar(var, valueExp);
+         CURRENT_NODE.addVar(var, valueExp);
          valueExp = null;
       }
    )*
-   end=LooseDirectiveEnd
+   LooseDirectiveEnd
    {
-      result.setLocation(template, token_source, start, end);
-      return result;
+      return CURRENT_NODE;
    }
 ;
+
+INJECT VarDirective :
+   import java.util.*;
+   import freemarker.template.*;
+   import freemarker.core.*;
+   extends TemplateElement
+{
+    private Map<String, Expression> vars = new LinkedHashMap<String, Expression>();
+
+    public void execute(Environment env) {
+        for (Map.Entry<String, Expression> entry : vars.entrySet()) {
+            String varname = entry.getKey();
+            Expression exp = entry.getValue();
+            Scope scope = env.getCurrentScope();
+            if (exp == null) {
+                if (scope.get(varname) == null) {
+                    scope.put(varname, Constants.JAVA_NULL);
+                }
+            } 
+            else {
+                Object tm = exp.evaluate(env);
+                assertIsDefined(tm, exp, env);
+                scope.put(varname, tm);
+            }
+        }
+    }
+
+    public Map<String, Expression> getVariables() {
+        return Collections.unmodifiableMap(vars);
+    }
+
+    public void addVar(Expression name, Expression value) {
+        String varname = name.toString();
+        if (name instanceof StringLiteral) {
+            varname = ((StringLiteral) name).getAsString();
+        }
+        vars.put(varname, value);
+    }
+    
+    public void addVar(String name) {
+        vars.put(name, null);
+    }
+
+    public String getDescription() {
+        return "variable declaration";
+    }
+}
 
 /**
  * A production for FreeMarker directives.
@@ -1419,7 +1463,7 @@ VarDirective Var :
      |
      tp=PropertySetting
      |
-     tp=Var
+     tp=VarDirective
      |
      tp=BreakInstruction
      |

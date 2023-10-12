@@ -4,6 +4,7 @@ import freemarker.core.ast.*;
 import freemarker.core.parser.ast.Comment;
 import freemarker.core.parser.ast.PropertySetting;
 import freemarker.core.parser.ast.TemplateElement;
+import freemarker.core.parser.ast.VarDirective;
 import java.util.List;
 import java.util.ArrayList;
 
