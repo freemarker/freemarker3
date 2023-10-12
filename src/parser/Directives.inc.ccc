@@ -290,22 +290,30 @@ ReturnInstruction Return :
    }
 ;
 
-StopInstruction Stop :
-{
-   Token start = null;
-   Expression exp = null;
-}
-    (
-      start=<HALT>
-      |
-      start=<STOP> exp=Expression LooseDirectiveEnd
-    )
-    {
-       StopInstruction result = new StopInstruction(exp);
-       result.setLocation(template, token_source, start, start);
-       return result;
-    }
+StopInstruction# :
+   <HALT>
+   |
+   <STOP> Expression LooseDirectiveEnd
 ;
+
+INJECT StopInstruction :
+   import freemarker.core.Environment;
+   import freemarker.core.StopException;
+   extends freemarker.core.ast.TemplateElement
+{
+   public String getMessage(Environment env) {
+      if (size()==1) return "";
+      return ((Expression)get(1)).getStringValue(env);
+   }
+
+    public void execute(Environment env) {
+        throw new StopException(env, getMessage(env));
+    }
+
+    public String getDescription() {
+        return "stop" + " [" + getStartLocation() + "]";
+    }
+}
 
 TemplateElement Nested :
 {
@@ -1110,11 +1118,7 @@ NoParseBlock# :
     <NOPARSE_END>
 ;
 
-INJECT NoParseBlock :
-   extends freemarker.core.ast.MixedContent
-{
-}
-
+INJECT NoParseBlock : extends freemarker.core.ast.MixedContent
 
 TransformBlock Transform :
 {
@@ -1419,7 +1423,7 @@ TemplateElement FreemarkerDirective :
      |
      tp=Return
      |
-     tp=Stop
+     tp=StopInstruction
      |
      tp=FlushInstruction
      |
