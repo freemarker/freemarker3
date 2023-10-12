@@ -154,32 +154,10 @@ INJECT LEXER_CLASS :
                 noparseType = TERSE_COMMENT;
                 switchTo(LexicalState.NO_PARSE);
                 break;
-            case COMMENT_START : 
-                noparseType = COMMENT_START;
-                switchTo(LexicalState.NO_PARSE);
-                break;
             case NOPARSE_END : 
                 if (noparseType != NOPARSE) {
                     token.setType(PRINTABLE_CHARS);
                     break;
-                }
-            // deliberate fall-through to next case...
-            case COMMENT_END : 
-                if (token.getType() == COMMENT_END && noparseType != COMMENT_START) {
-                    token.setType(PRINTABLE_CHARS);
-                } else {
-                    char lastChar = tokText.charAt(tokText.length() - 1);
-                    char startTagChar = lastChar == ']' ? '[' : '<';
-                    String extraChars = tokText.substring(0, tokText.lastIndexOf(startTagChar));
-                    if (extraChars.length() > 0) {
-                        //token.setImage(extraChars);
-                        // backup(tokText.length() - extraChars.length());
-                        //token.setEndOffset(token.getEndOffset() - (tokText.length() - extraChars.length()));
-                        token.truncate(extraChars.length());
-                        token.setType(PRINTABLE_CHARS);
-                    } else {
-                        switchTo(LexicalState.DEFAULT);
-                    }
                 }
                 break;
             case TERSE_COMMENT_END : 
@@ -274,8 +252,6 @@ TOKEN:
     <VAR : <START_TAG> "var"  <BLANK>>
     |
     <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> 
-    |
-    <COMMENT_START : <START_TAG> "comment" <CLOSE_TAG1>> 
     |
     <TERSE_COMMENT : ("<" | "[") "#--" >
     |
@@ -453,8 +429,6 @@ TOKEN:
 
 <NO_PARSE> TOKEN :
 	<TERSE_COMMENT_END : "-->" | "--]">
-	|
-    <COMMENT_END : ("</#comment" (<BLANK>)* ">") | ("[/#comment" (<BLANK>)* "]")>
     |
     <NOPARSE_END : ("</#noparse" (<BLANK>)* ">") | ("[/#noparse" (<BLANK>)* "]")>
 ;

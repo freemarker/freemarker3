@@ -1091,14 +1091,6 @@ TerseComment#Comment :
 	<TERSE_COMMENT_END>
 ;
 
-Comment# :
-    <COMMENT_START>
-    (
-       <PRINTABLE_CHARS> 
-    )*
-    <COMMENT_END>
-;
-
 INJECT Comment :
     import freemarker.core.Environment;
     extends freemarker.core.ast.TemplateElement
@@ -1180,7 +1172,7 @@ SwitchBlock Switch :
    start=<SWITCH>
    switchExp=Expression
    <DIRECTIVE_END>
-   (<WHITESPACE>|Comment)*   
+   (<WHITESPACE>)*   
    {
       switchBlock = new SwitchBlock(switchExp);
    }
@@ -1420,8 +1412,6 @@ TemplateElement FreemarkerDirective :
      tp=Call
      |
      tp=TerseComment
-     |
-     tp=Comment
      |
      tp=NoParseBlock
      |
