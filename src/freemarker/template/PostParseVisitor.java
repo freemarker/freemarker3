@@ -7,7 +7,7 @@ import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.parser.ast.Fallback;
+import freemarker.core.parser.ast.FallbackInstruction;
 import freemarker.core.parser.ast.Interpolation;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.core.parser.ast.TemplateNode;
@@ -205,7 +205,7 @@ public class PostParseVisitor extends ASTVisitor {
 		super.visit(node);
 	}
 	
-	public void visit(Fallback node) {
+	public void visit(FallbackInstruction node) {
 		super.visit(node);
 		if (getContainingMacro(node) == null) {
 			template.addParsingProblem(new ParsingProblem("The fallback directive can only be used inside a macro", node));

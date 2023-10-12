@@ -228,11 +228,11 @@ RecurseNode Recurse :
    }
 ;
 
-Fallback# :
+FallbackInstruction# :
    <FALLBACK>
 ;
 
-INJECT Fallback :
+INJECT FallbackInstruction :
     import java.io.IOException;
     import freemarker.core.Environment;
     extends freemarker.core.ast.TemplateElement;
@@ -331,11 +331,11 @@ TemplateElement Nested :
    }
 ;
 
-Flush# :
+FlushInstruction# :
    <FLUSH>
 ;
 
-INJECT Flush :
+INJECT FlushInstruction :
    import java.io.IOException;
    import freemarker.core.Environment;
    extends freemarker.core.ast.TemplateElement
@@ -1423,7 +1423,7 @@ TemplateElement FreemarkerDirective :
      |
      tp=Stop
      |
-     tp=Flush
+     tp=FlushInstruction
      |
      tp=Trim
      |
@@ -1439,7 +1439,7 @@ TemplateElement FreemarkerDirective :
      |
      tp=Recurse
      |
-     tp=Fallback
+     tp=FallbackInstruction
      |
      tp=Attempt
    )
