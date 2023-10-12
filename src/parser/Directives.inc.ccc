@@ -1300,22 +1300,47 @@ Token LooseDirectiveEnd :
    }
 ;
 
-PropertySetting Setting :
-{
-   Token start, end, key;
-   Expression value;
-}
-   start=<SETTING>
-   key=<ID>
+PropertySetting# :
+   <SETTING>
+   <ID>
    <EQUALS>
-   value=Expression
-   end=LooseDirectiveEnd
-   {
-      PropertySetting result = new PropertySetting(key.toString(), value);
-      result.setLocation(template, token_source, start, end);
-      return result;
-   }
+   Expression
+   LooseDirectiveEnd
 ;
+
+INJECT PropertySetting :
+    import freemarker.core.Environment;
+    import static freemarker.ext.beans.ObjectWrapper.*;
+    extends TemplateElement
+{
+    public String getKey() {
+    	return firstChildOfType(ID).toString();
+    }
+    
+    public Expression getValue() {
+    	return firstChildOfType(Expression.class);
+    }
+
+    public void execute(Environment env) {
+        Object mval = getValue().evaluate(env);
+        String strval;
+        if (isString(mval)) {
+            strval = asString(mval);
+        } else if (isBoolean(mval)) {
+            strval = asBoolean(mval) ? "true" : "false";
+        } else if (isNumber(mval)) {
+            strval = asNumber(mval).toString();
+        } else {
+            strval = getValue().getStringValue(env);
+        }
+        env.setSetting(getKey(), strval);
+    }
+
+    public String getDescription() {
+        return "setting " + getKey() + " set to " + "\"" + getValue() + "\" "
+	    + "[" + getStartLocation() + "]";
+    }    
+}
 
 VarDirective Var :
 {
@@ -1392,7 +1417,7 @@ VarDirective Var :
      |
      tp=Switch
      |
-     tp=Setting
+     tp=PropertySetting
      |
      tp=Var
      |
