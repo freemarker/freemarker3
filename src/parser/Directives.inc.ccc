@@ -1217,33 +1217,6 @@ SwitchBlock Switch :
        return result;
    }
 ;
-#TrimBlock :
-{
-	Token start, end;
-	TemplateElement content;
-	boolean left = false, right = false;
-	String closeTag = null;
-}
-	(
-	   start=<BLOCKTRIM> {closeTag = "t_lines"; left = right = true;}
-	   |
-	   start=<BLOCKTRIML> {closeTag = "lt_lines"; left = true;}
-	   |
-	   start=<BLOCKTRIMR> {closeTag = "rt_lines"; right = true;}
-	   |
-	   start=<BLOCKNOTRIM> {closeTag = "nt_lines";}
-	) 
-	{trimBlockNesting++;}
-	content=OptionalBlock
-	end=CloseDirectiveBlock(closeTag)
-	{
-		TrimBlock result = new TrimBlock(content, left, right);
-		result.setLocation(template, token_source, start, end);
-		trimBlockNesting--;
-		return result;
-	}
-;
-	
 
 EscapeBlock Escape :
 {
@@ -1438,8 +1411,6 @@ VarDirective Var :
      tp=Escape
      |
      tp=NoEscape
-     |
-     tp=TrimBlock
      |
      tp=Visit
      |

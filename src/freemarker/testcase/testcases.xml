@@ -43,7 +43,7 @@
       <config object_wrapper="freemarker.ext.beans.ObjectWrapper"/>
                             <config locale="en_US"/>
    </testcase>
-   <testcase name="block-trim" filename="trimblock.ftl"/>
+   <!--testcase name="block-trim" filename="trimblock.ftl"/-->
    <testcase name="boolean" filename="test-boolean.html" />
    <testcase name="charset-in-header" filename="test-charsetinheader.html">
       <config clear_encoding_map="Y"/>

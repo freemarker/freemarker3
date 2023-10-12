@@ -255,8 +255,7 @@ public class PostParseVisitor extends ASTVisitor {
         Node parent = node.getParent();
         while (parent instanceof MixedContent 
         		|| parent instanceof EscapeBlock 
-        		|| parent instanceof NoEscapeBlock
-        		|| parent instanceof TrimBlock) {
+        		|| parent instanceof NoEscapeBlock) {
             parent = parent.getParent();
         }
        	for (String key : node.getVariables().keySet()) {
@@ -333,29 +332,6 @@ public class PostParseVisitor extends ASTVisitor {
 			if (!(node.isLeft() || node.isRight())) 
 				template.setLineSaysNoTrim(i);
 		}
-	}
-	
-	public void visit(TrimBlock node) {
-		int beginLine = node.getBeginLine();
-		int endLine = node.getEndLine();
-		if (node.isRight()) {
-			template.setLineSaysRightTrim(beginLine++); 
-		}
-		if (node.isLeft()) {
-			template.setLineSaysLeftTrim(endLine--);
-		}
-		for (int i= beginLine; i<=endLine; i++) {
-			if (node.isLeft()) {
-				template.setLineSaysLeftTrim(i);
-			}
-			if (node.isRight()) {
-				template.setLineSaysRightTrim(i);
-			}
-			if (!node.isLeft() && !node.isRight()) {
-				template.setLineSaysNoTrim(i);
-			}
-		}
-		super.visit(node);
 	}
 	
     public void visit(PropertySetting node) {

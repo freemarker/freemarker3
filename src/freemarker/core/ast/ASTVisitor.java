@@ -318,10 +318,6 @@ public abstract class ASTVisitor {
 		recurse(node);
 	}
 	
-	public void visit(TrimBlock node) {
-		visit(node.firstChildOfType(TemplateElement.class));
-	}
-
 	public void visit(TrimInstruction node) {}
 	
 	public void visit(UnaryPlusMinusExpression node) {
