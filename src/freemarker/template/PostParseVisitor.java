@@ -2,6 +2,7 @@ package freemarker.template;
 
 import freemarker.core.Configurable;
 import freemarker.core.ast.*;
+import freemarker.core.parser.ast.*;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;

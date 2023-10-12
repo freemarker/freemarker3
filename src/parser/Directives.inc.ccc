@@ -249,17 +249,23 @@ INJECT FallbackInstruction :
 /**
  * Production used to break out of a loop or a switch block.
  */
-BreakInstruction Break :
-{
-   Token start;
-}
-    start=<BREAK>
-    {
-       BreakInstruction result = new BreakInstruction();
-       result.setLocation(template, token_source, start, start);
-       return result;
-    }
+BreakInstruction# :
+    <BREAK>
 ;
+
+INJECT BreakInstruction :
+    import freemarker.core.Environment;
+    import freemarker.core.BreakException;
+    extends freemarker.core.ast.TemplateElement
+{
+    public void execute(Environment env) {
+        throw BreakException.INSTANCE;
+    }
+
+    public String getDescription() {
+        return "break" + " [" + getStartLocation() + "]";
+    }
+}
 
 /**
  * Production used to jump out of a macro.
@@ -1417,7 +1423,7 @@ TemplateElement FreemarkerDirective :
      |
      tp=Var
      |
-     tp=Break
+     tp=BreakInstruction
      |
      tp=Return
      |

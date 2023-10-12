@@ -3,38 +3,9 @@ package freemarker.core.ast;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-
-import freemarker.core.parser.ast.Expression;
-import freemarker.core.parser.ast.AdditiveExpression;
-import freemarker.core.parser.ast.AndExpression;
-import freemarker.core.parser.ast.Interpolation;
-import freemarker.core.parser.ast.OrExpression;
-import freemarker.core.parser.ast.MultiplicativeExpression;
-import freemarker.core.parser.ast.NamedArgsList;
-import freemarker.core.parser.ast.NullLiteral;
-import freemarker.core.parser.ast.NumberLiteral;
-import freemarker.core.parser.ast.ParentheticalExpression;
-import freemarker.core.parser.ast.ParameterList;
-import freemarker.core.parser.ast.PositionalArgsList;
-import freemarker.core.parser.ast.TemplateNode;
-import freemarker.core.parser.ast.BuiltinVariable;
-import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.parser.ast.DefaultToExpression;
-import freemarker.core.parser.ast.DotVariable;
-import freemarker.core.parser.ast.DynamicKeyName;
-import freemarker.core.parser.ast.ExistsExpression;
-import freemarker.core.parser.ast.FallbackInstruction;
-import freemarker.core.parser.ast.FlushInstruction;
-import freemarker.core.parser.ast.HashLiteral;
-import freemarker.core.parser.ast.Identifier;
-import freemarker.core.parser.ast.ListLiteral;
-import freemarker.core.parser.ast.MethodCall;
-import freemarker.core.parser.ast.NotExpression;
-import freemarker.core.parser.ast.RangeExpression;
-import freemarker.core.parser.ast.ComparisonExpression;
-import freemarker.core.parser.ast.StringLiteral;
-import freemarker.core.parser.ast.UnaryPlusMinusExpression;
 import freemarker.template.Template;
+
+import freemarker.core.parser.ast.*;
 
 
 /**
