@@ -1,6 +1,7 @@
 package freemarker.template;
 
 import freemarker.core.ast.*;
+import freemarker.core.parser.ast.Comment;
 import java.util.List;
 import java.util.ArrayList;
 

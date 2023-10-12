@@ -1061,38 +1061,46 @@ Map<String, Expression> NamedArgs :
   }
 ;
 
-Comment TerseComment :
-{
-	Token start, end, t;
-	StringBuilder buf = new StringBuilder();
-}
-	start=<TERSE_COMMENT>
+TerseComment#Comment :
+	<TERSE_COMMENT>
 	(
-	   t=<PRINTABLE_CHARS> {buf.append(t.toString());}
+	   <PRINTABLE_CHARS> 
 	)*
-	end=<TERSE_COMMENT_END>
-	{
-		Comment result = new Comment(buf.toString());
-		result.setLocation(template, token_source, start, end);
-		return result;
-	}
+	<TERSE_COMMENT_END>
 ;
-#Comment :
-{
-   Token start, end, t;
-   StringBuilder buf = new StringBuilder();
-}
-    start=<COMMENT>
+
+Comment# :
+    <COMMENT_START>
     (
-       t=<PRINTABLE_CHARS> {buf.append(t.toString());}
+       <PRINTABLE_CHARS> 
     )*
-    end=<COMMENT_END>
-    {
-       Comment result = new Comment(buf.toString());
-       result.setLocation(template, token_source, start, end);
-       return result;
-    }
+    <COMMENT_END>
 ;
+
+INJECT Comment :
+    import freemarker.core.Environment;
+    extends freemarker.core.ast.TemplateElement
+{
+    public String getText() {
+      StringBuffer buf = new StringBuffer();
+      for (Node n: childrenOfType(PRINTABLE_CHARS)) {
+         buf.append(n.toString());
+      }
+    	return buf.toString();
+    }
+
+    public void execute(Environment env) {
+    // do nothing, skip the body
+    }
+
+    public String getDescription() {
+        String s = getText().trim();
+        if (s.length() > 20) {
+            s = s.substring(0, 20) + "...";
+        }
+        return "comment (" + s + ")";
+    }   
+}
 
 NoParseBlock NoParse :
 {

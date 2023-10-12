@@ -154,8 +154,8 @@ INJECT LEXER_CLASS :
                 noparseType = TERSE_COMMENT;
                 switchTo(LexicalState.NO_PARSE);
                 break;
-            case COMMENT : 
-                noparseType = COMMENT;
+            case COMMENT_START : 
+                noparseType = COMMENT_START;
                 switchTo(LexicalState.NO_PARSE);
                 break;
             case NOPARSE_END : 
@@ -165,7 +165,7 @@ INJECT LEXER_CLASS :
                 }
             // deliberate fall-through to next case...
             case COMMENT_END : 
-                if (token.getType() == COMMENT_END && noparseType != COMMENT) {
+                if (token.getType() == COMMENT_END && noparseType != COMMENT_START) {
                     token.setType(PRINTABLE_CHARS);
                 } else {
                     char lastChar = tokText.charAt(tokText.length() - 1);
@@ -275,7 +275,7 @@ TOKEN:
     |
     <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> 
     |
-    <COMMENT : <START_TAG> "comment" <CLOSE_TAG1>> 
+    <COMMENT_START : <START_TAG> "comment" <CLOSE_TAG1>> 
     |
     <TERSE_COMMENT : ("<" | "[") "#--" >
     |
