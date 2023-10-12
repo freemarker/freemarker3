@@ -5,6 +5,7 @@ import freemarker.template.*;
 import freemarker.core.*;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.StringLiteral;
+import freemarker.core.parser.ast.TemplateElement;
 
 /**
  * @author Jonathan Revusky

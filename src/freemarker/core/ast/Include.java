@@ -10,6 +10,7 @@ import freemarker.core.InvalidReferenceException;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.StringLiteral;
+import freemarker.core.parser.ast.TemplateElement;
 import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**

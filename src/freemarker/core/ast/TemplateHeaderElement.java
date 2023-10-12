@@ -4,6 +4,7 @@ import java.util.*;
 
 import freemarker.core.parser.ast.Identifier;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.*;
 import static freemarker.template.utility.StringUtil.*;

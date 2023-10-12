@@ -1,6 +1,7 @@
 package freemarker.core.ast;
 
 import freemarker.core.Environment;
+import freemarker.core.parser.ast.TemplateElement;
 
 /**
  * An instruction that indicates that that opening

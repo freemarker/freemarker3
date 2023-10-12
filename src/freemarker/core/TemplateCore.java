@@ -1,13 +1,10 @@
 package freemarker.core;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
 import freemarker.core.ast.Macro;
-import freemarker.core.ast.TemplateElement;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 

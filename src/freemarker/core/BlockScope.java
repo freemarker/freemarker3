@@ -1,6 +1,6 @@
 package freemarker.core;
 
-import freemarker.core.ast.TemplateElement;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.template.*;
 
 

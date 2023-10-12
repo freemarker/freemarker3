@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Iterator;
 
 import freemarker.core.ast.*;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ast.TemplateNode;
 
 import freemarker.template.TemplateException;

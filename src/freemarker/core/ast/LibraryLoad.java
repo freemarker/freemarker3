@@ -8,6 +8,7 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.log.Logger;
 
 

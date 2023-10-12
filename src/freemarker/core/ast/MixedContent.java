@@ -2,7 +2,7 @@ package freemarker.core.ast;
 
 import java.io.IOException;
 import freemarker.core.Environment;
-
+import freemarker.core.parser.ast.TemplateElement;
 
 /**
  * Encapsulates an array of <tt>TemplateElement</tt> objects. 

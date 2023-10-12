@@ -1,6 +1,7 @@
 package freemarker.core.ast;
 
 import freemarker.core.Environment;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.template.utility.StandardCompress;
 import java.io.*;
 

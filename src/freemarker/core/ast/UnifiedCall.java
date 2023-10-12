@@ -10,6 +10,7 @@ import freemarker.core.Environment;
 import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.ParameterList;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateTransformModel;

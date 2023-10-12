@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
+import freemarker.core.parser.ast.TemplateElement;
 
 public class TrimBlock extends TemplateElement {
 	
@@ -23,7 +24,7 @@ public class TrimBlock extends TemplateElement {
     	return right;
     }
 
-    public void execute(Environment env) throws TemplateException, IOException 
+    public void execute(Environment env) throws IOException 
     {
     	if (firstChildOfType(TemplateElement.class) != null) {
     		env.render(firstChildOfType(TemplateElement.class));

@@ -11,6 +11,7 @@ import freemarker.core.Scope;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateTransformModel;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.TemplateElement;
 
 /**
  * @version $Id: BlockAssignment.java,v 1.4 2004/07/07 21:11:12 szegedia Exp $

@@ -5,6 +5,7 @@ import java.io.IOException;
 import freemarker.template.TemplateException;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ast.TemplateNode;
 
 /**

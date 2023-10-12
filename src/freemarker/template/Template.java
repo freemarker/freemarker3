@@ -10,7 +10,7 @@ import freemarker.core.Environment;
 import freemarker.core.TemplateCore;
 import freemarker.core.ast.ASTVisitor;
 import freemarker.core.ast.LibraryLoad;
-import freemarker.core.ast.TemplateElement;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.ast.TemplateHeaderElement;
 import freemarker.core.parser.*;
 import freemarker.ext.beans.SimpleMapModel;

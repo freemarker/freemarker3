@@ -5,6 +5,7 @@ import java.util.*;
 
 import freemarker.core.Environment;
 import freemarker.template.*;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ParsingProblem;
 
 public class AttemptBlock extends TemplateElement {

@@ -9,6 +9,7 @@ import freemarker.core.Scope;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.ListLiteral;
 import freemarker.core.parser.ast.StringLiteral;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.template.*;
 
 import static freemarker.ext.beans.ObjectWrapper.*;

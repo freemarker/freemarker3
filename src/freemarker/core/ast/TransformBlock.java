@@ -5,6 +5,7 @@ import java.util.*;
 
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.template.*;
 
 /**

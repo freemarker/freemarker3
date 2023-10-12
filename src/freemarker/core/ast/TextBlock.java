@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.*;
 import freemarker.template.Template;
 import freemarker.core.Environment;
+import freemarker.core.parser.ast.TemplateElement;
 
 /**
  * A TemplateElement representing a block of plain text.

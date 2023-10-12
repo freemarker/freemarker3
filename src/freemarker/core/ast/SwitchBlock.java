@@ -8,6 +8,7 @@ import freemarker.core.parser.Token;
 import freemarker.core.parser.ast.EQUALS;
 import freemarker.core.parser.ast.ComparisonExpression;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.BreakException;
 import freemarker.template.*;
 

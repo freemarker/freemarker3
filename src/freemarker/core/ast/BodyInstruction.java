@@ -6,6 +6,7 @@ import freemarker.core.*;
 import freemarker.template.*;
 import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.PositionalArgsList;
+import freemarker.core.parser.ast.TemplateElement;
 
 /**
  * An instruction that processes the nested block within a macro instruction.

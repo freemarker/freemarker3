@@ -1948,7 +1948,6 @@ INJECT StringLiteral :
    import freemarker.core.Environment;
    import freemarker.core.parser.*;
    import freemarker.core.parser.ast.Expression;
-   import freemarker.core.ast.TemplateElement;
    import java.io.*;
    extends Expression
 {

@@ -24,7 +24,7 @@ INJECT Interpolation :
     import java.io.IOException;
     import freemarker.core.Environment;
     import freemarker.template.TemplateException;
-    extends freemarker.core.ast.TemplateElement
+    extends TemplateElement
 {
     private Expression escapedExpression; // This will be the same as the expression if we are not within an escape block.
 
@@ -235,7 +235,7 @@ FallbackInstruction# :
 INJECT FallbackInstruction :
     import java.io.IOException;
     import freemarker.core.Environment;
-    extends freemarker.core.ast.TemplateElement;
+    extends TemplateElement;
 {
     public void execute(Environment env) throws IOException {
         env.fallback();
@@ -256,7 +256,7 @@ BreakInstruction# :
 INJECT BreakInstruction :
     import freemarker.core.Environment;
     import freemarker.core.BreakException;
-    extends freemarker.core.ast.TemplateElement
+    extends TemplateElement
 {
     public void execute(Environment env) {
         throw BreakException.INSTANCE;
@@ -280,7 +280,7 @@ INJECT ReturnInstruction :
     import freemarker.core.Environment;
     import freemarker.core.ReturnException;
     import freemarker.core.ast.Macro;
-    extends freemarker.core.ast.TemplateElement
+    extends TemplateElement
 {
     public Object getReturnValue(Environment env) {
         if (size()==1) return null;
@@ -313,7 +313,7 @@ StopInstruction# :
 INJECT StopInstruction :
    import freemarker.core.Environment;
    import freemarker.core.StopException;
-   extends freemarker.core.ast.TemplateElement
+   extends TemplateElement
 {
    public String getMessage(Environment env) {
       if (size()==1) return "";
@@ -366,7 +366,7 @@ FlushInstruction# :
 INJECT FlushInstruction :
    import java.io.IOException;
    import freemarker.core.Environment;
-   extends freemarker.core.ast.TemplateElement
+   extends TemplateElement
 {
     public void execute(Environment env) throws IOException {
         env.getOut().flush();
@@ -1093,7 +1093,7 @@ TerseComment#Comment :
 
 INJECT Comment :
     import freemarker.core.Environment;
-    extends freemarker.core.ast.TemplateElement
+    extends TemplateElement
 {
     public String getText() {
       StringBuffer buf = new StringBuffer();
@@ -1386,7 +1386,7 @@ VarDirective Var :
 /**
  * A production for FreeMarker directives.
  */
-TemplateElement FreemarkerDirective :
+#TemplateElement#abstract :
 {
    TemplateElement tp;
 }
@@ -1454,6 +1454,44 @@ TemplateElement FreemarkerDirective :
    }
 ;
 
+INJECT TemplateElement :
+   import java.util.*;
+   import java.io.IOException;
+   import freemarker.core.Environment;
+{
+       /**
+     * Processes the contents of this <tt>TemplateElement</tt> and
+     * outputs the resulting text
+     *
+     * @param env The runtime environment
+     */
+    abstract public void execute(Environment env) throws IOException;
+
+    // The scoped variables defined in this element.
+    private HashSet<String> declaredVariables;
+
+    public Set<String> declaredVariables() {
+        return declaredVariables;
+    }
+
+    public boolean declaresVariable(String name) {
+    	return declaredVariables != null && declaredVariables.contains(name);
+    }
+    
+    public void declareVariable(String varName) {
+    	if (declaredVariables == null) declaredVariables = new HashSet<String>();
+    	declaredVariables.add(varName);
+    }
+    
+    public boolean isIgnorable() {
+        return false;
+    }
+
+    public final boolean createsScope() {
+    	return declaredVariables != null && !declaredVariables.isEmpty();
+    }
+}
+
 /**
  * Production for a block of raw text
  * i.e. text that contains no
@@ -1515,7 +1553,7 @@ TemplateElement Content :
          |
          elem=StringOutput
          |
-         elem=FreemarkerDirective
+         elem=TemplateElement
       )
       {
             if (begin == null) {
