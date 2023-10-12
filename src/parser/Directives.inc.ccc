@@ -269,26 +269,40 @@ INJECT BreakInstruction :
 
 /**
  * Production used to jump out of a macro.
- * The stop instruction terminates the rendering of the template.
  */
-ReturnInstruction Return :
-{
-   Token start, end=null;
-   Expression exp = null;
-}
-   (
-      start=<SIMPLE_RETURN>{end = start;}
-      |
-      start=<RETURN> 
-      exp=Expression 
-      end=LooseDirectiveEnd
-   )
-   {
-      ReturnInstruction result = new ReturnInstruction(exp);
-      result.setLocation(template, token_source, start, end);
-      return result;
-   }
+ReturnInstruction# :
+   <SIMPLE_RETURN>
+   | 
+   <RETURN> Expression LooseDirectiveEnd
 ;
+
+INJECT ReturnInstruction :
+    import freemarker.core.Environment;
+    import freemarker.core.ReturnException;
+    import freemarker.core.ast.Macro;
+    extends freemarker.core.ast.TemplateElement
+{
+    public Object getReturnValue(Environment env) {
+        if (size()==1) return null;
+        return ((Expression)get(1)).evaluate(env);
+    }
+    
+    public void execute(Environment env) {
+        env.setLastReturnValue(getReturnValue(env));
+        if (nextSibling() != null) {
+            // We need to jump out using an exception.
+            throw ReturnException.INSTANCE;
+        }
+        if (!(getParent() instanceof Macro || getParent().getParent() instanceof Macro)) {
+            // Here also, we need to jump out using an exception.
+            throw ReturnException.INSTANCE;
+        }
+    }
+
+    public String getDescription() {
+        return "return" + " [" + getStartLocation() + "]";
+    }
+}
 
 StopInstruction# :
    <HALT>
@@ -1421,7 +1435,7 @@ TemplateElement FreemarkerDirective :
      |
      tp=BreakInstruction
      |
-     tp=Return
+     tp=ReturnInstruction
      |
      tp=StopInstruction
      |
