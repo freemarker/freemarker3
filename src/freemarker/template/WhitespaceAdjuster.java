@@ -2,6 +2,7 @@ package freemarker.template;
 
 import freemarker.core.ast.*;
 import freemarker.core.parser.ast.Comment;
+import freemarker.core.parser.ast.ImportDeclaration;
 import freemarker.core.parser.ast.PropertySetting;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ast.VarDirective;
@@ -20,7 +21,7 @@ public class WhitespaceAdjuster extends ASTVisitor {
 		return (elem instanceof Macro) 
 		       || (elem instanceof AssignmentInstruction) 
 		       || (elem instanceof VarDirective)
-		       || (elem instanceof LibraryLoad)
+		       || (elem instanceof ImportDeclaration)
 		       || (elem instanceof PropertySetting)
 		       || (elem instanceof Comment);
  	}

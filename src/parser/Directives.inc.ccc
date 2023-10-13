@@ -529,25 +529,7 @@ TemplateElement Assign :
        return result;
     }
 ;
-#if false
-LibraryLoad Import :
-{
-   Token start, end, ns;
-   Expression nameExp;
-}
-   start=<IMPORT>
-   nameExp=Expression
-   <AS>
-   ns=<ID>
-   end=LooseDirectiveEnd
-   {
-       LibraryLoad result = new LibraryLoad(template, nameExp, ns.toString());
-       result.setLocation(template, token_source, start, end);
-       if (template != null) template.addImport(result);
-       return result;
-   }
-;
-#else
+
 ImportDeclaration# :
    <IMPORT>
    Expression
@@ -636,7 +618,6 @@ INJECT ImportDeclaration :
         }
     }
 }
-#endif
 
 #ParameterList# :
 {

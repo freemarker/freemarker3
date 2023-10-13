@@ -195,7 +195,7 @@ public abstract class ASTVisitor {
 		recurse(node);
 	}
 	
-	public void visit(LibraryLoad node) {
+	public void visit(ImportDeclaration node) {
 		visit(node.getTemplateNameExpression());
 	}
 	

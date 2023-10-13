@@ -9,6 +9,7 @@ import freemarker.core.parser.ParsingProblem;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.FallbackInstruction;
+import freemarker.core.parser.ast.ImportDeclaration;
 import freemarker.core.parser.ast.Interpolation;
 import freemarker.core.parser.ast.StringLiteral;
 import freemarker.core.parser.ast.TemplateNode;
@@ -312,7 +313,7 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 	}
 	
-	public void visit(LibraryLoad node) {
+	public void visit(ImportDeclaration node) {
 		String namespaceName = node.getNamespace();
 		if (template.strictVariableDeclaration() && 
 				template.declaresVariable(namespaceName)) { 
