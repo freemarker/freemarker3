@@ -1,5 +1,6 @@
-<#global x=["a", "b", "c"]>
-<#global templateSource = r"<#foreach y in x>${y}</#foreach>">
+<#ftl strict_vars=true>
+<#var x=["a", "b", "c"]>
+<#var templateSource = r"<#foreach y in x>${y}</#foreach>">
 <@templateSource?interpret/>def
 <@[templateSource]?interpret/>def
 <@[templateSource,"id"]?interpret/>def

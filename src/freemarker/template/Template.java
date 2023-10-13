@@ -10,6 +10,7 @@ import freemarker.core.Environment;
 import freemarker.core.TemplateCore;
 import freemarker.core.ast.ASTVisitor;
 import freemarker.core.ast.LibraryLoad;
+import freemarker.core.parser.ast.ImportDeclaration;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.ast.TemplateHeaderElement;
 import freemarker.core.parser.*;
@@ -52,7 +53,7 @@ public class Template extends TemplateCore {
     public static final String DEFAULT_NAMESPACE_PREFIX = "D";
     public static final String NO_NS_PREFIX = "N";
 
-    private List<LibraryLoad> imports = new Vector<LibraryLoad>();
+    private List<ImportDeclaration> imports = new Vector<>();
     private String encoding, defaultNS;
     private final String name;
     BitSet leftTrimLines = new BitSet();
@@ -372,8 +373,9 @@ public class Template extends TemplateCore {
      * Called by code internally to maintain
      * a list of imports
      */
-    public void addImport(LibraryLoad ll) {
-        imports.add(ll);
+    public void addImport(ImportDeclaration id) {
+        declaredVariables.add(id.getNamespace());
+        imports.add(id);
     }
     
     public void setHeaderElement(TemplateHeaderElement headerElement) {
@@ -453,7 +455,7 @@ public class Template extends TemplateCore {
         return getRootElement();
     }
 
-    public List<LibraryLoad> getImports() {
+    public List<ImportDeclaration> getImports() {
         return imports;
     }
 

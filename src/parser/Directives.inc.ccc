@@ -529,7 +529,7 @@ TemplateElement Assign :
        return result;
     }
 ;
-
+#if false
 LibraryLoad Import :
 {
    Token start, end, ns;
@@ -547,6 +547,96 @@ LibraryLoad Import :
        return result;
    }
 ;
+#else
+ImportDeclaration# :
+   <IMPORT>
+   Expression
+   <AS>
+   <ID>
+   LooseDirectiveEnd
+   {
+       CURRENT_NODE.setTemplate(template);
+       //if (template != null) template.addImport(CURRENT_NODE);
+   }
+;
+
+INJECT ImportDeclaration :
+    import java.io.IOException;
+    import freemarker.template.Template;
+    import freemarker.template.TemplateException;
+    import freemarker.core.Environment;
+    import freemarker.core.InvalidReferenceException;
+    import freemarker.log.Logger;
+    extends TemplateElement
+{
+    private String templatePath="";
+    @Property Template template;
+
+    public String getNamespace() {
+    	return get(3).toString();
+    }
+    
+    public Expression getTemplateNameExpression() {
+    	return (Expression) get(1);
+    }
+
+    public void execute(Environment env) throws IOException {
+        String templateNameString = getTemplateNameExpression().getStringValue(env);
+        if( templateNameString == null ) {
+            String msg = "Error " + getStartLocation()
+                        + "The expression " + getTemplateNameExpression() + " is undefined.";
+            throw new InvalidReferenceException(msg, env);
+        }
+        Template importedTemplate;
+        try {
+            if (templateNameString.indexOf("://") >0) {
+                ;
+            }
+            else if(templateNameString.length() > 0 && templateNameString.charAt(0) == '/')  {
+                int protIndex = templatePath.indexOf("://");
+                if (protIndex >0) {
+                    templateNameString = templatePath.substring(0, protIndex + 2) + templateNameString;
+                } else {
+                    templateNameString = templateNameString.substring(1);
+                }
+            }
+            else {
+                templateNameString = templatePath + templateNameString;
+            }
+            importedTemplate = env.getTemplateForImporting(templateNameString);
+        }
+        catch (ParseException pe) {
+            String msg = "Error parsing imported template "
+                        + templateNameString;
+            Logger.getLogger("freemarker.runtime").error(msg, pe);
+            throw new TemplateException(msg, pe, env);
+        }
+        catch (IOException ioe) {
+            String msg = "Error reading imported file "
+                        + templateNameString;
+            throw new TemplateException(msg, ioe, env);
+        }
+        env.importLib(importedTemplate, getNamespace(), false);
+    }
+
+    public String getDescription() {
+        return "import " + getTemplateNameExpression() + " as " + getNamespace();
+    }
+
+    public String getTemplateName() {
+        return getTemplateNameExpression().toString();
+    }    
+
+    public void close() {
+        if (template != null) {
+        	String templatePath1 = template.getName();
+        	int lastSlash = templatePath1.lastIndexOf('/');
+        	templatePath = lastSlash == -1 ? "" : templatePath1.substring(0, lastSlash + 1);
+            template.addImport(this);
+        }
+    }
+}
+#endif
 
 #ParameterList# :
 {
@@ -1443,7 +1533,7 @@ INJECT VarDirective :
      |
      tp=Include
      |
-     tp=Import
+     tp=ImportDeclaration
      |
      tp=Macro
      |
