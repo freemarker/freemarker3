@@ -373,7 +373,6 @@ public class Template extends TemplateCore {
      * a list of imports
      */
     public void addImport(ImportDeclaration id) {
-        declaredVariables.add(id.getNamespace());
         imports.add(id);
     }
     
