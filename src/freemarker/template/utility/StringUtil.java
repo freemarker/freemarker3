@@ -573,34 +573,6 @@ public class StringUtil {
     }
 
     /**
-     * Splits a string at the specified character.
-     */
-    public static String[] split(String s, char c) {
-        int i, b, e;
-        int cnt;
-        String res[];
-        int ln = s.length();
-
-        i = 0;
-        cnt = 1;
-        while ((i = s.indexOf(c, i)) != -1) {
-            cnt++;
-            i++;
-        }
-        res = new String[cnt];
-
-        i = 0;
-        b = 0;
-        while (b <= ln) {
-            e = s.indexOf(c, b);
-            if (e == -1) e = ln;
-            res[i++] = s.substring(b, e);
-            b = e + 1;
-        }
-        return res;
-    }
-
-    /**
      * Splits a string at the specified string.
      */
     public static String[] split(String s, String sep, boolean caseInsensitive) {
