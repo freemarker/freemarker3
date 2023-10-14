@@ -8,7 +8,6 @@ import java.util.*;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.TemplateCore;
-import freemarker.core.ast.ASTVisitor;
 import freemarker.core.parser.ast.ImportDeclaration;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.ast.TemplateHeaderElement;
@@ -114,14 +113,7 @@ public class Template extends TemplateCore {
             ppv.visit(this);
             if (stripWhitespace) {
                 WhitespaceAdjuster wadj = new WhitespaceAdjuster(this);
-                wadj.visit(this);
-                //wadj.visit(this.getRootElement());
-            }
-            for (ASTVisitor visitor : cfg.getAutoVisitors()) {
-            	if (visitor instanceof Cloneable) {
-            		visitor = visitor.clone();
-            	}
-            	visitor.visit(this);
+                wadj.visit(getRootTreeNode());
             }
         }
         catch(ParseException e) {
@@ -150,12 +142,6 @@ public class Template extends TemplateCore {
             ppv.visit(this);
             WhitespaceAdjuster wadj = new WhitespaceAdjuster(this);
             wadj.visit(this);
-            for (ASTVisitor visitor : cfg.getAutoVisitors()) {
-            	if (visitor instanceof Cloneable) {
-            		visitor = visitor.clone();
-            	}
-            	visitor.visit(this);
-            }
         }
         catch(ParseException e) {
             e.setTemplateName(name);

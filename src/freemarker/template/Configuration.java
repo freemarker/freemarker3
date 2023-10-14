@@ -31,8 +31,6 @@ import freemarker.template.utility.StandardCompress;
 import freemarker.template.utility.StringUtil;
 import freemarker.template.utility.XmlEscape;
 
-import freemarker.core.ast.ASTVisitor;
-
 import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
@@ -78,7 +76,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     private Map<String, String> autoImportMap = new HashMap<String, String>();
     private ArrayList<String> autoImports = new ArrayList<String>();
     private ArrayList<String> autoIncludes = new ArrayList<String>();
-    private ArrayList<ASTVisitor> autoVisitors = new ArrayList<ASTVisitor>();
+    private ArrayList<Visitor> autoVisitors = new ArrayList<Visitor>();
     private String defaultEncoding = "UTF-8";
     private boolean tolerateParsingProblems = false;
     private int tagSyntax = AUTO_DETECT_TAG_SYNTAX;
@@ -872,30 +870,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      
     public synchronized void removeAutoInclude(String templateName) {
         autoIncludes.remove(templateName);
-    }
-    
-    public synchronized void addAutoTemplateVisitors(ASTVisitor... visitors) {
-    	for (ASTVisitor visitor : visitors) {
-    		autoVisitors.remove(visitor);
-    		autoVisitors.add(visitor);
-    	}
-    }
-    
-    public synchronized void removeAutoTemplateVisitors(ASTVisitor... visitors) {
-    	for (ASTVisitor visitor : visitors) {
-    		autoVisitors.remove(visitor);
-    	}
-    }
-    
-    public synchronized void setAutoTemplateVisitors(ASTVisitor... visitors) {
-    	autoVisitors.clear();
-    	for (ASTVisitor visitor : visitors) {
-    		autoVisitors.add(visitor);
-    	}
-    }
-    
-    synchronized List<ASTVisitor> getAutoVisitors() {
-    	return new ArrayList<ASTVisitor>(autoVisitors);
     }
     
     /**

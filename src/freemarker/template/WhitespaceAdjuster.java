@@ -27,12 +27,6 @@ public class WhitespaceAdjuster extends Node.Visitor {
 		       || (elem instanceof Comment);
  	}
 
-	 public void visit(Template template) {
-		TemplateHeaderElement header = template.getHeaderElement();
-		if (header != null) visit(header);
-		visit(template.getRootTreeNode());
-	}
-	
 	public void visit(MixedContent node) {
 		boolean atTopLevel = node.getParent() == null;
 		recurse(node);

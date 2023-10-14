@@ -9,7 +9,6 @@ import freemarker.core.parser.ParsingProblem;
 import freemarker.template.utility.DeepUnwrap;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
-import freemarker.core.parser.Node;
 import java.util.*;
 
 /**

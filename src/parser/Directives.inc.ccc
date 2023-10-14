@@ -1022,23 +1022,6 @@ INJECT ParameterList :
 ;
 
 
-CompressedBlock Compress :
-{
-   TemplateElement block;
-   Token start, end;
-}
-    start=<COMPRESS>
-    block=OptionalBlock
-    end=CloseDirectiveBlock("compress")
-    {
-       CompressedBlock cb = new CompressedBlock(block);
-       cb.setLocation(template, token_source, start, end);
-       return cb;
-    }
-;
-
-
-
 TemplateElement UnifiedMacroTransform :
 {
    Token start=null, end, t;
@@ -1517,8 +1500,6 @@ INJECT VarDirective :
      tp=ImportDeclaration
      |
      tp=Macro
-     |
-     tp=Compress
      |
      tp=UnifiedMacroTransform
      |
