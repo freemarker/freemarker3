@@ -1560,7 +1560,6 @@ List<TextBlock> PCData :
     StringBuilder buf = new StringBuilder();
     Token start=null;
     List<TextBlock> result = new ArrayList<TextBlock>();
-    int prevNodeArity = nodeArity();
 }
     (
       (
@@ -1575,35 +1574,22 @@ List<TextBlock> PCData :
       }
     )+
     {
-        assert prevNodeArity == nodeArity();
-         if (stripText && contentNesting == 1) {
-             result.add(TextBlock.EMPTY_BLOCK);
-             return result;
-         }
-         return TextBlock.breakIntoBlocks(buf.toString(), template, start.getBeginColumn(), start.getBeginLine());
+        return TextBlock.breakIntoBlocks(buf.toString(), template, start.getBeginColumn(), start.getBeginLine());
     }
 ;
-
-/**
- * Production for dealing with unparsed content,
- * i.e. what is inside a comment or noparse tag.
- * It returns the ending token. The content
- * of the tag is put in buf.
- */
 
 TemplateElement Content#MixedContent(false) :
 {
     MixedContent nodes = new MixedContent();
-    TemplateElement elem=null, begin=null;
-    contentNesting++;
-    List<TextBlock> text = null;
+    TemplateElement elem=null;
+    List<TextBlock> text;
 }
     (
       (
          text=PCData 
          {
             for (TextBlock tb : text) nodes.add(tb);
-            elem = null;
+            for (TextBlock tb : text) pushNode(tb);
          }
          |
          elem=Interpolation {nodes.add(elem);}
@@ -1612,9 +1598,6 @@ TemplateElement Content#MixedContent(false) :
       )
     )+
     {
-        contentNesting--;
-      //  if (elem == null) elem = text.get(text.size() -1);
-      //  nodes.setLocation(template, token_source, begin, elem);
 	    return nodes;
     }
 ;
@@ -1645,7 +1628,7 @@ INJECT MixedContent :
  * ${...} but no directives.
  */
 
-TemplateElement FreeMarkerText :
+TemplateElement FreeMarkerText#MixedContent(false) :
 {
      MixedContent nodes = new MixedContent();
      TemplateElement elem = null, begin = null;
