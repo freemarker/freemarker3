@@ -961,7 +961,6 @@ INJECT NumberLiteral :
     }
     
     public Object evaluate(Environment env) {
-        //return new NumberModel(value);
         return value;
     }
     
