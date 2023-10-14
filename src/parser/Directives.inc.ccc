@@ -1568,6 +1568,7 @@ List<TextBlock> PCData :
     StringBuilder buf = new StringBuilder();
     Token start=null;
     List<TextBlock> result = new ArrayList<TextBlock>();
+    int prevNodeArity = nodeArity();
 }
     (
       (
@@ -1576,12 +1577,13 @@ List<TextBlock> PCData :
          <WHITESPACE> 
       )
       {
+         popNode();
          buf.append(lastConsumedToken.toString());
          if (start == null) start = lastConsumedToken;
       }
     )+
     {
-         clearNodeScope();
+        assert prevNodeArity == nodeArity();
          if (stripText && contentNesting == 1) {
              result.add(TextBlock.EMPTY_BLOCK);
              return result;
@@ -1606,27 +1608,21 @@ TemplateElement Content :
 }
     (
       (
-         text=PCData {elem = null;}
+         text=PCData 
+         {
+            for (TextBlock tb : text) nodes.add(tb);
+            elem = null;
+         }
          |
-         elem=StringOutput
+         elem=StringOutput {nodes.add(elem);}
          |
-         elem=TemplateElement
+         elem=TemplateElement {nodes.add(elem);}
       )
-      {
-            if (begin == null) {
-               begin = elem == null ? text.get(0) : elem;
-            }
-            if (elem == null) {
-            	for (TextBlock tb : text) nodes.add(tb);
-            } else {
-            	nodes.add(elem);
-            }
-      }
     )+
     {
         contentNesting--;
-        if (elem == null) elem = text.get(text.size() -1);
-        nodes.setLocation(template, token_source, begin, elem);
+      //  if (elem == null) elem = text.get(text.size() -1);
+      //  nodes.setLocation(template, token_source, begin, elem);
 	    return nodes;
     }
 ;
@@ -1644,24 +1640,14 @@ TemplateElement FreeMarkerText :
 }
     (
       (
-        text=PCData {elem = null;}
+        text=PCData {for (TextBlock tb : text) nodes.add(tb);}
         |
-        elem=StringOutput
+        elem=StringOutput {nodes.add(elem);}
       )
-      {
-         if (begin == null) {
-            begin = (elem == null) ? text.get(0) : elem;
-         }
-         if (elem != null) {
-         	nodes.add(elem);
-         } else {
-         	for (TextBlock tb : text) nodes.add(tb);
-         }
-      }
     )+
     {
-       if (elem == null) elem = text.get(text.size() -1);
-       nodes.setLocation(template, token_source, begin, elem);
+       //if (elem == null) elem = text.get(text.size() -1);
+       //nodes.setLocation(template, token_source, begin, elem);
        return nodes;
     }
 ;
