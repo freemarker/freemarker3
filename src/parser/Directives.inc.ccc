@@ -1607,7 +1607,6 @@ List<TextBlock> PCData :
       {
          buf.append(t.toString());
          if (start == null) start = t;
-         //if (prevToken != null) prevToken.setNext(null);
          if (prevToken != null) token_source.uncacheTokens(prevToken);
       }
     )+
@@ -1616,12 +1615,7 @@ List<TextBlock> PCData :
              result.add(TextBlock.EMPTY_BLOCK);
              return result;
          }
-    	 if (trimBlockNesting>0) {
-    		result = TextBlock.breakIntoBlocksLineByLine(buf.toString(), template, start.getBeginColumn(), start.getBeginLine()); 
-    	 } else {
-            result = TextBlock.breakIntoBlocks(buf.toString(), template, start.getBeginColumn(), start.getBeginLine());
-    	 }
-         return result;
+         return TextBlock.breakIntoBlocks(buf.toString(), template, start.getBeginColumn(), start.getBeginLine());
     }
 ;
 

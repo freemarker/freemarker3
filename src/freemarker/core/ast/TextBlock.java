@@ -162,43 +162,6 @@ public final class TextBlock extends TemplateElement {
 		return result;
 	}
 	
-	static public List<TextBlock> breakIntoBlocksLineByLine(String input, Template template, int beginColumn, int beginLine) {
-		List<String> lines = lines(input);
-		List<TextBlock> result = new ArrayList<TextBlock>();
-		for (String line : lines) {
-			String ltrim = leftTrim(line);
-			int initWSLength = line.length() - ltrim.length();
-			if (initWSLength >0) {
-				TextBlock tb = new TextBlock(line.substring(0, initWSLength));
-				tb.setLocation(template, beginColumn, beginLine, beginColumn+initWSLength-1, beginLine);
-				beginColumn += initWSLength;
-				tb.textType = TextBlock.OPENING_WS;
-				result.add(tb);
-			}
-			if (ltrim.length() >0) {
-				String trimmed = rightTrim(ltrim);
-				int trailingWSLength = ltrim.length() - trimmed.length();
-				if (trimmed.length() >0) {
-					TextBlock tb = new TextBlock(trimmed);
-					tb.setLocation(template, beginColumn, beginLine, beginColumn + trimmed.length() -1, beginLine);
-					tb.textType = TextBlock.PRINTABLE_TEXT;
-					result.add(tb);
-					beginColumn += trimmed.length();
-				}
-				if (trailingWSLength>0) {
-					String trailingWS = ltrim.substring(trimmed.length());
-					TextBlock tb = new TextBlock(trailingWS);
-					tb.setLocation(template, beginColumn, beginLine, beginColumn + trailingWSLength-1, beginLine); 
-					tb.textType = TextBlock.TRAILING_WS;
-					result.add(tb);
-				}
-			}
-			beginColumn = 1;
-			beginLine++;
-		}
-		return result;
-	}
-	
 	static public List<TextBlock> breakIntoBlocks(String input, Template template, int beginColumn, int beginLine) {
 		int numLines = countLines(input);
 		if (numLines == 1) {
@@ -318,16 +281,6 @@ public final class TextBlock extends TemplateElement {
 		return input;
 	}
 	
-	static private List<String> lines(String input) {
-		List<String> result = new ArrayList<String>();
-		while (input.length() >0) {
-			String line = firstLine(input);
-			result.add(line);
-			input = input.substring(line.length());
-		}
-		return result;
-	}
-
 	static private String leftTrim(String s) {
 		for (int i=0; i<s.length(); i++) {
 			char c = s.charAt(i);

@@ -117,10 +117,8 @@ INJECT PARSER_CLASS :
     @Property Template template;
     private String templateName;
     private boolean stripText;
-    // variables that keep track of whether we are in a loop or a switch.
+    // variable that keeps track of whether we are in a loop or a switch.
     private int contentNesting;
-    // for stripText
-    private int trimBlockNesting;
 
     void OPEN_NODE_HOOK(Node n) {
          n.setTemplate(template);
