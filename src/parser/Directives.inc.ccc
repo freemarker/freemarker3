@@ -1563,28 +1563,25 @@ INJECT TemplateElement :
  * i.e. text that contains no
  * FreeMarker directives.
  */
-
 List<TextBlock> PCData :
 {
     StringBuilder buf = new StringBuilder();
-    Token t=null, start=null, prevToken = null;
+    Token start=null;
     List<TextBlock> result = new ArrayList<TextBlock>();
 }
     (
-      SCAN <WHITESPACE>|<PRINTABLE_CHARS> =>
       (
-         {prevToken = t;}         
-         t=<PRINTABLE_CHARS> 
+         <PRINTABLE_CHARS> 
          |
-         t=<WHITESPACE> 
+         <WHITESPACE> 
       )
       {
-         buf.append(t.toString());
-         if (start == null) start = t;
-         if (prevToken != null) token_source.uncacheTokens(prevToken);
+         buf.append(lastConsumedToken.toString());
+         if (start == null) start = lastConsumedToken;
       }
     )+
     {
+         clearNodeScope();
          if (stripText && contentNesting == 1) {
              result.add(TextBlock.EMPTY_BLOCK);
              return result;
@@ -1630,7 +1627,7 @@ TemplateElement Content :
         contentNesting--;
         if (elem == null) elem = text.get(text.size() -1);
         nodes.setLocation(template, token_source, begin, elem);
-	     return nodes;
+	    return nodes;
     }
 ;
 
