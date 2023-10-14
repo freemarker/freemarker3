@@ -329,8 +329,6 @@ public class PostParseVisitor extends Node.Visitor {
 				template.setLineSaysLeftTrim(i);
 			if (node.isRight())
 				template.setLineSaysRightTrim(i);
-			if (!(node.isLeft() || node.isRight())) 
-				template.setLineSaysNoTrim(i);
 		}
 	}
 	

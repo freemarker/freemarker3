@@ -54,11 +54,10 @@ public class Template extends TemplateCore {
     private List<ImportDeclaration> imports = new Vector<>();
     private String encoding, defaultNS;
     private final String name;
-    BitSet leftTrimLines = new BitSet();
-    BitSet rightTrimLines = new BitSet();
-    BitSet noTrimLines = new BitSet();
-    BitSet outputtingLines = new BitSet();
-    BitSet outputtingLinesInMacro = new BitSet();
+    private BitSet leftTrimLines = new BitSet();
+    private BitSet rightTrimLines = new BitSet();
+    private BitSet outputtingLines = new BitSet();
+    private BitSet outputtingLinesInMacro = new BitSet();
 
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
@@ -405,20 +404,12 @@ public class Template extends TemplateCore {
         rightTrimLines.set(i);
     }
     
-    public void setLineSaysNoTrim(int i) {
-        noTrimLines.set(i);
-    }
-    
     public boolean lineSaysLeftTrim(int i) {
         return leftTrimLines.get(i);
     }
     
     public boolean lineSaysRightTrim(int i) {
         return rightTrimLines.get(i);
-    }
-    
-    public boolean lineSaysNoTrim(int i) {
-        return noTrimLines.get(i);
     }
     
     public void markAsOutputtingLine(int lineNumber, boolean inMacro) {

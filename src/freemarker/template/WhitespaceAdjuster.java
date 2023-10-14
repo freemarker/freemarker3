@@ -66,9 +66,6 @@ public class WhitespaceAdjuster extends Node.Visitor {
 			return;
 		}
 		int lineNumber = node.getBeginLine();
-		if (template.lineSaysNoTrim(lineNumber)) {
-			return;
-		}
 		boolean inMacro = PostParseVisitor.getContainingMacro(node) != null;
 		boolean ignorable = template.stripWhitespace && !template.isOutputtingLine(lineNumber, inMacro);
 		if (nodeType == TextBlock.OPENING_WS) {
