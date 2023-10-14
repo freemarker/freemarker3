@@ -5,6 +5,7 @@ import freemarker.template.*;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.ParameterList;
 import freemarker.core.parser.ast.Expression;
+import freemarker.core.parser.ast.MixedContent;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ast.VarDirective;

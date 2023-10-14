@@ -4,6 +4,7 @@ import freemarker.core.ast.*;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ast.Comment;
 import freemarker.core.parser.ast.ImportDeclaration;
+import freemarker.core.parser.ast.MixedContent;
 import freemarker.core.parser.ast.PropertySetting;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ast.VarDirective;

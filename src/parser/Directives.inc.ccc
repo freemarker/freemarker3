@@ -6,18 +6,10 @@
  * A production representing the ${...}
  * that outputs a variable.
  */
-TemplateElement StringOutput#Interpolation :
-{
-   Expression exp;
-   Token begin, end;
-   boolean unclosed = false;
-}
-   begin=<OUTPUT_ESCAPE> 
-   exp=Expression
-	end=<CLOSE_BRACE>
-   {
-      return CURRENT_NODE;
-   }
+Interpolation# :
+   <OUTPUT_ESCAPE> 
+   Expression
+   <CLOSE_BRACE>
 ;
 
 INJECT Interpolation :
@@ -1189,7 +1181,7 @@ NoParseBlock# :
     <NOPARSE_END>
 ;
 
-INJECT NoParseBlock : extends freemarker.core.ast.MixedContent
+INJECT NoParseBlock : extends freemarker.core.parser.ast.MixedContent
 
 SwitchBlock Switch :
 {
@@ -1599,7 +1591,7 @@ List<TextBlock> PCData :
  * of the tag is put in buf.
  */
 
-TemplateElement Content :
+TemplateElement Content#MixedContent(false) :
 {
     MixedContent nodes = new MixedContent();
     TemplateElement elem=null, begin=null;
@@ -1614,7 +1606,7 @@ TemplateElement Content :
             elem = null;
          }
          |
-         elem=StringOutput {nodes.add(elem);}
+         elem=Interpolation {nodes.add(elem);}
          |
          elem=TemplateElement {nodes.add(elem);}
       )
@@ -1626,6 +1618,27 @@ TemplateElement Content :
 	    return nodes;
     }
 ;
+
+INJECT MixedContent :
+    import java.io.IOException;
+    import freemarker.core.Environment;
+    extends TemplateElement
+{
+    public void execute(Environment env) throws IOException 
+    {
+        for (TemplateElement element : childrenOfType(TemplateElement.class)) {
+            env.render(element);
+        }
+    }
+
+    public String getDescription() {
+        if (getParent() == null) {
+            return "root element";
+        }
+        return "content"; // MixedContent is uninteresting in a stack trace.
+    }
+}
+
 
 /**
  * A production freemarker text that may contain
@@ -1642,7 +1655,7 @@ TemplateElement FreeMarkerText :
       (
         text=PCData {for (TextBlock tb : text) nodes.add(tb);}
         |
-        elem=StringOutput {nodes.add(elem);}
+        elem=Interpolation {nodes.add(elem);}
       )
     )+
     {
