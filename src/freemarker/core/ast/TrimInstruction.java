@@ -33,7 +33,6 @@ public class TrimInstruction extends TemplateElement {
         String type = "";
         if (!right) type = "left ";
         if (!left) type = "right ";
-        if (!left && !right) type = "no-";
         return type + "trim instruction";
     }
 

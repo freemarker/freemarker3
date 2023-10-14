@@ -388,8 +388,6 @@ TemplateElement Trim :
      t=<LTRIM> {result = new TrimInstruction(true, false);}
      |
      t=<RTRIM> {result = new TrimInstruction(false, true);}
-     |
-     t=<NOTRIM> {result = new TrimInstruction(false, false);}
    )
    {
        result.setLocation(template, token_source, t, t);

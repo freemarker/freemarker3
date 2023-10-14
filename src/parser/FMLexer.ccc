@@ -197,14 +197,6 @@ TOKEN:
     |
     <_RECOVER : <START_TAG> "recover" <CLOSE_TAG1>>
     |
-    <BLOCKTRIM : <START_TAG> "t_lines" <CLOSE_TAG1>>
-    |
-    <BLOCKTRIML : <START_TAG> "lt_lines" <CLOSE_TAG2>>
-    |
-    <BLOCKTRIMR : <START_TAG> "rt_lines" <CLOSE_TAG1>>
-    |
-    <BLOCKNOTRIM : <START_TAG> "nt_lines" <CLOSE_TAG1>>
-    |
     <IF : <START_TAG> "if" <BLANK>> 
     |
     <ELSE_IF : <START_TAG> "elseif" <BLANK>>
@@ -272,8 +264,6 @@ TOKEN:
     <LTRIM : <START_TAG> "lt" <CLOSE_TAG2>> 
     |
     <RTRIM : <START_TAG> "rt" <CLOSE_TAG2>> 
-    |
-    <NOTRIM : <START_TAG> "nt" <CLOSE_TAG2>> 
     |
     <DEFAUL : <START_TAG> "default" <CLOSE_TAG1>> 
     |
