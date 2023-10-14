@@ -1260,30 +1260,61 @@ SwitchBlock Switch :
    }
 ;
 
-EscapeBlock Escape :
-{
-    Token variable, start, end;
-    Expression escapeExpr;
-    TemplateElement content;
-}
-    start=<ESCAPE>
-    variable=<ID>
+EscapeBlock# :
+    <ESCAPE>
+    <ID>
     <AS>
-    escapeExpr=Expression
+    Expression
     <DIRECTIVE_END>
-    {
-        EscapeBlock result = new EscapeBlock(variable.toString(), escapeExpr);
-    }
-    content=Content
-    {
-        result.setContent(content);
-    }
-    end=CloseDirectiveBlock("escape")
-    {
-       result.setLocation(template, token_source, start, end);
-       return result;
-    }
+    Content
+    CloseDirectiveBlock("escape")
 ;
+
+INJECT EscapeBlock :
+    import java.io.IOException;
+    import freemarker.core.Environment;
+    import freemarker.template.*;
+    extends TemplateElement
+{
+    private Expression escapedExpression;
+
+    public Expression getExpression() {
+    	return (Expression) get(3);
+    }
+    
+    public String getVariable() {
+    	return get(1).toString();
+    }
+    
+    public Expression getEscapedExpression() {
+    	return escapedExpression == null ? getExpression() : escapedExpression;
+    }
+    
+    /**
+     * This is only used internally.
+     */
+    public void setEscapedExpression(Expression escapedExpression) {
+    	this.escapedExpression = escapedExpression;
+    }
+
+    public void setContent(TemplateElement nestedBlock) {
+        this.add(nestedBlock);
+    }
+
+    public void execute(Environment env) throws TemplateException, IOException {
+        if (firstChildOfType(TemplateElement.class) != null) {
+            env.render(firstChildOfType(TemplateElement.class));
+        }
+    }
+
+    public Expression doEscape(Expression subst) {
+        return getEscapedExpression().deepClone(getVariable(), subst);
+    }
+
+    public String getDescription() {
+        return "escape " + getVariable() + " as " + getEscapedExpression().toString();
+    }
+}
 
 NoEscapeBlock# :
     <NOESCAPE>
@@ -1522,7 +1553,7 @@ INJECT VarDirective :
      |
      tp=Nested
      |
-     tp=Escape
+     tp=EscapeBlock
      |
      tp=NoEscapeBlock
      |
