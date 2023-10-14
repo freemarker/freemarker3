@@ -377,23 +377,35 @@ INJECT FlushInstruction :
     }
 }
 
-TemplateElement Trim :
+TrimInstruction# : <TRIM>|<LTRIM>|<RTRIM>;
+
+INJECT TrimInstruction :
+   import freemarker.core.Environment;
+   extends TemplateElement
 {
-  Token t;
-  TrimInstruction result=null;
+    public boolean isLeft() {
+    	return get(0).getType() != RTRIM;
+    }
+    
+    public boolean isRight() {
+    	return get(0).getType() != LTRIM;
+    }
+
+    public void execute(Environment env) {
+        // This instruction does nothing at render-time, only parse-time.
+    }
+
+    public String getDescription() {
+        String type = "";
+        if (!isRight()) type = "left ";
+        if (!isLeft()) type = "right ";
+        return type + "trim instruction";
+    }
+
+    public boolean isIgnorable() {
+        return true;
+    }
 }
-   (
-     t=<TRIM> {result = new TrimInstruction(true, true);}
-     |
-     t=<LTRIM> {result = new TrimInstruction(true, false);}
-     |
-     t=<RTRIM> {result = new TrimInstruction(false, true);}
-   )
-   {
-       result.setLocation(template, token_source, t, t);
-       return result;
-   }
-;
 
 TemplateElement Assign :
 {
@@ -1523,7 +1535,7 @@ INJECT VarDirective :
      |
      tp=FlushInstruction
      |
-     tp=Trim
+     tp=TrimInstruction
      |
      tp=Nested
      |
