@@ -59,7 +59,7 @@ TemplateElement If :
    start=<IF>
    condition=Expression
    <DIRECTIVE_END>
-   block=OptionalBlock
+   block=Content
    {
       cblock = new ConditionalBlock(condition, block, true);
       cblock.setLocation(template, token_source, start, block);
@@ -69,7 +69,7 @@ TemplateElement If :
        t=<ELSE_IF>
        condition=Expression
        LooseDirectiveEnd
-       block=OptionalBlock
+       block=Content
        {
           cblock = new ConditionalBlock(condition, block, false);
           cblock.setLocation(template, token_source, t, block);
@@ -78,7 +78,7 @@ TemplateElement If :
    )*
    [
          t=<ELSE>
-         block=OptionalBlock
+         block=Content
          {
             cblock = new ConditionalBlock(null, block, false);
             cblock.setLocation(template, token_source, t, block);
@@ -99,8 +99,8 @@ AttemptBlock Attempt :
    ParseException problem = null;
 }
    start=<_ATTEMPT>
-   block=OptionalBlock
-   recoveryBlock=Recover
+   block=Content
+   recoveryBlock=RecoveryBlock
    end=CloseDirectiveBlock("attempt, recover")
    {
       AttemptBlock result = new AttemptBlock(block, recoveryBlock);
@@ -113,19 +113,28 @@ AttemptBlock Attempt :
    }
 ;
 
-RecoveryBlock Recover : 
-{
-   Token start;
-   TemplateElement block;
-}
-   start=<_RECOVER>
-   block=OptionalBlock
-   {
-      RecoveryBlock result = new RecoveryBlock(block);
-      result.setLocation(template, token_source, start, block);
-      return result;
-   }
+RecoveryBlock# : 
+   <_RECOVER>
+   Content
 ;
+
+INJECT RecoveryBlock :
+    import java.io.IOException;
+    import freemarker.core.Environment;
+    import freemarker.template.*;
+    extends TemplateElement
+{
+    public void execute(Environment env) throws TemplateException, IOException 
+    {
+    	if (firstChildOfType(TemplateElement.class) != null) {
+    		env.render(firstChildOfType(TemplateElement.class));
+    	}
+    }
+
+    public String getDescription() {
+        return "recover block";
+    }
+}
 
 TemplateElement List :
 {
@@ -138,7 +147,7 @@ TemplateElement List :
    <AS>
    index=<ID>
    <DIRECTIVE_END>
-   block=OptionalBlock
+   block=Content
    end=CloseDirectiveBlock("list")
    {
      IteratorBlock result = new IteratorBlock(exp,
@@ -161,7 +170,7 @@ IteratorBlock ForEach :
    <IN>
    exp=Expression
    <DIRECTIVE_END>
-   block=OptionalBlock
+   block=Content
    end=CloseDirectiveBlock("foreach")
    {
      IteratorBlock result = new IteratorBlock(exp,
@@ -466,7 +475,7 @@ TemplateElement Assign :
           nsExp=Expression {if (type != AssignmentInstruction.NAMESPACE && type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.getBeginLine(), id.getBeginColumn());}
        ]
        <DIRECTIVE_END>
-       block=OptionalBlock
+       block=Content
        end=CloseDirectiveBlock(assignmentType)
        {
        	  String name = end.toString().substring(3, end.toString().length() -1);
@@ -1014,7 +1023,7 @@ INJECT ParameterList :
     params=ParameterList {result.setParams(params);}
     [<CLOSE_PAREN>]
     <DIRECTIVE_END>
-    block=OptionalBlock
+    block=Content
     end=CloseDirectiveBlock(functionOrMacro)
     {
 	   result.setName(name);
@@ -1067,7 +1076,7 @@ TemplateElement UnifiedMacroTransform :
       |
       (
         <DIRECTIVE_END>
-		nestedBlock=OptionalBlock
+		nestedBlock=Content
 		end=<UNIFIED_CALL_END>
 		{
            String s=end.toString().substring(2);;
@@ -1232,7 +1241,7 @@ SwitchBlock Switch :
       |
       start=<DEFAUL>{isDefault = true;}
    )
-   block=OptionalBlock
+   block=Content
    {
        Case result = new Case(exp, block, isDefault);
        result.setLocation(template, token_source, start, block);
@@ -1254,7 +1263,7 @@ EscapeBlock Escape :
     {
         EscapeBlock result = new EscapeBlock(variable.toString(), escapeExpr);
     }
-    content=OptionalBlock
+    content=Content
     {
         result.setContent(content);
     }
@@ -1271,7 +1280,7 @@ NoEscapeBlock NoEscape :
     TemplateElement content;
 }
     start=<NOESCAPE>
-    content=OptionalBlock
+    content=Content
     end=CloseDirectiveBlock("noescape")
     {
        NoEscapeBlock result = new NoEscapeBlock(content);
@@ -1596,8 +1605,10 @@ TemplateElement Content#MixedContent(false) :
          |
          elem=TemplateElement {nodes.add(elem);}
       )
-    )+
+    )*
     {
+        clearNodeScope();
+        pushNode(nodes);
 	    return nodes;
     }
 ;
@@ -1642,30 +1653,9 @@ TemplateElement FreeMarkerText#MixedContent(false) :
       )
     )+
     {
-       //if (elem == null) elem = text.get(text.size() -1);
-       //nodes.setLocation(template, token_source, begin, elem);
        return nodes;
     }
 ;
-
-/**
- * A production for a block of optional content.
- * Returns an empty Text block if there is no
- * content.
- */
-
-TemplateElement OptionalBlock :
-{
-   TemplateElement tp = TextBlock.EMPTY_BLOCK;
-}
-   [
-         tp=Content
-   ]
-   {
-      return tp;
-   }
-;
-
 
 TemplateHeaderElement HeaderElement : 
 {
@@ -1746,7 +1736,7 @@ TemplateElement Root :
        	   	
        }
    ]
-   doc=OptionalBlock
+   doc=Content
    <EOF>
    {
        return doc;
