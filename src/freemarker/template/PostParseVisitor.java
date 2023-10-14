@@ -224,7 +224,7 @@ public class PostParseVisitor extends Node.Visitor {
 		}
 	}
 	
-	public void visit(BodyInstruction node) {
+	public void visit(NestedInstruction node) {
 		recurse(node);
 		Macro macro = getContainingMacro(node);
 		if (macro == null) {

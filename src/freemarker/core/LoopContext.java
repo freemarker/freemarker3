@@ -3,7 +3,7 @@ package freemarker.core;
 import java.io.IOException;
 import java.util.Iterator;
 
-import freemarker.core.ast.*;
+import freemarker.core.parser.ast.IteratorBlock;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ast.TemplateNode;
 

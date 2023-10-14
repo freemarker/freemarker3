@@ -147,51 +147,58 @@ INJECT RecoveryBlock :
     }
 }
 
-TemplateElement List :
-{
-    Expression exp;
-    Token index, start, end, as=null, directiveEnd=null;
-    TemplateElement block;
-}
-   start=<LIST> 
-   exp=Expression
+ListBlock#IteratorBlock :
+   <LIST> 
+   Expression
    <AS>
-   index=<ID>
+   <ID>
    <DIRECTIVE_END>
-   block=Content
-   end=CloseDirectiveBlock("list")
-   {
-     IteratorBlock result = new IteratorBlock(exp,
-                                              index.toString(),
-                                              block,
-                                              false);
-     result.setLocation(template, token_source, start, end);
-     return result;
-   }
+   Content
+   CloseDirectiveBlock("list")
 ;
 
-IteratorBlock ForEach :
-{
-     Expression exp;
-     Token index, start, end;
-     TemplateElement block;
-}
-   start=<FOREACH> 
-   index=<ID>
+ForEachBlock#IteratorBlock :
+   <FOREACH> 
+   <ID>
    <IN>
-   exp=Expression
+   Expression
    <DIRECTIVE_END>
-   block=Content
-   end=CloseDirectiveBlock("foreach")
-   {
-     IteratorBlock result = new IteratorBlock(exp,
-                                              index.toString(),
-                                              block,
-                                              true);
-     result.setLocation(template, token_source, start, end);
-     return result;
-   }
+   Content
+   CloseDirectiveBlock("foreach")
 ;
+
+INJECT IteratorBlock :
+    import java.io.IOException;
+    import freemarker.template.*;
+    import freemarker.core.*;
+    extends TemplateElement
+{
+    public boolean isForeach() {
+        return get(0).getType() == FOREACH;
+    }
+
+    public String getIndexName() {
+        return isForeach() ? get(1).toString() : get(3).toString();
+    }
+    
+    public Expression getListExpression() {
+        return isForeach() ? (Expression) get(3) : (Expression) get(1);
+    }
+
+    public void execute(Environment env) throws TemplateException, IOException 
+    {
+        Object baseModel = getListExpression().evaluate(env);
+        assertNonNull(baseModel, getListExpression(), env);
+        env.process(new LoopContext(this, env.getCurrentScope(), baseModel)); // REVISIT
+    }
+
+    public String getDescription() {
+        return isForeach() ?
+            "foreach " + getIndexName() + " in " + getListExpression() 
+            :
+            "list " + getListExpression() + " as " + getIndexName();
+    }
+}
 
 VisitNode Visit :
 {
@@ -1524,9 +1531,9 @@ INJECT VarDirective :
    (
      tp=If
      |
-     tp=List
+     tp=ListBlock
      |
-     tp=ForEach
+     tp=ForEachBlock
      |
      tp=Assign
      |
