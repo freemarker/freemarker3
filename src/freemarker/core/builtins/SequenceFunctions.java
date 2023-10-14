@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import freemarker.core.Environment;
-import freemarker.core.ast.ArithmeticEngine;
+import freemarker.core.ArithmeticEngine;
 import freemarker.core.parser.ast.BuiltInExpression;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.TemplateDateModel;

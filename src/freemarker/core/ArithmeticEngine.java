@@ -1,10 +1,9 @@
-package freemarker.core.ast;
+package freemarker.core;
 
 import java.math.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import freemarker.core.Environment;
 import freemarker.template.*;
 import freemarker.template.utility.OptimizerUtil;
 

@@ -1,11 +1,9 @@
 package freemarker.core.builtins;
 
 import freemarker.core.Environment;
-import freemarker.core.ast.ArithmeticEngine;
+import freemarker.core.ArithmeticEngine;
 import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.ast.NonNumericalException;
 import freemarker.core.parser.ast.TemplateNode;
-import freemarker.ext.beans.ObjectWrapper;
 import freemarker.template.TemplateException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -32,7 +30,7 @@ public class numberBI extends ExpressionEvaluatingBuiltIn
         } catch(NumberFormatException nfe) {
                 String mess = "Error: " + caller.getStartLocation()
                 + "\nExpecting a number in string here, found: " + string;
-                throw new NonNumericalException(mess, env);
+                throw new TemplateException(mess, env);
             }
     }
 }

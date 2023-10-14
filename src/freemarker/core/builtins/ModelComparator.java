@@ -4,7 +4,7 @@ import java.text.Collator;
 import java.util.Date;
 
 import freemarker.core.Environment;
-import freemarker.core.ast.ArithmeticEngine;
+import freemarker.core.ArithmeticEngine;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateModelException;

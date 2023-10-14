@@ -6,7 +6,6 @@ import java.util.*;
 
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
-import freemarker.core.ast.ArithmeticEngine;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.ext.beans.ObjectWrapper;
 

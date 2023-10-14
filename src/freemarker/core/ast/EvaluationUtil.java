@@ -36,7 +36,7 @@ public class EvaluationUtil
             throw new InvalidReferenceException(expr + " is null.", env);
         }
         else {
-            throw new NonNumericalException(expr + " is not a number, it is " + model.getClass().getName(), env);
+            throw new TemplateException(expr + " is not a number, it is " + model.getClass().getName(), env);
         }
     }
 
