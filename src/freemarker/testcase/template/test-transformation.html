@@ -23,28 +23,28 @@
 </@>
 
 <p>Now some nested transforms:</p>
-<#transform utility.compress>
-<p    >This tests the compress transformation</p >
-</#transform>
 <@utility.compress>
-<#transform utility.htmlEscape>
 <p    >This tests the compress transformation</p >
-</#transform>
+</@>
+<@utility.compress>
+<@html_escape>
+<p    >This tests the compress transformation</p >
+</@html_escape>
 </@utility.compress>
 <#assign html_transform = "freemarker.template.utility.HtmlEscape"?new() />
-<#transform html_transform><#--Using the transform via an instantiation -->
-<#transform utility.compress>
+<@html_transform><#--Using the transform via an instantiation -->
+<@compress>
 <p    >This tests the compress transformation</p >
-</#transform>
-</#transform>
+</@>
+</@>
 
 <p>Now try method and transform interactions:</p>
-<#transform utility.escape( "xml" )>
+<@utility.escape( "xml" )>
 <p>This isn't a valid XML string.</p>
-</#transform>
-<#transform utility.escape( "html" )>
+</@>
+<@utility.escape( "html" )>
 <p>This isn't a valid HTML string.</p>
-</#transform>
+</@>
 
 <p>A more advanced interaction involves getting a TemplateMethodModel
 to initialise a TemplateTransformModel, as follow:</p>

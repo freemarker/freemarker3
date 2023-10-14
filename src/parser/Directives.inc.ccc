@@ -1191,41 +1191,6 @@ NoParseBlock# :
 
 INJECT NoParseBlock : extends freemarker.core.ast.MixedContent
 
-TransformBlock Transform :
-{
-   Token start, end, argName;
-   Expression exp, argExp;
-   TemplateElement content = null;
-   HashMap<String, Expression> args = null;
-}
-    start=<TRANSFORM>
-    exp=Expression
-    [<SEMICOLON>]
-    (
-       argName=<ID>
-       <EQUALS>
-       argExp=Expression
-       {
-           if (args == null) args = new HashMap<String, Expression>();
-           args.put(argName.toString(), argExp);
-       }
-    )*
-    (
-       end=<EMPTY_DIRECTIVE_END>
-       |
-       (
-          <DIRECTIVE_END>
-          content=OptionalBlock
-          end=CloseDirectiveBlock("transform")
-       )
-    )
-    {
-       TransformBlock result = new TransformBlock(exp, args, content);
-       result.setLocation(template, token_source, start, end);
-       return result;
-    }
-;
-
 SwitchBlock Switch :
 {
     SwitchBlock switchBlock;
@@ -1519,8 +1484,6 @@ INJECT VarDirective :
      tp=TerseComment
      |
      tp=NoParseBlock
-     |
-     tp=Transform
      |
      tp=Switch
      |
