@@ -115,6 +115,7 @@ public class Template extends TemplateCore {
             if (stripWhitespace) {
                 WhitespaceAdjuster wadj = new WhitespaceAdjuster(this);
                 wadj.visit(this);
+                //wadj.visit(this.getRootElement());
             }
             for (ASTVisitor visitor : cfg.getAutoVisitors()) {
             	if (visitor instanceof Cloneable) {

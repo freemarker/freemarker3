@@ -1,6 +1,7 @@
 package freemarker.template;
 
 import freemarker.core.ast.*;
+import freemarker.core.parser.Node;
 import freemarker.core.parser.ast.Comment;
 import freemarker.core.parser.ast.ImportDeclaration;
 import freemarker.core.parser.ast.PropertySetting;
@@ -9,7 +10,7 @@ import freemarker.core.parser.ast.VarDirective;
 import java.util.List;
 import java.util.ArrayList;
 
-public class WhitespaceAdjuster extends ASTVisitor {
+public class WhitespaceAdjuster extends Node.Visitor {
 	
 	private Template template;
 	
@@ -25,10 +26,16 @@ public class WhitespaceAdjuster extends ASTVisitor {
 		       || (elem instanceof PropertySetting)
 		       || (elem instanceof Comment);
  	}
+
+	 public void visit(Template template) {
+		TemplateHeaderElement header = template.getHeaderElement();
+		if (header != null) visit(header);
+		visit(template.getRootTreeNode());
+	}
 	
 	public void visit(MixedContent node) {
 		boolean atTopLevel = node.getParent() == null;
-		super.visit(node);
+		recurse(node);
 		List<TemplateElement> childElements = new ArrayList<TemplateElement>();
 		TemplateElement prev = null;
 		for (TemplateElement elem : node.childrenOfType(TemplateElement.class)) {
@@ -83,4 +90,5 @@ public class WhitespaceAdjuster extends ASTVisitor {
 			}
 		}
 	}
+
 }

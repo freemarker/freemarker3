@@ -6,16 +6,10 @@ import freemarker.core.parser.ast.*;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
-import freemarker.core.parser.ast.Expression;
-import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.parser.ast.FallbackInstruction;
-import freemarker.core.parser.ast.ImportDeclaration;
-import freemarker.core.parser.ast.Interpolation;
-import freemarker.core.parser.ast.StringLiteral;
-import freemarker.core.parser.ast.TemplateNode;
 import freemarker.template.utility.DeepUnwrap;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
+import freemarker.core.parser.Node;
 import java.util.*;
 
 /**
@@ -24,7 +18,7 @@ import java.util.*;
  * @author revusky
  */
 
-public class PostParseVisitor extends ASTVisitor {
+public class PostParseVisitor extends Node.Visitor {
 	
 	private Template template;
 	private List<EscapeBlock> escapes = new ArrayList<EscapeBlock>();
@@ -39,6 +33,12 @@ public class PostParseVisitor extends ASTVisitor {
 		}
 		EscapeBlock lastEscape = escapes.get(escapes.size() -1);
 		return lastEscape.doEscape(exp);
+	}
+
+	 public void visit(Template template) {
+		TemplateHeaderElement header = template.getHeaderElement();
+		if (header != null) visit(header);
+		visit(template.getRootTreeNode());
 	}
 	
 	public void visit(TemplateHeaderElement header) {
@@ -78,11 +78,11 @@ public class PostParseVisitor extends ASTVisitor {
 			ParsingProblem problem = new ParsingProblem("The legacy #include instruction is not permitted in strict_vars mode. Use #embed or possibly #import.", node);
 			template.addParsingProblem(problem);
 		}
-		super.visit(node);
+		recurse(node);
 	}
 	
 	public void visit(AssignmentInstruction node) {
-		super.visit(node);
+		recurse(node);
 		if (template.strictVariableDeclaration()) {
 			if (node.getBlockType() == AssignmentInstruction.NAMESPACE) {
 				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
@@ -108,7 +108,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(BlockAssignment node) {
-		super.visit(node);
+		recurse(node);
 		if (template.strictVariableDeclaration()) {
 			if (node.getBlockType() == AssignmentInstruction.NAMESPACE) {
 				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
@@ -132,7 +132,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(BuiltInExpression node) {
-		super.visit(node);
+		recurse(node);
 		if (node.getBuiltIn() == null) {
 			ParsingProblem problem = new ParsingProblem("Unknown builtin: " + node.getName(), node);
 			template.addParsingProblem(problem);
@@ -140,7 +140,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(Interpolation node) {
-		super.visit(node);
+		recurse(node);
 		markAsProducingOutput(node);
 		Expression escapedExpression = escapedExpression(node.getExpression());
 		node.setEscapedExpression(escapedExpression);
@@ -154,7 +154,7 @@ public class PostParseVisitor extends ASTVisitor {
             node.getParent().replace(node, cblock);
             visit(cblock);
         } else {
-            super.visit(node);
+            recurse(node);
         }
 	}
 	
@@ -162,7 +162,7 @@ public class PostParseVisitor extends ASTVisitor {
 		Expression escapedExpression = escapedExpression(node.getExpression());
 		node.setEscapedExpression(escapedExpression);
 		escapes.add(node);
-		super.visit(node);
+		recurse(node);
 		escapes.remove(escapes.size() -1);
 	}
 	
@@ -184,7 +184,7 @@ public class PostParseVisitor extends ASTVisitor {
 			}
 		}
 		template.addMacro(node);
-		super.visit(node);
+		recurse(node);
 	}
 	
 	public void visit(NoEscapeBlock node) {
@@ -196,7 +196,7 @@ public class PostParseVisitor extends ASTVisitor {
 			template.addParsingProblem(new ParsingProblem("The noescape directive only makes sense inside an escape block.", node));
 		}
 		EscapeBlock last = escapes.remove(escapes.size() -1);
-		super.visit(node);
+		recurse(node);
 		escapes.add(last);
 	}
 	
@@ -204,18 +204,18 @@ public class PostParseVisitor extends ASTVisitor {
 		node.declareVariable(node.getIndexName());
 		node.declareVariable(node.getIndexName() + "_has_next");
 		node.declareVariable(node.getIndexName() + "_index");
-		super.visit(node);
+		recurse(node);
 	}
 	
 	public void visit(FallbackInstruction node) {
-		super.visit(node);
+		recurse(node);
 		if (getContainingMacro(node) == null) {
 			template.addParsingProblem(new ParsingProblem("The fallback directive can only be used inside a macro", node));
 		}
 	}
 	
 	public void visit(BreakInstruction node) {
-		super.visit(node);
+		recurse(node);
 		Node parent = node;
 		while (parent != null && !(parent instanceof SwitchBlock) && !(parent instanceof IteratorBlock)) { 
 			parent = parent.getParent();
@@ -226,7 +226,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(BodyInstruction node) {
-		super.visit(node);
+		recurse(node);
 		Macro macro = getContainingMacro(node);
 		if (macro == null) {
 			template.addParsingProblem(new ParsingProblem("The nested directive can only be used inside a function or macro.", node));
@@ -234,7 +234,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(ReturnInstruction node) {
-		super.visit(node);
+		recurse(node);
 		Node parent = node;
 		while (parent != null && !(parent instanceof Macro)) {
 			parent = parent.getParent();
@@ -277,7 +277,7 @@ public class PostParseVisitor extends ASTVisitor {
 	}
 	
 	public void visit(SwitchBlock node) {
-		super.visit(node);
+		recurse(node);
 		boolean foundDefaultCase = false;
 		for (TemplateNode te : node.getCases()) {
 			if (((Case) te).isDefault()) {
@@ -321,7 +321,7 @@ public class PostParseVisitor extends ASTVisitor {
 			template.addParsingProblem(new ParsingProblem(msg, node));
 		}
 		template.declareVariable(namespaceName);
-		super.visit(node);
+		recurse(node);
 	}
 
 	public void visit(TrimInstruction node) {
