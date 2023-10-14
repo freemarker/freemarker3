@@ -1285,20 +1285,27 @@ EscapeBlock Escape :
     }
 ;
 
-NoEscapeBlock NoEscape :
-{
-    Token start, end;
-    TemplateElement content;
-}
-    start=<NOESCAPE>
-    content=Content
-    end=CloseDirectiveBlock("noescape")
-    {
-       NoEscapeBlock result = new NoEscapeBlock(content);
-       result.setLocation(template, token_source, start, end);
-       return result;
-    }
+NoEscapeBlock# :
+    <NOESCAPE>
+    Content
+    CloseDirectiveBlock("noescape")
 ;
+
+INJECT NoEscapeBlock :
+    import java.io.IOException;
+    import freemarker.core.Environment;
+    extends TemplateElement
+{
+    public void execute(Environment env) throws IOException {
+        if (firstChildOfType(TemplateElement.class) != null) {
+            env.render(firstChildOfType(TemplateElement.class));
+        }
+    }
+
+    public String getDescription() {
+        return "noescape block";
+    }
+}
 
 
 Token CloseDirectiveBlock(String expectedTags) :
@@ -1517,7 +1524,7 @@ INJECT VarDirective :
      |
      tp=Escape
      |
-     tp=NoEscape
+     tp=NoEscapeBlock
      |
      tp=Visit
      |
