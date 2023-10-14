@@ -739,7 +739,6 @@ INJECT RangeExpression :
    import freemarker.core.Environment;
    import freemarker.core.ast.EvaluationUtil;
    import freemarker.core.parser.ast.Expression;
-   import freemarker.core.ast.NumericalRange;
    extends Expression
 {
     public Expression getLeft() {
@@ -779,6 +778,41 @@ INJECT RangeExpression :
         result.add(get(1));
         if (hasRhs()) result.add(getRight().deepClone(name, subst));
         return result;
+    }
+
+    private class NumericalRange implements TemplateSequenceModel {
+        private int lower, upper;
+        private boolean descending, norhs; // if norhs is true, then we have a half-range, like n..
+        
+        /**
+        * Constructor for half-range, i.e. n..
+        */
+        public NumericalRange(int lower) {
+            this.norhs = true;
+            this.lower = lower;
+        }
+
+        public NumericalRange(int left, int right) {
+            lower = Math.min(left, right);
+            upper = Math.max(left, right);
+            descending = (left != lower);
+        }
+
+        public Object get(int i) {
+            int index = descending ? (upper -i) : (lower + i);
+            if ((norhs && index > upper) || index <lower) {
+                throw new TemplateModelException("out of bounds of range");
+            }
+            return index;
+        }
+
+        public int size() {
+            return 1 + upper - lower;
+        }
+        
+        boolean hasRhs() {
+            return !norhs;
+        }
     }
 }
 
