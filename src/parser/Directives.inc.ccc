@@ -92,26 +92,37 @@ TemplateElement If :
    }
 ;
 
-AttemptBlock Attempt :
-{
-   Token start, end;
-   TemplateElement block=null, recoveryBlock;
-   ParseException problem = null;
-}
-   start=<_ATTEMPT>
-   block=Content
-   recoveryBlock=RecoveryBlock
-   end=CloseDirectiveBlock("attempt, recover")
-   {
-      AttemptBlock result = new AttemptBlock(block, recoveryBlock);
-      result.setLocation(template, token_source, start, end);
-      if (problem != null) {
-      	ParsingProblem pp = new ParsingProblem(problem.getMessage(), result);
-      	result.addParsingProblem(pp);
-      }
-      return result;
-   }
+AttemptBlock# :
+   <_ATTEMPT>
+   Content
+   RecoveryBlock
+   CloseDirectiveBlock("attempt, recover")
 ;
+
+INJECT AttemptBlock :
+    import java.io.IOException;
+    import java.util.*;
+    import freemarker.core.Environment;
+    import freemarker.template.*;
+    extends TemplateElement
+{
+    public TemplateElement getAttemptBlock() {
+        return childrenOfType(TemplateElement.class).get(0);
+    }
+    
+    public TemplateElement getRecoverBlock() {
+        return childrenOfType(TemplateElement.class).get(1);
+    }
+
+    public void execute(Environment env) throws IOException 
+    {
+        env.render(getAttemptBlock(), getRecoverBlock());
+    }
+
+    public String getDescription() {
+        return "attempt block";
+    }
+}
 
 RecoveryBlock# : 
    <_RECOVER>
@@ -1514,7 +1525,7 @@ INJECT VarDirective :
      |
      tp=FallbackInstruction
      |
-     tp=Attempt
+     tp=AttemptBlock
    )
    {
       return tp;

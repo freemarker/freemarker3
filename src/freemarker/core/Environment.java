@@ -283,16 +283,12 @@ public final class Environment extends Configurable implements Scope {
      */
 
     public void render(TemplateElement attemptBlock,
-            TemplateElement recoveryBlock, List<ParsingProblem> parsingProblems) throws TemplateException,
-            IOException {
+            TemplateElement recoveryBlock) throws IOException {
         Writer prevOut = this.out;
         StringWriter sw = new StringWriter();
         this.out = sw;
         TemplateException thrownException = null;
         try {
-            if (!parsingProblems.isEmpty()) {
-                throw new TemplateException(new ParseException(parsingProblems), this);
-            }
             render(attemptBlock);
         } catch (TemplateException te) {
             thrownException = te;
