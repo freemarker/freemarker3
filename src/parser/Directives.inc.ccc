@@ -341,35 +341,44 @@ INJECT StopInstruction :
     }
 }
 
-TemplateElement Nested :
-{
-  Token t, end;
-  PositionalArgsList args=null;
-  BodyInstruction result = null;
-}
-   (
-      (
-         t=<SIMPLE_NESTED>
-         {
-            result = new BodyInstruction(null);
-            result.setLocation(template, token_source, t, t);
-         }
-      )
-      |
-      (
-          t=<NESTED>
-          PositionalArgsList {args = (PositionalArgsList) peekNode();}
-          end=LooseDirectiveEnd
-          {
-             result = new BodyInstruction(args);
-             result.setLocation(template, token_source, t, end);
-          }
-      )
-   )
-   {
-       return result;
-   }
+NestedInstruction# :
+    <SIMPLE_NESTED>
+    |
+    (
+        <NESTED>
+        PositionalArgsList
+        LooseDirectiveEnd
+    )
 ;
+
+INJECT NestedInstruction :
+    import java.io.IOException;
+    import freemarker.core.*;
+    import freemarker.template.*;
+    extends TemplateElement
+{
+    public ArgsList getArgs() {
+    	return firstChildOfType(ArgsList.class);
+    }
+    
+    /**
+     * There is actually a subtle but essential point in the code below.
+     * A macro operates in the context in which it is defined. However, 
+     * a nested block within a macro instruction is defined in the 
+     * context in which the macro was invoked. So, we actually need to
+     * temporarily switch the namespace and macro context back to
+     * what it was before macro invocation to implement this properly.
+     * I (JR) realized this thanks to some incisive comments from Daniel Dekany.
+     */
+    public void execute(Environment env) throws IOException {
+        MacroInvocationBodyContext bodyContext = new MacroInvocationBodyContext(env, (PositionalArgsList) getArgs());
+        env.render(bodyContext);
+    }
+
+    public String getDescription() {
+        return "nested macro content";
+    }
+}
 
 FlushInstruction# :
    <FLUSH>
@@ -1551,7 +1560,7 @@ INJECT VarDirective :
      |
      tp=TrimInstruction
      |
-     tp=Nested
+     tp=NestedInstruction
      |
      tp=EscapeBlock
      |
