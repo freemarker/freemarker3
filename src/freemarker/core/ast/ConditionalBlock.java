@@ -16,7 +16,6 @@ public class ConditionalBlock extends TemplateElement {
 
     private Expression condition;
     private boolean isFirst;
-    boolean isSimple;
 
     public ConditionalBlock(Expression condition, TemplateElement nestedBlock, boolean isFirst)
     {
@@ -29,29 +28,10 @@ public class ConditionalBlock extends TemplateElement {
     	return condition;
     }
     
-    public boolean isFirst() {
-    	return isFirst;
-    }
-    
-    public boolean isSimple() {
-    	return isSimple;
-    }
-
     public void execute(Environment env) throws TemplateException, IOException {
-        if (isSimple && condition != null && !condition.isTrue(env)) {
-        	return;
-        }
         env.render(firstChildOfType(TemplateElement.class));
     }
     
-    public boolean isLoneIfBlock() {
-    	return isSimple;
-    }
-    
-    public void setIsSimple(boolean isSimple) {
-    	this.isSimple = isSimple;
-    }
-
     public String getDescription() {
         String s = "if ";
         if (condition == null) {

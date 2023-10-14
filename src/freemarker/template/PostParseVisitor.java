@@ -145,18 +145,6 @@ public class PostParseVisitor extends Node.Visitor {
 		node.setEscapedExpression(escapedExpression);
 	}
 	
-	public void visit(IfBlock node) {
-        if (node.size() == 1) {
-            ConditionalBlock cblock = (ConditionalBlock) node.get(0);
-            cblock.setIsSimple(true);
-           	cblock.setLocation(node.getTemplate(), node.getTokenSource(), cblock, node);
-            node.getParent().replace(node, cblock);
-            visit(cblock);
-        } else {
-            recurse(node);
-        }
-	}
-	
 	public void visit(EscapeBlock node) {
 		Expression escapedExpression = escapedExpression(node.getExpression());
 		node.setEscapedExpression(escapedExpression);

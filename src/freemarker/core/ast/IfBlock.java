@@ -24,14 +24,9 @@ public class IfBlock extends TemplateElement {
         add(block);
     }
     
-    public List<TemplateElement> getSubBlocks() {
-    	return Collections.unmodifiableList(childrenOfType(TemplateElement.class));
-    }
-    
     public void execute(Environment env) throws TemplateException, IOException {
     	
-        for (TemplateNode te : childrenOfType(TemplateElement.class)) {
-            ConditionalBlock cblock = (ConditionalBlock) te;
+        for (ConditionalBlock cblock : childrenOfType(ConditionalBlock.class)) {
             Expression condition = cblock.getCondition();
             if (condition == null || condition.isTrue(env)) {
                 if (cblock.firstChildOfType(TemplateElement.class) != null) {
