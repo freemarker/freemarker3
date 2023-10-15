@@ -542,90 +542,6 @@ INJECT TrimInstruction :
         return true;
     }
 }
-#if false
-TemplateElement Assign :
-{
-   Token start, end;
-   int type;
-   Token id=null;
-   Expression nameExp, exp, nsExp=null;
-   String varName;
-   TemplateElement block;
-   Map<String, Expression> assignments = new LinkedHashMap<>();
-   String assignmentType;
-   AssignmentInstruction result;
-}
-    (
-      start=<ASSIGN> {type = AssignmentInstruction.NAMESPACE; assignmentType="assign";}
-      |
-      start=<GLOBALASSIGN>{type = AssignmentInstruction.GLOBAL; assignmentType = "global";}
-      |
-      start=<LOCALASSIGN> {type = AssignmentInstruction.LOCAL; assignmentType = "local";}
-      |
-      start=<SET> {type = AssignmentInstruction.SET; assignmentType = "set";}
-    )
-    {result = new AssignmentInstruction(type);}
-    nameExp=IdentifierOrStringLiteral
-    {
-       varName = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
-    }
-    ((
-       <EQUALS>
-       exp=Expression {assignments.put(varName, exp);}
-       (
-            [<COMMA>]
-            nameExp=IdentifierOrStringLiteral
-            {
-               varName = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
-            }
-            <EQUALS> =>||
-            exp=Expression
-            {
-            	assignments.put(varName, exp);
-            } 
-       )*
-       [
-          id=<IN>
-          nsExp=Expression {if (type != AssignmentInstruction.SET && type != AssignmentInstruction.NAMESPACE) {
-          	   ParsingProblem problem = new ParsingProblem("Can only assign to namespace with #set or #assign.", result);
-          	   template.addParsingProblem(problem);
-            } 
-          }
-       ]
-       end=LooseDirectiveEnd
-       {
-           result.setNamespaceExp(nsExp);
-		   for (Map.Entry<String,Expression> entry : assignments.entrySet()) {
-           	    result.addAssignment(entry.getKey(), entry.getValue());
-           }
-           result.setLocation(template, token_source, start, end);
-           return result;
-       }
-    )
-    |
-    (
-       [
-          id=<IN>
-          nsExp=Expression {if (type != AssignmentInstruction.NAMESPACE && type != AssignmentInstruction.SET) throw new ParseException(getErrorStart(id) + "\nCannot assign to namespace here.", id.getBeginLine(), id.getBeginColumn());}
-       ]
-       <DIRECTIVE_END>
-       block=Content
-       end=CloseDirectiveBlock(assignmentType)
-       {
-       	  String name = end.toString().substring(3, end.toString().length() -1);
-       	  switch (type) {
-       	   	   case AssignmentInstruction.LOCAL : if (name.length() >0 && !name.equals("local")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.getBeginLine(), end.getBeginColumn()); break;
-       	   	   case AssignmentInstruction.NAMESPACE : if (name.length() >0 && !name.equals("assign")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.getBeginLine(), end.getBeginColumn()); break;
-       	   	   case AssignmentInstruction.GLOBAL : if (name.length() >0 && !name.equals("global")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.getBeginLine(), end.getBeginColumn()); break;
-       	   	   case AssignmentInstruction.SET : if (name.length() >0 && !name.equals("set")) throw new ParseException(getErrorStart(end) + "\nMismatched assignment tags.", end.getBeginLine(), end.getBeginColumn()); break;
-       	  }
-          BlockAssignment ba = new BlockAssignment(block, varName, type, nsExp);
-          ba.setLocation(template, token_source, start, end);
-          return ba;
-       }
-    ))
-;
-#else
 
 BlockAssignment# :
 {String assignmentType = "set";}
@@ -823,9 +739,6 @@ INJECT AssignmentInstruction :
     	return "assignment instruction";
     }
 }
-
-
-#endif
 
 IncludeInstruction# :
 {
@@ -1476,28 +1389,6 @@ TemplateElement UnifiedMacroTransform :
     }
 ;
 
-TemplateElement Call :
-{
-   Token start, end;
-   Identifier id;
-   String macroName= null;
-   UnifiedCall result = new UnifiedCall();
-}
-    start=<CALL>
-    id=Identifier {result.setNameExp(id);}
-    [
-	    <OPEN_PAREN>
-	]
-    ArgsList {result.setArgs((ArgsList) peekNode());}
-    [<CLOSE_PAREN>]
-    end=LooseDirectiveEnd
-    {
-       result.setLocation(template, token_source, start, end);
-       //args.setLocationInfoIfAbsent(result);
-       return result;
-    }
-;
-
 Map<String, Expression> NamedArgs :
 {
     Map<String, Expression> result = new LinkedHashMap<String, Expression>();
@@ -1908,8 +1799,6 @@ INJECT VarDirective :
      tp=Macro
      |
      tp=UnifiedMacroTransform
-     |
-     tp=Call
      |
      tp=TerseComment
      |

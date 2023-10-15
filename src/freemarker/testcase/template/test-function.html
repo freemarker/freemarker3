@@ -28,7 +28,7 @@
 
 <p>Function is defined, now let's call it:</p>
 
-   <#call español(urls.home, images.home, "Home")><#t>
+   <@español urls.home images.home "Home"/><#t>
 
 <p>Again, but with different parameters:</p>
 
@@ -48,7 +48,7 @@
 
 <#macro recurse(dummy, a=3)>
     <#if (a > 0)>
-        <#call recurse(dummy, a - 1)>
+        <@recurse dummy, a - 1 />
     </#if>
     ${a}
 </#macro>
@@ -73,7 +73,7 @@ foo=${foo} baz=[<#list bar?keys as key>${key}=${bar[key]}<#if key_has_next>, </#
   ${pattern}<#lt>
 </#macro>
 
-<#call fmt("Hello {0}! Today is {1}.", "World", "Monday")>
+<@fmt "Hello {0}! Today is {1}.", "World", "Monday" />
 
 </body>
 </html>
