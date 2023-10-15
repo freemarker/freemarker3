@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import freemarker.core.Environment;
-import freemarker.core.ast.UnifiedCall;
+import freemarker.core.parser.ast.UnifiedCall;
 import freemarker.core.parser.ast.IncludeInstruction;
 import freemarker.core.parser.ast.TemplateNode;
 

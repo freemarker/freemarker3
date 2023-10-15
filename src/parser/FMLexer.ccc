@@ -173,7 +173,7 @@ INJECT LEXER_CLASS :
                     token.setType(PRINTABLE_CHARS);
                 }
                 break;
-            case FUNCTION : case MACRO : case PARAM : case NESTED : case STOP : case RETURN : case CALL : case IF : case ELSE_IF : case VISIT : case RECURSE : case VAR : case SET : case ASSIGN : case LOCALASSIGN : case GLOBALASSIGN : case LIST : case FOREACH : case SWITCH : case CASE : case _INCLUDE : case IMPORT : case EMBED : case ESCAPE : case SETTING : 
+            case FUNCTION : case MACRO : case PARAM : case NESTED : case STOP : case RETURN : case IF : case ELSE_IF : case VISIT : case RECURSE : case VAR : case SET : case ASSIGN : case LOCALASSIGN : case GLOBALASSIGN : case LIST : case FOREACH : case SWITCH : case CASE : case _INCLUDE : case IMPORT : case EMBED : case ESCAPE : case SETTING : 
                 switchTo(LexicalState.EXPRESSION);
         }
         return token;
@@ -232,8 +232,6 @@ TOKEN:
     <STOP : <START_TAG> "stop" <BLANK>> 
     |
     <RETURN : <START_TAG> "return" <BLANK>> 
-    |
-    <CALL : <START_TAG> "call" <BLANK>> 
     |
     <SETTING : <START_TAG> "setting" <BLANK>> 
     |

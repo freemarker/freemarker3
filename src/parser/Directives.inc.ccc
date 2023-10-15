@@ -1314,12 +1314,12 @@ INJECT ParameterList :
     {
 	   result.setName(name);
 	   result.add(block);
-      result.setLocation(template, token_source, start, end);
-      return result;
+       result.setLocation(template, token_source, start, end);
+       return result;
     }
 ;
 
-
+#if false
 TemplateElement UnifiedMacroTransform :
 {
    Token start=null, end, t;
@@ -1388,6 +1388,104 @@ TemplateElement UnifiedMacroTransform :
        return result;
     }
 ;
+#else
+UnifiedCall# :
+   <UNIFIED_CALL>
+   Expression
+   [<TERMINATING_WHITESPACE>]
+   [ArgsList]
+   [
+       <SEMICOLON>[<TERMINATING_WHITESPACE>]
+       ParameterList
+   ] 
+   (
+      <EMPTY_DIRECTIVE_END>
+      |
+      <DIRECTIVE_END>
+      Content
+      <UNIFIED_CALL_END>      
+   )  
+;
+
+INJECT UnifiedCall :
+    import java.io.IOException;
+    import java.util.*;
+    import freemarker.core.Environment;
+    import freemarker.core.ast.Macro;
+    import freemarker.template.TemplateDirectiveModel;
+    import freemarker.template.TemplateException;
+    extends TemplateElement
+{
+    public Expression getNameExp() {
+        return (Expression) get(1);
+    }
+
+    public ArgsList getArgs() {
+        ArgsList result = firstChildOfType(ArgsList.class);
+        if (result == null) result = new PositionalArgsList();
+        return result;
+    }
+
+    public ParameterList getBodyParameters() {
+        return firstChildOfType(ParameterList.class);
+    }
+
+    public void close() {
+    	ParameterList bodyParameters = getBodyParameters();
+    	if (bodyParameters != null) {
+    		for (String paramName : bodyParameters.getParams()) {
+    			declareVariable(paramName);
+    		}
+    		String catchallParam = bodyParameters.getCatchAll();
+    		if (catchallParam != null) {
+    			declareVariable(catchallParam);
+    		}
+    	}
+    }
+
+    public void execute(Environment env) throws IOException {
+        Expression nameExp = getNameExp();
+        Object tm = nameExp.evaluate(env);
+        ArgsList args = getArgs();
+        ParameterList bodyParameters = getBodyParameters();
+        if (tm == Macro.DO_NOTHING_MACRO) return; // shortcut here.
+        if (tm instanceof Macro) {
+            Macro macro = (Macro) tm;
+            if (macro.isFunction()) {
+                throw new TemplateException("Routine " + macro.getName() 
+                        + " is a function. A function can only be called " +
+                        "within the evaluation of an expression.", env);
+            }    
+            env.render(macro, args, bodyParameters, firstChildOfType(TemplateElement.class));
+        }
+        else if (tm instanceof TemplateDirectiveModel) {
+            Map<String, Object> argMap
+                    = args != null
+                            ? args.getParameterMap(tm, env)
+                            : new HashMap<String, Object>();
+            List<String> paramNames;
+            if(bodyParameters == null) {
+                paramNames = Collections.emptyList();
+            }
+            else {
+                paramNames = bodyParameters.getParamNames();
+            }
+            env.render(firstChildOfType(TemplateElement.class), (TemplateDirectiveModel) tm, argMap, paramNames);
+        }
+        else {
+            assertNonNull(tm, nameExp, env);
+            throw new TemplateException(getStartLocation() + ": " + getNameExp() + 
+                    " is not a user-defined directive.", env);
+        }
+    }
+    
+    
+    public String getDescription() {
+        return "user-directive " + getNameExp();
+    }
+}
+
+#endif
 
 Map<String, Expression> NamedArgs :
 {
@@ -1798,7 +1896,7 @@ INJECT VarDirective :
      |
      tp=Macro
      |
-     tp=UnifiedMacroTransform
+     tp=UnifiedCall
      |
      tp=TerseComment
      |

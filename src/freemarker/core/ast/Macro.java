@@ -1,20 +1,15 @@
 package freemarker.core.ast;
 
-import java.util.*;
 import freemarker.template.*;
 import freemarker.core.Environment;
 import freemarker.core.parser.ast.ParameterList;
-import freemarker.core.parser.ast.Expression;
-import freemarker.core.parser.ast.MixedContent;
-import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.TemplateElement;
-import freemarker.core.parser.ast.VarDirective;
 
 
 /**
  * An element representing a macro declaration.
  */
-public final class Macro extends TemplateElement implements TemplateModel, Cloneable {
+public final class Macro extends TemplateElement implements TemplateModel {
     private String name;
     private ParameterList params;
     private boolean isFunction;
@@ -64,35 +59,5 @@ public final class Macro extends TemplateElement implements TemplateModel, Clone
 
     public String getDescription() {
         return (isFunction() ? "function " : "macro ") + name;
-    }
-    
-    public void canonicalizeAssignments() {
-        if (createsScope() && (firstChildOfType(TemplateElement.class) instanceof MixedContent)) {
-            MixedContent block = (MixedContent) firstChildOfType(TemplateElement.class);
-            VarDirective varDirective = null;
-            Set<String> variables = new HashSet<String>();
-            variables.addAll(params.getParamNames());
-            for (TemplateNode te : block.childrenOfType(TemplateElement.class)) {
-                if (te instanceof VarDirective) {
-                    VarDirective sdir = (VarDirective) te; 
-                    if (varDirective == null){
-                        varDirective = sdir;
-                    }
-                    Map<String, Expression> vars = sdir.getVariables();
-                    for (String varname : vars.keySet()) {
-                        variables.add(varname);
-                    }
-                }
-            }
-            for (String varname : declaredVariables()) {
-                if (!variables.contains(varname)) {
-                    if (varDirective == null) {
-                        varDirective = new VarDirective();
-                        block.add(0, varDirective);
-                    }
-                    varDirective.addVar(varname);
-                }
-            }
-        }
     }
 }
