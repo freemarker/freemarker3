@@ -19,7 +19,7 @@ TREE_BUILDING_ENABLED=false;
  * an "<#if" and then, when you hit the matching ">"
  * that ends the if directive, you go back to DEFAULT lexical state.
  * Note that whitespace is ignored in the
- * EXPRESSION statep but is passed through to the parser as PCDATA 
+ * EXPRESSION state but is passed through to the parser as PCDATA 
  * in the DEFAULT state. EXPRESSION_COMMENT is a lexical state
  * we are in if for comments within an FTL expression.
  * NO_SPACE_EXPRESSION is a slight variant on the EXPRESSION state. 

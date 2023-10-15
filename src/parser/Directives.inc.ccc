@@ -1285,41 +1285,6 @@ INJECT ParameterList :
     }
 }
 
-#if false
-#Macro :
-{
-   Macro result = new Macro();
-   Token arg, start, end;
-   Expression nameExp;
-   String name;
-   TemplateElement block;
-   ParameterList params;
-   String functionOrMacro;
-}
-    (
-        start=<MACRO> {functionOrMacro = "macro";}
-        |
-        start=<FUNCTION> {result.setFunction(true); functionOrMacro = "function";}
-    )
-    nameExp=IdentifierOrStringLiteral
-    {
-       name = (nameExp instanceof StringLiteral) ? ((StringLiteral) nameExp).getAsString() : nameExp.toString();
-       result.setName(name);
-    }
-    [<OPEN_PAREN>]
-    params=ParameterList {result.setParams(params);}
-    [<CLOSE_PAREN>]
-    <DIRECTIVE_END>
-    block=Content
-    end=CloseDirectiveBlock(functionOrMacro)
-    {
-	   result.setName(name);
-	   result.add(block);
-       result.setLocation(template, token_source, start, end);
-       return result;
-    }
-;
-#else
 Macro# :
     <MACRO>
     IdentifierOrStringLiteral
@@ -1392,8 +1357,6 @@ INJECT Macro :
         return (isFunction() ? "function " : "macro ") + getName();
     }
 }
-
-#endif
 
 UnifiedCall# :
    <UNIFIED_CALL>

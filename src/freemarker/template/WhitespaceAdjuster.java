@@ -1,6 +1,6 @@
 package freemarker.template;
 
-import freemarker.core.ast.*;
+import freemarker.core.ast.TextBlock;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ast.AssignmentInstruction;
 import freemarker.core.parser.ast.BlockAssignment;

@@ -65,7 +65,6 @@ public final class TextBlock extends TemplateElement {
 
 	public String getText() {
 		return getSource();
-		//return text != null ? new String(text) : getSource();
 	}
 
 	public int getBlockType() {

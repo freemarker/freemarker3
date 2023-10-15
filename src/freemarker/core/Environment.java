@@ -12,7 +12,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.IncludeInstruction;

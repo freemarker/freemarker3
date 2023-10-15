@@ -103,7 +103,7 @@ INJECT Node :
 }
 
 INJECT PARSER_CLASS : 
-    import freemarker.core.ast.*;
+    import freemarker.core.ast.TextBlock;
     import freemarker.template.*;
     import freemarker.template.utility.StringUtil;
     import java.util.HashSet;
