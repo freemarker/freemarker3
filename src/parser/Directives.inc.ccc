@@ -221,53 +221,69 @@ INJECT IteratorBlock :
     }
 }
 
-VisitNode Visit :
-{
-   Token start, end;
-   Expression targetNode, namespaces=null;
-}
-   start=<VISIT>
-   targetNode=Expression
+VisitNode# :
+   <VISIT>
+   Expression
    [
-       <USING>
-       namespaces=Expression
+      <USING>
+      Expression
    ]
-   end=LooseDirectiveEnd
-   {
-       VisitNode result = new VisitNode(targetNode, namespaces);
-       result.setLocation(template, token_source, start, end);
-       return result;
-   }
+   LooseDirectiveEnd
 ;
-#if false
-RecurseNode Recurse :
+
+INJECT VisitNode :
+    import java.io.IOException;
+    import java.util.ArrayList;
+    import java.util.List;
+    import freemarker.core.Environment;
+    import freemarker.core.Scope;
+    import freemarker.core.TemplateNamespace;
+    import freemarker.template.*;
+    import static freemarker.ext.beans.ObjectWrapper.*;
+    extends TemplateElement
 {
-   Token start, end = null;
-   Expression node=null, namespaces=null;
+    public Expression getTargetNode() {
+    	return (Expression) get(1);
+    }
+    
+    public Expression getNamespaces() {
+        if (firstChildOfType(USING) == null) return null;
+        return (Expression) get(3);
+    }
+
+    public void execute(Environment env) throws IOException, TemplateException {
+        Expression targetNode = getTargetNode();
+        Expression namespaces = getNamespaces();
+        Object node = targetNode.evaluate(env);
+        assertNonNull(node, targetNode, env);
+        if (!(node instanceof TemplateNodeModel)) {
+            throw new TemplateException("Expecting an XML node here", env);
+        }
+        Object nss = namespaces == null ? null : namespaces.evaluate(env);
+        if (namespaces instanceof StringLiteral) {
+            nss = env.importLib(asString(nss), null);
+        }
+        else if (namespaces instanceof ListLiteral) {
+            nss = ((ListLiteral) namespaces).evaluateStringsToNamespaces(env);
+        }
+        if (nss != null) {
+            if (nss instanceof TemplateNamespace) {
+                List<Scope> ss = new ArrayList<>();
+                ss.add((Scope)nss);
+                nss = ss;
+            }
+            else if (!isList(nss)) {
+                throw new TemplateException("Expecting a sequence of namespaces after 'using'", env);
+            }
+        }
+        env.render((TemplateNodeModel) node, (List<Scope>)nss);
+    }
+
+    public String getDescription() {
+        return "visit instruction";
+    }
 }
-   (
-      start=<SIMPLE_RECURSE>
-      |
-      (
-         start=<RECURSE>
-         [
-            node=Expression
-         ]
-         [
-            <USING>
-            namespaces=Expression
-         ]
-         end=LooseDirectiveEnd
-      )
-   )
-   {
-       if (end == null) end = start;
-       RecurseNode result = new RecurseNode(node, namespaces);
-       result.setLocation(template, token_source, start, end);
-       return result;
-   }
-;
-#else
+
 RecurseNode# :
    <SIMPLE_RECURSE>
    |
@@ -338,8 +354,6 @@ INJECT RecurseNode :
         return "recurse instruction";
     }
 }
-
-#endif
 
 FallbackInstruction# :
    <FALLBACK>
@@ -1687,7 +1701,7 @@ INJECT VarDirective :
      SCAN 1 \...\EscapeBlock =>
      tp=NoEscapeBlock
      |
-     tp=Visit
+     tp=VisitNode
      |
      tp=RecurseNode
      |
