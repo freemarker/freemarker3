@@ -10,9 +10,8 @@ import freemarker.core.Environment;
 import freemarker.core.TemplateCore;
 import freemarker.core.parser.ast.ImportDeclaration;
 import freemarker.core.parser.ast.TemplateElement;
-import freemarker.core.ast.TemplateHeaderElement;
+import freemarker.core.parser.ast.TemplateHeaderElement;
 import freemarker.core.parser.*;
-import freemarker.ext.beans.SimpleMapModel;
 
 import static freemarker.ext.beans.ObjectWrapper.wrap;
 /**

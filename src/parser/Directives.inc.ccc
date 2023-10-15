@@ -1847,7 +1847,7 @@ TemplateElement FreeMarkerText#MixedContent(false) :
        return nodes;
     }
 ;
-
+#if false
 TemplateHeaderElement HeaderElement : 
 {
 	Token key, start, end;
@@ -1874,6 +1874,88 @@ TemplateHeaderElement HeaderElement :
    	   return header;
    }
 ;
+#else
+TemplateHeaderElement# :
+  [<WHITESPACE>]
+  (
+    <TRIVIAL_FTL_HEADER>
+    |
+    (
+        <FTL_HEADER>
+        (
+            <ID>
+            <EQUALS>
+            Expression
+        )*
+        LooseDirectiveEnd
+    )
+  )
+;  
+
+INJECT TemplateHeaderElement :
+    import java.util.*;
+    import freemarker.template.*;
+    import static freemarker.template.utility.StringUtil.*;
+    import static freemarker.ext.beans.ObjectWrapper.*;
+{
+
+    private Map<String,Expression> params = new LinkedHashMap<>();
+
+    public void close() {
+        List<Node> ids = childrenOfType(ID);
+        for (Node n : ids) {
+            String key = n.toString();
+            Expression exp = (Expression) n.nextSibling().nextSibling();
+            params.put(key, exp);
+        }
+    }
+
+    public boolean hasParameter(String name) {
+        return params.containsKey(name);
+    }
+
+    public Map<String,Expression> getParams() {
+        return params;
+    }
+
+    public Object getParameter(String name) {
+        if (!hasParameter(name)) {
+            return null;
+        }
+        Expression exp = params.get(name);
+        return exp.evaluate(null);
+    }
+
+	public String getStringParameter(String name) {
+		Object tm = getParameter(name);
+        if (tm == null) return null;
+		try {
+			return asString(tm);
+		} catch (ClassCastException cce) {
+		    throw new IllegalArgumentException("Parameter " + name + " is not a string.");
+		}
+	}
+
+	public boolean getBooleanParameter(String name) {
+		Object tm = getParameter(name);
+		if (tm == null) {
+			throw new IllegalArgumentException("No parameter " + name);
+		}
+		if (isBoolean(tm)) {
+			return asBoolean(tm);
+		}
+		if (isString(tm)) {
+			try {
+				return getYesNo(asString(tm));
+			} catch (Exception e) {
+				throw new IllegalArgumentException(e);
+			}
+		}
+		throw new IllegalArgumentException("Parameter " + name + " is not a boolean type.");
+	}
+}
+
+#endif
 
 Map<String,Expression> ParamList :
 {
@@ -1904,7 +1986,7 @@ TemplateElement Root :
 }
    [
       SCAN [<WHITESPACE>](<TRIVIAL_FTL_HEADER>|<FTL_HEADER>) =>
-       header=HeaderElement
+       header=TemplateHeaderElement
        {
        	   template.setHeaderElement(header);
        	   String templateEncoding = template.getEncoding();
