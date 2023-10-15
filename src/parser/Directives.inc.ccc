@@ -1346,8 +1346,6 @@ INJECT Macro :
     		declareVariable(catchallVar);
     	}
     }
-    
-
 
     public void execute(Environment env) {
         env.visitMacroDef(this);
@@ -1842,62 +1840,62 @@ INJECT VarDirective :
  * A production for FreeMarker directives.
  */
 TemplateElement#abstract :
-     IfBlock
-     |
-     ListBlock
-     |
-     ForEachBlock
-     |
-     AssignmentInstruction
-     |
-     BlockAssignment
-     |
-     IncludeInstruction
-     |
-     ImportDeclaration
-     |
-     Macro
-     |
-     Function
-     |
-     UnifiedCall
-     |
-     TerseComment
-     |
-     NoParseBlock
-     |
-     SwitchBlock
-     |
-     PropertySetting
-     |
-     VarDirective
-     |
-     BreakInstruction
-     |
-     ReturnInstruction
-     |
-     StopInstruction
-     |
-     FlushInstruction
-     |
-     TrimInstruction
-     |
-     SCAN 1 \...\Macro =>
-     NestedInstruction
-     |
-     SCAN 1 \...\Macro =>
-     FallbackInstruction
-     |
-     EscapeBlock
-     |
-     SCAN 1 \...\EscapeBlock =>
-     NoEscapeBlock
-     |
-     VisitNode
-     |
-     RecurseNode
-     |
-     AttemptBlock
+   IfBlock
+   |
+   ListBlock
+   |
+   ForEachBlock
+   |
+   AssignmentInstruction
+   |
+   BlockAssignment
+   |
+   IncludeInstruction
+   |
+   ImportDeclaration
+   |
+   Macro
+   |
+   Function
+   |
+   UnifiedCall
+   |
+   TerseComment
+   |
+   NoParseBlock
+   |
+   SwitchBlock
+   |
+   PropertySetting
+   |
+   VarDirective
+   |
+   BreakInstruction
+   |
+   ReturnInstruction
+   |
+   StopInstruction
+   |
+   FlushInstruction
+   |
+   TrimInstruction
+   |
+   VisitNode
+   |
+   RecurseNode
+   |
+   AttemptBlock
+   |
+   EscapeBlock
+   |
+   SCAN 1 \...\EscapeBlock =>
+   NoEscapeBlock
+   |
+   SCAN 1 \...\Macro =>
+   NestedInstruction
+   |
+   SCAN 1 \...\Macro =>
+   FallbackInstruction
 ;
 
 INJECT TemplateElement :
@@ -1966,30 +1964,16 @@ List<TextBlock> PCData#void :
     }
 ;
 
-TemplateElement Content#MixedContent(false) :
-{
-    MixedContent nodes = new MixedContent();
-    TemplateElement elem=null;
-    List<TextBlock> text;
-}
+Content#MixedContent(true) :
     (
-      (
-         text=PCData 
-         {
-            for (TextBlock tb : text) nodes.add(tb);
-            for (TextBlock tb : text) pushNode(tb);
-         }
-         |
-         elem=Interpolation {nodes.add(elem);}
-         |
-         elem=TemplateElement {nodes.add(elem);}
-      )
+       {List<TextBlock> text;}
+       text=PCData 
+       {for (TextBlock tb : text) pushNode(tb);}
+       |
+       Interpolation
+       |
+       TemplateElement
     )*
-    {
-        clearNodeScope();
-        pushNode(nodes);
-	    return nodes;
-    }
 ;
 
 INJECT MixedContent :
