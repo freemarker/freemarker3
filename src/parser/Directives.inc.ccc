@@ -1564,17 +1564,20 @@ INJECT VarDirective :
      |
      tp=TrimInstruction
      |
+     SCAN 1 \...\Macro =>
      tp=NestedInstruction
+     |
+     SCAN 1 \...\Macro =>
+     tp=FallbackInstruction
      |
      tp=EscapeBlock
      |
+     SCAN 1 \...\EscapeBlock =>
      tp=NoEscapeBlock
      |
      tp=Visit
      |
      tp=Recurse
-     |
-     tp=FallbackInstruction
      |
      tp=AttemptBlock
    )

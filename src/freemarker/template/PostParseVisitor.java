@@ -20,7 +20,7 @@ import java.util.*;
 public class PostParseVisitor extends Node.Visitor {
 	
 	private Template template;
-	private List<EscapeBlock> escapes = new ArrayList<EscapeBlock>();
+	private List<EscapeBlock> escapes = new ArrayList<>();
 
 	public PostParseVisitor(Template template) {
 		this.template = template;
@@ -194,13 +194,6 @@ public class PostParseVisitor extends Node.Visitor {
 		recurse(node);
 	}
 	
-	public void visit(FallbackInstruction node) {
-		recurse(node);
-		if (getContainingMacro(node) == null) {
-			template.addParsingProblem(new ParsingProblem("The fallback directive can only be used inside a macro", node));
-		}
-	}
-	
 	public void visit(BreakInstruction node) {
 		recurse(node);
 		Node parent = node;
@@ -209,14 +202,6 @@ public class PostParseVisitor extends Node.Visitor {
 		}
 		if (parent == null) {
 			template.addParsingProblem(new ParsingProblem("The break directive can only be used within a loop or a switch-case construct.", node));
-		}
-	}
-	
-	public void visit(NestedInstruction node) {
-		recurse(node);
-		Macro macro = getContainingMacro(node);
-		if (macro == null) {
-			template.addParsingProblem(new ParsingProblem("The nested directive can only be used inside a function or macro.", node));
 		}
 	}
 	
