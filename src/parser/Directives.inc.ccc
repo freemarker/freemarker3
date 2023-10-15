@@ -48,49 +48,70 @@ INJECT Interpolation :
     }
 }
 
-TemplateElement If :
-{
-    Token start, end, t;
-    Expression condition;
-    TemplateElement block;
-    IfBlock ifBlock;
-    ConditionalBlock cblock;
-}
-   start=<IF>
-   condition=Expression
-   <DIRECTIVE_END>
-   block=Content
-   {
-      cblock = new ConditionalBlock(condition, block, true);
-      cblock.setLocation(template, token_source, start, block);
-      ifBlock = new IfBlock(cblock);
-   }
-   (
-       t=<ELSE_IF>
-       condition=Expression
-       LooseDirectiveEnd
-       block=Content
-       {
-          cblock = new ConditionalBlock(condition, block, false);
-          cblock.setLocation(template, token_source, t, block);
-          ifBlock.addBlock(cblock);
-       }
-   )*
-   [
-         t=<ELSE>
-         block=Content
-         {
-            cblock = new ConditionalBlock(null, block, false);
-            cblock.setLocation(template, token_source, t, block);
-            ifBlock.addBlock(cblock);
-         }
-   ]
-   end=CloseDirectiveBlock("if")
-   {
-       ifBlock.setLocation(template, token_source, start, end);
-       return ifBlock;
-   }
+IfBlock# :
+  (
+    <IF>
+    Expression
+    <DIRECTIVE_END>
+    Content
+  )#ConditionalBlock
+  (
+    (
+        <ELSE_IF>
+        Expression
+        <DIRECTIVE_END>
+        Content
+    )#ConditionalBlock
+  )*
+  [
+    (
+        <ELSE>
+        Content
+    )#ConditionalBlock
+  ]
+  CloseDirectiveBlock("if")
 ;
+
+INJECT IfBlock :
+    import java.util.*;
+    import java.io.IOException;
+    import freemarker.core.Environment;
+    extends TemplateElement
+{
+    public void execute(Environment env) throws IOException {
+        for (ConditionalBlock cblock : childrenOfType(ConditionalBlock.class)) {
+            Expression condition = cblock.getCondition();
+            if (condition == null || condition.isTrue(env)) {
+                if (cblock.firstChildOfType(TemplateElement.class) != null) {
+                    env.render(cblock);
+                }
+                return;
+            }
+        }
+    }
+
+    public String getDescription() {
+        return "if-else ";
+    }
+}
+
+INJECT ConditionalBlock :
+    import java.io.IOException;
+    import freemarker.core.Environment;
+    extends TemplateElement
+{
+    public Expression getCondition() {
+    	return firstChildOfType(Expression.class);
+    }
+    
+    public void execute(Environment env) throws IOException {
+        env.render(firstChildOfType(TemplateElement.class));
+    }
+
+    public String getDescription() {
+        return get(0).toString() + " block";
+    }
+}
 
 AttemptBlock# :
    <_ATTEMPT>
@@ -1526,7 +1547,7 @@ INJECT VarDirective :
    TemplateElement tp;
 }
    (
-     tp=If
+     tp=IfBlock
      |
      tp=ListBlock
      |
