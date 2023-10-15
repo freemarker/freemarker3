@@ -1691,7 +1691,7 @@ INJECT PositionalArgsList :
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             if (firstChildOfType(Expression.class) != null) {
-                throw new TemplateModelException("Cannot pass positional arguments to this TemplateTransformModel");
+                throw new TemplateModelException("Cannot pass positional arguments to this TemplateDirectiveModel");
             }
         }
         else {
@@ -1894,16 +1894,7 @@ INJECT ArgsList :
 	private static Parameters getAnnotatedParameters(Object target) {
 		Parameters params = null;
 		Method keyMethod = null;
-		if (target instanceof TemplateTransformModel) {
-			try {
-				keyMethod = target.getClass().getMethod("getWriter", new Class[] {java.io.Writer.class, java.util.Map.class}); 
-			} catch (Exception e) {
-				// This should be impossible, since
-				// if the target is a TemplateTransformModel, it has this method, no?
-				throw new InternalError(e.getMessage());
-			}
-		}
-        else if (target instanceof SimpleMethodModel) {
+        if (target instanceof SimpleMethodModel) {
             params = ((SimpleMethodModel) target).getParametersAnnotation();
         }
 		else if (target instanceof TemplateMethodModel) {

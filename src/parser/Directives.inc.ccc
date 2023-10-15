@@ -239,7 +239,7 @@ VisitNode Visit :
        return result;
    }
 ;
-
+#if false
 RecurseNode Recurse :
 {
    Token start, end = null;
@@ -267,6 +267,79 @@ RecurseNode Recurse :
        return result;
    }
 ;
+#else
+RecurseNode# :
+   <SIMPLE_RECURSE>
+   |
+   (
+      <RECURSE>
+      [Expression]
+      <USING>
+      [Expression]
+      LooseDirectiveEnd
+   )
+;
+
+INJECT RecurseNode : 
+    import java.io.IOException;
+    import java.util.ArrayList;
+    import java.util.List;
+    import freemarker.core.Environment;
+    import freemarker.core.Scope;
+    import freemarker.template.*;
+    import static freemarker.ext.beans.ObjectWrapper.isList;
+    import static freemarker.ext.beans.ObjectWrapper.asString;
+    extends TemplateElement
+{
+    public Expression getTargetNode() {
+        if (get(1) instanceof Expression) {
+            return (Expression) get(1);
+        }
+        return null;
+    }
+    
+    public Expression getNamespaces() {
+        Node using = firstChildOfType(USING);
+        if (using == null) return null;
+        if (using.nextSibling() instanceof Expression) {
+            return (Expression) using.nextSibling();
+        }
+        return null;
+    }
+
+    public void execute(Environment env) throws IOException {
+        Expression targetNode = getTargetNode();
+        Expression namespaces = getNamespaces();
+        Object node = targetNode == null ? null : targetNode.evaluate(env);
+        Object nss = namespaces == null ? null : namespaces.evaluate(env);
+        if (namespaces instanceof StringLiteral) {
+                nss = env.importLib(asString(nss), null);
+        }
+        else if (namespaces instanceof ListLiteral) {
+            nss = ((ListLiteral) namespaces).evaluateStringsToNamespaces(env);
+        }
+        if (node != null && !(node instanceof TemplateNodeModel)) {
+            throw new TemplateException("Expecting an XML node here, for expression: " + targetNode + ", found a: " + node.getClass().getName(), env);
+        }
+        if (nss != null) {
+            if (nss instanceof TemplateHashModel) {
+                List<Scope> ss = new ArrayList<>();
+                ss.add((Scope)nss);
+                nss = ss;
+            }
+            else if (!isList(nss)) {
+                throw new TemplateException("Expecting a sequence of namespaces after 'using'", env);
+            }
+        }
+        env.process((TemplateNodeModel) node, (List<Scope>)nss);
+    }
+
+    public String getDescription() {
+        return "recurse instruction";
+    }
+}
+
+#endif
 
 FallbackInstruction# :
    <FALLBACK>
@@ -1616,7 +1689,7 @@ INJECT VarDirective :
      |
      tp=Visit
      |
-     tp=Recurse
+     tp=RecurseNode
      |
      tp=AttemptBlock
    )
