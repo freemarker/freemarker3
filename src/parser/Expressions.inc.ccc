@@ -12,7 +12,7 @@ INJECT Expression :
    import freemarker.template.*;
    import freemarker.ext.beans.ObjectWrapper;
    import freemarker.core.Environment;
-   import freemarker.core.ast.EvaluationUtil;
+   import freemarker.core.EvaluationUtil;
    import static freemarker.ext.beans.ObjectWrapper.*;
    extends TemplateNode
 {
@@ -270,7 +270,7 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
    import freemarker.template.*;
    import freemarker.core.Environment;
    import freemarker.core.ArithmeticEngine;
-   import freemarker.core.ast.EvaluationUtil;
+   import freemarker.core.EvaluationUtil;
    import freemarker.core.parser.ast.Expression;
    import static freemarker.ext.beans.ObjectWrapper.isNumber;   
    import static freemarker.ext.beans.ObjectWrapper.isList;   
@@ -477,7 +477,7 @@ INJECT MultiplicativeExpression :
    import freemarker.template.TemplateException;
    import freemarker.core.Environment;
    import freemarker.core.ArithmeticEngine;
-   import freemarker.core.ast.EvaluationUtil;
+   import freemarker.core.EvaluationUtil;
    import freemarker.core.parser.ast.Expression;
    import static freemarker.ext.beans.ObjectWrapper.isNumber;
    extends freemarker.core.parser.ast.Expression
@@ -580,7 +580,7 @@ INJECT ComparisonExpression :
    import freemarker.core.ArithmeticEngine;
    import freemarker.core.ast.BooleanExpression;
    import freemarker.core.parser.ast.Expression;
-   import freemarker.core.ast.EvaluationUtil;
+   import freemarker.core.EvaluationUtil;
    import freemarker.ext.beans.Pojo;
    import static freemarker.ext.beans.ObjectWrapper.asBoolean;
    import static freemarker.ext.beans.ObjectWrapper.isBoolean;
@@ -737,7 +737,7 @@ RangeExpression#(>1) :
 INJECT RangeExpression :
    import freemarker.template.*;
    import freemarker.core.Environment;
-   import freemarker.core.ast.EvaluationUtil;
+   import freemarker.core.EvaluationUtil;
    import freemarker.core.parser.ast.Expression;
    extends Expression
 {
@@ -1405,7 +1405,7 @@ INJECT DynamicKeyName :
     import freemarker.template.*;
     import freemarker.ext.beans.ListModel;
     import freemarker.core.parser.ast.Expression;
-    import freemarker.core.ast.EvaluationUtil;
+    import freemarker.core.EvaluationUtil;
     import freemarker.core.ast.Range;
     import static freemarker.ext.beans.ObjectWrapper.*;
     import static freemarker.template.Constants.JAVA_NULL;

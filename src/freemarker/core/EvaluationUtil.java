@@ -1,9 +1,7 @@
-package freemarker.core.ast;
+package freemarker.core;
 
 import java.util.Date;
 
-import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.core.parser.ast.Expression;
