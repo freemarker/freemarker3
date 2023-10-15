@@ -248,19 +248,6 @@ public class PostParseVisitor extends Node.Visitor {
        	}
 	}
 	
-	public void visit(SwitchBlock node) {
-		recurse(node);
-		boolean foundDefaultCase = false;
-		for (TemplateNode te : node.getCases()) {
-			if (((Case) te).isDefault()) {
-				if (foundDefaultCase) {
-					template.addParsingProblem(new ParsingProblem("You can only have one default case in a switch construct.", node));
-				}
-				foundDefaultCase = true;
-			}
-		}
-	}
-	
 	public void visit(TextBlock node) {
 		int type = node.getBlockType();
 		if (type == TextBlock.PRINTABLE_TEXT) {

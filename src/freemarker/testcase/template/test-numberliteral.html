@@ -6,7 +6,7 @@
 <title>FreeMarker: Number Literal Test</title>
 </head>
 <body>
-[#assign hash = {"1" : "one", 
+[#var hash = {"1" : "one", 
                  "12" : "twelve", 
                 "2one" : "two-one", 
                 "one2" : "one-two"}
@@ -40,24 +40,24 @@
 
 ${1.300000?double}
 
-[#assign mynumber = 1.8, USA="en_US" /]
-[#assign myfloat = mynumber?float /]
+[#set mynumber = 1.8, USA="en_US" /]
+[#set myfloat = mynumber?float /]
 
 My number is: ${mynumber}
 [#setting locale="en_US"]
 My float is: ${myfloat}
 The int part is: ${myfloat?int}
 
-[#assign mymessage = mynumber?string]
+[#set mymessage = mynumber?string]
 
 ${mymessage + 3}
 
 <p>Now use numbers in assignment</p>
 
-[#assign mymessage = 1 + 5]
+[#set mymessage = 1 + 5]
 ${mymessage}
 
-[#assign mymessage = mymessage + 2]
+[#set mymessage = mymessage + 2]
 ${mymessage}
 
 <p>Try numbers in tests</p>
@@ -93,8 +93,8 @@ MyMessage is not 152, its: ${mymessage}.
 
 <p>Now for numbers in dynamic keys:</p>
 
-[#assign one = 1]
-[#assign two = 2]
+[#set one = 1]
+[#set two = 2]
 
 ${list[ 1 ]}
 ${list[ 1 + 2 ]}

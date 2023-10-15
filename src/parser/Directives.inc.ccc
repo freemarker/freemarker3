@@ -1240,62 +1240,81 @@ NoParseBlock# :
 
 INJECT NoParseBlock : extends freemarker.core.parser.ast.MixedContent
 
-SwitchBlock Switch :
-{
-    SwitchBlock switchBlock;
-    Case caseIns;
-    Expression switchExp;
-    Token start, end;
-    boolean defaultFound = false;
-}
-   start=<SWITCH>
-   switchExp=Expression
+SwitchBlock# :
+   <SWITCH>
+   Expression
    <DIRECTIVE_END>
    (<WHITESPACE>)*   
-   {
-      switchBlock = new SwitchBlock(switchExp);
-   }
    (
-     SCAN 2 => caseIns=Case
-     {
-       if (caseIns.isDefault()) {
-	   if (defaultFound) {
-                String msg = getErrorStart(start)
-                            + "\nYou can only have one default case in a switch statement";
-                throw new ParseException(msg, start.getBeginLine(), start.getBeginColumn());
-	   }
-	   defaultFound = true;
-	}
-        switchBlock.addCase(caseIns);
-     }
-   )*
-   end=CloseDirectiveBlock("switch")
-   {
-      switchBlock.setLocation(template, token_source, start, end);
-      return switchBlock;
-   }
-;
-#Case :
-{
-    Expression exp = null;
-    TemplateElement block;
-    boolean isDefault = false;
-    Token start;
-}
-   (
-      start=<CASE> 
-      exp=Expression 
+     (
+      <CASE>
+      Expression
       <DIRECTIVE_END>
-      |
-      start=<DEFAUL>{isDefault = true;}
-   )
-   block=Content
-   {
-       Case result = new Case(exp, block, isDefault);
-       result.setLocation(template, token_source, start, block);
-       return result;
-   }
+      Content
+     )#CaseBlock
+   )*
+   [
+     (
+      <DEFAUL>
+      Content
+     )#CaseBlock
+   ]
+   CloseDirectiveBlock("switch")
 ;
+
+INJECT SwitchBlock : 
+    import java.io.IOException;
+    import freemarker.core.Environment;
+    import freemarker.core.BreakException;
+    import freemarker.template.TemplateException;
+    import static freemarker.ext.beans.ObjectWrapper.*;
+    extends TemplateElement  
+{
+    public void execute(Environment env) throws IOException {
+        boolean foundMatch = false;
+        Object testValue = firstChildOfType(Expression.class).evaluate(env);
+        try {
+            for (CaseBlock cb : childrenOfType(CaseBlock.class)) {
+                if (foundMatch) {
+                    cb.execute(env);
+                }
+                else {
+                    Expression testExp = cb.getExpression();
+                    foundMatch = testExp == null || equals(env, testValue, cb.getExpression().evaluate(env));
+                    if (foundMatch) cb.execute(env);
+                }
+            }
+        } catch (BreakException be) {}
+    }
+
+    private boolean equals(Environment env, Object first, Object second) {
+        if (isNumber(first) && isNumber(second)) {
+            return asNumber(first).equals(asNumber(second));
+        }
+        if (isString(first) && isString(second)) {
+            return asString(first).equals(asString(second));
+        }
+        throw new TemplateException("Can only compare numbers and strings", env);
+    }
+}
+
+INJECT CaseBlock :
+    import java.io.IOException;
+    import freemarker.core.Environment;
+    extends TemplateElement  
+{
+    public Expression getExpression() {
+        return firstChildOfType(Expression.class);
+    }
+
+    public void execute(Environment env) throws IOException {
+        env.render(firstChildOfType(TemplateElement.class));
+    }
+
+    public String getDescription() {
+        return get(0).toString() + " block";
+    }
+}
 
 EscapeBlock# :
     <ESCAPE>
@@ -1569,7 +1588,7 @@ INJECT VarDirective :
      |
      tp=NoParseBlock
      |
-     tp=Switch
+     tp=SwitchBlock
      |
      tp=PropertySetting
      |
@@ -1612,7 +1631,7 @@ INJECT TemplateElement :
    import java.io.IOException;
    import freemarker.core.Environment;
 {
-       /**
+    /**
      * Processes the contents of this <tt>TemplateElement</tt> and
      * outputs the resulting text
      *
