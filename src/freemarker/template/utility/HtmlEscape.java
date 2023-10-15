@@ -34,7 +34,7 @@ import freemarker.core.Environment;
  * @version $Id: HtmlEscape.java,v 1.29 2003/02/25 00:28:16 revusky Exp $
  * @see freemarker.template.utility.XmlEscape
  */
-public class HtmlEscape implements TemplateTransformModel, TemplateDirectiveModel {
+public class HtmlEscape implements TemplateDirectiveModel {
 
     private static final char[] LT = "&lt;".toCharArray();
     private static final char[] GT = "&gt;".toCharArray();

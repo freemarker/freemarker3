@@ -57,7 +57,7 @@ import static freemarker.ext.beans.ObjectWrapper.asNumber;
 
 @Parameters("buffer_size=2048 single_line=false")
 
-public class StandardCompress implements TemplateTransformModel, TemplateDirectiveModel {
+public class StandardCompress implements TemplateDirectiveModel {
     private static final String BUFFER_SIZE_KEY = "buffer_size";
     private static final String SINGLE_LINE_KEY = "single_line";
     private int defaultBufferSize;

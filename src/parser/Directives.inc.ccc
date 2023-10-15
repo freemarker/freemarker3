@@ -486,7 +486,6 @@ TemplateElement Assign :
        <EQUALS>
        exp=Expression {assignments.put(varName, exp);}
        (
-   //      SCAN [<COMMA>](<ID>|<STRING_LITERAL>)<EQUALS> =>
             [<COMMA>]
             nameExp=IdentifierOrStringLiteral
             {
