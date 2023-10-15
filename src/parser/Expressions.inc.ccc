@@ -892,7 +892,7 @@ INJECT OrExpression :
     }
 }
 
-#ListLiteral :
+ListLiteral :
     <OPEN_BRACKET>
     [
       Expression 
@@ -902,9 +902,6 @@ INJECT OrExpression :
       )*
     ]
     <CLOSE_BRACKET>
-    {
-        return CURRENT_NODE;
-    }
 ;
 
 INJECT ListLiteral :

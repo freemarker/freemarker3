@@ -1841,71 +1841,63 @@ INJECT VarDirective :
 /**
  * A production for FreeMarker directives.
  */
-#TemplateElement#abstract :
-{
-   TemplateElement tp;
-}
-   (
-     tp=IfBlock
+TemplateElement#abstract :
+     IfBlock
      |
-     tp=ListBlock
+     ListBlock
      |
-     tp=ForEachBlock
+     ForEachBlock
      |
-     tp=AssignmentInstruction
+     AssignmentInstruction
      |
-     tp=BlockAssignment
+     BlockAssignment
      |
-     tp=IncludeInstruction
+     IncludeInstruction
      |
-     tp=ImportDeclaration
+     ImportDeclaration
      |
-     tp=Macro
+     Macro
      |
-     tp=Function
+     Function
      |
-     tp=UnifiedCall
+     UnifiedCall
      |
-     tp=TerseComment
+     TerseComment
      |
-     tp=NoParseBlock
+     NoParseBlock
      |
-     tp=SwitchBlock
+     SwitchBlock
      |
-     tp=PropertySetting
+     PropertySetting
      |
-     tp=VarDirective
+     VarDirective
      |
-     tp=BreakInstruction
+     BreakInstruction
      |
-     tp=ReturnInstruction
+     ReturnInstruction
      |
-     tp=StopInstruction
+     StopInstruction
      |
-     tp=FlushInstruction
+     FlushInstruction
      |
-     tp=TrimInstruction
+     TrimInstruction
      |
      SCAN 1 \...\Macro =>
-     tp=NestedInstruction
+     NestedInstruction
      |
      SCAN 1 \...\Macro =>
-     tp=FallbackInstruction
+     FallbackInstruction
      |
-     tp=EscapeBlock
+     EscapeBlock
      |
      SCAN 1 \...\EscapeBlock =>
-     tp=NoEscapeBlock
+     NoEscapeBlock
      |
-     tp=VisitNode
+     VisitNode
      |
-     tp=RecurseNode
+     RecurseNode
      |
-     tp=AttemptBlock
-   )
-   {
-      return tp;
-   }
+     AttemptBlock
 ;
 
 INJECT TemplateElement :
