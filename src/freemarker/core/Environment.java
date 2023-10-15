@@ -219,6 +219,7 @@ public final class Environment extends Configurable implements Scope {
                     try {
                         Environment.this.render(element);
                     } finally {
+                        out.flush();
                         out = prevOut;
                     }
                 }
@@ -242,45 +243,10 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    /**
-     * "Visit" the template element, passing the output through a
-     * TemplateTransformModel
-     * 
-     * @param element
-     *                  the element to visit through a transform
-     * @param transform
-     *                  the transform to pass the element output through
-     * @param args
-     *                  optional arguments fed to the transform
-     */
-    @SuppressWarnings("deprecation")
-    public void render(TemplateElement element, 
-                       TemplateTransformModel transform, 
-                       Map<String, Object> args) throws IOException 
-    {
-        try {
-            Writer tw = transform.getWriter(out, args);
-            if (tw == null)
-                tw = EMPTY_BODY_WRITER;
-            Writer prevOut = out;
-            out = tw;
-            try {
-                if (element != null) {
-                    render(element);
-                }
-            }  finally {
-                out = prevOut;
-                tw.close();
-            }
-        } catch (TemplateException te) {
-            handleTemplateException(te);
-        }
-    }
 
     /**
      * Visit a block using buffering/recovery
      */
-
     public void render(TemplateElement attemptBlock,
             TemplateElement recoveryBlock) throws IOException {
         Writer prevOut = this.out;
@@ -381,8 +347,6 @@ public final class Environment extends Configurable implements Scope {
             Object macroOrTransform = getNodeProcessor(node);
             if (macroOrTransform instanceof Macro) {
                 render((Macro) macroOrTransform, (ArgsList) null, null, null);
-            } else if (macroOrTransform instanceof TemplateTransformModel) {
-                render(null, (TemplateTransformModel) macroOrTransform, null);
             } else {
                 String nodeType = node.getNodeType();
                 if (nodeType != null) {
@@ -459,9 +423,7 @@ public final class Environment extends Configurable implements Scope {
                 currentNodeNS, nodeNamespaceIndex);
         if (macroOrTransform instanceof Macro) {
             render((Macro) macroOrTransform, (ArgsList) null, null, null);
-        } else if (macroOrTransform instanceof TemplateTransformModel) {
-            render(null, (TemplateTransformModel) macroOrTransform, null);
-        }
+        } 
     }
 
     /**
@@ -888,20 +850,6 @@ public final class Environment extends Configurable implements Scope {
 
     public static NumberFormat getNewCNumberFormat() {
         return (NumberFormat) C_NUMBER_FORMAT.clone();
-    }
-
-    public TemplateTransformModel getTransform(Expression exp) {
-        TemplateTransformModel ttm = null;
-        Object tm = exp.evaluate(this);
-        if (tm instanceof TemplateTransformModel) {
-            ttm = (TemplateTransformModel) tm;
-        } else if (exp instanceof Identifier) {
-            tm = getConfiguration().getSharedVariable(exp.toString());
-            if (tm instanceof TemplateTransformModel) {
-                ttm = (TemplateTransformModel) tm;
-            }
-        }
-        return ttm;
     }
 
     public Object resolveVariable(String name) {
@@ -1349,8 +1297,7 @@ public final class Environment extends Configurable implements Scope {
         Object result = null;
         if (nsURI == null) {
             result = ns.get(localName);
-            if (!(result instanceof Macro)
-                    && !(result instanceof TemplateTransformModel)) {
+            if (!(result instanceof Macro)) {
                 result = null;
             }
         } else {
@@ -1363,30 +1310,26 @@ public final class Environment extends Configurable implements Scope {
             }
             if (prefix.length() > 0) {
                 result = ns.get(prefix + ":" + localName);
-                if (!(result instanceof Macro)
-                        && !(result instanceof TemplateTransformModel)) {
+                if (!(result instanceof Macro)) {
                     result = null;
                 }
             } else {
                 if (nsURI.length() == 0) {
                     result = ns.get(Template.NO_NS_PREFIX + ":" + localName);
-                    if (!(result instanceof Macro)
-                            && !(result instanceof TemplateTransformModel)) {
+                    if (!(result instanceof Macro)) {
                         result = null;
                     }
                 }
                 if (nsURI.equals(template.getDefaultNS())) {
                     result = ns.get(Template.DEFAULT_NAMESPACE_PREFIX + ":"
                             + localName);
-                    if (!(result instanceof Macro)
-                            && !(result instanceof TemplateTransformModel)) {
+                    if (!(result instanceof Macro)) {
                         result = null;
                     }
                 }
                 if (result == null) {
                     result = ns.get(localName);
-                    if (!(result instanceof Macro)
-                            && !(result instanceof TemplateTransformModel)) {
+                    if (!(result instanceof Macro)) {
                         result = null;
                     }
                 }

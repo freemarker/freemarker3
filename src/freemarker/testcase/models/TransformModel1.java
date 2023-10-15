@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.annotations.Parameters;
+import freemarker.core.Environment;
 import freemarker.template.*;
 import java.io.*;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Map;
 
 @Parameters("")
 
-public class TransformModel1 implements TemplateTransformModel {
+public class TransformModel1 implements TemplateDirectiveModel {
 
     private boolean m_bAmpersands = false;
     private boolean m_bQuotes = false;
@@ -23,6 +24,11 @@ public class TransformModel1 implements TemplateTransformModel {
     private String  m_aComment = "";
 
     private static final int READER_BUFFER_SIZE = 4096;
+
+    public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) throws IOException {
+    	body.render(getWriter(env.getOut(), args));
+    }
+
 
     public Writer getWriter(final Writer out, 
                             final Map args) 
@@ -33,10 +39,10 @@ public class TransformModel1 implements TemplateTransformModel {
                 buf.append(cbuf, off, len);
             }
 
-            public void flush() {
+            public void close() {
             }
 
-            public void close() throws IOException {
+            public void flush() throws IOException {
                 StringReader sr = new StringReader(buf.toString());
                 StringWriter sw = new StringWriter();
                 transform(sr, sw);

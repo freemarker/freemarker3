@@ -42,10 +42,10 @@ public class HtmlEscape implements TemplateDirectiveModel {
     private static final char[] QUOT = "&quot;".toCharArray();
     
     public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) throws IOException {
-    	body.render(getWriter(env.getOut(), args));
+    	body.render(getWriter(env.getOut()));
     }
 
-    public Writer getWriter(Writer out, Map args)
+    public Writer getWriter(Writer out)
     {
         return new HtmlEscapeWriter(out);
     }

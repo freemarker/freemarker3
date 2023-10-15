@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-import freemarker.template.TemplateTransformModel;
+import freemarker.core.Environment;
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateDirectiveModel;
 
 /**
  * Performs an XML escaping of a given template fragment. Specifically,
@@ -15,7 +17,7 @@ import freemarker.template.TemplateTransformModel;
  * 
  * @version $Id: XmlEscape.java,v 1.29 2004/11/27 14:49:57 ddekany Exp $
  */
-public class XmlEscape implements TemplateTransformModel {
+public class XmlEscape implements TemplateDirectiveModel {
 
     private static final char[] LT = "&lt;".toCharArray();
     private static final char[] GT = "&gt;".toCharArray();
@@ -23,8 +25,13 @@ public class XmlEscape implements TemplateTransformModel {
     private static final char[] QUOT = "&quot;".toCharArray();
     private static final char[] APOS = "&apos;".toCharArray();
 
-    public Writer getWriter(final Writer out, Map args)
+    public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) throws IOException {
+        body.render(getWriter(env.getOut()));
+    }
+    
+    public Writer getWriter(final Writer out)
     {
+
         return new Writer()
         {
             @Override

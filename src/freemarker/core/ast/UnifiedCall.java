@@ -13,7 +13,6 @@ import freemarker.core.parser.ast.ParameterList;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateTransformModel;
 
 /**
  * An element for the unified macro/transform syntax. 
@@ -85,13 +84,6 @@ public class UnifiedCall extends TemplateElement {
                 paramNames = bodyParameters.getParamNames();
             }
             env.render(firstChildOfType(TemplateElement.class), (TemplateDirectiveModel) tm, argMap, paramNames);
-        }
-        else if (tm instanceof TemplateTransformModel) {
-            Map<String, Object> argMap
-                    = args != null
-                            ? args.getParameterMap(tm, env)
-                            : new HashMap<String, Object>();
-            env.render(firstChildOfType(TemplateElement.class), (TemplateTransformModel) tm, argMap);
         }
         else {
             assertNonNull(tm, nameExp, env);

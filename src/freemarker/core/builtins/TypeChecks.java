@@ -37,8 +37,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = (value instanceof Macro) && !((Macro) value).isFunction();
 		}
 		else if (builtInName == "is_directive") {
-			result = value instanceof Macro || value instanceof TemplateTransformModel
-                                 || value instanceof TemplateDirectiveModel;
+			result = value instanceof Macro || value instanceof TemplateDirectiveModel;
 		}
 		else if (builtInName == "is_boolean") {
 			result = isBoolean(value);
@@ -59,7 +58,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = value == Constants.JAVA_NULL;
 		}
 		else if (builtInName == "is_transform") {
-			result = value instanceof TemplateTransformModel;
+			result = false;
 		}
 		return result;
 	}

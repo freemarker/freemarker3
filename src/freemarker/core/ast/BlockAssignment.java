@@ -8,15 +8,15 @@ import java.util.*;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.Scope;
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateTransformModel;
 import freemarker.core.parser.ast.Expression;
 import freemarker.core.parser.ast.TemplateElement;
 
 /**
  * @version $Id: BlockAssignment.java,v 1.4 2004/07/07 21:11:12 szegedia Exp $
  */
-@SuppressWarnings("deprecation")
 public class BlockAssignment extends TemplateElement {
 
     private String varName;
@@ -62,7 +62,7 @@ public class BlockAssignment extends TemplateElement {
     	}
     	CaptureOutput filter = new CaptureOutput();
         if (firstChildOfType(TemplateElement.class) != null) {
-            env.render(firstChildOfType(TemplateElement.class), filter, null);
+            env.render(firstChildOfType(TemplateElement.class), filter, null, null);
         }
         String text = filter.capturedText;
     	if (scope != null) {
@@ -72,12 +72,16 @@ public class BlockAssignment extends TemplateElement {
     	}
     }
     
-    private static class CaptureOutput implements TemplateTransformModel {
+    private static class CaptureOutput implements TemplateDirectiveModel {
         String capturedText = ""; 
-        
+
+        public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) throws IOException {
+        	body.render(getWriter(env.getOut(), args));
+        }
+
         public Writer getWriter(Writer out, Map<String, Object> args) {
             return new StringWriter() {
-                public void close() {
+                public void flush() {
                 	capturedText = this.toString();
                 }
             };
