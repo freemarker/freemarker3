@@ -406,7 +406,7 @@ ReturnInstruction# :
 INJECT ReturnInstruction :
     import freemarker.core.Environment;
     import freemarker.core.ReturnException;
-    import freemarker.core.ast.Macro;
+    import freemarker.core.parser.ast.Macro;
     extends TemplateElement
 {
     public Object getReturnValue(Environment env) {
@@ -917,7 +917,7 @@ INJECT ImportDeclaration :
     }
 }
 
-#ParameterList# :
+#ParameterList#(true) :
 {
 	Token arg=null, firstArg=null, ellipsis = null;
 	Expression defValue = null;
@@ -1285,6 +1285,7 @@ INJECT ParameterList :
     }
 }
 
+#if false
 #Macro :
 {
    Macro result = new Macro();
@@ -1318,77 +1319,82 @@ INJECT ParameterList :
        return result;
     }
 ;
-
-#if false
-TemplateElement UnifiedMacroTransform :
-{
-   Token start=null, end, t;
-   Map<String, Expression> namedArgs = null;
-   ArrayList<Expression> positionalArgs = null;
-   String directiveName = null;
-   TemplateElement nestedBlock = null;
-   Expression exp;
-   UnifiedCall result = new UnifiedCall();
-   ArgsList args = null;
-   ParameterList bodyParameters = null;
-}
-    start=<UNIFIED_CALL>
-    exp=Expression
-    {
-        if (exp instanceof Identifier || (exp instanceof DotVariable && ((DotVariable) exp).onlyHasIdentifiers())) {
-           //directiveName = exp.getCanonicalForm();
-           directiveName = exp.toString(); // REVISIT. Deal with whitespace diffs in dot-separated names
-	    }
-	    result.setNameExp(exp);
-    }
-    [<TERMINATING_WHITESPACE>]
-    [ArgsList {args = (ArgsList)peekNode();}]
-    {
-        if(args == null)
-        {
-            args = new PositionalArgsList();
-        }
-        result.setArgs(args);
-    }
-    [
-       <SEMICOLON>[<TERMINATING_WHITESPACE>]
-       bodyParameters=ParameterList
-       {
-           result.setBodyParameters(bodyParameters);
-       }
-    ]
-    (
-      end=<EMPTY_DIRECTIVE_END>
-      |
-      (
-        <DIRECTIVE_END>
-		nestedBlock=Content
-		end=<UNIFIED_CALL_END>
-		{
-           String s=end.toString().substring(2);;
-           if (s.charAt(0) == '@') {
-              s = s.substring(1);
-           }
-	       s = s.substring(0, s.length() -1).trim();
-           if (s.length() >0 && !s.equals(directiveName)) {
-           String msg = getErrorStart(end);
-           if (directiveName == null) {
-                throw new ParseException(msg + "\nExpecting </@>", end.getBeginLine(), end.getBeginColumn());
-	       }
-	       else {
-	           throw new ParseException(msg + "\nExpecting </@> or </@" + directiveName + ">", end.getBeginLine(), end.getBeginColumn());
-	       }
-	    }
-	    result.add(nestedBlock);
-	  }
-      )
-    )
-    {
-       result.setLocation(template, token_source, start, end);
-       return result;
-    }
-;
 #else
+Macro# :
+    <MACRO>
+    IdentifierOrStringLiteral
+    [<OPEN_PAREN>]
+    ParameterList
+    [<CLOSE_PAREN>]
+    <DIRECTIVE_END>
+    Content
+    CloseDirectiveBlock("macro")
+;
+
+Function#Macro :
+    <FUNCTION>
+    IdentifierOrStringLiteral
+    [<OPEN_PAREN>]
+    ParameterList
+    [<CLOSE_PAREN>]
+    <DIRECTIVE_END>
+    Content
+    CloseDirectiveBlock("function")
+;
+
+INJECT Macro :
+    import freemarker.template.*;
+    import freemarker.core.Environment;
+    import freemarker.core.ast.TextBlock;
+    extends TemplateElement implements TemplateModel
+{
+    static public final Macro DO_NOTHING_MACRO = new Macro();
+    static {
+    	DO_NOTHING_MACRO.add((TemplateElement) TextBlock.EMPTY_BLOCK);
+    }
+
+    public boolean isFunction() {
+    	return get(0).getType() == FUNCTION;
+    }
+
+    public String getName() {
+        if (this == DO_NOTHING_MACRO) {
+            return ".pass";
+        }
+        if (get(1) instanceof Identifier) {
+            return get(1).toString();
+        }
+        return ((StringLiteral) get(1)).getAsString();
+    }
+
+    public ParameterList getParams() {
+        return firstChildOfType(ParameterList.class);
+    }
+
+    public void close() {
+    	ParameterList params = getParams();
+    	for (String paramName : params.getParams()) {
+    		declareVariable(paramName);
+    	}
+    	String catchallVar = params.getCatchAll();
+    	if (catchallVar != null) {
+    		declareVariable(catchallVar);
+    	}
+    }
+    
+
+
+    public void execute(Environment env) {
+        env.visitMacroDef(this);
+    }
+
+    public String getDescription() {
+        return (isFunction() ? "function " : "macro ") + getName();
+    }
+}
+
+#endif
+
 UnifiedCall# :
    <UNIFIED_CALL>
    Expression
@@ -1411,7 +1417,7 @@ INJECT UnifiedCall :
     import java.io.IOException;
     import java.util.*;
     import freemarker.core.Environment;
-    import freemarker.core.ast.Macro;
+    import freemarker.core.parser.ast.Macro;
     import freemarker.template.TemplateDirectiveModel;
     import freemarker.template.TemplateException;
     extends TemplateElement
@@ -1479,13 +1485,10 @@ INJECT UnifiedCall :
         }
     }
     
-    
     public String getDescription() {
         return "user-directive " + getNameExp();
     }
 }
-
-#endif
 
 Map<String, Expression> NamedArgs :
 {
@@ -1895,6 +1898,8 @@ INJECT VarDirective :
      tp=ImportDeclaration
      |
      tp=Macro
+     |
+     tp=Function
      |
      tp=UnifiedCall
      |

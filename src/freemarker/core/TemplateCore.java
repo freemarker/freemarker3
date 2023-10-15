@@ -3,7 +3,7 @@ package freemarker.core;
 import java.util.HashMap;
 import java.util.Map;
 
-import freemarker.core.ast.Macro;
+import freemarker.core.parser.ast.Macro;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.template.Configuration;
 import freemarker.template.Template;

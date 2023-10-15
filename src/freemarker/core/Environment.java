@@ -16,6 +16,7 @@ import freemarker.core.ast.*;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.IncludeInstruction;
+import freemarker.core.parser.ast.Macro;
 import freemarker.core.parser.ast.ParameterList;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ast.TemplateNode;

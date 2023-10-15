@@ -6,6 +6,7 @@ import freemarker.core.parser.ast.AssignmentInstruction;
 import freemarker.core.parser.ast.BlockAssignment;
 import freemarker.core.parser.ast.Comment;
 import freemarker.core.parser.ast.ImportDeclaration;
+import freemarker.core.parser.ast.Macro;
 import freemarker.core.parser.ast.MixedContent;
 import freemarker.core.parser.ast.PropertySetting;
 import freemarker.core.parser.ast.TemplateElement;

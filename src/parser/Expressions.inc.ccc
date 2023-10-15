@@ -1075,7 +1075,7 @@ INJECT BuiltinVariable :
     import freemarker.core.Environment;
     import freemarker.core.parser.ParseException;
     import freemarker.core.parser.ast.Expression;
-    import freemarker.core.ast.Macro;
+    import freemarker.core.parser.ast.Macro;
     extends Expression
 {
     private String name;
@@ -1580,7 +1580,7 @@ INJECT MethodCall :
     import freemarker.template.*;
     import java.io.IOException;
     import java.io.StringWriter;
-    import freemarker.core.ast.Macro;
+    import freemarker.core.parser.ast.Macro;
     extends Expression;
 {
 
