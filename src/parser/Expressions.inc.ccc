@@ -1062,20 +1062,6 @@ INJECT Identifier :
     }
 }
 
-Expression IdentifierOrStringLiteral :
-{
-   Expression exp;
-}
-   (
-      exp=Identifier
-      |
-      exp=StringLiteral
-   )
-   {
-      return exp;
-   }   
-;
-
 BuiltinVariable# :
    <DOT>
    <ID>

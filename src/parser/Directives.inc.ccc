@@ -542,7 +542,7 @@ INJECT TrimInstruction :
         return true;
     }
 }
-
+#if false
 TemplateElement Assign :
 {
    Token start, end;
@@ -625,6 +625,207 @@ TemplateElement Assign :
        }
     ))
 ;
+#else
+
+BlockAssignment# :
+{String assignmentType = "set";}
+   (
+    <ASSIGN>{assignmentType = "assign";}
+    |
+    <GLOBALASSIGN>{assignmentType="global";}
+    |
+    <LOCALASSIGN>{assignmentType="local";}
+    |
+    <SET>
+   )
+   IdentifierOrStringLiteral
+   [ 
+      <IN>
+      Expression
+   ]
+   <DIRECTIVE_END> =>||
+   Content
+   CloseDirectiveBlock(assignmentType)   
+;
+
+INJECT BlockAssignment :
+    import java.io.IOException;
+    import java.io.StringWriter;
+    import java.io.Writer;
+    import java.util.*;
+    import freemarker.core.Environment;
+    import freemarker.core.InvalidReferenceException;
+    import freemarker.core.Scope;
+    import freemarker.template.TemplateDirectiveBody;
+    import freemarker.template.TemplateDirectiveModel;
+    import freemarker.template.TemplateException;
+    extends TemplateElement
+{
+    public String getVarName() {
+        if (get(1) instanceof StringLiteral) {
+            return ((StringLiteral)get(1)).getAsString();
+        }
+        return get(1).toString();
+    }
+
+    public Expression getNamespaceExp() {
+        Node inToken = firstChildOfType(IN);
+        if (inToken != null) {
+            return (Expression) inToken.nextSibling();
+        }
+        return null;
+    }
+
+    public void execute(Environment env) throws IOException {
+    	Scope scope = null;
+        Expression namespaceExp = getNamespaceExp();
+    	if (namespaceExp != null) {
+    		try {
+    			scope = (Scope) namespaceExp.evaluate(env); 
+    		} catch (ClassCastException cce) {
+                throw new InvalidReferenceException(getStartLocation() + "\nInvalid reference to namespace: " + namespaceExp, env);
+    		}
+    	}
+    	else {
+    		if (get(0).getType() == ASSIGN) {
+    			scope = env.getCurrentNamespace();
+    		} else if (get(0).getType() == LOCALASSIGN) {
+    			scope = env.getCurrentMacroContext();
+    		} else if (get(0).getType() == GLOBALASSIGN) {
+    			scope = env.getGlobalNamespace();
+    		} 
+    	}
+    	CaptureOutput filter = new CaptureOutput();
+        if (firstChildOfType(TemplateElement.class) != null) {
+            env.render(firstChildOfType(TemplateElement.class), filter, null, null);
+        }
+        String text = filter.capturedText;
+    	if (scope != null) {
+    		scope.put(getVarName(), text);
+    	} else {
+    		env.unqualifiedSet(getVarName(), text);
+    	}
+    }
+    
+    private static class CaptureOutput implements TemplateDirectiveModel {
+        String capturedText = ""; 
+
+        public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) throws IOException {
+        	body.render(getWriter(env.getOut(), args));
+        }
+
+        public Writer getWriter(Writer out, Map<String, Object> args) {
+            return new StringWriter() {
+                public void flush() {
+                	capturedText = this.toString();
+                }
+            };
+        }
+    }
+    
+    public String getDescription() {
+        return "block assignment to variable: " + getVarName();
+    }
+}
+
+AssignmentInstruction# :
+   (<ASSIGN>|<GLOBALASSIGN>|<LOCALASSIGN>|<SET>)
+   IdentifierOrStringLiteral
+   <EQUALS> =>||
+   Expression
+   (
+     [<COMMA>]
+     IdentifierOrStringLiteral
+     <EQUALS>
+     Expression
+   )*
+   [
+      <IN>
+      Expression     
+   ]
+   LooseDirectiveEnd
+;
+
+INJECT AssignmentInstruction :
+    import java.io.IOException;
+    import java.util.*;
+    import freemarker.template.TemplateException;
+    import freemarker.core.*;
+    extends TemplateElement
+{
+    public List<String> getVarNames() {
+        List<String> result = new ArrayList<>();
+        List<Node> equalsToks = childrenOfType(EQUALS);
+        for (Node tok : equalsToks) {
+            Node varExp = tok.previousSibling();
+            if (varExp instanceof StringLiteral) {
+                result.add(((StringLiteral)varExp).getAsString());
+            }
+            else {
+                result.add(varExp.toString());
+            }
+        }
+        return result;
+    }
+
+    public List<Expression> getValues() {
+        List<Expression> result = new ArrayList<>();
+        List<Node> equalsToks = childrenOfType(EQUALS);
+        for (Node tok : equalsToks) {
+            result.add((Expression)tok.nextSibling());
+        }
+        return result;
+    }
+    
+    public Expression getNamespaceExp() {
+        Node inToken = firstChildOfType(IN);
+        if (inToken != null) {
+            return (Expression) inToken.nextSibling();
+        }
+        return null;
+    }
+
+    public void execute(Environment env) throws TemplateException, IOException {
+    	Scope scope = null;
+        Expression namespaceExp = getNamespaceExp();
+    	if (namespaceExp != null) {
+    		try {
+    			scope = (Scope) namespaceExp.evaluate(env); 
+    		} catch (ClassCastException cce) {
+                throw new InvalidReferenceException(getStartLocation() + "\nInvalid reference to namespace: " + namespaceExp, env);
+    		}
+    	}
+    	else {
+    		if (get(0).getType() == ASSIGN) {
+    			scope = env.getCurrentNamespace();
+    		} else if (get(0).getType() == LOCALASSIGN) {
+    			scope = env.getCurrentMacroContext();
+    		} else if (get(0).getType() == GLOBALASSIGN) {
+    			scope = env.getGlobalNamespace();
+    		}
+    	}
+        List<String> varNames = getVarNames();
+        List<Expression> values = getValues();
+    	for (int i=0; i< varNames.size(); i++) {
+    		String varname = varNames.get(i);
+    		Expression valueExp = values.get(i);
+    		Object value = valueExp.evaluate(env);
+    		assertIsDefined(value, valueExp, env);
+    		if (scope != null) {
+    			scope.put(varname, value);
+    		} else {
+    			env.unqualifiedSet(varname, value);
+    		}
+    	}
+    }
+    
+    public String getDescription() {
+    	return "assignment instruction";
+    }
+}
+
+
+#endif
 
 IncludeInstruction# :
 {
@@ -1696,7 +1897,9 @@ INJECT VarDirective :
      |
      tp=ForEachBlock
      |
-     tp=Assign
+     tp=AssignmentInstruction
+     |
+     tp=BlockAssignment
      |
      tp=IncludeInstruction
      |
@@ -1983,6 +2186,19 @@ Map<String,Expression> ParamList :
    }
 ;
 
+Expression IdentifierOrStringLiteral :
+{
+   Expression exp;
+}
+   (
+      exp=Identifier
+      |
+      exp=StringLiteral
+   )
+   {
+      return exp;
+   }   
+;
 
 /**
  * Root production to be used when parsing

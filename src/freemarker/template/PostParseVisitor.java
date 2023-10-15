@@ -6,6 +6,7 @@ import freemarker.core.parser.ast.*;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
+import freemarker.core.parser.Token;
 import freemarker.template.utility.DeepUnwrap;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -83,16 +84,16 @@ public class PostParseVisitor extends Node.Visitor {
 	public void visit(AssignmentInstruction node) {
 		recurse(node);
 		if (template.strictVariableDeclaration()) {
-			if (node.getBlockType() == AssignmentInstruction.NAMESPACE) {
+			if (node.get(0).getType() == Token.TokenType.ASSIGN) {
 				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
-			if (node.getBlockType() == AssignmentInstruction.LOCAL) {
+			if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
 				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 		}
-        if (node.getBlockType() == AssignmentInstruction.LOCAL) {
+        if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
         	Macro macro = getContainingMacro(node);
         	if (macro == null) {
         		ParsingProblem problem = new ParsingProblem("The local directive can only be used inside a function or macro.", node);
@@ -109,16 +110,16 @@ public class PostParseVisitor extends Node.Visitor {
 	public void visit(BlockAssignment node) {
 		recurse(node);
 		if (template.strictVariableDeclaration()) {
-			if (node.getBlockType() == AssignmentInstruction.NAMESPACE) {
+			if (node.get(0).getType() == Token.TokenType.ASSIGN) {
 				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
-			if (node.getBlockType() == AssignmentInstruction.LOCAL) {
+			if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
 				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 		}
-		if (node.getBlockType() == AssignmentInstruction.LOCAL) {
+		if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
 			Macro macro = getContainingMacro(node);
 			if (macro == null) {
 				template.addParsingProblem(new ParsingProblem("The local directive can only be used inside a function or macro.", node));
