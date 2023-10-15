@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.List;
 
 import freemarker.core.Environment;
-import freemarker.core.ast.Include;
 import freemarker.core.ast.UnifiedCall;
+import freemarker.core.parser.ast.IncludeInstruction;
 import freemarker.core.parser.ast.TemplateNode;
 
 /**
@@ -124,7 +124,7 @@ public class TemplateException extends RuntimeException {
     	            buf.append(" [");
     	            buf.append(location.getStartLocation());
     	            buf.append("]\n");
-    			} else if (location instanceof UnifiedCall || location instanceof Include){ // We only show macro calls and includes
+    			} else if (location instanceof UnifiedCall || location instanceof IncludeInstruction){ // We only show macro calls and includes
                     String line = location.getDescription() + " ["
                     + location.getStartLocation() + "]";
                     if (line != null && line.length() > 0) {

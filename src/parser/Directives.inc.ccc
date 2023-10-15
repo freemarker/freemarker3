@@ -626,55 +626,94 @@ TemplateElement Assign :
     ))
 ;
 
-#Include :
+IncludeInstruction# :
 {
-   Token att, start, end;
-   Expression nameExp, exp, parseExp = null, encodingExp = null;
-   boolean freshNamespace;
+    CURRENT_NODE.setTemplate(template);
 }
-    (
-        start=<_INCLUDE> {freshNamespace = false;}
-        |
-        start=<EMBED> {freshNamespace=true;}
-    )
-    nameExp=Expression
-    [<SEMICOLON>]
-    (
-	  att=<ID>
-	  <EQUALS>
-	  exp=Expression
-	  {
-	     String attString = att.toString();
-	     if (attString.equalsIgnoreCase("parse")) {
-	        if (parseExp != null) {
-	           String msg = getErrorStart(att)
-	                 + "\nparse may not be specified more than once.";
-	           throw new ParseException(msg, att.getBeginLine(), att.getBeginColumn());
-	        }
-	        parseExp = exp;
-	     }
-	     else if (attString.equalsIgnoreCase("encoding")) {
-	        if (encodingExp != null) {
-	           String msg = getErrorStart(att)
-	                 + "\nencoding may not be specified more than once.";
-	           throw new ParseException(msg, att.getBeginLine(), att.getBeginColumn());
-	        }
-	        encodingExp = exp;
-	     }
-	     else {
-	         String msg = getErrorStart(att)
-	               + "\nexpecting parse= or encoding= to be specified.";
-	         throw new ParseException(msg, att.getBeginLine(), att.getBeginColumn());
-	     }
-	  }
-	)*
-    end=LooseDirectiveEnd
-    {
-       Include result = new Include(template, nameExp, freshNamespace, encodingExp, parseExp);
-       result.setLocation(template, token_source, start, end);
-       return result;
-    }
+   (<_INCLUDE>|<EMBED>)
+   Expression
+   (
+    <ID><EQUALS>Expression
+   )*
+   LooseDirectiveEnd
 ;
+
+INJECT IncludeInstruction :
+    import java.io.IOException;
+    import java.io.IOException;
+    import freemarker.cache.TemplateCache;
+    import freemarker.template.*;
+    import freemarker.template.utility.StringUtil;
+    import freemarker.core.Environment;
+    import freemarker.core.InvalidReferenceException;
+    import freemarker.core.parser.ParseException;
+    import static freemarker.ext.beans.ObjectWrapper.*;
+    extends TemplateElement
+{
+    @Property Template template;
+
+    public boolean useFreshNamespace() {
+        return get(0).getType() == EMBED;
+    }
+
+    public Expression getParamByName(String name) {
+        for (Node n : this) {
+            if (n instanceof ID && n.toString().equalsIgnoreCase(name)) {
+                return (Expression) n.nextSibling().nextSibling();
+            }
+        }
+        return null;
+    }
+
+    public void execute(Environment env) throws IOException {
+        String templateNameString = ((Expression) get(1)).getStringValue(env);
+        if( templateNameString == null ) {
+            String msg = "Error " + getStartLocation()
+                        + "The expression " + get(1)  + " is undefined.";
+            throw new InvalidReferenceException(msg, env);
+        }
+        String encoding = null;
+        Expression encodingExp = getParamByName("encoding");
+        if (encodingExp!=null) {
+            encoding = encodingExp.getStringValue(env);
+        }
+        boolean parse = true;
+        Expression parseExp = getParamByName("parse");
+        if (parseExp != null) {
+            Object tm = parseExp.evaluate(env);
+            assertNonNull(tm, parseExp, env);
+            if (isString(tm)) {
+                parse = StringUtil.getYesNo(asString(tm));
+            }
+            else {
+                parse = parseExp.isTrue(env);
+            }
+        }
+        Template includedTemplate;
+        String templatePath = "";
+    	if (template != null) {
+    		String templatePath1 = template.getName();
+    		int lastSlash = templatePath1.lastIndexOf('/');
+    		templatePath = lastSlash == -1 ? "" : templatePath1.substring(0, lastSlash + 1);
+    	}
+        try {
+            //REVISIT
+            templateNameString = TemplateCache.getFullTemplatePath(env, templatePath, templateNameString);
+            includedTemplate = env.getTemplateForInclusion(templateNameString, encoding, parse);
+        }
+        catch (ParseException pe) {
+            String msg = "Error parsing included template "
+                        + templateNameString + "\n" + pe.getMessage();
+            throw new TemplateException(msg, pe, env);
+        }
+        catch (IOException ioe) {
+            String msg = "Error reading included file "
+                        + templateNameString;
+            throw new TemplateException(msg, ioe, env);
+        }
+        env.include(includedTemplate, useFreshNamespace());
+    }
+}
 
 ImportDeclaration# :
    <IMPORT>
@@ -684,7 +723,6 @@ ImportDeclaration# :
    LooseDirectiveEnd
    {
        CURRENT_NODE.setTemplate(template);
-       //if (template != null) template.addImport(CURRENT_NODE);
    }
 ;
 
@@ -1660,7 +1698,7 @@ INJECT VarDirective :
      |
      tp=Assign
      |
-     tp=Include
+     tp=IncludeInstruction
      |
      tp=ImportDeclaration
      |
@@ -1847,34 +1885,7 @@ TemplateElement FreeMarkerText#MixedContent(false) :
        return nodes;
     }
 ;
-#if false
-TemplateHeaderElement HeaderElement : 
-{
-	Token key, start, end;
-	Expression exp;
-	Map<String,Expression> params = new LinkedHashMap<String,Expression>();
-}
-   [<WHITESPACE>]
-   (
-     start=<TRIVIAL_FTL_HEADER> {end=start;}
-     |
-     (
-       start=<FTL_HEADER>
-       (
-          key=<ID>
-          <EQUALS>
-          exp=Expression {params.put(key.toString().toLowerCase(), exp);}
-       )*
-       end=LooseDirectiveEnd
-     )
-   )
-   {
-   	   TemplateHeaderElement header = new TemplateHeaderElement(params);
-   	   header.setLocation(template, token_source, start, end);
-   	   return header;
-   }
-;
-#else
+
 TemplateHeaderElement# :
   [<WHITESPACE>]
   (
@@ -1954,8 +1965,6 @@ INJECT TemplateHeaderElement :
 		throw new IllegalArgumentException("Parameter " + name + " is not a boolean type.");
 	}
 }
-
-#endif
 
 Map<String,Expression> ParamList :
 {

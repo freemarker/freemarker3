@@ -72,7 +72,7 @@ public class PostParseVisitor extends Node.Visitor {
 		}
 	}
 	
-	public void visit(Include node) {
+	public void visit(IncludeInstruction node) {
 		if (template.strictVariableDeclaration() && !node.useFreshNamespace()) {
 			ParsingProblem problem = new ParsingProblem("The legacy #include instruction is not permitted in strict_vars mode. Use #embed or possibly #import.", node);
 			template.addParsingProblem(problem);

@@ -20,6 +20,7 @@ import freemarker.core.parser.ast.ParameterList;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.Identifier;
+import freemarker.core.parser.ast.IncludeInstruction;
 import freemarker.log.Logger;
 import freemarker.template.*;
 
@@ -1022,7 +1023,7 @@ public final class Environment extends Configurable implements Scope {
         }
         while (iter.hasPrevious()) {
             TemplateNode prev = iter.previous();
-            if (prev instanceof UnifiedCall || prev instanceof Include) {
+            if (prev instanceof UnifiedCall || prev instanceof IncludeInstruction) {
                 String location = prev.getDescription() + " ["
                         + prev.getStartLocation() + "]";
                 if (location != null && location.length() > 0) {
