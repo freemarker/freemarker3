@@ -76,7 +76,7 @@ INJECT Expression :
     }
 }
 
-PrimaryExpression :
+PrimaryExpression#void :
    (
       NumberLiteral
       |
@@ -122,7 +122,7 @@ PrimaryExpression :
   )*
 ;
 
-ParentheticalExpression# :
+ParentheticalExpression :
     <OPEN_PAREN> 
     Expression 
     <CLOSE_PAREN>
@@ -158,7 +158,7 @@ INJECT ParentheticalExpression :
  * A primary expression preceded (optionally)
  * by a unary operator
  */
-UnaryExpression :
+UnaryExpression#void :
    UnaryPlusMinusExpression
    |
    NotExpression 
@@ -166,7 +166,7 @@ UnaryExpression :
    PrimaryExpression 
 ;
 
-NotExpression# :
+NotExpression :
    <EXCLAM>
    (
       PrimaryExpression 
@@ -199,7 +199,7 @@ INJECT NotExpression :
     }
 }
 
-UnaryPlusMinusExpression# :
+UnaryPlusMinusExpression :
    (
       <PLUS>
       |
@@ -253,7 +253,7 @@ INJECT UnaryPlusMinusExpression :
     }
 }
 
-AdditiveExpression#(>1) :
+AdditiveExpression :
    MultiplicativeExpression 
    [
       (
@@ -459,7 +459,7 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
     }
 }
 
-MultiplicativeExpression#(>1) :
+MultiplicativeExpression :
    UnaryExpression 
    [
       (
@@ -724,7 +724,7 @@ INJECT ComparisonExpression :
     }    
 }
 
-RangeExpression#(>1) :
+RangeExpression :
    AdditiveExpression
    [
     <DOT_DOT>
@@ -816,7 +816,7 @@ INJECT RangeExpression :
     }
 }
 
-AndExpression#(>1) :
+AndExpression :
    EqualityExpression 
    [
       <AND>
@@ -854,7 +854,7 @@ INJECT AndExpression :
     }
 }
 
-OrExpression#(>1) :
+OrExpression :
    AndExpression
    [
       <OR>
@@ -892,7 +892,7 @@ INJECT OrExpression :
     }
 }
 
-#ListLiteral# :
+#ListLiteral :
     <OPEN_BRACKET>
     [
       Expression 
@@ -1062,7 +1062,7 @@ INJECT Identifier :
     }
 }
 
-BuiltinVariable# :
+BuiltinVariable :
    <DOT>
    <ID>
    {
@@ -1705,7 +1705,7 @@ INJECT PositionalArgsList :
     }    
 }
 
-NamedArgsList# :
+NamedArgsList :
 {
     String param;
 	Expression arg;
@@ -2080,7 +2080,7 @@ INJECT NullLiteral :
     }
 }
 
-HashLiteral# :
+HashLiteral :
    <OPEN_BRACE>
    [
        Expression

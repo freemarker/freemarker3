@@ -6,7 +6,7 @@
  * A production representing the ${...}
  * that outputs a variable.
  */
-Interpolation# :
+Interpolation :
    <OUTPUT_ESCAPE> 
    Expression
    <CLOSE_BRACE>
@@ -48,7 +48,7 @@ INJECT Interpolation :
     }
 }
 
-IfBlock# :
+IfBlock :
   (
     <IF>
     Expression
@@ -113,7 +113,7 @@ INJECT ConditionalBlock :
     }
 }
 
-AttemptBlock# :
+AttemptBlock :
    <_ATTEMPT>
    Content
    RecoveryBlock
@@ -145,7 +145,7 @@ INJECT AttemptBlock :
     }
 }
 
-RecoveryBlock# : 
+RecoveryBlock : 
    <_RECOVER>
    Content
 ;
@@ -221,7 +221,7 @@ INJECT IteratorBlock :
     }
 }
 
-VisitNode# :
+VisitNode :
    <VISIT>
    Expression
    [
@@ -543,7 +543,7 @@ INJECT TrimInstruction :
     }
 }
 
-BlockAssignment# :
+BlockAssignment :
 {String assignmentType = "set";}
    (
     <ASSIGN>{assignmentType = "assign";}
@@ -644,7 +644,7 @@ INJECT BlockAssignment :
     }
 }
 
-AssignmentInstruction# :
+AssignmentInstruction :
    (<ASSIGN>|<GLOBALASSIGN>|<LOCALASSIGN>|<SET>)
    IdentifierOrStringLiteral
    <EQUALS> =>||
@@ -740,7 +740,7 @@ INJECT AssignmentInstruction :
     }
 }
 
-IncludeInstruction# :
+IncludeInstruction :
 {
     CURRENT_NODE.setTemplate(template);
 }
@@ -829,7 +829,7 @@ INJECT IncludeInstruction :
     }
 }
 
-ImportDeclaration# :
+ImportDeclaration :
    <IMPORT>
    Expression
    <AS>
@@ -1285,7 +1285,7 @@ INJECT ParameterList :
     }
 }
 
-Macro# :
+Macro :
     <MACRO>
     IdentifierOrStringLiteral
     [<OPEN_PAREN>]
@@ -1358,7 +1358,7 @@ INJECT Macro :
     }
 }
 
-UnifiedCall# :
+UnifiedCall :
    <UNIFIED_CALL>
    Expression
    [<TERMINATING_WHITESPACE>]
@@ -1453,7 +1453,7 @@ INJECT UnifiedCall :
     }
 }
 
-Map<String, Expression> NamedArgs :
+Map<String, Expression> NamedArgs#void :
 {
     Map<String, Expression> result = new LinkedHashMap<String, Expression>();
     Token t;
@@ -1510,7 +1510,7 @@ INJECT Comment :
     }   
 }
 
-NoParseBlock# :
+NoParseBlock :
     <NOPARSE>
     (
        <PRINTABLE_CHARS> 
@@ -1520,7 +1520,7 @@ NoParseBlock# :
 
 INJECT NoParseBlock : extends freemarker.core.parser.ast.MixedContent
 
-SwitchBlock# :
+SwitchBlock :
    <SWITCH>
    Expression
    <DIRECTIVE_END>
@@ -1596,7 +1596,7 @@ INJECT CaseBlock :
     }
 }
 
-EscapeBlock# :
+EscapeBlock :
     <ESCAPE>
     <ID>
     <AS>
@@ -1652,7 +1652,7 @@ INJECT EscapeBlock :
     }
 }
 
-NoEscapeBlock# :
+NoEscapeBlock :
     <NOESCAPE>
     Content
     CloseDirectiveBlock("noescape")
@@ -1702,7 +1702,7 @@ Token CloseDirectiveBlock(String expectedTags) :
  * Production to terminate potentially empty elements. Either a ">" or "/>"
  */
 
-Token LooseDirectiveEnd :
+Token LooseDirectiveEnd#void :
 {
     Token t;
 }
@@ -1716,7 +1716,7 @@ Token LooseDirectiveEnd :
    }
 ;
 
-PropertySetting# :
+PropertySetting :
    <SETTING>
    <ID>
    <EQUALS>
@@ -1758,7 +1758,7 @@ INJECT PropertySetting :
     }    
 }
 
-VarDirective# :
+VarDirective :
 {
     Expression var, valueExp = null;
 }
@@ -1951,7 +1951,7 @@ INJECT TemplateElement :
  * i.e. text that contains no
  * FreeMarker directives.
  */
-List<TextBlock> PCData :
+List<TextBlock> PCData#void :
 {
     StringBuilder buf = new StringBuilder();
     Token start=null;
@@ -2124,7 +2124,7 @@ INJECT TemplateHeaderElement :
 	}
 }
 
-Map<String,Expression> ParamList :
+Map<String,Expression> ParamList#void :
 {
    Identifier id;
    Expression exp;
@@ -2141,7 +2141,7 @@ Map<String,Expression> ParamList :
    }
 ;
 
-Expression IdentifierOrStringLiteral :
+Expression IdentifierOrStringLiteral#void :
 {
    Expression exp;
 }
@@ -2159,7 +2159,7 @@ Expression IdentifierOrStringLiteral :
  * Root production to be used when parsing
  * an entire file.
  */
-TemplateElement Root :
+TemplateElement Root#void :
 {
    TemplateHeaderElement header;
    TemplateElement doc;
