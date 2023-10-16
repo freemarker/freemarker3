@@ -140,7 +140,7 @@ INJECT LEXER_CLASS :
                 }
                 break;
             case UNIFIED_CALL : 
-                switchTo(LexicalState.NO_SPACE_EXPRESSION);
+                switchTo(LexicalState.EXPRESSION);
                 break;
             case NOPARSE : 
                 noparseType = NOPARSE;
