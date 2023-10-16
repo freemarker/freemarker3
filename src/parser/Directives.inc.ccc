@@ -406,7 +406,6 @@ ReturnInstruction# :
 INJECT ReturnInstruction :
     import freemarker.core.Environment;
     import freemarker.core.ReturnException;
-    import freemarker.core.parser.ast.Macro;
     extends TemplateElement
 {
     public Object getReturnValue(Environment env) {
@@ -1378,7 +1377,6 @@ INJECT UnifiedCall :
     import java.io.IOException;
     import java.util.*;
     import freemarker.core.Environment;
-    import freemarker.core.parser.ast.Macro;
     import freemarker.template.TemplateDirectiveModel;
     import freemarker.template.TemplateException;
     extends TemplateElement
@@ -1673,7 +1671,7 @@ INJECT NoEscapeBlock :
 }
 
 
-Token CloseDirectiveBlock(String expectedTags) :
+CloseDirectiveBlock(String expectedTags)#void :
 {
 	Token t;
 }
@@ -1685,13 +1683,19 @@ Token CloseDirectiveBlock(String expectedTags) :
 			StringTokenizer st = new StringTokenizer(expectedTags, ", ");
 			boolean found = false;
 			while (st.hasMoreTokens()) {
-				if (st.nextToken().equals(name.trim())) found = true;
+				if (st.nextToken().equals(name.trim())) {
+                    found = true;
+                    break;
+                }
 			}
 			if (!found) {
-				throw new ParseException(getErrorStart(t) + " Expecting " + t.toString().substring(0,3) + expectedTags + t.toString().charAt(t.toString().length() -1));
+				throw new ParseException(getErrorStart(t) 
+                + " Expecting " 
+                + t.toString().substring(0,3) 
+                + expectedTags 
+                + t.toString().charAt(t.toString().length() -1));
 			}
 		}
-		return t;
 	}
 ;
 

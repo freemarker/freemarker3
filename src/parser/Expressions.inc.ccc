@@ -130,7 +130,6 @@ ParentheticalExpression :
 
 INJECT ParentheticalExpression :
    import freemarker.core.Environment;
-   import freemarker.core.parser.ast.Expression;
    extends Expression
 {
    public Expression getNested() {
@@ -177,7 +176,6 @@ NotExpression :
 
 INJECT NotExpression :
     import freemarker.core.Environment;
-    import freemarker.core.parser.ast.Expression;
     extends Expression
 {
     public Expression getTarget() {
@@ -214,7 +212,6 @@ UnaryPlusMinusExpression :
 
 INJECT UnaryPlusMinusExpression : 
     import freemarker.core.Environment;
-    import freemarker.core.parser.ast.Expression;
     import freemarker.core.ArithmeticEngine;
     import freemarker.template.*;
     import static freemarker.ext.beans.ObjectWrapper.asNumber;
@@ -271,7 +268,6 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
    import freemarker.core.Environment;
    import freemarker.core.ArithmeticEngine;
    import freemarker.core.EvaluationUtil;
-   import freemarker.core.parser.ast.Expression;
    import static freemarker.ext.beans.ObjectWrapper.isNumber;   
    import static freemarker.ext.beans.ObjectWrapper.isList;   
    import static freemarker.ext.beans.ObjectWrapper.asString;   
@@ -478,7 +474,6 @@ INJECT MultiplicativeExpression :
    import freemarker.core.Environment;
    import freemarker.core.ArithmeticEngine;
    import freemarker.core.EvaluationUtil;
-   import freemarker.core.parser.ast.Expression;
    import static freemarker.ext.beans.ObjectWrapper.isNumber;
    extends freemarker.core.parser.ast.Expression
 {
@@ -579,7 +574,6 @@ INJECT ComparisonExpression :
    import freemarker.core.Environment;
    import freemarker.core.ArithmeticEngine;
    import freemarker.core.ast.BooleanExpression;
-   import freemarker.core.parser.ast.Expression;
    import freemarker.core.EvaluationUtil;
    import freemarker.ext.beans.Pojo;
    import static freemarker.ext.beans.ObjectWrapper.asBoolean;
@@ -738,7 +732,6 @@ INJECT RangeExpression :
    import freemarker.template.*;
    import freemarker.core.Environment;
    import freemarker.core.EvaluationUtil;
-   import freemarker.core.parser.ast.Expression;
    extends Expression
 {
     public Expression getLeft() {
@@ -826,7 +819,6 @@ AndExpression :
 
 INJECT AndExpression :
     import freemarker.core.Environment;
-    import freemarker.core.parser.ast.Expression;
     extends Expression
 {
     public Expression getLeft() {
@@ -864,7 +856,6 @@ OrExpression :
 
 INJECT OrExpression :
     import freemarker.core.Environment;
-    import freemarker.core.parser.ast.Expression;
     extends Expression
 {
     public Expression getLeft() {
@@ -913,7 +904,6 @@ INJECT ListLiteral :
   import freemarker.ext.beans.ListModel;
   import freemarker.template.TemplateException;
   import freemarker.template.*;
-  import freemarker.core.parser.ast.Expression;
   extends Expression
 {
     public List<Expression> getElements() {
@@ -979,7 +969,6 @@ NumberLiteral# :
 
 INJECT NumberLiteral :
   import freemarker.core.Environment;
-  import freemarker.core.parser.ast.Expression;
   import freemarker.ext.beans.NumberModel;
   extends Expression
 {
@@ -1022,7 +1011,6 @@ Identifier# :
 INJECT Identifier :
     import freemarker.template.TemplateException;
     import freemarker.core.Environment;
-    import freemarker.core.parser.ast.Expression;
     extends Expression
 {
     @Property String name;
@@ -1071,8 +1059,6 @@ INJECT BuiltinVariable :
     import freemarker.template.*;
     import freemarker.core.Environment;
     import freemarker.core.parser.ParseException;
-    import freemarker.core.parser.ast.Expression;
-    import freemarker.core.parser.ast.Macro;
     extends Expression
 {
     private String name;
@@ -1134,7 +1120,6 @@ INJECT DefaultToExpression :
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
     import freemarker.template.*;
-    import freemarker.core.parser.ast.Expression;
     extends Expression
 {
 	public Expression getLeft() {
@@ -1174,8 +1159,6 @@ INJECT DefaultToExpression :
 INJECT ExistsExpression :
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
-    import freemarker.core.parser.ast.ParentheticalExpression;
-    import freemarker.core.parser.ast.Expression;
     import static freemarker.template.Constants.JAVA_NULL;
     extends Expression
 {
@@ -1208,7 +1191,6 @@ import java.util.HashMap;
     import freemarker.core.Environment;
     import freemarker.core.builtins.*;
     import freemarker.template.TemplateDateModel;
-    import freemarker.core.parser.ast.Expression;
     extends Expression;
 {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();
@@ -1351,7 +1333,6 @@ INJECT DotVariable :
     import freemarker.core.Environment;
     import freemarker.core.parser.Token;
     import freemarker.template.TemplateHashModel;
-    import freemarker.core.parser.ast.Expression;
     import java.util.Map;
     import static freemarker.ext.beans.ObjectWrapper.wrap;
     extends Expression
@@ -1401,7 +1382,6 @@ INJECT DynamicKeyName :
     import freemarker.core.Environment;
     import freemarker.template.*;
     import freemarker.ext.beans.ListModel;
-    import freemarker.core.parser.ast.Expression;
     import freemarker.core.EvaluationUtil;
     import freemarker.core.ast.Range;
     import static freemarker.ext.beans.ObjectWrapper.*;
@@ -1577,7 +1557,6 @@ INJECT MethodCall :
     import freemarker.template.*;
     import java.io.IOException;
     import java.io.StringWriter;
-    import freemarker.core.parser.ast.Macro;
     extends Expression;
 {
 
@@ -1726,10 +1705,6 @@ INJECT NamedArgsList :
     import java.util.*;
     import freemarker.core.Environment;
     import freemarker.core.parser.ParseException;
-    import freemarker.core.parser.ast.ArgsList;
-    import freemarker.core.parser.ast.Expression;
-    import freemarker.core.parser.ast.ParameterList;
-    import freemarker.core.parser.ast.TemplateNode;
     import freemarker.template.*;
     extends ArgsList;
 {
@@ -1934,7 +1909,6 @@ INJECT StringLiteral :
    import freemarker.template.*;
    import freemarker.core.Environment;
    import freemarker.core.parser.*;
-   import freemarker.core.parser.ast.Expression;
    import java.io.*;
    extends Expression
 {
@@ -2025,7 +1999,6 @@ BooleanLiteral# :
 INJECT BooleanLiteral :
     import freemarker.core.Environment;
     import freemarker.template.*;
-    import freemarker.core.parser.ast.Expression;
     extends Expression
 {
     @Property boolean value;
@@ -2061,7 +2034,6 @@ INJECT NullLiteral :
    import freemarker.core.Environment;
    import freemarker.template.Constants;
    import freemarker.template.TemplateModel;
-   import freemarker.core.parser.ast.Expression;
    extends Expression
 {
     public String toString() {
@@ -2098,7 +2070,6 @@ INJECT HashLiteral :
     import freemarker.core.Environment;
     import freemarker.ext.beans.ListModel;
     import freemarker.template.*;
-    import freemarker.core.parser.ast.Expression;
     import freemarker.core.ast.CollectionAndSequence;
     extends Expression
 {
