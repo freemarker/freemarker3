@@ -1277,15 +1277,12 @@ INJECT ParameterList :
         if (args instanceof NamedArgsList) {
             return getParameterMap((NamedArgsList) args, env);
         } 
-        if(args instanceof PositionalArgsList) {
-            return getParameterMap((PositionalArgsList) args, env, false);
-        }
-        throw new AssertionError();
+        return getParameterMap((PositionalArgsList) args, env, false);
     }
 }
 
 Macro :
-    <MACRO>
+    <_MACRO>
     IdentifierOrStringLiteral
     [<OPEN_PAREN>]
     ParameterList
@@ -2006,21 +2003,19 @@ INJECT MixedContent :
  * ${...} but no directives.
  */
 
-TemplateElement FreeMarkerText#MixedContent(false) :
+TemplateElement FreeMarkerText#MixedContent(true) :
 {
-     MixedContent nodes = new MixedContent();
-     TemplateElement elem = null, begin = null;
      List<TextBlock> text = null;
 }
     (
       (
-        text=PCData {for (TextBlock tb : text) nodes.add(tb);}
+        text=PCData {for (TextBlock tb : text) pushNode(tb);}
         |
-        elem=Interpolation {nodes.add(elem);}
+        Interpolation
       )
     )+
     {
-       return nodes;
+       return CURRENT_NODE;
     }
 ;
 

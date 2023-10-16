@@ -1,7 +1,6 @@
 PARSER_PACKAGE="freemarker.core.parser";
 TREE_BUILDING_ENABLED=false;
 
-
 /**
  * The lexer portion defines 5 lexical states:
  * DEFAULT, NO_PARSE, EXPRESSION, EXPRESSION_COMMENT, 
@@ -173,14 +172,13 @@ INJECT LEXER_CLASS :
                     token.setType(PRINTABLE_CHARS);
                 }
                 break;
-            case FUNCTION : case MACRO : case PARAM : case NESTED : case STOP : case RETURN : case IF : case ELSE_IF : case VISIT : case RECURSE : case VAR : case SET : case ASSIGN : case LOCALASSIGN : case GLOBALASSIGN : case LIST : case FOREACH : case SWITCH : case CASE : case _INCLUDE : case IMPORT : case EMBED : case ESCAPE : case SETTING : 
+            case FUNCTION : case _MACRO : case PARAM : case NESTED : case STOP : case RETURN : case IF : case ELSE_IF : case VISIT : case RECURSE : case VAR : case SET : case ASSIGN : case LOCALASSIGN : case GLOBALASSIGN : case LIST : case FOREACH : case SWITCH : case CASE : case _INCLUDE : case IMPORT : case EMBED : case ESCAPE : case SETTING : 
                 switchTo(LexicalState.EXPRESSION);
         }
         return token;
     }
 
 }
-
 
 TOKEN:
     <#BLANK : [" ", "\t", "\n", "\r"]>
@@ -223,7 +221,7 @@ TOKEN:
     |
     <FUNCTION : <START_TAG> "function" <BLANK>> 
     |
-    <MACRO : <START_TAG> "macro" <BLANK>>
+    <_MACRO : <START_TAG> "macro" <BLANK>>
     |
     <PARAM : <START_TAG> "param" <BLANK>> 
     |
@@ -286,13 +284,13 @@ TOKEN:
     <TRIVIAL_FTL_HEADER : ("<#ftl" | "[#ftl") ("/")? (">" | "]")>
     |
     <UNKNOWN_DIRECTIVE : ("[#" | "[/#" | "<#" | "</#") (["a"-"z","A"-"Z", "_"])+>
-;
+;  
 
-<DEFAULT, NODIRECTIVE> TOKEN :
+TOKEN :    
     <WHITESPACE : (["\t", " ", "\r", "\n"])+>
     |
-    <PRINTABLE_CHARS : ("$" | "#" | "<" | "[" | "{") 
-                      | (~["$", "<", "#", "[", "{", "\n", "\r", "\t", " "])+>
+    <PRINTABLE_CHARS : ("$" | "<" | "[" | "{") 
+                      | (~["$", "<", "[", "{", "\n", "\r", "\t", " "])+>
     |
     <OUTPUT_ESCAPE : "${" > : EXPRESSION
 ;
@@ -352,7 +350,7 @@ TOKEN:
   |
   <GREATER_THAN_EQUALS: ">=">
   |
-  <EMPTY_DIRECTIVE_END : "/>" | "/]"> :DEFAULT
+  <EMPTY_DIRECTIVE_END : "/>" | "/]"> : DEFAULT
   |
   <LESS_THAN : "lt" | "<" | "&lt;">
   |
