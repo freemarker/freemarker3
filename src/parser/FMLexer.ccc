@@ -2,9 +2,8 @@ PARSER_PACKAGE="freemarker.core.parser";
 TREE_BUILDING_ENABLED=false;
 
 /**
- * The lexer portion defines 5 lexical states:
- * DEFAULT, NO_PARSE, EXPRESSION, EXPRESSION_COMMENT, 
- * NO_SPACE_EXPRESSION
+ * The lexer portion defines 4 lexical states:
+ * DEFAULT, NO_PARSE, EXPRESSION, NO_SPACE_EXPRESSION
  * The lexer is in the DEFAULT state when it is 
  * just consuming regular text, but are scanning for
  * FreeMarker constructs. NO_PARSE is the simplest state.
@@ -19,9 +18,7 @@ TREE_BUILDING_ENABLED=false;
  * that ends the if directive, you go back to DEFAULT lexical state.
  * Note that whitespace is ignored in the
  * EXPRESSION state but is passed through to the parser as PCDATA 
- * in the DEFAULT state. EXPRESSION_COMMENT is a lexical state
- * we are in if for comments within an FTL expression.
- * NO_SPACE_EXPRESSION is a slight variant on the EXPRESSION state. 
+ * in the DEFAULT state. NO_SPACE_EXPRESSION is a slight variant on the EXPRESSION state. 
  * It basically exists as a kludge to deal with a nasty
  * little corner in FTL syntax. In NO_SPACE_EXPRESSION,
  * spaces are not ignored, so a whitespace token effectively ends
@@ -298,15 +295,9 @@ TOKEN :
 <EXPRESSION> SKIP :
     < ( " " | "\t" | "\n" | "\r" )+ >
     |
-    < ["<", "["]  ["#", "!"] "--"> : EXPRESSION_COMMENT
-;
-
-<EXPRESSION_COMMENT> SKIP:
-    < ~[] >  
+    <?EXPRESSION_COMMENT1 : "<#--" (~[])* "-->">
     |
-    < "-->"> : EXPRESSION
-    |
-    < "--]" > : EXPRESSION
+    <?EXPRESSION_COMMENT2 : "[#--" (~[])* "--]">
 ;
 
 <EXPRESSION, NO_SPACE_EXPRESSION> TOKEN :
