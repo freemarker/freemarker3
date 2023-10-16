@@ -1356,12 +1356,12 @@ UnifiedCall :
    <UNIFIED_CALL>
    LEXICAL_STATE NO_SPACE_EXPRESSION 
    (
-     Expression
+     PrimaryExpression
      [<TERMINATING_WHITESPACE>]
    )
    [ArgsList]
    [
-       <SEMICOLON>[<TERMINATING_WHITESPACE>]
+       <SEMICOLON>
        ParameterList
    ] 
    (
