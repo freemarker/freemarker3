@@ -1,6 +1,5 @@
 PARSER_PACKAGE="freemarker.core.parser";
 TREE_BUILDING_ENABLED=false;
-EXTRA_TOKENS=DIRECTIVE_END;
 
 /**
  * The lexer portion defines 4 lexical states:
@@ -259,9 +258,13 @@ TOKEN:
     |
     <DEFAUL : <START_TAG> "default" <CLOSE_TAG1>> 
     |
-    <NESTED : <START_TAG> "nested"> 
+    <SIMPLE_NESTED : <START_TAG> "nested" <CLOSE_TAG2>> 
     |
-    <RECURSE : <START_TAG> "recurse">
+    <NESTED : <START_TAG> "nested" <BLANK>> 
+    |
+    <SIMPLE_RECURSE : <START_TAG> "recurse" <CLOSE_TAG2>>
+    |
+    <RECURSE : <START_TAG> "recurse" <BLANK>>
     |
     <FALLBACK : <START_TAG> "fallback" <CLOSE_TAG2>> 
     |
@@ -271,9 +274,11 @@ TOKEN:
     |
     <UNIFIED_CALL : "<@" | "[@" > 
     |
-    <?UNIFIED_CALL_END : ("<" | "[") "/@" (~[])* <CLOSE_TAG1>> 
+    <UNIFIED_CALL_END : ("<" | "[") "/@" ((<ID>) ("."<ID>)*)? <CLOSE_TAG1>> 
     |
-    <FTL_HEADER : (<BLANK>)* ("<#ftl" | "[#ftl")>
+    <FTL_HEADER : ("<#ftl" | "[#ftl") <BLANK>>
+    |
+    <TRIVIAL_FTL_HEADER : ("<#ftl" | "[#ftl") ("/")? (">" | "]")>
     |
     <UNKNOWN_DIRECTIVE : ("[#" | "[/#" | "<#" | "</#") (["a"-"z","A"-"Z", "_"])+>
 ;  
@@ -402,6 +407,8 @@ TOKEN :
     |
     <NOPARSE_END : ("</#noparse" (<BLANK>)* ">") | ("[/#noparse" (<BLANK>)* "]")>
 ;
+
+<PHONY> TOKEN: <DIRECTIVE_END : ">"|"]">;
 
 INCLUDE JAVA_IDENTIFIER_DEF
 
