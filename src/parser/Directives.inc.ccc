@@ -285,15 +285,11 @@ INJECT VisitNode :
 }
 
 RecurseNode# :
-   <SIMPLE_RECURSE>
-   |
-   (
-      <RECURSE>
-      [Expression]
-      <USING>
-      [Expression]
-      LooseDirectiveEnd
-   )
+    <RECURSE>
+    [Expression]
+    <USING>
+    [Expression]
+    LooseDirectiveEnd
 ;
 
 INJECT RecurseNode : 
@@ -456,13 +452,9 @@ INJECT StopInstruction :
 }
 
 NestedInstruction# :
-    <SIMPLE_NESTED>
-    |
-    (
-        <NESTED>
-        PositionalArgsList
-        LooseDirectiveEnd
-    )
+    <NESTED>
+    [PositionalArgsList]
+    LooseDirectiveEnd
 ;
 
 INJECT NestedInstruction :
@@ -2023,10 +2015,9 @@ TemplateElement FreeMarkerText#MixedContent(true) :
 ;
 
 TemplateHeaderElement# :
-  [<WHITESPACE>]
   (
-    <TRIVIAL_FTL_HEADER>
-    |
+//    <TRIVIAL_FTL_HEADER>
+//    |
     (
         <FTL_HEADER>
         (
@@ -2143,7 +2134,6 @@ TemplateElement Root#void :
    TemplateElement doc;
 }
    [
-      SCAN [<WHITESPACE>](<TRIVIAL_FTL_HEADER>|<FTL_HEADER>) =>
        header=TemplateHeaderElement
        {
        	   template.setHeaderElement(header);
