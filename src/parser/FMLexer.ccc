@@ -155,18 +155,15 @@ INJECT LEXER_CLASS :
                     token.setType(PRINTABLE_CHARS);
                     break;
                 }
+                else {
+                    switchTo(LexicalState.DEFAULT);
+                }
                 break;
             case TERSE_COMMENT_END : 
                 if (noparseType != TERSE_COMMENT) {
                     token.setType(PRINTABLE_CHARS);
-                } else if (tokText.length() == 3) {
-                    switchTo(LexicalState.DEFAULT);
                 } else {
-                    //token.setImage(tokText.substring(0, tokText.length() -3));
-                    //backup(3);
-                    //token.setEndOffset(token.getEndOffset() - 3);
-                    token.truncate(3);
-                    token.setType(PRINTABLE_CHARS);
+                    switchTo(LexicalState.DEFAULT);
                 }
                 break;
             case FUNCTION : case _MACRO : case PARAM : case NESTED : case STOP : case RETURN : case IF : case ELSE_IF : case VISIT : case RECURSE : case VAR : case SET : case ASSIGN : case LOCALASSIGN : case GLOBALASSIGN : case LIST : case FOREACH : case SWITCH : case CASE : case _INCLUDE : case IMPORT : case EMBED : case ESCAPE : case SETTING : 

@@ -57,7 +57,6 @@ INJECT BASE_NODE_CLASS :
 
 
 	static private DefaultReferenceChecker referenceChecker = DefaultReferenceChecker.instance;
-	static private DefaultTreeDumper canonicalTreeRenderer = new DefaultTreeDumper(false);
 
     public String toString() {
     	return getSource();

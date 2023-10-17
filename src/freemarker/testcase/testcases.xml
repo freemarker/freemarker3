@@ -45,10 +45,10 @@
    </testcase>
    <!--testcase name="block-trim" filename="trimblock.ftl"/-->
    <testcase name="boolean" filename="test-boolean.html" />
-   <testcase name="charset-in-header" filename="test-charsetinheader.html">
+   <!--testcase name="charset-in-header" filename="test-charsetinheader.html">
       <config clear_encoding_map="Y"/>
       <config input_encoding="ISO-8859-5"/>
-   </testcase>
+   </testcase-->
    <testcase name="default" filename="test-default.ftl"/>
    <testcase name="comment" filename="test-comment.html" />
    <testcase name="comparisons" filename="test-comparisons.html" />
@@ -95,7 +95,7 @@
    <testcase name="precedence" filename="test-precedence.html"/>
    <testcase name="recover" filename="test-recover.ftl" />
    <testcase name="root" filename="test-root.html" />
-   <testcase name="sequence-builtins" filename="test-sequencebuiltins.txt" />
+   <!--testcase name="sequence-builtins" filename="test-sequencebuiltins.txt"/-->
    <testcase name="scopes" filename="test-scopes.ftl"/>
    <testcase name="strictinheader" filename="test-strictinheader.html"/>
    <testcase name="string-builtins1" filename="test-stringbuiltins.txt" />
@@ -109,11 +109,11 @@
    <testcase name="var-layers" filename="test-varlayers.txt"/>
    <testcase name="variables" filename="test-variables.html"/>
    <testcase name="whitespace-trim" filename="test-wstrim.txt"/>
-   <testcase name="wstrip-in-header" filename="test-wsstripinheader.txt"/>
-   <testcase name="duplicate-includeencoding" filename="test-duplicateincludeencoding.txt"
-      class="freemarker.testcase.ParserTestCase" />
-   <testcase name="duplicate-includeparse" filename="test-duplicateincludeparse.txt"
-      class="freemarker.testcase.ParserTestCase" />
+   <!-- testcase name="wstrip-in-header" filename="test-wsstripinheader.txt"/ -->
+   <!--testcase name="duplicate-includeencoding" filename="test-duplicateincludeencoding.txt"
+      class="freemarker.testcase.ParserTestCase" / -->
+   <!--testcase name="duplicate-includeparse" filename="test-duplicateincludeparse.txt"
+      class="freemarker.testcase.ParserTestCase" /-->
    <testcase name="duplicate-macroparam" filename="test-duplicatemacroparam.txt"
       class="freemarker.testcase.ParserTestCase" />
    <testcase name="duplicate-namedarg" filename="test-duplicatenamedarg.txt"

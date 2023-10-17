@@ -1516,7 +1516,28 @@ NoParseBlock :
     <NOPARSE_END>
 ;
 
-INJECT NoParseBlock : extends freemarker.core.parser.ast.MixedContent
+INJECT NoParseBlock : 
+    import java.io.IOException;
+    import freemarker.core.Environment;
+    extends TemplateElement
+{
+    public void execute(Environment env) throws IOException {
+        String source = getSource();
+        for (int i = 0; i < source.length(); i++) {
+            if (source.charAt(i) == '>' || source.charAt(i) == ']') {
+                source = source.substring(i + 1);
+                break;
+            }
+        }
+        for (int i = source.length()-1; i>=0; i--) {
+            if (source.charAt(i) == '<' || source.charAt(i) == '[') {
+                source = source.substring(0, i);
+                break;
+            }
+        }
+        env.getOut().write(source);
+    }
+}    
 
 SwitchBlock :
    <SWITCH>
