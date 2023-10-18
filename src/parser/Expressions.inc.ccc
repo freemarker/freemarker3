@@ -99,9 +99,8 @@ PrimaryExpression#void :
   (
       (
         <DOT>
-        {token_source.justAfterDot = true;} 
-        <ID> 
-        {token_source.justAfterDot=false;}
+        DEACTIVATE_TOKENS IN, AS, USING, TRUE, FALSE, NULL
+        (<ID>|<TIMES>|<DOUBLE_STAR>) 
       ) #DotVariable(+1) 
       |
       (<OPEN_BRACKET> Expression <CLOSE_BRACKET>) #DynamicKeyName(+1)

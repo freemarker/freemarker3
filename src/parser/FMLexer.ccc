@@ -1,5 +1,6 @@
 PARSER_PACKAGE="freemarker.core.parser";
 TREE_BUILDING_ENABLED=false;
+EXTRA_TOKENS=DIRECTIVE_END;
 
 /**
  * The lexer portion defines 4 lexical states:
@@ -28,7 +29,8 @@ TREE_BUILDING_ENABLED=false;
  */
 
 INJECT LEXER_CLASS : 
-   import freemarker.template.utility.StringUtil;{
+   import static freemarker.template.utility.StringUtil.isFTLIdentifier;
+{
     /**
     The noparseType is set when we enter
     a block of text that the parser more or less ignores.
@@ -50,7 +52,7 @@ INJECT LEXER_CLASS :
     private int hashLiteralNesting;
     private int parenthesisNesting;
     private int bracketNesting;
-    boolean onlyTextOutput, justAfterDot;
+    boolean onlyTextOutput;//, justAfterDot;
     private boolean inPointySyntax;
     String templateName;
 
@@ -70,10 +72,10 @@ INJECT LEXER_CLASS :
     );
 
     private EnumSet<TokenType> emptyDirectives = EnumSet.of(
-        _ATTEMPT, _RECOVER, VISIT, STOP, RETURN,
-        TERSE_COMMENT, NOPARSE, ELSE, BREAK, SIMPLE_RETURN, HALT, 
-        FLUSH, TRIM, LTRIM, RTRIM, DEFAUL, SIMPLE_NESTED, 
-        SIMPLE_RECURSE, FALLBACK, NOESCAPE, TRIVIAL_FTL_HEADER 
+        _ATTEMPT, _RECOVER, VISIT, TERSE_COMMENT, NOPARSE, 
+        ELSE, BREAK, SIMPLE_RETURN, HALT, FLUSH, TRIM, LTRIM, 
+        RTRIM, DEFAUL, SIMPLE_NESTED, SIMPLE_RECURSE, FALLBACK, 
+        NOESCAPE, TRIVIAL_FTL_HEADER 
     );
 
     private BASE_TOKEN_CLASS TOKEN_HOOK(BASE_TOKEN_CLASS token) {
@@ -82,7 +84,9 @@ INJECT LEXER_CLASS :
             if (emptyDirectives.contains(token.getType())) {
                 switchTo(LexicalState.DEFAULT);
             }
-            else switchTo (LexicalState.EXPRESSION);
+            else {
+                switchTo (LexicalState.EXPRESSION);
+            }
         }
         return token;
     }
@@ -91,12 +95,6 @@ INJECT LEXER_CLASS :
         if (token.getType() == EOF) return token;
         String tokText = token.toString();
         char firstChar = tokText.charAt(0);
-        if (justAfterDot) {
-            if (StringUtil.isFTLIdentifier(tokText) || tokText.equals("*") || tokText.equals("**")) {
-                token.setType(ID);
-                return token;
-            }
-        }
         if (firstChar == '[' || firstChar == '<') {
             String chopFirst = tokText.substring(1);
             if (chopFirst.startsWith("#") || chopFirst.startsWith("/#") || chopFirst.startsWith("@") || chopFirst.startsWith("/@")) {
@@ -115,9 +113,6 @@ INJECT LEXER_CLASS :
             }
         }
         switch(token.getType()) {
-            case FTL_HEADER : 
-                switchTo(LexicalState.EXPRESSION);
-                break;
             case GREATER_THAN_EQUALS : case GREATER_THAN : 
                 if (parenthesisNesting == 0 && inPointySyntax) {
                     if (token.getType() == GREATER_THAN_EQUALS) {
@@ -131,7 +126,7 @@ INJECT LEXER_CLASS :
                 parenthesisNesting++;
                 switchTo(LexicalState.EXPRESSION);
                 break;
-            case CLOSE_PAREN : 
+            case CLOSE_PAREN :
                 parenthesisNesting--;
                 break;
             case OPEN_BRACKET : 
@@ -181,9 +176,6 @@ INJECT LEXER_CLASS :
                 } else {
                     switchTo(LexicalState.DEFAULT);
                 }
-                break;
-            case FUNCTION : case _MACRO : case PARAM : case NESTED : case STOP : case RETURN : case IF : case ELSE_IF : case VISIT : case RECURSE : case VAR : case SET : case ASSIGN : case LOCALASSIGN : case GLOBALASSIGN : case LIST : case FOREACH : case SWITCH : case CASE : case _INCLUDE : case IMPORT : case EMBED : case ESCAPE : case SETTING : 
-                switchTo(LexicalState.EXPRESSION);
         }
         return token;
     }
@@ -246,8 +238,6 @@ TOKEN:
     <FUNCTION : "function" <BLANK>> 
     |
     <_MACRO : "macro" <BLANK>>
-    |
-    <PARAM : "param" <BLANK>> 
     |
     <VISIT : "visit" <BLANK>> 
     |
@@ -394,9 +384,9 @@ TOKEN:
   |
   <CLOSE_BRACKET : "]"> 
   |
-  <OPEN_PAREN : "(">
+  <OPEN_PAREN : "("> 
   |
-  <CLOSE_PAREN : ")">
+  <CLOSE_PAREN : ")"> 
   |
   <OPEN_BRACE : "{" > 
   |
@@ -421,11 +411,8 @@ TOKEN:
     <NOPARSE_END : ("</#noparse" (<BLANK>)* ">") | ("[/#noparse" (<BLANK>)* "]")>
 ;
 
-<PHONY> TOKEN: <DIRECTIVE_END : ">"|"]">;
-
 INCLUDE JAVA_IDENTIFIER_DEF
 
 <EXPRESSION, NO_SPACE_EXPRESSION> TOKEN:
    <ID: ("@"|<JAVA_IDENTIFIER_START>)("@"|<JAVA_IDENTIFIER_PART>)*>
 ;
-
