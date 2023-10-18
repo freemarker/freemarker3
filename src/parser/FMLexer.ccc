@@ -88,32 +88,9 @@ INJECT LEXER_CLASS :
                 switchTo (LexicalState.EXPRESSION);
             }
         }
-        return token;
-    }
-    
-    private BASE_TOKEN_CLASS TOKEN_HOOK(BASE_TOKEN_CLASS token) {
-        if (token.getType() == EOF) return token;
-        String tokText = token.toString();
-        char firstChar = tokText.charAt(0);
-        if (firstChar == '[' || firstChar == '<') {
-            String chopFirst = tokText.substring(1);
-            if (chopFirst.startsWith("#") || chopFirst.startsWith("/#") || chopFirst.startsWith("@") || chopFirst.startsWith("/@")) {
-                if (this.onlyTextOutput) {
-                    token.setType(PRINTABLE_CHARS);
-                    return token;
-                }
-                boolean squareBracket = firstChar == '[';
-                if (token.getType() == UNKNOWN_DIRECTIVE) {
-                    int index = tokText.indexOf('#');
-                    String s = tokText.substring(index);
-                    String msg = "Unknown directive: " + s + " on line: " + token.getBeginLine() + ", column: " + token.getBeginColumn() + 1 + ", in template: " + templateName;
-                    throw new RuntimeException(msg);
-                    // REVISIT
-                }
-            }
-        }
         switch(token.getType()) {
-            case GREATER_THAN_EQUALS : case GREATER_THAN : 
+            case GREATER_THAN_EQUALS : 
+            case GREATER_THAN : 
                 if (parenthesisNesting == 0 && inPointySyntax) {
                     if (token.getType() == GREATER_THAN_EQUALS) {
                         token.truncate(1);
