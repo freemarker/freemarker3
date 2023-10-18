@@ -50,18 +50,42 @@ INJECT LEXER_CLASS :
     private int hashLiteralNesting;
     private int parenthesisNesting;
     private int bracketNesting;
-    boolean onlyTextOutput, directiveSyntaxEstablished, altDirectiveSyntax, justAfterDot;
+    boolean onlyTextOutput, justAfterDot;
     String templateName;
 
     public void setOnlyTextOutput(boolean b) {
         this.onlyTextOutput = b;
     }
 
-    void setAltDirectiveSyntax(boolean b) {
-        altDirectiveSyntax = b;
-        directiveSyntaxEstablished = true;
-    }
+    private EnumSet<TokenType> directiveNames = EnumSet.of(
+        _ATTEMPT, _RECOVER, IF, ELSE_IF, LIST, FOREACH, SWITCH,
+        CASE, ASSIGN, GLOBALASSIGN, LOCALASSIGN, SET, _INCLUDE,
+        IMPORT, FUNCTION, _MACRO, VISIT, STOP, RETURN,
+        SETTING, EMBED, VAR, TERSE_COMMENT, NOPARSE, ELSE,
+        BREAK, SIMPLE_RETURN, HALT, FLUSH, TRIM, LTRIM, RTRIM,
+        DEFAUL, SIMPLE_NESTED, NESTED, SIMPLE_RECURSE, RECURSE,
+        FALLBACK, ESCAPE, NOESCAPE, FTL_HEADER, TRIVIAL_FTL_HEADER,
+        UNKNOWN_DIRECTIVE
+    );
 
+    private EnumSet<TokenType> emptyDirectives = EnumSet.of(
+        _ATTEMPT, _RECOVER, VISIT, STOP, RETURN,
+        TERSE_COMMENT, NOPARSE, ELSE, BREAK, SIMPLE_RETURN, HALT, 
+        FLUSH, TRIM, LTRIM, RTRIM, DEFAUL, SIMPLE_NESTED, 
+        SIMPLE_RECURSE, FALLBACK, NOESCAPE, TRIVIAL_FTL_HEADER 
+    );
+
+    private BASE_TOKEN_CLASS TOKEN_HOOK(BASE_TOKEN_CLASS token) {
+        if (directiveNames.contains(token.getType())) {
+            token.setBeginOffset(token.getBeginOffset()-2);
+            if (emptyDirectives.contains(token.getType())) {
+                switchTo(LexicalState.DEFAULT);
+            }
+            else switchTo (LexicalState.EXPRESSION);
+        }
+        return token;
+    }
+    
     private BASE_TOKEN_CLASS TOKEN_HOOK(BASE_TOKEN_CLASS token) {
         if (token.getType() == EOF) return token;
         String tokText = token.toString();
@@ -80,12 +104,6 @@ INJECT LEXER_CLASS :
                     return token;
                 }
                 boolean squareBracket = firstChar == '[';
-                if (!directiveSyntaxEstablished) {
-                    setAltDirectiveSyntax(squareBracket);
-                } else if (altDirectiveSyntax != squareBracket) {
-                    token.setType(PRINTABLE_CHARS);
-                    return token;
-                }
                 if (token.getType() == UNKNOWN_DIRECTIVE) {
                     int index = tokText.indexOf('#');
                     String s = tokText.substring(index);
@@ -100,7 +118,7 @@ INJECT LEXER_CLASS :
                 switchTo(LexicalState.EXPRESSION);
                 break;
             case GREATER_THAN_EQUALS : case GREATER_THAN : 
-                if (parenthesisNesting == 0 && !altDirectiveSyntax) {
+                if (parenthesisNesting == 0) {
                     if (token.getType() == GREATER_THAN_EQUALS) {
                         //backup(1);
                         //token.setEndOffset(token.getEndOffset() - 1);
@@ -171,13 +189,104 @@ INJECT LEXER_CLASS :
         }
         return token;
     }
-
 }
+
+<DIRECTIVE_NAME> TOKEN :
+    <_ATTEMPT : "attempt" <CLOSE_TAG1>> 
+    |
+    <_RECOVER : "recover" <CLOSE_TAG1>>
+    |
+    <IF : "if" <BLANK>> 
+    |
+    <ELSE_IF : "elseif" <BLANK>>
+    |
+    <LIST : "list" <BLANK>> 
+    |
+    <FOREACH : "foreach" <BLANK>> 
+    |
+    <SWITCH : "switch" <BLANK>>
+    |
+    <CASE : "case" <BLANK>> 
+    |
+    <ASSIGN : "assign" <BLANK>>
+    |
+    <GLOBALASSIGN : "global" <BLANK>> 
+    |
+    <LOCALASSIGN : "local" <BLANK>> 
+    |
+    <SET : "set" <BLANK>>
+    |
+    <_INCLUDE : "include" <BLANK>> 
+    |
+    <IMPORT : "import" <BLANK>> 
+    |
+    <FUNCTION : "function" <BLANK>> 
+    |
+    <_MACRO : "macro" <BLANK>>
+    |
+    <PARAM : "param" <BLANK>> 
+    |
+    <VISIT : "visit" <BLANK>> 
+    |
+    <STOP : "stop" <BLANK>> 
+    |
+    <RETURN : "return" <BLANK>> 
+    |
+    <SETTING : "setting" <BLANK>> 
+    |
+    <EMBED : "embed" <BLANK>> 
+    |
+    <VAR : "var"  <BLANK>>
+    |
+    <TERSE_COMMENT : "--" >
+    |
+    <NOPARSE : "noparse" <CLOSE_TAG1>> 
+    |
+    <ELSE : "else" <CLOSE_TAG2>> 
+    |
+    <BREAK : "break" <CLOSE_TAG2>> 
+    |
+    <SIMPLE_RETURN : "return" <CLOSE_TAG2>>
+    |
+    <HALT : "stop" <CLOSE_TAG2>> 
+    |
+    <FLUSH : "flush" <CLOSE_TAG2>> 
+    |
+    <TRIM : "t" <CLOSE_TAG2>> 
+    |
+    <LTRIM : "lt" <CLOSE_TAG2>> 
+    |
+    <RTRIM : "rt" <CLOSE_TAG2>> 
+    |
+    <DEFAUL : "default" <CLOSE_TAG1>> 
+    |
+    <SIMPLE_NESTED : "nested" <CLOSE_TAG2>> 
+    |
+    <NESTED : "nested" <BLANK>> 
+    |
+    <SIMPLE_RECURSE : "recurse" <CLOSE_TAG2>>
+    |
+    <RECURSE : "recurse" <BLANK>>
+    |
+    <FALLBACK : "fallback" <CLOSE_TAG2>> 
+    |
+    <ESCAPE : "escape" <BLANK>> 
+    |
+    <NOESCAPE : "noescape" <CLOSE_TAG1>> 
+    |
+    <FTL_HEADER : "ftl" <BLANK>>
+    |
+    <TRIVIAL_FTL_HEADER : "ftl" <CLOSE_TAG2>> 
+    |
+    <UNKNOWN_DIRECTIVE : (["a"-"z","A"-"Z", "_"])+>
+;
+
+UNPARSED :
+    <START_TAG : "<#" | "[#"> : DIRECTIVE_NAME
+;    
 
 TOKEN:
     <#BLANK : [" ", "\t", "\n", "\r"]>
-    |
-    <#START_TAG : "<#" | "[#">
     |
     <#CLOSE_TAG1 : (<BLANK>)* (">" | "]")>
     |
@@ -185,102 +294,10 @@ TOKEN:
     |
     <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> 
     |
-    <_ATTEMPT : <START_TAG> "attempt" <CLOSE_TAG1>> 
-    |
-    <_RECOVER : <START_TAG> "recover" <CLOSE_TAG1>>
-    |
-    <IF : <START_TAG> "if" <BLANK>> 
-    |
-    <ELSE_IF : <START_TAG> "elseif" <BLANK>>
-    |
-    <LIST : <START_TAG> "list" <BLANK>> 
-    |
-    <FOREACH : <START_TAG> "foreach" <BLANK>> 
-    |
-    <SWITCH : <START_TAG> "switch" <BLANK>>
-    |
-    <CASE : <START_TAG> "case" <BLANK>> 
-    |
-    <ASSIGN : <START_TAG> "assign" <BLANK>>
-    |
-    <GLOBALASSIGN : <START_TAG> "global" <BLANK>> 
-    |
-    <LOCALASSIGN : <START_TAG> "local" <BLANK>> 
-    |
-    <SET : <START_TAG> "set" <BLANK>>
-    |
-    <_INCLUDE : <START_TAG> "include" <BLANK>> 
-    |
-    <IMPORT : <START_TAG> "import" <BLANK>> 
-    |
-    <FUNCTION : <START_TAG> "function" <BLANK>> 
-    |
-    <_MACRO : <START_TAG> "macro" <BLANK>>
-    |
-    <PARAM : <START_TAG> "param" <BLANK>> 
-    |
-    <VISIT : <START_TAG> "visit" <BLANK>> 
-    |
-    <STOP : <START_TAG> "stop" <BLANK>> 
-    |
-    <RETURN : <START_TAG> "return" <BLANK>> 
-    |
-    <SETTING : <START_TAG> "setting" <BLANK>> 
-    |
-    <EMBED : <START_TAG> "embed" <BLANK>> 
-    |
-    <VAR : <START_TAG> "var"  <BLANK>>
-    |
-    <COMPRESS : <START_TAG> "compress" <CLOSE_TAG1>> 
-    |
-    <TERSE_COMMENT : ("<" | "[") "#--" >
-    |
-    <NOPARSE : <START_TAG> "noparse" <CLOSE_TAG1>> 
-    |
-    <ELSE : <START_TAG> "else" <CLOSE_TAG2>> 
-    |
-    <BREAK : <START_TAG> "break" <CLOSE_TAG2>> 
-    |
-    <SIMPLE_RETURN : <START_TAG> "return" <CLOSE_TAG2>>
-    |
-    <HALT : <START_TAG> "stop" <CLOSE_TAG2>> 
-    |
-    <FLUSH : <START_TAG> "flush" <CLOSE_TAG2>> 
-    |
-    <TRIM : <START_TAG> "t" <CLOSE_TAG2>> 
-    |
-    <LTRIM : <START_TAG> "lt" <CLOSE_TAG2>> 
-    |
-    <RTRIM : <START_TAG> "rt" <CLOSE_TAG2>> 
-    |
-    <DEFAUL : <START_TAG> "default" <CLOSE_TAG1>> 
-    |
-    <SIMPLE_NESTED : <START_TAG> "nested" <CLOSE_TAG2>> 
-    |
-    <NESTED : <START_TAG> "nested" <BLANK>> 
-    |
-    <SIMPLE_RECURSE : <START_TAG> "recurse" <CLOSE_TAG2>>
-    |
-    <RECURSE : <START_TAG> "recurse" <BLANK>>
-    |
-    <FALLBACK : <START_TAG> "fallback" <CLOSE_TAG2>> 
-    |
-    <ESCAPE : <START_TAG> "escape" <BLANK>> 
-    |
-    <NOESCAPE : <START_TAG> "noescape" <CLOSE_TAG1>> 
-    |
     <UNIFIED_CALL : "<@" | "[@" > 
     |
     <UNIFIED_CALL_END : ("<" | "[") "/@" ((<ID>) ("."<ID>)*)? <CLOSE_TAG1>> 
     |
-    <FTL_HEADER : ("<#ftl" | "[#ftl") <BLANK>>
-    |
-    <TRIVIAL_FTL_HEADER : ("<#ftl" | "[#ftl") ("/")? (">" | "]")>
-    |
-    <UNKNOWN_DIRECTIVE : ("[#" | "[/#" | "<#" | "</#") (["a"-"z","A"-"Z", "_"])+>
-;  
-
-TOKEN :    
     <WHITESPACE : (["\t", " ", "\r", "\n"])+>
     |
     <PRINTABLE_CHARS : ("$" | "<" | "[" | "{") 

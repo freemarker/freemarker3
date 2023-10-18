@@ -146,33 +146,15 @@ INJECT PARSER_CLASS :
         template.setTokenSource(token_source);
     }
 
-    public FMParser(Template template, Path path, int syntaxSetting) throws IOException {
-        this(template, path);
-        if (syntaxSetting != Configuration.AUTO_DETECT_TAG_SYNTAX) {
-            token_source.setAltDirectiveSyntax(syntaxSetting == Configuration.SQUARE_BRACKET_TAG_SYNTAX);
-        }
-    }
-
-    public FMParser(Template template, CharSequence input, int syntaxSetting) {
+    public FMParser(Template template, CharSequence input) {
         this (input);
         this.template = template;
         this.templateName = template != null ? template.getName() : "";
-         if (syntaxSetting != Configuration.AUTO_DETECT_TAG_SYNTAX) {
-            token_source.setAltDirectiveSyntax(syntaxSetting == Configuration.SQUARE_BRACKET_TAG_SYNTAX);
-        }
         template.setTokenSource(token_source);
     }
 
     private String getErrorStart(Token t) {
         return "Error in template: " + template.getName() + "\non line " + t.getBeginLine() + ", column " + t.getBeginColumn();
-    }
-
-    public boolean isSyntaxSet() {
-        return token_source.directiveSyntaxEstablished;
-    }
-
-    public boolean isAltDirectiveSyntax() {
-        return token_source.altDirectiveSyntax;
     }
 }
  

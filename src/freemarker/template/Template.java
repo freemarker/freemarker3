@@ -100,11 +100,11 @@ public class Template extends TemplateCore {
         this(name, cfg);
         this.encoding = encoding;
         try {
-            int syntaxSetting = getConfiguration().getTagSyntax();
+            //int syntaxSetting = getConfiguration().getTagSyntax();
             this.stripWhitespace = getConfiguration().getWhitespaceStripping();
             this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
             CharSequence content = readInTemplateText(reader);
-            FMParser parser = new FMParser(this, content, syntaxSetting);
+            FMParser parser = new FMParser(this, content);
             parser.setInputSource(getName());
             setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
@@ -130,10 +130,10 @@ public class Template extends TemplateCore {
         
         //readInTemplateText(reader);
         try {
-            int syntaxSetting = getConfiguration().getTagSyntax();
+//            int syntaxSetting = getConfiguration().getTagSyntax();
             this.stripWhitespace = getConfiguration().getWhitespaceStripping();
             this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
-            FMParser parser = new FMParser(this, input, syntaxSetting);
+            FMParser parser = new FMParser(this, input);
             parser.setInputSource(getName());
             setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
