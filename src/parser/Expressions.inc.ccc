@@ -76,7 +76,7 @@ INJECT Expression :
     }
 }
 
-PrimaryExpression#void :
+PrimaryExpression(boolean noSpace)#void :
    (
       NumberLiteral
       |
@@ -97,6 +97,8 @@ PrimaryExpression#void :
       BuiltinVariable
   )
   (
+    SCAN 1 {!noSpace || getToken(0).getEndOffset() == getToken(1).getBeginOffset()} =>
+    (
       (
         <DOT>
         DEACTIVATE_TOKENS IN, AS, USING, TRUE, FALSE, NULL
@@ -115,9 +117,10 @@ PrimaryExpression#void :
         <EXCLAM>
         [
             SCAN {getToken(1).getType() != TokenType.ID || getToken(2).getType() != TokenType.EQUALS}
-            => PrimaryExpression =>||
+            => PrimaryExpression(false) =>||
         ]
       ) #DefaultToExpression(+1)
+    )
   )*
 ;
 
@@ -161,13 +164,13 @@ UnaryExpression#void :
    |
    NotExpression 
    |
-   PrimaryExpression 
+   PrimaryExpression(false) 
 ;
 
 NotExpression :
    <EXCLAM>
    (
-      PrimaryExpression 
+      PrimaryExpression(false) 
       |
       NotExpression 
    )
@@ -205,7 +208,7 @@ UnaryPlusMinusExpression :
    (
       UnaryPlusMinusExpression
       |
-      PrimaryExpression
+      PrimaryExpression(false)
    )
 ;
 

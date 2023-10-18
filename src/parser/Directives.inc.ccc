@@ -1356,11 +1356,7 @@ INJECT Macro :
 
 UnifiedCall :
    <UNIFIED_CALL>
-   LEXICAL_STATE NO_SPACE_EXPRESSION 
-   (
-     PrimaryExpression
-     [<TERMINATING_WHITESPACE>]
-   )
+   PrimaryExpression(true)
    [ArgsList]
    [
        <SEMICOLON>

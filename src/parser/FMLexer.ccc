@@ -4,7 +4,7 @@ EXTRA_TOKENS=DIRECTIVE_END;
 
 /**
  * The lexer portion defines 4 lexical states:
- * DEFAULT, NO_PARSE, EXPRESSION, NO_SPACE_EXPRESSION
+ * DEFAULT, NO_PARSE, EXPRESSION, DIRECTIVE_NAME
  * The lexer is in the DEFAULT state when it is 
  * just consuming regular text, but are scanning for
  * FreeMarker constructs. NO_PARSE is the simplest state.
@@ -19,13 +19,7 @@ EXTRA_TOKENS=DIRECTIVE_END;
  * that ends the if directive, you go back to DEFAULT lexical state.
  * Note that whitespace is ignored in the
  * EXPRESSION state but is passed through to the parser as PCDATA 
- * in the DEFAULT state. NO_SPACE_EXPRESSION is a slight variant on the EXPRESSION state. 
- * It basically exists as a kludge to deal with a nasty
- * little corner in FTL syntax. In NO_SPACE_EXPRESSION,
- * spaces are not ignored, so a whitespace token effectively ends
- * the parsing of an expression. THus, for example, [@x (y+1)/]
- * is parsed as the macro x with the single argument (y+1) rather than
- * the macro x(y+1) with no args.
+ * in the DEFAULT state. 
  */
 
 INJECT LEXER_CLASS : 
@@ -280,7 +274,7 @@ TOKEN:
     <?EXPRESSION_COMMENT2 : "[#--" (~[])* "--]">
 ;
 
-<EXPRESSION, NO_SPACE_EXPRESSION> TOKEN :
+<EXPRESSION> TOKEN :
   <STRING_LITERAL :
       ("\"" 
           ((~["\\", "\""]) | ("\\" ~[]))*      
@@ -376,10 +370,6 @@ TOKEN:
   <USING : "using">
 ;
 
-<NO_SPACE_EXPRESSION> TOKEN :
-    <TERMINATING_WHITESPACE :  (["\n", "\r", "\t", " "])+> : EXPRESSION
-;
-
 <NO_PARSE> MORE:  <(~[])> ;
 
 <NO_PARSE> TOKEN :
@@ -390,6 +380,6 @@ TOKEN:
 
 INCLUDE JAVA_IDENTIFIER_DEF
 
-<EXPRESSION, NO_SPACE_EXPRESSION> TOKEN:
+<EXPRESSION> TOKEN:
    <ID: ("@"|<JAVA_IDENTIFIER_START>)("@"|<JAVA_IDENTIFIER_PART>)*>
 ;
