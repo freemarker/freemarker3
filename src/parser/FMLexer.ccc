@@ -51,6 +51,7 @@ INJECT LEXER_CLASS :
     private int parenthesisNesting;
     private int bracketNesting;
     boolean onlyTextOutput, justAfterDot;
+    private boolean inPointySyntax;
     String templateName;
 
     public void setOnlyTextOutput(boolean b) {
@@ -77,7 +78,7 @@ INJECT LEXER_CLASS :
 
     private BASE_TOKEN_CLASS TOKEN_HOOK(BASE_TOKEN_CLASS token) {
         if (directiveNames.contains(token.getType())) {
-            token.setBeginOffset(token.getBeginOffset()-2);
+            inPointySyntax = token.charAt(0) == '<';
             if (emptyDirectives.contains(token.getType())) {
                 switchTo(LexicalState.DEFAULT);
             }
@@ -118,11 +119,8 @@ INJECT LEXER_CLASS :
                 switchTo(LexicalState.EXPRESSION);
                 break;
             case GREATER_THAN_EQUALS : case GREATER_THAN : 
-                if (parenthesisNesting == 0) {
+                if (parenthesisNesting == 0 && inPointySyntax) {
                     if (token.getType() == GREATER_THAN_EQUALS) {
-                        //backup(1);
-                        //token.setEndOffset(token.getEndOffset() - 1);
-                        // So that the = doesn't get eaten.
                         token.truncate(1);
                     }
                     token.setType(DIRECTIVE_END);
@@ -190,6 +188,31 @@ INJECT LEXER_CLASS :
         return token;
     }
 }
+
+MORE :
+    <START_TAG : "<#" | "[#"> : DIRECTIVE_NAME
+;    
+
+TOKEN:
+    <#BLANK : [" ", "\t", "\n", "\r"]>
+    |
+    <#CLOSE_TAG1 : (<BLANK>)* (">" | "]")>
+    |
+    <#CLOSE_TAG2 : (<BLANK>)* ("/")? (">" | "]")>
+    |
+    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> 
+    |
+    <UNIFIED_CALL : "<@" | "[@" > 
+    |
+    <UNIFIED_CALL_END : ("<" | "[") "/@" ((<ID>) ("."<ID>)*)? <CLOSE_TAG1>> 
+    |
+    <WHITESPACE : (["\t", " ", "\r", "\n"])+>
+    |
+    <PRINTABLE_CHARS : ("$" | "<" | "[" | "{") 
+                      | (~["$", "<", "[", "{", "\n", "\r", "\t", " "])+>
+    |
+    <OUTPUT_ESCAPE : "${" > : EXPRESSION
+;
 
 <DIRECTIVE_NAME> TOKEN :
     <_ATTEMPT : "attempt" <CLOSE_TAG1>> 
@@ -281,30 +304,6 @@ INJECT LEXER_CLASS :
     <UNKNOWN_DIRECTIVE : (["a"-"z","A"-"Z", "_"])+>
 ;
 
-UNPARSED :
-    <START_TAG : "<#" | "[#"> : DIRECTIVE_NAME
-;    
-
-TOKEN:
-    <#BLANK : [" ", "\t", "\n", "\r"]>
-    |
-    <#CLOSE_TAG1 : (<BLANK>)* (">" | "]")>
-    |
-    <#CLOSE_TAG2 : (<BLANK>)* ("/")? (">" | "]")>
-    |
-    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> 
-    |
-    <UNIFIED_CALL : "<@" | "[@" > 
-    |
-    <UNIFIED_CALL_END : ("<" | "[") "/@" ((<ID>) ("."<ID>)*)? <CLOSE_TAG1>> 
-    |
-    <WHITESPACE : (["\t", " ", "\r", "\n"])+>
-    |
-    <PRINTABLE_CHARS : ("$" | "<" | "[" | "{") 
-                      | (~["$", "<", "[", "{", "\n", "\r", "\t", " "])+>
-    |
-    <OUTPUT_ESCAPE : "${" > : EXPRESSION
-;
 
 <EXPRESSION> SKIP :
     < ( " " | "\t" | "\n" | "\r" )+ >
