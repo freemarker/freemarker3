@@ -142,7 +142,7 @@ INJECT LEXER_CLASS :
     }
 }
 
-SKIP :
+UNPARSED :
     <?COMMENT : ("<#--" | "[#--") (~[])* ("--]" | "-->")>
 ;
 
@@ -167,14 +167,16 @@ INJECT Text :
 {
     public String getOutputText() {
         String text = getSource();
-        boolean isOutputtingLine = checkForOutputOnLine();
+        if (isNonOutputtingLine()) {
+            return "";
+        }
         if (hasOpeningWS()) {
-            if (!isOutputtingLine || checkForExplicitLeftTrim()) {
+            if (checkForExplicitLeftTrim()) {
                 text = leftTrim(text);
             }
         } 
         if (hasTrailingWS()) {
-            if (!isOutputtingLine || checkForExplicitRightTrim()) {
+            if (checkForExplicitRightTrim()) {
                 text = rightTrim(text);
             } 
         }
@@ -190,7 +192,6 @@ INJECT Text :
     }
 
     public boolean hasTrailingWS() {
-        //if (previousSibling() != null) return false;
         int lastChar = charAt(length() -1);
         if (getEndOffset() >= getTokenSource().length()) {
             return lastChar == '\t' || lastChar == ' ' || lastChar == '\n';
@@ -219,46 +220,42 @@ INJECT Text :
         }
         return false;
     }
-
-    private boolean checkForOutputOnLine() {
-        if (!isAllWhitespace() || spansLine()) return true;
-        if (previousSibling() == null) {
-            Token tok = previousCachedToken();
-            while (tok != null && tok.getEndLine() == getBeginLine()) {
-                if (tok.firstAncestorOfType(Macro.class) != this.firstAncestorOfType(Macro.class)) {
-                    tok = tok.previousCachedToken();
-                    continue;
-                }
-                if (tok.getType() == CLOSE_BRACE && tok.getParent() instanceof Interpolation) {
-                    return true;
-                }
-                if (tok instanceof Text) {
-                    if (!((Text) tok).isAllWhitespace()) {
-                        return true;
-                    }
-                } 
+    
+    private boolean isNonOutputtingLine() {
+        if (!isAllWhitespace() || spansLine()) return false;
+        Token tok = previousCachedToken();
+        while (tok != null && tok.getEndLine() == getBeginLine()) {
+            if (tok.firstAncestorOfType(Macro.class) != this.firstAncestorOfType(Macro.class)) {
                 tok = tok.previousCachedToken();
+                continue;
             }
+            if (tok.getType() == CLOSE_BRACE && tok.getParent() instanceof Interpolation) {
+                return false;
+            }
+            if (tok instanceof Text) {
+                if (!((Text) tok).isAllWhitespace()) {
+                    return false;
+                }
+            } 
+            tok = tok.previousCachedToken();
         }
-        if (nextSibling() == null)  {
-            Token tok = nextCachedToken();
-            while (tok != null && tok.getBeginLine() == getBeginLine()) {
-                if (tok.firstAncestorOfType(Macro.class) != this.firstAncestorOfType(Macro.class)) {
-                    tok = tok.nextCachedToken();
-                    continue;
-                }
-                if (tok.getType() == OUTPUT_ESCAPE) {
-                    return true;
-                }
-                if (tok instanceof Text) {
-                    if (!((Text) tok).isAllWhitespace()) {
-                        return true;
-                    }
-                }
+        tok = nextCachedToken();
+        while (tok != null && tok.getBeginLine() == getBeginLine()) {
+            if (tok.firstAncestorOfType(Macro.class) != this.firstAncestorOfType(Macro.class)) {
                 tok = tok.nextCachedToken();
+                continue;
             }
+            if (tok.getType() == OUTPUT_ESCAPE) {
+                return false;
+            }
+            if (tok instanceof Text) {
+                if (!((Text) tok).isAllWhitespace()) {
+                    return false;
+                }
+            }
+            tok = tok.nextCachedToken();
         }
-        return false;
+        return true;
     }
 
     private boolean spansLine() {
