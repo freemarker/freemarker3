@@ -276,7 +276,7 @@ INJECT Text :
         for (int i = s.length() -1; i>=0; i--) {
             char c = s.charAt(i);
             if (c != '\t' && c!=' ' && c != '\n') {
-                return s.substring(0,i);
+                return s.substring(0,i+1);
             }
         }
         return "";

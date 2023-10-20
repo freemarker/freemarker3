@@ -5,7 +5,8 @@
    red 
    ----
    red 
-   green    
+   green 
+   
    ----
    yellow 
 --
