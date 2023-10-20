@@ -2,7 +2,6 @@ BASE_SRC_DIR="..";
 PARSER_PACKAGE="freemarker.core.parser";
 BASE_NODE_CLASS=TemplateNode;
 PRESERVE_TABS;
-//PRESERVE_LINE_ENDINGS;
 
 INCLUDE "FMLexer.ccc"
 INCLUDE "Expressions.inc.ccc"

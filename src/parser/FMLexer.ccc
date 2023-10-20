@@ -190,10 +190,10 @@ INJECT Text :
     }
 
     public boolean hasTrailingWS() {
-        if (previousSibling() != null) return false;
+        //if (previousSibling() != null) return false;
         int lastChar = charAt(length() -1);
         if (getEndOffset() >= getTokenSource().length()) {
-            return lastChar == '\t' || lastChar == ' ';
+            return lastChar == '\t' || lastChar == ' ' || lastChar == '\n';
         }
         return lastChar == '\n';
     }
@@ -221,7 +221,7 @@ INJECT Text :
     }
 
     private boolean checkForOutputOnLine() {
-        if (spansLine()) return true;
+        if (!isAllWhitespace() || spansLine()) return true;
         if (previousSibling() == null) {
             Token tok = previousCachedToken();
             while (tok != null && tok.getEndLine() == getBeginLine()) {
