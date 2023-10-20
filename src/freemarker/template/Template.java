@@ -53,10 +53,6 @@ public class Template extends TemplateCore {
     private List<ImportDeclaration> imports = new Vector<>();
     private String encoding, defaultNS;
     private final String name;
-    private BitSet leftTrimLines = new BitSet();
-    private BitSet rightTrimLines = new BitSet();
-    private BitSet outputtingLines = new BitSet();
-    private BitSet outputtingLinesInMacro = new BitSet();
 
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
@@ -109,10 +105,6 @@ public class Template extends TemplateCore {
             setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
             ppv.visit(this);
-            if (stripWhitespace) {
-                WhitespaceAdjuster wadj = new WhitespaceAdjuster(this);
-                wadj.visit(getRootTreeNode());
-            }
         }
         catch(ParseException e) {
             e.setTemplateName(name);
@@ -138,8 +130,6 @@ public class Template extends TemplateCore {
             setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
             ppv.visit(this);
-            WhitespaceAdjuster wadj = new WhitespaceAdjuster(this);
-            wadj.visit(this);
         }
         catch(ParseException e) {
             e.setTemplateName(name);
@@ -390,39 +380,6 @@ public class Template extends TemplateCore {
     	this.strictVariableDeclaration = strictVariableDeclaration;
     }
 
-    public void setLineSaysLeftTrim(int i) {
-        leftTrimLines.set(i);
-    }
-    
-    public void setLineSaysRightTrim(int i) {
-        rightTrimLines.set(i);
-    }
-    
-    public void setLineSaysTrim(int i) {
-        leftTrimLines.set(i);
-        rightTrimLines.set(i);
-    }
-    
-    public boolean lineSaysLeftTrim(int i) {
-        return leftTrimLines.get(i);
-    }
-    
-    public boolean lineSaysRightTrim(int i) {
-        return rightTrimLines.get(i);
-    }
-    
-    public void markAsOutputtingLine(int lineNumber, boolean inMacro) {
-    	if (inMacro) {
-            outputtingLinesInMacro.set(lineNumber);
-    	} else {
-            outputtingLines.set(lineNumber);
-    	}
-    }
-    
-    public boolean isOutputtingLine(int i, boolean inMacro) {
-        return inMacro ? outputtingLinesInMacro.get(i) : outputtingLines.get(i);
-    }
-    
     /**
      *  @return the root TemplateElement object.
      */

@@ -1,5 +1,6 @@
 /.bin/
 /freemarker.jar
+/personal.code-workspace
 src/freemarker/core/parser/FMParser.java
 src/freemarker/core/parser/FMLexer.java
 src/freemarker/core/parser/Node.java

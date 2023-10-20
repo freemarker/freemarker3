@@ -1,7 +1,6 @@
 package freemarker.template;
 
 import freemarker.core.Configurable;
-import freemarker.core.ast.TextBlock;
 import freemarker.core.parser.ast.*;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ParseException;
@@ -141,7 +140,6 @@ public class PostParseVisitor extends Node.Visitor {
 	
 	public void visit(Interpolation node) {
 		recurse(node);
-		markAsProducingOutput(node);
 		Expression escapedExpression = escapedExpression(node.getExpression());
 		node.setEscapedExpression(escapedExpression);
 	}
@@ -249,22 +247,6 @@ public class PostParseVisitor extends Node.Visitor {
        	}
 	}
 	
-	public void visit(TextBlock node) {
-		int type = node.getBlockType();
-		if (type == TextBlock.PRINTABLE_TEXT) {
-			for (int i = node.getBeginLine(); i<=node.getEndLine(); i++) {
-				boolean inMacro = getContainingMacro(node) != null;
-				if (i >0) {//REVISIT THIS 
-					template.markAsOutputtingLine(i, inMacro);
-				}
-			}
-		} 
-	}
-
-	public void visit(TextElement node) {
-		
-	}
-	
 	public void visit(StringLiteral node) {
 		if (!node.isRaw()) {
 			try {
@@ -288,15 +270,6 @@ public class PostParseVisitor extends Node.Visitor {
 		recurse(node);
 	}
 
-	public void visit(TrimInstruction node) {
-		for (int i = node.getBeginLine(); i<= node.getEndLine(); i++) {
-			if (node.isLeft())
-				template.setLineSaysLeftTrim(i);
-			if (node.isRight())
-				template.setLineSaysRightTrim(i);
-		}
-	}
-	
     public void visit(PropertySetting node) {
     	String key = node.getKey();
         if (!key.equals(Configurable.LOCALE_KEY) &&
@@ -321,12 +294,5 @@ public class PostParseVisitor extends Node.Visitor {
 			parent = parent.getParent();
 		}
 		return (Macro) parent;
-	}
-	
-	private void markAsProducingOutput(TemplateNode node) {
-		for (int i= node.getBeginLine(); i<=node.getEndLine(); i++) {
-			boolean inMacro = getContainingMacro(node) != null;
-			template.markAsOutputtingLine(i, inMacro);
-		}
 	}
 }

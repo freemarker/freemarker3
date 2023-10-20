@@ -1308,12 +1308,11 @@ Function#Macro :
 INJECT Macro :
     import freemarker.template.*;
     import freemarker.core.Environment;
-    import freemarker.core.ast.TextBlock;
     extends TemplateElement implements TemplateModel
 {
     static public final Macro DO_NOTHING_MACRO = new Macro();
     static {
-    	DO_NOTHING_MACRO.add((TemplateElement) TextBlock.EMPTY_BLOCK);
+    	DO_NOTHING_MACRO.add(new MixedContent());
     }
 
     public boolean isFunction() {
@@ -1983,38 +1982,8 @@ INJECT TextElement :
  	}
 }
 
-/**
- * Production for a block of raw text
- * i.e. text that contains no
- * FreeMarker directives.
- */
-List<TextBlock> PCData#void :
-{
-    Token start=null;
-    List<TextBlock> result = new ArrayList<TextBlock>();
-}
-    (
-      (
-         <TEXT>
-      )
-      {
-         popNode();
-         if (start == null) start = lastConsumedToken;
-      }
-    )+
-    {
-        start.setEndOffset(lastConsumedToken.getEndOffset());
-        token_source.cacheToken(start);
-        pushNode(start);
-        return TextBlock.breakIntoBlocks(start.toString(), template, start.getBeginColumn(), start.getBeginLine());
-    }
-;
-
 Content#MixedContent(true) :
     (
-//       {List<TextBlock> text;}
-//       text=PCData 
-//       {for (TextBlock tb : text) pushNode(tb);}
        TextElement
        |
        Interpolation
@@ -2050,16 +2019,10 @@ INJECT MixedContent :
  */
 
 TemplateElement FreeMarkerText#MixedContent(true) :
-{
-     List<TextBlock> text = null;
-}
     (
-      (
-        //text=PCData {for (TextBlock tb : text) pushNode(tb);}
         TextElement
         |
         Interpolation
-      )
     )+
     {
        return CURRENT_NODE;
