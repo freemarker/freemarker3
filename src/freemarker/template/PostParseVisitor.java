@@ -260,6 +260,10 @@ public class PostParseVisitor extends Node.Visitor {
 			}
 		} 
 	}
+
+	public void visit(TextElement node) {
+		
+	}
 	
 	public void visit(StringLiteral node) {
 		if (!node.isRaw()) {

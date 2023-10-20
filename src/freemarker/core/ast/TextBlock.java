@@ -34,8 +34,9 @@ public final class TextBlock extends TemplateElement {
 	public static final int OPENING_WS = 2;
 	public static final int TRAILING_WS = 3;
 
+	public TextBlock() {}
+
 	public TextBlock(String text) {
-		if (text == null) text = "";
 		this.text = text;
 	}
 
@@ -63,6 +64,10 @@ public final class TextBlock extends TemplateElement {
 		this.text = null; // Now that we have location info, we don't need this. :-)
 	}
 
+	private int getOffset(int line, int column) {
+		return getTokenSource().getLineStartOffset(line) + column -1;
+	}
+	
 	public String getText() {
 		return getSource();
 	}
@@ -82,13 +87,8 @@ public final class TextBlock extends TemplateElement {
 	{
 		if (this.ignore) return;
 		Writer out = env.getOut();
-		if (text != null) {
-			out.write(text);
-		}
-		else {
-			String output = getTokenSource().getText(getBeginOffset(), getEndOffset()+1);
-			out.write(output);
-		}
+	    String output = getTokenSource().getText(getBeginOffset(), getEndOffset()+1);
+		out.write(output);
 	}
 
 	public String getDescription() {

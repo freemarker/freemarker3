@@ -1,8 +1,8 @@
 BASE_SRC_DIR="..";
 PARSER_PACKAGE="freemarker.core.parser";
 BASE_NODE_CLASS=TemplateNode;
-PRESERVE_LINE_ENDINGS;
 PRESERVE_TABS;
+//PRESERVE_LINE_ENDINGS;
 
 INCLUDE "FMLexer.ccc"
 INCLUDE "Expressions.inc.ccc"
@@ -24,17 +24,7 @@ INJECT BASE_NODE_CLASS :
 	public String getDescription() {
 		return "";
 	}
-	
-    public int getEndLine() {
-      TokenSource tokenSource = getTokenSource();
-      return tokenSource == null ? 0 : tokenSource.getLineFromOffset(getEndOffset());
-	}
-	
-	public int getEndColumn() {
-      TokenSource tokenSource = getTokenSource();
-      return tokenSource == null ? 0 : tokenSource.getCodePointColumnFromOffset(getEndOffset());
-	}
-	
+    
     /**
      * Returns a string that indicates
      * where in the template source, this object is.
@@ -85,17 +75,6 @@ INJECT Node :
    import freemarker.template.Template;
 {
     default void setTemplate(Template template) {}
-
-    default void setLocation(Template template, TokenSource tokenSource, Node begin, Node end) {
-        setTemplate(template);
-        setTokenSource(tokenSource);
-        setBeginOffset(begin.getBeginOffset());
-        setEndOffset(end.getEndOffset());
-    }
-
-	default int getOffset(int line, int column) {
-		return getTokenSource().getLineStartOffset(line) + column -1;
-	}
 }
 
 INJECT PARSER_CLASS : 
@@ -187,5 +166,4 @@ INJECT ParseException  :
     public void setTemplateName(String templateName) {
         this.templateName = templateName;
     }
-
 }

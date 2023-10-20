@@ -4,7 +4,6 @@ import freemarker.core.ast.TextBlock;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ast.AssignmentInstruction;
 import freemarker.core.parser.ast.BlockAssignment;
-import freemarker.core.parser.ast.Comment;
 import freemarker.core.parser.ast.ImportDeclaration;
 import freemarker.core.parser.ast.Macro;
 import freemarker.core.parser.ast.MixedContent;
@@ -22,14 +21,13 @@ public class WhitespaceAdjuster extends Node.Visitor {
 		this.template = template;
 	}
 
-	boolean ignoresSandwichedWhitespace(TemplateElement elem) {
+	private boolean ignoresSandwichedWhitespace(TemplateElement elem) {
 		return (elem instanceof Macro) 
 		       || (elem instanceof AssignmentInstruction) 
 		       || (elem instanceof BlockAssignment) 
 		       || (elem instanceof VarDirective)
 		       || (elem instanceof ImportDeclaration)
-		       || (elem instanceof PropertySetting)
-		       || (elem instanceof Comment);
+		       || (elem instanceof PropertySetting);
  	}
 
 	public void visit(MixedContent node) {

@@ -58,7 +58,7 @@ INJECT LEXER_CLASS :
         _ATTEMPT, _RECOVER, IF, ELSE_IF, LIST, FOREACH, SWITCH,
         CASE, ASSIGN, GLOBALASSIGN, LOCALASSIGN, SET, _INCLUDE,
         IMPORT, FUNCTION, _MACRO, VISIT, STOP, RETURN,
-        SETTING, EMBED, VAR, TERSE_COMMENT, NOPARSE, ELSE,
+        SETTING, EMBED, VAR, NOPARSE, ELSE,
         BREAK, SIMPLE_RETURN, HALT, FLUSH, TRIM, LTRIM, RTRIM,
         DEFAUL, SIMPLE_NESTED, NESTED, SIMPLE_RECURSE, RECURSE,
         FALLBACK, ESCAPE, NOESCAPE, FTL_HEADER, TRIVIAL_FTL_HEADER,
@@ -66,7 +66,7 @@ INJECT LEXER_CLASS :
     );
 
     private EnumSet<TokenType> emptyDirectives = EnumSet.of(
-        _ATTEMPT, _RECOVER, VISIT, TERSE_COMMENT, NOPARSE, 
+        _ATTEMPT, _RECOVER, VISIT, NOPARSE, 
         ELSE, BREAK, SIMPLE_RETURN, HALT, FLUSH, TRIM, LTRIM, 
         RTRIM, DEFAUL, SIMPLE_NESTED, SIMPLE_RECURSE, FALLBACK, 
         NOESCAPE, TRIVIAL_FTL_HEADER 
@@ -128,56 +128,171 @@ INJECT LEXER_CLASS :
                 noparseType = NOPARSE;
                 switchTo(LexicalState.NO_PARSE);
                 break;
-            case TERSE_COMMENT : 
-                noparseType = TERSE_COMMENT;
-                switchTo(LexicalState.NO_PARSE);
-                break;
             case NOPARSE_END : 
                 if (noparseType != NOPARSE) {
-                    token.setType(PRINTABLE_CHARS);
+                    token.setType(TEXT);
                     break;
                 }
                 else {
                     switchTo(LexicalState.DEFAULT);
                 }
                 break;
-            case TERSE_COMMENT_END : 
-                if (noparseType != TERSE_COMMENT) {
-                    token.setType(PRINTABLE_CHARS);
-                } else {
-                    switchTo(LexicalState.DEFAULT);
-                }
         }
         return token;
     }
 }
 
+SKIP :
+    <?COMMENT : ("<#--" | "[#--") (~[])* ("--]" | "-->")>
+;
+
 MORE :
     <START_TAG : "<#" | "[#"> : DIRECTIVE_NAME
 ;    
 
-TOKEN:
+TOKEN :
+    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> 
+    |
+    <UNIFIED_CALL : "<@" | "[@" > 
+    |
+    <UNIFIED_CALL_END : ("<" | "[") "/@" (~[" ", "\t", "\n", "\r", ">", "]"])* (">" | "]")> 
+    |
+    <TEXT : "\n" | (("$" | "<" | "[" ) | (~["$", "<", "[" ,"\n"])+ ("\n")?)> #Text
+//    <TEXT : ("$" | "<" | "[" ) | (~["$", "<", "["])+ > #Text
+    |
+    <OUTPUT_ESCAPE : "${" > : EXPRESSION
+;
+
+INJECT Text :
+{
+    public String getOutputText() {
+        String text = getSource();
+        boolean isOutputtingLine = checkForOutputOnLine();
+        if (hasOpeningWS()) {
+            if (!isOutputtingLine || checkForExplicitLeftTrim()) {
+                text = leftTrim(text);
+            }
+        } 
+        if (hasTrailingWS()) {
+            if (!isOutputtingLine || checkForExplicitRightTrim()) {
+                text = rightTrim(text);
+            } 
+        }
+        return text;
+    }
+
+    public boolean isAllWhitespace() {
+        return toString().trim().length() == 0;
+    }
+
+    public boolean hasOpeningWS() {
+        return getBeginColumn() == 1 && (charAt(0) == '\t' || charAt(0) == ' ');
+    }
+
+    public boolean hasTrailingWS() {
+        if (previousSibling() != null) return false;
+        int lastChar = charAt(length() -1);
+        if (getEndOffset() >= getTokenSource().length()) {
+            return lastChar == '\t' || lastChar == ' ';
+        }
+        return lastChar == '\n';
+    }
+
+    private boolean checkForExplicitLeftTrim() {
+        Token tok = nextCachedToken();
+        while (tok != null && tok.getBeginLine() == this.getBeginLine()) {
+            if (tok.getType() == TRIM || tok.getType() == LTRIM) {
+                return true;
+            }
+            tok = tok.nextCachedToken();
+        }
+        return false;
+    }
+
+    private boolean checkForExplicitRightTrim() {
+        Token tok = previousCachedToken();
+        while (tok != null && tok.getBeginLine() == this.getBeginLine()) {
+            if (tok.getType() == TRIM || tok.getType() == RTRIM) {
+                return true;
+            }
+            tok = tok.previousCachedToken();
+        }
+        return false;
+    }
+
+    private boolean checkForOutputOnLine() {
+        if (spansLine()) return true;
+        if (previousSibling() == null) {
+            Token tok = previousCachedToken();
+            while (tok != null && tok.getEndLine() == getBeginLine()) {
+                if (tok.firstAncestorOfType(Macro.class) != this.firstAncestorOfType(Macro.class)) {
+                    tok = tok.previousCachedToken();
+                    continue;
+                }
+                if (tok.getType() == CLOSE_BRACE && tok.getParent() instanceof Interpolation) {
+                    return true;
+                }
+                if (tok instanceof Text) {
+                    if (!((Text) tok).isAllWhitespace()) {
+                        return true;
+                    }
+                } 
+                tok = tok.previousCachedToken();
+            }
+        }
+        if (nextSibling() == null)  {
+            Token tok = nextCachedToken();
+            while (tok != null && tok.getBeginLine() == getBeginLine()) {
+                if (tok.firstAncestorOfType(Macro.class) != this.firstAncestorOfType(Macro.class)) {
+                    tok = tok.nextCachedToken();
+                    continue;
+                }
+                if (tok.getType() == OUTPUT_ESCAPE) {
+                    return true;
+                }
+                if (tok instanceof Text) {
+                    if (!((Text) tok).isAllWhitespace()) {
+                        return true;
+                    }
+                }
+                tok = tok.nextCachedToken();
+            }
+        }
+        return false;
+    }
+
+    private boolean spansLine() {
+        return getBeginColumn() == 1 && charAt(length()-1) == '\n';
+    }
+
+    private String leftTrim(String s) {
+        for (int i = 0; i<s.length(); i++) {
+            char c = s.charAt(i);
+            if (c != '\t' && c!= ' ') {
+                return s.substring(i);
+            }
+        }
+        return "";
+    }
+
+    private String rightTrim(String s) {
+        for (int i = s.length() -1; i>=0; i--) {
+            char c = s.charAt(i);
+            if (c != '\t' && c!=' ' && c != '\n') {
+                return s.substring(0,i);
+            }
+        }
+        return "";
+    }
+}
+
+<DIRECTIVE_NAME> TOKEN :
     <#BLANK : [" ", "\t", "\n", "\r"]>
     |
     <#CLOSE_TAG1 : (<BLANK>)* (">" | "]")>
     |
     <#CLOSE_TAG2 : (<BLANK>)* ("/")? (">" | "]")>
     |
-    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> 
-    |
-    <UNIFIED_CALL : "<@" | "[@" > 
-    |
-    <UNIFIED_CALL_END : ("<" | "[") "/@" ((<ID>) ("."<ID>)*)? <CLOSE_TAG1>> 
-    |
-    <WHITESPACE : (["\t", " ", "\r", "\n"])+>
-    |
-    <PRINTABLE_CHARS : ("$" | "<" | "[" | "{") 
-                      | (~["$", "<", "[", "{", "\n", "\r", "\t", " "])+>
-    |
-    <OUTPUT_ESCAPE : "${" > : EXPRESSION
-;
-
-<DIRECTIVE_NAME> TOKEN :
     <_ATTEMPT : "attempt" <CLOSE_TAG1>> 
     |
     <_RECOVER : "recover" <CLOSE_TAG1>>
@@ -221,8 +336,6 @@ TOKEN:
     <EMBED : "embed" <BLANK>> 
     |
     <VAR : "var"  <BLANK>>
-    |
-    <TERSE_COMMENT : "--" >
     |
     <NOPARSE : "noparse" <CLOSE_TAG1>> 
     |
@@ -373,8 +486,6 @@ TOKEN:
 <NO_PARSE> MORE:  <(~[])> ;
 
 <NO_PARSE> TOKEN :
-	<TERSE_COMMENT_END : "-->" | "--]">
-    |
     <NOPARSE_END : ("</#noparse" (<BLANK>)* ">") | ("[/#noparse" (<BLANK>)* "]")>
 ;
 

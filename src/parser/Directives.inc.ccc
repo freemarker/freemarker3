@@ -1471,43 +1471,10 @@ Map<String, Expression> NamedArgs#void :
   }
 ;
 
-TerseComment#Comment :
-	<TERSE_COMMENT>
-	(
-	   <PRINTABLE_CHARS> 
-	)*
-	<TERSE_COMMENT_END>
-;
-
-INJECT Comment :
-    import freemarker.core.Environment;
-    extends TemplateElement
-{
-    public String getText() {
-      StringBuffer buf = new StringBuffer();
-      for (Node n: childrenOfType(PRINTABLE_CHARS)) {
-         buf.append(n.toString());
-      }
-    	return buf.toString();
-    }
-
-    public void execute(Environment env) {
-    // do nothing, skip the body
-    }
-
-    public String getDescription() {
-        String s = getText().trim();
-        if (s.length() > 20) {
-            s = s.substring(0, 20) + "...";
-        }
-        return "comment (" + s + ")";
-    }   
-}
-
 NoParseBlock :
     <NOPARSE>
     (
-       <PRINTABLE_CHARS> 
+       <TEXT> 
     )*
     <NOPARSE_END>
 ;
@@ -1539,7 +1506,7 @@ SwitchBlock :
    <SWITCH>
    Expression
    <DIRECTIVE_END>
-   (<WHITESPACE>)*   
+   (Whitespace)*
    (
      (
       <CASE>
@@ -1883,8 +1850,6 @@ TemplateElement#abstract :
    |
    UnifiedCall
    |
-   TerseComment
-   |
    NoParseBlock
    |
    SwitchBlock
@@ -1959,6 +1924,65 @@ INJECT TemplateElement :
     }
 }
 
+TextElement# :
+{Token start=null;}
+   (
+      <TEXT>
+   )+
+;
+
+INJECT TextElement :
+   import java.io.IOException;
+   import freemarker.core.Environment;
+   extends TemplateElement
+{
+    @Property boolean allWhitespace;
+    private String outputText;
+
+    public void close() {
+        this.allWhitespace = true;
+        for (Node n : this) {
+            Text text = (Text) n;
+            if (!text.isAllWhitespace()) {
+                allWhitespace = false; 
+                break;
+            }
+        }
+    } 
+
+    private String getOutputText() {
+        if (outputText != null) {
+            return outputText;
+        }
+        if (isAllWhitespace() && ignoresSandwichedWhitespace(previousSibling()) && ignoresSandwichedWhitespace(nextSibling())) {
+            return outputText = "";
+        }
+        StringBuilder buf = new StringBuilder();
+        for (Node n : this) {
+            Text text = (Text) n;
+            buf.append(((Text) n).getOutputText());
+        }
+        return outputText = buf.toString();
+    }
+
+    public void execute(Environment env) throws IOException {
+        env.getOut().write(getOutputText());
+ 	}
+
+    private boolean atTopLevel() {
+        return getParent() == null || getParent().getParent() == null;
+    }
+
+	private boolean ignoresSandwichedWhitespace(Node elem) {
+		return    (elem instanceof Macro) 
+		       || (elem instanceof AssignmentInstruction) 
+		       || (elem instanceof BlockAssignment) 
+		       || (elem instanceof VarDirective)
+		       || (elem instanceof ImportDeclaration)
+		       || (elem instanceof PropertySetting);
+ 	}
+}
+
 /**
  * Production for a block of raw text
  * i.e. text that contains no
@@ -1966,32 +1990,32 @@ INJECT TemplateElement :
  */
 List<TextBlock> PCData#void :
 {
-    StringBuilder buf = new StringBuilder();
     Token start=null;
     List<TextBlock> result = new ArrayList<TextBlock>();
 }
     (
       (
-         <PRINTABLE_CHARS> 
-         |
-         <WHITESPACE> 
+         <TEXT>
       )
       {
          popNode();
-         buf.append(lastConsumedToken.toString());
          if (start == null) start = lastConsumedToken;
       }
     )+
     {
-        return TextBlock.breakIntoBlocks(buf.toString(), template, start.getBeginColumn(), start.getBeginLine());
+        start.setEndOffset(lastConsumedToken.getEndOffset());
+        token_source.cacheToken(start);
+        pushNode(start);
+        return TextBlock.breakIntoBlocks(start.toString(), template, start.getBeginColumn(), start.getBeginLine());
     }
 ;
 
 Content#MixedContent(true) :
     (
-       {List<TextBlock> text;}
-       text=PCData 
-       {for (TextBlock tb : text) pushNode(tb);}
+//       {List<TextBlock> text;}
+//       text=PCData 
+//       {for (TextBlock tb : text) pushNode(tb);}
+       TextElement
        |
        Interpolation
        |
@@ -2031,7 +2055,8 @@ TemplateElement FreeMarkerText#MixedContent(true) :
 }
     (
       (
-        text=PCData {for (TextBlock tb : text) pushNode(tb);}
+        //text=PCData {for (TextBlock tb : text) pushNode(tb);}
+        TextElement
         |
         Interpolation
       )
@@ -2042,7 +2067,7 @@ TemplateElement FreeMarkerText#MixedContent(true) :
 ;
 
 TemplateHeaderElement# :
-  [<WHITESPACE>]
+  (Whitespace)*
   (
     <TRIVIAL_FTL_HEADER>
     |
@@ -2056,7 +2081,15 @@ TemplateHeaderElement# :
         LooseDirectiveEnd
     )
   )
-;  
+; 
+
+Whitespace#void :
+   SCAN 0 {getTokenImage(1).trim().length() == 0}# 
+   => <TEXT>
+   {
+      popNode();
+   }
+;
 
 INJECT TemplateHeaderElement :
     import java.util.*;
@@ -2162,7 +2195,7 @@ TemplateElement Root#void :
    TemplateElement doc;
 }
    [
-      SCAN [<WHITESPACE>](<TRIVIAL_FTL_HEADER>|<FTL_HEADER>) =>
+      SCAN (Whitespace)*(<TRIVIAL_FTL_HEADER>|<FTL_HEADER>) =>
        header=TemplateHeaderElement
        {
        	   template.setHeaderElement(header);

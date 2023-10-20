@@ -2,6 +2,7 @@ package freemarker.core;
 
 import freemarker.template.*;
 import java.io.*;
+import java.util.HashMap;
 
 /**
  * FreeMarker command-line utility, the Main-Class of <tt>freemarker.jar</tt>.
@@ -33,7 +34,7 @@ public class CommandLine {
 		conf.setDirectoryForTemplateLoading(file.getParentFile());
 		Template template = conf.getTemplate(file.getName());
 		Writer out = new OutputStreamWriter(System.out);
-		template.process(null, out);
+		template.process(new HashMap<String, Object>(), out);
 	}
     
     public static void info() {
