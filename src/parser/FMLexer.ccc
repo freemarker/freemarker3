@@ -3,13 +3,13 @@ TREE_BUILDING_ENABLED=false;
 EXTRA_TOKENS=DIRECTIVE_END;
 
 /**
- * The lexer portion defines 4 lexical states:
- * DEFAULT, NO_PARSE, EXPRESSION, DIRECTIVE_NAME
+ * The lexer portion defines 3 lexical states:
+ * DEFAULT, EXPRESSION, DIRECTIVE_NAME
  * The lexer is in the DEFAULT state when it is 
- * just consuming regular text, but are scanning for
- * FreeMarker constructs. NO_PARSE is the simplest state.
- * We are consuming text, but ignoring FreeMarker constructs,
- * so ${x} or [#if..] are just treated as plain text.
+ * just consuming regular text, but is scanning for
+ * FreeMarker constructs. 
+ * DIRECTIVE_NAME is a trivial state you are in just
+ * after a <# or [# and we expect a directive name.
  * EXPRESSION is the state you are in
  * when the parser wants a FreeMarker expression.
  * So, for example, you enter the EXPRESSION state
@@ -17,24 +17,11 @@ EXTRA_TOKENS=DIRECTIVE_END;
  * Or, you enter the EXPRESSION state right after
  * an "<#if" and then, when you hit the matching ">"
  * that ends the if directive, you go back to DEFAULT lexical state.
- * Note that whitespace is ignored in the
- * EXPRESSION state but is passed through to the parser as PCDATA 
- * in the DEFAULT state. 
  */
 
 INJECT LEXER_CLASS : 
    import static freemarker.template.utility.StringUtil.isFTLIdentifier;
 {
-    /**
-    The noparseType is set when we enter
-    a block of text that the parser more or less ignores.
-    These are <noparse> and <comment>. This variable
-    tells us what the closing tag should be, and when
-    we hit that, we resume parsing. Note that with this
-    scheme, <comment> and <noparse> tags cannot nest
-    recursively, but it is not clear how important that is.
-    */
-    private TokenType noparseType;
     /**
     Keeps track of how deeply nested
     we have the hash literals.
@@ -58,7 +45,7 @@ INJECT LEXER_CLASS :
         _ATTEMPT, _RECOVER, IF, ELSE_IF, LIST, FOREACH, SWITCH,
         CASE, ASSIGN, GLOBALASSIGN, LOCALASSIGN, SET, _INCLUDE,
         IMPORT, FUNCTION, _MACRO, VISIT, STOP, RETURN,
-        SETTING, EMBED, VAR, NOPARSE, ELSE,
+        SETTING, EMBED, VAR, ELSE,
         BREAK, SIMPLE_RETURN, HALT, FLUSH, TRIM, LTRIM, RTRIM,
         DEFAUL, SIMPLE_NESTED, NESTED, SIMPLE_RECURSE, RECURSE,
         FALLBACK, ESCAPE, NOESCAPE, FTL_HEADER, TRIVIAL_FTL_HEADER,
@@ -66,7 +53,7 @@ INJECT LEXER_CLASS :
     );
 
     private EnumSet<TokenType> emptyDirectives = EnumSet.of(
-        _ATTEMPT, _RECOVER, VISIT, NOPARSE, 
+        _ATTEMPT, _RECOVER, VISIT,  
         ELSE, BREAK, SIMPLE_RETURN, HALT, FLUSH, TRIM, LTRIM, 
         RTRIM, DEFAUL, SIMPLE_NESTED, SIMPLE_RECURSE, FALLBACK, 
         NOESCAPE, TRIVIAL_FTL_HEADER 
@@ -124,19 +111,6 @@ INJECT LEXER_CLASS :
             case UNIFIED_CALL : 
                 switchTo(LexicalState.EXPRESSION);
                 break;
-            case NOPARSE : 
-                noparseType = NOPARSE;
-                switchTo(LexicalState.NO_PARSE);
-                break;
-            case NOPARSE_END : 
-                if (noparseType != NOPARSE) {
-                    token.setType(TEXT);
-                    break;
-                }
-                else {
-                    switchTo(LexicalState.DEFAULT);
-                }
-                break;
         }
         return token;
     }
@@ -157,45 +131,31 @@ TOKEN :
     |
     <UNIFIED_CALL_END : ("<" | "[") "/@" (~[" ", "\t", "\n", "\r", ">", "]"])* (">" | "]")> 
     |
-    <TEXT : "\n" | (("$" | "<" | "[" ) | (~["$", "<", "[" ,"\n"])+ ("\n")?)> #Text
-    |
     <OUTPUT_ESCAPE : "${" > : EXPRESSION
+    |
+    <?NOPARSE : <NOPARSE_BEGIN> (~[])* <NOPARSE_END> > #LegacyNoParse
+    |
+    <#NOPARSE_BEGIN :   ("<#noparse" (<BLANK>)* ">") | ("/#noparse" (<BLANK>)* "]")>
+    |
+    <#NOPARSE_END :  ("</#noparse" (<BLANK>)* ">") | ("[/#noparse" (<BLANK>)* "]")>
 ;
 
-INJECT Text :
+TOKEN#Text :
+    <TRAILING_WHITESPACE : (["\t"," "])* "\n"> #Whitespace
+    |
+    <NON_TRAILING_WHITESPACE : (["\t"," "])+> #Whitespace
+    |
+    <PROBLEMATIC_CHAR : "$" | "<" | "["> #Printable
+    |
+    <REGULAR_PRINTABLE : (~["$", "<", "[" ,"\t", " ", "\n"])+> #Printable
+;
+
+INJECT Whitespace :
 {
-    public String getOutputText() {
-        String text = getSource();
-        if (isNonOutputtingLine()) {
-            return "";
-        }
-        if (hasOpeningWS()) {
-            if (checkForExplicitLeftTrim()) {
-                text = leftTrim(text);
-            }
-        } 
-        if (hasTrailingWS()) {
-            if (checkForExplicitRightTrim()) {
-                text = rightTrim(text);
-            } 
-        }
-        return text;
-    }
-
-    public boolean isAllWhitespace() {
-        return toString().trim().length() == 0;
-    }
-
-    public boolean hasOpeningWS() {
-        return getBeginColumn() == 1 && (charAt(0) == '\t' || charAt(0) == ' ');
-    }
-
-    public boolean hasTrailingWS() {
-        int lastChar = charAt(length() -1);
-        if (getEndOffset() >= getTokenSource().length()) {
-            return lastChar == '\t' || lastChar == ' ' || lastChar == '\n';
-        }
-        return lastChar == '\n';
+    public boolean isIgnored() {
+        return isNonOutputtingLine() 
+            || getType() == TRAILING_WHITESPACE && checkForExplicitRightTrim() 
+            || getType() == NON_TRAILING_WHITESPACE && getBeginColumn() == 1 && checkForExplicitLeftTrim(); 
     }
 
     private boolean checkForExplicitLeftTrim() {
@@ -221,7 +181,7 @@ INJECT Text :
     }
     
     private boolean isNonOutputtingLine() {
-        if (!isAllWhitespace() || spansLine()) return false;
+        if (spansLine()) return false;
         Token tok = previousCachedToken();
         while (tok != null && tok.getEndLine() == getBeginLine()) {
             if (tok.firstAncestorOfType(Macro.class) != this.firstAncestorOfType(Macro.class)) {
@@ -231,10 +191,8 @@ INJECT Text :
             if (tok.getType() == CLOSE_BRACE && tok.getParent() instanceof Interpolation) {
                 return false;
             }
-            if (tok instanceof Text) {
-                if (!((Text) tok).isAllWhitespace()) {
-                    return false;
-                }
+            if (tok.getType() == REGULAR_PRINTABLE || tok.getType() == PROBLEMATIC_CHAR || tok.getType() == NOPARSE) {
+                return false;
             } 
             tok = tok.previousCachedToken();
         }
@@ -247,11 +205,9 @@ INJECT Text :
             if (tok.getType() == OUTPUT_ESCAPE) {
                 return false;
             }
-            if (tok instanceof Text) {
-                if (!((Text) tok).isAllWhitespace()) {
-                    return false;
-                }
-            }
+            if (tok.getType() == REGULAR_PRINTABLE || tok.getType() == PROBLEMATIC_CHAR || tok.getType() == NOPARSE) {
+                return false;
+            } 
             tok = tok.nextCachedToken();
         }
         return true;
@@ -259,26 +215,6 @@ INJECT Text :
 
     private boolean spansLine() {
         return getBeginColumn() == 1 && charAt(length()-1) == '\n';
-    }
-
-    private String leftTrim(String s) {
-        for (int i = 0; i<s.length(); i++) {
-            char c = s.charAt(i);
-            if (c != '\t' && c!= ' ') {
-                return s.substring(i);
-            }
-        }
-        return "";
-    }
-
-    private String rightTrim(String s) {
-        for (int i = s.length() -1; i>=0; i--) {
-            char c = s.charAt(i);
-            if (c != '\t' && c!=' ' && c != '\n') {
-                return s.substring(0,i+1);
-            }
-        }
-        return "";
     }
 }
 
@@ -332,8 +268,6 @@ INJECT Text :
     <EMBED : "embed" <BLANK>> 
     |
     <VAR : "var"  <BLANK>>
-    |
-    <NOPARSE : "noparse" <CLOSE_TAG1>> 
     |
     <ELSE : "else" <CLOSE_TAG2>> 
     |
@@ -477,12 +411,6 @@ INJECT Text :
   <AS : "as">
   |
   <USING : "using">
-;
-
-<NO_PARSE> MORE:  <(~[])> ;
-
-<NO_PARSE> TOKEN :
-    <NOPARSE_END : ("</#noparse" (<BLANK>)* ">") | ("[/#noparse" (<BLANK>)* "]")>
 ;
 
 INCLUDE JAVA_IDENTIFIER_DEF

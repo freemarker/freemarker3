@@ -2,12 +2,9 @@ package freemarker.core;
 
 import java.util.*;
 
-//import static freemarker.ext.beans.ObjectWrapper.wrap;
-
 /**
  * A basic scope that stores variables locally in a hash map. 
  * @author Jonathan Revusky
- * @version $Id: $
  */
 public class BaseScope extends AbstractScope {
 
@@ -26,7 +23,6 @@ public class BaseScope extends AbstractScope {
     }
 
     public Object get(String key) { 
-        //return wrap(variables.get(key));
         return variables.get(key);
     }
 
@@ -38,11 +34,11 @@ public class BaseScope extends AbstractScope {
         return variables.isEmpty();
     }
 
-    public Iterable keys() {
+    public Iterable<String> keys() {
         return variables.keySet();
     }
 
-    public Iterable values() {
+    public Iterable<?> values() {
         return variables.values();
     }
 

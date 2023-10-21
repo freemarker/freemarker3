@@ -16,7 +16,6 @@ INJECT Expression :
    import freemarker.core.InvalidReferenceException;
    import static freemarker.ext.beans.ObjectWrapper.*;
    import static freemarker.template.Constants.JAVA_NULL;
-   extends Node
 {
     public abstract Object evaluate(Environment env);
     
