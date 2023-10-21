@@ -1930,6 +1930,7 @@ TextElement# :
 INJECT TextElement :
    import java.io.IOException;
    import freemarker.core.Environment;
+   import freemarker.core.nodes.Whitespace;
    extends TemplateElement
 {
     private String outputText;
