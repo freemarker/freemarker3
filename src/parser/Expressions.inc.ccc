@@ -1,11 +1,11 @@
 // This file defines the expression
 // grammar. It is INCLUDEd from the main template.
 
-#Expression#abstract :
-{
-	Expression exp;
-}
-	 OrExpression {return (Expression) peekNode();}
+#Expression#interface : 
+    OrExpression 
+    {
+        return (Expression) peekNode();
+    } 
 ;
 
 INJECT Expression :
@@ -14,46 +14,19 @@ INJECT Expression :
    import freemarker.core.Environment;
    import freemarker.core.EvaluationUtil;
    import static freemarker.ext.beans.ObjectWrapper.*;
-   extends TemplateNode
+   extends Node
 {
     public abstract Object evaluate(Environment env);
     
-    public String getDescription() {
+    default String getDescription() {
     	return "the expression: "  + this;
     }
 
-    public String getStringValue(Environment env) {
-        return getStringValue(evaluate(env), this, env);
+    default String getStringValue(Environment env) {
+        return Node.getStringValue(evaluate(env), this, env);
     }
     
-    static public boolean isDisplayableAsString(Object tm) {
-    	return ObjectWrapper.isString(tm)
-    	     || ObjectWrapper.isNumber(tm)
-    	     || tm instanceof TemplateDateModel;
-    }
-    
-    public static String getStringValue(Object referent, Expression exp, Environment env)
-    {
-        if (isNumber(referent)) {
-            return env.formatNumber(asNumber(referent));
-        }
-        if (referent instanceof TemplateDateModel) {
-            TemplateDateModel dm = (TemplateDateModel) referent;
-            return env.formatDate(EvaluationUtil.getDate(dm, exp, env), dm.getDateType());
-        }
-        if (isString(referent)) {
-            return asString(referent);
-        }
-        assertNonNull(referent, exp, env);
-        String msg = "Error " + exp.getStartLocation()
-                     +"\nExpecting a string, " 
-                     + "date or number here, Expression " + exp 
-                     + " is instead a " 
-                     + referent.getClass().getName();
-        throw new TemplateException(msg, env);
-    }
-
-    public Expression deepClone(String name, Expression subst) {
+    default Expression deepClone(String name, Expression subst) {
         Expression clone = _deepClone(name, subst);
         clone.copyLocationFrom(this);
         clone.setParent(this.getParent());
@@ -62,12 +35,12 @@ INJECT Expression :
 
     public abstract Expression _deepClone(String name, Expression subst);
 
-    public boolean isTrue(Environment env) {
+    default boolean isTrue(Environment env) {
         Object referent = evaluate(env);
         if (isBoolean(referent)) {
             return asBoolean(referent);
         }
-        assertNonNull(referent, this, env);
+        Node.assertNonNull(referent, this, env);
         String msg = "Error " + getStartLocation()
                      + "\nExpecting a boolean (true/false) expression here"
                      + "\nExpression " + this + " does not evaluate to true/false "
@@ -132,7 +105,7 @@ ParentheticalExpression :
 
 INJECT ParentheticalExpression :
    import freemarker.core.Environment;
-   extends Expression
+   implements Expression
 {
    public Expression getNested() {
         return firstChildOfType(Expression.class);
@@ -178,7 +151,7 @@ NotExpression :
 
 INJECT NotExpression :
     import freemarker.core.Environment;
-    extends Expression
+    implements Expression
 {
     public Expression getTarget() {
         return (Expression) get(1);
@@ -217,7 +190,7 @@ INJECT UnaryPlusMinusExpression :
     import freemarker.core.ArithmeticEngine;
     import freemarker.template.*;
     import static freemarker.ext.beans.ObjectWrapper.asNumber;
-    extends Expression
+    implements Expression
 {
     private static final Integer MINUS_ONE = Integer.valueOf(-1); 
 
@@ -273,7 +246,7 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
    import static freemarker.ext.beans.ObjectWrapper.isNumber;   
    import static freemarker.ext.beans.ObjectWrapper.isList;   
    import static freemarker.ext.beans.ObjectWrapper.asString;   
-   extends Expression
+   implements Expression
 {
     public boolean isPlus() {
         return get(1).getType() == PLUS;
@@ -311,10 +284,10 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
             return merged;*/
             return new ConcatenatedSequence((TemplateSequenceModel)left, (TemplateSequenceModel)right);            
         }
-        if (isDisplayableAsString(left) && isDisplayableAsString(right)) {
-            String s1 = getStringValue(left, getLeft(), env);
+        if (Node.isDisplayableAsString(left) && Node.isDisplayableAsString(right)) {
+            String s1 = Node.getStringValue(left, getLeft(), env);
             if(s1 == null) s1 = "null";
-            String s2 = getStringValue(right, getRight(), env);
+            String s2 = Node.getStringValue(right, getRight(), env);
             if(s2 == null) s2 = "null";
             return s1.concat(s2);
         }
@@ -344,7 +317,6 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
         result.add(get(1));
         result.add(getRight().deepClone(name, subst));
         return result;
-    	//return new AddConcatExpression(getLeft().deepClone(name, subst), getRight().deepClone(name, subst));
     }
 
     private static final class ConcatenatedSequence implements TemplateSequenceModel
@@ -477,7 +449,7 @@ INJECT MultiplicativeExpression :
    import freemarker.core.ArithmeticEngine;
    import freemarker.core.EvaluationUtil;
    import static freemarker.ext.beans.ObjectWrapper.isNumber;
-   extends freemarker.core.parser.ast.Expression
+   implements Expression
 {
     public Expression getLeft() {
     	return (Expression) get(0);
@@ -584,7 +556,7 @@ INJECT ComparisonExpression :
    import static freemarker.ext.beans.ObjectWrapper.isNumber;
    import static freemarker.ext.beans.ObjectWrapper.asString;
    import static freemarker.ext.beans.ObjectWrapper.isString;
-   extends Expression
+   implements Expression
 {
     public Expression getLeft() {
     	return (Expression) get(0);
@@ -612,8 +584,8 @@ INJECT ComparisonExpression :
         TokenType operation = getOperation();
         Object ltm = getLeft().evaluate(env);
         Object rtm = getRight().evaluate(env);
-        assertNonNull(ltm, getLeft(), env);
-       	assertNonNull(rtm, getRight(), env);
+        Node.assertNonNull(ltm, getLeft(), env);
+       	Node.assertNonNull(rtm, getRight(), env);
         int comp = 0;
         if (isNumber(ltm) && isNumber(rtm)) { 
             Number first = asNumber(ltm);
@@ -734,7 +706,7 @@ INJECT RangeExpression :
    import freemarker.template.*;
    import freemarker.core.Environment;
    import freemarker.core.EvaluationUtil;
-   extends Expression
+   implements Expression
 {
     public Expression getLeft() {
         return (Expression) get(0);
@@ -821,7 +793,7 @@ AndExpression :
 
 INJECT AndExpression :
     import freemarker.core.Environment;
-    extends Expression
+    implements Expression
 {
     public Expression getLeft() {
     	return (Expression) get(0);
@@ -858,7 +830,7 @@ OrExpression :
 
 INJECT OrExpression :
     import freemarker.core.Environment;
-    extends Expression
+    implements Expression
 {
     public Expression getLeft() {
     	return (Expression) get(0);
@@ -906,7 +878,7 @@ INJECT ListLiteral :
   import freemarker.ext.beans.ListModel;
   import freemarker.template.TemplateException;
   import freemarker.template.*;
-  extends Expression
+  implements Expression
 {
     public List<Expression> getElements() {
         return childrenOfType(Expression.class);
@@ -916,7 +888,7 @@ INJECT ListLiteral :
         ListModel list = new ListModel();
         for (Expression exp: getElements()) {
             Object tm = exp.evaluate(env);
-            assertIsDefined(tm, exp, env);
+            Node.assertIsDefined(tm, exp, env);
             list.add(tm);
         }
         return list;
@@ -972,7 +944,7 @@ NumberLiteral# :
 INJECT NumberLiteral :
   import freemarker.core.Environment;
   import freemarker.ext.beans.NumberModel;
-  extends Expression
+  implements Expression
 {
     @Property Number value;
 
@@ -1013,7 +985,7 @@ Identifier# :
 INJECT Identifier :
     import freemarker.template.TemplateException;
     import freemarker.core.Environment;
-    extends Expression
+    implements Expression
 {
     @Property String name;
 
@@ -1061,7 +1033,7 @@ INJECT BuiltinVariable :
     import freemarker.template.*;
     import freemarker.core.Environment;
     import freemarker.core.parser.ParseException;
-    extends Expression
+    implements Expression
 {
     private String name;
 
@@ -1122,7 +1094,7 @@ INJECT DefaultToExpression :
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
     import freemarker.template.*;
-    extends Expression
+    implements Expression
 {
 	public Expression getLeft() {
 		return (Expression) get(0);
@@ -1162,7 +1134,7 @@ INJECT ExistsExpression :
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
     import static freemarker.template.Constants.JAVA_NULL;
-    extends Expression
+    implements Expression
 {
 	public Expression getExpression() {
 		return (Expression) get(0);
@@ -1193,7 +1165,7 @@ import java.util.HashMap;
     import freemarker.core.Environment;
     import freemarker.core.builtins.*;
     import freemarker.template.TemplateDateModel;
-    extends Expression;
+    implements Expression;
 {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();
     {
@@ -1337,7 +1309,7 @@ INJECT DotVariable :
     import freemarker.template.TemplateHashModel;
     import java.util.Map;
     import static freemarker.ext.beans.ObjectWrapper.wrap;
-    extends Expression
+    implements Expression
 {
     public Expression getTarget() {
     	return (Expression) get(0);
@@ -1388,7 +1360,7 @@ INJECT DynamicKeyName :
     import freemarker.core.ast.Range;
     import static freemarker.ext.beans.ObjectWrapper.*;
     import static freemarker.template.Constants.JAVA_NULL;
-    extends Expression
+    implements Expression
 {
 
     public Expression getNameExpression() {
@@ -1402,13 +1374,13 @@ INJECT DynamicKeyName :
     public Object evaluate(Environment env) throws TemplateException
     {
         Object value = getTarget().evaluate(env);
-        assertNonNull(value, getTarget(), env);
+        Node.assertNonNull(value, getTarget(), env);
         if (getNameExpression() instanceof RangeExpression) {
             return dealWithRangeKey(value, (RangeExpression) getNameExpression(), env);
         }
         Object key = getNameExpression().evaluate(env);
         if(key == null) {
-            assertNonNull(key, getNameExpression(), env);
+            Node.assertNonNull(key, getNameExpression(), env);
         }
         if (isNumber(key)) {
             int index = asNumber(key).intValue();
@@ -1559,7 +1531,7 @@ INJECT MethodCall :
     import freemarker.template.*;
     import java.io.IOException;
     import java.io.StringWriter;
-    extends Expression;
+    implements Expression;
 {
 
     public ArgsList getArgs() {
@@ -1667,7 +1639,7 @@ INJECT PositionalArgsList :
     public Object getValueAt(int i, Environment env) {
         Expression exp = childrenOfType(Expression.class).get(i);
         Object value = exp.evaluate(env);
-        TemplateNode.assertIsDefined(value, exp, env);
+        Node.assertIsDefined(value, exp, env);
         return value;
     }
 
@@ -1741,7 +1713,7 @@ INJECT NamedArgsList :
             for (String paramName : namedArgs.keySet()) {
                 Expression exp = namedArgs.get(paramName);
                 Object value = exp.evaluate(env);
-                TemplateNode.assertIsDefined(value, exp, env);
+                Node.assertIsDefined(value, exp, env);
                 result.put(paramName, value);
             }
         }
@@ -1912,7 +1884,7 @@ INJECT StringLiteral :
    import freemarker.core.Environment;
    import freemarker.core.parser.*;
    import java.io.*;
-   extends Expression
+   implements Expression
 {
     private TemplateElement interpolatedOutput;
     private String value;
@@ -2001,7 +1973,7 @@ BooleanLiteral# :
 INJECT BooleanLiteral :
     import freemarker.core.Environment;
     import freemarker.template.*;
-    extends Expression
+    implements Expression
 {
     @Property boolean value;
 
@@ -2036,7 +2008,7 @@ INJECT NullLiteral :
    import freemarker.core.Environment;
    import freemarker.template.Constants;
    import freemarker.template.TemplateModel;
-   extends Expression
+   implements Expression
 {
     public String toString() {
     	return "null";
@@ -2073,7 +2045,7 @@ INJECT HashLiteral :
     import freemarker.ext.beans.ListModel;
     import freemarker.template.*;
     import freemarker.core.ast.CollectionAndSequence;
-    extends Expression
+    implements Expression
 {
     private List<Expression> keys = new ArrayList<>();
     private List<Expression> values = new ArrayList<>();
@@ -2126,7 +2098,7 @@ INJECT HashLiteral :
                 Expression valExp = values.get(i);
                 String key = keyExp.getStringValue(env);
                 Object value = valExp.evaluate(env);
-                assertIsDefined(value, valExp, env);
+                Node.assertIsDefined(value, valExp, env);
                 keyMap.put(key, value);
                 keyList.add(key);
                 valueList.add(value);

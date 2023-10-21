@@ -15,10 +15,6 @@ import java.util.Iterator;
  */
 public class Constants {
 
-    public static class InvalidExpressionModel implements TemplateModel {
-    	InvalidExpressionModel() {}
-    }
-
     /**
      * The type of the {@link JAVA_NULL} object. Using a named 
      * class instead of an anonymous one, as it is easier to figure out what's 
@@ -109,11 +105,4 @@ public class Constants {
      */
     public static final TemplateModel JAVA_NULL = new Constants.JavaNull();
 
-    /**
-     * A singleton value used to represent the result of an 
-     * invalid expression, such as 1 - "3"
-     */
-    
-    public static final TemplateModel INVALID_EXPRESSION = new Constants.InvalidExpressionModel();
-    
 }

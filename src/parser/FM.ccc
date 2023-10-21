@@ -7,11 +7,83 @@ INCLUDE "FMLexer.ccc"
 INCLUDE "Expressions.inc.ccc"
 INCLUDE "Directives.inc.ccc"
 
-INJECT BASE_NODE_CLASS :
+INJECT Node : 
    import freemarker.template.*;
    import freemarker.core.Environment;
    import freemarker.core.InvalidReferenceException;
-   import freemarker.core.helpers.DefaultReferenceChecker;
+   import freemarker.core.EvaluationUtil;
+   import freemarker.core.parser.ast.Expression;
+   import static freemarker.template.Constants.JAVA_NULL;
+   import static freemarker.ext.beans.ObjectWrapper.*;
+{
+    void setTemplate(Template template);
+    
+    Template getTemplate();
+
+    default String getStartLocation() {
+        String templateName = getTemplate() != null ? getTemplate().getName() : getInputSource();
+        return "on line " 
+              + getBeginLine() 
+              + ", column " 
+              + getBeginColumn()
+              + " in "
+              + templateName;
+    }
+
+    default void copyLocationFrom(Node from)
+    {
+        setBeginOffset(from.getBeginOffset());
+        setEndOffset(from.getEndOffset());
+    }
+
+    static void assertNonNull(Object model, Expression exp, Environment env) {
+        assertIsDefined(model, exp, env);
+        if (model == JAVA_NULL) {
+            throw new InvalidReferenceException(
+                "Expression " + exp + " is null " +
+                exp.getStartLocation() + ".", env);
+        }
+    }
+    
+    static void assertIsDefined(Object model, Expression exp, Environment env) {
+        if (model == null) {
+            throw new InvalidReferenceException(
+                "Expression " + exp + " is undefined " +
+                exp.getStartLocation() + ".", env);
+        }
+    }
+
+    static boolean isDisplayableAsString(Object tm) {
+    	return isString(tm)
+    	     || isNumber(tm)
+    	     || tm instanceof TemplateDateModel;
+    }
+    
+    static String getStringValue(Object referent, Expression exp, Environment env)
+    {
+        if (isNumber(referent)) {
+            return env.formatNumber(asNumber(referent));
+        }
+        if (referent instanceof TemplateDateModel) {
+            TemplateDateModel dm = (TemplateDateModel) referent;
+            return env.formatDate(EvaluationUtil.getDate(dm, exp, env), dm.getDateType());
+        }
+        if (isString(referent)) {
+            return asString(referent);
+        }
+        Node.assertNonNull(referent, exp, env);
+        String msg = "Error " + exp.getStartLocation()
+                     +"\nExpecting a string, " 
+                     + "date or number here, Expression " + exp 
+                     + " is instead a " 
+                     + referent.getClass().getName();
+        throw new TemplateException(msg, env);
+    }
+}
+
+INJECT BASE_NODE_CLASS :
+   import freemarker.template.*;
+   import freemarker.core.Environment;
    import freemarker.core.helpers.DefaultTreeDumper;
    import freemarker.core.parser.Token;
    import freemarker.core.parser.ast.Expression;
@@ -27,7 +99,7 @@ INJECT BASE_NODE_CLASS :
     /**
      * Returns a string that indicates
      * where in the template source, this object is.
-     */
+     *//*
     public String getStartLocation() {
         String templateName = template != null ? template.getName() : getInputSource();
         return "on line " 
@@ -36,16 +108,8 @@ INJECT BASE_NODE_CLASS :
               + getBeginColumn()
               + " in "
               + templateName;
-    }
+    }*/
 
-    public void copyLocationFrom(TemplateNode from)
-    {
-        beginOffset = from.getBeginOffset();
-        endOffset = from.getEndOffset();
-    }
-
-
-	static private DefaultReferenceChecker referenceChecker = DefaultReferenceChecker.instance;
 
     public String toString() {
     	return getSource();
@@ -53,7 +117,7 @@ INJECT BASE_NODE_CLASS :
     
     static public TemplateException invalidTypeException(Object model, Expression exp, Environment env, String expected)
     {
-        assertNonNull(model, exp, env);
+        Node.assertNonNull(model, exp, env);
         return new TemplateException(
             "Expected " + expected + ". " + 
             exp + " evaluated instead to " + 
@@ -61,19 +125,6 @@ INJECT BASE_NODE_CLASS :
             exp.getStartLocation() + ".", env);
     }
     
-    static public void assertNonNull(Object model, Expression exp, Environment env) throws InvalidReferenceException {
-    	referenceChecker.assertNonNull(model, exp, env);
-    }
-    
-    static public void assertIsDefined(Object model, Expression exp, Environment env) throws InvalidReferenceException {
-    	referenceChecker.assertIsDefined(model, exp, env);
-    }
-}
-
-INJECT Node : 
-   import freemarker.template.Template;
-{
-    void setTemplate(Template template);
 }
 
 INJECT Token :
@@ -81,6 +132,7 @@ INJECT Token :
 {
     @Property Template template;
 }
+
 
 INJECT PARSER_CLASS : 
     import freemarker.core.ast.TextBlock;
