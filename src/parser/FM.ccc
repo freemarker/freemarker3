@@ -36,88 +36,23 @@ INJECT Node :
         setEndOffset(from.getEndOffset());
     }
 
-    static void assertNonNull(Object model, Expression exp, Environment env) {
-        assertIsDefined(model, exp, env);
-        if (model == JAVA_NULL) {
-            throw new InvalidReferenceException(
-                "Expression " + exp + " is null " +
-                exp.getStartLocation() + ".", env);
-        }
-    }
-    
-    static void assertIsDefined(Object model, Expression exp, Environment env) {
-        if (model == null) {
-            throw new InvalidReferenceException(
-                "Expression " + exp + " is undefined " +
-                exp.getStartLocation() + ".", env);
-        }
-    }
-
-    static boolean isDisplayableAsString(Object tm) {
-    	return isString(tm)
-    	     || isNumber(tm)
-    	     || tm instanceof TemplateDateModel;
-    }
-    
-    static String getStringValue(Object referent, Expression exp, Environment env)
-    {
-        if (isNumber(referent)) {
-            return env.formatNumber(asNumber(referent));
-        }
-        if (referent instanceof TemplateDateModel) {
-            TemplateDateModel dm = (TemplateDateModel) referent;
-            return env.formatDate(EvaluationUtil.getDate(dm, exp, env), dm.getDateType());
-        }
-        if (isString(referent)) {
-            return asString(referent);
-        }
-        Node.assertNonNull(referent, exp, env);
-        String msg = "Error " + exp.getStartLocation()
-                     +"\nExpecting a string, " 
-                     + "date or number here, Expression " + exp 
-                     + " is instead a " 
-                     + referent.getClass().getName();
-        throw new TemplateException(msg, env);
-    }
 }
 
 INJECT BASE_NODE_CLASS :
    import freemarker.template.*;
    import freemarker.core.Environment;
-   import freemarker.core.helpers.DefaultTreeDumper;
    import freemarker.core.parser.Token;
    import freemarker.core.parser.ast.Expression;
 {
 	@Property Template template;
 	
-	static public int TAB_SIZE = 8;
-	
 	public String getDescription() {
-		return "";
+		return getClass().getSimpleName();
 	}
-    
-    /**
-     * Returns a string that indicates
-     * where in the template source, this object is.
-     *//*
-    public String getStartLocation() {
-        String templateName = template != null ? template.getName() : getInputSource();
-        return "on line " 
-              + getBeginLine() 
-              + ", column " 
-              + getBeginColumn()
-              + " in "
-              + templateName;
-    }*/
 
-
-    public String toString() {
-    	return getSource();
-    }
-    
     static public TemplateException invalidTypeException(Object model, Expression exp, Environment env, String expected)
     {
-        Node.assertNonNull(model, exp, env);
+        exp.assertNonNull(model, env);
         return new TemplateException(
             "Expected " + expected + ". " + 
             exp + " evaluated instead to " + 

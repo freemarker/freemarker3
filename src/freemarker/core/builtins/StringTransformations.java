@@ -23,7 +23,7 @@ public abstract class StringTransformations extends ExpressionEvaluatingBuiltIn 
             string = asString(model);
         }
         else {
-            string = Expression.getStringValue(model, caller.getTarget(), env);
+            string = caller.getTarget().getStringValue(env);
         }
         if (string == null) {
             throw new InvalidReferenceException("String is undefined", env);

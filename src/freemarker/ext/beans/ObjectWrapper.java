@@ -193,6 +193,12 @@ public class ObjectWrapper
         return ((CharSequence) obj).toString();
     }
 
+    public static boolean isDisplayableAsString(Object tm) {
+    	return isString(tm)
+    	     || isNumber(tm)
+    	     || tm instanceof TemplateDateModel;
+    }
+    
     public static boolean isBoolean(Object obj) {
         if (obj instanceof TemplateBooleanModel) {
             return true;

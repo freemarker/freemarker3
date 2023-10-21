@@ -13,7 +13,9 @@ INJECT Expression :
    import freemarker.ext.beans.ObjectWrapper;
    import freemarker.core.Environment;
    import freemarker.core.EvaluationUtil;
+   import freemarker.core.InvalidReferenceException;
    import static freemarker.ext.beans.ObjectWrapper.*;
+   import static freemarker.template.Constants.JAVA_NULL;
    extends Node
 {
     public abstract Object evaluate(Environment env);
@@ -23,8 +25,27 @@ INJECT Expression :
     }
 
     default String getStringValue(Environment env) {
-        return Node.getStringValue(evaluate(env), this, env);
+        Object referent = evaluate(env);
+        if (isNumber(referent)) {
+            return env.formatNumber(asNumber(referent));
+        }
+        if (referent instanceof TemplateDateModel) {
+            TemplateDateModel dm = (TemplateDateModel) referent;
+            return env.formatDate(EvaluationUtil.getDate(dm, this, env), dm.getDateType());
+        }
+        if (isString(referent)) {
+            return asString(referent);
+        }
+        assertNonNull(referent, env);
+        String msg = "Error " + getStartLocation()
+                     +"\nExpecting a string, " 
+                     + "date or number here, Expression " + this 
+                     + " is instead a " 
+                     + referent.getClass().getName();
+        throw new TemplateException(msg, env);
     }
+    
+    Expression _deepClone(String name, Expression subst);
     
     default Expression deepClone(String name, Expression subst) {
         Expression clone = _deepClone(name, subst);
@@ -33,14 +54,25 @@ INJECT Expression :
         return clone;
     }
 
-    public abstract Expression _deepClone(String name, Expression subst);
+    default void assertNonNull(Object model, Environment env) {
+        assertIsDefined(model, env);
+        if (model == JAVA_NULL) {
+            throw new InvalidReferenceException("Expression " + this + " is null " + getStartLocation() + ".", env);
+        }
+    }
+
+    default void assertIsDefined(Object model, Environment env) {
+        if (model == null) {
+            throw new InvalidReferenceException("Expression " + this + " is undefined " + getStartLocation() + ".", env);
+        }
+    }
 
     default boolean isTrue(Environment env) {
         Object referent = evaluate(env);
         if (isBoolean(referent)) {
             return asBoolean(referent);
         }
-        Node.assertNonNull(referent, this, env);
+        assertNonNull(referent, env);
         String msg = "Error " + getStartLocation()
                      + "\nExpecting a boolean (true/false) expression here"
                      + "\nExpression " + this + " does not evaluate to true/false "
@@ -243,9 +275,7 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
    import freemarker.core.Environment;
    import freemarker.core.ArithmeticEngine;
    import freemarker.core.EvaluationUtil;
-   import static freemarker.ext.beans.ObjectWrapper.isNumber;   
-   import static freemarker.ext.beans.ObjectWrapper.isList;   
-   import static freemarker.ext.beans.ObjectWrapper.asString;   
+   import static freemarker.ext.beans.ObjectWrapper.*;   
    implements Expression
 {
     public boolean isPlus() {
@@ -284,12 +314,8 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
             return merged;*/
             return new ConcatenatedSequence((TemplateSequenceModel)left, (TemplateSequenceModel)right);            
         }
-        if (Node.isDisplayableAsString(left) && Node.isDisplayableAsString(right)) {
-            String s1 = Node.getStringValue(left, getLeft(), env);
-            if(s1 == null) s1 = "null";
-            String s2 = Node.getStringValue(right, getRight(), env);
-            if(s2 == null) s2 = "null";
-            return s1.concat(s2);
+        if (isDisplayableAsString(left) && isDisplayableAsString(right)) {
+            return asString(left) + asString(right);
         }
         if (left instanceof TemplateHashModel && right instanceof TemplateHashModel) {
             if (left instanceof TemplateHashModelEx && right instanceof TemplateHashModelEx) {
@@ -584,8 +610,8 @@ INJECT ComparisonExpression :
         TokenType operation = getOperation();
         Object ltm = getLeft().evaluate(env);
         Object rtm = getRight().evaluate(env);
-        Node.assertNonNull(ltm, getLeft(), env);
-       	Node.assertNonNull(rtm, getRight(), env);
+        getLeft().assertNonNull(ltm, env);
+       	getRight().assertNonNull(rtm, env);
         int comp = 0;
         if (isNumber(ltm) && isNumber(rtm)) { 
             Number first = asNumber(ltm);
@@ -888,7 +914,7 @@ INJECT ListLiteral :
         ListModel list = new ListModel();
         for (Expression exp: getElements()) {
             Object tm = exp.evaluate(env);
-            Node.assertIsDefined(tm, exp, env);
+            assertIsDefined(tm, env);
             list.add(tm);
         }
         return list;
@@ -1374,13 +1400,13 @@ INJECT DynamicKeyName :
     public Object evaluate(Environment env) throws TemplateException
     {
         Object value = getTarget().evaluate(env);
-        Node.assertNonNull(value, getTarget(), env);
+        getTarget().assertNonNull(value, env);
         if (getNameExpression() instanceof RangeExpression) {
             return dealWithRangeKey(value, (RangeExpression) getNameExpression(), env);
         }
         Object key = getNameExpression().evaluate(env);
         if(key == null) {
-            Node.assertNonNull(key, getNameExpression(), env);
+            getNameExpression().assertNonNull(key, env);
         }
         if (isNumber(key)) {
             int index = asNumber(key).intValue();
@@ -1639,7 +1665,7 @@ INJECT PositionalArgsList :
     public Object getValueAt(int i, Environment env) {
         Expression exp = childrenOfType(Expression.class).get(i);
         Object value = exp.evaluate(env);
-        Node.assertIsDefined(value, exp, env);
+        exp.assertIsDefined(value, env);
         return value;
     }
 
@@ -1713,7 +1739,7 @@ INJECT NamedArgsList :
             for (String paramName : namedArgs.keySet()) {
                 Expression exp = namedArgs.get(paramName);
                 Object value = exp.evaluate(env);
-                Node.assertIsDefined(value, exp, env);
+                exp.assertIsDefined(value, env);
                 result.put(paramName, value);
             }
         }
@@ -2098,7 +2124,7 @@ INJECT HashLiteral :
                 Expression valExp = values.get(i);
                 String key = keyExp.getStringValue(env);
                 Object value = valExp.evaluate(env);
-                Node.assertIsDefined(value, valExp, env);
+                valExp.assertIsDefined(value, env);
                 keyMap.put(key, value);
                 keyList.add(key);
                 valueList.add(value);

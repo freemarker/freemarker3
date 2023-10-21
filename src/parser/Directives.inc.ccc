@@ -209,7 +209,7 @@ INJECT IteratorBlock :
     public void execute(Environment env) throws TemplateException, IOException 
     {
         Object baseModel = getListExpression().evaluate(env);
-        Node.assertNonNull(baseModel, getListExpression(), env);
+        getListExpression().assertNonNull(baseModel, env);
         env.process(new LoopContext(this, env.getCurrentScope(), baseModel)); // REVISIT
     }
 
@@ -255,7 +255,7 @@ INJECT VisitNode :
         Expression targetNode = getTargetNode();
         Expression namespaces = getNamespaces();
         Object node = targetNode.evaluate(env);
-        Node.assertNonNull(node, targetNode, env);
+        targetNode.assertNonNull(node, env);
         if (!(node instanceof TemplateNodeModel)) {
             throw new TemplateException("Expecting an XML node here", env);
         }
@@ -727,7 +727,7 @@ INJECT AssignmentInstruction :
     		String varname = varNames.get(i);
     		Expression valueExp = values.get(i);
     		Object value = valueExp.evaluate(env);
-    		Node.assertIsDefined(value, valueExp, env);
+    		valueExp.assertIsDefined(value, env);
     		if (scope != null) {
     			scope.put(varname, value);
     		} else {
@@ -796,7 +796,7 @@ INJECT IncludeInstruction :
         Expression parseExp = getParamByName("parse");
         if (parseExp != null) {
             Object tm = parseExp.evaluate(env);
-            Node.assertNonNull(tm, parseExp, env);
+            parseExp.assertNonNull(tm, env);
             if (isString(tm)) {
                 parse = StringUtil.getYesNo(asString(tm));
             }
@@ -1107,7 +1107,7 @@ INJECT ParameterList :
             }
             else {
                 assert firstUnresolvedExpression != null;
-                Node.assertNonNull(null, firstUnresolvedExpression, scope.getEnvironment());
+                firstUnresolvedExpression.assertNonNull(null, scope.getEnvironment());
             }
         }
     }
@@ -1172,7 +1172,7 @@ INJECT ParameterList :
             Expression argExp = argsMap.remove(paramName);
             if (argExp != null) {
                 Object argModel = argExp.evaluate(env);
-                Node.assertIsDefined(argModel, argExp, env);
+                argExp.assertIsDefined(argModel, env);
                 result.add(argModel);
             } else {
                 if(unresolvedParamNames == null) {
@@ -1235,7 +1235,7 @@ INJECT ParameterList :
             Expression argExp = argsMap.remove(paramName);
             if (argExp != null) {
                 Object value = argExp.evaluate(env);
-                Node.assertIsDefined(value, argExp, env);
+                argExp.assertIsDefined(value, env);
                 result.put(paramName, value);
             }
             else if(defaults != null && defaults.containsKey(paramName)) {
@@ -1264,7 +1264,7 @@ INJECT ParameterList :
                 for (Map.Entry<String, Expression> entry : argsMap.entrySet()) {
                     Expression exp = entry.getValue();
                     Object val = exp.evaluate(env);
-                    Node.assertIsDefined(val, exp, env);
+                    exp.assertIsDefined(val, env);
                     catchAllMap.put(entry.getKey(), val);
                 }
             } else {
@@ -1435,7 +1435,7 @@ INJECT UnifiedCall :
             env.render(firstChildOfType(TemplateElement.class), (TemplateDirectiveModel) tm, argMap, paramNames);
         }
         else {
-            Node.assertNonNull(tm, nameExp, env);
+            nameExp.assertNonNull(tm, env);
             throw new TemplateException(getStartLocation() + ": " + getNameExp() + 
                     " is not a user-defined directive.", env);
         }
@@ -1798,7 +1798,7 @@ INJECT VarDirective :
             } 
             else {
                 Object tm = exp.evaluate(env);
-                Node.assertIsDefined(tm, exp, env);
+                exp.assertIsDefined(tm, env);
                 scope.put(varname, tm);
             }
         }
