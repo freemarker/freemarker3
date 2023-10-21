@@ -1935,7 +1935,7 @@ INJECT TextElement :
    import freemarker.core.Environment;
    extends TemplateElement
 {
-    @Property boolean allWhitespace;
+    private boolean allWhitespace;
     private String outputText;
 
     public void close() {
@@ -1953,7 +1953,7 @@ INJECT TextElement :
         if (outputText != null) {
             return outputText;
         }
-        if (isAllWhitespace() && ignoresSandwichedWhitespace(previousSibling()) && ignoresSandwichedWhitespace(nextSibling())) {
+        if (allWhitespace && ignoresSandwichedWhitespace(previousSibling()) && ignoresSandwichedWhitespace(nextSibling())) {
             return outputText = "";
         }
         StringBuilder buf = new StringBuilder();
@@ -2135,16 +2135,13 @@ Map<String,Expression> ParamList#void :
 ;
 
 Expression IdentifierOrStringLiteral#void :
-{
-   Expression exp;
-}
    (
-      exp=Identifier
+      Identifier
       |
-      exp=StringLiteral
+      StringLiteral
    )
    {
-      return exp;
+      return (Expression) peekNode();
    }   
 ;
 

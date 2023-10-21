@@ -73,7 +73,13 @@ INJECT BASE_NODE_CLASS :
 INJECT Node : 
    import freemarker.template.Template;
 {
-    default void setTemplate(Template template) {}
+    void setTemplate(Template template);
+}
+
+INJECT Token :
+    import freemarker.template.Template;
+{
+    @Property Template template;
 }
 
 INJECT PARSER_CLASS : 
