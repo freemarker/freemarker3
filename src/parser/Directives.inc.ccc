@@ -53,20 +53,20 @@ IfBlock :
     <IF>
     Expression
     <DIRECTIVE_END>
-    Content
+    Block
   )#ConditionalBlock
   (
     (
         <ELSE_IF>
         Expression
         <DIRECTIVE_END>
-        Content
+        Block
     )#ConditionalBlock
   )*
   [
     (
         <ELSE>
-        Content
+        Block
     )#ConditionalBlock
   ]
   CloseDirectiveBlock("if")
@@ -115,7 +115,7 @@ INJECT ConditionalBlock :
 
 AttemptBlock :
    <_ATTEMPT>
-   Content
+   Block
    RecoveryBlock
    CloseDirectiveBlock("attempt, recover")
 ;
@@ -147,7 +147,7 @@ INJECT AttemptBlock :
 
 RecoveryBlock : 
    <_RECOVER>
-   Content
+   Block
 ;
 
 INJECT RecoveryBlock :
@@ -174,7 +174,7 @@ ListBlock#IteratorBlock :
    <AS>
    <ID>
    <DIRECTIVE_END>
-   Content
+   Block
    CloseDirectiveBlock("list")
 ;
 
@@ -184,7 +184,7 @@ ForEachBlock#IteratorBlock :
    <IN>
    Expression
    <DIRECTIVE_END>
-   Content
+   Block
    CloseDirectiveBlock("foreach")
 ;
 
@@ -561,7 +561,7 @@ BlockAssignment :
       Expression
    ]
    <DIRECTIVE_END> =>||
-   Content
+   Block
    CloseDirectiveBlock(assignmentType)   
 ;
 
@@ -1290,7 +1290,7 @@ Macro :
     ParameterList
     [<CLOSE_PAREN>]
     <DIRECTIVE_END>
-    Content
+    Block
     CloseDirectiveBlock("macro")
 ;
 
@@ -1301,7 +1301,7 @@ Function#Macro :
     ParameterList
     [<CLOSE_PAREN>]
     <DIRECTIVE_END>
-    Content
+    Block
     CloseDirectiveBlock("function")
 ;
 
@@ -1312,7 +1312,7 @@ INJECT Macro :
 {
     static public final Macro DO_NOTHING_MACRO = new Macro();
     static {
-    	DO_NOTHING_MACRO.add(new MixedContent());
+    	DO_NOTHING_MACRO.add(new Block());
     }
 
     public boolean isFunction() {
@@ -1365,7 +1365,7 @@ UnifiedCall :
       <EMPTY_DIRECTIVE_END>
       |
       <DIRECTIVE_END>
-      Content
+      Block
       <UNIFIED_CALL_END>      
    )  
 ;
@@ -1511,13 +1511,13 @@ SwitchBlock :
       <CASE>
       Expression
       <DIRECTIVE_END>
-      Content
+      Block
      )#CaseBlock
    )*
    [
      (
       <DEFAUL>
-      Content
+      Block
      )#CaseBlock
    ]
    CloseDirectiveBlock("switch")
@@ -1583,7 +1583,7 @@ EscapeBlock :
     <AS>
     Expression
     <DIRECTIVE_END>
-    Content
+    Block
     CloseDirectiveBlock("escape")
 ;
 
@@ -1635,7 +1635,7 @@ INJECT EscapeBlock :
 
 NoEscapeBlock :
     <NOESCAPE>
-    Content
+    Block
     CloseDirectiveBlock("noescape")
 ;
 
@@ -1982,7 +1982,7 @@ INJECT TextElement :
  	}
 }
 
-Content#MixedContent(true) :
+Block#(true) :
     (
        TextElement
        |
@@ -1992,7 +1992,7 @@ Content#MixedContent(true) :
     )*
 ;
 
-INJECT MixedContent :
+INJECT Block :
     import java.io.IOException;
     import freemarker.core.Environment;
     extends TemplateElement
@@ -2008,7 +2008,7 @@ INJECT MixedContent :
         if (getParent() == null) {
             return "root element";
         }
-        return "content"; // MixedContent is uninteresting in a stack trace.
+        return "content"; // Block is uninteresting in a stack trace.
     }
 }
 
@@ -2018,7 +2018,7 @@ INJECT MixedContent :
  * ${...} but no directives.
  */
 
-TemplateElement FreeMarkerText#MixedContent(true) :
+TemplateElement FreeMarkerText#Block(true) :
     (
         TextElement
         |
@@ -2179,7 +2179,7 @@ TemplateElement Root#void :
        	   	
        }
    ]
-   doc=Content
+   doc=Block
    <EOF>
    {
        return doc;

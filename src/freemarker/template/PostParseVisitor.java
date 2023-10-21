@@ -163,7 +163,7 @@ public class PostParseVisitor extends Node.Visitor {
 			Node parent=node.getParent();
 			while (parent != null) {
 				parent = parent.getParent();
-				if (parent != null && !(parent instanceof EscapeBlock) && !(parent instanceof NoEscapeBlock) && !(parent instanceof MixedContent)) {
+				if (parent != null && !(parent instanceof EscapeBlock) && !(parent instanceof NoEscapeBlock) && !(parent instanceof Block)) {
 					ParsingProblem problem = new ParsingProblem("Macro " + macroName + " is within a " + ((TemplateNode)parent).getDescription() + ". It must be a top-level element.");
 					template.addParsingProblem(problem);
 				}
@@ -225,7 +225,7 @@ public class PostParseVisitor extends Node.Visitor {
 	
 	public void visit(VarDirective node) {
         Node parent = node.getParent();
-        while (parent instanceof MixedContent 
+        while (parent instanceof Block 
         		|| parent instanceof EscapeBlock 
         		|| parent instanceof NoEscapeBlock) {
             parent = parent.getParent();
