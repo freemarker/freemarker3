@@ -1344,7 +1344,15 @@ CloseDirectiveBlock(String expectedTags)#void :
     t=<CLOSE_DIRECTIVE_BLOCK>
 	{
 		String name = t.toString();
-		name = name.substring(3, name.length() -1);
+        String prefix = "/#";
+        String suffix = "";
+        if (name.charAt(0) == '<' || name.charAt(0) == '[') {
+            prefix = name.substring(0,3);
+            suffix = (name.charAt(0) == '<') ? ">" : "]";
+		    name = name.substring(3, name.length() -1);
+        } else {
+            name = name.substring(2);
+        }
 		if (name.length()>0) {
 			StringTokenizer st = new StringTokenizer(expectedTags, ", ");
 			boolean found = false;
@@ -1356,10 +1364,7 @@ CloseDirectiveBlock(String expectedTags)#void :
 			}
 			if (!found) {
 				throw new ParseException(getErrorStart(t) 
-                + " Expecting " 
-                + t.toString().substring(0,3) 
-                + expectedTags 
-                + t.toString().charAt(t.toString().length() -1));
+                + " Expecting to close " + expectedTags);
 			}
 		}
 	}
@@ -1610,6 +1615,8 @@ TextElement# :
       <PROBLEMATIC_CHAR>
       |
       <POSSIBLE_DIRECTIVE>
+      |
+      <POSSIBLE_END_DIRECTIVE>
       |
       <REGULAR_PRINTABLE>
    )+

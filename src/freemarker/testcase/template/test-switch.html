@@ -1,4 +1,4 @@
-[#var animalList favoriteAnimal]
+#var animalList favoriteAnimal
 
 
 <html>
@@ -8,30 +8,31 @@
 <body>
 
 <p>Here we iterate over a list of animals.</p>
-[#set animalList = ["aardvark", "kiwi", "gecko", "cat", "dog", "elephant", "squirrel", "zebra"]]
-[#set favoriteAnimal = "kiwi"]
+  #set animalList = ["aardvark", "kiwi", "gecko", "cat", "dog", "elephant", "squirrel", "zebra"]
+  #set favoriteAnimal = "kiwi"
 
-[#list animalList as animal]
+#list animalList as animal
 <p>Animal is: ${animal}.<br />
-[#switch animal][#case "zebra"]
+  #switch animal
+    #case "zebra" 
         This is the HTML for a large stripey animal.
-    [#case "elephant"]
-    [#case "rhinocerous"]
+    #case "elephant"
+    #case "rhinoceros"
         This is the HTML for large animals.
-        [#break]
-    [#case "squirrel"]
-    [#case "gecko"]
+        #break
+    #case "squirrel"
+    #case "gecko"
         This is the HTML for small animals.
-        [#break]
-    [#case favoriteAnimal]
+        #break
+    #case favoriteAnimal
         This is the HTML for the user's favorite animal.
-        [#break]
-    [#default]
+        #break
+    #default
         This is the HTML for other animals.
-        [#break]
-[/#switch]
+        #break
+  /#switch
 </p>
-[/#list]
+/#list
 
 </body>
 </html>

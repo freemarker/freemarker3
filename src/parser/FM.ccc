@@ -98,11 +98,7 @@ INJECT PARSER_CLASS :
     */
     static public FMParser createExpressionParser(String s) {
         FMLexer lexer;
-        try {
-            lexer = new FMLexer(s);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        lexer = new FMLexer(s);
         lexer.switchTo(LexicalState.EXPRESSION);
         return new FMParser(lexer);
     }
@@ -144,7 +140,7 @@ INJECT ParseException  :
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
     }
-    
+
     public ParseException(List<ParsingProblem> problems) {
         this.problems = problems;
     }

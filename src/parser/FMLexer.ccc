@@ -52,21 +52,88 @@ INJECT LEXER_CLASS :
         RTRIM, DEFAUL, FALLBACK, NOESCAPE 
     );
 
-/*
+    private boolean atLineStart(Token tok) {
+        for (int i = tok.getBeginOffset() -1; i >= 0; i--) {
+            int ch = charAt(i);
+            if (ch == '\n') break;
+            if (!Character.isWhitespace(ch)) return false;
+        }
+        return true;
+    }
+
+    private boolean atLineEnd(Token tok) {
+        for (int i = tok.getEndOffset(); i < length(); i++) {
+            int ch = charAt(i);
+            if (ch == '\n') break;
+            if (!Character.isWhitespace(ch)) return false;
+        }
+        return true;
+    }
+
+    private TokenType directiveTypeFromString(String name) {
+        switch(name) {
+            case "#assign" : return ASSIGN;
+            case "#attempt" : return _ATTEMPT;
+            case "#break" : return BREAK;
+            case "#case" : return CASE;
+            case "#default" : return DEFAUL;
+            case "#embed" : return EMBED;
+            case "#escape" : return ESCAPE;
+            case "#else" : return ELSE;
+            case "#elseif" : return ELSE_IF;
+            case "#fallback" : return FALLBACK;
+            case "#flush" : return FLUSH;
+            case "#foreach" : return FOREACH;
+            case "#ftl" : return FTL_HEADER;
+            case "#function" : return FUNCTION;
+            case "#global" : return GLOBALASSIGN;
+            case "#if" : return IF;
+            case "#import" : return IMPORT;
+            case "#include" : return _INCLUDE;
+            case "#list" : return LIST;
+            case "#local" : return LOCALASSIGN;
+            case "#macro" : return _MACRO;
+            case "#nested" : return NESTED;
+            case "#noescape" : return NOESCAPE;
+            case "#recover" : return _RECOVER;
+            case "#recurse" : return RECURSE;
+            case "#return" : return RETURN;
+            case "#set" : return SET;
+            case "#setting" : return SETTING;
+            case "#stop" : return STOP;
+            case "#switch" : return SWITCH;
+            case "#var" : return VAR;
+            case "#visit" : return VISIT;
+        }
+        return UNKNOWN_DIRECTIVE;
+    }
+
     private Token TOKEN_HOOK(Token token) {
-        if (token.getType() == POSSIBLE_DIRECTIVE) {
-            BASE_TOKEN_CLASS prevToken = token.previousCachedToken();
-            if (prevToken.getType() == NON_TRAILING_WHITESPACE && prevToken.getBeginColumn()==1) {
-                ((Whitespace) prevToken).setIgnored(true);
+        TokenType type = token.getType();
+        if (type == POSSIBLE_DIRECTIVE) {
+            if (!atLineStart(token)) return token;
+            TokenType directiveType = directiveTypeFromString(token.toString());
+            if (emptyDirectives.contains(directiveType) && !atLineEnd(token)) {
+                return token;
             }
-            activeTokenTypes.add(EOL);
-        } 
-        else if (token.getType()==EOL) {
+            token.setType(directiveType);
+            if (directiveType == UNKNOWN_DIRECTIVE) return token;
+            if (!emptyDirectives.contains(directiveType)) {
+                switchTo(LexicalState.EXPRESSION);
+                activeTokenTypes.add(EOL);
+            }
+        }
+        else if (type == POSSIBLE_END_DIRECTIVE) {
+            if (!atLineStart(token) && !atLineEnd(token)) return token;
+            token.setType(CLOSE_DIRECTIVE_BLOCK);
+        }
+        else if (type == EOL) {
             token.setType(DIRECTIVE_END);
             activeTokenTypes.remove(EOL);
+            switchTo(LexicalState.DEFAULT);
         }
         return token;
-    }*/
+    }
 
     private Token TOKEN_HOOK(Token token) {
         if (directiveNames.contains(token.getType())) {
@@ -81,7 +148,7 @@ INJECT LEXER_CLASS :
         switch(token.getType()) {
             case GREATER_THAN_EQUALS : 
             case GREATER_THAN : 
-                if (parenthesisNesting == 0 && inPointySyntax) {
+                if (parenthesisNesting == 0 && inPointySyntax && !activeTokenTypes.contains(EOL)) {
                     if (token.getType() == GREATER_THAN_EQUALS) {
                         token.truncate(1);
                     }
@@ -91,7 +158,6 @@ INJECT LEXER_CLASS :
                 break;
             case OPEN_PAREN : 
                 parenthesisNesting++;
-                switchTo(LexicalState.EXPRESSION);
                 break;
             case CLOSE_PAREN :
                 parenthesisNesting--;
@@ -102,7 +168,7 @@ INJECT LEXER_CLASS :
             case CLOSE_BRACKET : 
                 if (bracketNesting > 0) {
                     --bracketNesting;
-                } else {
+                } else if (!activeTokenTypes.contains(EOL)){
                     token.setType(DIRECTIVE_END);
                     switchTo(LexicalState.DEFAULT);
                 }
@@ -158,6 +224,8 @@ TOKEN#Text :
     |
     <POSSIBLE_DIRECTIVE : "#" (["a"-"z","A"-"Z"])+> #Printable
     |
+    <POSSIBLE_END_DIRECTIVE : "/#" (["a"-"z","A"-"Z"])*> #Printable
+    |
     <REGULAR_PRINTABLE : (~["$", "<", "[" ,"\t", " ", "\n"])+> #Printable
 ;
 
@@ -168,75 +236,75 @@ TOKEN#Text :
     |
     <#CLOSE_TAG2 : (<BLANK>)* ("/")? (">" | "]")>
     |
-    <_ATTEMPT : "attempt" <CLOSE_TAG1>> 
-    |
-    <_RECOVER : "recover" <CLOSE_TAG1>>
-    |
-    <IF : "if"> 
-    |
-    <ELSE_IF : "elseif">
-    |
-    <LIST : "list"> 
-    |
-    <FOREACH : "foreach"> 
-    |
-    <SWITCH : "switch">
-    |
-    <CASE : "case"> 
-    |
     <ASSIGN : "assign">
     |
-    <GLOBALASSIGN : "global" > 
-    |
-    <LOCALASSIGN : "local"> 
-    |
-    <SET : "set">
-    |
-    <_INCLUDE : "include"> 
-    |
-    <IMPORT : "import"> 
-    |
-    <FUNCTION : "function"> 
-    |
-    <_MACRO : "macro">
-    |
-    <VISIT : "visit"> 
-    |
-    <STOP : "stop"> 
-    |
-    <RETURN : "return"> 
-    |
-    <SETTING : "setting"> 
-    |
-    <EMBED : "embed"> 
-    |
-    <VAR : "var">
-    |
-    <ELSE : "else" <CLOSE_TAG2>> 
+    <_ATTEMPT : "attempt" <CLOSE_TAG1>> 
     |
     <BREAK : "break" <CLOSE_TAG2>> 
     |
-    <FLUSH : "flush" <CLOSE_TAG2>> 
-    |
-    <TRIM : "t" <CLOSE_TAG2>> 
-    |
-    <LTRIM : "lt" <CLOSE_TAG2>> 
-    |
-    <RTRIM : "rt" <CLOSE_TAG2>> 
+    <CASE : "case"> 
     |
     <DEFAUL : "default" <CLOSE_TAG1>> 
     |
-    <NESTED : "nested"> 
+    <ELSE : "else" <CLOSE_TAG2>> 
     |
-    <RECURSE : "recurse">
+    <ELSE_IF : "elseif">
     |
-    <FALLBACK : "fallback" <CLOSE_TAG2>> 
+    <EMBED : "embed"> 
     |
     <ESCAPE : "escape" > 
     |
-    <NOESCAPE : "noescape" <CLOSE_TAG1>> 
+    <FALLBACK : "fallback" <CLOSE_TAG2>> 
+    |
+    <FLUSH : "flush" <CLOSE_TAG2>> 
+    |
+    <FOREACH : "foreach"> 
     |
     <FTL_HEADER : "ftl">
+    |
+    <FUNCTION : "function"> 
+    |
+    <GLOBALASSIGN : "global" > 
+    |
+    <IF : "if"> 
+    |
+    <IMPORT : "import"> 
+    |
+    <_INCLUDE : "include"> 
+    |
+    <LIST : "list"> 
+    |
+    <LOCALASSIGN : "local"> 
+    |
+    <LTRIM : "lt" <CLOSE_TAG2>> 
+    |
+    <_MACRO : "macro">
+    |
+    <NESTED : "nested"> 
+    |
+    <NOESCAPE : "noescape" <CLOSE_TAG1>> 
+    |
+    <_RECOVER : "recover" <CLOSE_TAG1>>
+    |
+    <RECURSE : "recurse">
+    |
+    <RETURN : "return"> 
+    |
+    <RTRIM : "rt" <CLOSE_TAG2>> 
+    |
+    <SET : "set">
+    |
+    <SETTING : "setting"> 
+    |
+    <STOP : "stop"> 
+    |
+    <SWITCH : "switch">
+    |
+    <TRIM : "t" <CLOSE_TAG2>> 
+    |
+    <VAR : "var">
+    |
+    <VISIT : "visit"> 
     |
     <UNKNOWN_DIRECTIVE : (["a"-"z","A"-"Z"])+>
 ;
