@@ -164,7 +164,7 @@ public class PostParseVisitor extends Node.Visitor {
 			while (parent != null) {
 				parent = parent.getParent();
 				if (parent != null && !(parent instanceof EscapeBlock) && !(parent instanceof NoEscapeBlock) && !(parent instanceof Block)) {
-					ParsingProblem problem = new ParsingProblem("Macro " + macroName + " is within a " + ((TemplateNode)parent).getDescription() + ". It must be a top-level element.");
+					ParsingProblem problem = new ParsingProblem("Macro " + macroName + " is within a " + ((TemplateNode)parent).getDescription() + ". It must be a top-level element.", node);
 					template.addParsingProblem(problem);
 				}
 			}
@@ -214,10 +214,10 @@ public class PostParseVisitor extends Node.Visitor {
        		template.addParsingProblem(new ParsingProblem("The return directive can only be used inside a function or macro.", node));
 		} else {
 			Macro macro = (Macro) parent;
-			if (!macro.isFunction() && node.size() > 1) {
+			if (!macro.isFunction() && node.size() > 2) {
 				template.addParsingProblem(new ParsingProblem("Can only return a value from a function, not a macro", node));
 			}
-			else if (macro.isFunction() && node.size() ==1) {
+			else if (macro.isFunction() && node.size() ==2) {
 				template.addParsingProblem(new ParsingProblem("A function must return a value.", node));
 			}
 		}

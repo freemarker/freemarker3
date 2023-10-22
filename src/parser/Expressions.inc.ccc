@@ -1938,7 +1938,7 @@ INJECT StringLiteral :
     	String src = this.getSource();
         if (src.length() >5 && (src.indexOf("${") >= 0)) {
             FMLexer token_source = new FMLexer("input", value, FMLexer.LexicalState.DEFAULT, getBeginLine(), getBeginColumn() +1);
-            token_source.setOnlyTextOutput(true);
+            //token_source.setOnlyTextOutput(true);
             FMParser parser = new FMParser(token_source);
             parser.setTemplate(getTemplate());
             try {

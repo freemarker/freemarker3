@@ -24,7 +24,9 @@ import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.Scope;
 import freemarker.core.parser.ParseException;
+import freemarker.core.parser.ParsingProblem;
 import freemarker.ext.beans.ObjectWrapper;
+import freemarker.log.Logger;
 import freemarker.template.utility.HtmlEscape;
 import freemarker.template.utility.StandardCompress;
 import freemarker.template.utility.StringUtil;
@@ -66,7 +68,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     public static final int ANGLE_BRACKET_TAG_SYNTAX = 1;
     public static final int SQUARE_BRACKET_TAG_SYNTAX = 2;
 
-
+    private static final Logger logger = Logger.getLogger("freemarker.parser");
     private static Configuration defaultConfig = new Configuration();
     private boolean localizedLookup = true, whitespaceStripping = true, strictVariableDefinition=false;
     private TemplateCache cache;
@@ -505,7 +507,14 @@ public class Configuration extends Configurable implements Cloneable, Scope {
             throw new FileNotFoundException("Template " + name + " not found.");
         }
         if (result.hasParsingProblems() && !tolerateParsingProblems) {
-        	throw new ParseException(result.getParsingProblems());
+            for (ParsingProblem pp : result.getParsingProblems()) {
+                logger.error(pp.getMessage());
+            }
+            throw new ParseException(result.getParsingProblems());
+        } else {
+            for (ParsingProblem pp : result.getParsingProblems()) {
+                logger.warn(pp.getMessage());
+            }
         }
         return result;
     }

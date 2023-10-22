@@ -285,17 +285,13 @@ INJECT VisitNode :
 }
 
 RecurseNode# :
-   <SIMPLE_RECURSE>
-   |
-   (
-      <RECURSE>
-      [Expression]
-      [
-          <USING>
-          Expression
-      ]
-      LooseDirectiveEnd
-   )
+    <RECURSE>
+    [Expression]
+    [
+        <USING>
+        Expression
+    ]
+    LooseDirectiveEnd
 ;
 
 INJECT RecurseNode : 
@@ -318,11 +314,7 @@ INJECT RecurseNode :
     
     public Expression getNamespaces() {
         Node using = firstChildOfType(USING);
-        if (using == null) return null;
-        if (using.nextSibling() instanceof Expression) {
-            return (Expression) using.nextSibling();
-        }
-        return null;
+        return using == null ? null : (Expression) using.nextSibling();
     }
 
     public void execute(Environment env) throws IOException {
@@ -400,9 +392,7 @@ INJECT BreakInstruction :
  * Production used to jump out of a macro.
  */
 ReturnInstruction# :
-   <SIMPLE_RETURN>
-   | 
-   <RETURN> Expression LooseDirectiveEnd
+   <RETURN> [Expression] LooseDirectiveEnd
 ;
 
 INJECT ReturnInstruction :
@@ -411,7 +401,7 @@ INJECT ReturnInstruction :
     extends TemplateElement
 {
     public Object getReturnValue(Environment env) {
-        if (size()==1) return null;
+        if (!(get(1) instanceof Expression)) return null;
         return ((Expression)get(1)).evaluate(env);
     }
     
@@ -433,9 +423,7 @@ INJECT ReturnInstruction :
 }
 
 StopInstruction# :
-   <HALT>
-   |
-   <STOP> Expression LooseDirectiveEnd
+   <STOP> [Expression] LooseDirectiveEnd
 ;
 
 INJECT StopInstruction :
@@ -444,8 +432,9 @@ INJECT StopInstruction :
    extends TemplateElement
 {
    public String getMessage(Environment env) {
-      if (size()==1) return "";
-      return ((Expression)get(1)).getStringValue(env);
+      return get(1) instanceof Expression ? 
+             ((Expression)get(1)).getStringValue(env) 
+             : "";
    }
 
     public void execute(Environment env) {
@@ -458,13 +447,9 @@ INJECT StopInstruction :
 }
 
 NestedInstruction# :
-    <SIMPLE_NESTED>
-    |
-    (
-        <NESTED>
-        PositionalArgsList
-        LooseDirectiveEnd
-    )
+    <NESTED>
+    [PositionalArgsList]
+    LooseDirectiveEnd
 ;
 
 INJECT NestedInstruction :
@@ -1720,19 +1705,13 @@ TemplateElement FreeMarkerText#Block :
 
 TemplateHeaderElement# :
   [IgnorableWhitespace] 
+  <FTL_HEADER> =>||
   (
-    <TRIVIAL_FTL_HEADER>
-    |
-    (
-        <FTL_HEADER>
-        (
-            <ID>
-            <EQUALS>
-            Expression
-        )*
-        LooseDirectiveEnd
-    )
-  )
+    <ID>
+    <EQUALS>
+    Expression
+  )*
+  LooseDirectiveEnd
 ; 
 
 IgnorableWhitespace#void :
@@ -1844,7 +1823,6 @@ TemplateElement Root#void :
    TemplateElement doc;
 }
    [
-      SCAN [IgnorableWhitespace] (<TRIVIAL_FTL_HEADER>|<FTL_HEADER>) =>
        header=TemplateHeaderElement
        {
        	   template.setHeaderElement(header);

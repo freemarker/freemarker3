@@ -34,6 +34,7 @@ INJECT Node :
 
     default void copyLocationFrom(Node from)
     {
+        setTokenSource(from.getTokenSource());
         setBeginOffset(from.getBeginOffset());
         setEndOffset(from.getEndOffset());
     }
@@ -132,7 +133,6 @@ INJECT PARSER_CLASS :
 }
  
 INJECT ParseException  : 
-    import java.util.*;
     import freemarker.core.nodes.generated.TemplateNode;
 {
     int lineNumber, columnNumber;
@@ -144,15 +144,7 @@ INJECT ParseException  :
         this.lineNumber = lineNumber;
         this.columnNumber = columnNumber;
     }
-
-    public ParseException(String message, TemplateNode tobj) {
-        super(message);
-        this.lineNumber = tobj.getBeginLine();
-        this.columnNumber = tobj.getBeginColumn();
-        problems = new ArrayList<ParsingProblem>();
-        problems.add(new ParsingProblem(message, tobj));
-    }
-
+    
     public ParseException(List<ParsingProblem> problems) {
         this.problems = problems;
     }

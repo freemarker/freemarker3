@@ -11,12 +11,6 @@ public class ParsingProblem extends TemplateNode {
 	
 	private String description;
 	
-	
-	
-	public ParsingProblem(String description) {
-		this.description = description;
-	}
-	
 	public ParsingProblem(String description, TemplateNode location) {
 		this.description = description;
 		this.copyLocationFrom(location);
@@ -24,5 +18,9 @@ public class ParsingProblem extends TemplateNode {
 	
 	public String getDescription() {
 		return description;
+	}
+
+	public String getMessage() {
+		return description + getLocation();
 	}
 }
