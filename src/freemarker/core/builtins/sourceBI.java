@@ -1,7 +1,7 @@
 package freemarker.core.builtins;
 
 import freemarker.core.Environment;
-import freemarker.core.parser.ast.BuiltInExpression;
+import freemarker.core.nodes.generated.BuiltInExpression;
 
 /**
  * Implementation of ?c built-in 

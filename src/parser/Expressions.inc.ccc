@@ -1876,13 +1876,6 @@ INJECT ArgsList :
 		return params;
 	}
 	
-	public void setLocationInfoIfAbsent(TemplateNode invoker) {
-		if (getBeginLine() == 0) {
-			this.copyLocationFrom(invoker);
-			
-		}
-	}
-	
 	public abstract ArgsList deepClone(String name, Expression subst);
 }
 

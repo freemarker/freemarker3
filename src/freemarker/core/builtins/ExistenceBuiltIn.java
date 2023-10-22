@@ -4,12 +4,12 @@ import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.parser.ast.Expression;
+import freemarker.core.nodes.generated.BuiltInExpression;
+import freemarker.core.nodes.generated.Expression;
 import freemarker.template.Constants;
 import freemarker.template.LazilyEvaluatableArguments;
 import freemarker.template.TemplateMethodModel;
-import freemarker.core.parser.ast.ParentheticalExpression;
+import freemarker.core.nodes.generated.ParentheticalExpression;
 import freemarker.ext.beans.ObjectWrapper;
 
 /**

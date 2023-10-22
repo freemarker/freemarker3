@@ -1,9 +1,9 @@
 package freemarker.core.nodes;
 
 import freemarker.core.parser.*;
-import freemarker.core.parser.ast.Interpolation;
-import freemarker.core.parser.ast.Macro;
-import freemarker.core.parser.ast.Text;
+import freemarker.core.nodes.generated.Interpolation;
+import freemarker.core.nodes.generated.Macro;
+import freemarker.core.nodes.generated.Text;
 import static freemarker.core.parser.Token.TokenType.*;
 
 

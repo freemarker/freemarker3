@@ -2,8 +2,8 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.core.parser.ast.Expression;
-import freemarker.core.parser.ast.BuiltInExpression;
+import freemarker.core.nodes.generated.Expression;
+import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.utility.StringUtil;
 
 import static freemarker.ext.beans.ObjectWrapper.*;

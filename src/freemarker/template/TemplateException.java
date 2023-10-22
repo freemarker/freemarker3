@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 import freemarker.core.Environment;
-import freemarker.core.parser.ast.UnifiedCall;
-import freemarker.core.parser.ast.IncludeInstruction;
-import freemarker.core.parser.ast.TemplateNode;
+import freemarker.core.nodes.generated.UnifiedCall;
+import freemarker.core.nodes.generated.IncludeInstruction;
+import freemarker.core.nodes.generated.TemplateNode;
 
 /**
  * The FreeMarker classes usually use this exception and its descendants to

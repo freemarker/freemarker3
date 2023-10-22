@@ -1,8 +1,8 @@
 package freemarker.core.builtins;
 
 import freemarker.core.Environment;
-import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.parser.ast.Macro;
+import freemarker.core.nodes.generated.BuiltInExpression;
+import freemarker.core.nodes.generated.Macro;
 import freemarker.template.*;
 
 import static freemarker.ext.beans.ObjectWrapper.*;

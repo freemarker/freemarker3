@@ -7,9 +7,9 @@ import java.util.List;
 
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
-import freemarker.core.parser.ast.BuiltInExpression;
+import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.EvaluationUtil;
-import freemarker.core.parser.ast.TemplateNode;
+import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.*;
 
 import static freemarker.ext.beans.ObjectWrapper.*;

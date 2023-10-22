@@ -2,7 +2,7 @@ package freemarker.core.helpers;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.core.parser.ast.Expression;
+import freemarker.core.nodes.generated.Expression;
 import freemarker.template.Constants;
 
 import java.util.*;

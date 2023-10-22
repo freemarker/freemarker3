@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import freemarker.core.Environment;
-import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.parser.ast.TemplateNode;
+import freemarker.core.nodes.generated.BuiltInExpression;
+import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModelException;
 import freemarker.template.TemplateSequenceModel;

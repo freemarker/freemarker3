@@ -16,7 +16,7 @@ import freemarker.core.Environment;
 import java.util.*;
 import java.io.IOException;
 
-import freemarker.core.parser.ast.*;
+import freemarker.core.nodes.generated.*;
 
 
 public class ParameterList extends TemplateNode {

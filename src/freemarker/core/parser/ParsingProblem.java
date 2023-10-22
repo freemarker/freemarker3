@@ -1,5 +1,5 @@
 package freemarker.core.parser;
-import freemarker.core.parser.ast.TemplateNode;
+import freemarker.core.nodes.generated.TemplateNode;
 
 /**
  * An object that encapsulates a problem that occurs 

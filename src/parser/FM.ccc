@@ -1,5 +1,6 @@
 BASE_SRC_DIR="..";
-PARSER_PACKAGE="freemarker.core.parser";
+PARSER_PACKAGE=freemarker.core.parser;
+NODE_PACKAGE=freemarker.core.nodes.generated;
 BASE_NODE_CLASS=TemplateNode;
 PRESERVE_TABS;
 DEACTIVATE_TOKENS=EOL;
@@ -13,7 +14,7 @@ INJECT Node :
    import freemarker.core.Environment;
    import freemarker.core.InvalidReferenceException;
    import freemarker.core.EvaluationUtil;
-   import freemarker.core.parser.ast.Expression;
+   import freemarker.core.nodes.generated.Expression;
    import static freemarker.template.Constants.JAVA_NULL;
    import static freemarker.ext.beans.ObjectWrapper.*;
 {
@@ -43,7 +44,7 @@ INJECT BASE_NODE_CLASS :
    import freemarker.template.*;
    import freemarker.core.Environment;
    import freemarker.core.parser.Token;
-   import freemarker.core.parser.ast.Expression;
+   import freemarker.core.nodes.generated.Expression;
 {
 	@Property Template template;
 	
@@ -132,7 +133,7 @@ INJECT PARSER_CLASS :
  
 INJECT ParseException  : 
     import java.util.*;
-    import freemarker.core.parser.ast.TemplateNode;
+    import freemarker.core.nodes.generated.TemplateNode;
 {
     int lineNumber, columnNumber;
     String templateName;

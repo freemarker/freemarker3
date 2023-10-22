@@ -62,7 +62,7 @@
      <delete file="src/freemarker/core/parser/NonTerminalCall.java"/>
      <delete file="src/freemarker/core/parser/ParseException.java"/>
      <delete dir="build"/>
-     <delete dir="src/freemarker/core/parser/ast"/>
+     <delete dir="src/freemarker/core/nodes/generated"/>
      <delete file="freemarker.jar"/>
      <delete>
       <fileset dir="src/freemarker/testcase/reference" includes="*.out"/>

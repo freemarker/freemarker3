@@ -2,8 +2,8 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.ArithmeticEngine;
-import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.parser.ast.TemplateNode;
+import freemarker.core.nodes.generated.BuiltInExpression;
+import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.TemplateException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;

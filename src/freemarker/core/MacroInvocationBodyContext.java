@@ -3,8 +3,8 @@ package freemarker.core;
 import java.util.*;
 
 import freemarker.core.nodes.ParameterList;
-import freemarker.core.parser.ast.PositionalArgsList;
-import freemarker.core.parser.ast.TemplateElement;
+import freemarker.core.nodes.generated.PositionalArgsList;
+import freemarker.core.nodes.generated.TemplateElement;
 
 /**
  * Represents the context or scope when a macro executes

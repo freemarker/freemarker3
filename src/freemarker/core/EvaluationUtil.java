@@ -4,7 +4,7 @@ import java.util.Date;
 
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
-import freemarker.core.parser.ast.Expression;
+import freemarker.core.nodes.generated.Expression;
 import static freemarker.template.Constants.JAVA_NULL;
 import static freemarker.ext.beans.ObjectWrapper.*;
 

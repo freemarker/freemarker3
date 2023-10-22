@@ -4,7 +4,7 @@ import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.core.parser.ast.BuiltInExpression;
+import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.ext.beans.ObjectWrapper;
 import freemarker.ext.beans.Pojo;
 import freemarker.template.*;

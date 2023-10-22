@@ -168,7 +168,7 @@ TOKEN#Text :
     <REGULAR_PRINTABLE : (~["$", "<", "[" ,"\t", " ", "\n"])+> #Printable
 ;
 
-<DIRECTIVE_NAME> TOKEN :
+<DIRECTIVE_NAME> TOKEN#DirectiveName :
     <#BLANK : [" ", "\t", "\n", "\r"]>
     |
     <#CLOSE_TAG1 : (<BLANK>)* (">" | "]")>

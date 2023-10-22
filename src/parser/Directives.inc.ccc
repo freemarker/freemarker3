@@ -1325,7 +1325,7 @@ INJECT EscapeBlock :
     }
 
     public String getDescription() {
-        return "escape " + getVariable() + " as " + getEscapedExpression().toString();
+        return "escape " + getVariable() + " as " + getEscapedExpression();
     }
 }
 

@@ -1,8 +1,8 @@
 package freemarker.core.builtins;
 
 import freemarker.core.Environment;
-import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.parser.ast.Expression;
+import freemarker.core.nodes.generated.BuiltInExpression;
+import freemarker.core.nodes.generated.Expression;
 import freemarker.core.parser.FMLexer;
 import freemarker.core.parser.FMParser;
 import freemarker.core.parser.ParseException;

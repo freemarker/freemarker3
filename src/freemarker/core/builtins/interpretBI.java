@@ -6,7 +6,7 @@ import java.util.Map;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.core.parser.ast.BuiltInExpression;
+import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.Template;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateDirectiveModel;

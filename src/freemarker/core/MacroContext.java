@@ -2,9 +2,9 @@ package freemarker.core;
 
 import java.io.IOException;
 
-import freemarker.core.parser.ast.Macro;
+import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.ParameterList;
-import freemarker.core.parser.ast.TemplateElement;
+import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.template.*;
 
 /**

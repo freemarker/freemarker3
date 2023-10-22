@@ -2,8 +2,8 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.core.parser.ast.BuiltInExpression;
-import freemarker.core.parser.ast.TemplateNode;
+import freemarker.core.nodes.generated.BuiltInExpression;
+import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.*;
 
 import java.math.BigDecimal;

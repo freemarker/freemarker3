@@ -8,9 +8,9 @@ import java.util.*;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.TemplateCore;
-import freemarker.core.parser.ast.ImportDeclaration;
-import freemarker.core.parser.ast.TemplateElement;
-import freemarker.core.parser.ast.TemplateHeaderElement;
+import freemarker.core.nodes.generated.ImportDeclaration;
+import freemarker.core.nodes.generated.TemplateElement;
+import freemarker.core.nodes.generated.TemplateHeaderElement;
 import freemarker.core.parser.*;
 
 import static freemarker.ext.beans.ObjectWrapper.wrap;
