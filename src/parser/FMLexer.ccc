@@ -200,7 +200,7 @@ MORE :
 ;    
 
 TOKEN :
-    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (~["]"])* "]") | ("</#" (~[">"])* ">")> 
+    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (["a"-"z"])* "]") | ("</#" (["a"-"z"])* ">")> 
     |
     <UNIFIED_CALL : "<@" | "[@" > 
     |

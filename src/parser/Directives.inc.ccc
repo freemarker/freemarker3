@@ -49,8 +49,9 @@ INJECT Interpolation :
 }
 
 IfBlock :
+{Token start;}
   (
-    <IF>
+    start=<IF>
     Expression
     <DIRECTIVE_END>
     Block
@@ -69,7 +70,7 @@ IfBlock :
         Block
     )#ConditionalBlock
   ]
-  CloseDirectiveBlock("if")
+  CloseDirectiveBlock(start)
 ;
 
 INJECT IfBlock :
@@ -114,10 +115,11 @@ INJECT ConditionalBlock :
 }
 
 AttemptBlock :
-   <_ATTEMPT>
+{Token start;}
+   start=<_ATTEMPT>
    Block
    RecoveryBlock
-   CloseDirectiveBlock("attempt, recover")
+   CloseDirectiveBlock(start)
 ;
 
 INJECT AttemptBlock :
@@ -169,23 +171,25 @@ INJECT RecoveryBlock :
 }
 
 ListBlock#IteratorBlock :
-   <LIST> 
+{Token start;}
+   start=<LIST> 
    Expression
    <AS>
    <ID>
    <DIRECTIVE_END>
    Block
-   CloseDirectiveBlock("list")
+   CloseDirectiveBlock(start)
 ;
 
 ForEachBlock#IteratorBlock :
-   <FOREACH> 
+{Token start;}
+   start=<FOREACH> 
    <ID>
    <IN>
    Expression
    <DIRECTIVE_END>
    Block
-   CloseDirectiveBlock("foreach")
+   CloseDirectiveBlock(start)
 ;
 
 INJECT IteratorBlock :
@@ -530,7 +534,10 @@ INJECT TrimInstruction :
 }
 
 BlockAssignment :
-{String assignmentType = "set";}
+{
+   String assignmentType = "set";
+   Token start;
+}
    (
     <ASSIGN>{assignmentType = "assign";}
     |
@@ -540,6 +547,7 @@ BlockAssignment :
     |
     <SET>
    )
+   {start = lastConsumedToken;}
    IdentifierOrStringLiteral
    [ 
       <IN>
@@ -547,7 +555,7 @@ BlockAssignment :
    ]
    <DIRECTIVE_END> =>||
    Block
-   CloseDirectiveBlock(assignmentType)   
+   CloseDirectiveBlock(start)   
 ;
 
 INJECT BlockAssignment :
@@ -967,25 +975,27 @@ INJECT ImportDeclaration :
 
 
 Macro :
-    <_MACRO>
+ { Token start; }
+    start=<_MACRO>
     IdentifierOrStringLiteral
     [<OPEN_PAREN>]
     ParameterList
     [<CLOSE_PAREN>]
     <DIRECTIVE_END>
     Block
-    CloseDirectiveBlock("macro")
+    CloseDirectiveBlock(start)
 ;
 
 Function#Macro :
-    <FUNCTION>
+{ Token start; }
+    start=<FUNCTION>
     IdentifierOrStringLiteral
     [<OPEN_PAREN>]
     ParameterList
     [<CLOSE_PAREN>]
     <DIRECTIVE_END>
     Block
-    CloseDirectiveBlock("function")
+    CloseDirectiveBlock(start)
 ;
 
 INJECT Macro :
@@ -1183,7 +1193,8 @@ INJECT NoParseBlock :
 }    
 
 SwitchBlock :
-   <SWITCH>
+{ Token start; }
+   start=<SWITCH>
    Expression
    <DIRECTIVE_END>
    [IgnorableWhitespace]
@@ -1201,7 +1212,7 @@ SwitchBlock :
       Block
      )#CaseBlock
    ]
-   CloseDirectiveBlock("switch")
+   CloseDirectiveBlock(start)
 ;
 
 INJECT SwitchBlock : 
@@ -1259,13 +1270,14 @@ INJECT CaseBlock :
 }
 
 EscapeBlock :
-    <ESCAPE>
+{ Token start; }
+    start=<ESCAPE>
     <ID>
     <AS>
     Expression
     <DIRECTIVE_END>
     Block
-    CloseDirectiveBlock("escape")
+    CloseDirectiveBlock(start)
 ;
 
 INJECT EscapeBlock :
@@ -1315,9 +1327,10 @@ INJECT EscapeBlock :
 }
 
 NoEscapeBlock :
-    <NOESCAPE>
+{ Token start; }
+    start=<NOESCAPE>
     Block
-    CloseDirectiveBlock("noescape")
+    CloseDirectiveBlock(start)
 ;
 
 INJECT NoEscapeBlock :
@@ -1337,38 +1350,40 @@ INJECT NoEscapeBlock :
 }
 
 
-CloseDirectiveBlock(String expectedTags)#void :
-{
-	Token t;
-}
-    t=<CLOSE_DIRECTIVE_BLOCK>
+CloseDirectiveBlock(Token startToken)#void :
+    <CLOSE_DIRECTIVE_BLOCK>
 	{
-		String name = t.toString();
-        String prefix = "/#";
-        String suffix = "";
-        if (name.charAt(0) == '<' || name.charAt(0) == '[') {
-            prefix = name.substring(0,3);
-            suffix = (name.charAt(0) == '<') ? ">" : "]";
-		    name = name.substring(3, name.length() -1);
-        } else {
-            name = name.substring(2);
-        }
-		if (name.length()>0) {
-			StringTokenizer st = new StringTokenizer(expectedTags, ", ");
-			boolean found = false;
-			while (st.hasMoreTokens()) {
-				if (st.nextToken().equals(name.trim())) {
-                    found = true;
-                    break;
+        String nameAtEnd = stripNonLetter(lastConsumedToken.toString());
+        String nameAtStart = stripNonLetter(startToken.toString());
+        if (nameAtEnd.length() > 0) {
+            if (!nameAtStart.equals(nameAtEnd)) {
+                if (!(nameAtStart.equals("attempt") && nameAtEnd.equals("recover"))) {
+                    String message = "Was expecting the closing tag /#" 
+                                     + nameAtStart 
+                                     + " to close the block starting on line " 
+                                     + startToken.getBeginLine()
+                                     + " but found /#" + nameAtEnd;
+                    throw new ParseException(message, lastConsumedToken, parsingStack);
                 }
-			}
-			if (!found) {
-				throw new ParseException(getErrorStart(t) 
-                + " Expecting to close " + expectedTags);
-			}
-		}
+            }
+        }
 	}
+    |
+    FAIL "Expecting closing tag for "+startToken + " block beginning at " + startToken.getLocation()
 ;
+
+INJECT PARSER_CLASS :
+{
+    static String stripNonLetter(String s) {
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            if (Character.isLetter(s.charAt(i))) {
+                buf.append(s.charAt(i));
+            }
+        }
+        return buf.toString();
+    }
+}
 
 
 /**
