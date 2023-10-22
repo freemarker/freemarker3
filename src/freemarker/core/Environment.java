@@ -16,7 +16,7 @@ import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.parser.ast.ArgsList;
 import freemarker.core.parser.ast.IncludeInstruction;
 import freemarker.core.parser.ast.Macro;
-import freemarker.core.parser.ast.ParameterList;
+import freemarker.core.nodes.ParameterList;
 import freemarker.core.parser.ast.TemplateElement;
 import freemarker.core.parser.ast.TemplateNode;
 import freemarker.core.parser.ast.UnifiedCall;
@@ -263,7 +263,7 @@ public final class Environment extends Configurable implements Scope {
         if (thrownException != null) {
             if (attemptLogger.isDebugEnabled()) {
                 logger.debug("Error in attempt block " +
-                        attemptBlock.getStartLocation(), thrownException);
+                        attemptBlock.getLocation(), thrownException);
             }
             try {
                 recoveredErrorStack.add(thrownException.getMessage());
@@ -1017,14 +1017,14 @@ public final class Environment extends Configurable implements Scope {
             TemplateNode prev = iter.previous();
             pw.print(prev.getDescription());
             pw.print(" [");
-            pw.print(prev.getStartLocation());
+            pw.print(prev.getLocation());
             pw.println("]");
         }
         while (iter.hasPrevious()) {
             TemplateNode prev = iter.previous();
             if (prev instanceof UnifiedCall || prev instanceof IncludeInstruction) {
                 String location = prev.getDescription() + " ["
-                        + prev.getStartLocation() + "]";
+                        + prev.getLocation() + "]";
                 if (location != null && location.length() > 0) {
                     pw.print(" in ");
                     pw.println(location);

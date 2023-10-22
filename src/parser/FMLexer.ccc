@@ -59,6 +59,22 @@ INJECT LEXER_CLASS :
         NOESCAPE, TRIVIAL_FTL_HEADER 
     );
 
+/*
+    private BASE_TOKEN_CLASS TOKEN_HOOK(BASE_TOKEN_CLASS token) {
+        if (token.getType() == POSSIBLE_DIRECTIVE) {
+            BASE_TOKEN_CLASS prevToken = token.previousCachedToken();
+            if (prevToken.getType() == NON_TRAILING_WHITESPACE && prevToken.getBeginColumn()==1) {
+                ((Whitespace) prevToken).setIgnored(true);
+            }
+            activeTokenTypes.add(EOL);
+        } 
+        else if (token.getType()==EOL) {
+            token.setType(DIRECTIVE_END);
+            activeTokenTypes.remove(EOL);
+        }
+        return token;
+    }*/
+
     private BASE_TOKEN_CLASS TOKEN_HOOK(BASE_TOKEN_CLASS token) {
         if (directiveNames.contains(token.getType())) {
             inPointySyntax = token.charAt(0) == '<';
@@ -146,6 +162,8 @@ TOKEN#Text :
     <NON_TRAILING_WHITESPACE : (["\t"," "])+> #freemarker.core.nodes.Whitespace
     |
     <PROBLEMATIC_CHAR : "$" | "<" | "["> #Printable
+    |
+    <POSSIBLE_DIRECTIVE : "#" (["a"-"z","A"-"Z"])+> #Printable
     |
     <REGULAR_PRINTABLE : (~["$", "<", "[" ,"\t", " ", "\n"])+> #Printable
 ;
@@ -237,12 +255,15 @@ TOKEN#Text :
     |
     <TRIVIAL_FTL_HEADER : "ftl" <CLOSE_TAG2>> 
     |
-    <UNKNOWN_DIRECTIVE : (["a"-"z","A"-"Z", "_"])+>
+    <UNKNOWN_DIRECTIVE : (["a"-"z","A"-"Z"])+>
 ;
 
+<EXPRESSION> TOKEN :
+    <EOL : "\n">
+;
 
 <EXPRESSION> SKIP :
-    < ( " " | "\t" | "\n" | "\r" )+ >
+    <IGNORED_WS : " " | "\t" | "\n" | "\r" >
     |
     <?EXPRESSION_COMMENT1 : "<#--" (~[])* "-->">
     |

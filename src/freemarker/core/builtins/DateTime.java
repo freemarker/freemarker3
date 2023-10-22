@@ -115,7 +115,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
                 return df.parse(text);
             }
             catch(java.text.ParseException e) {
-                String mess = "Error: " + caller.getStartLocation()
+                String mess = "Error: " + caller.getLocation()
                 + "\nExpecting a date here, found: " + text;
                 throw new TemplateModelException(mess);
             }

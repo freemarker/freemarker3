@@ -19,7 +19,7 @@ public class DefaultReferenceChecker {
         if (model == Constants.JAVA_NULL) {
             throw new InvalidReferenceException(
                 "Expression " + exp + " is null " +
-                exp.getStartLocation() + ".", env);
+                exp.getLocation() + ".", env);
         }
     }
     
@@ -27,7 +27,7 @@ public class DefaultReferenceChecker {
         if (model == null) {
             throw new InvalidReferenceException(
                 "Expression " + exp + " is undefined " +
-                exp.getStartLocation() + ".", env);
+                exp.getLocation() + ".", env);
         }
     }
     

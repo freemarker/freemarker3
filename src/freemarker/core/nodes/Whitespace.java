@@ -8,14 +8,24 @@ import static freemarker.core.parser.Token.TokenType.*;
 
 
 public class Whitespace extends Text {
+
+    private Boolean ignored;
+
     public Whitespace(TokenType type, FMLexer tokenSource, int beginOffset, int endOffset) {
         super(type, tokenSource, beginOffset, endOffset);
     }
 
     public boolean isIgnored() {
-        return isNonOutputtingLine() 
+        if (ignored == null) {
+            ignored = isNonOutputtingLine() 
                || getType() == TRAILING_WHITESPACE && checkForExplicitRightTrim() 
                || getType() == NON_TRAILING_WHITESPACE && getBeginColumn() == 1 && checkForExplicitLeftTrim();
+        }
+        return ignored;
+    }
+
+    public void setIgnored(boolean b) {
+        ignored = b;
     }
 
     private boolean checkForExplicitLeftTrim() {

@@ -252,7 +252,7 @@ public class PostParseVisitor extends Node.Visitor {
 			try {
 				node.checkInterpolation();
 			} catch (ParseException pe) {
-				String msg = "Error in string " + node.getStartLocation();
+				String msg = "Error in string " + node.getLocation();
 				msg += "\n" + pe.getMessage();
 				template.addParsingProblem(new ParsingProblem(msg, node));
 			}

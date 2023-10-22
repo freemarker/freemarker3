@@ -122,11 +122,11 @@ public class TemplateException extends RuntimeException {
     	            buf.append("==> ");
     	            buf.append(location.getDescription());
     	            buf.append(" [");
-    	            buf.append(location.getStartLocation());
+    	            buf.append(location.getLocation());
     	            buf.append("]\n");
     			} else if (location instanceof UnifiedCall || location instanceof IncludeInstruction){ // We only show macro calls and includes
                     String line = location.getDescription() + " ["
-                    + location.getStartLocation() + "]";
+                    + location.getLocation() + "]";
                     if (line != null && line.length() > 0) {
                     	buf.append(" in ");
                     	buf.append(line);

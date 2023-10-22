@@ -2,6 +2,7 @@ BASE_SRC_DIR="..";
 PARSER_PACKAGE="freemarker.core.parser";
 BASE_NODE_CLASS=TemplateNode;
 PRESERVE_TABS;
+DEACTIVATE_TOKENS=EOL;
 
 INCLUDE "FMLexer.ccc"
 INCLUDE "Expressions.inc.ccc"
@@ -20,7 +21,7 @@ INJECT Node :
     
     Template getTemplate();
 
-    default String getStartLocation() {
+    default String getLocation() {
         String templateName = getTemplate() != null ? getTemplate().getName() : getInputSource();
         return "on line " 
               + getBeginLine() 
@@ -57,7 +58,7 @@ INJECT BASE_NODE_CLASS :
             "Expected " + expected + ". " + 
             exp + " evaluated instead to " + 
             model.getClass().getName() + " " +
-            exp.getStartLocation() + ".", env);
+            exp.getLocation() + ".", env);
     }
     
 }

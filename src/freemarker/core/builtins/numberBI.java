@@ -28,7 +28,7 @@ public class numberBI extends ExpressionEvaluatingBuiltIn
         try {
             return wrap(e.toNumber(string));
         } catch(NumberFormatException nfe) {
-                String mess = "Error: " + caller.getStartLocation()
+                String mess = "Error: " + caller.getLocation()
                 + "\nExpecting a number in string here, found: " + string;
                 throw new TemplateException(mess, env);
             }

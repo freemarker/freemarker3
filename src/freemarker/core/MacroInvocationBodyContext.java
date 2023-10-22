@@ -2,7 +2,7 @@ package freemarker.core;
 
 import java.util.*;
 
-import freemarker.core.parser.ast.ParameterList;
+import freemarker.core.nodes.ParameterList;
 import freemarker.core.parser.ast.PositionalArgsList;
 import freemarker.core.parser.ast.TemplateElement;
 

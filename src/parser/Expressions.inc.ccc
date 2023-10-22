@@ -36,7 +36,7 @@ INJECT Expression :
             return asString(referent);
         }
         assertNonNull(referent, env);
-        String msg = "Error " + getStartLocation()
+        String msg = "Error " + getLocation()
                      +"\nExpecting a string, " 
                      + "date or number here, Expression " + this 
                      + " is instead a " 
@@ -56,13 +56,13 @@ INJECT Expression :
     default void assertNonNull(Object model, Environment env) {
         assertIsDefined(model, env);
         if (model == JAVA_NULL) {
-            throw new InvalidReferenceException("Expression " + this + " is null " + getStartLocation() + ".", env);
+            throw new InvalidReferenceException("Expression " + this + " is null " + getLocation() + ".", env);
         }
     }
 
     default void assertIsDefined(Object model, Environment env) {
         if (model == null) {
-            throw new InvalidReferenceException("Expression " + this + " is undefined " + getStartLocation() + ".", env);
+            throw new InvalidReferenceException("Expression " + this + " is undefined " + getLocation() + ".", env);
         }
     }
 
@@ -72,7 +72,7 @@ INJECT Expression :
             return asBoolean(referent);
         }
         assertNonNull(referent, env);
-        String msg = "Error " + getStartLocation()
+        String msg = "Error " + getLocation()
                      + "\nExpecting a boolean (true/false) expression here"
                      + "\nExpression " + this + " does not evaluate to true/false "
                      + "\nit is an instance of " + referent.getClass().getName();
@@ -238,7 +238,7 @@ INJECT UnaryPlusMinusExpression :
         try {
             value = asNumber(getTarget().evaluate(env));
         } catch (ClassCastException cce) {
-            String msg = "Error " + getStartLocation();
+            String msg = "Error " + getLocation();
             msg += "\nExpression " + getTarget() + " is not numerical.";
             throw new TemplateException(msg, env);
         }
@@ -332,7 +332,7 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
                                             (TemplateHashModel)right);
             }
         }
-        String msg = this.getStartLocation() + ": Cannot add or concatenate";
+        String msg = this.getLocation() + ": Cannot add or concatenate";
         throw new TemplateException(msg, env);
     }
 
@@ -496,7 +496,7 @@ INJECT MultiplicativeExpression :
         boolean rightIsNumber = isNumber(rightModel);
         boolean bothNumbers = leftIsNumber && rightIsNumber;
         if (!bothNumbers) {
-            String msg = "Error " + getStartLocation();
+            String msg = "Error " + getLocation();
             if (!leftIsNumber) {
                 msg += "\nExpression " + getLeft() + " is not numerical";
             }
@@ -758,7 +758,7 @@ INJECT RangeExpression :
     }
     
     public boolean isTrue(Environment env) {
-        String msg = "Error " + getStartLocation() + ". " 
+        String msg = "Error " + getLocation() + ". " 
                     + "\nExpecting a boolean here."
                     + " Expression " + this + " is a range.";
         throw new TemplateException(msg, env);
@@ -1472,22 +1472,22 @@ INJECT DynamicKeyName :
             TemplateSequenceModel sequence = (TemplateSequenceModel) targetModel;
             if (!hasRhs) end = sequence.size() -1;
             if (start < 0) {
-                String msg = range.getRight().getStartLocation() + "\nNegative starting index for range, is " + range;
+                String msg = range.getRight().getLocation() + "\nNegative starting index for range, is " + range;
                 throw new TemplateException(msg, env);
             }
             if (end < 0) {
-                String msg = range.getLeft().getStartLocation() + "\nNegative ending index for range, is " + range;
+                String msg = range.getLeft().getLocation() + "\nNegative ending index for range, is " + range;
                 throw new TemplateException(msg, env);
             }
             if (start >= sequence.size()) {
-                String msg = range.getLeft().getStartLocation() 
+                String msg = range.getLeft().getLocation() 
                             + "\nLeft side index of range out of bounds, is " + start
                             + ", but the sequence has only " + sequence.size() + " element(s) "
                             + "(note that indices are 0 based, and ranges are inclusive).";
                 throw new TemplateException(msg, env);
             }
             if (end >= sequence.size()) {
-                String msg = range.getRight().getStartLocation() 
+                String msg = range.getRight().getLocation() 
                              + "\nRight side index of range out of bounds, is " + end
                              + ", but the sequence has only " + sequence.size() + " element(s)."
                              + "(note that indices are 0 based, and ranges are inclusive).";
@@ -1510,21 +1510,21 @@ INJECT DynamicKeyName :
         String s = getTarget().getStringValue(env);
         if (!hasRhs) end = s.length() -1;
         if (start < 0) {
-            String msg = range.getLeft().getStartLocation() + "\nNegative starting index for range " + range + " : " + start;
+            String msg = range.getLeft().getLocation() + "\nNegative starting index for range " + range + " : " + start;
             throw new TemplateException(msg, env);
         }
         if (end < 0) {
-            String msg = range.getLeft().getStartLocation() + "\nNegative ending index for range " + range + " : " + end;
+            String msg = range.getLeft().getLocation() + "\nNegative ending index for range " + range + " : " + end;
             throw new TemplateException(msg, env);
         }
         if (start > s.length()) {
-            String msg = range.getLeft().getStartLocation() 
+            String msg = range.getLeft().getLocation() 
                         + "\nLeft side of range out of bounds, is: " + start
                         + "\nbut string " + targetModel + " has " + s.length() + " elements.";
             throw new TemplateException(msg, env);
         }
         if (end > s.length()) {
-            String msg = range.getRight().getStartLocation() 
+            String msg = range.getRight().getLocation() 
                             + "\nRight side of range out of bounds, is: " + end
                             + "\nbut string " + targetModel + " is only " + s.length() + " characters.";
             throw new TemplateException(msg, env);
@@ -1532,7 +1532,7 @@ INJECT DynamicKeyName :
         try {
             return s.substring(start, end+1);
         } catch (RuntimeException re) {
-            String msg = "Error " + getStartLocation();
+            String msg = "Error " + getLocation();
             throw new TemplateException(msg, re, env);
         }
     }
@@ -1632,6 +1632,7 @@ INJECT PositionalArgsList :
     import freemarker.core.Environment;
     import freemarker.template.*;
     import freemarker.template.utility.UndeclaredThrowableException;
+    import freemarker.core.nodes.ParameterList;
     extends ArgsList
 {
    public List getParameterSequence(Object target, Environment env) {
@@ -1703,6 +1704,7 @@ NamedArgsList :
 INJECT NamedArgsList :
     import java.util.*;
     import freemarker.core.Environment;
+    import freemarker.core.nodes.ParameterList;
     import freemarker.core.parser.ParseException;
     import freemarker.template.*;
     extends ArgsList;
@@ -1713,7 +1715,7 @@ INJECT NamedArgsList :
 
     public void addNamedArg(String name, Expression exp) throws ParseException{
         if (namedArgs.containsKey(name)) throw new ParseException(
-                "Error at: " + exp.getStartLocation() + "\nArgument " + name + " was already specified.");
+                "Error at: " + exp.getLocation() + "\nArgument " + name + " was already specified.");
         namedArgs.put(name, exp);
         exp.setParent(this);
     }
@@ -1751,7 +1753,7 @@ INJECT NamedArgsList :
     public List<Object> getParameterSequence(Object target, Environment env) {
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
-            String msg = "Error at: " + getStartLocation() 
+            String msg = "Error at: " + getLocation() 
             + "\nCannot invoke method " + target + " with a key=value parameter list because it is not annotated.";
             throw new TemplateException(msg, env);
         }
@@ -1789,6 +1791,7 @@ INJECT ArgsList :
     import freemarker.core.parser.*;
     import freemarker.core.parser.FMLexer.LexicalState;
     import freemarker.ext.beans.SimpleMethodModel;
+    import freemarker.core.nodes.ParameterList;
 {
 	/**
 	 * Cache the retrieved annotation information, since it seems like 
