@@ -200,7 +200,7 @@ MORE :
 ;    
 
 TOKEN :
-    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (["a"-"z"])* "]") | ("</#" (["a"-"z"])* ">")> 
+    <CLOSE_DIRECTIVE_BLOCK : ("[/#" (["a"-"z"])* (<BLANK>)* "]") | ("</#" (["a"-"z"])* (<BLANK>)* ">")> 
     |
     <UNIFIED_CALL : "<@" | "[@" > 
     |
@@ -321,7 +321,7 @@ TOKEN#Text :
     <?EXPRESSION_COMMENT2 : "[#--" (~[])* "--]">
 ;
 
-<EXPRESSION> TOKEN :
+<EXPRESSION> TOKEN#Literal :
   <STRING_LITERAL :
       ("\"" 
           ((~["\\", "\""]) | ("\\" ~[]))*      
@@ -334,16 +334,18 @@ TOKEN#Text :
   |
   <RAW_STRING : "r" (("\"" (~["\""])* "\"") | ("'" (~["'"])* "'"))>
   |
-  <FALSE : "false">
+  <FALSE : "false"> #BooleanLiteral
   |
-  <TRUE : "true">
+  <TRUE : "true"> #BooleanLiteral
   |
-  <NULL : "null">
+  <NULL : "null"> #NullLiteral
   |
-  <INTEGER : (["0"-"9"])+>
+  <INTEGER : (["0"-"9"])+> //#NumberLiteral
   |
-  <DECIMAL : <INTEGER> "." <INTEGER>>
-  |
+  <DECIMAL : <INTEGER> "." <INTEGER>> //#NumberLiteral
+;
+
+<EXPRESSION> TOKEN#Operator :
   <DOT : ".">
   |
   <DOT_DOT : "..">
@@ -361,8 +363,6 @@ TOKEN#Text :
   <GREATER_THAN : ">">
   |
   <GREATER_THAN_EQUALS: ">=">
-  |
-  <EMPTY_DIRECTIVE_END : "/>" | "/]"> : DEFAULT
   |
   <LESS_THAN : "lt" | "<" | "&lt;">
   |
@@ -391,6 +391,10 @@ TOKEN#Text :
   <OR : "|" | "||">
   |
   <EXCLAM : "!">
+;
+
+<EXPRESSION> TOKEN#Delimiter :
+  <EMPTY_DIRECTIVE_END : "/>" | "/]"> : DEFAULT
   |
   <COMMA : ",">
   |
@@ -445,3 +449,61 @@ INJECT Identifier :
     }
 }
 
+INJECT NullLiteral : 
+   import freemarker.core.Environment;
+   import static freemarker.template.Constants.JAVA_NULL;
+   implements Expression
+{
+    public Object evaluate(Environment env) {
+        return JAVA_NULL;
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+    	return this;
+    }
+}
+#if false
+INJECT BooleanLiteral :
+    import freemarker.core.Environment;
+    import freemarker.template.*;
+    implements Expression
+{
+    public boolean isTrue(Environment env) {
+        return getType() == TRUE;
+    }
+
+    public Boolean evaluate(Environment env) {
+        return isTrue(env);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        return this;
+    }
+}
+
+INJECT NumberLiteral :
+  import freemarker.core.Environment;
+  implements Expression
+{
+    private Number value;
+
+    public Number getValue() {
+        if (value == null) {
+            value = getTemplate() != null ? getTemplate().getArithmeticEngine().toNumber(toString()) : new java.math.BigDecimal(toString());
+        }
+        return value;
+    }
+
+    public Object evaluate(Environment env) {
+        return getValue();
+    }
+    
+    public String getStringValue(Environment env) {
+        return env.formatNumber(getValue());
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        return (Expression) newToken(getType(), getTokenSource(), getBeginOffset(), getEndOffset());
+    }
+}
+#endif

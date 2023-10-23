@@ -80,19 +80,25 @@ INJECT Expression :
     }
 }
 
+Literal#void :
+  <ID>
+  |
+  <NULL>
+  |
+  <TRUE>
+  |
+  <FALSE>
+  |
+  NumberLiteral
+  |
+  StringLiteral
+;
+
 PrimaryExpression(boolean noSpace)#void :
    (
-      <ID>
-      |
-      NumberLiteral
+      Literal
       |
       HashLiteral
-      |
-      StringLiteral
-      |
-      BooleanLiteral
-      |
-      NullLiteral
       |
       ListLiteral
       |
@@ -1929,65 +1935,6 @@ INJECT StringLiteral :
         StringLiteral cloned = new StringLiteral(value, raw);
         cloned.interpolatedOutput = this.interpolatedOutput;
         return cloned;
-    }
-}
-
-BooleanLiteral# :
-   <FALSE>
-   |
-   <TRUE> {CURRENT_NODE.setValue(true);}
-;
-
-INJECT BooleanLiteral :
-    import freemarker.core.Environment;
-    import freemarker.template.*;
-    implements Expression
-{
-    @Property boolean value;
-
-    public BooleanLiteral() {}
-    public BooleanLiteral(boolean value) {this.value = value;}
-
-    public boolean isTrue(Environment env) {
-        return value;
-    }
-
-    public String toString() {
-        return value ? "true" : "false";
-    }
-
-    public Boolean evaluate(Environment env) {
-        return value;
-    }
-
-    public Expression _deepClone(String name, Expression subst) {
-        BooleanLiteral result = new BooleanLiteral();
-        result.setValue(value);
-        return result;
-    }
-
-}
-
-NullLiteral# :
-   <NULL>
-;
-
-INJECT NullLiteral : 
-   import freemarker.core.Environment;
-   import freemarker.template.Constants;
-   import freemarker.template.TemplateModel;
-   implements Expression
-{
-    public String toString() {
-    	return "null";
-    }
-
-    public Object evaluate(Environment env) {
-        return Constants.JAVA_NULL;
-    }
-
-    public Expression _deepClone(String name, Expression subst) {
-    	return new NullLiteral();
     }
 }
 
