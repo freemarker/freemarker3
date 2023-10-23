@@ -765,7 +765,7 @@ INJECT IncludeInstruction :
 
     public Expression getParamByName(String name) {
         for (Node n : this) {
-            if (n instanceof ID && n.toString().equalsIgnoreCase(name)) {
+            if (n instanceof Identifier && n.toString().equalsIgnoreCase(name)) {
                 return (Expression) n.nextSibling().nextSibling();
             }
         }
@@ -1422,7 +1422,7 @@ INJECT PropertySetting :
     }
     
     public Expression getValue() {
-    	return firstChildOfType(Expression.class);
+    	return (Expression) get(3);
     }
 
     public void execute(Environment env) {
@@ -1809,12 +1809,12 @@ INJECT TemplateHeaderElement :
 
 Map<String,Expression> ParamList#void :
 {
-   Identifier id;
+   Token id;
    Expression exp;
    Map<String,Expression> result = new HashMap<String,Expression>();
 }
    (
-      id=Identifier
+      id=<ID>
       <EQUALS>
       exp=Expression {result.put(id.toString(), exp);}
       [<COMMA>]
@@ -1826,7 +1826,7 @@ Map<String,Expression> ParamList#void :
 
 Expression IdentifierOrStringLiteral#void :
    (
-      Identifier
+      <ID>
       |
       StringLiteral
    )
