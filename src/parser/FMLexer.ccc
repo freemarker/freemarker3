@@ -38,7 +38,7 @@ INJECT LEXER_CLASS :
     @Property boolean onlyTextOutput;
     String templateName;
 
-    private EnumSet<TokenType> directiveNames = EnumSet.of(
+    private static EnumSet<TokenType> directiveNames = EnumSet.of(
         _ATTEMPT, _RECOVER, IF, ELSE_IF, LIST, FOREACH, SWITCH,
         CASE, ASSIGN, GLOBALASSIGN, LOCALASSIGN, SET, _INCLUDE,
         IMPORT, FUNCTION, _MACRO, VISIT, STOP, RETURN, SETTING, 
@@ -47,9 +47,16 @@ INJECT LEXER_CLASS :
         FTL_HEADER, UNKNOWN_DIRECTIVE
     );
 
-    private EnumSet<TokenType> emptyDirectives = EnumSet.of(
+    private static EnumSet<TokenType> emptyDirectives = EnumSet.of(
         _ATTEMPT, _RECOVER, ELSE, BREAK, FLUSH, TRIM, LTRIM, 
         RTRIM, DEFAUL, FALLBACK, NOESCAPE 
+    );
+
+    private static EnumSet<TokenType> continueLineTokens = EnumSet.of(
+        COMMA, EQUALS, DOUBLE_EQUALS, NOT_EQUALS, DOT_DOT, 
+        GREATER_THAN, GREATER_THAN_EQUALS, LESS_THAN, LESS_THAN_EQUALS,
+        ESCAPED_GT, ESCAPED_GTE, PLUS, MINUS, TIMES, DIVIDE,
+        PERCENT, AND, OR, SEMICOLON, COLON, IN, AS, USING
     );
 
     private boolean atLineStart(Token tok) {
@@ -128,9 +135,18 @@ INJECT LEXER_CLASS :
             token.setType(CLOSE_DIRECTIVE_BLOCK);
         }
         else if (type == EOL) {
-            token.setType(DIRECTIVE_END);
-            activeTokenTypes.remove(EOL);
-            switchTo(LexicalState.DEFAULT);
+            Token prevTok = token.previousCachedToken();
+            if (parenthesisNesting > 0 || 
+                bracketNesting > 0 ||
+                hashLiteralNesting > 0 ||
+                prevTok != null && continueLineTokens.contains(prevTok.getType())) 
+            {
+                token.setUnparsed(true);
+            } else {
+                token.setType(DIRECTIVE_END);
+                activeTokenTypes.remove(EOL);
+                switchTo(LexicalState.DEFAULT);
+            }
         }
         return token;
     }
@@ -180,7 +196,7 @@ INJECT LEXER_CLASS :
                 if (hashLiteralNesting > 0) {
                     --hashLiteralNesting;
                 } else {
-                    switchTo(LexicalState.DEFAULT);
+                     switchTo(LexicalState.DEFAULT);
                 }
                 break;
             case UNIFIED_CALL : 
