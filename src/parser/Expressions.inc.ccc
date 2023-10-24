@@ -81,8 +81,6 @@ INJECT Expression :
 }
 
 Literal#void :
-  <ID>
-  |
   <NULL>
   |
   <TRUE>
@@ -90,26 +88,21 @@ Literal#void :
   <FALSE>
   |
   <NUMBER>
-  {
-    NumberLiteral n = (NumberLiteral) lastConsumedToken;
-    String s = n.toString();
-    if (template != null) {
-        n.setValue(template.getArithmeticEngine().toNumber(s));
-    } else {
-        n.setValue(new java.math.BigDecimal(s));
-    }
-  } 
   |
-  StringLiteral
+  <STRING_LITERAL>
+  |
+  <RAW_STRING>
+  |
+  HashLiteral
+  |
+  ListLiteral
 ;
 
 PrimaryExpression(boolean noSpace)#void :
    (
       Literal
       |
-      HashLiteral
-      |
-      ListLiteral
+      <ID>
       |
       ParentheticalExpression
       |
@@ -1793,7 +1786,7 @@ INJECT ArgsList :
 	
 	public abstract ArgsList deepClone(String name, Expression subst);
 }
-
+#if false
 Expression StringLiteral# :
 {
   boolean raw = false;
@@ -1899,6 +1892,7 @@ INJECT StringLiteral :
         return cloned;
     }
 }
+#endif
 
 HashLiteral :
    <OPEN_BRACE>

@@ -1828,7 +1828,7 @@ Expression IdentifierOrStringLiteral#void :
    (
       <ID>
       |
-      StringLiteral
+      <STRING_LITERAL>
    )
    {
       return (Expression) peekNode();

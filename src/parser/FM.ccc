@@ -73,14 +73,11 @@ INJECT Token :
 
 INJECT PARSER_CLASS : 
     import freemarker.template.*;
-    import freemarker.template.utility.StringUtil;
     import java.util.HashSet;
     import java.util.List;
     import java.util.LinkedHashMap;
     import java.util.Map;
     import java.util.Set;
-    import java.util.StringTokenizer;
-    import freemarker.core.nodes.generated.NumberLiteral;
 {
     // Necessary for adding macros and setting location info.
     @Property Template template;
