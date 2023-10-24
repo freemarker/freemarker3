@@ -89,7 +89,16 @@ Literal#void :
   |
   <FALSE>
   |
-  NumberLiteral
+  <NUMBER>
+  {
+    NumberLiteral n = (NumberLiteral) lastConsumedToken;
+    String s = n.toString();
+    if (template != null) {
+        n.setValue(template.getArithmeticEngine().toNumber(s));
+    } else {
+        n.setValue(new java.math.BigDecimal(s));
+    }
+  } 
   |
   StringLiteral
 ;
@@ -956,53 +965,6 @@ INJECT ListLiteral :
             result.add(node);
         }
         return result;
-    }
-}
-
-NumberLiteral# :
-   (
-      <INTEGER>
-      |
-      <DECIMAL>
-   )
-   {
-       String s = lastConsumedToken.toString();
-       Number n = template != null ? template.getArithmeticEngine().toNumber(s) : new java.math.BigDecimal(s);
-       CURRENT_NODE.setValue(n);
-   }
-;
-
-INJECT NumberLiteral :
-  import freemarker.core.Environment;
-  import freemarker.ext.beans.NumberModel;
-  implements Expression
-{
-    @Property Number value;
-
-    public NumberLiteral() {}
-
-    public NumberLiteral(Number value) {
-        this.value = value;
-    }
-    
-    public Object evaluate(Environment env) {
-        return value;
-    }
-    
-    public String getStringValue(Environment env) {
-        return env.formatNumber(value);
-    }
-
-    public Number getAsNumber() {
-        return value;
-    }
-    
-    String getName() {
-        return "the number: '" + value + "'";
-    }
-
-    public Expression _deepClone(String name, Expression subst) {
-        return new NumberLiteral(value);
     }
 }
 

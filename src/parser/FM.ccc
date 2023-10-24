@@ -19,7 +19,6 @@ INJECT Node :
    import static freemarker.ext.beans.ObjectWrapper.*;
 {
     void setTemplate(Template template);
-    
     Template getTemplate();
 
     default String getLocation() {
@@ -73,7 +72,6 @@ INJECT Token :
 
 
 INJECT PARSER_CLASS : 
-    import freemarker.core.ast.TextBlock;
     import freemarker.template.*;
     import freemarker.template.utility.StringUtil;
     import java.util.HashSet;
@@ -82,6 +80,7 @@ INJECT PARSER_CLASS :
     import java.util.Map;
     import java.util.Set;
     import java.util.StringTokenizer;
+    import freemarker.core.nodes.generated.NumberLiteral;
 {
     // Necessary for adding macros and setting location info.
     @Property Template template;
@@ -90,7 +89,6 @@ INJECT PARSER_CLASS :
 
     void OPEN_NODE_HOOK(Node n) {
          n.setTemplate(template);
-         n.setTokenSource(token_source);
     }
 
     /**

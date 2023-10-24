@@ -340,9 +340,7 @@ TOKEN#Text :
   |
   <NULL : "null"> #NullLiteral
   |
-  <INTEGER : (["0"-"9"])+> //#NumberLiteral
-  |
-  <DECIMAL : <INTEGER> "." <INTEGER>> //#NumberLiteral
+  <NUMBER : ("0" | (["1"-"9"]) (["0"-"9"])*) ("." (["0"-"9"])+)?> #NumberLiteral
 ;
 
 <EXPRESSION> TOKEN#Operator :
@@ -462,7 +460,7 @@ INJECT NullLiteral :
     	return this;
     }
 }
-#if false
+
 INJECT BooleanLiteral :
     import freemarker.core.Environment;
     import freemarker.template.*;
@@ -483,16 +481,10 @@ INJECT BooleanLiteral :
 
 INJECT NumberLiteral :
   import freemarker.core.Environment;
+  import java.math.BigDecimal;
   implements Expression
 {
-    private Number value;
-
-    public Number getValue() {
-        if (value == null) {
-            value = getTemplate() != null ? getTemplate().getArithmeticEngine().toNumber(toString()) : new java.math.BigDecimal(toString());
-        }
-        return value;
-    }
+    @Property Number value;
 
     public Object evaluate(Environment env) {
         return getValue();
@@ -503,7 +495,6 @@ INJECT NumberLiteral :
     }
 
     public Expression _deepClone(String name, Expression subst) {
-        return (Expression) newToken(getType(), getTokenSource(), getBeginOffset(), getEndOffset());
+        return this;
     }
 }
-#endif
