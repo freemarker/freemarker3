@@ -572,29 +572,6 @@ abstract public class Configurable extends TemplateNode
         setSettings(p);
     }
 
-    /**
-     * Internal entry point for setting unnamed custom attributes
-     */
-    void setCustomAttribute(Object key, Object value) {
-        synchronized(customAttributes) {
-            customAttributes.put(key, value);
-        }
-    }
-
-    /**
-     * Internal entry point for getting unnamed custom attributes
-     */
-    Object getCustomAttribute(Object key, CustomAttribute attr) {
-        synchronized(customAttributes) {
-            Object o = customAttributes.get(key);
-            if(o == null && !customAttributes.containsKey(key)) {
-                o = attr.create();
-                customAttributes.put(key, o);
-            }
-            return o;
-        }
-    }
-      
     protected void doAutoImportsAndIncludes(Environment env)
     throws TemplateException, IOException
     {
