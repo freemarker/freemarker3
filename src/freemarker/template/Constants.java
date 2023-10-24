@@ -32,7 +32,7 @@ public class Constants {
     public static final Iterator<Object> EMPTY_ITERATOR = new Iterator<Object>() {
 
         public TemplateModel next() {
-            throw new TemplateModelException("The collection has no more elements.");
+            throw new EvaluationException("The collection has no more elements.");
         }
 
         public boolean hasNext() {

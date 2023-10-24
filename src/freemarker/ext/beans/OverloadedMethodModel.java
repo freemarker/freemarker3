@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
 
 /**
@@ -34,7 +34,7 @@ class OverloadedMethodModel implements TemplateMethodModel, TemplateSequenceMode
      * Invokes the method, passing it the arguments from the list. The actual
      * method to call from several overloaded methods will be chosen based
      * on the classes of the arguments.
-     * @throws TemplateModelException if the method cannot be chosen
+     * @throws EvaluationException if the method cannot be chosen
      * unambiguously.
      */
     public Object exec(List arguments)
@@ -60,7 +60,7 @@ class OverloadedMethodModel implements TemplateMethodModel, TemplateSequenceMode
             }
             if((method.getModifiers() & Modifier.STATIC) != 0)
             {
-                throw new TemplateModelException("Method " + method + 
+                throw new EvaluationException("Method " + method + 
                         " threw an exception", e);
             }
             else
@@ -71,7 +71,7 @@ class OverloadedMethodModel implements TemplateMethodModel, TemplateSequenceMode
                 {
                     buf.append(arg == null ? "null" : arg.getClass().getName()).append(',');
                 }
-                throw new TemplateModelException("Method " + method + 
+                throw new EvaluationException("Method " + method + 
                         " threw an exception when invoked on " + object + 
                         " with arguments of types [" + buf + "]", e);
             }
@@ -85,7 +85,7 @@ class OverloadedMethodModel implements TemplateMethodModel, TemplateSequenceMode
 
     public int size() 
     {
-        throw new TemplateModelException("?size is unsupported for: " + 
+        throw new EvaluationException("?size is unsupported for: " + 
                 getClass().getName());
     }
 }

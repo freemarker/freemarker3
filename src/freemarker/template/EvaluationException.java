@@ -6,39 +6,39 @@ import freemarker.core.Environment;
  * Template model implementation classes should throw this exception if
  * requested data cannot be retrieved.  
  */
-public class TemplateModelException extends TemplateException {
+public class EvaluationException extends TemplateException {
 
     /**
-     * Constructs a <tt>TemplateModelException</tt> with no
+     * Constructs an <tt>EvaluationException</tt> with no
      * specified detail message.
      */
-    public TemplateModelException() {
+    public EvaluationException() {
         this(null, null);
     }
 
     /**
-     * Constructs a <tt>TemplateModelException</tt> with the
+     * Constructs an <tt>EvaluationException</tt> with the
      * specified detail message.
      *
      * @param description the detail message.
      */
-    public TemplateModelException(String description) {
+    public EvaluationException(String description) {
         this(description, null);
     }
 
     /**
-     * Constructs a <tt>TemplateModelException</tt> with the given underlying
+     * Constructs an <tt>EvaluationException</tt> with the given underlying
      * Exception, but no detail message.
      *
      * @param cause the underlying <code>Exception</code> that caused this
      * exception to be raised
      */
-    public TemplateModelException(Exception cause) {
+    public EvaluationException(Exception cause) {
         this(null, cause);
     }
 
     /**
-     * Constructs a TemplateModelException with both a description of the error
+     * Constructs an EvaluationException with both a description of the error
      * that occurred and the underlying Exception that caused this exception
      * to be raised.
      *
@@ -46,7 +46,7 @@ public class TemplateModelException extends TemplateException {
      * @param cause the underlying <code>Exception</code> that caused this
      * exception to be raised
      */
-    public TemplateModelException(String description, Exception cause) {
+    public EvaluationException(String description, Exception cause) {
         super( description, cause, Environment.getCurrentEnvironment() );
     }
 }

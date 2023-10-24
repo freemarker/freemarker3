@@ -22,7 +22,7 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
         try {
             return new ConstructorFunction(asString(model), env);
         } catch (ClassCastException cce) {
-            throw new TemplateModelException("Expecting string on left of ?new built-in");
+            throw new EvaluationException("Expecting string on left of ?new built-in");
 
         } catch (NullPointerException npe) {
             throw new InvalidReferenceException("undefined string on left of ?new built-in", env);

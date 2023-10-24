@@ -4,7 +4,7 @@ import java.util.AbstractCollection;
 import java.util.Iterator;
 
 import freemarker.template.TemplateModelAdapter;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.utility.UndeclaredThrowableException;
 
 /**
@@ -37,7 +37,7 @@ class CollectionAdapter extends AbstractCollection implements TemplateModelAdapt
                     try {
                         return i.hasNext();
                     }
-                    catch(TemplateModelException e) {
+                    catch(EvaluationException e) {
                         throw new UndeclaredThrowableException(e);
                     }
                 }
@@ -46,7 +46,7 @@ class CollectionAdapter extends AbstractCollection implements TemplateModelAdapt
                     try {
                         return wrapper.unwrap(i.next());
                     }
-                    catch(TemplateModelException e) {
+                    catch(EvaluationException e) {
                         throw new UndeclaredThrowableException(e);
                     }
                 }
@@ -56,7 +56,7 @@ class CollectionAdapter extends AbstractCollection implements TemplateModelAdapt
                 }
             };
         }
-        catch(TemplateModelException e) {
+        catch(EvaluationException e) {
             throw new UndeclaredThrowableException(e);
         }
     }

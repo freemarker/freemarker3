@@ -4,7 +4,7 @@
 */
 package freemarker.core.nodes;
 
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateException;
 import freemarker.ext.beans.SimpleMapModel;
 import freemarker.core.helpers.NamedParameterMapScope;
@@ -118,7 +118,7 @@ public class ParameterList extends TemplateNode {
                             }
                         }
                     } else if (arg == null) {
-                        throw new TemplateModelException("Missing required parameter " + paramName);
+                        throw new EvaluationException("Missing required parameter " + paramName);
                     }
                 }
             }

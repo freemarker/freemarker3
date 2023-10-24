@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
 
 import static freemarker.ext.beans.ObjectWrapper.wrap;
@@ -37,7 +37,7 @@ public class ListModel extends Pojo implements TemplateSequenceModel {
     /**
      * Retrieves the i-th object from the collection, wrapped as a TemplateModel.
      * @return null if the index is out of bounds
-     * *@throws TemplateModelException if the underlying collection is not a List.
+     * *@throws EvaluationException if the underlying collection is not a List.
      */
     public Object get(int index) {
         try {

@@ -17,7 +17,7 @@ import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
 
@@ -44,7 +44,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             try {
                 result = Pattern.compile(patternString);
             } catch (PatternSyntaxException e) {
-                throw new TemplateModelException(e);
+                throw new EvaluationException(e);
             }
         }
         else {
@@ -63,7 +63,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             try {
                 result = Pattern.compile(patternString, flags);
             } catch (PatternSyntaxException e) {
-                throw new TemplateModelException(e);
+                throw new EvaluationException(e);
             }
         }
         synchronized (patterns) {
@@ -199,7 +199,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         public Object exec(List args) {
             int numArgs = args.size();
             if (numArgs < 2 || numArgs >3 ) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "?replace(...) needs 2 or 3 arguments.");
             }
             String first = (String) args.get(0);
@@ -231,7 +231,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         public Object exec(java.util.List args) {
             int argCount = args.size(), left=0, right=0;
             if (argCount != 1 && argCount != 2) {
-                throw new TemplateModelException("Expecting 1 or 2 numerical arguments for ?substring(...)");
+                throw new EvaluationException("Expecting 1 or 2 numerical arguments for ?substring(...)");
             }
             try {
                 Number tnm = asNumber(args.get(0));
@@ -241,7 +241,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     right = asNumber(tnm).intValue();
                 }
             } catch (ClassCastException cce) {
-                throw new TemplateModelException("Expecting numerical arguments for ?substring(...)");
+                throw new EvaluationException("Expecting numerical arguments for ?substring(...)");
             }
             if (argCount == 1) {
                 return string.substring(left);
@@ -261,7 +261,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         public Object exec(List args) {
             int numArgs = args.size();
             if (numArgs < 1 || numArgs >2 ) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "?replace(...) needs 1 or 2 arguments.");
             }
             String splitString = (String) args.get(0);
@@ -290,10 +290,10 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         public Object exec(List args) {
             int numArgs = args.size();
             if (numArgs == 0) {
-                throw new TemplateModelException("Expecting at least one argument");
+                throw new EvaluationException("Expecting at least one argument");
             }
             if (numArgs > 2) {
-                throw new TemplateModelException("Expecting at most two argumnets");
+                throw new EvaluationException("Expecting at most two argumnets");
             }
             String patternString = (String) args.get(0);
             String flagString = (numArgs >1) ? (String) args.get(1) : "";
@@ -348,7 +348,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                             return matcher.groupCount() + 1;
                         }
                         catch (Exception e) {
-                            throw new TemplateModelException(e);
+                            throw new EvaluationException(e);
                         }
                     }
                     public Object get(int i) {
@@ -356,7 +356,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                             return matcher.group(i);
                         }
                         catch (Exception e) {
-                            throw new TemplateModelException(e);
+                            throw new EvaluationException(e);
                         }
                     }
                 };
@@ -374,7 +374,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 }
 
                 public Object next() {
-                    if (!hasNext()) throw new TemplateModelException("No more matches");
+                    if (!hasNext()) throw new EvaluationException("No more matches");
                     Match result = new Match();
                     hasFindInfo = matcher.find();
                     return result;
@@ -409,17 +409,17 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
             int ln  = args.size();
             if (ln == 0) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "?left_pad(...) expects at least 1 argument.");
             }
             if (ln > 2) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "?left_pad(...) expects at most 2 arguments.");
             }
 
             obj = args.get(0);
             if (!isNumber(obj)) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "?left_pad(...) expects a number as "
                         + "its 1st argument.");
             }
@@ -428,7 +428,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             if (ln > 1) {
                 obj = args.get(1);
                 if (!isString(obj)) {
-                    throw new TemplateModelException(
+                    throw new EvaluationException(
                             "?left_pad(...) expects a string as "
                             + "its 2nd argument.");
                 }
@@ -437,11 +437,11 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     return StringUtil.leftPad(string, width, filling);
                 } catch (IllegalArgumentException e) {
                     if (filling.length() == 0) {
-                        throw new TemplateModelException(
+                        throw new EvaluationException(
                                 "The 2nd argument of ?left_pad(...) "
                                 + "can't be a 0 length string.");
                     } else {
-                        throw new TemplateModelException(
+                        throw new EvaluationException(
                                 "Error while executing the ?left_pad(...) "
                                 + "built-in.", e);
                     }
@@ -464,17 +464,17 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
             int ln  = args.size();
             if (ln == 0) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "?right_pad(...) expects at least 1 argument.");
             }
             if (ln > 2) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "?right_pad(...) expects at most 2 arguments.");
             }
 
             obj = args.get(0);
             if (!isNumber(obj)) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "?right_pad(...) expects a number as "
                         + "its 1st argument.");
             }
@@ -482,7 +482,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             if (ln > 1) {
                 obj = args.get(1);
                 if (!isString(obj)) {
-                    throw new TemplateModelException(
+                    throw new EvaluationException(
                             "?right_pad(...) expects a string as "
                             + "its 2nd argument.");
                 }
@@ -491,11 +491,11 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     return StringUtil.rightPad(string, width, filling);
                 } catch (IllegalArgumentException e) {
                     if (filling.length() == 0) {
-                        throw new TemplateModelException(
+                        throw new EvaluationException(
                                 "The 2nd argument of ?right_pad(...) "
                                 + "can't be a 0 length string.");
                     } else {
-                        throw new TemplateModelException(
+                        throw new EvaluationException(
                                 "Error while executing the ?right_pad(...) "
                                 + "built-in.", e);
                     }
@@ -521,7 +521,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             if (cachedResult == null) {
                 String cs = env.getEffectiveURLEscapingCharset();
                 if (cs == null) {
-                    throw new TemplateModelException(
+                    throw new EvaluationException(
                             "To do URL encoding, the framework that encloses "
                             + "FreeMarker must specify the output encoding "
                             + "or the URL encoding charset, so ask the "
@@ -535,7 +535,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 try {
                     cachedResult = StringUtil.URLEnc(target, cs);
                 } catch (UnsupportedEncodingException e) {
-                    throw new TemplateModelException(
+                    throw new EvaluationException(
                             "Failed to execute URL encoding.", e);
                 }
             }
@@ -544,13 +544,13 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
         public Object exec(List args) {
             if (args.size() != 1) {
-                throw new TemplateModelException("The \"url\" built-in "
+                throw new EvaluationException("The \"url\" built-in "
                         + "needs exactly 1 parameter, the charset.");
             }	
             try {
                 return StringUtil.URLEnc(target, (String) args.get(0));
             } catch (UnsupportedEncodingException e) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "Failed to execute URL encoding.", e);
             }
         }
@@ -573,13 +573,13 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             String sub;
 
             if (args.size() != 1) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         getName()+ "(...) expects exactly 1 argument.");
             }
 
             Object obj = args.get(0);
             if (!isString(obj)) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         getName() + "(...) expects a string argument");
             }
             sub = asString(obj);
@@ -608,22 +608,22 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
             int ln  = args.size();
             if (ln == 0) {
-                throw new TemplateModelException(getName() + "(...) expects at least one argument.");
+                throw new EvaluationException(getName() + "(...) expects at least one argument.");
             }
             if (ln > 2) {
-                throw new TemplateModelException(getName() + "(...) expects at most two arguments.");
+                throw new EvaluationException(getName() + "(...) expects at most two arguments.");
             }
 
             obj = args.get(0);       
             if (!isString(obj)) {
-                throw new TemplateModelException(getName() + "(...) expects a string as its first argument.");
+                throw new EvaluationException(getName() + "(...) expects a string as its first argument.");
             }
             sub = asString(obj);
 
             if (ln > 1) {
                 obj = args.get(1);
                 if (!isNumber(obj)) {
-                    throw new TemplateModelException(getName() + "(...) expects a number as "
+                    throw new EvaluationException(getName() + "(...) expects a number as "
                             + "its second argument.");
                 }
                 fidx = asNumber(obj).intValue();
@@ -653,13 +653,13 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         public Object exec(List args) {
             int ln  = args.size();
             if (ln != 1) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "?contains(...) expects one argument.");
             }
 
             Object firstArg = args.get(0);
             if (!isString(firstArg)) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "?contains(...) expects a string as "
                         + "its first argument.");
             }

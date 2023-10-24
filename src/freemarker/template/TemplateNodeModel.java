@@ -18,14 +18,14 @@ public interface TemplateNodeModel extends TemplateModel {
      * @return the parent of this node or null, in which case
      * this node is the root of the tree.
      */
-    TemplateNodeModel getParentNode() throws TemplateModelException;
+    TemplateNodeModel getParentNode() throws EvaluationException;
     
     /**
      * @return a sequence containing this node's children.
      * If the returned value is null or empty, this is essentially 
      * a leaf node.
      */
-    TemplateSequenceModel getChildNodes() throws TemplateModelException;
+    TemplateSequenceModel getChildNodes() throws EvaluationException;
 
     /**
      * @return a String that is used to determine the processing
@@ -35,7 +35,7 @@ public interface TemplateNodeModel extends TemplateModel {
      * returns "@text" for text nodes, "@pi" for processing instructions,
      * and so on.
      */    
-    String getNodeName() throws TemplateModelException;
+    String getNodeName() throws EvaluationException;
     
     /**
      * @return a String describing the <em>type</em> of node this is.
@@ -44,7 +44,7 @@ public interface TemplateNodeModel extends TemplateModel {
      * trees could return whatever is appropriate for that application. It
      * can be null, if you don't want to use node-types.
      */
-    String getNodeType() throws TemplateModelException;
+    String getNodeType() throws EvaluationException;
     
     
     /**
@@ -53,5 +53,5 @@ public interface TemplateNodeModel extends TemplateModel {
      * not XML-related, it will almost certainly be null. Even 
      * for XML nodes, this will often be null.
      */
-    String getNodeNamespace() throws TemplateModelException;
+    String getNodeNamespace() throws EvaluationException;
 }

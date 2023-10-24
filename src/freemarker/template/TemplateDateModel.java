@@ -48,7 +48,7 @@ public interface TemplateDateModel extends TemplateModel
      * Returns the date value. The return value must not be null.
      * @return the {@link Date} instance associated with this date model.
      */
-    public Date getAsDate() throws TemplateModelException;
+    public Date getAsDate() throws EvaluationException;
 
     /**
      * Returns the type of the date. It can be any of <tt>TIME</tt>, 

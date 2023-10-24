@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 
 /**
  * @author Attila Szegedi

@@ -406,7 +406,7 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
             super(left, right);
         }
         
-        public int size() throws TemplateModelException
+        public int size() throws EvaluationException
         {
             initKeys();
             return size;
@@ -437,7 +437,7 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
         }
 
         private static void addKeys(Set<String> set, List<String> keySeq, TemplateHashModelEx hash)
-        throws TemplateModelException
+        throws EvaluationException
         {
             Iterator<?> it = hash.keys().iterator();
             while (it.hasNext()) {
@@ -801,7 +801,7 @@ INJECT RangeExpression :
         public Object get(int i) {
             int index = descending ? (upper -i) : (lower + i);
             if ((norhs && index > upper) || index <lower) {
-                throw new TemplateModelException("out of bounds of range");
+                throw new EvaluationException("out of bounds of range");
             }
             return index;
         }
@@ -1561,7 +1561,7 @@ INJECT PositionalArgsList :
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             if (firstChildOfType(Expression.class) != null) {
-                throw new TemplateModelException("Cannot pass positional arguments to this TemplateDirectiveModel");
+                throw new EvaluationException("Cannot pass positional arguments to this TemplateDirectiveModel");
             }
         }
         else {

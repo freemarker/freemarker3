@@ -14,12 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import freemarker.log.Logger;
-import freemarker.template.AdapterTemplateModel;
-import freemarker.template.Constants;
-import freemarker.template.TemplateHashModelEx;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateScalarModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.*;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -84,13 +79,10 @@ public class Pojo implements TemplateScalarModel, TemplateHashModelEx, AdapterTe
      * then <tt>non-void-return-type get(java.lang.Object)</tt>, or 
      * alternatively (if the wrapped object is a resource bundle) 
      * <tt>Object getObject(java.lang.String)</tt>.
-     * @throws TemplateModelException if there was no property nor method nor
+     * @throws EvaluationException if there was no property nor method nor
      * a generic <tt>get</tt> method to invoke.
      */
-    public Object get(String key)
-        throws
-        TemplateModelException
-    {
+    public Object get(String key) {
         Class<?> clazz = object.getClass();
         Map<String,Object> classInfo = ObjectWrapper.instance().getClassKeyMap(clazz);
         Object retval = null;
@@ -129,13 +121,13 @@ public class Pojo implements TemplateScalarModel, TemplateHashModelEx, AdapterTe
             }
             return retval;
         }
-        catch(TemplateModelException e)
+        catch(EvaluationException e)
         {
             throw e;
         }
         catch(Exception e)
         {
-            throw new TemplateModelException("get(" + key + ") failed on " +
+            throw new EvaluationException("get(" + key + ") failed on " +
                 "instance of " + object.getClass().getName(), e);
         }
     }
@@ -158,7 +150,7 @@ public class Pojo implements TemplateScalarModel, TemplateHashModelEx, AdapterTe
         throws
         IllegalAccessException,
         InvocationTargetException,
-        TemplateModelException
+        EvaluationException
     {
         // See if this particular instance has a cached implementation
         // for the requested feature descriptor

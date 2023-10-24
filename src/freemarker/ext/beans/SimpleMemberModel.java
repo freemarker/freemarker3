@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 
 /**
  * This class is used for constructors and as a base for non-overloaded methods
@@ -28,7 +28,7 @@ class SimpleMemberModel<T extends Member>
         this.argTypes = argTypes;
     }
     
-    Object[] unwrapArguments(List arguments, ObjectWrapper wrapper) throws TemplateModelException
+    Object[] unwrapArguments(List arguments, ObjectWrapper wrapper) throws EvaluationException
     {
         if(arguments == null) {
             arguments = Collections.EMPTY_LIST;
@@ -37,13 +37,13 @@ class SimpleMemberModel<T extends Member>
         int typeLen = argTypes.length;
         if(varArg) {
             if(typeLen - 1 > arguments.size()) {
-                throw new TemplateModelException("Method " + member + 
+                throw new EvaluationException("Method " + member + 
                         " takes at least " + (typeLen - 1) + 
                         " arguments");
             }
         }
         else if(typeLen != arguments.size()) {
-            throw new TemplateModelException("Method " + member + 
+            throw new EvaluationException("Method " + member + 
                     " takes exactly " + typeLen + " arguments");
         }
          
@@ -58,7 +58,7 @@ class SimpleMemberModel<T extends Member>
     }
 
     static Object[] unwrapArguments(List<Object> arguments, Class[] argTypes, ObjectWrapper w) 
-    throws TemplateModelException
+    throws EvaluationException
     {
         if(arguments == null) {
             return null;
@@ -81,7 +81,7 @@ class SimpleMemberModel<T extends Member>
     {
         Object val = w.unwrap(model, type);
         if(val == ObjectWrapper.CAN_NOT_UNWRAP) {
-            throw new TemplateModelException("Can not unwrap argument " +
+            throw new EvaluationException("Can not unwrap argument " +
                     model + " to " + type.getName());
         }
         return val;

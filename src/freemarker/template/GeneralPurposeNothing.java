@@ -40,7 +40,7 @@ implements TemplateBooleanModel, TemplateScalarModel, TemplateSequenceModel, Tem
     }
 
     public TemplateModel get(int i) {
-        throw new TemplateModelException("Empty list");
+        throw new EvaluationException("Empty list");
     }
 
     public TemplateModel get(String key) {

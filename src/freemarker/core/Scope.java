@@ -64,9 +64,9 @@ public interface Scope extends TemplateHashModelEx {
      * enclosing scopes. The returned collection should be either immutable, or
      * it should be disconnected from the scope, so any modifications to the
      * collection don't affect the scope.
-     * @throws TemplateModelException
+     * @throws EvaluationException
      */
-    Collection<String> getDirectVariableNames() throws TemplateModelException;
+    Collection<String> getDirectVariableNames() throws EvaluationException;
     
     
 }

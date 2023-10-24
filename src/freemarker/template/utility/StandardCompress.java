@@ -88,14 +88,14 @@ public class StandardCompress implements TemplateDirectiveModel {
                 Number num = asNumber(args.get(BUFFER_SIZE_KEY));
                 bufferSize = num.intValue();
             } catch (ClassCastException e) {
-                throw new TemplateModelException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
+                throw new EvaluationException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
             }
             try {
                 singleLine = asBoolean(args.get(SINGLE_LINE_KEY));
 //                if (flag != null)
 //                    singleLine = flag.getAsBoolean();
             } catch (ClassCastException e) {
-                throw new TemplateModelException("Expecting boolean argument to " + SINGLE_LINE_KEY);
+                throw new EvaluationException("Expecting boolean argument to " + SINGLE_LINE_KEY);
             }
         }
         Writer compressWriter = new StandardCompressWriter(env.getOut(), bufferSize, singleLine);
@@ -108,7 +108,7 @@ public class StandardCompress implements TemplateDirectiveModel {
     }
 
     public Writer getWriter(final Writer out, Map<String, Object> args)
-    throws TemplateModelException
+    throws EvaluationException
     {
         int bufferSize = defaultBufferSize;
         boolean singleLine = false;
@@ -117,14 +117,14 @@ public class StandardCompress implements TemplateDirectiveModel {
                 Number num = (Number) args.get(BUFFER_SIZE_KEY);
                 if (num != null) bufferSize = num.intValue();
             } catch (ClassCastException e) {
-                throw new TemplateModelException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
+                throw new EvaluationException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
             }
             try {
                 TemplateBooleanModel flag = (TemplateBooleanModel)args.get(SINGLE_LINE_KEY);
                 if (flag != null)
                     singleLine = flag.getAsBoolean();
             } catch (ClassCastException e) {
-                throw new TemplateModelException("Expecting boolean argument to " + SINGLE_LINE_KEY);
+                throw new EvaluationException("Expecting boolean argument to " + SINGLE_LINE_KEY);
             }
         }
         return new StandardCompressWriter(out, bufferSize, singleLine);

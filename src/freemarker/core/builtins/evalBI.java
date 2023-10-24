@@ -7,7 +7,7 @@ import freemarker.core.parser.FMLexer;
 import freemarker.core.parser.FMParser;
 import freemarker.core.parser.ParseException;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -23,10 +23,10 @@ public class evalBI extends ExpressionEvaluatingBuiltIn {
         try {
             return eval(asString(model), env, caller);
         } catch (ClassCastException cce) {
-            throw new TemplateModelException("Expecting string on left of ?eval built-in");
+            throw new EvaluationException("Expecting string on left of ?eval built-in");
 
         } catch (NullPointerException npe) {
-            throw new TemplateModelException(npe);
+            throw new EvaluationException(npe);
         }
     }
 

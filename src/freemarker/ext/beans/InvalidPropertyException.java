@@ -1,6 +1,6 @@
 package freemarker.ext.beans;
 
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 
 /**
  * An exception thrown when there is an attempt to access
@@ -8,7 +8,7 @@ import freemarker.template.TemplateModelException;
  * @author Jonathan Revusky
  */
 
-public class InvalidPropertyException extends TemplateModelException {
+public class InvalidPropertyException extends EvaluationException {
 
     public InvalidPropertyException(String description) {
         super(description);

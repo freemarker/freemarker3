@@ -8,7 +8,7 @@ import java.util.Collections;
 
 import freemarker.annotations.Parameters;
 import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
 
 /**
@@ -46,7 +46,7 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
      */
     public Object exec(List arguments)
         throws
-        TemplateModelException
+        EvaluationException
     {
         try
         {
@@ -69,25 +69,25 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
             }
             if((getMember().getModifiers() & Modifier.STATIC) != 0)
             {
-                throw new TemplateModelException("Method " + getMember() + 
+                throw new EvaluationException("Method " + getMember() + 
                         " threw an exception", e);
             }
             else
             {
-                throw new TemplateModelException("Method " + getMember() + 
+                throw new EvaluationException("Method " + getMember() + 
                         " threw an exception when invoked on " + object, e);
             }
         }
     }
     
-    public Object get(int index) throws TemplateModelException
+    public Object get(int index) throws EvaluationException
     {
         return exec(Collections.singletonList(Integer.valueOf(index)));
     }
 
     public int size() 
     {
-        throw new TemplateModelException("?size is unsupported for: " + getClass().getName());
+        throw new EvaluationException("?size is unsupported for: " + getClass().getName());
     }
     
     public Parameters getParametersAnnotation() {

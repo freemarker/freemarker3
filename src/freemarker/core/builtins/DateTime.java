@@ -12,7 +12,7 @@ import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -98,7 +98,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
         public Object exec(List arguments)
         {
             if (arguments.size() != 1) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "string?" + caller.getName() + "(...) requires exactly 1 argument.");
             }
             return get((String) arguments.get(0));
@@ -117,7 +117,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
             catch(java.text.ParseException e) {
                 String mess = "Error: " + caller.getLocation()
                 + "\nExpecting a date here, found: " + text;
-                throw new TemplateModelException(mess);
+                throw new EvaluationException(mess);
             }
         }
     }

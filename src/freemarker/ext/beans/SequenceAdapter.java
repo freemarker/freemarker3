@@ -4,7 +4,7 @@ import java.util.AbstractList;
 
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelAdapter;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.UndeclaredThrowableException;
 
@@ -29,7 +29,7 @@ class SequenceAdapter extends AbstractList implements TemplateModelAdapter {
         try {
             return model.size();
         }
-        catch(TemplateModelException e) {
+        catch(EvaluationException e) {
             throw new UndeclaredThrowableException(e);
         }
     }
@@ -38,7 +38,7 @@ class SequenceAdapter extends AbstractList implements TemplateModelAdapter {
         try {
             return wrapper.unwrap(model.get(index));
         }
-        catch(TemplateModelException e) {
+        catch(EvaluationException e) {
             throw new UndeclaredThrowableException(e);
         }
     }

@@ -64,7 +64,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         public Object exec(List arguments)
                 {
             if (arguments.size() != 2) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "boolean?string(...) requires exactly "
                         + "2 arguments.");
             }
@@ -89,7 +89,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
 
         public String getAsString() { 
             if(dateType == TemplateDateModel.UNKNOWN) {
-                throw new TemplateModelException("Can't convert the date to string, because it is not known which parts of the date variable are in use. Use ?date, ?time or ?datetime built-in, or ?string.<format> or ?string(format) built-in with this date.");
+                throw new EvaluationException("Can't convert the date to string, because it is not known which parts of the date variable are in use. Use ?date, ?time or ?datetime built-in, or ?string.<format> or ?string(format) built-in with this date.");
             }
             return defaultFormat.format(date);
         }
@@ -102,7 +102,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         public Object exec(List arguments)
             {
             if (arguments.size() != 1) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "date?string(...) requires exactly 1 argument.");
             }
             return get((String) arguments.get(0));
@@ -143,7 +143,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         @Parameters("format")
         public Object exec(List arguments) {
             if (arguments.size() != 1) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "number?string(...) requires exactly 1 argument.");
             }
             return get(asString(arguments.get(0)));

@@ -7,7 +7,7 @@ import freemarker.core.Environment;
 import freemarker.core.ArithmeticEngine;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -37,7 +37,7 @@ public class ModelComparator
                         asNumber(model1), 
                         asNumber(model2)) == 0;
             } catch (TemplateException ex) {
-                throw new TemplateModelException(ex);
+                throw new EvaluationException(ex);
             }
         }
         
@@ -47,18 +47,18 @@ public class ModelComparator
             int ltype = ltdm.getDateType();
             int rtype = rtdm.getDateType();
             if(ltype != rtype) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "Can not compare dates of different type. Left date is of "
                         + TemplateDateModel.TYPE_NAMES.get(ltype)
                         + " type, right date is of "
                         + TemplateDateModel.TYPE_NAMES.get(rtype) + " type.");
             }
             if(ltype == TemplateDateModel.UNKNOWN) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "Left date is of UNKNOWN type, and can not be compared.");
             }
             if(rtype == TemplateDateModel.UNKNOWN) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "Right date is of UNKNOWN type, and can not be compared.");
             }
             Date first = ltdm.getAsDate();

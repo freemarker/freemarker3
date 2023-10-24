@@ -7,7 +7,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
 
 /**
@@ -46,7 +46,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
 
         public Boolean exec(List args) {
             if (args.size() != 1) {
-                throw new TemplateModelException("Expecting exactly one argument for ?seq_contains(...)");
+                throw new EvaluationException("Expecting exactly one argument for ?seq_contains(...)");
             }
             Object compareToThis = args.get(0);
             final ModelComparator modelComparator = new ModelComparator(Environment.getCurrentEnvironment());

@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 
 class MethodMap<T extends Member>
 {
@@ -42,12 +42,12 @@ class MethodMap<T extends Member>
                 memberAndArguments = varArgMethod.getMemberAndArguments(arguments, wrapper);
             }
             if(memberAndArguments == OverloadedMethod.NO_SUCH_METHOD) {
-                throw new TemplateModelException("No signature of method " + 
+                throw new EvaluationException("No signature of method " + 
                         name + " matches the arguments");
             }
         }
         if(memberAndArguments == OverloadedMethod.AMBIGUOUS_METHOD) {
-            throw new TemplateModelException("Multiple signatures of method " + 
+            throw new EvaluationException("Multiple signatures of method " + 
                     name + " match the arguments");
         }
         return (MemberAndArguments<T>)memberAndArguments;

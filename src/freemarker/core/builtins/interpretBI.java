@@ -10,7 +10,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.Template;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateDirectiveModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.TemplateException;
 
@@ -34,12 +34,12 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
                     id = asString(tm);
                 }
                 else {
-                    throw new TemplateModelException("Expecting string as second item of sequence of left of ?interpret built-in");
+                    throw new EvaluationException("Expecting string as second item of sequence of left of ?interpret built-in");
                 }
             }
             tm = tsm.get(0);
             if (!isString(tm)) {
-                throw new TemplateModelException("Expecting string as first item of sequence of left of ?interpret built-in");
+                throw new EvaluationException("Expecting string as first item of sequence of left of ?interpret built-in");
             }
             interpretString = asString(tm);
         }
@@ -81,7 +81,7 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
                 throw e;
             }
             catch(Exception e) {
-                throw new TemplateModelException(e);
+                throw new EvaluationException(e);
             }
         }
     }

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 
 /**
  * @author Attila Szegedi
@@ -87,5 +87,5 @@ abstract class OverloadedMethod<T extends Member> {
     abstract void afterSignatureAdded(int l);
     
     abstract Object getMemberAndArguments(List<TemplateModel> arguments, 
-            ObjectWrapper w) throws TemplateModelException;
+            ObjectWrapper w) throws EvaluationException;
 }

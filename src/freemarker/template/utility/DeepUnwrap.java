@@ -10,7 +10,7 @@ import freemarker.template.Constants;
 import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateHashModelEx;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -41,7 +41,7 @@ public class DeepUnwrap
      *       <code>java.util.HashMap</code> is constructed from the subvariables, and each
      *       subvariable is unwrapped with the rules described here (recursive unwrapping).
      *   <li>If the object is {@link Constants#JAVA_NULL}, then null is returned.
-     *   <li>Throw a <code>TemplateModelException</code>, because it doesn't know how to
+     *   <li>Throw an <code>EvaluationException</code>, because it doesn't know how to
      *       unwrap the object.
      * </ol>
      */
@@ -115,6 +115,6 @@ public class DeepUnwrap
         if (permissive) {
             return model;
         }
-        throw new TemplateModelException("Cannot deep-unwrap model of type " + model.getClass().getName());
+        throw new EvaluationException("Cannot deep-unwrap model of type " + model.getClass().getName());
     }
 }

@@ -417,7 +417,7 @@ public class ObjectWrapper
     public Object unwrap(Object object, Class<?> requiredType) 
     {
         if(object == null) {
-            throw new TemplateModelException("invalid reference");
+            throw new EvaluationException("invalid reference");
         }
         if (object == Constants.JAVA_NULL) {
             return null;
@@ -443,10 +443,10 @@ public class ObjectWrapper
      * @throws InvocationTargetException if the invoked method threw an exception
      * @throws IllegalAccessException if the method can't be invoked due to an
      * access restriction. 
-     * @throws TemplateModelException if the return value couldn't be wrapped
+     * @throws EvaluationException if the return value couldn't be wrapped
      * (this can happen if the wrapper has an outer identity or is subclassed,
      * and the outer identity or the subclass throws an exception. Plain
-     * BeansWrapper never throws TemplateModelException).
+     * BeansWrapper never throws EvaluationException).
      */
     Object invokeMethod(Object object, Method method, Object[] args)
     throws InvocationTargetException, IllegalAccessException
@@ -473,7 +473,7 @@ public class ObjectWrapper
             Object ctors = classInfo.get(CONSTRUCTORS);
             if(ctors == null)
             {
-                throw new TemplateModelException("Class " + clazz.getName() + 
+                throw new EvaluationException("Class " + clazz.getName() + 
                         " has no public constructors.");
             }
             Constructor<?> ctor = null;
@@ -499,13 +499,13 @@ public class ObjectWrapper
             }
             return ctor.newInstance(objargs);
         }
-        catch (TemplateModelException e)
+        catch (EvaluationException e)
         {
             throw e;
         }
         catch (Exception e)
         {
-            throw new TemplateModelException(
+            throw new EvaluationException(
                     "Could not create instance of class " + clazz.getName(), e);
         }
     }

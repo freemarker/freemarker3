@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
 
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import static freemarker.ext.beans.ObjectWrapper.asString;
 import static freemarker.ext.beans.ObjectWrapper.wrap;
 
@@ -53,7 +53,7 @@ public class ResourceBundleModel extends Pojo implements TemplateMethodModel
         }
         catch(MissingResourceException e)
         {
-            throw new TemplateModelException("No such key: " + key);
+            throw new EvaluationException("No such key: " + key);
         }
     }
 
@@ -88,11 +88,11 @@ public class ResourceBundleModel extends Pojo implements TemplateMethodModel
      */
     public Object exec(List arguments)
         throws
-        TemplateModelException
+        EvaluationException
     {
         // Must have at least one argument - the key
         if(arguments.size() < 1)
-            throw new TemplateModelException("No message key was specified");
+            throw new EvaluationException("No message key was specified");
         // Read it
         Iterator it = arguments.iterator();
         String key = asString(it.next());
@@ -114,11 +114,11 @@ public class ResourceBundleModel extends Pojo implements TemplateMethodModel
         }
         catch(MissingResourceException e)
         {
-            throw new TemplateModelException("No such key: " + key);
+            throw new EvaluationException("No such key: " + key);
         }
         catch(Exception e)
         {
-            throw new TemplateModelException(e.getMessage());
+            throw new EvaluationException(e.getMessage());
         }
     }
 

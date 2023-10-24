@@ -502,7 +502,7 @@ public final class Environment extends Configurable implements Scope {
         if (node == null) {
             node = this.getCurrentVisitorNode();
             if (node == null) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "The target node of recursion is missing or null.");
             }
         }
@@ -632,7 +632,7 @@ public final class Environment extends Configurable implements Scope {
     public String formatDate(Date date, int type) {
         DateFormat df = getDateFormatObject(type);
         if (df == null) {
-            throw new TemplateModelException(
+            throw new EvaluationException(
                     "Can't convert the date to string, because it is not known which parts of the date variable are in use. Use ?date, ?time or ?datetime built-in, or ?string.<format> or ?string(format) built-in with this date.");
         }
         return df.format(date);
@@ -734,7 +734,7 @@ public final class Environment extends Configurable implements Scope {
                 return dateTimeFormat;
             }
             default: {
-                throw new TemplateModelException("Unrecognized date type "
+                throw new EvaluationException("Unrecognized date type "
                         + dateType);
             }
         }
@@ -771,7 +771,7 @@ public final class Environment extends Configurable implements Scope {
                 if (style != -1) {
                     switch (dateType) {
                         case TemplateDateModel.UNKNOWN: {
-                            throw new TemplateModelException(
+                            throw new EvaluationException(
                                     "Can't convert the date to string using a "
                                             + "built-in format, because it is not known which "
                                             + "parts of the date variable are in use. Use "
@@ -803,7 +803,7 @@ public final class Environment extends Configurable implements Scope {
                     try {
                         format = new SimpleDateFormat(pattern, locale);
                     } catch (IllegalArgumentException e) {
-                        throw new TemplateModelException("Can't parse "
+                        throw new EvaluationException("Can't parse "
                                 + pattern + " to a date format.", e);
                     }
                 }
@@ -1051,7 +1051,7 @@ public final class Environment extends Configurable implements Scope {
         try {
             return globalVariables.containsKey(name)
                     || rootDataModel.get(name) != null;
-        } catch (TemplateModelException tme) {
+        } catch (EvaluationException tme) {
             return false;
         }
     }
@@ -1074,13 +1074,13 @@ public final class Environment extends Configurable implements Scope {
             return globalVariables.size() + root.size()
                     + getEnclosingScope().size();
         }
-        throw new TemplateModelException(
+        throw new EvaluationException(
                 "The size() method is not applicable because the root data model does not expose a size() method.");
     }
 
     public Iterable keys() {
         if (!(rootDataModel instanceof TemplateHashModelEx)) {
-            throw new TemplateModelException(
+            throw new EvaluationException(
                     "The keys() method is not applicable because the root data model does not expose a keys() method.");
         }
         TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
@@ -1102,7 +1102,7 @@ public final class Environment extends Configurable implements Scope {
 
     public Iterable values() {
         if (!(rootDataModel instanceof TemplateHashModelEx)) {
-            throw new TemplateModelException(
+            throw new EvaluationException(
                     "The keys() method is not applicable because the root data model does not expose a keys() method.");
         }
         TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;

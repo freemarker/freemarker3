@@ -2,7 +2,7 @@ package freemarker.ext.beans;
 
 import java.lang.reflect.Array;
 
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
 
 import static freemarker.ext.beans.ObjectWrapper.wrap;
@@ -45,7 +45,7 @@ public class ArrayModel extends Pojo implements Iterable, TemplateSequenceModel
 
     public Object get(int index)
     throws
-        TemplateModelException
+        EvaluationException
     {
         try
         {
@@ -54,7 +54,6 @@ public class ArrayModel extends Pojo implements Iterable, TemplateSequenceModel
         catch(IndexOutOfBoundsException e)
         {
         	return null; // Allow existence built-ins, see coment in CollectionModel (JR)
-//            throw new TemplateModelException("Index out of bounds: " + index);
         }
     }
 
@@ -72,14 +71,14 @@ public class ArrayModel extends Pojo implements Iterable, TemplateSequenceModel
 
         public Object get(int index)
         throws
-            TemplateModelException
+            EvaluationException
         {
             return ArrayModel.this.get(index);
         }
 
         public Object next()
         throws
-            TemplateModelException
+            EvaluationException
         {
             return position < length ? get(position++) : null;
         }

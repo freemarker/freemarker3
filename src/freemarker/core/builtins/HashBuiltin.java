@@ -27,7 +27,7 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
     }
     
     public abstract Iterable apply(TemplateHashModelEx hash) 
-    throws TemplateModelException;
+    throws EvaluationException;
     
     public static class Keys extends HashBuiltin {
         @Override

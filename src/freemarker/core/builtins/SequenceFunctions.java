@@ -15,7 +15,7 @@ import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModelException;
+import freemarker.template.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
 
@@ -134,12 +134,12 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         public Object exec(List args) {
             int numArgs = args.size();
             if (numArgs != 1 && numArgs != 2) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "?chunk(...) expects 1 or 2 arguments.");
             }
             Object chunkSize = args.get(0);
             if (!isNumber(chunkSize)) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "?chunk(...) expects a number as "
                         + "its 1st argument.");
             }
@@ -162,7 +162,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 int chunkSize, Object fillerItem)
         {
             if (chunkSize < 1) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                 "The 1st argument to ?chunk(...) must be at least 1.");
             }
             this.wrappedTsm = wrappedTsm;
@@ -227,7 +227,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             } else {
                 for (i = 0; i < keyCnt; i++) {
                     if (!(item instanceof TemplateHashModel)) {
-                        throw new TemplateModelException(
+                        throw new EvaluationException(
                                 "sorting failed: "
                                 + (i == 0 ? "You can't use ?sort_by when the "
                                         + "sequence items are not hashes."
@@ -243,7 +243,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
                     item = ((TemplateHashModel) item).get(keys[i]);
                     if (item == null) {
-                        throw new TemplateModelException(
+                        throw new EvaluationException(
                                 "sorting failed: "
                                 + "The "
                                 + StringUtil.jQuote(keys[i])
@@ -267,7 +267,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         } else if (item instanceof TemplateDateModel) {
             keyType = KEY_TYPE_DATE;
         } else {
-            throw new TemplateModelException(
+            throw new EvaluationException(
                     "sorting failed: "
                     + "Values used for sorting must be numbers, strings, or date/time values.");
         }
@@ -279,7 +279,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     try {
                         result.add(new KVP(asString(item), item));
                     } catch (ClassCastException e) {
-                            throw new TemplateModelException(
+                            throw new EvaluationException(
                                     "Failure of ?sort built-in: "
                                     + "All values in the sequence must be "
                                     + "strings, because the first value "
@@ -294,7 +294,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     try {
                         result.add(new KVP(asNumber(item), item));
                     } catch (ClassCastException e) {
-                        throw new TemplateModelException(
+                        throw new EvaluationException(
                                 "sorting failed: " 
                                 + "All values in the sequence must be "
                                 + "numbers, because the first value "
@@ -311,7 +311,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                                 item));
                     } catch (ClassCastException e) {
                         if (!isNumber(item)) {
-                            throw new TemplateModelException(
+                            throw new EvaluationException(
                                     "sorting failed: " 
                                     + "All values in the sequence must be "
                                     + "date/time values, because the first "
@@ -335,7 +335,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                         key = ((TemplateHashModel) key).get(keys[j]);
                     } catch (ClassCastException e) {
                         if (!(key instanceof TemplateHashModel)) {
-                            throw new TemplateModelException(
+                            throw new EvaluationException(
                                     "sorting failed: " 
                                     + "Problem with the sequence item at index "
                                     + i
@@ -348,7 +348,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                         }
                     }
                     if (key == null) {
-                        throw new TemplateModelException(
+                        throw new EvaluationException(
                                 "sorting failed "  
                                 + "Problem with the sequence item at index "
                                 + i + ": " + "The "
@@ -360,7 +360,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     try {
                         result.add(new KVP(asString(key), item));
                     } catch (ClassCastException e) {
-                            throw new TemplateModelException(
+                            throw new EvaluationException(
                                     "sorting failed: " 
                                     + "All key values in the sequence must be "
                                     + "date/time values, because the first key "
@@ -372,7 +372,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     try {
                         result.add(new KVP(asNumber(key), item));
                     } catch (ClassCastException e) {
-                            throw new TemplateModelException(
+                            throw new EvaluationException(
                                     "sorting failed: "
                                     + "All key values in the sequence must be "
                                     + "numbers, because the first key "
@@ -386,7 +386,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                                 item));
                     } catch (ClassCastException e) {
                         if (!(key instanceof TemplateDateModel)) {
-                            throw new TemplateModelException(
+                            throw new EvaluationException(
                                     "sorting failed: "
                                     + "All key values in the sequence must be "
                                     + "dates, because the first key "
@@ -475,7 +475,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         public Object exec(List params)
         {
             if (params.size() == 0) {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "?sort_by(key) needs exactly 1 argument.");
             }
             String[] subvars;
@@ -492,7 +492,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                         subvars[i] = asString(item);
                     } catch (ClassCastException e) {
                         if (!isString(item)) {
-                            throw new TemplateModelException(
+                            throw new EvaluationException(
                                     "The argument to ?sort_by(key), when it "
                                     + "is a sequence, must be a sequence of "
                                     + "strings, but the item at index " + i
@@ -501,7 +501,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 }
             } else {
-                throw new TemplateModelException(
+                throw new EvaluationException(
                         "The argument to ?sort_by(key) must be a string "
                         + "(the name of the subvariable), or a sequence of "
                         + "strings (the \"path\" to the subvariable).");
@@ -524,14 +524,14 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             final int argc = args.size();
             final int startIndex;
             if (argc != 1 && argc != 2) {
-                throw new TemplateModelException("Expecting one or two arguments for ?seq_" + (reverse ? "last_" : "") + "index_of");
+                throw new EvaluationException("Expecting one or two arguments for ?seq_" + (reverse ? "last_" : "") + "index_of");
             }
             Object compareToThis = args.get(0);
             if (argc == 2) {
                 try {
                     startIndex = asNumber(args.get(1)).intValue();
                 } catch (ClassCastException cce) {
-                    throw new TemplateModelException("Expecting number as second argument to ?seq_" + (reverse ? "last_" : "") + "index_of");
+                    throw new EvaluationException("Expecting number as second argument to ?seq_" + (reverse ? "last_" : "") + "index_of");
                 }
             }
             else {
