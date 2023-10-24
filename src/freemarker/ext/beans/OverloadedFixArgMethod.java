@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
 
 /**
  * @author Attila Szegedi

@@ -6,7 +6,6 @@ import java.beans.*;
 import java.io.InputStream;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import freemarker.log.Logger;
 import freemarker.template.*;
 
@@ -14,17 +13,7 @@ public class ObjectWrapper
 {
     public static final Object CAN_NOT_UNWRAP = new Object();
     private static final Class<java.math.BigInteger> BIGINTEGER_CLASS = java.math.BigInteger.class;
-    private static final Class<Boolean> BOOLEAN_CLASS = Boolean.class;
-    private static final Class<Character> CHARACTER_CLASS = Character.class;
-    private static final Class<Collection> COLLECTION_CLASS = Collection.class;
-    private static final Class<Date> DATE_CLASS = Date.class;
-    private static final Class<HashAdapter> HASHADAPTER_CLASS = HashAdapter.class;
-    private static final Class<Iterable> ITERABLE_CLASS = Iterable.class;
-    private static final Class<Number> NUMBER_CLASS = Number.class;
     private static final Class<Object> OBJECT_CLASS = Object.class;
-    private static final Class<SequenceAdapter> SEQUENCEADAPTER_CLASS = SequenceAdapter.class;
-    private static final Class<Set> SET_CLASS = Set.class;
-    private static final Class<SetAdapter> SETADAPTER_CLASS = SetAdapter.class;
     private static final Class<String> STRING_CLASS = String.class;
     
     // When this property is true, some things are stricter. This is mostly to
@@ -425,13 +414,7 @@ public class ObjectWrapper
         return unwrap(object, OBJECT_CLASS);
     }
     
-    public Object unwrap(Object object, Class requiredType) 
-    {
-        return unwrap(object, requiredType, null);
-    }
-    
-    private Object unwrap(Object object, Class<?> requiredType, 
-            Map<Object, Object> recursionStops) 
+    public Object unwrap(Object object, Class<?> requiredType) 
     {
         if(object == null) {
             throw new TemplateModelException("invalid reference");
@@ -439,246 +422,15 @@ public class ObjectWrapper
         if (object == Constants.JAVA_NULL) {
             return null;
         }
+        if (object instanceof Pojo) {
+            return ((Pojo)object).getWrappedObject();
+        }
         if (!(object instanceof TemplateModel)) {
             return object;
         }
-        boolean isBoolean = Boolean.TYPE == requiredType;
-        boolean isChar = Character.TYPE == requiredType;
-        
-        // This is for transparent interop with other wrappers (and ourselves)
-        // Passing the hint allows i.e. a Jython-aware method that declares a
-        // PyObject as its argument to receive a PyObject from a JythonModel
-        // passed as an argument to TemplateMethodModel etc.
-        if(object instanceof AdapterTemplateModel) {
-            Object adapted = ((AdapterTemplateModel)object).getAdaptedObject(
-                    requiredType);
-            if(requiredType.isInstance(adapted)) {
-                return adapted;
-            }
-            // Attempt numeric conversion 
-            if(adapted instanceof Number && ((requiredType.isPrimitive() && !isChar && 
-                    !isBoolean) || NUMBER_CLASS.isAssignableFrom(requiredType))) {
-                Number number = convertUnwrappedNumber(requiredType,
-                        (Number)adapted);
-                if(number != null) {
-                    return number;
-                }
-            }
-        }
-        
-        // Translation of generic template models to POJOs. First give priority
-        // to various model interfaces based on the hint class. This helps us
-        // select the appropriate interface in multi-interface models when we
-        // know what is expected as the return type.
-
-        if(STRING_CLASS == requiredType) {
-            if(object instanceof TemplateScalarModel) {
-                return ((TemplateScalarModel)object).getAsString();
-            }
-            // String is final, so no other conversion will work
-            return CAN_NOT_UNWRAP;
-        }
-
-        // Primitive numeric types & Number.class and its subclasses
-        if((requiredType.isPrimitive() && !isChar && !isBoolean) 
-                || NUMBER_CLASS.isAssignableFrom(requiredType)) {
-            if(object instanceof TemplateNumberModel) {
-                Number number = convertUnwrappedNumber(requiredType, 
-                        ((TemplateNumberModel)object).getAsNumber());
-                if(number != null) {
-                    return number;
-                }
-            }
-        }
-        
-        if(isBoolean || BOOLEAN_CLASS == requiredType) {
-            if(object instanceof TemplateBooleanModel) {
-                return ((TemplateBooleanModel)object).getAsBoolean() 
-                ? Boolean.TRUE : Boolean.FALSE;
-            }
-            // Boolean is final, no other conversion will work
-            return CAN_NOT_UNWRAP;
-        }
-
-        if(requiredType == Map.class) {
-            assert false : "FUCK";
-            if(object instanceof TemplateHashModel) {
-                return new HashAdapter((TemplateHashModel)object, this);
-            }
-        }
-        
-        if(requiredType == List.class) {
-            assert false : "SUCK";
-            if(object instanceof TemplateSequenceModel) {
-                return new SequenceAdapter((TemplateSequenceModel)object, this);
-            }
-        }
-        
-        if(SET_CLASS == requiredType) {
-            if(object instanceof Iterable) {
-                return new SetAdapter((Iterable)object, this);
-            }
-        }
-        
-        if(COLLECTION_CLASS == requiredType 
-                || ITERABLE_CLASS == requiredType) {
-            if(object instanceof Iterable) {
-                return new CollectionAdapter((Iterable)object, 
-                        this);
-            }
-            if(object instanceof TemplateSequenceModel) {
-                return new SequenceAdapter((TemplateSequenceModel)object, this);
-            }
-        }
-        
-        // TemplateSequenceModels can be converted to arrays
-        if(requiredType.isArray()) {
-            if(object instanceof TemplateSequenceModel) {
-                if(recursionStops != null) {
-                    Object retval = recursionStops.get(object);
-                    if(retval != null) {
-                        return retval;
-                    }
-                } else {
-                    recursionStops = 
-                        new IdentityHashMap<Object, Object>();
-                }
-                TemplateSequenceModel seq = (TemplateSequenceModel)object;
-                Class componentType = requiredType.getComponentType();
-                Object array = Array.newInstance(componentType, seq.size());
-                recursionStops.put(object, array);
-                try {
-                    int size = seq.size();
-                    for (int i = 0; i < size; i++) {
-                        Object val = unwrap(seq.get(i), componentType, 
-                                recursionStops);
-                        if(val == CAN_NOT_UNWRAP) {
-                            return CAN_NOT_UNWRAP;
-                        }
-                        Array.set(array, i, val);
-                    }
-                } finally {
-                    recursionStops.remove(object);
-                }
-                return array;
-            }
-            // array classes are final, no other conversion will work
-            return CAN_NOT_UNWRAP;
-        }
-        
-        // Allow one-char strings to be coerced to characters
-        if(isChar || requiredType == CHARACTER_CLASS) {
-            if(object instanceof TemplateScalarModel) {
-                String s = ((TemplateScalarModel)object).getAsString();
-                if(s.length() == 1) {
-                    return Character.valueOf(s.charAt(0));
-                }
-            }
-            // Character is final, no other conversion will work
-            return CAN_NOT_UNWRAP;
-        }
-
-        if(DATE_CLASS.isAssignableFrom(requiredType)) {
-            if(object instanceof TemplateDateModel) {
-                Date date = ((TemplateDateModel)object).getAsDate();
-                if(requiredType.isInstance(date)) {
-                    return date;
-                }
-            }
-        }
-        
-        // Translation of generic template models to POJOs. Since hint was of
-        // no help initially, now use an admittedly arbitrary order of 
-        // interfaces. Note we still test for isInstance and isAssignableFrom
-        // to guarantee we return a compatible value. 
-        if(object instanceof TemplateNumberModel) {
-            Number number = ((TemplateNumberModel)object).getAsNumber();
-            if(requiredType.isInstance(number)) {
-                return number;
-            }
-        }
-        if(object instanceof TemplateDateModel) {
-            Date date = ((TemplateDateModel)object).getAsDate();
-            if(requiredType.isInstance(date)) {
-                return date;
-            }
-        }
-        if(object instanceof TemplateScalarModel && 
-                requiredType.isAssignableFrom(STRING_CLASS)) {
-            return ((TemplateScalarModel)object).getAsString();
-        }
-        if(object instanceof TemplateBooleanModel && 
-                requiredType.isAssignableFrom(BOOLEAN_CLASS)) {
-            return ((TemplateBooleanModel)object).getAsBoolean() 
-            ? Boolean.TRUE : Boolean.FALSE;
-        }
-        if(object instanceof TemplateHashModel && requiredType.isAssignableFrom(
-                HASHADAPTER_CLASS)) {
-            return new HashAdapter((TemplateHashModel)object, this);
-        }
-        if(object instanceof TemplateSequenceModel 
-                && requiredType.isAssignableFrom(SEQUENCEADAPTER_CLASS)) {
-            return new SequenceAdapter((TemplateSequenceModel)object, this);
-        }
-        if(object instanceof Iterable && 
-                requiredType.isAssignableFrom(SETADAPTER_CLASS)) {
-            return new SetAdapter((Iterable)object, this);
-        }
-
-        // Last ditch effort - is maybe the model itself instance of the 
-        // required type?
-        if(requiredType.isInstance(object)) {
-            return object;
-        }
-        
-        return CAN_NOT_UNWRAP;
+        throw new UnsupportedOperationException("Don't know how to unwrap this object " + object.getClass());
     }
     
-    private static Number convertUnwrappedNumber(Class<?> hint, Number number)
-    {
-        if(hint == Integer.TYPE || hint == Integer.class) {
-            return number.intValue();
-        }
-        if(hint == Long.TYPE || hint == Long.class) {
-            return number.longValue();
-        }
-        if(hint == Float.TYPE || hint == Float.class) {
-            return number.floatValue();
-        }
-        if(hint == Double.TYPE || hint == Double.class) {
-            return number.doubleValue();
-        }
-        if(hint == Byte.TYPE || hint == Byte.class) {
-            return number.byteValue();
-        }
-        if(hint == Short.TYPE || hint == Short.class) {
-            return number.shortValue();
-        }
-        if(hint == BigInteger.class) {
-            return number instanceof BigInteger ? number : 
-                new BigInteger(number.toString());
-        }
-        if(hint == BigDecimal.class) {
-            if(number instanceof BigDecimal) {
-                return number;
-            }
-            if(number instanceof BigInteger) {
-                return new BigDecimal((BigInteger)number);
-            }
-            if(number instanceof Long) {
-                // Because we can't represent long accurately as a 
-                // double
-                return new BigDecimal(number.toString());
-            }
-            return new BigDecimal(number.doubleValue());
-        }
-        // Handle nonstandard Number subclasses as well as directly 
-        // java.lang.Number too
-        if(hint.isInstance(number)) {
-            return number;
-        }
-        return null;
-    }
     
     /**
      * Invokes the specified method, wrapping the return value. The specialty
@@ -1079,7 +831,7 @@ public class ObjectWrapper
             String s = asString(model);
             return (s == null || s.length() == 0);
         } else if (model instanceof Iterable) {
-            return !((Iterable) model).iterator().hasNext();
+            return !((Iterable<?>) model).iterator().hasNext();
         } else if (model instanceof TemplateHashModel) {
             return ((TemplateHashModel) model).isEmpty();
         } else if (isNumber(model) || (model instanceof TemplateDateModel) ||
