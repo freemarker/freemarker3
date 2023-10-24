@@ -6,9 +6,7 @@ import freemarker.core.parser.Node;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
 import freemarker.core.parser.Token;
-import freemarker.template.utility.DeepUnwrap;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
 import java.util.*;
 
 /**
@@ -48,15 +46,6 @@ public class PostParseVisitor extends Node.Visitor {
 				if (key.equals("strip_whitespace")) {
 					template.setStripWhitespace(header.getBooleanParameter("strip_whitespace"));
 				} 
-				else if (key.equals("attributes")) {
-					TemplateHashModelEx attributeMap = (TemplateHashModelEx) header.getParameter("attributes");
-	                Iterable keys = attributeMap.keys();
-	                for (Iterator<Object> it = keys.iterator(); it.hasNext();) {
-	                    String attName = asString(it.next());
-	                    Object attValue = DeepUnwrap.unwrap(attributeMap.get(attName));
-	                    template.setCustomAttribute(attName, attValue);
-	                }
-				}
 				else if (key.equals("strict_vars")) {
 					boolean strictVariableDeclaration = header.getBooleanParameter("strict_vars");
 	         	   	template.setStrictVariableDeclaration(strictVariableDeclaration);
