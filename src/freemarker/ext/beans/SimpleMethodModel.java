@@ -9,7 +9,7 @@ import java.util.Collections;
 import freemarker.annotations.Parameters;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.EvaluationException;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.WrappedSequence;
 
 /**
  * A class that will wrap a reflected method call into a
@@ -22,7 +22,7 @@ import freemarker.template.TemplateSequenceModel;
 public final class SimpleMethodModel extends SimpleMemberModel<Method>
     implements
     TemplateMethodModel,
-    TemplateSequenceModel
+    WrappedSequence
 {
     private final Object object;
     private final ObjectWrapper wrapper;

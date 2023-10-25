@@ -31,7 +31,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  * @version $Id: BeanModel.java,v 1.51 2006/03/15 05:01:12 revusky Exp $
  */
 
-public class Pojo implements TemplateScalarModel, TemplateHashModelEx
+public class Pojo implements WrappedString, TemplateHashModelEx
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
@@ -52,7 +52,7 @@ public class Pojo implements TemplateScalarModel, TemplateHashModelEx
      */
     public Pojo(Object object)
     {
-        assert !(object instanceof TemplateModel);
+        assert !(object instanceof WrappedVariable);
         this.object = object;
     }
 
@@ -227,7 +227,7 @@ public class Pojo implements TemplateScalarModel, TemplateHashModelEx
         return ObjectWrapper.wrap(obj);
     }*/
     
-    protected Object unwrap(TemplateModel object)
+    protected Object unwrap(WrappedVariable object)
     {
         return ObjectWrapper.instance().unwrap(object);
     }

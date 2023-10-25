@@ -9,7 +9,7 @@ import java.util.List;
 
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.EvaluationException;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.WrappedSequence;
 
 /**
  * A class that will wrap a reflected method call into a
@@ -19,7 +19,7 @@ import freemarker.template.TemplateSequenceModel;
  * @author Attila Szegedi, szegedia at users dot sourceforge dot net
  * @version $Id: OverloadedMethodModel.java,v 1.25 2005/06/11 12:12:04 szegedia Exp $
  */
-class OverloadedMethodModel implements TemplateMethodModel, TemplateSequenceModel
+class OverloadedMethodModel implements TemplateMethodModel, WrappedSequence
 {
     private final Object object;
     private final MethodMap<Method> methodMap;

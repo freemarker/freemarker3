@@ -7,14 +7,14 @@ package freemarker.template;
  *
  * @version $Id: TemplateHashModel.java,v 1.13 2005/06/08 02:13:34 revusky Exp $
  */
-public interface TemplateHashModel extends TemplateModel {
+public interface TemplateHashModel extends WrappedVariable {
     
     /**
-     * Gets a <tt>TemplateModel</tt> from the hash.
+     * Gets a <tt>WrappedVariable</tt> from the hash.
      *
-     * @param key the name by which the <tt>TemplateModel</tt>
+     * @param key the name by which the <tt>WrappedVariable</tt>
      * is identified in the template.
-     * @return the <tt>TemplateModel</tt> referred to by the key,
+     * @return the <tt>WrappedVariable</tt> referred to by the key,
      * or null if not found.
      */
     Object get(String key);

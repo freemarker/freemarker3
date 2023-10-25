@@ -319,7 +319,7 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
             /*List merged = new ArrayList(asList(leftModel));
             merged.addAll(asList(rightModel));
             return merged;*/
-            return new ConcatenatedSequence((TemplateSequenceModel)left, (TemplateSequenceModel)right);            
+            return new ConcatenatedSequence((WrappedSequence)left, (WrappedSequence)right);            
         }
         if (isDisplayableAsString(left) && isDisplayableAsString(right)) {
             return asString(left) + asString(right);
@@ -352,12 +352,12 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
         return result;
     }
 
-    private static final class ConcatenatedSequence implements TemplateSequenceModel
+    private static final class ConcatenatedSequence implements WrappedSequence
     {
-        private final TemplateSequenceModel left;
-        private final TemplateSequenceModel right;
+        private final WrappedSequence left;
+        private final WrappedSequence right;
 
-        ConcatenatedSequence(TemplateSequenceModel left, TemplateSequenceModel right)
+        ConcatenatedSequence(WrappedSequence left, WrappedSequence right)
         {
             this.left = left;
             this.right = right;
@@ -780,7 +780,7 @@ INJECT RangeExpression :
         return result;
     }
 
-    private class NumericalRange implements TemplateSequenceModel {
+    private class NumericalRange implements WrappedSequence {
         private int lower, upper;
         private boolean descending, norhs; // if norhs is true, then we have a half-range, like n..
         
@@ -929,7 +929,7 @@ INJECT ListLiteral :
 
     // A hacky routine used by VisitNode and RecurseNode
     
-    public TemplateSequenceModel evaluateStringsToNamespaces(Environment env) {
+    public WrappedSequence evaluateStringsToNamespaces(Environment env) {
         ListModel result = new ListModel();
         for (Expression exp : getElements()) {
             if (exp instanceof StringLiteral) {
@@ -1330,8 +1330,8 @@ INJECT DynamicKeyName :
                                                int index, 
                                                Environment env)
     {
-        if (targetModel instanceof TemplateSequenceModel) {
-            TemplateSequenceModel tsm = (TemplateSequenceModel) targetModel;
+        if (targetModel instanceof WrappedSequence) {
+            WrappedSequence tsm = (WrappedSequence) targetModel;
             int size = Integer.MAX_VALUE;
             try {
                 size = tsm.size();
@@ -1376,8 +1376,8 @@ INJECT DynamicKeyName :
         if (hasRhs) {
             end = EvaluationUtil.getNumber(range.getRight(), env).intValue();
         }
-        if (targetModel instanceof TemplateSequenceModel) {
-            TemplateSequenceModel sequence = (TemplateSequenceModel) targetModel;
+        if (targetModel instanceof WrappedSequence) {
+            WrappedSequence sequence = (WrappedSequence) targetModel;
             if (!hasRhs) end = sequence.size() -1;
             if (start < 0) {
                 String msg = range.getRight().getLocation() + "\nNegative starting index for range, is " + range;

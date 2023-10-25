@@ -12,14 +12,14 @@ import java.util.Collections;
  */
 
 final class GeneralPurposeNothing
-implements TemplateBooleanModel, TemplateScalarModel, TemplateSequenceModel, TemplateHashModelEx, TemplateMethodModel {
+implements WrappedBoolean, WrappedString, WrappedSequence, TemplateHashModelEx, TemplateMethodModel {
 
-    private static final TemplateModel instance = new GeneralPurposeNothing();
+    private static final WrappedVariable instance = new GeneralPurposeNothing();
       
     private GeneralPurposeNothing() {
     }
 
-    static TemplateModel getInstance()  {
+    static WrappedVariable getInstance()  {
         return instance;
     }
 
@@ -39,11 +39,11 @@ implements TemplateBooleanModel, TemplateScalarModel, TemplateSequenceModel, Tem
         return 0;
     }
 
-    public TemplateModel get(int i) {
+    public WrappedVariable get(int i) {
         throw new EvaluationException("Empty list");
     }
 
-    public TemplateModel get(String key) {
+    public WrappedVariable get(String key) {
         return null;
     }
 

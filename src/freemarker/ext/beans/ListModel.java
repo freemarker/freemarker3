@@ -5,18 +5,18 @@ import java.util.Collection;
 import java.util.List;
 
 import freemarker.template.EvaluationException;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.WrappedSequence;
 
 import static freemarker.ext.beans.ObjectWrapper.wrap;
 
 /**
  * <p>A special case of {@link Pojo} that can wrap Java lists
  * and that implements the {@link Iterable} and 
- * {@link TemplateSequenceModel} in order to be usable in a <tt>&lt;foreach></tt> block.</p>
+ * {@link WrappedSequence} in order to be usable in a <tt>&lt;foreach></tt> block.</p>
  * @author Attila Szegedi
  * @version $Id: CollectionModel.java,v 1.22 2003/06/03 13:21:32 szegedia Exp $
  */
-public class ListModel extends Pojo implements TemplateSequenceModel {
+public class ListModel extends Pojo implements WrappedSequence {
     /**
      * Creates a new model that wraps the specified collection object.
      * @param list the list object to wrap into a model.
@@ -35,7 +35,7 @@ public class ListModel extends Pojo implements TemplateSequenceModel {
     }
 
     /**
-     * Retrieves the i-th object from the collection, wrapped as a TemplateModel.
+     * Retrieves the i-th object from the collection, wrapped as a WrappedVariable.
      * @return null if the index is out of bounds
      * *@throws EvaluationException if the underlying collection is not a List.
      */

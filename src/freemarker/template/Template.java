@@ -238,7 +238,7 @@ public class Template extends TemplateCore {
      * @throws TemplateException if an exception occurs during template processing
      * @throws IOException if an I/O exception occurs during writing to the writer.
      */
-    public void process(Object rootMap, Writer out, TemplateNodeModel rootNode)
+    public void process(Object rootMap, Writer out, WrappedNode rootNode)
     throws TemplateException, IOException
     {
         Environment env = createProcessingEnvironment(rootMap, out);
@@ -275,7 +275,7 @@ public class Template extends TemplateCore {
     * Environment env = myTemplate.createProcessingEnvironment(root, out);
     * env.include("include/common.ftl", null, true);  // before processing
     * env.process();
-    * TemplateModel x = env.getVariable("x");  // after processing
+    * WrappedVariable x = env.getVariable("x");  // after processing
     * </pre>
     *
     * @param rootMap the root node of the data model.  If null, an

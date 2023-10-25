@@ -260,7 +260,7 @@ INJECT VisitNode :
         Expression namespaces = getNamespaces();
         Object node = targetNode.evaluate(env);
         targetNode.assertNonNull(node, env);
-        if (!(node instanceof TemplateNodeModel)) {
+        if (!(node instanceof WrappedNode)) {
             throw new TemplateException("Expecting an XML node here", env);
         }
         Object nss = namespaces == null ? null : namespaces.evaluate(env);
@@ -280,7 +280,7 @@ INJECT VisitNode :
                 throw new TemplateException("Expecting a sequence of namespaces after 'using'", env);
             }
         }
-        env.render((TemplateNodeModel) node, (List<Scope>)nss);
+        env.render((WrappedNode) node, (List<Scope>)nss);
     }
 
     public String getDescription() {
@@ -332,7 +332,7 @@ INJECT RecurseNode :
         else if (namespaces instanceof ListLiteral) {
             nss = ((ListLiteral) namespaces).evaluateStringsToNamespaces(env);
         }
-        if (node != null && !(node instanceof TemplateNodeModel)) {
+        if (node != null && !(node instanceof WrappedNode)) {
             throw new TemplateException("Expecting an XML node here, for expression: " + targetNode + ", found a: " + node.getClass().getName(), env);
         }
         if (nss != null) {
@@ -345,7 +345,7 @@ INJECT RecurseNode :
                 throw new TemplateException("Expecting a sequence of namespaces after 'using'", env);
             }
         }
-        env.process((TemplateNodeModel) node, (List<Scope>)nss);
+        env.process((WrappedNode) node, (List<Scope>)nss);
     }
 
     public String getDescription() {
@@ -1002,7 +1002,7 @@ INJECT Macro :
     import freemarker.template.*;
     import freemarker.core.Environment;
     import freemarker.core.nodes.ParameterList;
-    extends TemplateElement implements TemplateModel
+    extends TemplateElement implements WrappedVariable
 {
     static public final Macro DO_NOTHING_MACRO = new Macro();
     static {

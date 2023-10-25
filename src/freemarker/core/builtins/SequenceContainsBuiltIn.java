@@ -8,7 +8,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.EvaluationException;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.WrappedSequence;
 
 /**
  * @author Attila Szegedi
@@ -20,7 +20,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
             Object model) 
     {
-        if (!(model instanceof TemplateSequenceModel || model instanceof Iterable)) {
+        if (!(model instanceof WrappedSequence || model instanceof Iterable)) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "sequence or collection");
         }
         
@@ -28,15 +28,15 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
     }
 
     static class SequenceContainsFunction implements TemplateMethodModel {
-        final TemplateSequenceModel sequence;
+        final WrappedSequence sequence;
         final Iterable collection;
         SequenceContainsFunction(Object seqModel) {
             if (seqModel instanceof Iterable) {
                 collection = (Iterable) seqModel;
                 sequence = null;
             }
-            else if (seqModel instanceof TemplateSequenceModel) {
-                sequence = (TemplateSequenceModel) seqModel;
+            else if (seqModel instanceof WrappedSequence) {
+                sequence = (WrappedSequence) seqModel;
                 collection = null;
             }
             else {

@@ -11,7 +11,6 @@ import freemarker.template.*;
 
 public class ObjectWrapper 
 {
-    public static final Object CAN_NOT_UNWRAP = new Object();
     private static final Class<java.math.BigInteger> BIGINTEGER_CLASS = java.math.BigInteger.class;
     private static final Class<Object> OBJECT_CLASS = Object.class;
     private static final Class<String> STRING_CLASS = String.class;
@@ -104,7 +103,7 @@ public class ObjectWrapper
     }
 
     public static boolean isList(Object obj) {
-        if (obj instanceof TemplateSequenceModel) {
+        if (obj instanceof WrappedSequence) {
             return true;
         }
         if (obj instanceof Pojo) {
@@ -117,8 +116,8 @@ public class ObjectWrapper
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
-        if (obj instanceof TemplateSequenceModel) {
-            TemplateSequenceModel tsm = (TemplateSequenceModel) obj;
+        if (obj instanceof WrappedSequence) {
+            WrappedSequence tsm = (WrappedSequence) obj;
             List result = new ArrayList();
             for (int i = 0; i < tsm.size() ; i++) result.add(tsm.get(i));
             return result;
@@ -133,7 +132,7 @@ public class ObjectWrapper
         if (obj instanceof Number) {
             return true;
         }
-        if (obj instanceof TemplateNumberModel) {
+        if (obj instanceof WrappedNumber) {
             return true;
         }
         return false;
@@ -143,8 +142,8 @@ public class ObjectWrapper
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
-        if (obj instanceof TemplateNumberModel) {
-            return ((TemplateNumberModel) obj).getAsNumber();
+        if (obj instanceof WrappedNumber) {
+            return ((WrappedNumber) obj).getAsNumber();
         }
         return (Number) obj;
     }
@@ -160,7 +159,7 @@ public class ObjectWrapper
     }
 
     public static boolean isString(Object obj) {
-        if (obj instanceof TemplateScalarModel) {
+        if (obj instanceof WrappedString) {
             return true;
         }
         if (obj instanceof Pojo) {
@@ -170,8 +169,8 @@ public class ObjectWrapper
     }
 
     public static String asString(Object obj) {
-        if (obj instanceof TemplateScalarModel) {
-            return ((TemplateScalarModel) obj).getAsString();
+        if (obj instanceof WrappedString) {
+            return ((WrappedString) obj).getAsString();
         }
         if (obj instanceof Number) {
             return obj.toString();
@@ -189,7 +188,7 @@ public class ObjectWrapper
     }
     
     public static boolean isBoolean(Object obj) {
-        if (obj instanceof TemplateBooleanModel) {
+        if (obj instanceof WrappedBoolean) {
             return true;
         }
         if (obj instanceof Pojo) {
@@ -199,8 +198,8 @@ public class ObjectWrapper
     }
 
     public static boolean asBoolean(Object obj) {
-        if (obj instanceof TemplateBooleanModel) {
-            return ((TemplateBooleanModel) obj).getAsBoolean();
+        if (obj instanceof WrappedBoolean) {
+            return ((WrappedBoolean) obj).getAsBoolean();
         }
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
@@ -334,7 +333,7 @@ public class ObjectWrapper
         if(object == null) {
             return Constants.JAVA_NULL;
         }
-        if (object instanceof TemplateModel) {
+        if (object instanceof WrappedVariable) {
             return object;
         }
         if (isMarkedAsPojo(object.getClass())) {
@@ -358,9 +357,6 @@ public class ObjectWrapper
         }
         if (object.getClass().isArray()) {
             return new ArrayModel(object);
-        }
-        if(object instanceof TemplateModelAdapter) {
-            return ((TemplateModelAdapter)object).getTemplateModel();
         }
         if (object instanceof Date) {
             return new DateModel((Date) object);
@@ -403,10 +399,10 @@ public class ObjectWrapper
     /**
      * Attempts to unwrap a model into underlying object. Generally, this
      * method is the inverse of the {@link #wrap(Object)} method. In addition
-     * it will unwrap arbitrary {@link TemplateNumberModel} instances into
+     * it will unwrap arbitrary {@link WrappedNumber} instances into
      * a number, arbitrary {@link TemplateDateModel} instances into a date,
-     * {@link TemplateScalarModel} instances into a String, and
-     * {@link TemplateBooleanModel} instances into a Boolean.
+     * {@link WrappedString} instances into a String, and
+     * {@link WrappedBoolean} instances into a Boolean.
      * All other objects are returned unchanged.
      */
     public Object unwrap(Object object) {
@@ -419,7 +415,7 @@ public class ObjectWrapper
         if (object instanceof Pojo) {
             return ((Pojo)object).getWrappedObject();
         }
-        if (!(object instanceof TemplateModel)) {
+        if (!(object instanceof WrappedVariable)) {
             return object;
         }
         throw new UnsupportedOperationException("Don't know how to unwrap this object " + object.getClass());
@@ -448,7 +444,7 @@ public class ObjectWrapper
         Object retval = method.invoke(object, args);
         return 
             method.getReturnType() == Void.TYPE
-            // We're returning TemplateModel.NOTHING for convenience of 
+            // We're returning WrappedVariable.NOTHING for convenience of 
             // template authors who want to invoke a method for its side effect
             // i.e. ${session.invalidate()}. Returning null would be more
             // intuitive (as return value of a void method is undefined), but
@@ -458,7 +454,7 @@ public class ObjectWrapper
             : wrap(retval); 
     }
 
-    public Object newInstance(Class<?> clazz, List<TemplateModel> arguments)
+    public Object newInstance(Class<?> clazz, List<WrappedVariable> arguments)
     {
         try
         {
@@ -820,8 +816,8 @@ public class ObjectWrapper
     {
         if (model instanceof Pojo) {
             return ((Pojo) model).isEmpty();
-        } else if (model instanceof TemplateSequenceModel) {
-            return ((TemplateSequenceModel) model).size() == 0;
+        } else if (model instanceof WrappedSequence) {
+            return ((WrappedSequence) model).size() == 0;
         } else if (isString(model)) {
             String s = asString(model);
             return (s == null || s.length() == 0);

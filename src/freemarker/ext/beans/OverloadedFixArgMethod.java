@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import freemarker.template.TemplateModel;
+import freemarker.template.WrappedVariable;
 
 /**
  * @author Attila Szegedi
@@ -22,7 +22,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
     void afterSignatureAdded(int l) {
     };
 
-    Object getMemberAndArguments(List<TemplateModel> arguments, ObjectWrapper w) 
+    Object getMemberAndArguments(List<WrappedVariable> arguments, ObjectWrapper w) 
     {
         if(arguments == null) {
             // null is treated as empty args
@@ -40,13 +40,9 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
         assert types.length == l;
         // Marshal the arguments
         Object[] args = new Object[l];
-        Iterator<TemplateModel> it = arguments.iterator();
+        Iterator<WrappedVariable> it = arguments.iterator();
         for(int i = 0; i < l; ++i) {
-            Object obj = w.unwrap(it.next());
-            if(obj == ObjectWrapper.CAN_NOT_UNWRAP) {
-                return NO_SUCH_METHOD;
-            }
-            args[i] = obj;
+            args[i] = w.unwrap(it.next());
         }
         
         Object objMember = getMemberForArgs(args, false);

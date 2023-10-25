@@ -584,7 +584,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * configuration, if the data model does not contain a
      * variable with the same name.
      *
-     * <p>Never use <tt>TemplateModel</tt> implementation that is not thread-safe for shared variables,
+     * <p>Never use <tt>WrappedVariable</tt> implementation that is not thread-safe for shared variables,
      * if the configuration is used by multiple threads! It is the typical situation for Servlet based Web sites.
      *
      * @param name the name used to access the data object from your template.
@@ -614,7 +614,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     /**
      * Adds all object in the hash as shared variable to the configuration.
      *
-     * <p>Never use <tt>TemplateModel</tt> implementation that is not thread-safe for shared variables,
+     * <p>Never use <tt>WrappedVariable</tt> implementation that is not thread-safe for shared variables,
      * if the configuration is used by multiple threads! It is the typical situation for Servlet based Web sites.
      *
      * @param hash a hash model whose objects will be copied to the
@@ -623,7 +623,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * with those from the map.
      *
      * @see #setSharedVariable(String,Object)
-     * @see #setSharedVariable(String,TemplateModel)
+     * @see #setSharedVariable(String,WrappedVariable)
      */
     public void setAllSharedVariables(TemplateHashModelEx hash) {
         Iterator<?> keys = hash.keys().iterator();
@@ -643,7 +643,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * for a comprehensive list of them.
      *
      * @see #setSharedVariable(String,Object)
-     * @see #setSharedVariable(String,TemplateModel)
+     * @see #setSharedVariable(String,WrappedVariable)
      * @see #setAllSharedVariables
      */
     public Object getSharedVariable(String name) {

@@ -38,8 +38,8 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
             this.env = env;
             try {
                 cl = Class.forName(classname);
-                if (!TemplateModel.class.isAssignableFrom(cl)) {
-                    throw new TemplateException("Class " + cl.getName() + " does not implement freemarker.template.TemplateModel", env);
+                if (!WrappedVariable.class.isAssignableFrom(cl)) {
+                    throw new TemplateException("Class " + cl.getName() + " does not implement freemarker.template.WrappedVariable", env);
                 }
                 if (Pojo.class.isAssignableFrom(cl)) {
                     throw new TemplateException("Bean Models cannot be instantiated using the ?new built-in", env);

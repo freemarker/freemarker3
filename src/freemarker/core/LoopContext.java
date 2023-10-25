@@ -8,7 +8,7 @@ import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.TemplateNode;
 
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.WrappedSequence;
 
 import static freemarker.ext.beans.ObjectWrapper.isIterable;
 import static freemarker.ext.beans.ObjectWrapper.asIterator;
@@ -49,8 +49,8 @@ public class LoopContext extends BlockScope {
                 index++;
             }
         }
-        else if (list instanceof TemplateSequenceModel) {
-            TemplateSequenceModel tsm = (TemplateSequenceModel) list;
+        else if (list instanceof WrappedSequence) {
+            WrappedSequence tsm = (WrappedSequence) list;
             int size = tsm.size();
             for (index =0; index <size; index++) {
             	clear();

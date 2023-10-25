@@ -15,7 +15,7 @@ import freemarker.core.Environment;
  * @author Attila Szegedi
  * @version $Id: $
  */
-public interface TemplateDirectiveModel extends TemplateModel
+public interface TemplateDirectiveModel extends WrappedVariable
 {
     /**
      * Executes this user-defined directive; called by FreeMarker when the user-defined
@@ -25,7 +25,7 @@ public interface TemplateDirectiveModel extends TemplateModel
      * the output {@link java.io.Writer Writer} by {@link Environment#getOut()}.
      * @param params the parameters (if any) passed to the directive as a 
      * map of key/value pairs where the keys are {@link String}-s and the 
-     * values are {@link TemplateModel} instances. This is never 
+     * values are {@link WrappedVariable} instances. This is never 
      * <code>null</code>. 
      * @param loopVars an array that corresponds to the "loop variables", in
      * the order as they appear in the directive call. ("Loop variables" are out-parameters

@@ -1,6 +1,6 @@
 package freemarker.template;
 
-public interface TemplateScalarModel extends TemplateModel, CharSequence {
+public interface WrappedString extends WrappedVariable, CharSequence {
 
     default String getAsString() {
         return toString();  

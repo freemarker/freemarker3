@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @version $Id: MultiModel5.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel5 implements TemplateSequenceModel, TemplateHashModel {
+public class MultiModel5 implements WrappedSequence, TemplateHashModel {
 
     private List  list = new ArrayList();
 
@@ -38,11 +38,11 @@ public class MultiModel5 implements TemplateSequenceModel, TemplateHashModel {
     }
 
     /**
-     * Gets a <tt>TemplateModel</tt> from the hash.
+     * Gets a <tt>WrappedVariable</tt> from the hash.
      *
-     * @param key the name by which the <tt>TemplateModel</tt>
+     * @param key the name by which the <tt>WrappedVariable</tt>
      * is identified in the template.
-     * @return the <tt>TemplateModel</tt> referred to by the key,
+     * @return the <tt>WrappedVariable</tt> referred to by the key,
      * or null if not found.
      */
     public Object get(String key) {

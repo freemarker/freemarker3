@@ -52,7 +52,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = value instanceof TemplateMethodModel;
 		}
 		else if (builtInName == "is_node") {
-			result = value instanceof TemplateNodeModel;
+			result = value instanceof WrappedNode;
 		}
 		else if (builtInName == "is_null") {
 			result = value == Constants.JAVA_NULL;

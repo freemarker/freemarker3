@@ -10,12 +10,12 @@ import freemarker.ext.beans.SimpleMapModel;
  * @version $Id: MultiModel1.java,v 1.17 2004/01/06 17:06:44 szegedia Exp $
  */
 public class MultiModel1 implements TemplateHashModel,
-        TemplateSequenceModel, TemplateScalarModel {
+        WrappedSequence, WrappedString {
 
-    private TemplateModel m_cSubModel = new MultiModel2();
-    private TemplateModel m_cListHashModel1 = new MultiModel4();
-    private TemplateModel m_cListHashModel2 = new MultiModel5();
-    private TemplateSequenceModel m_cListModel = new ListModel();
+    private WrappedVariable m_cSubModel = new MultiModel2();
+    private WrappedVariable m_cListHashModel1 = new MultiModel4();
+    private WrappedVariable m_cListHashModel2 = new MultiModel5();
+    private WrappedSequence m_cListModel = new ListModel();
     private TemplateHashModel m_cHashModel = new SimpleMapModel();
 
     /** Creates new MultiModel1 */
@@ -28,11 +28,11 @@ public class MultiModel1 implements TemplateHashModel,
     }
 
     /**
-     * Gets a <tt>TemplateModel</tt> from the hash.
+     * Gets a <tt>WrappedVariable</tt> from the hash.
      *
-     * @param key the name by which the <tt>TemplateModel</tt>
+     * @param key the name by which the <tt>WrappedVariable</tt>
      * is identified in the template.
-     * @return the <tt>TemplateModel</tt> referred to by the key,
+     * @return the <tt>WrappedVariable</tt> referred to by the key,
      * or null if not found.
      */
     public Object get(String key) {

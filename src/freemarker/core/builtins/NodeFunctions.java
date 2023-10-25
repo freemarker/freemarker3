@@ -7,7 +7,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.ext.beans.ListModel;
 import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateNodeModel;
+import freemarker.template.WrappedNode;
 import freemarker.template.Constants;
 import freemarker.template.utility.StringUtil;
 
@@ -21,17 +21,17 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     @Override
     public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
-        if (!(model instanceof TemplateNodeModel)) {
+        if (!(model instanceof WrappedNode)) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "node");
         }
-        return apply(env, (TemplateNodeModel)model);
+        return apply(env, (WrappedNode)model);
     }
 
-    public abstract Object apply(Environment env, TemplateNodeModel node);
+    public abstract Object apply(Environment env, WrappedNode node);
     
     public static class Parent extends NodeFunctions {
         @Override
-        public Object apply(Environment env, TemplateNodeModel node)
+        public Object apply(Environment env, WrappedNode node)
         {
             return node.getParentNode();
         }
@@ -39,7 +39,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class Children extends NodeFunctions {
         @Override
-        public Object apply(Environment env, TemplateNodeModel node)
+        public Object apply(Environment env, WrappedNode node)
         {
             return node.getChildNodes();
         }
@@ -47,10 +47,10 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class Root extends NodeFunctions {
         @Override
-        public Object apply(Environment env, TemplateNodeModel node)
+        public Object apply(Environment env, WrappedNode node)
         {
             for(;;) {
-                final TemplateNodeModel parent = node.getParentNode();
+                final WrappedNode parent = node.getParentNode();
                 if(parent == null) {
                     return node;
                 }
@@ -61,7 +61,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
     
     public static class NodeName extends NodeFunctions {
         @Override
-        public Object apply(Environment env, TemplateNodeModel node)
+        public Object apply(Environment env, WrappedNode node)
         {
             return node.getNodeName();
         }
@@ -69,7 +69,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class NodeNamespace extends NodeFunctions {
         @Override
-        public Object apply(Environment env, TemplateNodeModel node)
+        public Object apply(Environment env, WrappedNode node)
         {
             String ns = node.getNodeNamespace();
             return ns == null ? Constants.JAVA_NULL : ns;
@@ -78,7 +78,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class NodeType extends NodeFunctions {
         @Override
-        public Object apply(Environment env, TemplateNodeModel node)
+        public Object apply(Environment env, WrappedNode node)
         {
             String nt = node.getNodeType();
             return nt == null ? Constants.JAVA_NULL : nt;
@@ -88,10 +88,10 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class Ancestors extends NodeFunctions {
         @Override
-        public Object apply(Environment env, TemplateNodeModel node)
+        public Object apply(Environment env, WrappedNode node)
         {
             final AncestorSequence result = new AncestorSequence();
-            TemplateNodeModel parent = node.getParentNode();
+            WrappedNode parent = node.getParentNode();
             while (parent != null) {
                 result.add(parent);
                 parent = parent.getParentNode();
@@ -108,7 +108,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
             AncestorSequence result = new AncestorSequence();
             final Environment env = Environment.getCurrentEnvironment();
             for (int i=0; i<size(); i++) {
-                TemplateNodeModel tnm = (TemplateNodeModel) get(i);
+                WrappedNode tnm = (WrappedNode) get(i);
                 String nodeName = tnm.getNodeName();
                 String nsURI = tnm.getNodeNamespace();
                 if (nsURI == null) {

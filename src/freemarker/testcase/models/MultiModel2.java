@@ -9,7 +9,7 @@ import static freemarker.ext.beans.ObjectWrapper.asString;
  *
  * @version $Id: MultiModel2.java,v 1.15 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel2 implements TemplateScalarModel, TemplateMethodModel {
+public class MultiModel2 implements WrappedString, TemplateMethodModel {
 
     /**
      * Returns the scalar's value as a String.
@@ -25,7 +25,7 @@ public class MultiModel2 implements TemplateScalarModel, TemplateMethodModel {
      *
      * @param arguments a <tt>List</tt> of <tt>String</tt> objects containing the values
      * of the arguments passed to the method.
-     * @return the <tt>TemplateModel</tt> produced by the method, or null.
+     * @return the <tt>WrappedVariable</tt> produced by the method, or null.
      */
     public Object exec(List arguments) {
         StringBuilder  aResults = new StringBuilder( "Arguments are:<br />" );

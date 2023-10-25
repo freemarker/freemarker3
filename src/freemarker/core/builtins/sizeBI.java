@@ -4,7 +4,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.TemplateHashModelEx;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.WrappedSequence;
 import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
@@ -18,8 +18,8 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
             Object model) 
     {
         int size = -1;
-        if (model instanceof TemplateSequenceModel) {
-            size = ((TemplateSequenceModel) model).size();
+        if (model instanceof WrappedSequence) {
+            size = ((WrappedSequence) model).size();
         }
         else if (isList(model)) {
             size=asList(model).size();

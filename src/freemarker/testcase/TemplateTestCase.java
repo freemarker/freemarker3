@@ -269,7 +269,7 @@ public class TemplateTestCase extends TestCase {
         }
     }
     
-    static class TestBoolean implements TemplateBooleanModel, TemplateScalarModel {
+    static class TestBoolean implements WrappedBoolean, WrappedString {
         public boolean getAsBoolean() {
             return true;
         }
@@ -285,13 +285,13 @@ public class TemplateTestCase extends TestCase {
       }
     }
     
-    static class TestNode implements TemplateNodeModel {
+    static class TestNode implements WrappedNode {
       
       public String getNodeName() {
           return "name";
       }
                     
-      public TemplateNodeModel getParentNode() {
+      public WrappedNode getParentNode() {
           return null;
       }
     
@@ -299,7 +299,7 @@ public class TemplateTestCase extends TestCase {
           return "element";
       }
     
-      public TemplateSequenceModel getChildNodes() {
+      public WrappedSequence getChildNodes() {
           return null;
       }
       

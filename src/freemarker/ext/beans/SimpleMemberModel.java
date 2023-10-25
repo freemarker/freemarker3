@@ -5,10 +5,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import freemarker.template.TemplateModel;
+import freemarker.template.WrappedVariable;
 import freemarker.template.EvaluationException;
 
 /**
@@ -20,18 +19,17 @@ import freemarker.template.EvaluationException;
 class SimpleMemberModel<T extends Member>
 {
     private final T member;
-    private final Class[] argTypes;
+    private final Class<?>[] argTypes;
     
-    protected SimpleMemberModel(T member, Class[] argTypes)
+    protected SimpleMemberModel(T member, Class<?>[] argTypes)
     {
         this.member = member;
         this.argTypes = argTypes;
     }
     
-    Object[] unwrapArguments(List arguments, ObjectWrapper wrapper) throws EvaluationException
-    {
+    Object[] unwrapArguments(List<WrappedVariable> arguments, ObjectWrapper wrapper) {
         if(arguments == null) {
-            arguments = Collections.EMPTY_LIST;
+            arguments = Collections.emptyList();
         }
         boolean varArg = member instanceof Method ? ((Method)member).isVarArgs() : ((Constructor<?>)member).isVarArgs();
         int typeLen = argTypes.length;
@@ -46,8 +44,13 @@ class SimpleMemberModel<T extends Member>
             throw new EvaluationException("Method " + member + 
                     " takes exactly " + typeLen + " arguments");
         }
-         
-        Object[] args = unwrapArguments(arguments, argTypes, wrapper);
+        Object[] args = null;
+        if (arguments != null) {
+            args = arguments.toArray(new Object[arguments.size()]);
+            for (int i = 0; i< args.length; i++) {
+                args[i] = wrapper.unwrap(args[i]);
+            }
+        }
         if(args != null) {
             ObjectWrapper.coerceBigDecimals(argTypes, args);
             if(varArg && shouldPackVarArgs(args)) {
@@ -57,36 +60,6 @@ class SimpleMemberModel<T extends Member>
         return args;
     }
 
-    static Object[] unwrapArguments(List<Object> arguments, Class[] argTypes, ObjectWrapper w) 
-    throws EvaluationException
-    {
-        if(arguments == null) {
-            return null;
-        }
-        int argsLen = arguments.size();
-        int typeLen = argTypes.length;
-        Object[] args = new Object[argsLen];
-        int min = Math.min(argsLen, typeLen);
-        Iterator<Object> it = arguments.iterator();
-        for (int i = 0; i < min; i++) {
-            args[i] = unwrapArgument(it.next(), argTypes[i], w);
-        }
-        for (int i = min; i < argsLen; i++) {
-            args[i] = unwrapArgument(it.next(), argTypes[min - 1], w);
-        }
-        return args;
-    }
-
-    private static Object unwrapArgument(Object model, Class<?> type, ObjectWrapper w) 
-    {
-        Object val = w.unwrap(model);
-        if(val == ObjectWrapper.CAN_NOT_UNWRAP) {
-            throw new EvaluationException("Can not unwrap argument " +
-                    model + " to " + type.getName());
-        }
-        return val;
-    }
-    
     private boolean shouldPackVarArgs(Object[] args) {
         int l = args.length;
         if(l == argTypes.length) {

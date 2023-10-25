@@ -9,9 +9,9 @@ package freemarker.template;
  * iteration is implemented by calling the {@link #get(int)} method 
  * repeatedly starting from zero and going to <tt>{@link #size()} - 1</tt>.
  * @author Attila Szegedi, szegedia at users dot sourceforge dot net
- * @version $Id: TemplateSequenceModel.java,v 1.10 2004/11/27 14:49:57 ddekany Exp $
+ * @version $Id: WrappedSequence.java,v 1.10 2004/11/27 14:49:57 ddekany Exp $
  */
-public interface TemplateSequenceModel extends TemplateModel {
+public interface WrappedSequence extends WrappedVariable {
 
     /**
      * Retrieves the i-th template model in this sequence.

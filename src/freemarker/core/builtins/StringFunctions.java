@@ -14,11 +14,11 @@ import java.util.regex.PatternSyntaxException;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.ext.beans.ListModel;
-import freemarker.template.TemplateBooleanModel;
-import freemarker.template.TemplateScalarModel;
+import freemarker.template.WrappedBoolean;
+import freemarker.template.WrappedString;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.EvaluationException;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.WrappedSequence;
 import freemarker.template.utility.StringUtil;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -305,11 +305,11 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
 
     static class RegexMatchModel 
-    implements TemplateBooleanModel, Iterable, TemplateSequenceModel {
+    implements WrappedBoolean, Iterable, WrappedSequence {
         Matcher matcher;
         String input;
         final boolean matches;
-        TemplateSequenceModel groups;
+        WrappedSequence groups;
         private ArrayList<Object> data;
 
         RegexMatchModel(Matcher matcher, String input) {
@@ -342,7 +342,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
         public Object getGroups() {
             if (groups == null) {
-                groups = new TemplateSequenceModel() {
+                groups = new WrappedSequence() {
                     public int size() {
                         try {
                             return matcher.groupCount() + 1;
@@ -382,7 +382,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             };
         }
 
-        class Match implements TemplateScalarModel {
+        class Match implements WrappedString {
             String match;
             ListModel subs = new ListModel();
             Match() {
@@ -506,7 +506,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class urlBIResult implements TemplateScalarModel, TemplateMethodModel {
+    static class urlBIResult implements WrappedString, TemplateMethodModel {
 
         private final String target;
         private final Environment env;

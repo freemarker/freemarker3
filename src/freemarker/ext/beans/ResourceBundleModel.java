@@ -11,7 +11,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import freemarker.template.TemplateMethodModel;
-import freemarker.template.TemplateModel;
+import freemarker.template.WrappedVariable;
 import freemarker.template.EvaluationException;
 import static freemarker.ext.beans.ObjectWrapper.asString;
 import static freemarker.ext.beans.ObjectWrapper.wrap;
@@ -107,7 +107,7 @@ public class ResourceBundleModel extends Pojo implements TemplateMethodModel
             int args = arguments.size() - 1;
             Object[] params = new Object[args];
             for(int i = 0; i < args; ++i)
-                params[i] = unwrap((TemplateModel)it.next());
+                params[i] = unwrap((WrappedVariable)it.next());
     
             // Invoke format
             return format(key, params);

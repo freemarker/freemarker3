@@ -5,7 +5,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import freemarker.template.TemplateModel;
+import freemarker.template.WrappedVariable;
 import freemarker.template.EvaluationException;
 
 class MethodMap<T extends Member>
@@ -34,7 +34,7 @@ class MethodMap<T extends Member>
         }
     }
     
-    MemberAndArguments<T> getMemberAndArguments(List<TemplateModel> arguments) 
+    MemberAndArguments<T> getMemberAndArguments(List<WrappedVariable> arguments) 
     {
         Object memberAndArguments = fixArgMethod.getMemberAndArguments(arguments, wrapper);
         if(memberAndArguments == OverloadedMethod.NO_SUCH_METHOD) {

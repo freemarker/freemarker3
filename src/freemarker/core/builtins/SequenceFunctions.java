@@ -16,7 +16,7 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateMethodModel;
 import freemarker.template.EvaluationException;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.WrappedSequence;
 import freemarker.template.utility.StringUtil;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -107,10 +107,10 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ReverseSequence implements TemplateSequenceModel {
-        private final TemplateSequenceModel seq;
+    static class ReverseSequence implements WrappedSequence {
+        private final WrappedSequence seq;
 
-        ReverseSequence(TemplateSequenceModel seq) {
+        ReverseSequence(WrappedSequence seq) {
             this.seq = seq;
         }
 
@@ -148,7 +148,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ChunkedSequence implements TemplateSequenceModel {
+    static class ChunkedSequence implements WrappedSequence {
 
         private final List wrappedTsm;
 
@@ -177,7 +177,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 return null;
             }
 
-            return new TemplateSequenceModel() {
+            return new WrappedSequence() {
 
                 private final int baseIndex = chunkIndex * chunkSize;
 
@@ -482,8 +482,8 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             Object obj = params.get(0);
             if (isString(obj)) {
                 subvars = new String[]{asString(obj)};
-            } else if (obj instanceof TemplateSequenceModel) {
-                TemplateSequenceModel seq = (TemplateSequenceModel) obj;
+            } else if (obj instanceof WrappedSequence) {
+                WrappedSequence seq = (WrappedSequence) obj;
                 int ln = seq.size();
                 subvars = new String[ln];
                 for (int i = 0; i < ln; i++) {

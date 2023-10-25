@@ -7,7 +7,7 @@ import freemarker.template.*;
  *
  * @version $Id: MultiModel3.java,v 1.14 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel3 implements TemplateScalarModel, TemplateHashModel {
+public class MultiModel3 implements WrappedString, TemplateHashModel {
 
     /**
      * Returns the scalar's value as a String.
@@ -26,11 +26,11 @@ public class MultiModel3 implements TemplateScalarModel, TemplateHashModel {
     }
 
     /**
-     * Gets a <tt>TemplateModel</tt> from the hash.
+     * Gets a <tt>WrappedVariable</tt> from the hash.
      *
-     * @param key the name by which the <tt>TemplateModel</tt>
+     * @param key the name by which the <tt>WrappedVariable</tt>
      * is identified in the template.
-     * @return the <tt>TemplateModel</tt> referred to by the key,
+     * @return the <tt>WrappedVariable</tt> referred to by the key,
      * or null if not found.
      */
     public Object get(String key) {

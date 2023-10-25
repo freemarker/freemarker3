@@ -9,7 +9,7 @@ import freemarker.template.utility.*;
  *
  * @version $Id: TransformHashWrapper.java,v 1.15 2005/06/16 18:13:59 ddekany Exp $
  */
-public class TransformHashWrapper implements TemplateHashModel, TemplateScalarModel {
+public class TransformHashWrapper implements TemplateHashModel, WrappedString {
 
     private SimpleMapModel hash = new SimpleMapModel();
 
@@ -22,11 +22,11 @@ public class TransformHashWrapper implements TemplateHashModel, TemplateScalarMo
     }
 
     /**
-     * Gets a <tt>TemplateModel</tt> from the hash.
+     * Gets a <tt>WrappedVariable</tt> from the hash.
      *
-     * @param key the name by which the <tt>TemplateModel</tt>
+     * @param key the name by which the <tt>WrappedVariable</tt>
      * is identified in the template.
-     * @return the <tt>TemplateModel</tt> referred to by the key,
+     * @return the <tt>WrappedVariable</tt> referred to by the key,
      * or null if not found.
      */
     public Object get(String key) {

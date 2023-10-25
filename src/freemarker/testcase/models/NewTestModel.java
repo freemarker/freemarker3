@@ -9,7 +9,7 @@ import freemarker.template.*;
  */
 public class NewTestModel
 implements
-    TemplateScalarModel
+    WrappedString
 {
     private final String string;
     

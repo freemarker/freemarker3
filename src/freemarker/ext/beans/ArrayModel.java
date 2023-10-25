@@ -3,18 +3,18 @@ package freemarker.ext.beans;
 import java.lang.reflect.Array;
 
 import freemarker.template.EvaluationException;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.WrappedSequence;
 
 import static freemarker.ext.beans.ObjectWrapper.wrap;
 
 /**
  * <p>A class that will wrap an arbitrary array into {@link Iterable}
- * and {@link TemplateSequenceModel} interfaces. It supports element retrieval through the <tt>array[index]</tt>
+ * and {@link WrappedSequence} interfaces. It supports element retrieval through the <tt>array[index]</tt>
  * syntax and can be iterated as a list.
  * @author Attila Szegedi
  * @version $Id: ArrayModel.java,v 1.26 2003/06/03 13:21:32 szegedia Exp $
  */
-public class ArrayModel extends Pojo implements Iterable, TemplateSequenceModel
+public class ArrayModel extends Pojo implements Iterable, WrappedSequence
 {
     // Cached length of the array
     private int length;
@@ -59,7 +59,7 @@ public class ArrayModel extends Pojo implements Iterable, TemplateSequenceModel
 
     private class Iterator
     implements 
-        TemplateSequenceModel,
+        WrappedSequence,
         java.util.Iterator<Object>
     {
         private int position = 0;

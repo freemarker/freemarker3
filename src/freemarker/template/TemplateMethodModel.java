@@ -11,7 +11,7 @@ import java.util.List;
  * interface.
  * @version $Id: TemplateMethodModel.java,v 1.11 2003/09/22 23:56:54 revusky Exp $
  */
-public interface TemplateMethodModel extends TemplateModel {
+public interface TemplateMethodModel extends WrappedVariable {
 
     /**
      * Executes a method call. 

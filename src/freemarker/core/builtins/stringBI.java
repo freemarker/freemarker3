@@ -43,7 +43,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
 	
 	
     static class BooleanFormatter
-    implements TemplateScalarModel, LazilyEvaluatableArguments  
+    implements WrappedString, LazilyEvaluatableArguments  
     {
         private final Object bool;
         private final Environment env;
@@ -74,7 +74,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     
     
     static class DateFormatter
-    implements TemplateScalarModel, TemplateHashModel, TemplateMethodModel {
+    implements WrappedString, TemplateHashModel, TemplateMethodModel {
         private final Date date;
         private final int dateType;
         private final Environment env;
@@ -114,7 +114,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
     }
     
-    static class NumberFormatter implements TemplateScalarModel, TemplateHashModel, TemplateMethodModel {
+    static class NumberFormatter implements WrappedString, TemplateHashModel, TemplateMethodModel {
         private final Number number;
         private final Environment env;
         private final NumberFormat defaultFormat;

@@ -16,7 +16,7 @@ public class SimpleTestMethod implements TemplateMethodModel {
      *
      * @param arguments a <tt>List</tt> of <tt>String</tt> objects containing
      * the values of the arguments passed to the method.
-     * @return the <tt>TemplateModel</tt> produced by the method, or null.
+     * @return the <tt>WrappedVariable</tt> produced by the method, or null.
      */
     public Object exec(List arguments) {
         if( arguments.size() == 0 ) {

@@ -10,7 +10,7 @@ package freemarker.template;
  * collections returned by <code>keys</code> and <code>values</code> to
  * present them as sequences to the template.  For performance, you may
  * wish to return objects that implement both Iterable
- * and {@link TemplateSequenceModel}. Note that the wrapping to sequence happens
+ * and {@link WrappedSequence}. Note that the wrapping to sequence happens
  * on demand; if the template does not try to use the variable returned by
  * <code>?keys</code> or <code>?values</code> as sequence (<code>theKeys?size</code>, or <code>theKeys[x]</code>,
  * or <code>theKeys?sort</code>, etc.), just iterates over the variable

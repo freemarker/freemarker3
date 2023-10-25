@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @version $Id: MultiModel4.java,v 1.13 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel4 implements TemplateSequenceModel, TemplateHashModel {
+public class MultiModel4 implements WrappedSequence, TemplateHashModel {
 
     private List list = new ArrayList();
 
@@ -22,7 +22,7 @@ public class MultiModel4 implements TemplateSequenceModel, TemplateHashModel {
     }
 
     /**
-     * Gets a <tt>TemplateModel</tt> from the hash.
+     * Gets a <tt>WrappedVariable</tt> from the hash.
      *
      * @param key the name by which the value
      * is identified in the template.

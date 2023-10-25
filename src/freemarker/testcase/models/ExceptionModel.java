@@ -7,7 +7,7 @@ import freemarker.template.*;
  *
  * @version $Id: ExceptionModel.java,v 1.13 2003/01/12 23:40:25 revusky Exp $
  */
-public class ExceptionModel implements TemplateScalarModel {
+public class ExceptionModel implements WrappedString {
 
     /**
      * Returns the scalar's value as a String.

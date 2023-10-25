@@ -120,7 +120,7 @@ public class StandardCompress implements TemplateDirectiveModel {
                 throw new EvaluationException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
             }
             try {
-                TemplateBooleanModel flag = (TemplateBooleanModel)args.get(SINGLE_LINE_KEY);
+                WrappedBoolean flag = (WrappedBoolean)args.get(SINGLE_LINE_KEY);
                 if (flag != null)
                     singleLine = flag.getAsBoolean();
             } catch (ClassCastException e) {

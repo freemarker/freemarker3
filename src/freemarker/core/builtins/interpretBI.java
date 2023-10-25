@@ -11,7 +11,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateDirectiveBody;
 import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.EvaluationException;
-import freemarker.template.TemplateSequenceModel;
+import freemarker.template.WrappedSequence;
 import freemarker.template.TemplateException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -27,7 +27,7 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
     {
         String id = null, interpretString = null;
         if (isList(model)) {
-            TemplateSequenceModel tsm = (TemplateSequenceModel) model;
+            WrappedSequence tsm = (WrappedSequence) model;
             Object tm = tsm.get(1);
             if (tm != null) {
                 if (isString(tm)) {

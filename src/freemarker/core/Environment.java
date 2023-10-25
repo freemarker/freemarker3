@@ -104,7 +104,7 @@ public final class Environment extends Configurable implements Scope {
 
     private Object lastReturnValue;
 
-    private TemplateNodeModel currentVisitorNode;
+    private WrappedNode currentVisitorNode;
 
     private List<Scope> nodeNamespaces;
 
@@ -323,11 +323,11 @@ public final class Environment extends Configurable implements Scope {
     }
 
     /**
-     * "Visit" A TemplateNodeModel
+     * "Visit" A WrappedNode
      */
 
     @SuppressWarnings("deprecation")
-    public void render(TemplateNodeModel node, List<Scope> namespaces)
+    public void render(WrappedNode node, List<Scope> namespaces)
             throws TemplateException, IOException {
         if (nodeNamespaces == null) {
             List<Scope> ss = new ArrayList<>();
@@ -338,7 +338,7 @@ public final class Environment extends Configurable implements Scope {
         String prevNodeName = this.currentNodeName;
         String prevNodeNS = this.currentNodeNS;
         List<Scope> prevNodeNamespaces = nodeNamespaces;
-        TemplateNodeModel prevVisitorNode = currentVisitorNode;
+        WrappedNode prevVisitorNode = currentVisitorNode;
         currentVisitorNode = node;
         if (namespaces != null) {
             this.nodeNamespaces = namespaces;
@@ -497,7 +497,7 @@ public final class Environment extends Configurable implements Scope {
         macroToNamespaceLookup.put(curriedMacro, tns);
     }
 
-    public void process(TemplateNodeModel node, List<Scope> namespaces)
+    public void process(WrappedNode node, List<Scope> namespaces)
             throws TemplateException, IOException {
         if (node == null) {
             node = this.getCurrentVisitorNode();
@@ -506,11 +506,11 @@ public final class Environment extends Configurable implements Scope {
                         "The target node of recursion is missing or null.");
             }
         }
-        TemplateSequenceModel children = node.getChildNodes();
+        WrappedSequence children = node.getChildNodes();
         if (children == null)
             return;
         for (int i = 0; i < children.size(); i++) {
-            TemplateNodeModel child = (TemplateNodeModel) children.get(i);
+            WrappedNode child = (WrappedNode) children.get(i);
             if (child != null) {
                 render(child, namespaces);
             }
@@ -1236,19 +1236,19 @@ public final class Environment extends Configurable implements Scope {
         elementStack.remove(elementStack.size() - 1);
     }
 
-    public TemplateNodeModel getCurrentVisitorNode() {
+    public WrappedNode getCurrentVisitorNode() {
         return currentVisitorNode;
     }
 
     /**
-     * sets TemplateNodeModel as the current visitor node.
+     * sets WrappedNode as the current visitor node.
      * <tt>.current_node</tt>
      */
-    public void setCurrentVisitorNode(TemplateNodeModel node) {
+    public void setCurrentVisitorNode(WrappedNode node) {
         currentVisitorNode = node;
     }
 
-    Object getNodeProcessor(TemplateNodeModel node) {
+    Object getNodeProcessor(WrappedNode node) {
         String nodeName = node.getNodeName();
         if (nodeName == null) {
             throw new TemplateException("Node name is null.", this);

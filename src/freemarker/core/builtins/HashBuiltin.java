@@ -20,7 +20,7 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
                     caller.getTarget(), env, "extended hash");
         }
         final Iterable result = apply((TemplateHashModelEx) model);
-//        if (!(result instanceof TemplateSequenceModel)) {
+//        if (!(result instanceof WrappedSequence)) {
 //            return new CollectionAndSequence(result);
 //        } 
         return result;
