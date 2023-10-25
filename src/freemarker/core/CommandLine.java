@@ -19,6 +19,7 @@ public class CommandLine {
 	public static void main(String[] args) throws IOException {
 		if (args.length == 0) {
 		    info();
+			return;
 		}
 		processTemplate(args[0]);
 	}
