@@ -336,7 +336,7 @@ INJECT RecurseNode :
             throw new TemplateException("Expecting an XML node here, for expression: " + targetNode + ", found a: " + node.getClass().getName(), env);
         }
         if (nss != null) {
-            if (nss instanceof TemplateHashModel) {
+            if (nss instanceof WrappedHash) {
                 List<Scope> ss = new ArrayList<>();
                 ss.add((Scope)nss);
                 nss = ss;

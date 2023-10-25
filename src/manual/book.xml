@@ -5459,7 +5459,7 @@ public class Test {
         <para>There is roughly one
         <literal>freemarker.template.WrappedVariable</literal> descendant
         interface corresponding to each basic type of variable
-        (<literal>TemplateHashModel</literal> for hashes,
+        (<literal>WrappedHash</literal> for hashes,
         <literal>WrappedSequence</literal> sequences,
         <literal>WrappedNumber</literal> for numbers, etc.). For
         example, if you want to expose a <literal>java.sql.ResultSet</literal>
@@ -5668,23 +5668,23 @@ public class Test {
           </indexterm>
 
           <para>Hashes are java objects that implement
-          <literal>TemplateHashModel</literal> interface.
-          <literal>TemplateHashModel</literal> contains two methods:
+          <literal>WrappedHash</literal> interface.
+          <literal>WrappedHash</literal> contains two methods:
           <literal>WrappedVariable get(String key)</literal>, which returns the
           subvariable of the given name, and <literal>boolean
           isEmpty()</literal>, which indicates if the hash has zero
           subvariable or not. The <literal>get</literal> method returns null
           if no subvariable with the given name exists.</para>
 
-          <para>The <literal>TemplateHashModel</literal> interface extends
-          <literal>TemplateHashModel</literal>. It adds methods by which <link
+          <para>The <literal>WrappedHash</literal> interface extends
+          <literal>WrappedHash</literal>. It adds methods by which <link
           linkend="ref_builtin_values">values</link> and <link
           linkend="ref_builtin_keys">keys</link> built-ins can enumerate the
           subvariables of the hash.</para>
 
           <para>The commonly used implementation is
           <literal>SimpleHash</literal>, which implements
-          <literal>TemplateHashModel</literal>. Internally it uses a
+          <literal>WrappedHash</literal>. Internally it uses a
           <literal>java.util.Hash</literal> to store the subvariables.
           <literal>SimpleHash</literal> has methods by which you can add and
           remove subvariable. These methods should be used to initialize the
@@ -6493,7 +6493,7 @@ ${theObject.sin(123)}</programlisting>
         FreeMarker application you need not know about
         <literal>WrappedVariable</literal>-s at all. Note that the root need not
         be a <literal>java.util.Map</literal>. It can be anything that is
-        wrapped so that it implements the <literal>TemplateHashModel</literal>
+        wrapped so that it implements the <literal>WrappedHash</literal>
         interface.</para>
 
         <para>The factory default value of the
@@ -7797,10 +7797,10 @@ env.process();</programlisting>
         discussion.</para>
 
         <section xml:id="beanswrapper_hash">
-          <title>TemplateHashModel functionality</title>
+          <title>WrappedHash functionality</title>
 
           <para>Every object will be wrapped into a
-          <literal>TemplateHashModel</literal> that will expose JavaBeans
+          <literal>WrappedHash</literal> that will expose JavaBeans
           properties and methods of the object. This way, you can use
           <literal>model.foo</literal> in the template to invoke
           <literal>obj.getFoo()</literal> or <literal>obj.isFoo()</literal>
@@ -8068,7 +8068,7 @@ env.process();</programlisting>
             <listitem>
               <para>If <literal>T</literal> is
               <literal>java.util.Map</literal> and the model implements
-              <literal>TemplateHashModel</literal>, then a special Map
+              <literal>WrappedHash</literal>, then a special Map
               representation of the hash model is returned.</para>
             </listitem>
 
@@ -8200,15 +8200,15 @@ env.process();</programlisting>
             <secondary>accessing from templates</secondary>
           </indexterm>
 
-          <para>The <literal>TemplateHashModel</literal> returned from
+          <para>The <literal>WrappedHash</literal> returned from
           <literal>BeansWrapper.getStaticModels()</literal> can be used to
           create hash models for accessing static methods and fields of an
           arbitrary class.</para>
 
           <programlisting role="unspecified">BeansWrapper wrapper = BeansWrapper.getDefaultInstance();
-TemplateHashModel staticModels = wrapper.getStaticModels();
-TemplateHashModel fileStatics =
-    (TemplateHashModel) staticModels.get("java.io.File");</programlisting>
+WrappedHash staticModels = wrapper.getStaticModels();
+WrappedHash fileStatics =
+    (WrappedHash) staticModels.get("java.io.File");</programlisting>
 
           <para>And you will get a template hash model that exposes all static
           methods and static fields (both final and non-final) of the
@@ -8257,7 +8257,7 @@ TemplateHashModel fileStatics =
             <primary>enum</primary>
           </indexterm>
 
-          <para>The <literal>TemplateHashModel</literal> returned from
+          <para>The <literal>WrappedHash</literal> returned from
           <literal>BeansWrapper.getEnumModels()</literal> can be used to
           create hash models for accessing values of enums on JRE 1.5 or
           later. (An attempt to invoke this method on an earlier JRE will
@@ -8265,9 +8265,9 @@ TemplateHashModel fileStatics =
           <literal>UnsupportedOperationException</literal>.)</para>
 
           <programlisting role="unspecified">BeansWrapper wrapper = BeansWrapper.getDefaultInstance();
-TemplateHashModel enumModels = wrapper.getEnumModels();
-TemplateHashModel roundingModeEnums =
-    (TemplateHashModel) enumModels.get("java.math.RoundingMode");</programlisting>
+WrappedHash enumModels = wrapper.getEnumModels();
+WrappedHash roundingModeEnums =
+    (WrappedHash) enumModels.get("java.math.RoundingMode");</programlisting>
 
           <para>And you will get a template hash model that exposes all enum
           values of the <literal>java.math.RoundingMode</literal> class as
@@ -9363,7 +9363,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         </section>
 
         <section>
-          <title>TemplateHashModel</title>
+          <title>WrappedHash</title>
 
           <para>When used as a hash, it is basically used to traverse
           children. That is, if you have a node list named
@@ -9782,7 +9782,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         template model root for the sake of the following discussion.</para>
 
         <section>
-          <title>TemplateHashModel functionality</title>
+          <title>WrappedHash functionality</title>
 
           <para><literal>PyDictionary</literal> and
           <literal>PyStringMap</literal> will be wrapped into a hash model.
@@ -10609,7 +10609,7 @@ Test Book</programlisting>
         <para>Every variable that corresponds to a single node in the DOM tree
         is a multi-type variable of type node and type hash (for programmers:
         implements both <literal>WrappedNode</literal> and
-        <literal>TemplateHashModel</literal>). Thus, you can use the <link
+        <literal>WrappedHash</literal>). Thus, you can use the <link
         linkend="ref_builtins_node">node built-ins</link> with them. Hash keys
         are interpreted as XPath expressions, except the special keys shown in
         the table below. Some of the node variables also have string type, so
@@ -19216,7 +19216,7 @@ or
             templates, but makes unwrapping on the Java side a tricky
             question. For example, it is possible to wrap a
             non-<literal>java.util.Map</literal> object as
-            <literal>TemplateHashModel</literal> (FTL hash variable). But
+            <literal>WrappedHash</literal> (FTL hash variable). But
             then, it can't be unwrapped to <literal>java.util.Map</literal>,
             since there is no wrapped <literal>java.util.Map</literal> around
             at all.</para>
@@ -19461,7 +19461,7 @@ or
                 and <literal>TemplateTransform</literal> implementation that
                 can modify certain types of sequences/hashes. Just certain
                 types, because <literal>WrappedSequence</literal> and
-                <literal>TemplateHashModel</literal> doesn't have methods for
+                <literal>WrappedHash</literal> doesn't have methods for
                 modification, so you will need the sequence or hash to
                 implement some additional methods. An example of this solution
                 can be seen in FMPP. It allows you to do things like this
@@ -22398,7 +22398,7 @@ ${obj.myMethod("foo")}</programlisting>
               In practical terms this means you can access their sizes or
               retrieve their subvariables by index, and use all of the <link
               linkend="ref_builtins_sequence">sequence built-ins</link>. (Note
-              for the programmers: The <literal>TemplateHashModel</literal>
+              for the programmers: The <literal>WrappedHash</literal>
               interface has not been changed. Your old code will work. See the
               API documentation to see why.)</para>
             </listitem>
@@ -23997,7 +23997,7 @@ ${obj.myMethod("foo")}</programlisting>
               package: <literal>BeanModel</literal>,
               <literal>MapModel</literal>, and
               <literal>ResourceModel</literal> now implement
-              <literal>TemplateHashModel</literal>.</para>
+              <literal>WrappedHash</literal>.</para>
             </listitem>
 
             <listitem>
@@ -24443,7 +24443,7 @@ ${obj.myMethod("foo")}</programlisting>
                   <literal>setSimpleMapWrapper</literal> method of
                   <literal>BeansWrapper</literal> you can configure it to wrap
                   <literal>java.util.Map</literal>-s as
-                  <literal>TemplateHashModel</literal>-s, and do not expose
+                  <literal>WrappedHash</literal>-s, and do not expose
                   the methods of the object.</para>
                 </listitem>
               </itemizedlist>
@@ -24880,7 +24880,7 @@ ${obj.myMethod("foo")}</programlisting>
                 <literal>setSimpleMapWrapper</literal> method of
                 <literal>BeansWrapper</literal> you can configure it to wrap
                 <literal>java.util.Map</literal>-s as
-                <literal>TemplateHashModel</literal>-s, and do not expose
+                <literal>WrappedHash</literal>-s, and do not expose
                 the methods of the object.</para>
               </listitem>
 
@@ -25542,7 +25542,7 @@ ${obj.myMethod("foo")}</programlisting>
             <listitem>
               <para>The <literal>TemplateModelRoot</literal> interface was
               deprecated. As of FreeMarker 2.1, you can simply use any
-              instance of <literal>TemplateHashModel</literal> instead. This
+              instance of <literal>WrappedHash</literal> instead. This
               actually is due to a significant architectural change. Variables
               set or defined in a template are stored in a separate
               <literal>Environment</literal> object that only exists while the

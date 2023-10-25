@@ -10,7 +10,7 @@ import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.ext.beans.DateModel;
 import freemarker.template.WrappedDate;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateHashModel;
+import freemarker.template.WrappedHash;
 import freemarker.template.WrappedMethod;
 import freemarker.template.EvaluationException;
 
@@ -60,7 +60,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
     implements
     WrappedDate,
     WrappedMethod,
-    TemplateHashModel
+    WrappedHash
     {
         private final String text;
         private final Environment env;

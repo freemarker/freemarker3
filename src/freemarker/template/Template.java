@@ -228,10 +228,10 @@ public class Template extends TemplateCore {
      * object wrapper to convert map elements to template models.
      * @param rootMap the root node of the data model.  If null, an
      * empty data model is used. Can be any object that the effective object
-     * wrapper can turn into a <tt>TemplateHashModel</tt> Basically, simple and
+     * wrapper can turn into a <tt>WrappedHash</tt> Basically, simple and
      * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes.
      * Naturally, you can pass any object directly implementing
-     * <tt>TemplateHashModel</tt> as well.
+     * <tt>WrappedHash</tt> as well.
      * @param out the writer to output the text to.
      * @param rootNode The root node for recursive processing, this may be null.
      * 
@@ -280,10 +280,10 @@ public class Template extends TemplateCore {
     *
     * @param rootMap the root node of the data model.  If null, an
     * empty data model is used. Can be any object that the effective object
-    * wrapper can turn into a <tt>TemplateHashModel</tt> Basically, simple and
+    * wrapper can turn into a <tt>WrappedHash</tt> Basically, simple and
     * beans wrapper can turn <tt>java.util.Map</tt> objects into hashes.
     * Naturally, you can pass any object directly implementing
-    * <tt>TemplateHashModel</tt> as well.
+    * <tt>WrappedHash</tt> as well.
     * @param out the writer to output the text to.
     * @return the {@link freemarker.core.Environment Environment} object created for processing
     * @throws TemplateException if an exception occurs while setting up the Environment object.
@@ -291,7 +291,7 @@ public class Template extends TemplateCore {
     public Environment createProcessingEnvironment(Object rootMap, Writer out)
     throws TemplateException
     {
-        return new Environment(this, (TemplateHashModel) wrap(rootMap), out);
+        return new Environment(this, (WrappedHash) wrap(rootMap), out);
     }
 
     /**

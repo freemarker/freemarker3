@@ -62,7 +62,7 @@ public class Constants {
         
     };
     
-    public static final TemplateHashModel EMPTY_HASH = new TemplateHashModel() {
+    public static final WrappedHash EMPTY_HASH = new WrappedHash() {
 
         public int size() {
             return 0;

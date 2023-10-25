@@ -93,7 +93,7 @@ public class ObjectWrapper
     private ObjectWrapper() {}
 
     public static boolean isMap(Object obj) {
-        if (obj instanceof TemplateHashModel) {
+        if (obj instanceof WrappedHash) {
             return true;
         }
         if (obj instanceof Pojo) {
@@ -553,7 +553,7 @@ public class ObjectWrapper
 
     /**
      * Returns the number of introspected methods/properties that should
-     * be available via the TemplateHashModel interface. Affected by the
+     * be available via the WrappedHash interface. Affected by the
      * {@link #setMethodsShadowItems(boolean)} and {@link
      * #setExposureLevel(int)} settings.
      */
@@ -572,7 +572,7 @@ public class ObjectWrapper
 
     /**
      * Returns the Set of names of introspected methods/properties that
-     * should be available via the TemplateHashModel interface. Affected
+     * should be available via the WrappedHash interface. Affected
      * by the {@link #setMethodsShadowItems(boolean)} and {@link
      * #setExposureLevel(int)} settings.
      */
@@ -823,8 +823,8 @@ public class ObjectWrapper
             return (s == null || s.length() == 0);
         } else if (model instanceof Iterable) {
             return !((Iterable<?>) model).iterator().hasNext();
-        } else if (model instanceof TemplateHashModel) {
-            return ((TemplateHashModel) model).isEmpty();
+        } else if (model instanceof WrappedHash) {
+            return ((WrappedHash) model).isEmpty();
         } else if (isNumber(model) || (model instanceof WrappedDate) ||
                 isBoolean(model)) {
             return false;

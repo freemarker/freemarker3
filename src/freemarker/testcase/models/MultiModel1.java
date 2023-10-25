@@ -9,14 +9,14 @@ import freemarker.ext.beans.SimpleMapModel;
  *
  * @version $Id: MultiModel1.java,v 1.17 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel1 implements TemplateHashModel,
+public class MultiModel1 implements WrappedHash,
         WrappedSequence, WrappedString {
 
     private WrappedVariable m_cSubModel = new MultiModel2();
     private WrappedVariable m_cListHashModel1 = new MultiModel4();
     private WrappedVariable m_cListHashModel2 = new MultiModel5();
     private WrappedSequence m_cListModel = new ListModel();
-    private TemplateHashModel m_cHashModel = new SimpleMapModel();
+    private WrappedHash m_cHashModel = new SimpleMapModel();
 
     /** Creates new MultiModel1 */
     public MultiModel1() {

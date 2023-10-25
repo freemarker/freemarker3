@@ -13,7 +13,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.WrappedDate;
 import freemarker.template.TemplateException;
-import freemarker.template.TemplateHashModel;
+import freemarker.template.WrappedHash;
 import freemarker.template.WrappedMethod;
 import freemarker.template.EvaluationException;
 import freemarker.template.WrappedSequence;
@@ -226,7 +226,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 keys = null;
             } else {
                 for (i = 0; i < keyCnt; i++) {
-                    if (!(item instanceof TemplateHashModel)) {
+                    if (!(item instanceof WrappedHash)) {
                         throw new EvaluationException(
                                 "sorting failed: "
                                 + (i == 0 ? "You can't use ?sort_by when the "
@@ -241,7 +241,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                                             + " subvariable."));
                     }
 
-                    item = ((TemplateHashModel) item).get(keys[i]);
+                    item = ((WrappedHash) item).get(keys[i]);
                     if (item == null) {
                         throw new EvaluationException(
                                 "sorting failed: "
@@ -332,9 +332,9 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 Object key = item;
                 for (int j = 0; j < keyCnt; j++) {
                     try {
-                        key = ((TemplateHashModel) key).get(keys[j]);
+                        key = ((WrappedHash) key).get(keys[j]);
                     } catch (ClassCastException e) {
-                        if (!(key instanceof TemplateHashModel)) {
+                        if (!(key instanceof WrappedHash)) {
                             throw new EvaluationException(
                                     "sorting failed: " 
                                     + "Problem with the sequence item at index "

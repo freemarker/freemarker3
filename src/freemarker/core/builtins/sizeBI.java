@@ -3,7 +3,7 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.template.TemplateHashModel;
+import freemarker.template.WrappedHash;
 import freemarker.template.WrappedSequence;
 import static freemarker.ext.beans.ObjectWrapper.*;
 
@@ -24,8 +24,8 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
         else if (isList(model)) {
             size=asList(model).size();
         }
-        else if (model instanceof TemplateHashModel) {
-            size = ((TemplateHashModel) model).size();
+        else if (model instanceof WrappedHash) {
+            size = ((WrappedHash) model).size();
         }
         else {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "a sequence or extended hash");

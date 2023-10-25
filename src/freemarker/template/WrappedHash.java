@@ -4,10 +4,8 @@ package freemarker.template;
  * Hashes in a data model must implement this interface. Hashes
  * are FreeMarker data objects that contain other objects through key-value 
  * mappings.
- *
- * @version $Id: TemplateHashModel.java,v 1.13 2005/06/08 02:13:34 revusky Exp $
  */
-public interface TemplateHashModel extends WrappedVariable {
+public interface WrappedHash extends WrappedVariable {
     
     /**
      * Gets a variable from the hash.

@@ -20,7 +20,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * A class that will wrap an arbitrary POJO (a.k.a. Plain Old Java Object)
- * into {@link freemarker.template.TemplateHashModel}
+ * into {@link freemarker.template.WrappedHash}
  * interface allowing calls to arbitrary property getters and invocation of
  * accessible methods on the object from a template using the
  * <tt>object.foo</tt> to access properties and <tt>object.bar(arg1, arg2)</tt> to
@@ -31,7 +31,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  * @version $Id: BeanModel.java,v 1.51 2006/03/15 05:01:12 revusky Exp $
  */
 
-public class Pojo implements WrappedString, TemplateHashModel
+public class Pojo implements WrappedString, WrappedHash
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
@@ -284,8 +284,8 @@ public class Pojo implements WrappedString, TemplateHashModel
     }
 
     /**
-     * Helper method to support TemplateHashModel. Returns the Set of
-     * Strings which are available via the TemplateHashModel
+     * Helper method to support WrappedHash. Returns the Set of
+     * Strings which are available via the WrappedHash
      * interface. Subclasses that override <tt>invokeGenericGet</tt> to
      * provide additional hash keys should also override this method.
      */

@@ -74,7 +74,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     
     
     static class DateFormatter
-    implements WrappedString, TemplateHashModel, WrappedMethod {
+    implements WrappedString, WrappedHash, WrappedMethod {
         private final Date date;
         private final int dateType;
         private final Environment env;
@@ -114,7 +114,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
     }
     
-    static class NumberFormatter implements WrappedString, TemplateHashModel, WrappedMethod {
+    static class NumberFormatter implements WrappedString, WrappedHash, WrappedMethod {
         private final Number number;
         private final Environment env;
         private final NumberFormat defaultFormat;

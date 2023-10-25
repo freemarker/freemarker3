@@ -66,7 +66,7 @@ public final class Environment extends Configurable implements Scope {
         C_NUMBER_FORMAT.setDecimalSeparatorAlwaysShown(false);
     }
 
-    private final TemplateHashModel rootDataModel;
+    private final WrappedHash rootDataModel;
 
     private final List<TemplateElement> elementStack = new ArrayList<TemplateElement>();
 
@@ -128,7 +128,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public Environment(Template template,
-           TemplateHashModel rootDataModel, Writer out) {
+           WrappedHash rootDataModel, Writer out) {
         super(template);
         this.currentScope = mainNamespace = new TemplateNamespace(
                 this, template);
@@ -898,8 +898,8 @@ public final class Environment extends Configurable implements Scope {
 
     public Collection<String> getDirectVariableNames() {
         Collection<String> coll = new HashSet<String>(globalVariables.keySet());
-        if (rootDataModel instanceof TemplateHashModel) {
-            Iterator<?> rootNames = ((TemplateHashModel) rootDataModel).keys().iterator();
+        if (rootDataModel instanceof WrappedHash) {
+            Iterator<?> rootNames = ((WrappedHash) rootDataModel).keys().iterator();
             while (rootNames.hasNext()) {
                 coll.add(asString(rootNames.next()));
             }
@@ -984,8 +984,8 @@ public final class Environment extends Configurable implements Scope {
      * names of all global variables that were assigned during the template
      * processing, names of all variables in the current name-space, names of
      * all local variables and loop variables. If the passed root data model
-     * implements the {@link TemplateHashModel} interface, then all names it
-     * retrieves through a call to {@link TemplateHashModel#keys()} method are
+     * implements the {@link WrappedHash} interface, then all names it
+     * retrieves through a call to {@link WrappedHash#keys()} method are
      * returned as well. The method returns a new Set object on each call that
      * is completely disconnected from the Environment. That is, modifying the
      * set will have no effect on the Environment object.
@@ -1069,8 +1069,8 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public int size() {
-        if (rootDataModel instanceof TemplateHashModel) {
-            TemplateHashModel root = (TemplateHashModel) rootDataModel;
+        if (rootDataModel instanceof WrappedHash) {
+            WrappedHash root = (WrappedHash) rootDataModel;
             return globalVariables.size() + root.size()
                     + getEnclosingScope().size();
         }
@@ -1079,11 +1079,11 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public Iterable keys() {
-        if (!(rootDataModel instanceof TemplateHashModel)) {
+        if (!(rootDataModel instanceof WrappedHash)) {
             throw new EvaluationException(
                     "The keys() method is not applicable because the root data model does not expose a keys() method.");
         }
-        TemplateHashModel root = (TemplateHashModel) rootDataModel;
+        WrappedHash root = (WrappedHash) rootDataModel;
         Iterable rootKeys = root.keys();
         Iterable sharedVariableKeys = getEnclosingScope().keys();
         LinkedHashSet<Object> aggregate = new LinkedHashSet<>();
@@ -1101,11 +1101,11 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public Iterable values() {
-        if (!(rootDataModel instanceof TemplateHashModel)) {
+        if (!(rootDataModel instanceof WrappedHash)) {
             throw new EvaluationException(
                     "The keys() method is not applicable because the root data model does not expose a keys() method.");
         }
-        TemplateHashModel root = (TemplateHashModel) rootDataModel;
+        WrappedHash root = (WrappedHash) rootDataModel;
         Iterable rootValues = root.values();
         Iterable sharedVariableValues = getEnclosingScope()
                 .values();
@@ -1180,8 +1180,8 @@ public final class Environment extends Configurable implements Scope {
      * of the root hash passed to the <code>Template.process(...)</code>, and
      * the shared variables in the <code>Configuration</code>.
      */
-    public TemplateHashModel getDataModel() {
-        final TemplateHashModel result = new TemplateHashModel() {
+    public WrappedHash getDataModel() {
+        final WrappedHash result = new WrappedHash() {
             public boolean isEmpty() {
                 return false;
             }
@@ -1195,8 +1195,8 @@ public final class Environment extends Configurable implements Scope {
             }
         };
 
-        if (rootDataModel instanceof TemplateHashModel) {
-            return new TemplateHashModel() {
+        if (rootDataModel instanceof WrappedHash) {
+            return new WrappedHash() {
                 public boolean isEmpty() {
                     return result.isEmpty();
                 }
@@ -1209,15 +1209,15 @@ public final class Environment extends Configurable implements Scope {
                 // configuration shared variables even though
                 // the hash will return them, if only for BWC reasons
                 public Iterable values() {
-                    return ((TemplateHashModel) rootDataModel).values();
+                    return ((WrappedHash) rootDataModel).values();
                 }
 
                 public Iterable keys() {
-                    return ((TemplateHashModel) rootDataModel).keys();
+                    return ((WrappedHash) rootDataModel).keys();
                 }
 
                 public int size() {
-                    return ((TemplateHashModel) rootDataModel).size();
+                    return ((WrappedHash) rootDataModel).size();
                 }
             };
         }

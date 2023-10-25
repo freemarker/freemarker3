@@ -324,10 +324,10 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
         if (isDisplayableAsString(left) && isDisplayableAsString(right)) {
             return asString(left) + asString(right);
         }
-        if (left instanceof TemplateHashModel && right instanceof TemplateHashModel) {
-            if (left instanceof TemplateHashModel && right instanceof TemplateHashModel) {
-                TemplateHashModel leftModelEx = (TemplateHashModel)left;
-                TemplateHashModel rightModelEx = (TemplateHashModel)right;
+        if (left instanceof WrappedHash && right instanceof WrappedHash) {
+            if (left instanceof WrappedHash && right instanceof WrappedHash) {
+                WrappedHash leftModelEx = (WrappedHash)left;
+                WrappedHash rightModelEx = (WrappedHash)right;
                 if (leftModelEx.size() == 0) {
                     return rightModelEx;
                 } else if (rightModelEx.size() == 0) {
@@ -336,8 +336,8 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
                     return new ConcatenatedHashEx(leftModelEx, rightModelEx);
                 }
             } else {
-                return new ConcatenatedHash((TemplateHashModel)left,
-                                            (TemplateHashModel)right);
+                return new ConcatenatedHash((WrappedHash)left,
+                                            (WrappedHash)right);
             }
         }
         String msg = this.getLocation() + ": Cannot add or concatenate";
@@ -373,11 +373,11 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
         }
     }
 
-    private static class ConcatenatedHash implements TemplateHashModel {
-        final TemplateHashModel left;
-        final TemplateHashModel right;
+    private static class ConcatenatedHash implements WrappedHash {
+        final WrappedHash left;
+        final WrappedHash right;
 
-        ConcatenatedHash(TemplateHashModel left, TemplateHashModel right)
+        ConcatenatedHash(WrappedHash left, WrappedHash right)
         {
             this.left = left;
             this.right = right;
@@ -395,13 +395,13 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
         }
     }
 
-    private static final class ConcatenatedHashEx extends ConcatenatedHash implements TemplateHashModel
+    private static final class ConcatenatedHashEx extends ConcatenatedHash implements WrappedHash
     {
         private Iterable<String> keys;
         private Iterable<Object> values;
         private int size;
 
-        ConcatenatedHashEx(TemplateHashModel left, TemplateHashModel right)
+        ConcatenatedHashEx(WrappedHash left, WrappedHash right)
         {
             super(left, right);
         }
@@ -429,14 +429,14 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
             if (keys == null) {
                 HashSet<String> keySet = new HashSet<String>();
                 List<String> keySeq = new ArrayList<>();
-                addKeys(keySet, keySeq, (TemplateHashModel)this.left);
-                addKeys(keySet, keySeq, (TemplateHashModel)this.right);
+                addKeys(keySet, keySeq, (WrappedHash)this.left);
+                addKeys(keySet, keySeq, (WrappedHash)this.right);
                 size = keySet.size();
                 keys = keySeq;
             }
         }
 
-        private static void addKeys(Set<String> set, List<String> keySeq, TemplateHashModel hash)
+        private static void addKeys(Set<String> set, List<String> keySeq, WrappedHash hash)
         throws EvaluationException
         {
             Iterator<?> it = hash.keys().iterator();
@@ -1012,7 +1012,7 @@ INJECT BuiltinVariable :
         return this;
     }
 
-    static class VarsHash implements TemplateHashModel {
+    static class VarsHash implements WrappedHash {
         
         private final Environment env;
         
@@ -1246,7 +1246,7 @@ import java.util.HashMap;
 INJECT DotVariable : 
     import freemarker.core.Environment;
     import freemarker.core.parser.Token;
-    import freemarker.template.TemplateHashModel;
+    import freemarker.template.WrappedHash;
     import java.util.Map;
     import static freemarker.ext.beans.ObjectWrapper.wrap;
     implements Expression
@@ -1264,8 +1264,8 @@ INJECT DotVariable :
         if (leftModel instanceof Map) {
             return wrap(((Map)leftModel).get(getKey()));
         }
-        if(leftModel instanceof TemplateHashModel) {
-            return wrap(((TemplateHashModel) leftModel).get(getKey()));
+        if(leftModel instanceof WrappedHash) {
+            return wrap(((WrappedHash) leftModel).get(getKey()));
         }
         throw invalidTypeException(leftModel, getTarget(), env, "hash");
     }
@@ -1360,8 +1360,8 @@ INJECT DynamicKeyName :
         if (targetModel instanceof Map) {
             return wrap(((Map) targetModel).get(key));
         }
-        if(targetModel instanceof TemplateHashModel) {
-            return wrap(((TemplateHashModel) targetModel).get(key));
+        if(targetModel instanceof WrappedHash) {
+            return wrap(((WrappedHash) targetModel).get(key));
         }
         throw invalidTypeException(targetModel, getTarget(), env, "hash");
     }
@@ -1955,7 +1955,7 @@ INJECT HashLiteral :
         return result;
     }
 
-    private class SequenceHash implements TemplateHashModel {
+    private class SequenceHash implements WrappedHash {
 
         private HashMap<String, Object> keyMap  = new HashMap<>(); // maps keys to integer offset
         private Iterable<String> keyCollection;
