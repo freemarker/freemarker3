@@ -7,7 +7,6 @@ import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.template.Constants;
-import freemarker.template.LazilyEvaluatableArguments;
 import freemarker.template.WrappedMethod;
 import freemarker.core.nodes.generated.ParentheticalExpression;
 import freemarker.ext.beans.ObjectWrapper;
@@ -70,7 +69,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
         }
     };
 
-    private static class FirstDefined implements LazilyEvaluatableArguments {
+    private static class FirstDefined implements WrappedMethod {
         static final FirstDefined INSTANCE = new FirstDefined();
         public Object exec(List args) {
             for (Object arg : args) {

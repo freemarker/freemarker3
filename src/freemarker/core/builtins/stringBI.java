@@ -43,7 +43,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
 	
 	
     static class BooleanFormatter
-    implements WrappedString, LazilyEvaluatableArguments  
+    implements WrappedString, WrappedMethod  
     {
         private final Object bool;
         private final Environment env;
