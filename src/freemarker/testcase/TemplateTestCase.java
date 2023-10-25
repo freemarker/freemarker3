@@ -145,8 +145,8 @@ public class TemplateTestCase extends TestCase {
         else if (testName.equals("dateformat")) {
             GregorianCalendar cal = new GregorianCalendar(2002, 10, 15, 14, 54, 13);
             cal.setTimeZone(TimeZone.getTimeZone("GMT"));
-            dataModel.put("date", new DateModel(cal.getTime(), TemplateDateModel.DATETIME));
-            dataModel.put("unknownDate", new DateModel(cal.getTime(), TemplateDateModel.UNKNOWN));
+            dataModel.put("date", new DateModel(cal.getTime(), WrappedDate.DATETIME));
+            dataModel.put("unknownDate", new DateModel(cal.getTime(), WrappedDate.UNKNOWN));
         }
     
         else if (testName.equals("number-format")) {
@@ -279,7 +279,7 @@ public class TemplateTestCase extends TestCase {
         }
     }
     @Parameters("foo")    
-    static class TestMethod implements TemplateMethodModel {
+    static class TestMethod implements WrappedMethod {
       public Object exec(java.util.List arguments) {
           return "Parameter foo is: " + arguments.get(0);
       }

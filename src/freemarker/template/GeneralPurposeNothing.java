@@ -12,7 +12,7 @@ import java.util.Collections;
  */
 
 final class GeneralPurposeNothing
-implements WrappedBoolean, WrappedString, WrappedSequence, TemplateHashModelEx, TemplateMethodModel {
+implements WrappedBoolean, WrappedString, WrappedSequence, TemplateHashModelEx, WrappedMethod {
 
     private static final WrappedVariable instance = new GeneralPurposeNothing();
       

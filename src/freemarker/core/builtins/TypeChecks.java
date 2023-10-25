@@ -25,7 +25,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = isNumber(value);
 		}
 		else if (builtInName == "is_date") {
-			result = value instanceof TemplateDateModel;
+			result = value instanceof WrappedDate;
 		}
 		else if (builtInName == "is_enumerable" || builtInName == "is_collection") {
 			result = isIterable(value);
@@ -37,7 +37,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = (value instanceof Macro) && !((Macro) value).isFunction();
 		}
 		else if (builtInName == "is_directive") {
-			result = value instanceof Macro || value instanceof TemplateDirectiveModel;
+			result = value instanceof Macro || value instanceof UserDirective;
 		}
 		else if (builtInName == "is_boolean") {
 			result = isBoolean(value);
@@ -49,7 +49,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = value instanceof TemplateHashModelEx;
 		}
 		else if (builtInName == "is_method") {
-			result = value instanceof TemplateMethodModel;
+			result = value instanceof WrappedMethod;
 		}
 		else if (builtInName == "is_node") {
 			result = value instanceof WrappedNode;

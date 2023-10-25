@@ -8,9 +8,9 @@ import freemarker.annotations.Parameters;
  * their arguments needn't be evaluated before the method is invoked, but that
  * each argument should be evaluated only when it is first retrieved from the
  * argument list by the model. While this interface extends 
- * {@link TemplateMethodModel} to reinforce the notion that it is to be applied
+ * {@link WrappedMethod} to reinforce the notion that it is to be applied
  * to method models, it can naturally be implemented by classes that implement
- * {@link TemplateMethodModel}. 
+ * {@link WrappedMethod}. 
  * Note that for the time being, there is a limitation in the FreeMarker 
  * implementation that prevents lazy evaluation of arguments of method models
  * that have a {@link Parameters} annotation on them. If your class 
@@ -20,5 +20,5 @@ import freemarker.annotations.Parameters;
  * @author Attila Szegedi
  * @version $Id: LazilyEvaluatableArguments.java,v 1.2 2005/11/03 08:45:08 szegedia Exp $
  */
-public interface LazilyEvaluatableArguments extends TemplateMethodModel {
+public interface LazilyEvaluatableArguments extends WrappedMethod {
 }

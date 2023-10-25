@@ -22,7 +22,7 @@ public class resolveBI extends ExpressionEvaluatingBuiltIn {
             throw new TemplateException("Expecting scope on left of ?resolve built-in", env);
         }
         final Scope scope = (Scope) model;
-        return new TemplateMethodModel() {
+        return new WrappedMethod() {
             @Parameters("key")
             public Object exec(List args) {
                 return scope.resolveVariable((String) args.get(0)); 

@@ -205,14 +205,14 @@ public final class Environment extends Configurable implements Scope {
     private static final Object[] NO_OUT_ARGS = new Object[0];
 
     public void render(final TemplateElement element,
-            TemplateDirectiveModel directiveModel, Map<String, Object> args,
+            UserDirective directiveModel, Map<String, Object> args,
             final List<String> bodyParameterNames)
             throws IOException {
-        TemplateDirectiveBody nested = null;
+        UserDirectiveBody nested = null;
         boolean createsNewScope = false;
         if (element != null) {
             createsNewScope = ((TemplateElement) element.getParent()).createsScope();
-            nested = new TemplateDirectiveBody() {
+            nested = new UserDirectiveBody() {
                 public void render(Writer newOut) throws TemplateException, IOException {
                     Writer prevOut = out;
                     out = newOut;
@@ -711,22 +711,22 @@ public final class Environment extends Configurable implements Scope {
 
     public DateFormat getDateFormatObject(int dateType) {
         switch (dateType) {
-            case TemplateDateModel.UNKNOWN: {
+            case WrappedDate.UNKNOWN: {
                 return null;
             }
-            case TemplateDateModel.TIME: {
+            case WrappedDate.TIME: {
                 if (timeFormat == null) {
                     timeFormat = getDateFormatObject(dateType, getTimeFormat());
                 }
                 return timeFormat;
             }
-            case TemplateDateModel.DATE: {
+            case WrappedDate.DATE: {
                 if (dateFormat == null) {
                     dateFormat = getDateFormatObject(dateType, getDateFormat());
                 }
                 return dateFormat;
             }
-            case TemplateDateModel.DATETIME: {
+            case WrappedDate.DATETIME: {
                 if (dateTimeFormat == null) {
                     dateTimeFormat = getDateFormatObject(dateType,
                             getDateTimeFormat());
@@ -743,10 +743,10 @@ public final class Environment extends Configurable implements Scope {
     public DateFormat getDateFormatObject(int dateType, String pattern) {
         if (dateFormats == null) {
             dateFormats = new Map[4];
-            dateFormats[TemplateDateModel.UNKNOWN] = new HashMap<String, DateFormat>();
-            dateFormats[TemplateDateModel.TIME] = new HashMap<String, DateFormat>();
-            dateFormats[TemplateDateModel.DATE] = new HashMap<String, DateFormat>();
-            dateFormats[TemplateDateModel.DATETIME] = new HashMap<String, DateFormat>();
+            dateFormats[WrappedDate.UNKNOWN] = new HashMap<String, DateFormat>();
+            dateFormats[WrappedDate.TIME] = new HashMap<String, DateFormat>();
+            dateFormats[WrappedDate.DATE] = new HashMap<String, DateFormat>();
+            dateFormats[WrappedDate.DATETIME] = new HashMap<String, DateFormat>();
         }
         Map<String, DateFormat> typedDateFormat = dateFormats[dateType];
 
@@ -770,7 +770,7 @@ public final class Environment extends Configurable implements Scope {
                         .nextToken()) : DateFormat.DEFAULT;
                 if (style != -1) {
                     switch (dateType) {
-                        case TemplateDateModel.UNKNOWN: {
+                        case WrappedDate.UNKNOWN: {
                             throw new EvaluationException(
                                     "Can't convert the date to string using a "
                                             + "built-in format, because it is not known which "
@@ -779,15 +779,15 @@ public final class Environment extends Configurable implements Scope {
                                             + "?string.<format> or ?string(<format>) built-in "
                                             + "with explicit formatting pattern with this date.");
                         }
-                        case TemplateDateModel.TIME: {
+                        case WrappedDate.TIME: {
                             format = DateFormat.getTimeInstance(style, locale);
                             break;
                         }
-                        case TemplateDateModel.DATE: {
+                        case WrappedDate.DATE: {
                             format = DateFormat.getDateInstance(style, locale);
                             break;
                         }
-                        case TemplateDateModel.DATETIME: {
+                        case WrappedDate.DATETIME: {
                             int timestyle = tok.hasMoreTokens() ? parseDateStyleToken(tok
                                     .nextToken())
                                     : style;

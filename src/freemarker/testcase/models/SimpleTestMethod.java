@@ -9,7 +9,7 @@ import freemarker.template.*;
  *
  * @version $Id: SimpleTestMethod.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class SimpleTestMethod implements TemplateMethodModel {
+public class SimpleTestMethod implements WrappedMethod {
 
     /**
      * Executes a method call.

@@ -9,14 +9,14 @@ import java.util.Map;
 /**
  * A TemplateTransformModel that includes properties. These properties can be
  * set at model construction time, or, for the purposes of this demonstration,
- * can be passed in from a wrapper TemplateMethodModel.
+ * can be passed in from a wrapper WrappedMethod.
  *
  * @version $Id: TransformModel1.java,v 1.21 2003/01/12 23:40:25 revusky Exp $
  */
 
 @Parameters("")
 
-public class TransformModel1 implements TemplateDirectiveModel {
+public class TransformModel1 implements UserDirective {
 
     private boolean m_bAmpersands = false;
     private boolean m_bQuotes = false;
@@ -25,7 +25,7 @@ public class TransformModel1 implements TemplateDirectiveModel {
 
     private static final int READER_BUFFER_SIZE = 4096;
 
-    public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) throws IOException {
+    public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, UserDirectiveBody body) throws IOException {
     	body.render(getWriter(env.getOut(), args));
     }
 
@@ -55,7 +55,7 @@ public class TransformModel1 implements TemplateDirectiveModel {
     /**
      * Indicates whether we escape ampersands. This property can be set either
      * while the model is being constructed, or via a property passed in through
-     * a <code>TemplateMethodModel</code>.
+     * a <code>WrappedMethod</code>.
      */
     public void setAmpersands( boolean bAmpersands ) {
         m_bAmpersands = bAmpersands;
@@ -64,7 +64,7 @@ public class TransformModel1 implements TemplateDirectiveModel {
     /**
      * Indicates whether we escape quotes. This property can be set either
      * while the model is being constructed, or via a property passed in through
-     * a <code>TemplateMethodModel</code>.
+     * a <code>WrappedMethod</code>.
      */
     public void setQuotes( boolean bQuotes ) {
         m_bQuotes = bQuotes;
@@ -73,7 +73,7 @@ public class TransformModel1 implements TemplateDirectiveModel {
     /**
      * Indicates whether we escape tags. This property can be set either
      * while the model is being constructed, or via a property passed in through
-     * a <code>TemplateMethodModel</code>.
+     * a <code>WrappedMethod</code>.
      */
     public void setTags( boolean bTags ) {
         m_bTags = bTags;
@@ -82,7 +82,7 @@ public class TransformModel1 implements TemplateDirectiveModel {
     /**
      * Sets a comment for this transformation. This property can be set either
      * while the model is being constructed, or via a property passed in through
-     * a <code>TemplateMethodModel</code>.
+     * a <code>WrappedMethod</code>.
      */
     public void setComment( String aComment ) {
         m_aComment = aComment;

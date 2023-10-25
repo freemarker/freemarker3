@@ -565,8 +565,8 @@ INJECT BlockAssignment :
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
     import freemarker.core.Scope;
-    import freemarker.template.TemplateDirectiveBody;
-    import freemarker.template.TemplateDirectiveModel;
+    import freemarker.template.UserDirectiveBody;
+    import freemarker.template.UserDirective;
     import freemarker.template.TemplateException;
     extends TemplateElement
 {
@@ -616,10 +616,10 @@ INJECT BlockAssignment :
     	}
     }
     
-    private static class CaptureOutput implements TemplateDirectiveModel {
+    private static class CaptureOutput implements UserDirective {
         String capturedText = ""; 
 
-        public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) throws IOException {
+        public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, UserDirectiveBody body) throws IOException {
         	body.render(getWriter(env.getOut(), args));
         }
 
@@ -1069,7 +1069,7 @@ INJECT UnifiedCall :
     import java.util.*;
     import freemarker.core.Environment;
     import freemarker.core.nodes.ParameterList;
-    import freemarker.template.TemplateDirectiveModel;
+    import freemarker.template.UserDirective;
     import freemarker.template.TemplateException;
     extends TemplateElement
 {
@@ -1115,7 +1115,7 @@ INJECT UnifiedCall :
             }    
             env.render(macro, args, bodyParameters, firstChildOfType(TemplateElement.class));
         }
-        else if (tm instanceof TemplateDirectiveModel) {
+        else if (tm instanceof UserDirective) {
             Map<String, Object> argMap
                     = args != null
                             ? args.getParameterMap(tm, env)
@@ -1127,7 +1127,7 @@ INJECT UnifiedCall :
             else {
                 paramNames = bodyParameters.getParamNames();
             }
-            env.render(firstChildOfType(TemplateElement.class), (TemplateDirectiveModel) tm, argMap, paramNames);
+            env.render(firstChildOfType(TemplateElement.class), (UserDirective) tm, argMap, paramNames);
         }
         else {
             nameExp.assertNonNull(tm, env);

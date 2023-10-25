@@ -29,7 +29,7 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ConstructorFunction implements TemplateMethodModel {
+    static class ConstructorFunction implements WrappedMethod {
 
         private final Class<?> cl;
         private final Environment env;

@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Collections;
 
 import freemarker.annotations.Parameters;
-import freemarker.template.TemplateMethodModel;
+import freemarker.template.WrappedMethod;
 import freemarker.template.EvaluationException;
 import freemarker.template.WrappedSequence;
 
 /**
  * A class that will wrap a reflected method call into a
- * {@link freemarker.template.TemplateMethodModel} interface. 
+ * {@link freemarker.template.WrappedMethod} interface. 
  * It is used by {@link Pojo} to wrap reflected method calls
  * for non-overloaded methods.
  * @author Attila Szegedi, szegedia at users dot sourceforge dot net
@@ -21,7 +21,7 @@ import freemarker.template.WrappedSequence;
  */
 public final class SimpleMethodModel extends SimpleMemberModel<Method>
     implements
-    TemplateMethodModel,
+    WrappedMethod,
     WrappedSequence
 {
     private final Object object;

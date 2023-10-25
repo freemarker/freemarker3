@@ -11,10 +11,10 @@ import freemarker.core.Environment;
 import freemarker.core.ArithmeticEngine;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.template.TemplateDateModel;
+import freemarker.template.WrappedDate;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
-import freemarker.template.TemplateMethodModel;
+import freemarker.template.WrappedMethod;
 import freemarker.template.EvaluationException;
 import freemarker.template.WrappedSequence;
 import freemarker.template.utility.StringUtil;
@@ -123,7 +123,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ChunkFunction implements TemplateMethodModel {
+    static class ChunkFunction implements WrappedMethod {
 
         private final List tsm;
 
@@ -264,7 +264,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             keyType = KEY_TYPE_STRING;
         } else if (isNumber(item)) {
             keyType = KEY_TYPE_NUMBER;
-        } else if (item instanceof TemplateDateModel) {
+        } else if (item instanceof WrappedDate) {
             keyType = KEY_TYPE_DATE;
         } else {
             throw new EvaluationException(
@@ -307,7 +307,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 for (i = 0; i < ln; i++) {
                     item = seq.get(i);
                     try {
-                        result.add(new KVP(((TemplateDateModel) item).getAsDate(),
+                        result.add(new KVP(((WrappedDate) item).getAsDate(),
                                 item));
                     } catch (ClassCastException e) {
                         if (!isNumber(item)) {
@@ -382,10 +382,10 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 } else if (keyType == KEY_TYPE_DATE) {
                     try {
-                        result.add(new KVP(((TemplateDateModel) key).getAsDate(),
+                        result.add(new KVP(((WrappedDate) key).getAsDate(),
                                 item));
                     } catch (ClassCastException e) {
-                        if (!(key instanceof TemplateDateModel)) {
+                        if (!(key instanceof WrappedDate)) {
                             throw new EvaluationException(
                                     "sorting failed: "
                                     + "All key values in the sequence must be "
@@ -465,7 +465,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SortByMethod implements TemplateMethodModel {
+    static class SortByMethod implements WrappedMethod {
         List seq;
 
         SortByMethod(List seq) {
@@ -510,7 +510,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SequenceIndexOf implements TemplateMethodModel {
+    static class SequenceIndexOf implements WrappedMethod {
 
         private final List sequence;
         private final boolean reverse;

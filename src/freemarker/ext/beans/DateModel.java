@@ -2,14 +2,14 @@ package freemarker.ext.beans;
 
 import java.util.Date;
 
-import freemarker.template.TemplateDateModel;
+import freemarker.template.WrappedDate;
 
 /**
  * Wraps arbitrary subclass of {@link java.util.Date} into a reflective model.
- * Beside acting as a {@link TemplateDateModel}, you can call all Java methods
+ * Beside acting as a {@link WrappedDate}, you can call all Java methods
  * on these objects as well.
  */
-public class DateModel extends Pojo implements TemplateDateModel
+public class DateModel extends Pojo implements WrappedDate
 {
     private int type;
     

@@ -59,7 +59,7 @@ public class Pojo implements WrappedString, TemplateHashModelEx
     /**
      * Uses Beans introspection to locate a property or method with name
      * matching the key name. If a method or property is found, it is wrapped
-     * into {@link freemarker.template.TemplateMethodModel} (for a method or
+     * into {@link freemarker.template.WrappedMethod} (for a method or
      * indexed property), or evaluated on-the-fly and the return value wrapped
      * into appropriate model (for a simple property) Models for various
      * properties and methods are cached on a per-class basis, so the costly

@@ -2,7 +2,7 @@ package freemarker.core;
 
 import java.util.Date;
 
-import freemarker.template.TemplateDateModel;
+import freemarker.template.WrappedDate;
 import freemarker.template.TemplateException;
 import freemarker.core.nodes.generated.Expression;
 import static freemarker.template.Constants.JAVA_NULL;
@@ -38,7 +38,7 @@ public class EvaluationUtil
         }
     }
 
-    static public Date getDate(TemplateDateModel model, Expression expr, Environment env)
+    static public Date getDate(WrappedDate model, Expression expr, Environment env)
     {
         Date value = model.getAsDate();
         if(value == null) {

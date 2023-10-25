@@ -9,7 +9,7 @@ import freemarker.template.utility.*;
  *
  * @version $Id: TransformMethodWrapper1.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class TransformMethodWrapper1 extends Object implements TemplateMethodModel {
+public class TransformMethodWrapper1 extends Object implements WrappedMethod {
 
     /**
      * Executes a method call.

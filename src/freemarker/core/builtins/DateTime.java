@@ -8,10 +8,10 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.ext.beans.DateModel;
-import freemarker.template.TemplateDateModel;
+import freemarker.template.WrappedDate;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateHashModel;
-import freemarker.template.TemplateMethodModel;
+import freemarker.template.WrappedMethod;
 import freemarker.template.EvaluationException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -32,20 +32,20 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller, 
             Object model) 
     {
-        if (model instanceof TemplateDateModel) {
-            TemplateDateModel dmodel = (TemplateDateModel) model;
+        if (model instanceof WrappedDate) {
+            WrappedDate dmodel = (WrappedDate) model;
             int dtype = dmodel.getDateType();
             // Any date model can be coerced into its own type
             if(dateType == dtype) {
                 return dmodel;
             }
             // unknown and datetime can be coerced into any date type
-            if(dtype == TemplateDateModel.UNKNOWN || dtype == TemplateDateModel.DATETIME) {
+            if(dtype == WrappedDate.UNKNOWN || dtype == WrappedDate.DATETIME) {
                 return new DateModel(dmodel.getAsDate(), dateType);
             }
             throw new TemplateException(
-                    "Cannot convert " + TemplateDateModel.TYPE_NAMES.get(dtype)
-                    + " into " + TemplateDateModel.TYPE_NAMES.get(dateType), env);
+                    "Cannot convert " + WrappedDate.TYPE_NAMES.get(dtype)
+                    + " into " + WrappedDate.TYPE_NAMES.get(dateType), env);
         }
         else if (isString(model)) {
             return new DateParser(asString(model), dateType, caller,  env);
@@ -58,8 +58,8 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
 
     static class DateParser
     implements
-    TemplateDateModel,
-    TemplateMethodModel,
+    WrappedDate,
+    WrappedMethod,
     TemplateHashModel
     {
         private final String text;

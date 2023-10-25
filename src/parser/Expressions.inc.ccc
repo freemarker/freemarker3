@@ -28,8 +28,8 @@ INJECT Expression :
         if (isNumber(referent)) {
             return env.formatNumber(asNumber(referent));
         }
-        if (referent instanceof TemplateDateModel) {
-            TemplateDateModel dm = (TemplateDateModel) referent;
+        if (referent instanceof WrappedDate) {
+            WrappedDate dm = (WrappedDate) referent;
             return env.formatDate(EvaluationUtil.getDate(dm, this, env), dm.getDateType());
         }
         if (isString(referent)) {
@@ -629,24 +629,24 @@ INJECT ComparisonExpression :
                     : getTemplate().getArithmeticEngine();
             comp = ae.compareNumbers(first, second);
         }
-        else if(ltm instanceof TemplateDateModel && rtm instanceof TemplateDateModel) {
-            TemplateDateModel ltdm = (TemplateDateModel)ltm;
-            TemplateDateModel rtdm = (TemplateDateModel)rtm;
+        else if(ltm instanceof WrappedDate && rtm instanceof WrappedDate) {
+            WrappedDate ltdm = (WrappedDate)ltm;
+            WrappedDate rtdm = (WrappedDate)rtm;
             int ltype = ltdm.getDateType();
             int rtype = rtdm.getDateType();
             if(ltype != rtype) {
                 throw new TemplateException(
                     "Can not compare dates of different type. Left date is of "
-                    + TemplateDateModel.TYPE_NAMES.get(ltype)
+                    + WrappedDate.TYPE_NAMES.get(ltype)
                     + " type, right date is of " 
-                    + TemplateDateModel.TYPE_NAMES.get(rtype) + " type.", 
+                    + WrappedDate.TYPE_NAMES.get(rtype) + " type.", 
                     env);
             }
-            if(ltype == TemplateDateModel.UNKNOWN) {
+            if(ltype == WrappedDate.UNKNOWN) {
                 throw new TemplateException(
                     "Left date is of UNKNOWN type, and can not be compared.", env);
             }
-            if(rtype == TemplateDateModel.UNKNOWN) {
+            if(rtype == WrappedDate.UNKNOWN) {
                 throw new TemplateException(
                     "Right date is of UNKNOWN type, and can not be compared.", env);
             }
@@ -1104,7 +1104,7 @@ import java.util.HashMap;
 
     import freemarker.core.Environment;
     import freemarker.core.builtins.*;
-    import freemarker.template.TemplateDateModel;
+    import freemarker.template.WrappedDate;
     implements Expression;
 {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();
@@ -1193,9 +1193,9 @@ import java.util.HashMap;
         knownBuiltins.put("namespace", new MacroBuiltins.Namespace());
         knownBuiltins.put("keys", new HashBuiltin.Keys());
         knownBuiltins.put("values", new HashBuiltin.Values());
-        knownBuiltins.put("date", new DateTime(TemplateDateModel.DATE));
-        knownBuiltins.put("time", new DateTime(TemplateDateModel.TIME));
-        knownBuiltins.put("datetime", new DateTime(TemplateDateModel.DATETIME));
+        knownBuiltins.put("date", new DateTime(WrappedDate.DATE));
+        knownBuiltins.put("time", new DateTime(WrappedDate.TIME));
+        knownBuiltins.put("datetime", new DateTime(WrappedDate.DATETIME));
         knownBuiltins.put("is_defined", new ExistenceBuiltIn.IsDefinedBuiltIn());
         knownBuiltins.put("if_exists", new ExistenceBuiltIn.IfExistsBuiltIn());
         knownBuiltins.put("exists", new ExistenceBuiltIn.ExistsBuiltIn());
@@ -1478,8 +1478,8 @@ INJECT MethodCall :
     public Object evaluate(Environment env) throws TemplateException
     {
         Object value = getTarget().evaluate(env);
-        if (value instanceof TemplateMethodModel) {
-            TemplateMethodModel targetMethod = (TemplateMethodModel)value;
+        if (value instanceof WrappedMethod) {
+            WrappedMethod targetMethod = (WrappedMethod)value;
             ArgsList args = getArgs();
             List argumentStrings = new ArrayList();
             if (args !=null) {
@@ -1561,7 +1561,7 @@ INJECT PositionalArgsList :
         ParameterList annotatedParameterList = getParameterList(target);
         if (annotatedParameterList == null) {
             if (firstChildOfType(Expression.class) != null) {
-                throw new EvaluationException("Cannot pass positional arguments to this TemplateDirectiveModel");
+                throw new EvaluationException("Cannot pass positional arguments to this UserDirective");
             }
         }
         else {
@@ -1710,7 +1710,7 @@ INJECT ArgsList :
 	private static final ParameterList NO_PARAM_LIST = new ParameterList();
         
 	/**
-	 * The target will be either a TemplateTranformModel or TemplateMethodModel.
+	 * The target will be either a TemplateTranformModel or WrappedMethod.
 	 * This returns a key-value map of the arguments to be passed to the target.
 	 * A TemplateException will be thrown if the target's parameters do not match
 	 * this ArgList in some way.
@@ -1765,12 +1765,12 @@ INJECT ArgsList :
         if (target instanceof SimpleMethodModel) {
             params = ((SimpleMethodModel) target).getParametersAnnotation();
         }
-		else if (target instanceof TemplateMethodModel) {
+		else if (target instanceof WrappedMethod) {
 			try {
 				keyMethod = target.getClass().getMethod("exec", new Class[] {List.class});
 			} catch (Exception e) {
 				// Again, this condition should be impossible. If something is
-				// a TemplateMethodModel, it must implement this exec method.
+				// a WrappedMethod, it must implement this exec method.
 				throw new InternalError(e.getMessage());
 			}
 		}

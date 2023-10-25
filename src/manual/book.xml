@@ -3918,7 +3918,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         directive. <phrase role="forProgrammers">Java programmers who want to
         implement the directive in Java Language, rather than in a template,
         should use
-        <literal>freemarker.template.TemplateDirectiveModel</literal> (see
+        <literal>freemarker.template.UserDirective</literal> (see
         <link linkend="pgui_datamodel_directive">more
         here...</link>).</phrase></para>
 
@@ -5616,13 +5616,13 @@ public class Test {
           corresponding <literal>java.util.Date</literal> subclasses for
           them.</para>
 
-          <para><literal>TemplateDateModel</literal> interface has two
+          <para><literal>WrappedDate</literal> interface has two
           methods: <literal>java.util.Date getAsDate()</literal> and
           <literal>int getDateType()</literal>. A typical implementation of
           this interface, stores a <literal>java.util.Date</literal> object,
           plus an integer that tells the "database style type". The value of
           this integer must be a constant from the
-          <literal>TemplateDateModel</literal> interface:
+          <literal>WrappedDate</literal> interface:
           <literal>DATE</literal>, <literal>TIME</literal>,
           <literal>DATETIME</literal> and <literal>UNKNOWN</literal>.</para>
 
@@ -5749,7 +5749,7 @@ public class Test {
         </indexterm>
 
         <para>Method variables exposed to a template implement the
-        <literal>TemplateMethodModel</literal> interface. This contains one
+        <literal>WrappedMethod</literal> interface. This contains one
         method: <literal>WrappedVariable exec(java.util.List
         arguments)</literal>. When you call a method with a <link
         linkend="dgui_template_exp_methodcall">method call expression</link>,
@@ -5759,7 +5759,7 @@ public class Test {
         method call expression.</para>
 
         <para>The <literal>TemplateMethodModelEx</literal> interface extends
-        <literal>TemplateMethodModel</literal>. It does not add any new
+        <literal>WrappedMethod</literal>. It does not add any new
         methods. The fact that the object implements this
         <emphasis>marker</emphasis> interface indicates to the FTL engine that
         the arguments should be put to the <literal>java.util.List</literal>
@@ -5773,7 +5773,7 @@ public class Test {
         second string of the first occurrence of the first string, or -1 if
         the second string doesn't contains the first.</para>
 
-        <programlisting role="unspecified">public class IndexOfMethod implements TemplateMethodModel {
+        <programlisting role="unspecified">public class IndexOfMethod implements WrappedMethod {
     
     public WrappedVariable exec(List args) {
         if (args.size() != 2) {
@@ -5809,7 +5809,7 @@ ${indexOf("foo", x)}</programlisting>
           <para>A method class can also implement the
           <literal>LazilyEvaluatableArguments</literal> marker interface. This
           interface has no methods and can be implemented by either
-          <literal>TemplateMethodModel</literal> or
+          <literal>WrappedMethod</literal> or
           <literal>TemplateMethodModelEx</literal> implementors. A method
           class implementing it declares that it wants its argument
           expressions to be lazily evaluated. This means that each expression
@@ -5854,11 +5854,11 @@ ${indexOf("foo", x)}</programlisting>
         </indexterm>
 
         <para>Java programmers can implement user-defined directives in Java
-        using the <literal>TemplateDirectiveModel</literal> interface. See in
+        using the <literal>UserDirective</literal> interface. See in
         the API documentation.</para>
 
         <note>
-          <para><literal>TemplateDirectiveModel</literal> was introduced in
+          <para><literal>UserDirective</literal> was introduced in
           FreeMarker 2.3.11, replacing the now depreciated
           <literal>TemplateTransformModel</literal>.</para>
         </note>
@@ -5901,8 +5901,8 @@ import java.io.Writer;
 import java.util.Map;
 
 import freemarker.core.Environment;
-import freemarker.template.TemplateDirectiveBody;
-import freemarker.template.TemplateDirectiveModel;
+import freemarker.template.UserDirectiveBody;
+import freemarker.template.UserDirective;
 import freemarker.template.TemplateException;
 import freemarker.template.WrappedVariable;
 import freemarker.template.TemplateModelException;
@@ -5918,11 +5918,11 @@ import freemarker.template.TemplateModelException;
  *  &lt;p&gt;Loop variables: None
  *  &lt;p&gt;Directive nested content: Yes
  */
-public class UpperDirective implements TemplateDirectiveModel {
+public class UpperDirective implements UserDirective {
     
     public void execute(Environment env,
             Map params, WrappedVariable[] loopVars,
-            TemplateDirectiveBody body)
+            UserDirectiveBody body)
             throws TemplateException, IOException {
         // Check if no parameters were given:
         if (!params.isEmpty()) {
@@ -6054,8 +6054,8 @@ import java.util.Map;
 import freemarker.core.Environment;
 import freemarker.template.SimpleNumber;
 import freemarker.template.WrappedBoolean;
-import freemarker.template.TemplateDirectiveBody;
-import freemarker.template.TemplateDirectiveModel;
+import freemarker.template.UserDirectiveBody;
+import freemarker.template.UserDirective;
 import freemarker.template.TemplateException;
 import freemarker.template.WrappedVariable;
 import freemarker.template.TemplateModelException;
@@ -6083,14 +6083,14 @@ import freemarker.template.WrappedNumber;
  * 
  * &lt;p&gt;Nested content: Yes
  */
-public class RepeatDirective implements TemplateDirectiveModel {
+public class RepeatDirective implements UserDirective {
     
     private static final String PARAM_NAME_COUNT = "count";
     private static final String PARAM_NAME_HR = "hr";
     
     public void execute(Environment env,
             Map params, WrappedVariable[] loopVars,
-            TemplateDirectiveBody body)
+            UserDirectiveBody body)
             throws TemplateException, IOException {
         
         // ---------------------------------------------------------------------
@@ -6178,7 +6178,7 @@ public class RepeatDirective implements TemplateDirectiveModel {
           <title>Notices</title>
 
           <para>It's important that a
-          <literal>TemplateDirectiveModel</literal> object usually should not
+          <literal>UserDirective</literal> object usually should not
           be stateful. The typical mistake is the storing of the state of the
           directive call execution in the fields of the object. Think of
           nested calls of the same directive, or directive objects used as
@@ -7938,7 +7938,7 @@ env.process();</programlisting>
         </section>
 
         <section xml:id="beanswrapper_method">
-          <title>TemplateMethodModel functionality</title>
+          <title>WrappedMethod functionality</title>
 
           <para>All methods of an object are represented as
           <literal>TemplateMethodModelEx</literal> objects accessible using a
@@ -8116,7 +8116,7 @@ env.process();</programlisting>
             <listitem>
               <para>If <literal>java.util.Date</literal> is assignable from
               <literal>T</literal>, and model implements
-              <literal>TemplateDateModel</literal>, and its date value is
+              <literal>WrappedDate</literal>, and its date value is
               instance of <literal>T</literal>, then its date value is
               returned.</para>
             </listitem>
@@ -9622,7 +9622,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         </section>
 
         <section>
-          <title>TemplateMethodModel</title>
+          <title>WrappedMethod</title>
 
           <para>When used as a method model, it returns a node list that is
           the result of evaluating an XPath expression on the current contents
@@ -14577,7 +14577,7 @@ Sorted by name.last:
 
                 <td>Whatever kind of directive (for example a macro, <phrase
                 role="forProgrammers">or
-                <literal>TemplateDirectiveModel</literal>,
+                <literal>UserDirective</literal>,
                 <literal>TemplateTransformModel</literal>, etc.</phrase>)</td>
               </tr>
 
@@ -20477,8 +20477,8 @@ WrappedVariable x = env.getVariable("x");  // get variable x</programlisting>
               <literal>[@myDirective width=50 color="red"]</literal> and
               <literal>myMethod(from=10, to=20)</literal>). This applies both
               to methods/directives implemented directly by using the
-              <literal>TemplateMethodModel</literal> and
-              <literal>TemplateDirectiveModel</literal> (and
+              <literal>WrappedMethod</literal> and
+              <literal>UserDirective</literal> (and
               <literal>TemplateTransformModel</literal>) interfaces, and to
               Java methods exposed by the object wrapper. The names of the
               parameters can be specified using the newly introduced
@@ -20521,7 +20521,7 @@ ${obj.myMethod("foo")}</programlisting>
               <para>New marker interface,
               <literal>freemarker.template.LazilyEvaluatableArguments</literal>
               can be implemented by custom
-              <literal>TemplateMethodModel</literal>-s to have their argument
+              <literal>WrappedMethod</literal>-s to have their argument
               lists lazily evaluated (each argument evaluated only when first
               used by the method during the call, instead of evaluating all
               arguments in left-to-right order before the call). <link
@@ -20587,7 +20587,7 @@ ${obj.myMethod("foo")}</programlisting>
 
             <listitem>
               <para><literal>TemplateTransformModel</literal> is now
-              deprecated, <literal>TemplateDirectiveModel</literal> is
+              deprecated, <literal>UserDirective</literal> is
               recommended instead.</para>
             </listitem>
 
@@ -20893,7 +20893,7 @@ ${obj.myMethod("foo")}</programlisting>
 
             <listitem>
               <para>A new model interface,
-              <literal>TemplateDirectiveModel</literal> provides an easier
+              <literal>UserDirective</literal> provides an easier
               paradigm for implementing user-defined directives than
               <literal>TemplateTransformModel</literal> did previously.
               <literal>TemplateTransformModel</literal> will be
@@ -21008,7 +21008,7 @@ ${obj.myMethod("foo")}</programlisting>
               documentation. Instead the more general "user-defined directive"
               term is used, which encompasses macros,
               <literal>TemplateTransformModel</literal>-s and the new
-              <literal>TemplateDirectiveModel</literal>-s, which are just
+              <literal>UserDirective</literal>-s, which are just
               different ways of implementing user-defined directives.</para>
             </listitem>
 
@@ -21605,7 +21605,7 @@ ${obj.myMethod("foo")}</programlisting>
               <para>Bugfix: The Jython wrapper didn't wrapped
               <literal>java.util.Date</literal> objects well. Now it wraps
               them with <literal>BeanWrapper</literal> to
-              <literal>TemplateDateModel</literal>.</para>
+              <literal>WrappedDate</literal>.</para>
             </listitem>
 
             <listitem>
@@ -22227,7 +22227,7 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para><literal>freemarker.template.TemplateMethodModel.exec</literal>
+              <para><literal>freemarker.template.WrappedMethod.exec</literal>
               now returns <literal>Object</literal> instead of
               <literal>WrappedVariable</literal>.</para>
             </listitem>
@@ -22566,7 +22566,7 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para><literal>freemarker.template.TemplateMethodModel.exec</literal>
+              <para><literal>freemarker.template.WrappedMethod.exec</literal>
               now returns <literal>Object</literal> instead of
               <literal>WrappedVariable</literal>.</para>
             </listitem>
@@ -23019,7 +23019,7 @@ ${obj.myMethod("foo")}</programlisting>
 
             <itemizedlist>
               <listitem>
-                <para><literal>freemarker.template.TemplateMethodModel.exec</literal>
+                <para><literal>freemarker.template.WrappedMethod.exec</literal>
                 now returns <literal>Object</literal> instead of
                 <literal>WrappedVariable</literal>.</para>
               </listitem>
@@ -23966,7 +23966,7 @@ ${obj.myMethod("foo")}</programlisting>
           <itemizedlist>
             <listitem>
               <para>New <literal>WrappedVariable</literal> subinterface:
-              <literal>TemplateDateModel</literal>. For more information read
+              <literal>WrappedDate</literal>. For more information read
               <xref linkend="pgui_datamodel_scalar" /></para>
             </listitem>
 
@@ -25532,7 +25532,7 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para><literal>TemplateDateModel</literal> introduced: objects
+              <para><literal>WrappedDate</literal> introduced: objects
               that implements this interface are recognized as dates and can
               be locale-sensitively formatted. <emphasis>Date support is
               experimental in FreeMarker 2.1. It can change substantially in

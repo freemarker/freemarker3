@@ -8,7 +8,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.template.Constants;
 import freemarker.template.LazilyEvaluatableArguments;
-import freemarker.template.TemplateMethodModel;
+import freemarker.template.WrappedMethod;
 import freemarker.core.nodes.generated.ParentheticalExpression;
 import freemarker.ext.beans.ObjectWrapper;
 
@@ -38,7 +38,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
             if(model == null || model == Constants.JAVA_NULL) {
                 return FirstDefined.INSTANCE;
             }
-            return new TemplateMethodModel() {
+            return new WrappedMethod() {
                 public Object exec(List arguments) {
                     return model;
                 }

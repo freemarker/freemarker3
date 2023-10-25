@@ -5,7 +5,7 @@ import java.util.Date;
 
 import freemarker.core.Environment;
 import freemarker.core.ArithmeticEngine;
-import freemarker.template.TemplateDateModel;
+import freemarker.template.WrappedDate;
 import freemarker.template.TemplateException;
 import freemarker.template.EvaluationException;
 
@@ -41,23 +41,23 @@ public class ModelComparator
             }
         }
         
-        if(model1 instanceof TemplateDateModel && model2 instanceof TemplateDateModel) {
-            TemplateDateModel ltdm = (TemplateDateModel)model1;
-            TemplateDateModel rtdm = (TemplateDateModel)model2;
+        if(model1 instanceof WrappedDate && model2 instanceof WrappedDate) {
+            WrappedDate ltdm = (WrappedDate)model1;
+            WrappedDate rtdm = (WrappedDate)model2;
             int ltype = ltdm.getDateType();
             int rtype = rtdm.getDateType();
             if(ltype != rtype) {
                 throw new EvaluationException(
                         "Can not compare dates of different type. Left date is of "
-                        + TemplateDateModel.TYPE_NAMES.get(ltype)
+                        + WrappedDate.TYPE_NAMES.get(ltype)
                         + " type, right date is of "
-                        + TemplateDateModel.TYPE_NAMES.get(rtype) + " type.");
+                        + WrappedDate.TYPE_NAMES.get(rtype) + " type.");
             }
-            if(ltype == TemplateDateModel.UNKNOWN) {
+            if(ltype == WrappedDate.UNKNOWN) {
                 throw new EvaluationException(
                 "Left date is of UNKNOWN type, and can not be compared.");
             }
-            if(rtype == TemplateDateModel.UNKNOWN) {
+            if(rtype == WrappedDate.UNKNOWN) {
                 throw new EvaluationException(
                 "Right date is of UNKNOWN type, and can not be compared.");
             }

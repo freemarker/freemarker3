@@ -16,7 +16,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.ext.beans.ListModel;
 import freemarker.template.WrappedBoolean;
 import freemarker.template.WrappedString;
-import freemarker.template.TemplateMethodModel;
+import freemarker.template.WrappedMethod;
 import freemarker.template.EvaluationException;
 import freemarker.template.WrappedSequence;
 import freemarker.template.utility.StringUtil;
@@ -189,7 +189,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ReplaceMethod implements TemplateMethodModel {
+    static class ReplaceMethod implements WrappedMethod {
         String string;
 
         ReplaceMethod(String string) {
@@ -220,7 +220,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SubstringMethod implements TemplateMethodModel {
+    static class SubstringMethod implements WrappedMethod {
 
         private final String string;
 
@@ -251,7 +251,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
     }
 
 
-    static class SplitMethod implements TemplateMethodModel {
+    static class SplitMethod implements WrappedMethod {
         private String string;
 
         SplitMethod(String string) {
@@ -279,7 +279,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class MatcherBuilder implements TemplateMethodModel {
+    static class MatcherBuilder implements WrappedMethod {
 
         String matchString;
 
@@ -397,7 +397,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class LeftPadMethod implements TemplateMethodModel {
+    static class LeftPadMethod implements WrappedMethod {
         private String string;
 
         LeftPadMethod(String s) {
@@ -452,7 +452,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class RightPadMethod implements TemplateMethodModel {
+    static class RightPadMethod implements WrappedMethod {
         private String string;
 
         private RightPadMethod(String string) {
@@ -506,7 +506,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class urlBIResult implements WrappedString, TemplateMethodModel {
+    static class urlBIResult implements WrappedString, WrappedMethod {
 
         private final String target;
         private final Environment env;
@@ -556,7 +556,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class StartsOrEndsWithMethod implements TemplateMethodModel {
+    static class StartsOrEndsWithMethod implements WrappedMethod {
         private final String string;
         private final boolean reverse;
 
@@ -588,7 +588,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class IndexOfMethod implements TemplateMethodModel {
+    static class IndexOfMethod implements WrappedMethod {
         private final String s;
         private final boolean reverse;
 
@@ -643,7 +643,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ContainsMethod implements TemplateMethodModel {
+    static class ContainsMethod implements WrappedMethod {
         private String s;
 
         private ContainsMethod(String s) {

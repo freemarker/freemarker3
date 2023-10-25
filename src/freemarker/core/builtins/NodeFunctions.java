@@ -6,7 +6,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.ext.beans.ListModel;
-import freemarker.template.TemplateMethodModel;
+import freemarker.template.WrappedMethod;
 import freemarker.template.WrappedNode;
 import freemarker.template.Constants;
 import freemarker.template.utility.StringUtil;
@@ -100,7 +100,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class AncestorSequence extends ListModel implements TemplateMethodModel {
+    static class AncestorSequence extends ListModel implements WrappedMethod {
         public Object exec(List names) {
             if (names == null || names.isEmpty()) {
                 return this;

@@ -80,7 +80,7 @@ public class ObjectWrapper
 
     private int exposureLevel = EXPOSE_SAFE;
     private boolean methodsShadowItems = true;
-    private int defaultDateType = TemplateDateModel.UNKNOWN;
+    private int defaultDateType = WrappedDate.UNKNOWN;
 
     private boolean strict = false;
     
@@ -149,8 +149,8 @@ public class ObjectWrapper
     }
 
     public static Date asDate(Object obj) {
-        if (obj instanceof TemplateDateModel) {
-            return ((TemplateDateModel) obj).getAsDate();
+        if (obj instanceof WrappedDate) {
+            return ((WrappedDate) obj).getAsDate();
         }
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
@@ -184,7 +184,7 @@ public class ObjectWrapper
     public static boolean isDisplayableAsString(Object tm) {
     	return isString(tm)
     	     || isNumber(tm)
-    	     || tm instanceof TemplateDateModel;
+    	     || tm instanceof WrappedDate;
     }
     
     public static boolean isBoolean(Object obj) {
@@ -300,7 +300,7 @@ public class ObjectWrapper
      * Sets the default date type to use for date models that result from
      * a plain <tt>java.util.Date</tt> instead of <tt>java.sql.Date</tt> or
      * <tt>java.sql.Time</tt> or <tt>java.sql.Timestamp</tt>. Default value is 
-     * {@link TemplateDateModel#UNKNOWN}.
+     * {@link WrappedDate#UNKNOWN}.
      * @param defaultDateType the new default date type.
      */
     public synchronized void setDefaultDateType(int defaultDateType) {
@@ -400,7 +400,7 @@ public class ObjectWrapper
      * Attempts to unwrap a model into underlying object. Generally, this
      * method is the inverse of the {@link #wrap(Object)} method. In addition
      * it will unwrap arbitrary {@link WrappedNumber} instances into
-     * a number, arbitrary {@link TemplateDateModel} instances into a date,
+     * a number, arbitrary {@link WrappedDate} instances into a date,
      * {@link WrappedString} instances into a String, and
      * {@link WrappedBoolean} instances into a Boolean.
      * All other objects are returned unchanged.
@@ -825,7 +825,7 @@ public class ObjectWrapper
             return !((Iterable<?>) model).iterator().hasNext();
         } else if (model instanceof TemplateHashModel) {
             return ((TemplateHashModel) model).isEmpty();
-        } else if (isNumber(model) || (model instanceof TemplateDateModel) ||
+        } else if (isNumber(model) || (model instanceof WrappedDate) ||
                 isBoolean(model)) {
             return false;
         } else {

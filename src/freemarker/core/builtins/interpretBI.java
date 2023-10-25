@@ -8,8 +8,8 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.Template;
-import freemarker.template.TemplateDirectiveBody;
-import freemarker.template.TemplateDirectiveModel;
+import freemarker.template.UserDirectiveBody;
+import freemarker.template.UserDirective;
 import freemarker.template.EvaluationException;
 import freemarker.template.WrappedSequence;
 import freemarker.template.TemplateException;
@@ -61,7 +61,7 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    private static class TemplateProcessorModel implements TemplateDirectiveModel {
+    private static class TemplateProcessorModel implements UserDirective {
         private final Template template;
 
         TemplateProcessorModel(Template template) {
@@ -69,7 +69,7 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
         }
 
         public void execute(Environment env, Map<String, Object> params,
-                Object[] loopVars, TemplateDirectiveBody body)
+                Object[] loopVars, UserDirectiveBody body)
                 throws IOException {
             try {
                 env.include(template, false);

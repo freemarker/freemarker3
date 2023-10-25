@@ -34,14 +34,14 @@ import freemarker.core.Environment;
  * @version $Id: HtmlEscape.java,v 1.29 2003/02/25 00:28:16 revusky Exp $
  * @see freemarker.template.utility.XmlEscape
  */
-public class HtmlEscape implements TemplateDirectiveModel {
+public class HtmlEscape implements UserDirective {
 
     private static final char[] LT = "&lt;".toCharArray();
     private static final char[] GT = "&gt;".toCharArray();
     private static final char[] AMP = "&amp;".toCharArray();
     private static final char[] QUOT = "&quot;".toCharArray();
     
-    public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) throws IOException {
+    public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, UserDirectiveBody body) throws IOException {
     	body.render(getWriter(env.getOut()));
     }
 

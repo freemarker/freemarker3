@@ -5,8 +5,8 @@ import java.io.Writer;
 import java.util.Map;
 
 import freemarker.core.Environment;
-import freemarker.template.TemplateDirectiveBody;
-import freemarker.template.TemplateDirectiveModel;
+import freemarker.template.UserDirectiveBody;
+import freemarker.template.UserDirective;
 
 /**
  * Performs an XML escaping of a given template fragment. Specifically,
@@ -17,7 +17,7 @@ import freemarker.template.TemplateDirectiveModel;
  * 
  * @version $Id: XmlEscape.java,v 1.29 2004/11/27 14:49:57 ddekany Exp $
  */
-public class XmlEscape implements TemplateDirectiveModel {
+public class XmlEscape implements UserDirective {
 
     private static final char[] LT = "&lt;".toCharArray();
     private static final char[] GT = "&gt;".toCharArray();
@@ -25,7 +25,7 @@ public class XmlEscape implements TemplateDirectiveModel {
     private static final char[] QUOT = "&quot;".toCharArray();
     private static final char[] APOS = "&apos;".toCharArray();
 
-    public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, TemplateDirectiveBody body) throws IOException {
+    public void execute(Environment env, Map<String, Object> args, Object[] bodyVars, UserDirectiveBody body) throws IOException {
         body.render(getWriter(env.getOut()));
     }
     

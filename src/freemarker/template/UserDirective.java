@@ -15,7 +15,7 @@ import freemarker.core.Environment;
  * @author Attila Szegedi
  * @version $Id: $
  */
-public interface TemplateDirectiveModel extends WrappedVariable
+public interface UserDirective extends WrappedVariable
 {
     /**
      * Executes this user-defined directive; called by FreeMarker when the user-defined
@@ -41,6 +41,6 @@ public interface TemplateDirectiveModel extends WrappedVariable
      * @throws IOException
      */
     public void execute(Environment env, Map<String, Object> params, 
-            Object[] loopVars, TemplateDirectiveBody body) 
+            Object[] loopVars, UserDirectiveBody body) 
     throws IOException;
 }

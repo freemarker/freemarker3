@@ -5,15 +5,15 @@ import java.io.Writer;
 
 /**
  * Represents the body of a directive invocation. An implementation of this 
- * class is passed to the {@link TemplateDirectiveModel#execute(freemarker.core.Environment, 
- * java.util.Map, WrappedVariable[], TemplateDirectiveBody)}. The implementation of the method is
+ * class is passed to the {@link UserDirective#execute(freemarker.core.Environment, 
+ * java.util.Map, WrappedVariable[], UserDirectiveBody)}. The implementation of the method is
  * free to invoke it any number of times, with any writer.
  *
  * @since 2.3.11
  * @author Attila Szegedi
  * @version $Id: $
  */
-public interface TemplateDirectiveBody
+public interface UserDirectiveBody
 {
     /**
      * Renders the body of the directive body to the specified writer. The 

@@ -9,7 +9,7 @@ import static freemarker.ext.beans.ObjectWrapper.asString;
  *
  * @version $Id: TransformMethodWrapper2.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class TransformMethodWrapper2 implements TemplateMethodModel {
+public class TransformMethodWrapper2 implements WrappedMethod {
 
     /**
      * Executes a method call.
