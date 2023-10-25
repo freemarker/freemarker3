@@ -325,9 +325,9 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
             return asString(left) + asString(right);
         }
         if (left instanceof TemplateHashModel && right instanceof TemplateHashModel) {
-            if (left instanceof TemplateHashModelEx && right instanceof TemplateHashModelEx) {
-                TemplateHashModelEx leftModelEx = (TemplateHashModelEx)left;
-                TemplateHashModelEx rightModelEx = (TemplateHashModelEx)right;
+            if (left instanceof TemplateHashModel && right instanceof TemplateHashModel) {
+                TemplateHashModel leftModelEx = (TemplateHashModel)left;
+                TemplateHashModel rightModelEx = (TemplateHashModel)right;
                 if (leftModelEx.size() == 0) {
                     return rightModelEx;
                 } else if (rightModelEx.size() == 0) {
@@ -395,13 +395,13 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
         }
     }
 
-    private static final class ConcatenatedHashEx extends ConcatenatedHash implements TemplateHashModelEx
+    private static final class ConcatenatedHashEx extends ConcatenatedHash implements TemplateHashModel
     {
         private Iterable<String> keys;
         private Iterable<Object> values;
         private int size;
 
-        ConcatenatedHashEx(TemplateHashModelEx left, TemplateHashModelEx right)
+        ConcatenatedHashEx(TemplateHashModel left, TemplateHashModel right)
         {
             super(left, right);
         }
@@ -429,14 +429,14 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
             if (keys == null) {
                 HashSet<String> keySet = new HashSet<String>();
                 List<String> keySeq = new ArrayList<>();
-                addKeys(keySet, keySeq, (TemplateHashModelEx)this.left);
-                addKeys(keySet, keySeq, (TemplateHashModelEx)this.right);
+                addKeys(keySet, keySeq, (TemplateHashModel)this.left);
+                addKeys(keySet, keySeq, (TemplateHashModel)this.right);
                 size = keySet.size();
                 keys = keySeq;
             }
         }
 
-        private static void addKeys(Set<String> set, List<String> keySeq, TemplateHashModelEx hash)
+        private static void addKeys(Set<String> set, List<String> keySeq, TemplateHashModel hash)
         throws EvaluationException
         {
             Iterator<?> it = hash.keys().iterator();
@@ -1955,7 +1955,7 @@ INJECT HashLiteral :
         return result;
     }
 
-    private class SequenceHash implements TemplateHashModelEx {
+    private class SequenceHash implements TemplateHashModel {
 
         private HashMap<String, Object> keyMap  = new HashMap<>(); // maps keys to integer offset
         private Iterable<String> keyCollection;

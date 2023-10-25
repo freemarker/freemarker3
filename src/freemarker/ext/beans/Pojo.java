@@ -31,7 +31,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  * @version $Id: BeanModel.java,v 1.51 2006/03/15 05:01:12 revusky Exp $
  */
 
-public class Pojo implements WrappedString, TemplateHashModelEx
+public class Pojo implements WrappedString, TemplateHashModel
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
@@ -284,7 +284,7 @@ public class Pojo implements WrappedString, TemplateHashModelEx
     }
 
     /**
-     * Helper method to support TemplateHashModelEx. Returns the Set of
+     * Helper method to support TemplateHashModel. Returns the Set of
      * Strings which are available via the TemplateHashModel
      * interface. Subclasses that override <tt>invokeGenericGet</tt> to
      * provide additional hash keys should also override this method.

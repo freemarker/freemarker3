@@ -11,7 +11,7 @@ import freemarker.template.*;
  * @author Jonathan Revusky
  */
 
-public interface Scope extends TemplateHashModelEx {
+public interface Scope extends TemplateHashModel {
 
     /**
      * Set a variable in this scope. This 

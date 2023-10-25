@@ -1,4 +1,4 @@
-package freemarker.template;
+    package freemarker.template;
 
 /**
  * Describes objects that are nodes in a tree.
@@ -18,14 +18,14 @@ public interface WrappedNode extends WrappedVariable {
      * @return the parent of this node or null, in which case
      * this node is the root of the tree.
      */
-    WrappedNode getParentNode() throws EvaluationException;
+    WrappedNode getParentNode();
     
     /**
      * @return a sequence containing this node's children.
      * If the returned value is null or empty, this is essentially 
      * a leaf node.
      */
-    WrappedSequence getChildNodes() throws EvaluationException;
+    java.util.List<WrappedNode> getChildNodes();
 
     /**
      * @return a String that is used to determine the processing
@@ -35,7 +35,7 @@ public interface WrappedNode extends WrappedVariable {
      * returns "@text" for text nodes, "@pi" for processing instructions,
      * and so on.
      */    
-    String getNodeName() throws EvaluationException;
+    String getNodeName();
     
     /**
      * @return a String describing the <em>type</em> of node this is.
@@ -44,7 +44,7 @@ public interface WrappedNode extends WrappedVariable {
      * trees could return whatever is appropriate for that application. It
      * can be null, if you don't want to use node-types.
      */
-    String getNodeType() throws EvaluationException;
+    String getNodeType();
     
     
     /**
@@ -53,5 +53,5 @@ public interface WrappedNode extends WrappedVariable {
      * not XML-related, it will almost certainly be null. Even 
      * for XML nodes, this will often be null.
      */
-    String getNodeNamespace() throws EvaluationException;
+    String getNodeNamespace();
 }

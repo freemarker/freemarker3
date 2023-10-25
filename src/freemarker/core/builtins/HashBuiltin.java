@@ -15,23 +15,23 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
             Object model) 
     {
-        if (!(model instanceof TemplateHashModelEx)) {
+        if (!(model instanceof TemplateHashModel)) {
             throw TemplateNode.invalidTypeException(model, 
                     caller.getTarget(), env, "extended hash");
         }
-        final Iterable result = apply((TemplateHashModelEx) model);
+        final Iterable result = apply((TemplateHashModel) model);
 //        if (!(result instanceof WrappedSequence)) {
 //            return new CollectionAndSequence(result);
 //        } 
         return result;
     }
     
-    public abstract Iterable apply(TemplateHashModelEx hash) 
+    public abstract Iterable apply(TemplateHashModel hash) 
     throws EvaluationException;
     
     public static class Keys extends HashBuiltin {
         @Override
-        public Iterable apply(TemplateHashModelEx hash)
+        public Iterable apply(TemplateHashModel hash)
         {
             return hash.keys();
         }
@@ -39,7 +39,7 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
 
     public static class Values extends HashBuiltin {
         @Override
-        public Iterable apply(TemplateHashModelEx hash)
+        public Iterable apply(TemplateHashModel hash)
         {
             return hash.values();
         }

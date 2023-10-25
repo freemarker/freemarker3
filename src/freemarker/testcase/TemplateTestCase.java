@@ -164,12 +164,6 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("zero", 0);
             dataModel.put("data", new MultiModel1());
         }
-/*        
-        else if (testName.equals("nodelistmodel")) {
-            org.jdom.Document doc = new SAXBuilder().build(new InputSource(getClass().getResourceAsStream("test-xml.xml")));
-            dataModel.put("doc", new NodeListModel(doc));
-        }
-*/        
         
         else if (testName.equals("string-builtins3")) {
             dataModel.put("multi", new TestBoolean());
@@ -278,9 +272,10 @@ public class TemplateTestCase extends TestCase {
             return "de";
         }
     }
+    
     @Parameters("foo")    
     static class TestMethod implements WrappedMethod {
-      public Object exec(java.util.List arguments) {
+      public Object exec(java.util.List<Object> arguments) {
           return "Parameter foo is: " + arguments.get(0);
       }
     }
@@ -299,7 +294,7 @@ public class TemplateTestCase extends TestCase {
           return "element";
       }
     
-      public WrappedSequence getChildNodes() {
+      public List<WrappedNode> getChildNodes() {
           return null;
       }
       

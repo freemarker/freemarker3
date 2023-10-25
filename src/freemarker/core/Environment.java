@@ -506,7 +506,7 @@ public final class Environment extends Configurable implements Scope {
                         "The target node of recursion is missing or null.");
             }
         }
-        WrappedSequence children = node.getChildNodes();
+        List<WrappedNode> children = node.getChildNodes();
         if (children == null)
             return;
         for (int i = 0; i < children.size(); i++) {
@@ -898,8 +898,8 @@ public final class Environment extends Configurable implements Scope {
 
     public Collection<String> getDirectVariableNames() {
         Collection<String> coll = new HashSet<String>(globalVariables.keySet());
-        if (rootDataModel instanceof TemplateHashModelEx) {
-            Iterator<?> rootNames = ((TemplateHashModelEx) rootDataModel).keys().iterator();
+        if (rootDataModel instanceof TemplateHashModel) {
+            Iterator<?> rootNames = ((TemplateHashModel) rootDataModel).keys().iterator();
             while (rootNames.hasNext()) {
                 coll.add(asString(rootNames.next()));
             }
@@ -984,8 +984,8 @@ public final class Environment extends Configurable implements Scope {
      * names of all global variables that were assigned during the template
      * processing, names of all variables in the current name-space, names of
      * all local variables and loop variables. If the passed root data model
-     * implements the {@link TemplateHashModelEx} interface, then all names it
-     * retrieves through a call to {@link TemplateHashModelEx#keys()} method are
+     * implements the {@link TemplateHashModel} interface, then all names it
+     * retrieves through a call to {@link TemplateHashModel#keys()} method are
      * returned as well. The method returns a new Set object on each call that
      * is completely disconnected from the Environment. That is, modifying the
      * set will have no effect on the Environment object.
@@ -1069,8 +1069,8 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public int size() {
-        if (rootDataModel instanceof TemplateHashModelEx) {
-            TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
+        if (rootDataModel instanceof TemplateHashModel) {
+            TemplateHashModel root = (TemplateHashModel) rootDataModel;
             return globalVariables.size() + root.size()
                     + getEnclosingScope().size();
         }
@@ -1079,11 +1079,11 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public Iterable keys() {
-        if (!(rootDataModel instanceof TemplateHashModelEx)) {
+        if (!(rootDataModel instanceof TemplateHashModel)) {
             throw new EvaluationException(
                     "The keys() method is not applicable because the root data model does not expose a keys() method.");
         }
-        TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
+        TemplateHashModel root = (TemplateHashModel) rootDataModel;
         Iterable rootKeys = root.keys();
         Iterable sharedVariableKeys = getEnclosingScope().keys();
         LinkedHashSet<Object> aggregate = new LinkedHashSet<>();
@@ -1101,11 +1101,11 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public Iterable values() {
-        if (!(rootDataModel instanceof TemplateHashModelEx)) {
+        if (!(rootDataModel instanceof TemplateHashModel)) {
             throw new EvaluationException(
                     "The keys() method is not applicable because the root data model does not expose a keys() method.");
         }
-        TemplateHashModelEx root = (TemplateHashModelEx) rootDataModel;
+        TemplateHashModel root = (TemplateHashModel) rootDataModel;
         Iterable rootValues = root.values();
         Iterable sharedVariableValues = getEnclosingScope()
                 .values();
@@ -1195,8 +1195,8 @@ public final class Environment extends Configurable implements Scope {
             }
         };
 
-        if (rootDataModel instanceof TemplateHashModelEx) {
-            return new TemplateHashModelEx() {
+        if (rootDataModel instanceof TemplateHashModel) {
+            return new TemplateHashModel() {
                 public boolean isEmpty() {
                     return result.isEmpty();
                 }
@@ -1209,15 +1209,15 @@ public final class Environment extends Configurable implements Scope {
                 // configuration shared variables even though
                 // the hash will return them, if only for BWC reasons
                 public Iterable values() {
-                    return ((TemplateHashModelEx) rootDataModel).values();
+                    return ((TemplateHashModel) rootDataModel).values();
                 }
 
                 public Iterable keys() {
-                    return ((TemplateHashModelEx) rootDataModel).keys();
+                    return ((TemplateHashModel) rootDataModel).keys();
                 }
 
                 public int size() {
-                    return ((TemplateHashModelEx) rootDataModel).size();
+                    return ((TemplateHashModel) rootDataModel).size();
                 }
             };
         }

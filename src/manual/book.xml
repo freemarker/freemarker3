@@ -5676,7 +5676,7 @@ public class Test {
           subvariable or not. The <literal>get</literal> method returns null
           if no subvariable with the given name exists.</para>
 
-          <para>The <literal>TemplateHashModelEx</literal> interface extends
+          <para>The <literal>TemplateHashModel</literal> interface extends
           <literal>TemplateHashModel</literal>. It adds methods by which <link
           linkend="ref_builtin_values">values</link> and <link
           linkend="ref_builtin_keys">keys</link> built-ins can enumerate the
@@ -5684,7 +5684,7 @@ public class Test {
 
           <para>The commonly used implementation is
           <literal>SimpleHash</literal>, which implements
-          <literal>TemplateHashModelEx</literal>. Internally it uses a
+          <literal>TemplateHashModel</literal>. Internally it uses a
           <literal>java.util.Hash</literal> to store the subvariables.
           <literal>SimpleHash</literal> has methods by which you can add and
           remove subvariable. These methods should be used to initialize the
@@ -22398,7 +22398,7 @@ ${obj.myMethod("foo")}</programlisting>
               In practical terms this means you can access their sizes or
               retrieve their subvariables by index, and use all of the <link
               linkend="ref_builtins_sequence">sequence built-ins</link>. (Note
-              for the programmers: The <literal>TemplateHashModelEx</literal>
+              for the programmers: The <literal>TemplateHashModel</literal>
               interface has not been changed. Your old code will work. See the
               API documentation to see why.)</para>
             </listitem>
@@ -23997,7 +23997,7 @@ ${obj.myMethod("foo")}</programlisting>
               package: <literal>BeanModel</literal>,
               <literal>MapModel</literal>, and
               <literal>ResourceModel</literal> now implement
-              <literal>TemplateHashModelEx</literal>.</para>
+              <literal>TemplateHashModel</literal>.</para>
             </listitem>
 
             <listitem>
@@ -24443,7 +24443,7 @@ ${obj.myMethod("foo")}</programlisting>
                   <literal>setSimpleMapWrapper</literal> method of
                   <literal>BeansWrapper</literal> you can configure it to wrap
                   <literal>java.util.Map</literal>-s as
-                  <literal>TemplateHashModelEx</literal>-s, and do not expose
+                  <literal>TemplateHashModel</literal>-s, and do not expose
                   the methods of the object.</para>
                 </listitem>
               </itemizedlist>
@@ -24880,7 +24880,7 @@ ${obj.myMethod("foo")}</programlisting>
                 <literal>setSimpleMapWrapper</literal> method of
                 <literal>BeansWrapper</literal> you can configure it to wrap
                 <literal>java.util.Map</literal>-s as
-                <literal>TemplateHashModelEx</literal>-s, and do not expose
+                <literal>TemplateHashModel</literal>-s, and do not expose
                 the methods of the object.</para>
               </listitem>
 

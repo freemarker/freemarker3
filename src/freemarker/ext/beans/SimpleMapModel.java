@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 import freemarker.template.Constants;
-import freemarker.template.TemplateHashModelEx;
+import freemarker.template.TemplateHashModel;
 import freemarker.template.WrappedMethod;
 
 import static freemarker.ext.beans.ObjectWrapper.wrap;
@@ -18,7 +18,7 @@ import static freemarker.ext.beans.ObjectWrapper.wrap;
  * @author Chris Nokleberg
  * @version $Id: SimpleMapModel.java,v 1.9 2005/06/12 19:03:04 szegedia Exp $
  */
-public class SimpleMapModel implements TemplateHashModelEx, WrappedMethod
+public class SimpleMapModel implements TemplateHashModel, WrappedMethod
 {
     private final Map map;
 
