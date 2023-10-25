@@ -42,7 +42,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
         Object[] args = new Object[l];
         Iterator<TemplateModel> it = arguments.iterator();
         for(int i = 0; i < l; ++i) {
-            Object obj = w.unwrap(it.next(), types[i]);
+            Object obj = w.unwrap(it.next());
             if(obj == ObjectWrapper.CAN_NOT_UNWRAP) {
                 return NO_SUCH_METHOD;
             }

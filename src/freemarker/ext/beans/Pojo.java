@@ -31,7 +31,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  * @version $Id: BeanModel.java,v 1.51 2006/03/15 05:01:12 revusky Exp $
  */
 
-public class Pojo implements TemplateScalarModel, TemplateHashModelEx, AdapterTemplateModel
+public class Pojo implements TemplateScalarModel, TemplateHashModelEx
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
@@ -84,7 +84,7 @@ public class Pojo implements TemplateScalarModel, TemplateHashModelEx, AdapterTe
      */
     public Object get(String key) {
         Class<?> clazz = object.getClass();
-        Map<String,Object> classInfo = ObjectWrapper.instance().getClassKeyMap(clazz);
+        Map<Object,Object> classInfo = ObjectWrapper.instance().getClassKeyMap(clazz);
         Object retval = null;
 
         ObjectWrapper.instance().introspectClass(object.getClass());
@@ -195,6 +195,7 @@ public class Pojo implements TemplateScalarModel, TemplateHashModelEx, AdapterTe
         }
         else if(desc instanceof MethodMap)
         {
+            //assert false : "DUCK";
             retval = member = 
                 new OverloadedMethodModel(object, (MethodMap<Method>)desc);
         }

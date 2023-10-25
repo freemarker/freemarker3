@@ -77,9 +77,9 @@ class SimpleMemberModel<T extends Member>
         return args;
     }
 
-    private static Object unwrapArgument(Object model, Class type, ObjectWrapper w) 
+    private static Object unwrapArgument(Object model, Class<?> type, ObjectWrapper w) 
     {
-        Object val = w.unwrap(model, type);
+        Object val = w.unwrap(model);
         if(val == ObjectWrapper.CAN_NOT_UNWRAP) {
             throw new EvaluationException("Can not unwrap argument " +
                     model + " to " + type.getName());

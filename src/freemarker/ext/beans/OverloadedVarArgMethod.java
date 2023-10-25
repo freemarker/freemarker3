@@ -42,7 +42,7 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
                 System.arraycopy(args, 0, newargs, 0, fixArgCount);
                 Object array = Array.newInstance(varArgType, actualArgCount - fixArgCount);
                 for(int i = fixArgCount; i < actualArgCount; ++i) {
-                    Object val = w.unwrap(modelArgs.get(i), varArgType);
+                    Object val = w.unwrap(modelArgs.get(i));
                     if(val == ObjectWrapper.CAN_NOT_UNWRAP) {
                         return null;
                     }
@@ -52,7 +52,7 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
                 return newargs;
             }
             else {
-                Object val = w.unwrap(modelArgs.get(fixArgCount), varArgType);
+                Object val = w.unwrap(modelArgs.get(fixArgCount));
                 if(val == ObjectWrapper.CAN_NOT_UNWRAP) {
                     return null;
                 }
@@ -177,7 +177,7 @@ outer:  for(int j = Math.min(l + 1, marshalTypes.length - 1); j >= 0; --j) {
             // Try to marshal the arguments
             Iterator<TemplateModel> it = arguments.iterator();
             for(int i = 0; i < l; ++i) {
-                Object dst = w.unwrap(it.next(), i < j ? types[i] : types[j - 1]);
+                Object dst = w.unwrap(it.next());
                 if(dst == ObjectWrapper.CAN_NOT_UNWRAP) {
                     continue outer;
                 }

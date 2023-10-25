@@ -76,7 +76,7 @@ public class ObjectWrapper
     // for a specified class. Each key is a Class, each value is a hash map. In
     // that hash map, each key is a property/method name, each value is a
     // MethodDescriptor or a PropertyDescriptor assigned to that property/method.
-    private Map<Class<?>,Map<String,Object>> classCache = new ConcurrentHashMap<>();
+    private Map<Class<?>,Map<Object,Object>> classCache = new ConcurrentHashMap<>();
     private Set<String> cachedClassNames = new HashSet<String>();
 
     private int exposureLevel = EXPOSE_SAFE;
@@ -243,7 +243,7 @@ public class ObjectWrapper
      * can use <tt>?default('something')</tt> and <tt>?exists</tt> and similar built-ins
      * to handle the situation.
      *
-     * <p>If this property is <tt>true</tt> then an attempt to read a bean propertly in
+     * <p>If this property is <tt>true</tt> then an attempt to read a bean property in
      * the template (like <tt>myBean.aProperty</tt>) that doesn't exist in the bean
      * object (as opposed to just holding <tt>null</tt> value) will cause
      * {@link InvalidPropertyException}, which can't be suppressed in the template
@@ -409,13 +409,7 @@ public class ObjectWrapper
      * {@link TemplateBooleanModel} instances into a Boolean.
      * All other objects are returned unchanged.
      */
-    public Object unwrap(Object object) 
-    {
-        return unwrap(object, OBJECT_CLASS);
-    }
-    
-    public Object unwrap(Object object, Class<?> requiredType) 
-    {
+    public Object unwrap(Object object) {
         if(object == null) {
             throw new EvaluationException("invalid reference");
         }
@@ -469,7 +463,7 @@ public class ObjectWrapper
         try
         {
             introspectClass(clazz);
-            Map<String,Object> classInfo = classCache.get(clazz);
+            Map<Object,Object> classInfo = classCache.get(clazz);
             Object ctors = classInfo.get(CONSTRUCTORS);
             if(ctors == null)
             {
@@ -543,9 +537,9 @@ public class ObjectWrapper
         cachedClassNames.add(className);
     }
 
-    Map<String,Object> getClassKeyMap(Class clazz)
+    Map<Object,Object> getClassKeyMap(Class<?> clazz)
     {
-        Map<String, Object> map = classCache.get(clazz);
+        Map<Object, Object> map = classCache.get(clazz);
         if(map == null)
         {
             synchronized(classCache)
@@ -601,7 +595,7 @@ public class ObjectWrapper
      * that is not accessible, replaces it with appropriate accessible method
      * from a superclass or interface.
      */
-    private Map populateClassMap(Class clazz)
+    private Map<Object,Object> populateClassMap(Class<?> clazz)
     {
         // Populate first from bean info
         Map<Object, Object> map = populateClassMapWithBeanInfo(clazz);
@@ -655,9 +649,10 @@ public class ObjectWrapper
         }
         return args;
     }
-    private Map<Object, Object> populateClassMapWithBeanInfo(Class clazz)
+    
+    private Map<Object, Object> populateClassMapWithBeanInfo(Class<?> clazz)
     {
-        Map<Object, Object> classMap = new HashMap<Object, Object>();
+        Map<Object, Object> classMap = new HashMap<>();
         Map<MethodSignature, List<Method>> accessibleMethods = discoverAccessibleMethods(clazz);
         Method genericGet = getFirstAccessibleMethod(MethodSignature.GET_STRING_SIGNATURE, accessibleMethods);
         if(genericGet == null) {
