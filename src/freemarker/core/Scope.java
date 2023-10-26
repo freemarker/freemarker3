@@ -10,7 +10,6 @@ import freemarker.template.*;
  * or a template namespace 
  * @author Jonathan Revusky
  */
-
 public interface Scope extends WrappedHash {
 
     /**
@@ -66,7 +65,5 @@ public interface Scope extends WrappedHash {
      * collection don't affect the scope.
      * @throws EvaluationException
      */
-    Collection<String> getDirectVariableNames() throws EvaluationException;
-    
-    
+    Collection<String> getDirectVariableNames();
 }

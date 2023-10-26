@@ -209,6 +209,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
     static Object sort(List seq, String[] keys)
     {
+        if (true) throw new UnsupportedOperationException();
         int i;
         int keyCnt;
 
@@ -264,7 +265,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             keyType = KEY_TYPE_STRING;
         } else if (isNumber(item)) {
             keyType = KEY_TYPE_NUMBER;
-        } else if (item instanceof WrappedDate) {
+        } else if (isDate(item)) {
             keyType = KEY_TYPE_DATE;
         } else {
             throw new EvaluationException(
@@ -522,7 +523,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
         public Object exec(List args) {
             final int argc = args.size();
-            final int startIndex;
+            int startIndex;
             if (argc != 1 && argc != 2) {
                 throw new EvaluationException("Expecting one or two arguments for ?seq_" + (reverse ? "last_" : "") + "index_of");
             }
@@ -537,6 +538,8 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             else {
                 startIndex = reverse ? sequence.size() - 1 : 0;
             }
+            if (startIndex>=sequence.size()) startIndex = sequence.size()-1;
+            if (startIndex<0) startIndex = 0;
             final Environment env = Environment.getCurrentEnvironment();
             final ModelComparator comparator = new ModelComparator(env);
             if (reverse) {

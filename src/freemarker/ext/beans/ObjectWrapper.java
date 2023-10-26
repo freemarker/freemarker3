@@ -138,6 +138,19 @@ public class ObjectWrapper
         return false;
     }
 
+    public static boolean isDate(Object obj) {
+        if (obj instanceof Pojo) {
+            obj = ((Pojo) obj).getWrappedObject();
+        }
+        if (obj instanceof Date) {
+            return true;
+        }
+        if (obj instanceof WrappedDate) {
+            return true;
+        }
+        return false;
+    }
+
     public static Number asNumber(Object obj) {
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
