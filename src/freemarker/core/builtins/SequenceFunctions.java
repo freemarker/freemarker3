@@ -209,7 +209,6 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
 
     static Object sort(List seq, String[] keys)
     {
-        if (true) throw new UnsupportedOperationException();
         int i;
         int keyCnt;
 
