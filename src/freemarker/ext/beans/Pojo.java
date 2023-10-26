@@ -45,9 +45,7 @@ public class Pojo implements WrappedString, WrappedHash
      * Creates a new model that wraps the specified object. Note that there are
      * specialized subclasses of this class for wrapping arrays, collections,
      * enumeration, iterators, and maps. Note also that the superclass can be
-     * used to wrap String objects if only scalar functionality is needed. You
-     * can also choose to delegate the choice over which model class is used for
-     * wrapping to {@link ObjectWrapper#wrap(Object)}.
+     * used to wrap String objects if only scalar functionality is needed. 
      * @param object the object to wrap into a model.
      */
     public Pojo(Object object)
@@ -195,7 +193,6 @@ public class Pojo implements WrappedString, WrappedHash
         }
         else if(desc instanceof MethodMap)
         {
-            //assert false : "DUCK";
             retval = member = 
                 new OverloadedMethodModel(object, (MethodMap<Method>)desc);
         }
