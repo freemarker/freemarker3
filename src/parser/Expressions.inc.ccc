@@ -271,7 +271,7 @@ INJECT UnaryPlusMinusExpression :
     }
 }
 
-AdditiveExpression :
+AdditiveExpression#freemarker.core.nodes.AdditiveExpression :
    MultiplicativeExpression 
    [
       (
@@ -283,6 +283,7 @@ AdditiveExpression :
    ]
 ;
 
+#if false
 INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
    import java.util.*;
    import freemarker.template.*;
@@ -468,6 +469,7 @@ INJECT AdditiveExpression : //THIS NEEDS TO BE SIMPLIFIED!
         }
     }
 }
+#endif
 
 MultiplicativeExpression :
    UnaryExpression 
