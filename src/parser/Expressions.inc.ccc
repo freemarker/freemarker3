@@ -14,6 +14,7 @@ INJECT Expression :
    import freemarker.core.Environment;
    import freemarker.core.EvaluationUtil;
    import freemarker.core.InvalidReferenceException;
+   import freemarker.ext.beans.Pojo;
    import static freemarker.ext.beans.ObjectWrapper.*;
    import static freemarker.template.Constants.JAVA_NULL;
 {
@@ -32,16 +33,20 @@ INJECT Expression :
             WrappedDate dm = (WrappedDate) referent;
             return env.formatDate(EvaluationUtil.getDate(dm, this, env), dm.getDateType());
         }
+        if (referent instanceof Pojo) {
+            return ((Pojo)referent).getWrappedObject().toString();
+        }
         if (isString(referent)) {
             return asString(referent);
         }
         assertNonNull(referent, env);
-        String msg = "Error " + getLocation()
+        return referent.toString();
+/*        String msg = "Error " + getLocation()
                      +"\nExpecting a string, " 
                      + "date or number here, Expression " + this 
                      + " is instead a " 
                      + referent.getClass().getName();
-        throw new TemplateException(msg, env);
+        throw new TemplateException(msg, env);*/
     }
     
     Expression _deepClone(String name, Expression subst);
@@ -682,7 +687,7 @@ INJECT ComparisonExpression :
         else if (ltm instanceof Pojo && rtm instanceof Pojo) {
             Object left = ((Pojo)ltm).getWrappedObject();
             Object right = ((Pojo)rtm).getWrappedObject();
-            if (operation == EQUALS) {
+            if (operation == EQUALS || operation == DOUBLE_EQUALS) {
                 return left.equals(right);
             }
             if (operation == NOT_EQUALS) {

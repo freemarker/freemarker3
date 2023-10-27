@@ -260,17 +260,13 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         int keyType;
-        if (isString(item)) {
-            keyType = KEY_TYPE_STRING;
-        } else if (isNumber(item)) {
+        if (isNumber(item)) {
             keyType = KEY_TYPE_NUMBER;
         } else if (isDate(item)) {
             keyType = KEY_TYPE_DATE;
         } else {
-            throw new EvaluationException(
-                    "sorting failed: "
-                    + "Values used for sorting must be numbers, strings, or date/time values.");
-        }
+            keyType = KEY_TYPE_STRING;
+        } 
 
         if (keys == null) {
             if (keyType == KEY_TYPE_STRING) {

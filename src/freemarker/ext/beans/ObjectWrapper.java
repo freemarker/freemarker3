@@ -179,17 +179,12 @@ public class ObjectWrapper
         if (obj instanceof WrappedString) {
             return ((WrappedString) obj).getAsString();
         }
-        if (obj instanceof Number) {
-            return obj.toString();
-        }
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
-        return ((CharSequence) obj).toString();
+        return obj.toString();
     }
 
     public static boolean isDisplayableAsString(Object tm) {
     	return isString(tm)
+             || tm instanceof Pojo
     	     || isNumber(tm)
     	     || tm instanceof WrappedDate;
     }

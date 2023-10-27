@@ -31,7 +31,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  * @version $Id: BeanModel.java,v 1.51 2006/03/15 05:01:12 revusky Exp $
  */
 
-public class Pojo implements WrappedHash//,WrappedString
+public class Pojo implements WrappedHash//, WrappedString
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
@@ -277,5 +277,14 @@ public class Pojo implements WrappedHash//,WrappedString
     Set<Object> keySet()
     {
         return ObjectWrapper.keySet(object.getClass());
-    }    
+    }
+
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other instanceof Pojo) {
+           return getWrappedObject().equals(((Pojo) other).getWrappedObject());
+        }
+        //return getWrappedObject().equals(other);
+        return false;
+    }
 }

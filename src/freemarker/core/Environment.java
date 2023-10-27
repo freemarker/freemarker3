@@ -351,8 +351,8 @@ public final class Environment extends Configurable implements Scope {
                 String nodeType = node.getNodeType();
                 if (nodeType != null) {
                     // If the node's type is 'text', we just output it.
-                    if ((nodeType.equals("text") && isString(node))) {
-                        out.write(asString(nodeType));
+                    if (nodeType.equals("text")) {
+                        out.write(nodeType.toString());
                     } else if (nodeType.equals("document")) {
                         process(node, namespaces);
                     }

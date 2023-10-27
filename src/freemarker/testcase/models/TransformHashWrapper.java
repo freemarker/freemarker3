@@ -9,7 +9,7 @@ import freemarker.template.utility.*;
  *
  * @version $Id: TransformHashWrapper.java,v 1.15 2005/06/16 18:13:59 ddekany Exp $
  */
-public class TransformHashWrapper implements WrappedHash, WrappedString {
+public class TransformHashWrapper implements WrappedHash {
 
     private SimpleMapModel hash = new SimpleMapModel();
 
@@ -44,7 +44,7 @@ public class TransformHashWrapper implements WrappedHash, WrappedString {
      * Returns the scalar's value as a String.
      * @return the String value of this scalar.
      */
-    public String getAsString() {
+    public String toString() {
         return "Utility transformations";
     }
 }

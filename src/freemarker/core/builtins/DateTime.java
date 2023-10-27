@@ -47,12 +47,8 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
                     "Cannot convert " + WrappedDate.TYPE_NAMES.get(dtype)
                     + " into " + WrappedDate.TYPE_NAMES.get(dateType), env);
         }
-        else if (isString(model)) {
-            return new DateParser(asString(model), dateType, caller,  env);
-        }
         else {
-            throw TemplateNode.invalidTypeException(model, caller, env, 
-                    "time/date or string");
+            return new DateParser(model.toString(), dateType, caller,  env);
         }
     }
 
