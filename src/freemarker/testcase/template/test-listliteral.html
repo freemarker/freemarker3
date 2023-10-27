@@ -12,19 +12,19 @@
 
 <p>Now perform a list assignment:</p>
 
-[#assign hash = {"temp" : "Temporary"}]
-[#assign mymessage = "hello"]
-[#assign test = ["test1", "test23", "test45", message, mymessage]]
+[#var hash = {"temp" : "Temporary"}]
+[#var mymessage = "hello"]
+[#var test = ["test1", "test23", "test45", message, mymessage]]
 
 The list contains ${test?size} items.
 
-[#list test as item]
+#list test as item
 <p>${item}</p>
-[/#list]
+/#list
 
 <p>Now update the assignment and repeat:</p>
 
-[#assign mymessage = "world"]
+#set mymessage = "world"
 
 [#list test as item]
 <p>${item}</p>
@@ -32,37 +32,37 @@ The list contains ${test?size} items.
 
 <p>Now reassign the list and repeat:</p>
 
-[#assign test = [hash.temp, "test1", "test23", "test45", mymessage, "hash", hash["temp"]]]
-[#assign test = ["foo", "bar"]+test]
+#set test = [hash.temp, "test1", "test23", "test45", mymessage, "hash", hash["temp"]]
+#set test = ["foo", "bar"]+test
 
-[#list test[1..4] as item]
+#list test[1..4] as item
 <p>${item}</p>
-[/#]
+/#
 
 <p>Silly, but necessary tests, for one and zero element lists:</p>
 
-[#assign test = ["Hello, world"]]
+#set test = ["Hello, world"]
 
-[#list test as item]
+#list test as item
 <p>${item}</p>
-[/#]
+/#
 
 <p>Zero item test:</p>
 
-[#assign test = []]
+#set test = []
 
-[#list test as item]
+#list test as item
 <p>${item}</p>
-[/#]
+/#
 
 <p>Dumb test for number literals -- these weren't working as expected:</p>
 
-[#assign test = []+[1, 2, 3, 5, 7]]
+#set test = []+[1, 2, 3, 5, 7]
 
-[#list test as item]
+#list test as item
 <p>${item}</p>
 [#if item = 5][#break][/#if]
-[/#]
+/#
 
 </body>
 </html>

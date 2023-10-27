@@ -31,7 +31,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  * @version $Id: BeanModel.java,v 1.51 2006/03/15 05:01:12 revusky Exp $
  */
 
-public class Pojo implements WrappedString, WrappedHash
+public class Pojo implements WrappedHash//,WrappedString
 {
     private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
@@ -82,13 +82,13 @@ public class Pojo implements WrappedString, WrappedHash
      */
     public Object get(String key) {
         Class<?> clazz = object.getClass();
-        Map<Object,Object> classInfo = ObjectWrapper.getClassKeyMap(clazz);
+        Map<Object,Object> classInfo = getClassKeyMap(clazz);
         Object retval = null;
 
-        ObjectWrapper.introspectClass(object.getClass());
+        introspectClass(object.getClass());
         try
         {
-            if(ObjectWrapper.isMethodsShadowItems())
+            if(isMethodsShadowItems())
             {
                 Object fd = classInfo.get(key);
                 if(fd != null)
@@ -111,7 +111,7 @@ public class Pojo implements WrappedString, WrappedHash
                 }
             }
             if (retval == null) {
-            	if (ObjectWrapper.isStrict()) {
+            	if (isStrict()) {
             		throw new InvalidPropertyException("No such bean property: " + key);
             	} else if (logger.isDebugEnabled()) {
             		logNoSuchKey(key, classInfo);
@@ -141,7 +141,7 @@ public class Pojo implements WrappedString, WrappedHash
      * Whether the model has a plain get(String) or get(Object) method
      */
     protected boolean hasPlainGetMethod() {
-    	return ObjectWrapper.getClassKeyMap(object.getClass()).get(ObjectWrapper.GENERIC_GET_KEY) != null;
+    	return getClassKeyMap(object.getClass()).get(GENERIC_GET_KEY) != null;
     }
     
     private Object invokeThroughDescriptor(Object desc, Map classInfo)
@@ -171,25 +171,23 @@ public class Pojo implements WrappedString, WrappedHash
             Method readMethod = 
                 ((IndexedPropertyDescriptor)desc).getIndexedReadMethod(); 
             retval = member = 
-                new SimpleMethodModel(object, readMethod, 
-                        ObjectWrapper.getArgTypes(classInfo, readMethod));
+                new SimpleMethodModel(object, readMethod, getArgTypes(classInfo, readMethod));
         }
         else if(desc instanceof PropertyDescriptor)
         {
             PropertyDescriptor pd = (PropertyDescriptor)desc;
-            retval = ObjectWrapper.invokeMethod(object, pd.getReadMethod(), null);
+            retval = invokeMethod(object, pd.getReadMethod(), null);
             // (member == null) condition remains, as we don't cache these
         }
         else if(desc instanceof Field)
         {
-            retval = ObjectWrapper.wrap(((Field)desc).get(object));
+            retval = wrap(((Field)desc).get(object));
             // (member == null) condition remains, as we don't cache these
         }
         else if(desc instanceof Method)
         {
             Method method = (Method)desc;
-            retval = member = new SimpleMethodModel(object, method, 
-                    ObjectWrapper.getArgTypes(classInfo, method));
+            retval = member = new SimpleMethodModel(object, method, getArgTypes(classInfo, method));
         }
         else if(desc instanceof MethodMap)
         {
@@ -212,11 +210,11 @@ public class Pojo implements WrappedString, WrappedHash
     protected Object invokeGenericGet(Map keyMap, String key) throws IllegalAccessException,
         InvocationTargetException
     {
-        Method genericGet = (Method)keyMap.get(ObjectWrapper.GENERIC_GET_KEY);
+        Method genericGet = (Method)keyMap.get(GENERIC_GET_KEY);
         if(genericGet == null)
             return null;
 
-        return ObjectWrapper.invokeMethod(object, genericGet, new Object[] { key });
+        return invokeMethod(object, genericGet, new Object[] { key });
     }
 
     /**
@@ -247,7 +245,7 @@ public class Pojo implements WrappedString, WrappedHash
     
     public int size()
     {
-        return ObjectWrapper.keyCount(object.getClass());
+        return keyCount(object.getClass());
     }
 
     public Iterable<?> keys()
@@ -276,7 +274,7 @@ public class Pojo implements WrappedString, WrappedHash
      * interface. Subclasses that override <tt>invokeGenericGet</tt> to
      * provide additional hash keys should also override this method.
      */
-    Set keySet()
+    Set<Object> keySet()
     {
         return ObjectWrapper.keySet(object.getClass());
     }    

@@ -95,7 +95,6 @@ public class Template extends TemplateCore {
         this(name, cfg);
         this.encoding = encoding;
         try {
-            //int syntaxSetting = getConfiguration().getTagSyntax();
             this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
             CharSequence content = readInTemplateText(reader);
             FMParser parser = new FMParser(this, content);

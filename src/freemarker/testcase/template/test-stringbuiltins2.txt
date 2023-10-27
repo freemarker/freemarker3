@@ -1,5 +1,5 @@
 --
-<#assign s = "abbcdbb">
+<#var s = "abbcdbb">
 ${s?index_of("bb")} = 1
 ${s?index_of("bb", 2)} = 5
 ${s?index_of("")} = 0
@@ -35,7 +35,7 @@ ${s?contains("")?string} = true
 [${s?replace("c", "-")}] = [abb-dbb]
 [${s?replace("bb", "-=*")}] = [a-=*cd-=*]
 --
-<#assign ls = s?split("b")>
+<#var ls = s?split("b")>
 <#list ls as i>[${i}]</#list> == [a][][cd][][]
 <#list "--die--maggots--!"?split("--") as i>[${i}]</#list> == [][die][maggots][!]
 <#list "Die maggots!"?split("--") as i>[${i}]</#list> == [Die maggots!]

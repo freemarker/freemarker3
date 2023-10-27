@@ -1462,10 +1462,10 @@ INJECT MethodCall :
     import java.util.List;
     import java.io.Writer;
     import freemarker.core.Environment;
-    import freemarker.ext.beans.ObjectWrapper;
     import freemarker.template.*;
     import java.io.IOException;
     import java.io.StringWriter;
+    import static freemarker.ext.beans.ObjectWrapper.wrap;
     implements Expression;
 {
 
@@ -1488,7 +1488,7 @@ INJECT MethodCall :
                 argumentStrings = args.getParameterSequence(targetMethod, env);
             }
             Object result = targetMethod.exec(argumentStrings);
-            return ObjectWrapper.wrap(result);
+            return wrap(result);
         }
         else if (value instanceof Macro) {
             Macro func = (Macro) value;
@@ -1507,7 +1507,7 @@ INJECT MethodCall :
             } finally {
                 env.setOut(prevOut);
             }
-            return sw != null ? ObjectWrapper.wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
+            return sw != null ? wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
         }
         else {
             throw invalidTypeException(value, getTarget(), env, "method");

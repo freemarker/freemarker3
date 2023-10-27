@@ -1,5 +1,5 @@
-[#assign h = ["", "a", "b", "c"]]
-[#assign g = {"x" : 1, "y" : 2, "z" : 3}]
+[#var h = ["", "a", "b", "c"]]
+[#var g = {"x" : 1, "y" : 2, "z" : 3}]
 [#escape x as h[x]]
 ${1}
 ${2}
@@ -23,7 +23,7 @@ ${"<&>"}
 ${"<&>"}
 [/#escape]
 ---
-[#assign x = "<Mooo>"]
+[#var x = "<Mooo>"]
 ${x} = <Mooo>
 [#escape x as x?upper_case]
   ${x} = <MOOO>

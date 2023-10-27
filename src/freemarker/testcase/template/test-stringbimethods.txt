@@ -1,11 +1,11 @@
 <#setting locale="en_US">
-<#assign x = 3>
+<#var x = 3>
 ${x?string["0.00"]}
 ${x?string("0.00")}
 ---
 ${multi}
-<#assign a = true>
-<#assign b = false>
+<#var a = true>
+<#var b = false>
 ${a?string} ${b?string}
 ${a?string("yes", "no")} ${b?string("yes", "no")}
 <#setting boolean_format="igen,nem"/>

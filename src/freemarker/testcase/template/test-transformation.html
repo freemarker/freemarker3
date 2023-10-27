@@ -1,4 +1,4 @@
-<#ftl>
+<#ftl strict_vars="false">
 <#assign htmlEscape = "freemarker.template.utility.HtmlEscape"?new(),
          utility = "freemarker.testcase.models.TransformHashWrapper"?new()>
 <html>
@@ -79,11 +79,12 @@ A test string containing amps: Fish & Chips.
 A test string containing tags: <p>Fish &amp; Chips.</p>
 </@>
 
-<#assign captured_output>
+<#var captured_output>
+<#set captured_output>
 <@compress>
 <#assign x=2, y=3, z = "python", adjective="cool">
 </@compress>
-</#assign>
+</#set>
 
 ${message}
 

@@ -1,5 +1,6 @@
+[#ftl strict_vars="false"]
 <#macro repeat count>
-  <#local y = "test">
+  <#var y = "test">
   <#foreach x in 1..count>
     ${y} ${count}/${x}: <#nested x, "asdf"> <#-- the second body parameter is not used below -->
   </#foreach>

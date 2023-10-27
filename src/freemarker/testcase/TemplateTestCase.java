@@ -85,11 +85,6 @@ public class TemplateTestCase extends TestCase {
                 conf.setLocale(loc);
             }
         }
-/*        
-        else if ("object_wrapper".equals(param)) {
-            ObjectWrapper ow = ObjectWrapper.instance();
-            conf.setObjectWrapper(ow);
-        }*/
         else if ("input_encoding".equals(param)) {
             conf.setDefaultEncoding(value);
         }

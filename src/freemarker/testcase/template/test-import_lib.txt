@@ -10,4 +10,4 @@
    <#return foo+foo>
 </#function>
 
-<#assign mail = "jsmith@acme.com">
+<#var mail = "jsmith@acme.com">

@@ -20,9 +20,9 @@
   </#list>
 </#macro>
 <#macro test2>
-<#local c = 123>
+<#var c = 123>
 <@repeat count=4 ; d, halfc, last>
-  <#local c = .locals.c + 0.1>
+  <#set c = c + 0.1>
   ${d} ${halfc}<#if last> Last!</#if>
 </@repeat>
 ${c}

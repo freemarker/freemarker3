@@ -53,12 +53,12 @@ ${""}  <@x t="IC"/><#rt>
 --
    <#lt>  IB
   IC1<#rt>
-  <#assign x = 1> <#-- just a comment -->
+  <#var x = 1> <#-- just a comment -->
   C2<#t>
-  <#assign x = 1>
+  <#set x = 1>
   IB
 1<#t>
-  <#assign x = 1>
+  <#set x = 1>
 2
 ---
 <#t>1
@@ -69,7 +69,7 @@ ${""}  <@x t="IC"/><#rt>
   6
 ---
 a
-  <#assign x = 1><#t>
+  <#set x = 1><#t>
 b<#t>  
 c
 ---

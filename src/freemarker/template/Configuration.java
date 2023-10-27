@@ -25,7 +25,6 @@ import freemarker.core.Environment;
 import freemarker.core.Scope;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
-import freemarker.ext.beans.ObjectWrapper;
 import freemarker.log.Logger;
 import freemarker.template.utility.HtmlEscape;
 import freemarker.template.utility.StandardCompress;
@@ -69,14 +68,13 @@ public class Configuration extends Configurable implements Cloneable, Scope {
 
     private static final Logger logger = Logger.getLogger("freemarker.parser");
     private static Configuration defaultConfig = new Configuration();
-    private boolean localizedLookup = true, strictVariableDefinition=false;
+    private boolean localizedLookup = true, strictVariableDefinition=true;
     private TemplateCache cache;
     private HashMap<String, Object> variables = new HashMap<String, Object>();
     private HashMap<String, String> encodingMap = new HashMap<String, String>();
     private Map<String, String> autoImportMap = new HashMap<String, String>();
     private ArrayList<String> autoImports = new ArrayList<String>();
     private ArrayList<String> autoIncludes = new ArrayList<String>();
-    private ArrayList<Visitor> autoVisitors = new ArrayList<Visitor>();
     private String defaultEncoding = "UTF-8";
     private boolean tolerateParsingProblems = false;
     private int tagSyntax = AUTO_DETECT_TAG_SYNTAX;
@@ -569,11 +567,11 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      * @see #setAllSharedVariables
      */
     public void setSharedVariable(String name, Object tm) {
-        variables.put(name, ObjectWrapper.wrap(tm));
+        variables.put(name, wrap(tm));
     }
 
     public void put(String key, Object obj) {
-        variables.put(key, ObjectWrapper.wrap(obj));
+        variables.put(key, wrap(obj));
     }
 
     /**

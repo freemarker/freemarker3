@@ -1,3 +1,4 @@
+[#ftl strict_vars="false"]
 ${UNDEFINED!"foo"}
 
 <#assign duck = (FOO.BAR)!"luck">

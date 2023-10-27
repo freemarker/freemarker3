@@ -5,10 +5,10 @@
 <title>FreeMarker: Variable Test</title>
 </head>
 <body>
-<#assign list = ["one", "two", "three", "four", "five"]>
-<#assign hash = {"output" : "My message.", "key" : list}>
-<#assign hash2 = {"value" : hash}>
-<#assign items = {"mykey" : "key", "_test": "out"}>
+<#var list = ["one", "two", "three", "four", "five"]>
+<#var hash = {"output" : "My message.", "key" : list}>
+<#var hash2 = {"value" : hash}>
+<#var items = {"mykey" : "key", "_test": "out"}>
 
 <p>A simple test follows:</p>
 

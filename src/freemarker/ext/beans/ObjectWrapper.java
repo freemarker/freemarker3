@@ -221,14 +221,14 @@ public class ObjectWrapper
         return obj instanceof Iterable;
     }
 
-    public static Iterator asIterator(Object obj) {
+    public static Iterator<?> asIterator(Object obj) {
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
         if (obj instanceof Iterator) {
-            return (Iterator) obj;
+            return (Iterator<?>) obj;
         }
-        return ((Iterable) obj).iterator();
+        return ((Iterable<?>) obj).iterator();
     }
 
     
@@ -314,7 +314,7 @@ public class ObjectWrapper
         ObjectWrapper.defaultDateType = defaultDateType;
     }
     
-    protected static synchronized int getDefaultDateType() {
+    static synchronized int getDefaultDateType() {
         return defaultDateType;
     }
     
@@ -358,7 +358,7 @@ public class ObjectWrapper
 
     private static Map<Class<?>, Boolean> markedAsPojoLookup = new HashMap<>();
 
-    public static boolean isMarkedAsPojo(Class<?> clazz) {
+    private static boolean isMarkedAsPojo(Class<?> clazz) {
         Boolean lookupValue = markedAsPojoLookup.get(clazz);
         if (lookupValue != null) return lookupValue;
         if (clazz.getAnnotation(freemarker.annotations.Pojo.class) != null) {
@@ -379,11 +379,6 @@ public class ObjectWrapper
         markedAsPojoLookup.put(clazz,lookupValue);
         return lookupValue;
     }
-
-    public static void markAsPojo(Class<?> clazz, boolean b) {
-        markedAsPojoLookup.put(clazz, b);
-    }
-
 
     /**
      * Attempts to unwrap a model into underlying object. Generally, this
@@ -431,15 +426,14 @@ public class ObjectWrapper
     throws InvocationTargetException, IllegalAccessException
     {
         Object retval = method.invoke(object, args);
-        return 
-            method.getReturnType() == Void.TYPE
+        return method.getReturnType() == Void.TYPE ?
             // We're returning WrappedVariable.NOTHING for convenience of 
             // template authors who want to invoke a method for its side effect
             // i.e. ${session.invalidate()}. Returning null would be more
             // intuitive (as return value of a void method is undefined), but
             // this way we don't force people to write an additional ! operator
             // i.e. ${session.invalidate()!}
-            ? Constants.NOTHING 
+            Constants.NOTHING 
             : wrap(retval); 
     }
 
@@ -565,9 +559,9 @@ public class ObjectWrapper
      * by the {@link #setMethodsShadowItems(boolean)} and {@link
      * #setExposureLevel(int)} settings.
      */
-    static Set keySet(Class clazz)
+    static Set<Object> keySet(Class<?> clazz)
     {
-        Set set = new HashSet(getClassKeyMap(clazz).keySet());
+        Set<Object> set = new HashSet<>(getClassKeyMap(clazz).keySet());
         set.remove(CONSTRUCTORS);
         set.remove(GENERIC_GET_KEY);
         set.remove(ARGTYPES);
@@ -625,7 +619,7 @@ public class ObjectWrapper
         return map;
     }
 
-    private static Class[] componentizeLastArg(Class[] args, boolean varArg) {
+    private static Class<?>[] componentizeLastArg(Class<?>[] args, boolean varArg) {
         if(varArg && args != null) {
             int lastArg = args.length - 1;
             if(lastArg >= 0) {
@@ -796,7 +790,7 @@ public class ObjectWrapper
         return null;
     }
     
-    static boolean isSafeMethod(Method method)
+    private static boolean isSafeMethod(Method method)
     {
         return exposureLevel < EXPOSE_SAFE || !UNSAFE_METHODS.contains(method);
     }
@@ -1007,7 +1001,7 @@ public class ObjectWrapper
      * Converts any {@link BigDecimal}s in the passed array to the type of
      * the corresponding formal argument of the method.
      */
-    public static void coerceBigDecimals(Class<?>[] formalTypes, Object[] args)
+    static void coerceBigDecimals(Class<?>[] formalTypes, Object[] args)
     {
         int typeLen = formalTypes.length;
         int argsLen = args.length;
@@ -1029,7 +1023,7 @@ public class ObjectWrapper
         }
     }
     
-    public static Object coerceBigDecimal(BigDecimal bd, Class<?> formalType) {
+    private static Object coerceBigDecimal(BigDecimal bd, Class<?> formalType) {
         // int is expected in most situations, so we check it first
         if(formalType == Integer.TYPE || formalType == Integer.class) {
             return bd.intValue();

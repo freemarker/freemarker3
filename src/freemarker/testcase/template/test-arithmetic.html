@@ -1,4 +1,4 @@
-[#ftl]
+[#ftl strict_vars="true"]
 
 
 <html>
@@ -6,15 +6,15 @@
 <title>FreeMarker: Arithmetic Test</title>
 </head>
 <body>
-#var foo = 1234, 
-     bar = 23.77 
+#var foo bar   
+#set foo = 1234, bar = 23.77 
 
 <p>A simple test follows:</p>
 
 <p>Perform a number assignment:</p>
 
-   #setting locale="en_US"
-   #assign x = 1.2345, y=2
+#setting locale="en_US"
+#var x = 1.2345, y=2
 
 ${ x+y}
 ${ y}
@@ -28,7 +28,7 @@ ${foo}
 
 <p>Now use numbers in assignment</p>
 
-#assign mynumber = foo + bar   [#-- a comment --] 
+#var mynumber = foo + bar   [#-- a comment --] 
 
 ${mynumber}
 

@@ -1,3 +1,4 @@
+#ftl strict_vars="false"
 FreeMarker: Encoding string built-in tests
 
 <#assign x = r'  dieBugsDie! * vazzZE 123456 --cdc-- --<<--@ x ${"kigyo"?upper_case}  '>
