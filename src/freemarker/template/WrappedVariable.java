@@ -10,4 +10,6 @@ package freemarker.template;
  * @see TemplateTransformModel
  *
  */
-public interface WrappedVariable {}
+public interface WrappedVariable {
+    //Object getWrappedObject();
+}

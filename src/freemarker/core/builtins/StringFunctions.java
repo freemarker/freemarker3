@@ -382,7 +382,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             };
         }
 
-        class Match implements WrappedString {
+        class Match {//implements WrappedString {
             String match;
             ListModel subs = new ListModel();
             Match() {
@@ -391,7 +391,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                     subs.add(matcher.group(i));
                 }
             }
-            public String getAsString() {
+            public String toString() {
                 return match;
             }
         }

@@ -394,10 +394,11 @@ public class ObjectWrapper
         if (object instanceof Pojo) {
             return ((Pojo)object).getWrappedObject();
         }
-        if (!(object instanceof WrappedVariable)) {
-            return object;
-        }
-        throw new UnsupportedOperationException("Don't know how to unwrap this object " + object.getClass());
+        return object;
+        //if (!(object instanceof WrappedVariable)) {
+        //    return object;
+        //}
+        //throw new UnsupportedOperationException("Don't know how to unwrap this object " + object.getClass());
     }
     
     

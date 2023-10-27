@@ -4,6 +4,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.builtins.StringFunctions.RegexMatchModel;
+import static freemarker.ext.beans.ObjectWrapper.unwrap;
 
 /**
  * @author Attila Szegedi
@@ -14,6 +15,7 @@ public class groupsBI extends ExpressionEvaluatingBuiltIn
     @Override
     public Object get(Environment env, BuiltInExpression caller,
             Object model) {
+        model = unwrap(model);
         if (model instanceof RegexMatchModel) {
             return ((RegexMatchModel) model).getGroups();
         }

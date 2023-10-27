@@ -52,19 +52,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
  */
 
 @SuppressWarnings("deprecation")
-public class Configuration extends Configurable implements Cloneable, Scope {
-    public static final String DEFAULT_ENCODING_KEY = "default_encoding"; 
-    public static final String LOCALIZED_LOOKUP_KEY = "localized_lookup";
-    public static final String STRICT_SYNTAX_KEY = "strict_syntax";
-    public static final String CACHE_STORAGE_KEY = "cache_storage";
-    public static final String TEMPLATE_UPDATE_DELAY_KEY = "template_update_delay";
-    public static final String AUTO_IMPORT_KEY = "auto_import";
-    public static final String AUTO_INCLUDE_KEY = "auto_include";
-    public static final String STRICT_VARS_KEY = "strict_vars";
-    public static final String SECURE = "secure";
-    public static final int AUTO_DETECT_TAG_SYNTAX = 0;
-    public static final int ANGLE_BRACKET_TAG_SYNTAX = 1;
-    public static final int SQUARE_BRACKET_TAG_SYNTAX = 2;
+public class Configuration extends Configurable {//implements Scope {
 
     private static final Logger logger = Logger.getLogger("freemarker.parser");
     private static Configuration defaultConfig = new Configuration();
@@ -77,7 +65,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     private ArrayList<String> autoIncludes = new ArrayList<String>();
     private String defaultEncoding = "UTF-8";
     private boolean tolerateParsingProblems = false;
-    private int tagSyntax = AUTO_DETECT_TAG_SYNTAX;
 
     public Configuration() {
         cache = new TemplateCache();
@@ -94,18 +81,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     
     public TemplateCache getTemplateCache() {
     	return cache;
-    }
-
-    public Object clone() {
-        try {
-            Configuration copy = (Configuration)super.clone();
-            copy.variables = new HashMap<String, Object>(variables);
-            copy.encodingMap = new HashMap<String, String>(encodingMap);
-            copy.createTemplateCache(cache.getTemplateLoader(), cache.getCacheStorage());
-            return copy;
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("Clone is not supported, but it should be: " + e.getMessage());
-        }
     }
     
     private void loadBuiltInSharedVariables() {
@@ -359,60 +334,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
         cache.setDelay(1000L * delay);
     }
     
-    
-    /**
-     * Determines the syntax of the template files (angle bracket VS square bracket)
-     * that has no <markup>ftl</markup> directive in it. The <code>tagSyntax</code>
-     * parameter must be one of:
-     * <ul>
-     *   <li>{@link Configuration#AUTO_DETECT_TAG_SYNTAX}:
-     *     use the syntax of the first FreeMarker tag (can be anything, like <tt>list</tt>,
-     *     <tt>include</tt>, user defined, ...etc)
-     *   <li>{@link Configuration#ANGLE_BRACKET_TAG_SYNTAX}:
-     *     use the angle bracket syntax (the normal syntax)
-     *   <li>{@link Configuration#SQUARE_BRACKET_TAG_SYNTAX}:
-     *     use the square bracket syntax
-     * </ul>
-     *
-     * <p>In FreeMarker 2.3.x {@link Configuration#ANGLE_BRACKET_TAG_SYNTAX} is the
-     * default for better backward compatibility. Starting from 2.4.x {@link
-     * Configuration#AUTO_DETECT_TAG_SYNTAX} is the default, so it is recommended to use
-     * that even for 2.3.x.
-     * 
-     * <p>This setting is ignored for the templates that have <tt>ftl</tt> directive in
-     * it. For those templates the syntax used for the <tt>ftl</tt> directive determines
-     * the syntax.
-     */    
-    
-    public void setTagSyntax(int tagSyntax) {
-        if (tagSyntax != AUTO_DETECT_TAG_SYNTAX
-            && tagSyntax != SQUARE_BRACKET_TAG_SYNTAX
-            && tagSyntax != ANGLE_BRACKET_TAG_SYNTAX)
-        {
-            throw new IllegalArgumentException(
-                        "This can only be set to one of three settings: Configuration.AUTO_DETECT_TAG_SYNTAX, Configuration.ANGLE_BRACKET_SYNTAX, or Configuration.SQAUARE_BRACKET_SYNTAX");
-        }
-        this.tagSyntax = tagSyntax;
-    }
-    
-    /**
-     * 
-     * @return one of:
-     * <ul>
-     *   <li>{@link Configuration#AUTO_DETECT_TAG_SYNTAX}:
-     *     use the syntax of the first FreeMarker tag (can be anything, like <tt>list</tt>,
-     *     <tt>include</tt>, user defined, ...etc)
-     *   <li>{@link Configuration#ANGLE_BRACKET_TAG_SYNTAX}:
-     *     use the angle bracket syntax (the normal syntax)
-     *   <li>{@link Configuration#SQUARE_BRACKET_TAG_SYNTAX}:
-     *     use the square bracket syntax
-     * </ul>
-     */
-    public int getTagSyntax() {
-        return tagSyntax;
-    }
-    
-
     /**
      * Sets whether, by default, templates use strict variable
      * definition syntax, such that any variable created 
@@ -710,21 +631,18 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      */
     public void setSetting(String key, String value) {
         if ("TemplateUpdateInterval".equalsIgnoreCase(key)) {
-            key = TEMPLATE_UPDATE_DELAY_KEY;
+            key = "template_update_delay";
         } else if ("DefaultEncoding".equalsIgnoreCase(key)) {
-            key = DEFAULT_ENCODING_KEY;
+            key = "default_encoding";
         }
         try {
-            if (DEFAULT_ENCODING_KEY.equalsIgnoreCase(key)) {
+            if ("default_encoding".equalsIgnoreCase(key)) {
                 setDefaultEncoding(value);
-            } else if (LOCALIZED_LOOKUP_KEY.equalsIgnoreCase(key)) {
+            } else if ("localized_lookup".equalsIgnoreCase(key)) {
                 setLocalizedLookup(StringUtil.getYesNo(value));
-            } else if (STRICT_SYNTAX_KEY.equalsIgnoreCase(key)) {
-// Should warn that this is no longer used.            	
-//                setStrictSyntaxMode(StringUtil.getYesNo(value));
-            } else if (STRICT_VARS_KEY.equalsIgnoreCase(key)) {
+            } else if ("strict_vars".equalsIgnoreCase(key)) {
             	setStrictVariableDefinition(StringUtil.getYesNo(value));
-            } else if (CACHE_STORAGE_KEY.equalsIgnoreCase(key)) {
+            } else if ("cache_storage".equalsIgnoreCase(key)) {
                 if (value.indexOf('.') == -1) {
                     int strongSize = 0;
                     int softSize = 0;
@@ -754,11 +672,11 @@ public class Configuration extends Configurable implements Cloneable, Scope {
                     setCacheStorage((CacheStorage) Class.forName(value)
                             .newInstance());
                 }
-            } else if (TEMPLATE_UPDATE_DELAY_KEY.equalsIgnoreCase(key)) {
+            } else if ("template_update_delay".equalsIgnoreCase(key)) {
                 setTemplateUpdateDelay(Integer.parseInt(value));
-            } else if (AUTO_INCLUDE_KEY.equalsIgnoreCase(key)) {
+            } else if ("auto_include".equalsIgnoreCase(key)) {
                 setAutoIncludes(new SettingStringParser(value).parseAsList());
-            } else if (AUTO_IMPORT_KEY.equalsIgnoreCase(key)) {
+            } else if ("auto_import".equalsIgnoreCase(key)) {
                 setAutoImports(new SettingStringParser(value).parseAsImportList());
             } else {
                 super.setSetting(key, value);

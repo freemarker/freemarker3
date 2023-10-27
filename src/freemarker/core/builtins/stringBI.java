@@ -35,10 +35,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         if (isBoolean(model)) {
             return new BooleanFormatter(model, env);
         }
-        if (isString(model)) {
-            return asString(model);
-        } 
-      	throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number, date, or string");
+        return model.toString();
     }
 	
 	
