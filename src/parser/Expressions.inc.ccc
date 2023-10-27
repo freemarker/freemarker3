@@ -117,11 +117,11 @@ PrimaryExpression(boolean noSpace)#void :
         (<ID>|<TIMES>|<DOUBLE_STAR>) 
       ) #DotVariable(+1) 
       |
-      (<OPEN_BRACKET> Expression <CLOSE_BRACKET>) #DynamicKeyName(+1)
+      <OPEN_BRACKET> Expression <CLOSE_BRACKET> #DynamicKeyName(4)
       |
       (<OPEN_PAREN> [ArgsList] <CLOSE_PAREN>) #MethodCall(+1)
       |
-      (<BUILT_IN><ID>) #BuiltInExpression(+1)
+      <BUILT_IN><ID> #BuiltInExpression(3)
       |
       <EXISTS>#ExistsExpression(2) 
       |
@@ -132,6 +132,8 @@ PrimaryExpression(boolean noSpace)#void :
             => PrimaryExpression(false) =>||
         ]
       ) #DefaultToExpression(+1)
+      |
+      <DOUBLE_COLON> <ID> #MethodReference(3)
     )
   )*
 ;
@@ -1786,113 +1788,6 @@ INJECT ArgsList :
 	
 	public abstract ArgsList deepClone(String name, Expression subst);
 }
-#if false
-Expression StringLiteral# :
-{
-  boolean raw = false;
-}
-   (
-     <STRING_LITERAL>
-     |
-     <RAW_STRING> {raw = true;}
-   )
-   {
-       String s = lastConsumedToken.toString();
-       if (raw) s = s.substring(1);
-       // Get rid of the quotes.
-       s = s.substring(1, s.length() -1);
-       if (!raw) s = StringUtil.FTLStringLiteralDec(s);
-       CURRENT_NODE.setRaw(raw);
-       CURRENT_NODE.setValue(s);
-       return CURRENT_NODE;
-   }
-;
-
-INJECT StringLiteral :
-   import freemarker.template.*;
-   import freemarker.core.Environment;
-   import freemarker.core.parser.*;
-   import java.io.*;
-   implements Expression
-{
-    private TemplateElement interpolatedOutput;
-    private String value;
-    private boolean raw;
-
-    public StringLiteral() {}
-    
-    public StringLiteral(String value, boolean raw) {
-        this.value = value;
-        this.raw = raw;
-    }
-    
-    public boolean isRaw() {
-    	return raw;
-    }
-
-    public void setRaw(boolean raw) {
-        this.raw = raw;
-    }
-    
-    public String getValue() {
-    	return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-    
-    public void checkInterpolation() {
-    	String src = this.getSource();
-        if (src.length() >5 && (src.indexOf("${") >= 0)) {
-            FMLexer token_source = new FMLexer("input", value, FMLexer.LexicalState.DEFAULT, getBeginLine(), getBeginColumn() +1);
-            //token_source.setOnlyTextOutput(true);
-            FMParser parser = new FMParser(token_source);
-            parser.setTemplate(getTemplate());
-            try {
-                interpolatedOutput = parser.FreeMarkerText();
-            }
-            catch(ParseException e) {
-                e.setTemplateName(getTemplate().getName());
-                throw e;
-            }
-        }
-    }
-    
-    public Object evaluate(Environment env) {
-        return getStringValue(env);
-    }
-
-    public String getAsString() {
-        return value;
-    }
-    
-    public String getStringValue(Environment env) {
-        if (interpolatedOutput == null) {
-            return value;
-        } 
-        else {
-            TemplateExceptionHandler teh = env.getTemplateExceptionHandler();
-            env.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
-            try {
-               return env.renderElementToString(interpolatedOutput);
-            }
-            catch (IOException ioe) {
-                throw new TemplateException(ioe, env);
-            }
-            finally {
-                env.setTemplateExceptionHandler(teh);
-            }
-        }
-    }
-
-    public Expression _deepClone(String name, Expression subst) {
-        StringLiteral cloned = new StringLiteral(value, raw);
-        cloned.interpolatedOutput = this.interpolatedOutput;
-        return cloned;
-    }
-}
-#endif
 
 HashLiteral :
    <OPEN_BRACE>
@@ -1997,5 +1892,29 @@ INJECT HashLiteral :
         public boolean isEmpty() {
             return size() == 0;
         }
+    }
+}
+
+INJECT MethodReference :
+    import freemarker.core.Environment;
+    implements Expression
+{
+    public Expression getTarget() {
+        return (Expression) get(0);
+    }
+
+    public Object evaluate(Environment env) {
+        throw new UnsupportedOperationException("unimplemented");
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        Expression clonedTarget = getTarget().deepClone(name, subst);
+        Token op = (Token) get(1);
+        Token key = (Token) get(2);
+        Expression result = new MethodReference();
+        result.add(clonedTarget);
+        result.add(op);
+        result.add(key);
+        return result;
     }
 }

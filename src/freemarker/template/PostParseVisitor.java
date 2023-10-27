@@ -43,14 +43,11 @@ public class PostParseVisitor extends Node.Visitor {
 		for (Map.Entry<String, Expression> entry : header.getParams().entrySet()) {
 			String key = entry.getKey();
 			try {
-				if (key.equals("strip_whitespace")) {
-					template.setStripWhitespace(header.getBooleanParameter("strip_whitespace"));
-				} 
-				else if (key.equals("strict_vars")) {
+				if (key.equals("strict_vars")) {
 					boolean strictVariableDeclaration = header.getBooleanParameter("strict_vars");
 	         	   	template.setStrictVariableDeclaration(strictVariableDeclaration);
 	       	   	}
-				else if (!key.equals("strip_text") && !key.equals("encoding")) {
+				else if (!key.equals("encoding")) {
 					ParsingProblem problem  = new ParsingProblem("Unknown ftl header parameter: " + entry.getKey(), header);
 					template.addParsingProblem(problem);
 				}

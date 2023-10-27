@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import freemarker.template.WrappedVariable;
+import static freemarker.ext.beans.ObjectWrapper.unwrap;
 
 /**
  * @author Attila Szegedi
@@ -42,7 +43,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
         Object[] args = new Object[l];
         Iterator<WrappedVariable> it = arguments.iterator();
         for(int i = 0; i < l; ++i) {
-            args[i] = w.unwrap(it.next());
+            args[i] = unwrap(it.next());
         }
         
         Object objMember = getMemberForArgs(args, false);

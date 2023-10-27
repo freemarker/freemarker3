@@ -364,6 +364,8 @@ TOKEN#Text :
   |
   <DOT_DOT : "..">
   |
+  <DOUBLE_COLON : "::">
+  |
   <BUILT_IN : "?">
   |
   <EXISTS : "??">

@@ -82,7 +82,6 @@ INJECT PARSER_CLASS :
     // Necessary for adding macros and setting location info.
     @Property Template template;
     private String templateName;
-    private boolean stripText;
 
     void OPEN_NODE_HOOK(Node n) {
          n.setTemplate(template);

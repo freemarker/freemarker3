@@ -57,7 +57,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     public static final String DEFAULT_ENCODING_KEY = "default_encoding"; 
     public static final String LOCALIZED_LOOKUP_KEY = "localized_lookup";
     public static final String STRICT_SYNTAX_KEY = "strict_syntax";
-    public static final String WHITESPACE_STRIPPING_KEY = "whitespace_stripping";
     public static final String CACHE_STORAGE_KEY = "cache_storage";
     public static final String TEMPLATE_UPDATE_DELAY_KEY = "template_update_delay";
     public static final String AUTO_IMPORT_KEY = "auto_import";
@@ -70,7 +69,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
 
     private static final Logger logger = Logger.getLogger("freemarker.parser");
     private static Configuration defaultConfig = new Configuration();
-    private boolean localizedLookup = true, whitespaceStripping = true, strictVariableDefinition=false;
+    private boolean localizedLookup = true, strictVariableDefinition=false;
     private TemplateCache cache;
     private HashMap<String, Object> variables = new HashMap<String, Object>();
     private HashMap<String, String> encodingMap = new HashMap<String, String>();
@@ -445,24 +444,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     }
 
     /**
-     * Sets whether the FTL parser will try to remove
-     * superfluous white-space around certain FTL tags.
-     */
-    public void setWhitespaceStripping(boolean b) {
-        whitespaceStripping = b;
-    }
-
-    /**
-     * Gets whether the FTL parser will try to remove
-     * superfluous white-space around certain FTL tags.
-     *
-     * @see #setWhitespaceStripping
-     */
-    public boolean getWhitespaceStripping() {
-        return whitespaceStripping;
-    }
-
-    /**
      * Equivalent to <tt>getTemplate(name, thisCfg.getLocale(), thisCfg.getEncoding(thisCfg.getLocale()), true)</tt>.
      */
     public Template getTemplate(String name) throws IOException {
@@ -705,8 +686,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
      *      See: {@link #setLocalizedLookup}
      *   <li><code>"strict_vars"</code>: <code>"true"</code>, <code>"false"</code>, etc.
      *       See: {@link #setStrictVariableDefinition}
-     *   <li><code>"whitespace_stripping"</code>: <code>"true"</code>, <code>"false"</code>, etc.
-     *       See: {@link #setWhitespaceStripping}
      *   <li><code>"cache_storage"</code>: If the value contains dot, then it is
      *       interpreted as class name, and the object will be created with
      *       its parameterless constructor. If the value does not contain dot,
@@ -753,8 +732,6 @@ public class Configuration extends Configurable implements Cloneable, Scope {
 //                setStrictSyntaxMode(StringUtil.getYesNo(value));
             } else if (STRICT_VARS_KEY.equalsIgnoreCase(key)) {
             	setStrictVariableDefinition(StringUtil.getYesNo(value));
-            } else if (WHITESPACE_STRIPPING_KEY.equalsIgnoreCase(key)) {
-                setWhitespaceStripping(StringUtil.getYesNo(value));
             } else if (CACHE_STORAGE_KEY.equalsIgnoreCase(key)) {
                 if (value.indexOf('.') == -1) {
                     int strongSize = 0;

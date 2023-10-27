@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import freemarker.template.WrappedVariable;
-import freemarker.template.EvaluationException;
+import static freemarker.ext.beans.ObjectWrapper.unwrap;
 
 /**
  * @author Attila Szegedi
@@ -42,14 +42,14 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
                 System.arraycopy(args, 0, newargs, 0, fixArgCount);
                 Object array = Array.newInstance(varArgType, actualArgCount - fixArgCount);
                 for(int i = fixArgCount; i < actualArgCount; ++i) {
-                    Object val = w.unwrap(modelArgs.get(i));
+                    Object val = unwrap(modelArgs.get(i));
                     Array.set(array, i - fixArgCount, val);
                 }
                 newargs[fixArgCount] = array;
                 return newargs;
             }
             else {
-                Object val = w.unwrap(modelArgs.get(fixArgCount));
+                Object val = unwrap(modelArgs.get(fixArgCount));
                 Object array = Array.newInstance(varArgType, 1);
                 Array.set(array, 0, val);
                 args[fixArgCount] = array;
@@ -171,7 +171,7 @@ outer:  for(int j = Math.min(l + 1, marshalTypes.length - 1); j >= 0; --j) {
             // Try to marshal the arguments
             Iterator<WrappedVariable> it = arguments.iterator();
             for(int i = 0; i < l; ++i) {
-                Object dst = w.unwrap(it.next());
+                Object dst = unwrap(it.next());
                 if(dst != args[i]) {
                     args[i] = dst;
                 }

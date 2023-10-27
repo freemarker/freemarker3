@@ -58,7 +58,6 @@ public class Template extends TemplateCore {
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
     private Set<String> declaredVariables = new HashSet<String>();
     
-    boolean stripWhitespace;
     private boolean strictVariableDeclaration;
     
     private List<ParsingProblem> parsingProblems = new ArrayList<>();
@@ -97,7 +96,6 @@ public class Template extends TemplateCore {
         this.encoding = encoding;
         try {
             //int syntaxSetting = getConfiguration().getTagSyntax();
-            this.stripWhitespace = getConfiguration().getWhitespaceStripping();
             this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
             CharSequence content = readInTemplateText(reader);
             FMParser parser = new FMParser(this, content);
@@ -123,7 +121,6 @@ public class Template extends TemplateCore {
         //readInTemplateText(reader);
         try {
 //            int syntaxSetting = getConfiguration().getTagSyntax();
-            this.stripWhitespace = getConfiguration().getWhitespaceStripping();
             this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
             FMParser parser = new FMParser(this, input);
             parser.setInputSource(getName());
@@ -202,10 +199,6 @@ public class Template extends TemplateCore {
         return template;
     }
     
-    public void setStripWhitespace(boolean stripWhitespace) {
-    	this.stripWhitespace = stripWhitespace;
-    }
-
     /**
      * Processes the template, using data from the map, and outputs
      * the resulting text to the supplied <tt>Writer</tt> The elements of the

@@ -418,7 +418,7 @@ public class ObjectWrapper
      * {@link WrappedBoolean} instances into a Boolean.
      * All other objects are returned unchanged.
      */
-    public Object unwrap(Object object) {
+    public static Object unwrap(Object object) {
         if(object == null) {
             throw new EvaluationException("invalid reference");
         }
@@ -1056,7 +1056,7 @@ public class ObjectWrapper
     public static Object coerceBigDecimal(BigDecimal bd, Class<?> formalType) {
         // int is expected in most situations, so we check it first
         if(formalType == Integer.TYPE || formalType == Integer.class) {
-            return Integer.valueOf(bd.intValue());
+            return bd.intValue();
         }
         else if(formalType == Double.TYPE || formalType == Double.class) {
             return bd.doubleValue();
