@@ -56,7 +56,6 @@ abstract public class Configurable extends TemplateNode
     private String falseFormat;
     private TemplateExceptionHandler templateExceptionHandler;
     private ArithmeticEngine arithmeticEngine;
-    private ObjectWrapper objectWrapper;
     private String outputEncoding;
     private boolean outputEncodingSet;
     private String urlEscapingCharset;
@@ -74,7 +73,6 @@ abstract public class Configurable extends TemplateNode
         falseFormat = "false";
         templateExceptionHandler = TemplateExceptionHandler.DEBUG_HANDLER;
         arithmeticEngine = ArithmeticEngine.BIGDECIMAL_ENGINE;
-        objectWrapper = ObjectWrapper.instance();
         // outputEncoding and urlEscapingCharset defaults to null,
         // which means "not specified"
         
@@ -488,10 +486,7 @@ abstract public class Configurable extends TemplateNode
     }
     
     public void setStrictBeanModels(boolean strict) {
-    	if (!(objectWrapper instanceof ObjectWrapper)) {
-    		throw new IllegalStateException("Not a beans wrapper");
-    	}
-    	((ObjectWrapper) objectWrapper).setStrict(strict);
+    	ObjectWrapper.setStrict(strict);
     }
     
     /**

@@ -23,7 +23,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
     void afterSignatureAdded(int l) {
     };
 
-    Object getMemberAndArguments(List<WrappedVariable> arguments, ObjectWrapper w) 
+    Object getMemberAndArguments(List<WrappedVariable> arguments) 
     {
         if(arguments == null) {
             // null is treated as empty args

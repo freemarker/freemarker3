@@ -30,12 +30,6 @@ public class ObjectWrapper
     private static final Map<AccessibleObject, Class<?>[]> ARGTYPES = new HashMap<>();
     
     /**
-     * The default instance of BeansWrapper
-     */
-    private static ObjectWrapper instance;
-
-
-    /**
      * At this level of exposure, all methods and properties of the
      * wrapped objects are exposed to the template.
      */
@@ -75,14 +69,14 @@ public class ObjectWrapper
     // for a specified class. Each key is a Class, each value is a hash map. In
     // that hash map, each key is a property/method name, each value is a
     // MethodDescriptor or a PropertyDescriptor assigned to that property/method.
-    private Map<Class<?>,Map<Object,Object>> classCache = new ConcurrentHashMap<>();
-    private Set<String> cachedClassNames = new HashSet<String>();
+    private static Map<Class<?>,Map<Object,Object>> classCache = new ConcurrentHashMap<>();
+    private static Set<String> cachedClassNames = new HashSet<String>();
 
-    private int exposureLevel = EXPOSE_SAFE;
-    private boolean methodsShadowItems = true;
-    private int defaultDateType = WrappedDate.UNKNOWN;
+    private static int exposureLevel = EXPOSE_SAFE;
+    private static boolean methodsShadowItems = true;
+    private static int defaultDateType = WrappedDate.UNKNOWN;
 
-    private boolean strict = false;
+    private static boolean strict = false;
     
     /**
      * Creates a new instance of BeansWrapper. The newly created instance
@@ -241,7 +235,7 @@ public class ObjectWrapper
     /**
      * @see #setStrict(boolean)
      */
-    public boolean isStrict() {
+    public static boolean isStrict() {
     	return strict;
     }
     
@@ -266,8 +260,8 @@ public class ObjectWrapper
      * goes against the basic approach of FreeMarker, so use this feature only if you really
      * know what are you doing.
      */
-    public void setStrict(boolean strict) {
-    	this.strict = strict;
+    public static void setStrict(boolean strict) {
+    	ObjectWrapper.strict = strict;
     }
 
     /**
@@ -275,16 +269,16 @@ public class ObjectWrapper
      * @param exposureLevel can be any of the <code>EXPOSE_xxx</code>
      * constants.
      */
-    public void setExposureLevel(int exposureLevel)
+    public static void setExposureLevel(int exposureLevel)
     {
         if(exposureLevel < EXPOSE_ALL || exposureLevel > EXPOSE_NOTHING)
         {
             throw new IllegalArgumentException("Illegal exposure level " + exposureLevel);
         }
-        this.exposureLevel = exposureLevel;
+        ObjectWrapper.exposureLevel = exposureLevel;
     }
     
-    int getExposureLevel()
+    static int getExposureLevel()
     {
         return exposureLevel;
     }
@@ -299,12 +293,12 @@ public class ObjectWrapper
      * When set to false, the lookup order is reversed and generic get method
      * is called first, and only if it returns null is method lookup attempted.
      */
-    public synchronized void setMethodsShadowItems(boolean methodsShadowItems)
+    public static synchronized void setMethodsShadowItems(boolean methodsShadowItems)
     {
-        this.methodsShadowItems = methodsShadowItems;
+        ObjectWrapper.methodsShadowItems = methodsShadowItems;
     }
     
-    boolean isMethodsShadowItems()
+    static boolean isMethodsShadowItems()
     {
         return methodsShadowItems;
     }
@@ -316,32 +310,14 @@ public class ObjectWrapper
      * {@link WrappedDate#UNKNOWN}.
      * @param defaultDateType the new default date type.
      */
-    public synchronized void setDefaultDateType(int defaultDateType) {
-        this.defaultDateType = defaultDateType;
+    public static synchronized void setDefaultDateType(int defaultDateType) {
+        ObjectWrapper.defaultDateType = defaultDateType;
     }
     
-    protected synchronized int getDefaultDateType() {
+    protected static synchronized int getDefaultDateType() {
         return defaultDateType;
     }
     
-    /**
-     * Returns the default instance of the wrapper. This instance is used
-     * when you construct various bean models without explicitly specifying
-     * a wrapper. It is also returned by 
-     * and this is the sole instance that is used by the JSP adapter.
-     * You can modify the properties of the default instance (caching,
-     * exposure level, null model) to affect its operation. By default, the
-     * default instance is not caching, uses the <code>EXPOSE_SAFE</code>
-     * exposure level, and uses null reference as the null model.
-     */
-    public static ObjectWrapper instance()
-    {
-        if (instance == null) {
-            instance = new ObjectWrapper();
-        }
-        return instance;
-    }
-
     public static Object wrap(Object object) {
         if(object == null) {
             return Constants.JAVA_NULL;
@@ -451,7 +427,7 @@ public class ObjectWrapper
      * and the outer identity or the subclass throws an exception. Plain
      * BeansWrapper never throws EvaluationException).
      */
-    Object invokeMethod(Object object, Method method, Object[] args)
+    static Object invokeMethod(Object object, Method method, Object[] args)
     throws InvocationTargetException, IllegalAccessException
     {
         Object retval = method.invoke(object, args);
@@ -467,7 +443,7 @@ public class ObjectWrapper
             : wrap(retval); 
     }
 
-    public Object newInstance(Class<?> clazz, List<WrappedVariable> arguments)
+    public static Object newInstance(Class<?> clazz, List<WrappedVariable> arguments)
     {
         try
         {
@@ -485,7 +461,7 @@ public class ObjectWrapper
             {
                 SimpleMemberModel<Constructor<?>> smm = (SimpleMemberModel<Constructor<?>>)ctors;
                 ctor = smm.getMember();
-                objargs = smm.unwrapArguments(arguments, this);
+                objargs = smm.unwrapArguments(arguments);
             }
             else if(ctors instanceof MethodMap)
             {
@@ -513,7 +489,7 @@ public class ObjectWrapper
         }
     }
     
-    void introspectClass(Class<?> clazz)
+    static void introspectClass(Class<?> clazz)
     {
         if(!classCache.containsKey(clazz))
         {
@@ -527,7 +503,7 @@ public class ObjectWrapper
         }
     }
 
-    private void introspectClassInternal(Class<?> clazz)
+    private static void introspectClassInternal(Class<?> clazz)
     {
         String className = clazz.getName();
         if(cachedClassNames.contains(className))
@@ -546,7 +522,7 @@ public class ObjectWrapper
         cachedClassNames.add(className);
     }
 
-    Map<Object,Object> getClassKeyMap(Class<?> clazz)
+    static Map<Object,Object> getClassKeyMap(Class<?> clazz)
     {
         Map<Object, Object> map = classCache.get(clazz);
         if(map == null)
@@ -570,7 +546,7 @@ public class ObjectWrapper
      * {@link #setMethodsShadowItems(boolean)} and {@link
      * #setExposureLevel(int)} settings.
      */
-    int keyCount(Class clazz)
+    static int keyCount(Class clazz)
     {
         Map map = getClassKeyMap(clazz);
         int count = map.size();
@@ -589,7 +565,7 @@ public class ObjectWrapper
      * by the {@link #setMethodsShadowItems(boolean)} and {@link
      * #setExposureLevel(int)} settings.
      */
-    Set keySet(Class clazz)
+    static Set keySet(Class clazz)
     {
         Set set = new HashSet(getClassKeyMap(clazz).keySet());
         set.remove(CONSTRUCTORS);
@@ -604,7 +580,7 @@ public class ObjectWrapper
      * that is not accessible, replaces it with appropriate accessible method
      * from a superclass or interface.
      */
-    private Map<Object,Object> populateClassMap(Class<?> clazz)
+    private static Map<Object,Object> populateClassMap(Class<?> clazz)
     {
         // Populate first from bean info
         Map<Object, Object> map = populateClassMapWithBeanInfo(clazz);
@@ -619,7 +595,7 @@ public class ObjectWrapper
             }
             else if(ctors.length > 1)
             {
-                MethodMap<Constructor> ctorMap = new MethodMap<Constructor>("<init>", this);
+                MethodMap<Constructor> ctorMap = new MethodMap<Constructor>("<init>");
                 for (int i = 0; i < ctors.length; i++)
                 {
                     ctorMap.addMember(ctors[i]);
@@ -659,7 +635,7 @@ public class ObjectWrapper
         return args;
     }
     
-    private Map<Object, Object> populateClassMapWithBeanInfo(Class<?> clazz)
+    private static Map<Object, Object> populateClassMapWithBeanInfo(Class<?> clazz)
     {
         Map<Object, Object> classMap = new HashMap<>();
         Map<MethodSignature, List<Method>> accessibleMethods = discoverAccessibleMethods(clazz);
@@ -746,7 +722,7 @@ public class ObjectWrapper
                         if(previous instanceof Method)
                         {
                             // Overloaded method - replace method with a method map
-                            MethodMap<Method> methodMap = new MethodMap<Method>(name, this);
+                            MethodMap<Method> methodMap = new MethodMap<Method>(name);
                             methodMap.addMember((Method)previous);
                             methodMap.addMember(publicMethod);
                             classMap.put(name, methodMap);
@@ -820,7 +796,7 @@ public class ObjectWrapper
         return null;
     }
     
-    boolean isSafeMethod(Method method)
+    static boolean isSafeMethod(Method method)
     {
         return exposureLevel < EXPOSE_SAFE || !UNSAFE_METHODS.contains(method);
     }

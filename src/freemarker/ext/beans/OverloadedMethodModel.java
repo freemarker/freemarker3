@@ -42,7 +42,7 @@ class OverloadedMethodModel implements WrappedMethod, WrappedSequence
         MemberAndArguments<Method> maa = methodMap.getMemberAndArguments(arguments);
         Method method = maa.getMember();
         try {
-            return methodMap.getWrapper().invokeMethod(object, method, maa.getArgs());
+            return ObjectWrapper.invokeMethod(object, method, maa.getArgs());
         }
         catch(Exception e)
         {

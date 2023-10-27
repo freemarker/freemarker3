@@ -11,17 +11,11 @@ import freemarker.template.EvaluationException;
 class MethodMap<T extends Member>
 {
     private final String name;
-    private final ObjectWrapper wrapper;
     private final OverloadedMethod<T> fixArgMethod = new OverloadedFixArgMethod<T>();
     private OverloadedMethod<T> varArgMethod;
     
-    MethodMap(String name, ObjectWrapper wrapper) {
+    MethodMap(String name) {
         this.name = name;
-        this.wrapper = wrapper;
-    }
-    
-    ObjectWrapper getWrapper() {
-        return wrapper;
     }
     
     void addMember(T member) {
@@ -36,10 +30,10 @@ class MethodMap<T extends Member>
     
     MemberAndArguments<T> getMemberAndArguments(List<WrappedVariable> arguments) 
     {
-        Object memberAndArguments = fixArgMethod.getMemberAndArguments(arguments, wrapper);
+        Object memberAndArguments = fixArgMethod.getMemberAndArguments(arguments);
         if(memberAndArguments == OverloadedMethod.NO_SUCH_METHOD) {
             if(varArgMethod != null) {
-                memberAndArguments = varArgMethod.getMemberAndArguments(arguments, wrapper);
+                memberAndArguments = varArgMethod.getMemberAndArguments(arguments);
             }
             if(memberAndArguments == OverloadedMethod.NO_SUCH_METHOD) {
                 throw new EvaluationException("No signature of method " + 

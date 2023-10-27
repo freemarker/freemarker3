@@ -54,7 +54,7 @@ public class SimpleMapModel implements WrappedHash, WrappedMethod
     }
     
     public Object exec(List args) {
-        Object key = ObjectWrapper.instance().unwrap(args.get(0));
+        Object key = ObjectWrapper.unwrap(args.get(0));
         Object value = map.get(key);
         if (value == null && !map.containsKey(key)) {
             return null;

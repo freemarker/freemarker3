@@ -34,7 +34,7 @@ public class DateModel extends Pojo implements WrappedDate
             type = DATETIME;
         }
         else {
-            type = ObjectWrapper.instance().getDefaultDateType();
+            type = ObjectWrapper.getDefaultDateType();
         }
     }
 

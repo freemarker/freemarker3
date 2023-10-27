@@ -9,6 +9,7 @@ import java.util.List;
 
 import freemarker.template.WrappedVariable;
 import freemarker.template.EvaluationException;
+import static freemarker.ext.beans.ObjectWrapper.unwrap;
 
 /**
  * This class is used for constructors and as a base for non-overloaded methods
@@ -27,7 +28,7 @@ class SimpleMemberModel<T extends Member>
         this.argTypes = argTypes;
     }
     
-    Object[] unwrapArguments(List<WrappedVariable> arguments, ObjectWrapper wrapper) {
+    Object[] unwrapArguments(List<WrappedVariable> arguments) {
         if(arguments == null) {
             arguments = Collections.emptyList();
         }
@@ -48,7 +49,7 @@ class SimpleMemberModel<T extends Member>
         if (arguments != null) {
             args = arguments.toArray(new Object[arguments.size()]);
             for (int i = 0; i< args.length; i++) {
-                args[i] = wrapper.unwrap(args[i]);
+                args[i] = unwrap(args[i]);
             }
         }
         if(args != null) {

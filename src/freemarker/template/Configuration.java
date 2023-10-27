@@ -247,13 +247,7 @@ public class Configuration extends Configurable implements Cloneable, Scope {
     	return env != null ? env.getConfiguration() : defaultConfig;
     }
     
-    static public ObjectWrapper getCurrentObjectWrapper() {
-    	Configuration r = getCurrentConfiguration();
-        return ObjectWrapper.instance();
-    }
-    
-    
-   
+  
     /**
      * Sets the Configuration object that will be retrieved from future calls
      * to {@link #getDefaultConfiguration()}.

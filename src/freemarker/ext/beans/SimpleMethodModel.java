@@ -25,7 +25,6 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
     WrappedSequence
 {
     private final Object object;
-    private final ObjectWrapper wrapper;
 
     /**
      * Creates a model for a specific method on a specific object.
@@ -33,12 +32,10 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
      * <tt>null</tt> for static methods.
      * @param method the method that will be invoked.
      */
-    SimpleMethodModel(Object object, Method method, Class[] argTypes, 
-            ObjectWrapper wrapper)
+    SimpleMethodModel(Object object, Method method, Class[] argTypes)
     {
         super(method, argTypes);
         this.object = object;
-        this.wrapper = wrapper;
     }
 
     /**
@@ -50,8 +47,8 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
     {
         try
         {
-            return wrapper.invokeMethod(object, getMember(), unwrapArguments(
-                    arguments, wrapper));
+            return ObjectWrapper.invokeMethod(object, getMember(), unwrapArguments(
+                    arguments));
         }
         catch(Exception e)
         {

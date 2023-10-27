@@ -51,9 +51,7 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
         }
 
         public Object exec(List arguments) {
-            ObjectWrapper ow = null;
-            if (env != null) ow = ObjectWrapper.instance();
-            return ow.newInstance(cl, arguments);
+            return ObjectWrapper.newInstance(cl, arguments);
         }
     }
 }

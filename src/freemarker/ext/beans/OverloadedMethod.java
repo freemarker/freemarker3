@@ -86,6 +86,5 @@ abstract class OverloadedMethod<T extends Member> {
     abstract void updateSignature(int l);
     abstract void afterSignatureAdded(int l);
     
-    abstract Object getMemberAndArguments(List<WrappedVariable> arguments, 
-            ObjectWrapper w) throws EvaluationException;
+    abstract Object getMemberAndArguments(List<WrappedVariable> arguments);
 }
