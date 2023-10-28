@@ -736,17 +736,7 @@ INJECT ListLiteral :
     public List<Expression> getElements() {
         return childrenOfType(Expression.class);
     }
-/*    
-    public Object evaluate(Environment env) {
-        ListModel list = new ListModel();
-        for (Expression exp: getElements()) {
-            Object tm = exp.evaluate(env);
-            assertIsDefined(tm, env);
-            list.add(tm);
-        }
-        return list;
-    }
-*/
+
     public Object evaluate(Environment env) {
         List<Object> result = new ArrayList<>();
         for (Expression exp : getElements()) {
@@ -756,8 +746,6 @@ INJECT ListLiteral :
         }
         return result;
     }
-
-
 
     // A hacky routine used by VisitNode and RecurseNode
    public List evaluateStringsToNamespaces(Environment env) {
@@ -777,27 +765,7 @@ INJECT ListLiteral :
         }
         return result;
     }    
-#if false    
-    public WrappedSequence evaluateStringsToNamespaces(Environment env) {
-        ListModel result = new ListModel();
-        for (Expression exp : getElements()) {
-            if (exp instanceof StringLiteral) {
-                String s = ((StringLiteral) exp).getAsString();
-                try {
-                    TemplateNamespace ns = env.importLib(s, null);
-                    result.add(ns);
-                } 
-                catch (IOException ioe) {
-                    throw new TemplateException("Could not import library '" + s + "', " + ioe.getMessage(), env); 
-                }
-            }
-            else {
-                result.add(exp);
-            }
-        }
-        return result;
-    }
-#endif    
+
     public Expression _deepClone(String name, Expression subst) {
         ListLiteral result = new ListLiteral();
         for (Node node : this) {
@@ -960,6 +928,7 @@ import java.util.HashMap;
     {
         knownBuiltins.put("c", new cBI());
         knownBuiltins.put("size", new sizeBI());
+        knownBuiltins.put("pojo", new pojoBI());
         knownBuiltins.put("string", new stringBI());
         knownBuiltins.put("eval", new evalBI());
         knownBuiltins.put("new", new newBI());
