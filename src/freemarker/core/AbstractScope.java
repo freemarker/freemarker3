@@ -36,16 +36,11 @@ public abstract class AbstractScope implements Scope
         return enclosingScope.getEnvironment();
     }
 
-    public final Object resolveVariable(String key)
-            {
+    public final Object resolveVariable(String key) {
     	Object result = get(key);
-    	if (result == null) {
+    	if (result == null && enclosingScope != null) {
     		return enclosingScope.resolveVariable(key);
     	}
     	return result;
-    }
-
-    public boolean isEmpty() {
-        return size() != 0;
     }
 }

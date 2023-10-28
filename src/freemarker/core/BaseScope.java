@@ -34,19 +34,6 @@ public class BaseScope extends AbstractScope {
         return variables.isEmpty();
     }
 
-    public Iterable<String> keys() {
-        return variables.keySet();
-    }
-
-    public Iterable<?> values() {
-        return variables.values();
-    }
-
-
-    public int size() {
-        return variables.size();
-    }
-
     public void clear() {
         variables.clear();
     }

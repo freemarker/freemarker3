@@ -76,28 +76,4 @@ public interface Scope {
      * or null if not found.
      */
     Object get(String key);
-
-    boolean isEmpty();
-
-
-   /**
-     * @return the number of key/value mappings in the hash.
-     */
-    default int size() {
-        throw new EvaluationException("Unsupported method size()");
-    }
-
-    /**
-     * @return a collection containing the keys in the hash. 
-     */
-    default Iterable<?> keys() {
-        throw new EvaluationException("Unsupported method keys()");
-    }
-
-    /**
-     * @return a collection containing the values in the hash.
-     */
-    default Iterable<?> values() {
-        throw new EvaluationException("Unsupported method values()");
-    }
 }

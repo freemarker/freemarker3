@@ -128,11 +128,9 @@ public final class Environment extends Configurable implements Scope {
         return threadEnv.get();
     }
 
-    public Environment(Template template,
-           WrappedHash rootDataModel, Writer out) {
+    public Environment(Template template, WrappedHash rootDataModel, Writer out) {
         super(template);
-        this.currentScope = mainNamespace = new TemplateNamespace(
-                this, template);
+        this.currentScope = mainNamespace = new TemplateNamespace( this, template);
         this.out = out;
         this.rootDataModel = rootDataModel;
         importMacros(template);
@@ -1049,12 +1047,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public boolean definesVariable(String name) {
-        try {
-            return globalVariables.containsKey(name)
-                    || rootDataModel.get(name) != null;
-        } catch (EvaluationException tme) {
-            return false;
-        }
+        return globalVariables.containsKey(name) || rootDataModel.get(name) != null;
     }
 
     public void put(String varname, Object value) {
@@ -1067,62 +1060,6 @@ public final class Environment extends Configurable implements Scope {
 
     public boolean isEmpty() {
         return false; // REVISIT, is this right?
-    }
-
-    public int size() {
-        assert false : "SHIT";
-        if (rootDataModel instanceof WrappedHash) {
-            WrappedHash root = (WrappedHash) rootDataModel;
-            return globalVariables.size() + root.size()
-                    + getEnclosingScope().size();
-        }
-        throw new EvaluationException(
-                "The size() method is not applicable because the root data model does not expose a size() method.");
-    }
-
-    public Iterable keys() {
-        if (!(rootDataModel instanceof WrappedHash)) {
-            throw new EvaluationException(
-                    "The keys() method is not applicable because the root data model does not expose a keys() method.");
-        }
-        WrappedHash root = (WrappedHash) rootDataModel;
-        Iterable rootKeys = root.keys();
-        Iterable sharedVariableKeys = getEnclosingScope().keys();
-        LinkedHashSet<Object> aggregate = new LinkedHashSet<>();
-        for (Iterator<Object> tmi = sharedVariableKeys.iterator(); tmi
-                .hasNext();) {
-            aggregate.add(tmi.next());
-        }
-        for (Iterator<Object> tmi = rootKeys.iterator(); tmi.hasNext();) {
-            aggregate.add(tmi.next());
-        }
-        for (String varname : globalVariables.keySet()) {
-            aggregate.add(varname);
-        }
-        return aggregate;
-    }
-
-    public Iterable values() {
-        if (!(rootDataModel instanceof WrappedHash)) {
-            throw new EvaluationException(
-                    "The keys() method is not applicable because the root data model does not expose a keys() method.");
-        }
-        WrappedHash root = (WrappedHash) rootDataModel;
-        Iterable rootValues = root.values();
-        Iterable sharedVariableValues = getEnclosingScope()
-                .values();
-        LinkedHashSet<Object> aggregate = new LinkedHashSet<>();
-        for (Iterator<Object> tmi = sharedVariableValues.iterator(); tmi
-                .hasNext();) {
-            aggregate.add(tmi.next());
-        }
-        for (Iterator<Object> tmi = rootValues.iterator(); tmi.hasNext();) {
-            aggregate.add(tmi.next());
-        }
-        for (Object value : globalVariables.values()) {
-            aggregate.add(value);
-        }
-        return aggregate;
     }
 
     /**

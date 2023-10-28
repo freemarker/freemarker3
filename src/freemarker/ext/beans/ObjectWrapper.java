@@ -210,6 +210,8 @@ public class ObjectWrapper
     }
 
     public static boolean isIterable(Object obj) {
+        if (obj.getClass().isArray()) return true;
+        if (obj instanceof WrappedSequence) return true;
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
@@ -222,6 +224,30 @@ public class ObjectWrapper
         }
         if (obj instanceof Iterator) {
             return (Iterator<?>) obj;
+        }
+        if (obj.getClass().isArray()) {
+            final Object arr = obj;
+            return new Iterator<Object>() {
+                int index = 0;
+                public boolean hasNext() {
+                    return index < Array.getLength(arr);
+                }
+                public Object next() {
+                    return Array.get(arr, index++);
+                }
+            };
+        }
+        if (obj instanceof WrappedSequence) {
+            final WrappedSequence seq = (WrappedSequence) obj;
+            return new Iterator<Object>() {
+                int index = 0;
+                public boolean hasNext() {
+                    return index < seq.size();
+                }
+                public Object next() {
+                    return seq.get(index++);
+                }
+            };
         }
         return ((Iterable<?>) obj).iterator();
     }

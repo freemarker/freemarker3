@@ -8,6 +8,8 @@ import freemarker.template.WrappedSequence;
 import freemarker.ext.beans.Pojo;
 import static freemarker.ext.beans.ObjectWrapper.*;
 
+import java.lang.reflect.Array;
+
 /**
  * Implementation of ?c built-in 
  */
@@ -30,6 +32,9 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
         }
         else if (model instanceof Pojo) {
             size = ((Pojo)model).size();
+        }
+        else if (model.getClass().isArray()) {
+            return Array.getLength(model);
         }
         else {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "a sequence or extended hash");
