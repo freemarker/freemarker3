@@ -120,6 +120,13 @@ public class ObjectWrapper
             for (int i = 0; i < tsm.size() ; i++) result.add(tsm.get(i));
             return result;
         }
+        if (obj.getClass().isArray()) {
+            List<Object> result = new ArrayList<>();
+            for (int i = 0; i< Array.getLength(obj); i++) {
+                result.add(Array.get(obj, i));
+            }
+            return result;
+        }
         return (List<?>) obj;
     }
 
@@ -214,11 +221,11 @@ public class ObjectWrapper
     }
 
     public static boolean isIterable(Object obj) {
-        if (obj.getClass().isArray()) return true;
         if (obj instanceof WrappedSequence) return true;
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
+        if (obj.getClass().isArray()) return true;
         return obj instanceof Iterable;
     }
 
@@ -365,7 +372,6 @@ public class ObjectWrapper
             return object;
         }
         if (object instanceof List) {
-            //return new ListModel((List<?>)object);
             //return object;
             return new Pojo(object);
         }
@@ -373,7 +379,7 @@ public class ObjectWrapper
             return  new SimpleMapModel((Map<?,?>)object);
         }
         if (object.getClass().isArray()) {
-            return new ArrayModel(object);
+            return new Pojo(object);
         }
         if (object instanceof Date) {
             return new DateModel((Date) object);
