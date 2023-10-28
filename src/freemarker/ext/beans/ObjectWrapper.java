@@ -8,6 +8,7 @@ import java.lang.reflect.*;
 import java.math.BigDecimal;
 import freemarker.log.Logger;
 import freemarker.template.*;
+import freemarker.core.Scope;
 
 public class ObjectWrapper 
 {
@@ -103,20 +104,23 @@ public class ObjectWrapper
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
+        if (obj.getClass().isArray()) {
+            return true;
+        }
         return obj instanceof List;
     }
 
-    public static List asList(Object obj) {
+    public static List<?> asList(Object obj) {
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
         if (obj instanceof WrappedSequence) {
             WrappedSequence tsm = (WrappedSequence) obj;
-            List result = new ArrayList();
+            List<Object> result = new ArrayList<>();
             for (int i = 0; i < tsm.size() ; i++) result.add(tsm.get(i));
             return result;
         }
-        return (List) obj;
+        return (List<?>) obj;
     }
 
     public static boolean isNumber(Object obj) {
@@ -344,6 +348,9 @@ public class ObjectWrapper
             return Constants.JAVA_NULL;
         }
         if (object instanceof WrappedVariable) {
+            return object;
+        }
+        if (object instanceof Scope) {
             return object;
         }
         if (isMarkedAsPojo(object.getClass())) {

@@ -12,7 +12,6 @@ import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.RangeExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
 
 public class DynamicKeyName extends TemplateNode implements Expression {
@@ -53,11 +52,11 @@ public class DynamicKeyName extends TemplateNode implements Expression {
                 size = tsm.size();
             } catch (Exception e) {
             }
-            return index < size ? tsm.get(index) : null;
+            return index < size ? tsm.get(index) : JAVA_NULL;
         }
-        if (targetModel instanceof List) {
+        if (isList(targetModel)) {
             try {
-                return wrap(((List) targetModel).get(index));
+                return wrap(asList(targetModel).get(index));
             } catch (ArrayIndexOutOfBoundsException ae) {
                 return JAVA_NULL;
             }

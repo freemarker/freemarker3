@@ -47,9 +47,4 @@ public class ListModel extends Pojo implements WrappedSequence {
             return null; // This is better because it allows the use of existence built-ins, i.e. x[10]?? etcetera (JR)
         }
     }
-    
-    public int size()
-    {
-        return ((Collection<?>)object).size();
-    }
 }
