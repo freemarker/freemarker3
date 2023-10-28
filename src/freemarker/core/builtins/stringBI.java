@@ -12,7 +12,7 @@ import freemarker.core.EvaluationUtil;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.*;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 /**
  * Implementation of ?string built-in 

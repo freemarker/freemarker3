@@ -13,7 +13,7 @@ import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.TemplateHeaderElement;
 import freemarker.core.parser.*;
 
-import static freemarker.ext.beans.ObjectWrapper.wrap;
+import static freemarker.core.evaluation.ObjectWrapper.wrap;
 /**
  * <p>A core FreeMarker API that represents a compiled template.
  * Typically, you will use a {@link Configuration} object to instantiate a template.

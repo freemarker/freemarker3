@@ -1,7 +1,7 @@
 package freemarker.core.nodes;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
-import freemarker.ext.beans.Pojo;
+import static freemarker.core.evaluation.ObjectWrapper.*;
+import freemarker.core.evaluation.Pojo;
 import freemarker.core.EvaluationUtil;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.TemplateNode;

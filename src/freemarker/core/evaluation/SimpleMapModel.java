@@ -1,4 +1,4 @@
-package freemarker.ext.beans;
+package freemarker.core.evaluation;
 
 import java.util.List;
 import java.util.Map;
@@ -8,7 +8,7 @@ import freemarker.template.Constants;
 import freemarker.template.WrappedHash;
 import freemarker.template.WrappedMethod;
 
-import static freemarker.ext.beans.ObjectWrapper.wrap;
+import static freemarker.core.evaluation.ObjectWrapper.wrap;
 
 /**
  * Model used by {@link ObjectWrapper} when <tt>simpleMapWrapper</tt>

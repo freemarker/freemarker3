@@ -1,4 +1,4 @@
-package freemarker.ext.beans;
+package freemarker.core.evaluation;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -9,7 +9,7 @@ import java.util.List;
 
 import freemarker.template.WrappedVariable;
 import freemarker.template.EvaluationException;
-import static freemarker.ext.beans.ObjectWrapper.unwrap;
+import static freemarker.core.evaluation.ObjectWrapper.unwrap;
 
 /**
  * This class is used for constructors and as a base for non-overloaded methods

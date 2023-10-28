@@ -5,11 +5,11 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.ext.beans.ObjectWrapper;
-import freemarker.ext.beans.Pojo;
+import freemarker.core.evaluation.ObjectWrapper;
+import freemarker.core.evaluation.Pojo;
 import freemarker.template.*;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 /**
  * Implementation of ?new built-in 

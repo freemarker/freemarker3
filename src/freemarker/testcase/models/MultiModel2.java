@@ -2,7 +2,7 @@ package freemarker.testcase.models;
 
 import freemarker.template.*;
 import java.util.*;
-import static freemarker.ext.beans.ObjectWrapper.asString;
+import static freemarker.core.evaluation.ObjectWrapper.asString;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.

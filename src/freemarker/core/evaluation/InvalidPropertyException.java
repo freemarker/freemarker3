@@ -1,4 +1,4 @@
-package freemarker.ext.beans;
+package freemarker.core.evaluation;
 
 import freemarker.template.EvaluationException;
 

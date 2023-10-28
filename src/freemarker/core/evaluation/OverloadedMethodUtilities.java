@@ -1,4 +1,4 @@
-package freemarker.ext.beans;
+package freemarker.core.evaluation;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;

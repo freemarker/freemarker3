@@ -6357,7 +6357,7 @@ public class RepeatDirective implements UserDirective {
             <para><literal>ObjectWrapper.BEANS_WRAPPER</literal>: It can
             expose java Bean properties and other members of arbitrary objects
             using Java reflection. At least in FreeMarker 2.3, it is a
-            <literal>freemarker.ext.beans.BeansWrapper</literal> instance;
+            <literal>freemarker.core.evaluation.BeansWrapper</literal> instance;
             there is a separated <link linkend="pgui_misc_beanwrapper">chapter
             about it</link>.</para>
           </listitem>
@@ -7734,7 +7734,7 @@ env.process();</programlisting>
           <secondary>wrapping</secondary>
         </indexterm>
 
-        <para>The <literal>freemarker.ext.beans.BeansWrapper</literal> is an
+        <para>The <literal>freemarker.core.evaluation.BeansWrapper</literal> is an
         <link linkend="pgui_datamodel_objectWrapper">object wrapper</link>
         that was originally added to FreeMarker so arbitrary POJO-s (Plain Old
         Java Objects) can be wrapped into <literal>WrappedVariable</literal>
@@ -8154,7 +8154,7 @@ env.process();</programlisting>
             <listitem>
               <para>If model is a hash model, and <literal>T</literal> is
               assignable from
-              <literal>freemarker.ext.beans.HashAdapter</literal>, a hash
+              <literal>freemarker.core.evaluation.HashAdapter</literal>, a hash
               adapter is returned. <phrase role="forProgrammers">Same as
               (**)</phrase></para>
             </listitem>
@@ -8162,7 +8162,7 @@ env.process();</programlisting>
             <listitem>
               <para>If model is a sequence model, and <literal>T</literal> is
               assignable from
-              <literal>freemarker.ext.beans.SequenceAdapter</literal>, a
+              <literal>freemarker.core.evaluation.SequenceAdapter</literal>, a
               sequence adapter is returned. <phrase role="forProgrammers">Same
               as (**)</phrase></para>
             </listitem>
@@ -8170,7 +8170,7 @@ env.process();</programlisting>
             <listitem>
               <para>If model is a collection model, and <literal>T</literal>
               is assignable from
-              <literal>freemarker.ext.beans.SetAdapter</literal>, a set
+              <literal>freemarker.core.evaluation.SetAdapter</literal>, a set
               adapter for the collection is returned. <phrase
               role="forProgrammers">Same as (**)</phrase></para>
             </listitem>
@@ -19308,7 +19308,7 @@ or
             configure FreeMarker. FreeMarker comes with a few object wrapper
             implementations out-of-the-box, and probably the most widely used
             of them is <link
-            linkend="pgui_misc_beanwrapper"><literal>freemarker.ext.beans.BeansWrapper</literal></link>.
+            linkend="pgui_misc_beanwrapper"><literal>freemarker.core.evaluation.BeansWrapper</literal></link>.
             If you use an instance of this as the object wrapper, then
             <literal>java.util.Map</literal>-s you put into the data-model
             will also act as a method, so you can write
@@ -20688,8 +20688,8 @@ ${obj.myMethod("foo")}</programlisting>
 
             <listitem>
               <para>Bugfix:
-              <literal>freemarker.ext.beans.SimpleMapModel</literal> (unlike
-              either <literal>freemarker.ext.beans.MapModel</literal> or
+              <literal>freemarker.core.evaluation.SimpleMapModel</literal> (unlike
+              either <literal>freemarker.core.evaluation.MapModel</literal> or
               <literal>freemarker.template.SimpleHash</literal>) didn't allow
               lookup by <literal>java.lang.Character</literal> key when passed
               a single-character string as a key.</para>
@@ -20703,7 +20703,7 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Bugfix: <literal>freemarker.ext.beans.MapModel</literal>
+              <para>Bugfix: <literal>freemarker.core.evaluation.MapModel</literal>
               returns <literal>BeansWrapper.wrap(null)</literal> instead of
               <literal>null</literal> for <literal>null</literal> values
               explicitly bound into the map.</para>
@@ -22555,7 +22555,7 @@ ${obj.myMethod("foo")}</programlisting>
               wrapper is now
               <literal>freemarker.template.DefaultObjectWrapper</literal>,
               which falls back on wrapping arbitrary objects as beans using
-              the <literal>freemarker.ext.beans.BeansWrapper</literal>. Also,
+              the <literal>freemarker.core.evaluation.BeansWrapper</literal>. Also,
               it will wrap <literal>org.w3c.dom.Node</literal> objects with
               the new DOM wrapper. Also, it is aware of Jython objects, and
               will use <literal>freemarker.ext.jython.JythonWrapper</literal>
@@ -23993,7 +23993,7 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Changes to <literal>freemarker.ext.beans</literal>
+              <para>Changes to <literal>freemarker.core.evaluation</literal>
               package: <literal>BeanModel</literal>,
               <literal>MapModel</literal>, and
               <literal>ResourceModel</literal> now implement
@@ -25633,7 +25633,7 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Changes to <literal>freemarker.ext.beans</literal>
+              <para>Changes to <literal>freemarker.core.evaluation</literal>
               package: The JavaBeans adapter layer has suffered several major
               changes. First, <literal>BeansWrapper</literal> is no longer a
               static utility class - you can now create instances of it, and

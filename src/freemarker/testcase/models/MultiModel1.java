@@ -5,8 +5,8 @@ import freemarker.template.*;
 import java.util.ArrayList;
 import java.util.List;
 
-//import freemarker.ext.beans.ListModel;
-import freemarker.ext.beans.SimpleMapModel;
+//import freemarker.core.evaluation.ListModel;
+import freemarker.core.evaluation.SimpleMapModel;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.

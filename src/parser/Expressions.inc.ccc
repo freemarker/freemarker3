@@ -10,12 +10,12 @@
 
 INJECT Expression :
    import freemarker.template.*;
-   import freemarker.ext.beans.ObjectWrapper;
+   import freemarker.core.evaluation.ObjectWrapper;
    import freemarker.core.Environment;
    import freemarker.core.EvaluationUtil;
    import freemarker.core.InvalidReferenceException;
-   import freemarker.ext.beans.Pojo;
-   import static freemarker.ext.beans.ObjectWrapper.*;
+   import freemarker.core.evaluation.Pojo;
+   import static freemarker.core.evaluation.ObjectWrapper.*;
    import static freemarker.template.Constants.JAVA_NULL;
 {
     public abstract Object evaluate(Environment env);
@@ -235,7 +235,7 @@ INJECT UnaryPlusMinusExpression :
     import freemarker.core.Environment;
     import freemarker.core.ArithmeticEngine;
     import freemarker.template.*;
-    import static freemarker.ext.beans.ObjectWrapper.asNumber;
+    import static freemarker.core.evaluation.ObjectWrapper.asNumber;
     implements Expression
 {
     private static final Integer MINUS_ONE = Integer.valueOf(-1); 
@@ -302,7 +302,7 @@ INJECT MultiplicativeExpression :
    import freemarker.core.Environment;
    import freemarker.core.ArithmeticEngine;
    import freemarker.core.EvaluationUtil;
-   import static freemarker.ext.beans.ObjectWrapper.isNumber;
+   import static freemarker.core.evaluation.ObjectWrapper.isNumber;
    implements Expression
 {
     public Expression getLeft() {
@@ -916,8 +916,8 @@ INJECT DotVariable :
     import freemarker.core.parser.Token;
     import freemarker.template.WrappedHash;
     import java.util.Map;
-    import freemarker.ext.beans.Pojo;
-    import static freemarker.ext.beans.ObjectWrapper.wrap;
+    import freemarker.core.evaluation.Pojo;
+    import static freemarker.core.evaluation.ObjectWrapper.wrap;
     implements Expression
 {
     public Expression getTarget() {
@@ -965,7 +965,7 @@ INJECT MethodCall :
     import freemarker.template.*;
     import java.io.IOException;
     import java.io.StringWriter;
-    import static freemarker.ext.beans.ObjectWrapper.wrap;
+    import static freemarker.core.evaluation.ObjectWrapper.wrap;
     implements Expression;
 {
 
@@ -1200,7 +1200,7 @@ INJECT ArgsList :
     import freemarker.template.*;
     import freemarker.core.parser.*;
     import freemarker.core.parser.FMLexer.LexicalState;
-    import freemarker.ext.beans.SimpleMethodModel;
+    import freemarker.core.evaluation.SimpleMethodModel;
     import freemarker.core.nodes.ParameterList;
 {
 	/**
@@ -1308,7 +1308,7 @@ HashLiteral :
 INJECT HashLiteral :
     import java.util.*;
     import freemarker.core.Environment;
-    import freemarker.ext.beans.ListModel;
+    import freemarker.core.evaluation.ListModel;
     import freemarker.template.*;
     import freemarker.core.ast.CollectionAndSequence;
     implements Expression

@@ -6,7 +6,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.TemplateException;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 public class numberBI extends ExpressionEvaluatingBuiltIn
 {

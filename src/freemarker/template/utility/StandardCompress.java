@@ -8,8 +8,8 @@ import freemarker.template.*;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 
-import static freemarker.ext.beans.ObjectWrapper.asBoolean;
-import static freemarker.ext.beans.ObjectWrapper.asNumber;
+import static freemarker.core.evaluation.ObjectWrapper.asBoolean;
+import static freemarker.core.evaluation.ObjectWrapper.asNumber;
 
 /**
  * <p>A filter that compresses each sequence of consecutive whitespace

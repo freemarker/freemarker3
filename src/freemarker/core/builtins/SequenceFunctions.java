@@ -19,7 +19,7 @@ import freemarker.template.EvaluationException;
 import freemarker.template.WrappedSequence;
 import freemarker.template.utility.StringUtil;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 /**
  * Implementations of builtins for standard functions that operate on sequences

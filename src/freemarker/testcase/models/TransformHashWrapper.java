@@ -1,7 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
-import freemarker.ext.beans.SimpleMapModel;
+import freemarker.core.evaluation.SimpleMapModel;
 import freemarker.template.utility.*;
 
 /**

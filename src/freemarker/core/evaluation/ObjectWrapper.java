@@ -1,4 +1,4 @@
-package freemarker.ext.beans;
+package freemarker.core.evaluation;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

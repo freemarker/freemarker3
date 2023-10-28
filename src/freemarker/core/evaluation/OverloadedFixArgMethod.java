@@ -1,4 +1,4 @@
-package freemarker.ext.beans;
+package freemarker.core.evaluation;
 
 import java.lang.reflect.Member;
 import java.util.Collections;
@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import freemarker.template.WrappedVariable;
-import static freemarker.ext.beans.ObjectWrapper.unwrap;
+import static freemarker.core.evaluation.ObjectWrapper.unwrap;
 
 /**
  * @author Attila Szegedi

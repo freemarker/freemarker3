@@ -6,7 +6,7 @@ import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.ext.beans.DateModel;
+import freemarker.core.evaluation.DateModel;
 import freemarker.template.WrappedDate;
 import freemarker.template.TemplateException;
 import freemarker.template.WrappedHash;

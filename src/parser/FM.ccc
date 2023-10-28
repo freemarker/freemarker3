@@ -16,7 +16,7 @@ INJECT Node :
    import freemarker.core.EvaluationUtil;
    import freemarker.core.nodes.generated.Expression;
    import static freemarker.template.Constants.JAVA_NULL;
-   import static freemarker.ext.beans.ObjectWrapper.*;
+   import static freemarker.core.evaluation.ObjectWrapper.*;
 {
     void setTemplate(Template template);
     Template getTemplate();

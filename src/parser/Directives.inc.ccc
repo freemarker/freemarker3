@@ -263,7 +263,7 @@ INJECT VisitNode :
     import freemarker.core.Scope;
     import freemarker.core.TemplateNamespace;
     import freemarker.template.*;
-    import static freemarker.ext.beans.ObjectWrapper.*;
+    import static freemarker.core.evaluation.ObjectWrapper.*;
     extends TemplateElement
 {
     public Expression getTargetNode() {
@@ -325,8 +325,8 @@ INJECT RecurseNode :
     import freemarker.core.Environment;
     import freemarker.core.Scope;
     import freemarker.template.*;
-    import static freemarker.ext.beans.ObjectWrapper.isList;
-    import static freemarker.ext.beans.ObjectWrapper.asString;
+    import static freemarker.core.evaluation.ObjectWrapper.isList;
+    import static freemarker.core.evaluation.ObjectWrapper.asString;
     extends TemplateElement
 {
     public Expression getTargetNode() {
@@ -774,7 +774,7 @@ INJECT IncludeInstruction :
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
     import freemarker.core.parser.ParseException;
-    import static freemarker.ext.beans.ObjectWrapper.*;
+    import static freemarker.core.evaluation.ObjectWrapper.*;
     extends TemplateElement
 {
     @Property Template template;
@@ -1274,7 +1274,7 @@ INJECT SwitchBlock :
     import freemarker.core.Environment;
     import freemarker.core.BreakException;
     import freemarker.template.TemplateException;
-    import static freemarker.ext.beans.ObjectWrapper.*;
+    import static freemarker.core.evaluation.ObjectWrapper.*;
     extends TemplateElement  
 {
     public void execute(Environment env) throws IOException {
@@ -1477,7 +1477,7 @@ PropertySetting :
 
 INJECT PropertySetting :
     import freemarker.core.Environment;
-    import static freemarker.ext.beans.ObjectWrapper.*;
+    import static freemarker.core.evaluation.ObjectWrapper.*;
     extends TemplateElement
 {
     public String getKey() {
@@ -1811,7 +1811,7 @@ INJECT TemplateHeaderElement :
     import java.util.*;
     import freemarker.template.*;
     import static freemarker.template.utility.StringUtil.*;
-    import static freemarker.ext.beans.ObjectWrapper.*;
+    import static freemarker.core.evaluation.ObjectWrapper.*;
 {
 
     private Map<String,Expression> params = new LinkedHashMap<>();

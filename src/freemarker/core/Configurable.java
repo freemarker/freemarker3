@@ -7,7 +7,7 @@ import java.util.*;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.ext.beans.ObjectWrapper;
+import freemarker.core.evaluation.ObjectWrapper;
 
 /**
  * This is a common superclass of {@link freemarker.template.Configuration},

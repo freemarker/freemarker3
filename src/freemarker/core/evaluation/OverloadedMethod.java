@@ -1,4 +1,4 @@
-package freemarker.ext.beans;
+package freemarker.core.evaluation;
 
 import java.lang.reflect.Member;
 import java.util.HashMap;

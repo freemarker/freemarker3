@@ -2,7 +2,7 @@ package freemarker.testcase.models;
 
 import java.util.*;
 import freemarker.template.*;
-import static freemarker.ext.beans.ObjectWrapper.asString;
+import static freemarker.core.evaluation.ObjectWrapper.asString;
 
 /**
  * Another test of the interaction between MethodModels and TransformModels.

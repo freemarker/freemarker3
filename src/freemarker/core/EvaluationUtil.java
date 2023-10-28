@@ -6,7 +6,7 @@ import freemarker.template.WrappedDate;
 import freemarker.template.TemplateException;
 import freemarker.core.nodes.generated.Expression;
 import static freemarker.template.Constants.JAVA_NULL;
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 /**
  * @version 1.0

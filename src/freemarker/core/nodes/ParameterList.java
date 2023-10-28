@@ -6,7 +6,7 @@ package freemarker.core.nodes;
 
 import freemarker.template.EvaluationException;
 import freemarker.template.TemplateException;
-import freemarker.ext.beans.SimpleMapModel;
+import freemarker.core.evaluation.SimpleMapModel;
 import freemarker.core.helpers.NamedParameterMapScope;
 import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.TemplateRunnable;

@@ -2,7 +2,7 @@ package freemarker.testcase;
 
 import freemarker.template.*;
 import freemarker.annotations.Parameters;
-import freemarker.ext.beans.*;
+import freemarker.core.evaluation.*;
 import freemarker.testcase.models.*;
 import freemarker.template.utility.*;
 import junit.framework.*;

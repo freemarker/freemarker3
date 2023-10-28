@@ -23,7 +23,7 @@ import freemarker.core.nodes.generated.UnifiedCall;
 import freemarker.log.Logger;
 import freemarker.template.*;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 /**
  * Object that represents the runtime environment during template processing.

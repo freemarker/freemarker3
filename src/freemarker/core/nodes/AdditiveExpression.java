@@ -9,7 +9,7 @@ import freemarker.template.*;
 import java.util.*;
 
 import static freemarker.core.parser.Token.TokenType.*;
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 
 //THIS NEEDS TO BE SIMPLIFIED!

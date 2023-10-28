@@ -9,7 +9,7 @@ import freemarker.template.WrappedDate;
 import freemarker.template.TemplateException;
 import freemarker.template.EvaluationException;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 /**
  * @author Attila Szegedi

@@ -9,7 +9,7 @@ import freemarker.core.nodes.generated.Expression;
 import freemarker.template.Constants;
 import freemarker.template.WrappedMethod;
 import freemarker.core.nodes.generated.ParentheticalExpression;
-import freemarker.ext.beans.ObjectWrapper;
+import freemarker.core.evaluation.ObjectWrapper;
 
 /**
  * @author Attila Szegedi

@@ -1,4 +1,4 @@
-package freemarker.ext.beans;
+package freemarker.core.evaluation;
 
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.PropertyDescriptor;
@@ -16,7 +16,7 @@ import java.util.Set;
 import freemarker.log.Logger;
 import freemarker.template.*;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 /**
  * A class that will wrap an arbitrary POJO (a.k.a. Plain Old Java Object)

@@ -1,4 +1,4 @@
-package freemarker.ext.beans;
+package freemarker.core.evaluation;
 
 import java.text.MessageFormat;
 import java.util.Hashtable;
@@ -13,9 +13,9 @@ import java.util.ResourceBundle;
 import freemarker.template.WrappedMethod;
 import freemarker.template.WrappedVariable;
 import freemarker.template.EvaluationException;
-import static freemarker.ext.beans.ObjectWrapper.asString;
-import static freemarker.ext.beans.ObjectWrapper.wrap;
-import static freemarker.ext.beans.ObjectWrapper.unwrap;
+import static freemarker.core.evaluation.ObjectWrapper.asString;
+import static freemarker.core.evaluation.ObjectWrapper.wrap;
+import static freemarker.core.evaluation.ObjectWrapper.unwrap;
 
 /**
  * <p>A hash model that wraps a resource bundle. Makes it convenient to store

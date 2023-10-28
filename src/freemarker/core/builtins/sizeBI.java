@@ -5,8 +5,8 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.WrappedHash;
 import freemarker.template.WrappedSequence;
-import freemarker.ext.beans.Pojo;
-import static freemarker.ext.beans.ObjectWrapper.*;
+import freemarker.core.evaluation.Pojo;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 import java.lang.reflect.Array;
 

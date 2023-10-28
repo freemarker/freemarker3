@@ -1,4 +1,4 @@
-package freemarker.ext.beans;
+package freemarker.core.evaluation;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Member;
@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import freemarker.template.WrappedVariable;
-import static freemarker.ext.beans.ObjectWrapper.unwrap;
+import static freemarker.core.evaluation.ObjectWrapper.unwrap;
 
 /**
  * @author Attila Szegedi

@@ -14,7 +14,7 @@ import freemarker.template.UserDirective;
 import freemarker.template.EvaluationException;
 import freemarker.template.TemplateException;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 /**
  * Implementation of ?interpret built-in 

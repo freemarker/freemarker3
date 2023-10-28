@@ -4,7 +4,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.EvaluationException;
 import freemarker.template.WrappedVariable;
-import freemarker.ext.beans.Pojo;
+import freemarker.core.evaluation.Pojo;
 
 /**
  * Implementation of ?pojo built-in 

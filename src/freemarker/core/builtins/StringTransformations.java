@@ -6,7 +6,7 @@ import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.utility.StringUtil;
 
-import static freemarker.ext.beans.ObjectWrapper.*;
+import static freemarker.core.evaluation.ObjectWrapper.*;
 
 /**
  * Implementations of ?cap_first, ?lower_case, ?upper_case and other
