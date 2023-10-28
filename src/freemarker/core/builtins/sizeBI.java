@@ -5,6 +5,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.WrappedHash;
 import freemarker.template.WrappedSequence;
+import freemarker.ext.beans.Pojo;
 import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
@@ -26,6 +27,9 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
         }
         else if (model instanceof WrappedHash) {
             size = ((WrappedHash) model).size();
+        }
+        else if (model instanceof Pojo) {
+            size = ((Pojo)model).size();
         }
         else {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "a sequence or extended hash");

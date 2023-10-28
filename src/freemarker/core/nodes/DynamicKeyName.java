@@ -3,7 +3,9 @@ package freemarker.core.nodes;
 import static freemarker.template.Constants.JAVA_NULL;
 import static freemarker.ext.beans.ObjectWrapper.*;
 import freemarker.core.EvaluationUtil;
+import freemarker.core.Scope;
 import freemarker.ext.beans.ListModel;
+import freemarker.ext.beans.Pojo;
 import freemarker.template.*;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
@@ -68,14 +70,20 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         }
     }
 
-    private Object dealWithStringKey(Object targetModel, String key, Environment env) {
-        if (targetModel instanceof Map) {
-            return wrap(((Map) targetModel).get(key));
+    private Object dealWithStringKey(Object lhs, String key, Environment env) {
+        if (lhs instanceof Map) {
+            return wrap(((Map) lhs).get(key));
         }
-        if (targetModel instanceof WrappedHash) {
-            return wrap(((WrappedHash) targetModel).get(key));
+        if (lhs instanceof WrappedHash) {
+            return wrap(((WrappedHash) lhs).get(key));
         }
-        throw invalidTypeException(targetModel, getTarget(), env, "hash");
+        if (lhs instanceof Scope) {
+            return wrap(((Scope) lhs).get(key));
+        }
+        if (lhs instanceof Pojo) {
+            return wrap(((Pojo) lhs).get(key));
+        }
+        throw invalidTypeException(lhs, getTarget(), env, "hash");
     }
 
     private Object dealWithRangeKey(Object targetModel, RangeExpression range, Environment env) {

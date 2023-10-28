@@ -67,6 +67,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     private final WrappedHash rootDataModel;
+    //private final Map<String,Object> rootDataModel;
 
     private final List<TemplateElement> elementStack = new ArrayList<TemplateElement>();
 
@@ -1069,6 +1070,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public int size() {
+        assert false : "SHIT";
         if (rootDataModel instanceof WrappedHash) {
             WrappedHash root = (WrappedHash) rootDataModel;
             return globalVariables.size() + root.size()

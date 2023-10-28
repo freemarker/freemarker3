@@ -7,7 +7,6 @@ package freemarker.template;
  * @see WrappedHash
  * @see WrappedSequence
  * @see WrappedString
- * @see TemplateTransformModel
  *
  */
 public interface WrappedVariable {

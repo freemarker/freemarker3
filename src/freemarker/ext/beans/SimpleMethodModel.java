@@ -41,19 +41,14 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
     /**
      * Invokes the method, passing it the arguments from the list.
      */
-    public Object exec(List arguments)
-        throws
-        EvaluationException
+    public Object exec(List<Object> arguments) 
     {
-        try
-        {
+        try {
             return ObjectWrapper.invokeMethod(object, getMember(), unwrapArguments(
                     arguments));
         }
-        catch(Exception e)
-        {
-            while(e instanceof InvocationTargetException)
-            {
+        catch(Exception e) {
+            while(e instanceof InvocationTargetException) {
                 Throwable t = ((InvocationTargetException)e).getTargetException();
                 if(t instanceof Exception)
                 {

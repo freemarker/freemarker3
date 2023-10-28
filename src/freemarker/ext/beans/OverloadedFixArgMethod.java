@@ -23,7 +23,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
     void afterSignatureAdded(int l) {
     };
 
-    Object getMemberAndArguments(List<WrappedVariable> arguments) 
+    Object getMemberAndArguments(List<Object> arguments) 
     {
         if(arguments == null) {
             // null is treated as empty args
@@ -41,7 +41,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
         assert types.length == l;
         // Marshal the arguments
         Object[] args = new Object[l];
-        Iterator<WrappedVariable> it = arguments.iterator();
+        Iterator<Object> it = arguments.iterator();
         for(int i = 0; i < l; ++i) {
             args[i] = unwrap(it.next());
         }

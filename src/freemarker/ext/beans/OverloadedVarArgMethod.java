@@ -33,7 +33,7 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
             varArgType = argTypes[argCount - 1].getComponentType(); 
         }
         
-        Object[] packArgs(Object[] args, List<WrappedVariable> modelArgs) 
+        Object[] packArgs(Object[] args, List<Object> modelArgs) 
         {
             final int actualArgCount = args.length;
             final int fixArgCount = argCount - 1;
@@ -148,7 +148,7 @@ class OverloadedVarArgMethod<T extends Member> extends OverloadedMethod<T>
         types[l1] = types[l1].getComponentType();
     }
     
-    Object getMemberAndArguments(List<WrappedVariable> arguments) 
+    Object getMemberAndArguments(List<Object> arguments) 
     {
         if(arguments == null) {
             // null is treated as empty args
@@ -169,7 +169,7 @@ outer:  for(int j = Math.min(l + 1, marshalTypes.length - 1); j >= 0; --j) {
                 continue;
             }
             // Try to marshal the arguments
-            Iterator<WrappedVariable> it = arguments.iterator();
+            Iterator<Object> it = arguments.iterator();
             for(int i = 0; i < l; ++i) {
                 Object dst = unwrap(it.next());
                 if(dst != args[i]) {

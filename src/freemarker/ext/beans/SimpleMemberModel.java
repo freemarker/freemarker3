@@ -28,7 +28,7 @@ class SimpleMemberModel<T extends Member>
         this.argTypes = argTypes;
     }
     
-    Object[] unwrapArguments(List<WrappedVariable> arguments) {
+    Object[] unwrapArguments(List<Object> arguments) {
         if(arguments == null) {
             arguments = Collections.emptyList();
         }

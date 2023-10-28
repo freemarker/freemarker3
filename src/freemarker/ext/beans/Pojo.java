@@ -235,17 +235,17 @@ public class Pojo implements WrappedHash//, WrappedString
         return object == null || Boolean.FALSE.equals(object);
     }
     
-    public Object getAdaptedObject(Class hint) {
-        return object;
-    }
-
     public Object getWrappedObject() {
         return object;
     }
     
     public int size()
     {
-        return keyCount(object.getClass());
+        if (object instanceof Collection) {
+            return ((Collection<?>)object).size();
+        }
+        throw new EvaluationException("not a collection");
+        //return keyCount(object.getClass());
     }
 
     public Iterable<?> keys()

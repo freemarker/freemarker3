@@ -433,7 +433,7 @@ public class ObjectWrapper
             : wrap(retval); 
     }
 
-    public static Object newInstance(Class<?> clazz, List<WrappedVariable> arguments)
+    public static Object newInstance(Class<?> clazz, List<Object> arguments)
     {
         try
         {
@@ -456,8 +456,7 @@ public class ObjectWrapper
             else if(ctors instanceof MethodMap)
             {
                 MethodMap<Constructor> methodMap = (MethodMap<Constructor>)ctors; 
-                MemberAndArguments<Constructor> maa = 
-                    methodMap.getMemberAndArguments(arguments);
+                MemberAndArguments<Constructor> maa = methodMap.getMemberAndArguments(arguments);
                 objargs = maa.getArgs();
                 ctor = maa.getMember();
             }
@@ -528,25 +527,6 @@ public class ObjectWrapper
             }
         }
         return map;
-    }
-
-    /**
-     * Returns the number of introspected methods/properties that should
-     * be available via the WrappedHash interface. Affected by the
-     * {@link #setMethodsShadowItems(boolean)} and {@link
-     * #setExposureLevel(int)} settings.
-     */
-    static int keyCount(Class clazz)
-    {
-        Map map = getClassKeyMap(clazz);
-        int count = map.size();
-        if (map.containsKey(CONSTRUCTORS))
-            count--;
-        if (map.containsKey(GENERIC_GET_KEY))
-            count--;
-        if (map.containsKey(ARGTYPES))
-            count--;
-        return count;
     }
 
     /**

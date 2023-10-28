@@ -28,7 +28,7 @@ class MethodMap<T extends Member>
         }
     }
     
-    MemberAndArguments<T> getMemberAndArguments(List<WrappedVariable> arguments) 
+    MemberAndArguments<T> getMemberAndArguments(List<Object> arguments) 
     {
         Object memberAndArguments = fixArgMethod.getMemberAndArguments(arguments);
         if(memberAndArguments == OverloadedMethod.NO_SUCH_METHOD) {
