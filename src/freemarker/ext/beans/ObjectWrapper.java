@@ -354,10 +354,10 @@ public class ObjectWrapper
         if(object == null) {
             return Constants.JAVA_NULL;
         }
-        if (isMarkedAsPojo(object.getClass())) {
-            return new Pojo(object);
-        }
         if (object instanceof WrappedVariable) {
+            return object;
+        }
+        if (object instanceof Pojo) {
             return object;
         }
         if (object instanceof Scope) {
@@ -371,15 +371,18 @@ public class ObjectWrapper
         {
             return object;
         }
+        if (isMarkedAsPojo(object.getClass())) {
+            return new Pojo(object);
+        }
         if (object instanceof List) {
             //return object;
             return new Pojo(object);
         }
-        if (object instanceof Map) {
-            return  new SimpleMapModel((Map<?,?>)object);
-        }
         if (object.getClass().isArray()) {
             return new Pojo(object);
+        }
+        if (object instanceof Map) {
+            return  new SimpleMapModel((Map<?,?>)object);
         }
         if (object instanceof Date) {
             return new DateModel((Date) object);
