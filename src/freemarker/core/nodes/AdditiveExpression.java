@@ -49,11 +49,6 @@ public class AdditiveExpression extends TemplateNode implements Expression {
             result.addAll(leftList);
             result.addAll(rightList);
             return result;
-            //return new ListModel(result);
-            /*List merged = new ArrayList(asList(leftModel));
-            merged.addAll(asList(rightModel));
-            return merged;*/
-            //return new ConcatenatedSequence((WrappedSequence) left, (WrappedSequence) right);
         }
         if (isDisplayableAsString(left) && isDisplayableAsString(right)) {
             return asString(left) + asString(right);
@@ -85,28 +80,6 @@ public class AdditiveExpression extends TemplateNode implements Expression {
         return result;
     }
 
-
-    private static final class ConcatenatedSequence implements WrappedSequence {
-        private final WrappedSequence left;
-        private final WrappedSequence right;
-
-        ConcatenatedSequence(WrappedSequence left, WrappedSequence right) {
-            this.left = left;
-            this.right = right;
-        }
-
-        public int size() {
-            return left.size() + right.size();
-        }
-
-        public Object get(int i) {
-            int ls = left.size();
-            return i < ls ? left.get(i) : right.get(i - ls);
-        }
-
-    }
-
-
     private static class ConcatenatedHash implements WrappedHash {
         final WrappedHash left;
         final WrappedHash right;
@@ -124,11 +97,10 @@ public class AdditiveExpression extends TemplateNode implements Expression {
         public boolean isEmpty() {
             return left.isEmpty() && right.isEmpty();
         }
-
     }
 
 
-    private static final class ConcatenatedHashEx extends ConcatenatedHash implements WrappedHash {
+    private static final class ConcatenatedHashEx extends ConcatenatedHash {
         private Iterable<String> keys;
         private Iterable<Object> values;
         private int size;

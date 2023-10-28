@@ -20,8 +20,7 @@ import static freemarker.ext.beans.ObjectWrapper.*;
 
 /**
  * A class that will wrap an arbitrary POJO (a.k.a. Plain Old Java Object)
- * into {@link freemarker.template.WrappedHash}
- * interface allowing calls to arbitrary property getters and invocation of
+ * allowing calls to arbitrary property getters and invocation of
  * accessible methods on the object from a template using the
  * <tt>object.foo</tt> to access properties and <tt>object.bar(arg1, arg2)</tt>
  * to

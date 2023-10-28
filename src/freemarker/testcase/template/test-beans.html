@@ -7,6 +7,7 @@ ${array[1]}
 <#list list as item>
 ${item}
 </#list>
+#var list = list?pojo
 ${list.size()}
 <#if list.isEmpty()>empty<#else>not empty</#if>
 ${list[0]}
