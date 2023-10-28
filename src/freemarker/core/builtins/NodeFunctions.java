@@ -1,15 +1,13 @@
 package freemarker.core.builtins;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.ext.beans.ListModel;
-import freemarker.template.WrappedMethod;
 import freemarker.template.WrappedNode;
 import freemarker.template.Constants;
-import freemarker.template.utility.StringUtil;
 
 /**
  * Implementations of ?children, ?node_name, and other 
@@ -90,7 +88,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         @Override
         public Object apply(Environment env, WrappedNode node)
         {
-            final AncestorSequence result = new AncestorSequence();
+            List<WrappedNode> result = new ArrayList<>();
             WrappedNode parent = node.getParentNode();
             while (parent != null) {
                 result.add(parent);
@@ -99,7 +97,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
             return result;
         }
     }
-
+/*
     static class AncestorSequence extends ListModel implements WrappedMethod {
         public Object exec(List names) {
             if (names == null || names.isEmpty()) {
@@ -127,4 +125,5 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
             return result;
         }
     }	
+*/    
 }

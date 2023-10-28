@@ -13,7 +13,6 @@ import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.ext.beans.ListModel;
 import freemarker.template.WrappedBoolean;
 import freemarker.template.WrappedString;
 import freemarker.template.WrappedMethod;
@@ -174,7 +173,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         @Override
         public Object apply(String string, Environment env, BuiltInExpression caller) {
             StringTokenizer st = new StringTokenizer(string);
-            ListModel result = new ListModel();
+            List<String> result = new ArrayList<>();
             while (st.hasMoreTokens()) {
                 result.add(st.nextToken());
             }
@@ -382,9 +381,10 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             };
         }
 
-        class Match {//implements WrappedString {
+        class Match {
             String match;
-            ListModel subs = new ListModel();
+            List<String> subs = new ArrayList<>();
+
             Match() {
                 match = input.substring(matcher.start(), matcher.end());
                 for (int i=0; i< matcher.groupCount() + 1; i++) {

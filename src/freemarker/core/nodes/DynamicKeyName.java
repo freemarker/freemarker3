@@ -4,7 +4,6 @@ import static freemarker.template.Constants.JAVA_NULL;
 import static freemarker.ext.beans.ObjectWrapper.*;
 import freemarker.core.EvaluationUtil;
 import freemarker.core.Scope;
-import freemarker.ext.beans.ListModel;
 import freemarker.ext.beans.Pojo;
 import freemarker.template.*;
 import freemarker.core.Environment;
@@ -13,6 +12,7 @@ import freemarker.core.nodes.generated.RangeExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DynamicKeyName extends TemplateNode implements Expression {
 
@@ -57,7 +57,7 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         if (isList(targetModel)) {
             try {
                 return wrap(asList(targetModel).get(index));
-            } catch (ArrayIndexOutOfBoundsException ae) {
+            } catch (IndexOutOfBoundsException ae) {
                 return JAVA_NULL;
             }
         }
@@ -92,9 +92,9 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         if (hasRhs) {
             end = EvaluationUtil.getNumber(range.getRight(), env).intValue();
         }
-        if (targetModel instanceof WrappedSequence) {
-            WrappedSequence sequence = (WrappedSequence) targetModel;
-            if (!hasRhs) end = sequence.size() - 1;
+        if (isList(targetModel)) {
+            List<?> list = asList(targetModel);
+            if (!hasRhs) end = list.size() - 1;
             if (start < 0) {
                 String msg = range.getRight().getLocation() + "\nNegative starting index for range, is " + range;
                 throw new TemplateException(msg, env);
@@ -103,25 +103,25 @@ public class DynamicKeyName extends TemplateNode implements Expression {
                 String msg = range.getLeft().getLocation() + "\nNegative ending index for range, is " + range;
                 throw new TemplateException(msg, env);
             }
-            if (start >= sequence.size()) {
-                String msg = range.getLeft().getLocation() + "\nLeft side index of range out of bounds, is " + start + ", but the sequence has only " + sequence.size() + " element(s) " + "(note that indices are 0 based, and ranges are inclusive).";
+            if (start >= list.size()) {
+                String msg = range.getLeft().getLocation() + "\nLeft side index of range out of bounds, is " + start + ", but the sequence has only " + list.size() + " element(s) " + "(note that indices are 0 based, and ranges are inclusive).";
                 throw new TemplateException(msg, env);
             }
-            if (end >= sequence.size()) {
-                String msg = range.getRight().getLocation() + "\nRight side index of range out of bounds, is " + end + ", but the sequence has only " + sequence.size() + " element(s)." + "(note that indices are 0 based, and ranges are inclusive).";
+            if (end >= list.size()) {
+                String msg = range.getRight().getLocation() + "\nRight side index of range out of bounds, is " + end + ", but the sequence has only " + list.size() + " element(s)." + "(note that indices are 0 based, and ranges are inclusive).";
                 throw new TemplateException(msg, env);
             }
-            ArrayList<Object> list = new ArrayList<>(1 + Math.abs(start - end));
+            ArrayList<Object> result = new ArrayList<>();
             if (start > end) {
                 for (int i = start; i >= end; i--) {
-                    list.add(sequence.get(i));
+                    result.add(list.get(i));
                 }
             } else {
                 for (int i = start; i <= end; i++) {
-                    list.add(sequence.get(i));
+                    result.add(list.get(i));
                 }
             }
-            return new ListModel(list);
+            return result;
         }
         String s = getTarget().getStringValue(env);
         if (!hasRhs) end = s.length() - 1;

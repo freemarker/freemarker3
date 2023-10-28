@@ -729,7 +729,6 @@ INJECT ListLiteral :
   import java.util.List;
   import freemarker.core.Environment;
   import freemarker.core.TemplateNamespace;
-  import freemarker.ext.beans.ListModel;
   import freemarker.template.TemplateException;
   import freemarker.template.*;
   implements Expression
@@ -737,7 +736,7 @@ INJECT ListLiteral :
     public List<Expression> getElements() {
         return childrenOfType(Expression.class);
     }
-    
+/*    
     public Object evaluate(Environment env) {
         ListModel list = new ListModel();
         for (Expression exp: getElements()) {
@@ -747,9 +746,38 @@ INJECT ListLiteral :
         }
         return list;
     }
+*/
+    public Object evaluate(Environment env) {
+        List<Object> result = new ArrayList<>();
+        for (Expression exp : getElements()) {
+            Object tm = exp.evaluate(env);
+            assertIsDefined(tm, env);
+            result.add(tm);
+        }
+        return result;
+    }
+
+
 
     // A hacky routine used by VisitNode and RecurseNode
-    
+   public List evaluateStringsToNamespaces(Environment env) {
+        List result = new ArrayList();
+        for (Expression exp : getElements()) {
+            if (exp instanceof StringLiteral) {
+                String s = ((StringLiteral) exp).getAsString();
+                try {
+                    TemplateNamespace ns = env.importLib(s, null);
+                    result.add(ns);
+                } catch (IOException ioe) {
+                    throw new TemplateException("Could not import library '" + s + "', " + ioe.getMessage(), env);
+                }
+            } else {
+                result.add(exp);
+            }
+        }
+        return result;
+    }    
+#if false    
     public WrappedSequence evaluateStringsToNamespaces(Environment env) {
         ListModel result = new ListModel();
         for (Expression exp : getElements()) {
@@ -769,7 +797,7 @@ INJECT ListLiteral :
         }
         return result;
     }
-    
+#endif    
     public Expression _deepClone(String name, Expression subst) {
         ListLiteral result = new ListLiteral();
         for (Node node : this) {

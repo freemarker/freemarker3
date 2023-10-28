@@ -347,14 +347,14 @@ public class ObjectWrapper
         if(object == null) {
             return Constants.JAVA_NULL;
         }
+        if (isMarkedAsPojo(object.getClass())) {
+            return new Pojo(object);
+        }
         if (object instanceof WrappedVariable) {
             return object;
         }
         if (object instanceof Scope) {
             return object;
-        }
-        if (isMarkedAsPojo(object.getClass())) {
-            return new Pojo(object);
         }
         if (object instanceof Boolean 
            || object instanceof Number 
@@ -365,9 +365,9 @@ public class ObjectWrapper
             return object;
         }
         if (object instanceof List) {
-            return new ListModel((List<?>)object);
+            //return new ListModel((List<?>)object);
             //return object;
-            //return new Pojo(object);
+            return new Pojo(object);
         }
         if (object instanceof Map) {
             return  new SimpleMapModel((Map<?,?>)object);

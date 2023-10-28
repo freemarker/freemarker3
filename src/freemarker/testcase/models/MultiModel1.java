@@ -1,7 +1,11 @@
 package freemarker.testcase.models;
 
 import freemarker.template.*;
-import freemarker.ext.beans.ListModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+//import freemarker.ext.beans.ListModel;
 import freemarker.ext.beans.SimpleMapModel;
 
 /**
@@ -15,15 +19,15 @@ public class MultiModel1 implements WrappedHash,
     private WrappedVariable m_cSubModel = new MultiModel2();
     private WrappedVariable m_cListHashModel1 = new MultiModel4();
     private WrappedVariable m_cListHashModel2 = new MultiModel5();
-    private WrappedSequence m_cListModel = new ListModel();
+    private List<Object> m_cListModel = new ArrayList<>();
     private WrappedHash m_cHashModel = new SimpleMapModel();
 
     /** Creates new MultiModel1 */
     public MultiModel1() {
         for( int i = 0; i < 10; i++ ) {
-            ((ListModel)m_cListModel).add( "Model1 value: " + Integer.toString( i ));
+            m_cListModel.add( "Model1 value: " + Integer.toString( i ));
         }
-        ((ListModel)m_cListModel).add( new MultiModel3() );
+        m_cListModel.add( new MultiModel3() );
         ((SimpleMapModel)m_cHashModel).put( "nested", new MultiModel3() );
     }
 

@@ -43,10 +43,17 @@ public class AdditiveExpression extends TemplateNode implements Expression {
             return ae.add(first, second);
         }
         if (isList(left) && isList(right)) {
+            List leftList = asList(left);
+            List rightList = asList(right);
+            List result = new ArrayList();
+            result.addAll(leftList);
+            result.addAll(rightList);
+            return result;
+            //return new ListModel(result);
             /*List merged = new ArrayList(asList(leftModel));
             merged.addAll(asList(rightModel));
             return merged;*/
-            return new ConcatenatedSequence((WrappedSequence) left, (WrappedSequence) right);
+            //return new ConcatenatedSequence((WrappedSequence) left, (WrappedSequence) right);
         }
         if (isDisplayableAsString(left) && isDisplayableAsString(right)) {
             return asString(left) + asString(right);

@@ -3,6 +3,7 @@ package freemarker.core.builtins;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
+import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
@@ -11,7 +12,6 @@ import freemarker.template.Template;
 import freemarker.template.UserDirectiveBody;
 import freemarker.template.UserDirective;
 import freemarker.template.EvaluationException;
-import freemarker.template.WrappedSequence;
 import freemarker.template.TemplateException;
 
 import static freemarker.ext.beans.ObjectWrapper.*;
@@ -22,13 +22,12 @@ import static freemarker.ext.beans.ObjectWrapper.*;
 public class interpretBI extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public Object get(Environment env, BuiltInExpression caller,
-            Object model) 
+    public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
         String id = null, interpretString = null;
         if (isList(model)) {
-            WrappedSequence tsm = (WrappedSequence) model;
-            Object tm = tsm.get(1);
+            List tsm = asList(model);
+            Object tm = tsm.size() >1 ? tsm.get(1) : null;
             if (tm != null) {
                 if (isString(tm)) {
                     id = asString(tm);

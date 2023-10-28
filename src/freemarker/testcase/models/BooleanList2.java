@@ -1,7 +1,8 @@
 package freemarker.testcase.models;
 
-import freemarker.ext.beans.ListModel;
 import freemarker.template.*;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Model for testing list models. Every
@@ -12,12 +13,7 @@ import freemarker.template.*;
  */
 public class BooleanList2 implements WrappedSequence {
 
-    private ListModel  cList;
-
-    /** Creates new BooleanList2 */
-    public BooleanList2() {
-        cList = new ListModel();
-    }
+    private List<Object>  cList = new ArrayList<>();
 
     /**
      * @return the specified index in the list
