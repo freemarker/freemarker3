@@ -59,6 +59,14 @@ IfBlock :
   (
     (
         <ELSE_IF>
+        {
+            if (start.charAt(0) == '#' && start.charAt(0) == '#' && start.getBeginColumn()!=lastConsumedToken.getBeginColumn()) {
+                String message = "Mismatched indentation. The #elseif "
+                                 + " should match the indentation of the #if tag on line "
+                                 + start.getBeginLine();
+                throw new ParseException(message, lastConsumedToken, parsingStack);
+            }
+        }
         Expression
         <DIRECTIVE_END>
         Block
@@ -67,6 +75,14 @@ IfBlock :
   [
     (
         <ELSE>
+        {
+            if (start.charAt(0) == '#' && start.charAt(0) == '#' && start.getBeginColumn()!=lastConsumedToken.getBeginColumn()) {
+                String message = "Mismatched indentation. The #else"
+                                 + " should match the indentation of the #if tag on line "
+                                 + start.getBeginLine();
+                throw new ParseException(message, lastConsumedToken, parsingStack);
+            }
+        }
         Block
     )#ConditionalBlock
   ]
@@ -118,7 +134,16 @@ AttemptBlock :
 {Token start;}
    start=<_ATTEMPT>
    Block
-   RecoveryBlock
+   <_RECOVER>
+   {
+        if (start.charAt(0) == '#' && start.charAt(0) == '#' && start.getBeginColumn()!=lastConsumedToken.getBeginColumn()) {
+            String message = "Mismatched indentation. The #recover "
+                                + " should match the indentation of the #attempt tag on line "
+                                + start.getBeginLine();
+            throw new ParseException(message, lastConsumedToken, parsingStack);
+        }
+   }
+   Block #RecoveryBlock(2)
    CloseDirectiveBlock(start)
 ;
 
@@ -146,11 +171,6 @@ INJECT AttemptBlock :
         return "attempt block";
     }
 }
-
-RecoveryBlock : 
-   <_RECOVER>
-   Block
-;
 
 INJECT RecoveryBlock :
     import java.io.IOException;
@@ -1193,7 +1213,7 @@ INJECT NoParseBlock :
 }    
 
 SwitchBlock :
-{ Token start; }
+{ Token start, caseTok=null; }
    start=<SWITCH>
    Expression
    <DIRECTIVE_END>
@@ -1201,6 +1221,23 @@ SwitchBlock :
    (
      (
       <CASE>
+      {
+         if (lastConsumedToken.charAt(0) == '#' && start.charAt(0) == '#') {
+            if (lastConsumedToken.getBeginColumn() <= start.getBeginColumn()) {
+                String message = "Indentation issue. The #case on line " 
+                + lastConsumedToken.getBeginLine() + " should be offset from the #switch "
+                + "on line " + start.getBeginLine() + ".";
+                throw new ParseException(message, lastConsumedToken, parsingStack);
+            }
+            if (caseTok != null && caseTok.getBeginColumn() != lastConsumedToken.getBeginColumn()) {
+                String message = "Indentation issue. The #case on line " 
+                + lastConsumedToken.getBeginLine() + " should be indented the same as the #case "
+                + "on line " + caseTok.getBeginLine() + ".";
+                throw new ParseException(message, lastConsumedToken, parsingStack);
+            }
+            caseTok = lastConsumedToken;
+         }
+      }
       Expression
       <DIRECTIVE_END>
       Block
@@ -1209,6 +1246,23 @@ SwitchBlock :
    [
      (
       <DEFAUL>
+      {
+         if (lastConsumedToken.charAt(0) == '#' && start.charAt(0) == '#') {
+            if (lastConsumedToken.getBeginColumn() <= start.getBeginColumn()) {
+                String message = "Indentation issue. The #default on line " 
+                + lastConsumedToken.getBeginLine() + " should be offset from the #switch "
+                + "on line " + start.getBeginLine() + ".";
+                throw new ParseException(message, lastConsumedToken, parsingStack);
+            }
+            if (caseTok != null && caseTok.getBeginColumn() != lastConsumedToken.getBeginColumn()) {
+                String message = "Indentation issue. The #default on line " 
+                + lastConsumedToken.getBeginLine() + " should be indented the same as the #case "
+                + "on line " + caseTok.getBeginLine() + ".";
+                throw new ParseException(message, lastConsumedToken, parsingStack);
+            }
+            caseTok = lastConsumedToken;
+         }
+      }
       Block
      )#CaseBlock
    ]
@@ -1366,6 +1420,15 @@ CloseDirectiveBlock(Token startToken)#void :
                     throw new ParseException(message, lastConsumedToken, parsingStack);
                 }
             }
+        }
+        if (startToken.charAt(0) == '#' 
+             && lastConsumedToken.charAt(0) == '/' 
+             && startToken.getBeginColumn() != lastConsumedToken.getBeginColumn()) 
+        {
+            String message = "Mismatched indentation. The closing tag /#" + nameAtEnd
+                             + " should match the indentation of the starting tag on line "
+                             + startToken.getBeginLine();
+            throw new ParseException(message, lastConsumedToken, parsingStack);
         }
 	}
     |

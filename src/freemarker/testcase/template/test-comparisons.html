@@ -52,20 +52,20 @@
 
 <p>The comparison operators:</p>
 <#assign list1 = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ]>
-<#foreach item in list1>
+#foreach item in list1
    <p>Item is: ${item}</p>
-   <#if item lt 5>
+   #if item lt 5
    <p>Item is less than five.</p>
-   </#if>
-   <#if item <= 7>
+   /#if
+   #if item <= 7
    <p>Item is less than or equals to seven.</p>
    </#if>
-   <#if item gt 2>
+   #if item gt 2
    <p>Item is greater than two.</p>
-   </#if>
-   <#if (item >= 10)>
+   /#if
+   #if item >= 10
    <p>Item is greater than or equal to ten.</p>
-   </#if>
-</#foreach>
+   /#if
+/#foreach
 </body>
 </html>
