@@ -3,7 +3,7 @@ package freemarker.core.helpers;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.Expression;
-import freemarker.core.evaluation.Constants;
+import freemarker.core.variables.Constants;
 
 import java.util.*;
 

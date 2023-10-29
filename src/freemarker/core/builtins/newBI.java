@@ -5,10 +5,10 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 import freemarker.template.TemplateException;
 
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 /**
  * Implementation of ?new built-in 

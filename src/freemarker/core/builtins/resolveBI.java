@@ -6,7 +6,7 @@ import freemarker.core.Scope;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.core.evaluation.WrappedMethod;
+import freemarker.core.variables.WrappedMethod;
 import freemarker.template.TemplateException;
 
 /**

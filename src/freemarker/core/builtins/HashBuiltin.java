@@ -3,8 +3,8 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.evaluation.WrappedHash;
-import freemarker.core.evaluation.EvaluationException;
+import freemarker.core.variables.WrappedHash;
+import freemarker.core.variables.EvaluationException;
 
 /**
  * Implementation of ?resolve built-in 

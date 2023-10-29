@@ -4,7 +4,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.generated.TemplateNode;
-import static freemarker.core.evaluation.Constants.JAVA_NULL;
+import static freemarker.core.variables.Constants.JAVA_NULL;
 
 /**
  * Implementations of ?scope and ?namespace built-ins

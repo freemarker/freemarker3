@@ -1,6 +1,6 @@
 package freemarker.testcase.models;
 
-import freemarker.core.evaluation.WrappedString;
+import freemarker.core.variables.WrappedString;
 
 /**
  * Testcase to see how FreeMarker's ?new built-in deals with constructors.

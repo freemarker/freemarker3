@@ -13,10 +13,10 @@ import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 import freemarker.template.utility.StringUtil;
 
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 /**
  * Implementations of ?substring and other 

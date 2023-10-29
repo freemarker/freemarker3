@@ -1,6 +1,6 @@
 package freemarker.testcase.models;
 
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 
 import java.util.ArrayList;
 import java.util.List;

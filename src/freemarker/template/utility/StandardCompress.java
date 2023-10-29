@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 
-import static freemarker.core.evaluation.ObjectWrapper.asBoolean;
-import static freemarker.core.evaluation.ObjectWrapper.asNumber;
+import static freemarker.core.variables.ObjectWrapper.asBoolean;
+import static freemarker.core.variables.ObjectWrapper.asNumber;
 
 /**
  * <p>A filter that compresses each sequence of consecutive whitespace

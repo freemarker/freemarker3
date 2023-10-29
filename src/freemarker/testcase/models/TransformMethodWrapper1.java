@@ -1,7 +1,7 @@
 package freemarker.testcase.models;
 
 import java.util.*;
-import freemarker.core.evaluation.WrappedMethod;
+import freemarker.core.variables.WrappedMethod;
 import freemarker.template.utility.*;
 
 /**

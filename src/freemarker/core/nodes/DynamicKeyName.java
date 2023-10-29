@@ -1,10 +1,10 @@
 package freemarker.core.nodes;
 
-import static freemarker.core.evaluation.Constants.JAVA_NULL;
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.variables.Constants.JAVA_NULL;
+import static freemarker.core.variables.ObjectWrapper.*;
 import freemarker.core.EvaluationUtil;
 import freemarker.core.Scope;
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.RangeExpression;

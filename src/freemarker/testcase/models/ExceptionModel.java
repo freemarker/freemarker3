@@ -1,7 +1,7 @@
 package freemarker.testcase.models;
 
-import freemarker.core.evaluation.WrappedString;
-import freemarker.core.evaluation.EvaluationException;
+import freemarker.core.variables.WrappedString;
+import freemarker.core.variables.EvaluationException;
 
 /**
  * A template that always throws an exception whenever we call getAsString()

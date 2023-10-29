@@ -40,7 +40,7 @@
    <testcase name="arithmetic" filename="test-arithmetic.html" />
    <!--testcase name="bean-maps" filename="test-bean-maps.html"/-->
    <testcase name="beans" filename="test-beans.html">
-      <config object_wrapper="freemarker.core.evaluation.ObjectWrapper"/>
+      <config object_wrapper="freemarker.core.variables.ObjectWrapper"/>
                             <config locale="en_US"/>
    </testcase>
    <!--testcase name="block-trim" filename="trimblock.ftl"/-->

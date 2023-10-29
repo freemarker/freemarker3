@@ -1,8 +1,8 @@
 package freemarker.testcase.models;
 
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 import java.util.*;
-import static freemarker.core.evaluation.ObjectWrapper.asString;
+import static freemarker.core.variables.ObjectWrapper.asString;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.

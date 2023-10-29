@@ -5,12 +5,12 @@ import freemarker.core.ArithmeticEngine;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 import freemarker.template.TemplateException;
 import java.util.*;
 
 import static freemarker.core.parser.Token.TokenType.*;
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 
 //THIS NEEDS TO BE SIMPLIFIED!

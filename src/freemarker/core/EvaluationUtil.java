@@ -4,9 +4,9 @@ import java.util.Date;
 
 import freemarker.template.TemplateException;
 import freemarker.core.nodes.generated.Expression;
-import freemarker.core.evaluation.WrappedDate;
-import static freemarker.core.evaluation.Constants.JAVA_NULL;
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import freemarker.core.variables.WrappedDate;
+import static freemarker.core.variables.Constants.JAVA_NULL;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 /**
  * @version 1.0

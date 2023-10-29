@@ -7,9 +7,9 @@ import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.ParentheticalExpression;
-import freemarker.core.evaluation.ObjectWrapper;
-import freemarker.core.evaluation.WrappedMethod;
-import static freemarker.core.evaluation.Constants.*;
+import freemarker.core.variables.ObjectWrapper;
+import freemarker.core.variables.WrappedMethod;
+import static freemarker.core.variables.Constants.*;
 
 /**
  * @author Attila Szegedi

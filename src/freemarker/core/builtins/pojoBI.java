@@ -2,9 +2,9 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.core.evaluation.EvaluationException;
-import freemarker.core.evaluation.WrappedVariable;
-import freemarker.core.evaluation.Pojo;
+import freemarker.core.variables.EvaluationException;
+import freemarker.core.variables.WrappedVariable;
+import freemarker.core.variables.Pojo;
 
 /**
  * Implementation of ?pojo built-in 

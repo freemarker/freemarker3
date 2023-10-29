@@ -1,12 +1,12 @@
 package freemarker.testcase.models;
 
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-//import freemarker.core.evaluation.ListModel;
-import freemarker.core.evaluation.SimpleMapModel;
+//import freemarker.core.variables.ListModel;
+import freemarker.core.variables.SimpleMapModel;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.

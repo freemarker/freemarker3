@@ -3,10 +3,10 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Macro;
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 
-import static freemarker.core.evaluation.ObjectWrapper.*;
-import static freemarker.core.evaluation.Constants.JAVA_NULL;;
+import static freemarker.core.variables.ObjectWrapper.*;
+import static freemarker.core.variables.Constants.JAVA_NULL;;
 
 /**
  * Implementation of ?is_XXXX built-ins

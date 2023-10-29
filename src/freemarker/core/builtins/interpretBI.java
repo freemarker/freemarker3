@@ -9,12 +9,12 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.Template;
-import freemarker.core.evaluation.UserDirectiveBody;
-import freemarker.core.evaluation.UserDirective;
-import freemarker.core.evaluation.EvaluationException;
+import freemarker.core.variables.UserDirectiveBody;
+import freemarker.core.variables.UserDirective;
+import freemarker.core.variables.EvaluationException;
 import freemarker.template.TemplateException;
 
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 /**
  * Implementation of ?interpret built-in 

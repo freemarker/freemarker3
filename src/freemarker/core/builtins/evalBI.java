@@ -7,9 +7,9 @@ import freemarker.core.parser.FMLexer;
 import freemarker.core.parser.FMParser;
 import freemarker.core.parser.ParseException;
 import freemarker.template.TemplateException;
-import freemarker.core.evaluation.EvaluationException;
+import freemarker.core.variables.EvaluationException;
 
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 /**
  * Implementation of ?eval built-in 

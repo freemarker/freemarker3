@@ -23,7 +23,7 @@ import freemarker.cache.TemplateLoader;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.Scope;
-import freemarker.core.evaluation.WrappedHash;
+import freemarker.core.variables.WrappedHash;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
 import freemarker.log.Logger;
@@ -32,7 +32,7 @@ import freemarker.template.utility.StandardCompress;
 import freemarker.template.utility.StringUtil;
 import freemarker.template.utility.XmlEscape;
 
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 /**
  * Main entry point into the FreeMarker API, this class encapsulates the 

@@ -3,10 +3,10 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.evaluation.WrappedHash;
-import freemarker.core.evaluation.WrappedSequence;
-import freemarker.core.evaluation.Pojo;
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import freemarker.core.variables.WrappedHash;
+import freemarker.core.variables.WrappedSequence;
+import freemarker.core.variables.Pojo;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 import java.lang.reflect.Array;
 

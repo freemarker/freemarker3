@@ -1,6 +1,6 @@
 package freemarker.testcase.models;
 
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.

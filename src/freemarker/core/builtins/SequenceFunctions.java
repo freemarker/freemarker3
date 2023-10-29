@@ -11,11 +11,11 @@ import freemarker.core.Environment;
 import freemarker.core.ArithmeticEngine;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.evaluation.*;;
+import freemarker.core.variables.*;;
 import freemarker.template.TemplateException;
 import freemarker.template.utility.StringUtil;
 
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 /**
  * Implementations of builtins for standard functions that operate on sequences

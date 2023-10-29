@@ -1,8 +1,8 @@
 package freemarker.testcase.models;
 
 import java.util.*;
-import freemarker.core.evaluation.WrappedMethod;
-import static freemarker.core.evaluation.ObjectWrapper.asString;
+import freemarker.core.variables.WrappedMethod;
+import static freemarker.core.variables.ObjectWrapper.asString;
 
 /**
  * Another test of the interaction between MethodModels and TransformModels.

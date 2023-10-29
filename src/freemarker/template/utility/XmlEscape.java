@@ -5,8 +5,8 @@ import java.io.Writer;
 import java.util.Map;
 
 import freemarker.core.Environment;
-import freemarker.core.evaluation.UserDirectiveBody;
-import freemarker.core.evaluation.UserDirective;
+import freemarker.core.variables.UserDirectiveBody;
+import freemarker.core.variables.UserDirective;
 
 /**
  * Performs an XML escaping of a given template fragment. Specifically,

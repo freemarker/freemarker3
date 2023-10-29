@@ -10,9 +10,9 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.EvaluationUtil;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.evaluation.*;
+import freemarker.core.variables.*;
 
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 /**
  * Implementation of ?string built-in 

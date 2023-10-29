@@ -5,11 +5,11 @@ import java.util.Date;
 
 import freemarker.core.Environment;
 import freemarker.core.ArithmeticEngine;
-import freemarker.core.evaluation.WrappedDate;
-import freemarker.core.evaluation.EvaluationException;
+import freemarker.core.variables.WrappedDate;
+import freemarker.core.variables.EvaluationException;
 import freemarker.template.TemplateException;
 
-import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 /**
  * @author Attila Szegedi
