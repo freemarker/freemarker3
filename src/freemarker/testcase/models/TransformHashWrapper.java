@@ -1,7 +1,10 @@
 package freemarker.testcase.models;
 
 import freemarker.core.variables.WrappedHash;
-import freemarker.core.variables.SimpleMapModel;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import freemarker.template.utility.*;
 
 /**
@@ -11,7 +14,7 @@ import freemarker.template.utility.*;
  */
 public class TransformHashWrapper implements WrappedHash {
 
-    private SimpleMapModel hash = new SimpleMapModel();
+    private Map<String, Object> hash = new HashMap<>();
 
     /** Creates new TransformHashWrapper */
     public TransformHashWrapper() {

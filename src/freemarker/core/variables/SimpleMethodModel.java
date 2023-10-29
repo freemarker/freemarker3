@@ -17,9 +17,7 @@ import freemarker.annotations.Parameters;
  * @version $Id: SimpleMethodModel.java,v 1.27 2005/06/11 12:12:04 szegedia Exp $
  */
 public final class SimpleMethodModel extends SimpleMemberModel<Method>
-    implements
-    WrappedMethod,
-    WrappedSequence
+    implements WrappedMethod, WrappedSequence
 {
     private final Object object;
 
@@ -29,7 +27,7 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
      * <tt>null</tt> for static methods.
      * @param method the method that will be invoked.
      */
-    SimpleMethodModel(Object object, Method method, Class[] argTypes)
+    SimpleMethodModel(Object object, Method method, Class<?>[] argTypes)
     {
         super(method, argTypes);
         this.object = object;

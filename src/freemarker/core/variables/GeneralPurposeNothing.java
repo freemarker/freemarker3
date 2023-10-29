@@ -23,7 +23,7 @@ implements WrappedBoolean, WrappedString, WrappedSequence, WrappedHash, WrappedM
         return instance;
     }
 
-    public String getAsString() {
+    public String toString() {
         return "";
     }
 

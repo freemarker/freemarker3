@@ -4,7 +4,8 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.WrappedHash;
-import freemarker.core.variables.EvaluationException;
+import static freemarker.core.variables.ObjectWrapper.*;
+import java.util.Map;
 
 /**
  * Implementation of ?resolve built-in 
@@ -16,33 +17,33 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
             Object model) 
     {
-        if (!(model instanceof WrappedHash)) {
+        if (!(model instanceof WrappedHash) && !isMap(model)) {
             throw TemplateNode.invalidTypeException(model, 
-                    caller.getTarget(), env, "extended hash");
+                    caller.getTarget(), env, "hash");
         }
-        final Iterable result = apply((WrappedHash) model);
-//        if (!(result instanceof WrappedSequence)) {
-//            return new CollectionAndSequence(result);
-//        } 
-        return result;
+        return apply(unwrap(model));
     }
     
-    public abstract Iterable apply(WrappedHash hash) 
-    throws EvaluationException;
+    public abstract Iterable apply(Object hash); 
     
     public static class Keys extends HashBuiltin {
         @Override
-        public Iterable apply(WrappedHash hash)
-        {
-            return hash.keys();
+        public Iterable apply(Object hash) {
+            if (hash instanceof Map) {
+                return ((Map)hash).keySet();
+            }
+            return ((WrappedHash) hash).keys();
         }
     }
 
     public static class Values extends HashBuiltin {
         @Override
-        public Iterable apply(WrappedHash hash)
+        public Iterable apply(Object hash)
         {
-            return hash.values();
+            if (hash instanceof WrappedHash) {
+                return ((WrappedHash)hash).values();
+            }
+            return ((Map) hash).values();
         }
     }
 }

@@ -86,16 +86,8 @@ public class ComparisonExpression extends TemplateNode implements Expression {
             boolean first = asBoolean(ltm);
             boolean second = asBoolean(rtm);
             comp = (first ? 1 : 0) - (second ? 1 : 0);
-        } else if (ltm instanceof Pojo && rtm instanceof Pojo) {
-            Object left = ((Pojo) ltm).getWrappedObject();
-            Object right = ((Pojo) rtm).getWrappedObject();
-            if (operation == EQUALS || operation == DOUBLE_EQUALS) {
-                return left.equals(right);
-            }
-            if (operation == NOT_EQUALS) {
-                return !left.equals(right);
-            }
-            throw new UnsupportedOperationException();
+        } else if (operation == EQUALS || operation == DOUBLE_EQUALS || operation == NOT_EQUALS) {
+            return operation == NOT_EQUALS ? !areEqual(ltm, rtm) : areEqual(ltm, rtm);
         } else {
             throw new TemplateException("The only legal comparisons are between two numbers, two strings, or two dates.\n" + "Left  hand operand is a " + ltm.getClass().getName() + "\n" + "Right hand operand is a " + rtm.getClass().getName() + "\n", env);
         }
@@ -116,6 +108,13 @@ public class ComparisonExpression extends TemplateNode implements Expression {
                 throw new TemplateException("unknown operation", env);
         }
     }
+
+    private boolean areEqual(Object left, Object right)  {
+        left = unwrap(left);
+        right = unwrap(right);
+        return left.equals(right);
+    }
+
 
     public Expression _deepClone(String name, Expression subst) {
         ComparisonExpression result = new ComparisonExpression();

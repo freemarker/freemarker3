@@ -6,6 +6,8 @@ import java.beans.*;
 import java.io.InputStream;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import freemarker.log.Logger;
 import freemarker.core.Scope;
 
@@ -13,6 +15,7 @@ public class ObjectWrapper {
     private static final Class<java.math.BigInteger> BIGINTEGER_CLASS = java.math.BigInteger.class;
     private static final Class<Object> OBJECT_CLASS = Object.class;
     private static final Class<String> STRING_CLASS = String.class;
+    public static final Object CAN_NOT_UNWRAP = new Object();
 
     // When this property is true, some things are stricter. This is mostly to
     // catch anomalous things in development that can otherwise be valid situations
@@ -134,9 +137,6 @@ public class ObjectWrapper {
         if (obj instanceof Number) {
             return true;
         }
-        if (obj instanceof WrappedNumber) {
-            return true;
-        }
         return false;
     }
 
@@ -156,9 +156,6 @@ public class ObjectWrapper {
     public static Number asNumber(Object obj) {
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
-        }
-        if (obj instanceof WrappedNumber) {
-            return ((WrappedNumber) obj).getAsNumber();
         }
         return (Number) obj;
     }
@@ -324,10 +321,7 @@ public class ObjectWrapper {
         if (isMarkedAsPojo(object.getClass())) {
             return new Pojo(object);
         }
-        if (object instanceof CharSequence) {
-            return object; //REVISIT
-        }
-        if (    object instanceof WrappedVariable
+        if (object instanceof WrappedVariable
                 || object instanceof Pojo
                 || object instanceof Scope
                 || object instanceof Boolean
@@ -337,15 +331,19 @@ public class ObjectWrapper {
                 || object instanceof Enumeration) {
             return object;
         }
+        if (object instanceof CharSequence) {
+            return object.toString(); //REVISIT
+        }
         if (object instanceof List) {
-            // return object;
+            //return object;
             return new Pojo(object);
         }
         if (object.getClass().isArray()) {
             return new Pojo(object);
         }
         if (object instanceof Map) {
-            return new SimpleMapModel((Map<?, ?>) object);
+            return object;
+            //return new SimpleMapModel((Map<?, ?>) object);
         }
         if (object instanceof Date) {
             return new DateModel((Date) object);
@@ -381,15 +379,6 @@ public class ObjectWrapper {
         return lookupValue;
     }
 
-    /**
-     * Attempts to unwrap a model into underlying object. Generally, this
-     * method is the inverse of the {@link #wrap(Object)} method. In addition
-     * it will unwrap arbitrary {@link WrappedNumber} instances into
-     * a number, arbitrary {@link WrappedDate} instances into a date,
-     * {@link WrappedString} instances into a String, and
-     * {@link WrappedBoolean} instances into a Boolean.
-     * All other objects are returned unchanged.
-     */
     public static Object unwrap(Object object) {
         if (object == null) {
             throw new EvaluationException("invalid reference");
@@ -401,11 +390,71 @@ public class ObjectWrapper {
             return ((Pojo) object).getWrappedObject();
         }
         return object;
-        // if (!(object instanceof WrappedVariable)) {
-        // return object;
-        // }
-        // throw new UnsupportedOperationException("Don't know how to unwrap this object
-        // " + object.getClass());
+    }
+
+    public static Object unwrap(Object object, Class<?> desiredType) {
+        if (object == null) {
+            return null;
+        }
+        object = unwrap(object);
+        if (desiredType.isInstance(object)) {
+            return object;
+        }
+        if (desiredType == String.class) {
+            return object.toString();
+        }
+        if (desiredType == Boolean.TYPE || desiredType == Boolean.class) {
+            if (object instanceof Boolean) {
+                return (Boolean) object;
+            }
+            if (object instanceof WrappedBoolean) {
+                return ((WrappedBoolean)object).getAsBoolean() ? Boolean.TRUE : Boolean.FALSE;
+            }
+            return CAN_NOT_UNWRAP;
+        }
+        if (object instanceof Number) {
+            Number num = (Number) object;
+            if (desiredType == Integer.class || desiredType == Integer.TYPE) {
+                return num.intValue();
+            }
+            if (desiredType == Long.class || desiredType == Long.TYPE) {
+                return num.longValue();
+            }
+            if (desiredType == Short.class || desiredType == Short.TYPE) {
+                return num.shortValue();
+            }
+            if (desiredType == Byte.class || desiredType == Byte.TYPE) {
+                return num.byteValue();
+            }
+            if (desiredType == Float.class || desiredType == Float.TYPE) {
+                return num.floatValue();
+            }
+            if (desiredType == Double.class || desiredType == Double.TYPE) {
+                return num.doubleValue();
+            }
+            if (desiredType == BigDecimal.class) {
+                return new BigDecimal(num.toString());
+            }
+            if (desiredType == BigInteger.class) {
+                return new BigInteger(num.toString());
+            }
+        }
+        if (desiredType == Date.class && object instanceof WrappedDate) {
+            // REVISIT
+            return ((WrappedDate) object).getAsDate();
+        }
+        return CAN_NOT_UNWRAP;
+    }
+
+    private static Object[] unwrapParams(Object[] params, Class<?>[] desiredTypes) {
+        if (params == null || params.length == 0) {
+            return new Object[0];
+        }
+        Object[] result = new Object[params.length];
+        for (int i = 0; i< params.length; i++) {
+            result[i] = unwrap(params[i], desiredTypes[i]);
+        }
+        return result;
     }
 
     /**
@@ -430,7 +479,11 @@ public class ObjectWrapper {
      */
     static Object invokeMethod(Object object, Method method, Object[] args)
             throws InvocationTargetException, IllegalAccessException {
-        Object retval = method.invoke(object, args);
+        Class<?>[] types = method.getParameterTypes();
+        assert args == null && types.length == 0 || args.length == types.length;
+        Object[] params = unwrapParams(args, types);
+        assert params.length == types.length;
+        Object retval = method.invoke(object, params);
         return method.getReturnType() == Void.TYPE ?
         // We're returning WrappedVariable.NOTHING for convenience of
         // template authors who want to invoke a method for its side effect
@@ -552,7 +605,7 @@ public class ObjectWrapper {
                 map.put(CONSTRUCTORS, ctorMap);
             }
         } catch (SecurityException e) {
-            logger.warn("Canont discover constructors for class " +
+            logger.warn("Cannot discover constructors for class " +
                     clazz.getName(), e);
         }
         switch (map.size()) {

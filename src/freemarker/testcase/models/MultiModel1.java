@@ -3,10 +3,9 @@ package freemarker.testcase.models;
 import freemarker.core.variables.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-//import freemarker.core.variables.ListModel;
-import freemarker.core.variables.SimpleMapModel;
+import java.util.Map;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.
@@ -20,7 +19,7 @@ public class MultiModel1 implements WrappedHash,
     private WrappedVariable m_cListHashModel1 = new MultiModel4();
     private WrappedVariable m_cListHashModel2 = new MultiModel5();
     private List<Object> m_cListModel = new ArrayList<>();
-    private WrappedHash m_cHashModel = new SimpleMapModel();
+    private Map<String,Object> m_cHashModel = new HashMap<>();
 
     /** Creates new MultiModel1 */
     public MultiModel1() {
@@ -28,7 +27,7 @@ public class MultiModel1 implements WrappedHash,
             m_cListModel.add( "Model1 value: " + Integer.toString( i ));
         }
         m_cListModel.add( new MultiModel3() );
-        ((SimpleMapModel)m_cHashModel).put( "nested", new MultiModel3() );
+        m_cHashModel.put( "nested", new MultiModel3() );
     }
 
     /**

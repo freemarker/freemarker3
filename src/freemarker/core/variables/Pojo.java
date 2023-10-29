@@ -2,6 +2,7 @@ package freemarker.core.variables;
 
 import java.beans.IndexedPropertyDescriptor;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,8 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import freemarker.core.InvalidReferenceException;
 
 import static freemarker.core.variables.ObjectWrapper.*;
 
@@ -117,13 +116,6 @@ public class Pojo  {
         }
     }
 
-    /**
-     * Whether the model has a plain get(String) or get(Object) method
-     */
-    protected boolean hasPlainGetMethod() {
-        return getClassKeyMap(object.getClass()).get(GENERIC_GET_KEY) != null;
-    }
-
     private Object invokeThroughDescriptor(Object desc, Map classInfo)
             throws IllegalAccessException, InvocationTargetException {
         // See if this particular instance has a cached implementation
@@ -136,10 +128,8 @@ public class Pojo  {
                 member = null;
             }
         }
-
         if (member != null)
             return member;
-
         Object retval = null;
         if (desc instanceof IndexedPropertyDescriptor) {
             Method readMethod = ((IndexedPropertyDescriptor) desc).getIndexedReadMethod();
@@ -204,7 +194,13 @@ public class Pojo  {
         if (object instanceof Collection) {
             return ((Collection<?>) object).size();
         }
-        throw new EvaluationException("not a collection");
+        if (object instanceof Map) {
+            return ((Map<?,?>)object).size();
+        }
+        if (object.getClass().isArray()) {
+            return Array.getLength(object);
+        }
+        throw new EvaluationException("not a container");
         // return keyCount(object.getClass());
     }
 

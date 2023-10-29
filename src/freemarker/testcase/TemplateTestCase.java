@@ -130,7 +130,8 @@ public class TemplateTestCase extends TestCase {
             dataModel.put( "boolean4", true);
             dataModel.put( "boolean5", false);
             
-            dataModel.put( "list1", new Pojo(new ArrayList<Object>()) );
+            dataModel.put( "list1", new ArrayList<Object>());
+            //dataModel.put( "list1", new Pojo(new ArrayList<Object>()) );
             dataModel.put( "list2", new BooleanList2() );
     
             dataModel.put( "hash1", new BooleanHash1() );

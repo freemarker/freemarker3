@@ -18,14 +18,14 @@ import static freemarker.core.variables.ObjectWrapper.unwrap;
 class SimpleMemberModel<T extends Member>
 {
     private final T member;
-    private final Class<?>[] argTypes;
+    final Class<?>[] argTypes;
     
     protected SimpleMemberModel(T member, Class<?>[] argTypes)
     {
         this.member = member;
         this.argTypes = argTypes;
     }
-    
+
     Object[] unwrapArguments(List<Object> arguments) {
         if(arguments == null) {
             arguments = Collections.emptyList();

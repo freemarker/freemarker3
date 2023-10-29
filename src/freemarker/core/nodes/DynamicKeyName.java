@@ -42,6 +42,7 @@ public class DynamicKeyName extends TemplateNode implements Expression {
             return dealWithStringKey(lhs, asString(key), env);
         }
         if (isMap(lhs)) {
+            return ((Map) unwrap(lhs)).get(unwrap(key));
         }
         throw invalidTypeException(key, getNameExpression(), env, "number, range, or string");
     }
@@ -82,7 +83,11 @@ public class DynamicKeyName extends TemplateNode implements Expression {
             return wrap(((Scope) lhs).get(key));
         }
         if (lhs instanceof Pojo) {
-            return wrap(((Pojo) lhs).get(key));
+            Object wrappedObject = ((Pojo)lhs).getWrappedObject();
+            if (wrappedObject instanceof Map) {
+                return wrap(((Map) wrappedObject).get(key));
+            }
+            //return wrap(((Pojo) lhs).get(key));
         }
         throw invalidTypeException(lhs, getTarget(), env, "hash");
     }
