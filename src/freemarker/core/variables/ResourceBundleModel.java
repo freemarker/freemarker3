@@ -84,38 +84,30 @@ public class ResourceBundleModel extends Pojo implements WrappedMethod
      * with this key, then applies a MessageFormat.format on the string with the
      * rest of the arguments. The created MessageFormats are cached for later reuse.
      */
-    public Object exec(List arguments)
-        throws
-        EvaluationException
-    {
+    public Object exec(List<Object> arguments) throws EvaluationException {
         // Must have at least one argument - the key
         if(arguments.size() < 1)
             throw new EvaluationException("No message key was specified");
         // Read it
-        Iterator it = arguments.iterator();
+        Iterator<Object> it = arguments.iterator();
         String key = asString(it.next());
-        try
-        {
-            if(!it.hasNext())
-            {
+        try {
+            if(!it.hasNext()) {
                 return wrap(((ResourceBundle)object).getObject(key));
             }
-    
             // Copy remaining arguments into an Object[]
             int args = arguments.size() - 1;
             Object[] params = new Object[args];
-            for(int i = 0; i < args; ++i)
-                params[i] = unwrap((WrappedVariable)it.next());
-    
+            for(int i = 0; i < args; ++i) {
+                params[i] = unwrap(it.next());
+            }
             // Invoke format
             return format(key, params);
         }
-        catch(MissingResourceException e)
-        {
+        catch(MissingResourceException e) {
             throw new EvaluationException("No such key: " + key);
         }
-        catch(Exception e)
-        {
+        catch(Exception e) {
             throw new EvaluationException(e.getMessage());
         }
     }

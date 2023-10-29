@@ -121,7 +121,6 @@ public class Template extends TemplateCore {
         
         //readInTemplateText(reader);
         try {
-//            int syntaxSetting = getConfiguration().getTagSyntax();
             this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
             FMParser parser = new FMParser(this, input);
             parser.setInputSource(getName());
@@ -211,7 +210,7 @@ public class Template extends TemplateCore {
      * @throws TemplateException if an exception occurs during template processing
      * @throws IOException if an I/O exception occurs during writing to the writer.
      */
-    public void process(Object rootMap, Writer out) throws IOException
+    public void process(Map<String,Object> rootMap, Writer out) throws IOException
     {
         createProcessingEnvironment(rootMap, out).process();
     }
@@ -232,7 +231,7 @@ public class Template extends TemplateCore {
      * @throws TemplateException if an exception occurs during template processing
      * @throws IOException if an I/O exception occurs during writing to the writer.
      */
-    public void process(Object rootMap, Writer out, WrappedNode rootNode)
+    public void process(Map<String,Object> rootMap, Writer out, WrappedNode rootNode)
     throws IOException
     {
         Environment env = createProcessingEnvironment(rootMap, out);
@@ -282,10 +281,10 @@ public class Template extends TemplateCore {
     * @return the {@link freemarker.core.Environment Environment} object created for processing
     * @throws TemplateException if an exception occurs while setting up the Environment object.
     */
-    public Environment createProcessingEnvironment(Object rootMap, Writer out)
+    public Environment createProcessingEnvironment(Map<String,Object> rootMap, Writer out)
     throws TemplateException
     {
-        return new Environment(this, (WrappedHash) wrap(rootMap), out);
+        return new Environment(this, rootMap, out);
     }
 
     /**

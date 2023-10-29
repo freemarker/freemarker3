@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import freemarker.log.Logger;
-import freemarker.template.*;
+import freemarker.core.InvalidReferenceException;
 
 import static freemarker.core.variables.ObjectWrapper.*;
 
@@ -34,7 +33,6 @@ import static freemarker.core.variables.ObjectWrapper.*;
  */
 
 public class Pojo  {
-    private static final Logger logger = Logger.getLogger("freemarker.beans");
     protected final Object object;
 
     // Cached template models that implement member properties and methods for this
@@ -107,11 +105,8 @@ public class Pojo  {
                 }
             }
             if (retval == null) {
-                if (isStrict()) {
-                    throw new InvalidPropertyException("No such bean property: " + key);
-                } else if (logger.isDebugEnabled()) {
-                    logNoSuchKey(key, classInfo);
-                }
+                // REVISIT
+                //throw new InvalidReferenceException("No such bean property: " + key, null);
             }
             return retval;
         } catch (EvaluationException e) {
@@ -120,12 +115,6 @@ public class Pojo  {
             throw new EvaluationException("get(" + key + ") failed on " +
                     "instance of " + object.getClass().getName(), e);
         }
-    }
-
-    private void logNoSuchKey(String key, Map keyMap) {
-        logger.debug("Key '" + key + "' was not found on instance of " +
-                object.getClass().getName() + ". Introspection information for " +
-                "the class is: " + keyMap);
     }
 
     /**

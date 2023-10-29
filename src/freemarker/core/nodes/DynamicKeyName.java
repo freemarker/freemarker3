@@ -25,10 +25,10 @@ public class DynamicKeyName extends TemplateNode implements Expression {
     }
 
     public Object evaluate(Environment env) throws TemplateException {
-        Object value = getTarget().evaluate(env);
-        getTarget().assertNonNull(value, env);
+        Object lhs = getTarget().evaluate(env);
+        getTarget().assertNonNull(lhs, env);
         if (getNameExpression() instanceof RangeExpression) {
-            return dealWithRangeKey(value, (RangeExpression) getNameExpression(), env);
+            return dealWithRangeKey(lhs, (RangeExpression) getNameExpression(), env);
         }
         Object key = getNameExpression().evaluate(env);
         if (key == null) {
@@ -36,10 +36,12 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         }
         if (isNumber(key)) {
             int index = asNumber(key).intValue();
-            return dealWithNumericalKey(value, index, env);
+            return dealWithNumericalKey(lhs, index, env);
         }
         if (isString(key)) {
-            return dealWithStringKey(value, asString(key), env);
+            return dealWithStringKey(lhs, asString(key), env);
+        }
+        if (isMap(lhs)) {
         }
         throw invalidTypeException(key, getNameExpression(), env, "number, range, or string");
     }

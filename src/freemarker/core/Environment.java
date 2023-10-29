@@ -67,8 +67,8 @@ public final class Environment extends Configurable implements Scope {
         C_NUMBER_FORMAT.setDecimalSeparatorAlwaysShown(false);
     }
 
-    private final WrappedHash rootDataModel;
-    //private final Map<String,Object> rootDataModel;
+    //private final WrappedHash rootDataModel;
+    private final Map<String,Object> rootDataModel;
 
     private final List<TemplateElement> elementStack = new ArrayList<TemplateElement>();
 
@@ -129,7 +129,7 @@ public final class Environment extends Configurable implements Scope {
         return threadEnv.get();
     }
 
-    public Environment(Template template, WrappedHash rootDataModel, Writer out) {
+    public Environment(Template template, Map<String,Object> rootDataModel, Writer out) {
         super(template);
         this.currentScope = mainNamespace = new TemplateNamespace( this, template);
         this.out = out;
@@ -325,8 +325,6 @@ public final class Environment extends Configurable implements Scope {
     /**
      * "Visit" A WrappedNode
      */
-
-    @SuppressWarnings("deprecation")
     public void render(WrappedNode node, List<Scope> namespaces)
             throws TemplateException, IOException {
         if (nodeNamespaces == null) {
@@ -878,7 +876,14 @@ public final class Environment extends Configurable implements Scope {
      * </ol>
      */
     public Object getVariable(String name) {
-        return currentScope.resolveVariable(name);
+        //return currentScope.resolveVariable(name);
+        Object result = currentScope.resolveVariable(name);
+        if (result == null) return result;
+        Object wrapped = wrap(currentScope.resolveVariable(name));
+//        if (wrapped != result) { REVISIT
+//            currentScope.put(name, wrapped);
+//        }
+        return wrapped;
     }
 
     /**

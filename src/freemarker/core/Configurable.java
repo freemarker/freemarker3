@@ -7,7 +7,6 @@ import java.util.*;
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.variables.ObjectWrapper;
 
 /**
  * This is a common superclass of {@link freemarker.template.Configuration},
@@ -38,7 +37,6 @@ abstract public class Configurable extends TemplateNode
     public static final String BOOLEAN_FORMAT_KEY = "boolean_format";
     public static final String OUTPUT_ENCODING_KEY = "output_encoding";
     public static final String URL_ESCAPING_CHARSET_KEY = "url_escaping_charset";
-    public static final String STRICT_BEAN_MODELS = "strict_bean_models";
 
     private static final char COMMA = ',';
     
@@ -470,10 +468,7 @@ abstract public class Configurable extends TemplateNode
                 setOutputEncoding(value);
             } else if (URL_ESCAPING_CHARSET_KEY.equals(key)) {
                 setURLEscapingCharset(value);
-            } else if (STRICT_BEAN_MODELS.equals(key)) {
-            	setStrictBeanModels(StringUtil.getYesNo(value));
-            }
-            else {
+            } else {
                 throw unknownSettingException(key);
             }
         } catch(TemplateException e) {
@@ -483,10 +478,6 @@ abstract public class Configurable extends TemplateNode
                     "Failed to set setting " + key + " to value " + value,
                     e, getEnvironment());
         }
-    }
-    
-    public void setStrictBeanModels(boolean strict) {
-    	ObjectWrapper.setStrict(strict);
     }
     
     /**

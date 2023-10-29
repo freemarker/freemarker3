@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.lang.reflect.*;
 import java.math.BigDecimal;
 import freemarker.log.Logger;
-import freemarker.template.*;
 import freemarker.core.Scope;
 
 public class ObjectWrapper {
@@ -88,9 +87,6 @@ public class ObjectWrapper {
     }
 
     public static boolean isMap(Object obj) {
-        if (obj instanceof WrappedHash) {
-            return true;
-        }
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
@@ -271,46 +267,6 @@ public class ObjectWrapper {
     }
 
     /**
-     * @see #setStrict(boolean)
-     */
-    public static boolean isStrict() {
-        return strict;
-    }
-
-    /**
-     * Specifies if an attempt to read a bean property that doesn't exist in the
-     * wrapped object should throw an {@link InvalidPropertyException}.
-     * 
-     * <p>
-     * If this property is <tt>false</tt> (the default) then an attempt to read
-     * a missing bean property is the same as reading an existing bean property
-     * whose
-     * value is <tt>null</tt>. The template can't tell the difference, and thus
-     * always
-     * can use <tt>?default('something')</tt> and <tt>?exists</tt> and similar
-     * built-ins
-     * to handle the situation.
-     *
-     * <p>
-     * If this property is <tt>true</tt> then an attempt to read a bean property in
-     * the template (like <tt>myBean.aProperty</tt>) that doesn't exist in the bean
-     * object (as opposed to just holding <tt>null</tt> value) will cause
-     * {@link InvalidPropertyException}, which can't be suppressed in the template
-     * (not even with <tt>myBean.noSuchProperty?default('something')</tt>). This way
-     * <tt>?default('something')</tt> and <tt>?exists</tt> and similar built-ins can
-     * be used to
-     * handle existing properties whose value is <tt>null</tt>, without the risk of
-     * hiding typos in the property names. Typos will always cause error. But mind
-     * you, it
-     * goes against the basic approach of FreeMarker, so use this feature only if
-     * you really
-     * know what are you doing.
-     */
-    public static void setStrict(boolean strict) {
-        ObjectWrapper.strict = strict;
-    }
-
-    /**
      * Sets the method exposure level. By default, set to <code>EXPOSE_SAFE</code>.
      * 
      * @param exposureLevel can be any of the <code>EXPOSE_xxx</code>
@@ -365,24 +321,21 @@ public class ObjectWrapper {
         if (object == null) {
             return Constants.JAVA_NULL;
         }
-        if (object instanceof WrappedVariable) {
-            return object;
+        if (isMarkedAsPojo(object.getClass())) {
+            return new Pojo(object);
         }
-        if (object instanceof Pojo) {
-            return object;
+        if (object instanceof CharSequence) {
+            return object; //REVISIT
         }
-        if (object instanceof Scope) {
-            return object;
-        }
-        if (object instanceof Boolean
+        if (    object instanceof WrappedVariable
+                || object instanceof Pojo
+                || object instanceof Scope
+                || object instanceof Boolean
                 || object instanceof Number
                 || object instanceof String
                 || object instanceof Iterator
                 || object instanceof Enumeration) {
             return object;
-        }
-        if (isMarkedAsPojo(object.getClass())) {
-            return new Pojo(object);
         }
         if (object instanceof List) {
             // return object;
