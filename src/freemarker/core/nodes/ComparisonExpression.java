@@ -1,13 +1,13 @@
 package freemarker.core.nodes;
 
 import static freemarker.core.evaluation.ObjectWrapper.*;
-import freemarker.core.evaluation.Pojo;
 import freemarker.core.EvaluationUtil;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.ArithmeticEngine;
 import freemarker.core.Environment;
-import freemarker.template.*;
+import freemarker.core.evaluation.*;
+import freemarker.template.TemplateException;
 import java.util.Date;
 import java.text.Collator;
 

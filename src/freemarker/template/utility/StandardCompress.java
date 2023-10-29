@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-import freemarker.template.*;
+import freemarker.core.evaluation.*;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 

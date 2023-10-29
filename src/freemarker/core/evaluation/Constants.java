@@ -1,4 +1,4 @@
-package freemarker.template;
+package freemarker.core.evaluation;
 
 import java.util.Iterator;
 

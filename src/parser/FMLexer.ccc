@@ -467,7 +467,7 @@ INJECT Identifier :
 
 INJECT NullLiteral : 
    import freemarker.core.Environment;
-   import static freemarker.template.Constants.JAVA_NULL;
+   import static freemarker.core.evaluation.Constants.JAVA_NULL;
    implements Expression
 {
     public Object evaluate(Environment env) {
@@ -481,7 +481,7 @@ INJECT NullLiteral :
 
 INJECT BooleanLiteral :
     import freemarker.core.Environment;
-    import freemarker.template.*;
+    import freemarker.core.evaluation.*;
     implements Expression
 {
     public boolean isTrue(Environment env) {

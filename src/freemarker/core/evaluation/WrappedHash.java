@@ -1,4 +1,4 @@
-package freemarker.template;
+package freemarker.core.evaluation;
 
 /**
  * Hashes in a data model must implement this interface. Hashes

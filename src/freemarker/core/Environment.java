@@ -21,6 +21,7 @@ import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.nodes.generated.UnifiedCall;
 import freemarker.log.Logger;
+import freemarker.core.evaluation.*;
 import freemarker.template.*;
 
 import static freemarker.core.evaluation.ObjectWrapper.*;

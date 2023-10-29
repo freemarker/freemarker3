@@ -6,10 +6,10 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
-import freemarker.template.Constants;
-import freemarker.template.WrappedMethod;
 import freemarker.core.nodes.generated.ParentheticalExpression;
 import freemarker.core.evaluation.ObjectWrapper;
+import freemarker.core.evaluation.WrappedMethod;
+import static freemarker.core.evaluation.Constants.*;
 
 /**
  * @author Attila Szegedi
@@ -34,7 +34,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
 
     public static final class DefaultBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
-            if(model == null || model == Constants.JAVA_NULL) {
+            if(model == null || model == JAVA_NULL) {
                 return FirstDefined.INSTANCE;
             }
             return new WrappedMethod() {
@@ -47,13 +47,13 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
 
     public static class IfExistsBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
-            return model == null || model == Constants.JAVA_NULL ? Constants.NOTHING : model;
+            return model == null || model == JAVA_NULL ? NOTHING : model;
         }
     };
 
     public static class ExistsBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
-            return model != null && model != Constants.JAVA_NULL;
+            return model != null && model != JAVA_NULL;
         }
     };
         
@@ -73,7 +73,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
         static final FirstDefined INSTANCE = new FirstDefined();
         public Object exec(List args) {
             for (Object arg : args) {
-                if (arg != null && arg != Constants.JAVA_NULL) {
+                if (arg != null && arg != JAVA_NULL) {
                     return arg;
                 }
             }

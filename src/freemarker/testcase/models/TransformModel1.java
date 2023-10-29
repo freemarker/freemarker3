@@ -2,7 +2,8 @@ package freemarker.testcase.models;
 
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
-import freemarker.template.*;
+import freemarker.core.evaluation.UserDirective;
+import freemarker.core.evaluation.UserDirectiveBody;
 import java.io.*;
 import java.util.Map;
 

@@ -6,7 +6,8 @@ import freemarker.core.Scope;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.template.*;
+import freemarker.core.evaluation.WrappedMethod;
+import freemarker.template.TemplateException;
 
 /**
  * Implementation of ?resolve built-in 

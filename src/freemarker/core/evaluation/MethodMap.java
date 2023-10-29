@@ -5,9 +5,6 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import freemarker.template.WrappedVariable;
-import freemarker.template.EvaluationException;
-
 class MethodMap<T extends Member>
 {
     private final String name;

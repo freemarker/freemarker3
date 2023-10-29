@@ -5,9 +5,9 @@ import java.util.Date;
 
 import freemarker.core.Environment;
 import freemarker.core.ArithmeticEngine;
-import freemarker.template.WrappedDate;
+import freemarker.core.evaluation.WrappedDate;
+import freemarker.core.evaluation.EvaluationException;
 import freemarker.template.TemplateException;
-import freemarker.template.EvaluationException;
 
 import static freemarker.core.evaluation.ObjectWrapper.*;
 

@@ -11,12 +11,8 @@ import freemarker.core.Environment;
 import freemarker.core.ArithmeticEngine;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.template.WrappedDate;
+import freemarker.core.evaluation.*;;
 import freemarker.template.TemplateException;
-import freemarker.template.WrappedHash;
-import freemarker.template.WrappedMethod;
-import freemarker.template.EvaluationException;
-import freemarker.template.WrappedSequence;
 import freemarker.template.utility.StringUtil;
 
 import static freemarker.core.evaluation.ObjectWrapper.*;

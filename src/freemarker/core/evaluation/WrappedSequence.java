@@ -1,4 +1,4 @@
-package freemarker.template;
+package freemarker.core.evaluation;
 
 /**
  * List values in a template data model whose elements are accessed by the 

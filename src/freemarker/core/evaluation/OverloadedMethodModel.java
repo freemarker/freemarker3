@@ -7,9 +7,9 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 
-import freemarker.template.WrappedMethod;
-import freemarker.template.EvaluationException;
-import freemarker.template.WrappedSequence;
+import freemarker.core.evaluation.WrappedMethod;
+import freemarker.core.evaluation.EvaluationException;
+import freemarker.core.evaluation.WrappedSequence;
 
 /**
  * A class that will wrap a reflected method call into a

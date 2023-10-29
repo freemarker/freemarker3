@@ -3,9 +3,10 @@ package freemarker.core.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Macro;
-import freemarker.template.*;
+import freemarker.core.evaluation.*;
 
 import static freemarker.core.evaluation.ObjectWrapper.*;
+import static freemarker.core.evaluation.Constants.JAVA_NULL;;
 
 /**
  * Implementation of ?is_XXXX built-ins
@@ -55,7 +56,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = value instanceof WrappedNode;
 		}
 		else if (builtInName == "is_null") {
-			result = value == Constants.JAVA_NULL;
+			result = value == JAVA_NULL;
 		}
 		else if (builtInName == "is_transform") {
 			result = false;

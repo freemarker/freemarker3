@@ -4,10 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-import freemarker.template.Constants;
-import freemarker.template.WrappedHash;
-import freemarker.template.WrappedMethod;
-
 import static freemarker.core.evaluation.ObjectWrapper.wrap;
 
 /**

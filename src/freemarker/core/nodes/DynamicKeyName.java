@@ -1,15 +1,15 @@
 package freemarker.core.nodes;
 
-import static freemarker.template.Constants.JAVA_NULL;
+import static freemarker.core.evaluation.Constants.JAVA_NULL;
 import static freemarker.core.evaluation.ObjectWrapper.*;
 import freemarker.core.EvaluationUtil;
 import freemarker.core.Scope;
-import freemarker.core.evaluation.Pojo;
-import freemarker.template.*;
+import freemarker.core.evaluation.*;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.RangeExpression;
 import freemarker.core.nodes.generated.TemplateNode;
+import freemarker.template.TemplateException;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;

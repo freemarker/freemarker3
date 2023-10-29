@@ -1,6 +1,7 @@
-package freemarker.template;
+package freemarker.core.evaluation;
 
 import freemarker.core.Environment;
+import freemarker.template.TemplateException;
 
 /**
  * Template model implementation classes should throw this exception if

@@ -1,6 +1,6 @@
 package freemarker.testcase.models;
 
-import freemarker.template.*;
+import freemarker.core.evaluation.*;
 
 /**
  * Tests the impact that the isEmpty() has on template hash models.

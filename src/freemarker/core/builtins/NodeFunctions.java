@@ -6,8 +6,8 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.template.WrappedNode;
-import freemarker.template.Constants;
+import freemarker.core.evaluation.WrappedNode;
+import static freemarker.core.evaluation.Constants.JAVA_NULL;
 
 /**
  * Implementations of ?children, ?node_name, and other 
@@ -70,7 +70,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         public Object apply(Environment env, WrappedNode node)
         {
             String ns = node.getNodeNamespace();
-            return ns == null ? Constants.JAVA_NULL : ns;
+            return ns == null ? JAVA_NULL : ns;
         }
     }
 
@@ -79,7 +79,7 @@ public abstract class NodeFunctions extends ExpressionEvaluatingBuiltIn {
         public Object apply(Environment env, WrappedNode node)
         {
             String nt = node.getNodeType();
-            return nt == null ? Constants.JAVA_NULL : nt;
+            return nt == null ? JAVA_NULL : nt;
         }
     }
     

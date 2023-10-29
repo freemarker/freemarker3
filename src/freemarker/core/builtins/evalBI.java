@@ -7,7 +7,7 @@ import freemarker.core.parser.FMLexer;
 import freemarker.core.parser.FMParser;
 import freemarker.core.parser.ParseException;
 import freemarker.template.TemplateException;
-import freemarker.template.EvaluationException;
+import freemarker.core.evaluation.EvaluationException;
 
 import static freemarker.core.evaluation.ObjectWrapper.*;
 

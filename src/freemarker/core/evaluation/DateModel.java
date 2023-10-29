@@ -2,8 +2,6 @@ package freemarker.core.evaluation;
 
 import java.util.Date;
 
-import freemarker.template.WrappedDate;
-
 /**
  * Wraps arbitrary subclass of {@link java.util.Date} into a reflective model.
  * Beside acting as a {@link WrappedDate}, you can call all Java methods

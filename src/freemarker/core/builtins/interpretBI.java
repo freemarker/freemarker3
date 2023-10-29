@@ -9,9 +9,9 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.Template;
-import freemarker.template.UserDirectiveBody;
-import freemarker.template.UserDirective;
-import freemarker.template.EvaluationException;
+import freemarker.core.evaluation.UserDirectiveBody;
+import freemarker.core.evaluation.UserDirective;
+import freemarker.core.evaluation.EvaluationException;
 import freemarker.template.TemplateException;
 
 import static freemarker.core.evaluation.ObjectWrapper.*;

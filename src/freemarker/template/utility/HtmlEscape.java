@@ -3,7 +3,8 @@ package freemarker.template.utility;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
-import freemarker.template.*;
+import freemarker.core.evaluation.UserDirective;
+import freemarker.core.evaluation.UserDirectiveBody;
 import freemarker.core.Environment;
 
 /**

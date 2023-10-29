@@ -1,6 +1,6 @@
 package freemarker.testcase.models;
 
-import freemarker.template.*;
+import freemarker.core.evaluation.WrappedHash;
 import freemarker.core.evaluation.SimpleMapModel;
 import freemarker.template.utility.*;
 

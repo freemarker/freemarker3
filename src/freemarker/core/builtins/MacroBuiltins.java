@@ -4,7 +4,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.template.Constants;
+import static freemarker.core.evaluation.Constants.JAVA_NULL;
 
 /**
  * Implementations of ?scope and ?namespace built-ins
@@ -36,7 +36,7 @@ public abstract class MacroBuiltins extends ExpressionEvaluatingBuiltIn {
         public Object apply(Environment env, Macro macro)
         {
             Object result = env.getMacroContext(macro);
-            return result == null ? Constants.JAVA_NULL : result;
+            return result == null ? JAVA_NULL : result;
         }
     }
 }

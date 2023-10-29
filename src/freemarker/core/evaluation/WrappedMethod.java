@@ -1,8 +1,8 @@
 
-
+package freemarker.core.evaluation;
 /*
  * 22 October 1999: This class added by Holger Arendt.
- */package freemarker.template;
+ */
 
 import java.util.List;
 

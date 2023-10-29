@@ -1,4 +1,4 @@
-package freemarker.template;
+package freemarker.core.evaluation;
 
 public interface WrappedString extends WrappedVariable, CharSequence {
 

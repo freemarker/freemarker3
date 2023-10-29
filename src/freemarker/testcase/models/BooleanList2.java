@@ -1,6 +1,6 @@
 package freemarker.testcase.models;
 
-import freemarker.template.*;
+import freemarker.core.evaluation.WrappedSequence;
 import java.util.List;
 import java.util.ArrayList;
 

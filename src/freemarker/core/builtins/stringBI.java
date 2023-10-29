@@ -10,7 +10,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.EvaluationUtil;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.template.*;
+import freemarker.core.evaluation.*;
 
 import static freemarker.core.evaluation.ObjectWrapper.*;
 

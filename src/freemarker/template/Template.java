@@ -11,6 +11,8 @@ import freemarker.core.TemplateCore;
 import freemarker.core.nodes.generated.ImportDeclaration;
 import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.TemplateHeaderElement;
+import freemarker.core.evaluation.WrappedHash;
+import freemarker.core.evaluation.WrappedNode;
 import freemarker.core.parser.*;
 
 import static freemarker.core.evaluation.ObjectWrapper.wrap;
@@ -231,7 +233,7 @@ public class Template extends TemplateCore {
      * @throws IOException if an I/O exception occurs during writing to the writer.
      */
     public void process(Object rootMap, Writer out, WrappedNode rootNode)
-    throws TemplateException, IOException
+    throws IOException
     {
         Environment env = createProcessingEnvironment(rootMap, out);
         if (rootNode != null) {

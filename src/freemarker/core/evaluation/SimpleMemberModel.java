@@ -7,8 +7,6 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
-import freemarker.template.WrappedVariable;
-import freemarker.template.EvaluationException;
 import static freemarker.core.evaluation.ObjectWrapper.unwrap;
 
 /**

@@ -2,7 +2,7 @@ package freemarker.testcase.models;
 
 import java.util.List;
 
-import freemarker.template.*;
+import freemarker.core.evaluation.WrappedMethod;
 
 /**
  * A simple method model used as a test bed.

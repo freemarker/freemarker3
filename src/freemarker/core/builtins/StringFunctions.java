@@ -13,11 +13,7 @@ import java.util.regex.PatternSyntaxException;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.template.WrappedBoolean;
-import freemarker.template.WrappedString;
-import freemarker.template.WrappedMethod;
-import freemarker.template.EvaluationException;
-import freemarker.template.WrappedSequence;
+import freemarker.core.evaluation.*;
 import freemarker.template.utility.StringUtil;
 
 import static freemarker.core.evaluation.ObjectWrapper.*;

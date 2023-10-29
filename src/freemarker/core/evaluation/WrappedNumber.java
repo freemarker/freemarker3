@@ -1,4 +1,4 @@
-package freemarker.template;
+package freemarker.core.evaluation;
 
 /**
  * Numeric values in a template data model must implement this interface.

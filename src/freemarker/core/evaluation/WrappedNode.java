@@ -1,4 +1,4 @@
-    package freemarker.template;
+package freemarker.core.evaluation;
 
 /**
  * Describes objects that are nodes in a tree.

@@ -6,9 +6,9 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.template.WrappedMethod;
-import freemarker.template.EvaluationException;
-import freemarker.template.WrappedSequence;
+import freemarker.core.evaluation.EvaluationException;
+import freemarker.core.evaluation.WrappedMethod;
+import freemarker.core.evaluation.WrappedSequence;
 
 /**
  * @author Attila Szegedi

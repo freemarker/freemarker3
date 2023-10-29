@@ -5,7 +5,8 @@ import freemarker.core.ArithmeticEngine;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.template.*;
+import freemarker.core.evaluation.*;
+import freemarker.template.TemplateException;
 import java.util.*;
 
 import static freemarker.core.parser.Token.TokenType.*;

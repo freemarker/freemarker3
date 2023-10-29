@@ -1,6 +1,6 @@
 package freemarker.testcase.models;
 
-import freemarker.template.*;
+import freemarker.core.evaluation.*;
 import java.util.*;
 import static freemarker.core.evaluation.ObjectWrapper.asString;
 

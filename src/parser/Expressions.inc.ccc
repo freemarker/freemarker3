@@ -9,14 +9,13 @@
 ;
 
 INJECT Expression :
-   import freemarker.template.*;
-   import freemarker.core.evaluation.ObjectWrapper;
+   import freemarker.core.evaluation.*;
    import freemarker.core.Environment;
    import freemarker.core.EvaluationUtil;
    import freemarker.core.InvalidReferenceException;
-   import freemarker.core.evaluation.Pojo;
+   import freemarker.template.TemplateException;
    import static freemarker.core.evaluation.ObjectWrapper.*;
-   import static freemarker.template.Constants.JAVA_NULL;
+   import static freemarker.core.evaluation.Constants.JAVA_NULL;
 {
     public abstract Object evaluate(Environment env);
     
@@ -234,7 +233,8 @@ UnaryPlusMinusExpression :
 INJECT UnaryPlusMinusExpression : 
     import freemarker.core.Environment;
     import freemarker.core.ArithmeticEngine;
-    import freemarker.template.*;
+    import freemarker.core.evaluation.*;
+    import freemarker.template.TemplateException;
     import static freemarker.core.evaluation.ObjectWrapper.asNumber;
     implements Expression
 {
@@ -406,9 +406,10 @@ RangeExpression :
 ;
 
 INJECT RangeExpression :
-   import freemarker.template.*;
+   import freemarker.core.evaluation.*;
    import freemarker.core.Environment;
    import freemarker.core.EvaluationUtil;
+   import freemarker.template.TemplateException;
    implements Expression
 {
     public Expression getLeft() {
@@ -423,9 +424,7 @@ INJECT RangeExpression :
         return size()==3;
     }
     
-    public Object evaluate(Environment env) 
-        throws TemplateException
-    {
+    public Object evaluate(Environment env) {
         int min = EvaluationUtil.getNumber(getLeft(), env).intValue();
         int max = 0;
         if (hasRhs()) {
@@ -579,7 +578,7 @@ INJECT ListLiteral :
   import freemarker.core.Environment;
   import freemarker.core.TemplateNamespace;
   import freemarker.template.TemplateException;
-  import freemarker.template.*;
+  import freemarker.core.evaluation.*;
   implements Expression
 {
     public List<Expression> getElements() {
@@ -636,9 +635,11 @@ BuiltinVariable :
 ;
 
 INJECT BuiltinVariable :
-    import freemarker.template.*;
+    import freemarker.core.evaluation.*;
     import freemarker.core.Environment;
     import freemarker.core.parser.ParseException;
+    import freemarker.template.Configuration;
+    import freemarker.template.TemplateException;
     implements Expression
 {
     private String name;
@@ -699,7 +700,7 @@ INJECT BuiltinVariable :
 INJECT DefaultToExpression : 
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
-    import freemarker.template.*;
+    import freemarker.core.evaluation.*;
     implements Expression
 {
 	public Expression getLeft() {
@@ -739,7 +740,7 @@ INJECT DefaultToExpression :
 INJECT ExistsExpression :
     import freemarker.core.Environment;
     import freemarker.core.InvalidReferenceException;
-    import static freemarker.template.Constants.JAVA_NULL;
+    import static freemarker.core.evaluation.Constants.JAVA_NULL;
     implements Expression
 {
 	public Expression getExpression() {
@@ -770,7 +771,7 @@ import java.util.HashMap;
 
     import freemarker.core.Environment;
     import freemarker.core.builtins.*;
-    import freemarker.template.WrappedDate;
+    import freemarker.core.evaluation.WrappedDate;
     implements Expression;
 {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();
@@ -911,11 +912,11 @@ import java.util.HashMap;
 }
 
 INJECT DotVariable : 
+    import java.util.Map;
     import freemarker.core.Environment;
     import freemarker.core.Scope;
     import freemarker.core.parser.Token;
-    import freemarker.template.WrappedHash;
-    import java.util.Map;
+    import freemarker.core.evaluation.WrappedHash;
     import freemarker.core.evaluation.Pojo;
     import static freemarker.core.evaluation.ObjectWrapper.wrap;
     implements Expression
@@ -961,10 +962,10 @@ INJECT MethodCall :
     import java.util.ArrayList;
     import java.util.List;
     import java.io.Writer;
-    import freemarker.core.Environment;
-    import freemarker.template.*;
     import java.io.IOException;
     import java.io.StringWriter;
+    import freemarker.core.Environment;
+    import freemarker.core.evaluation.*;
     import static freemarker.core.evaluation.ObjectWrapper.wrap;
     implements Expression;
 {
@@ -977,8 +978,7 @@ INJECT MethodCall :
     	return (Expression) get(0);
     }
     
-    public Object evaluate(Environment env) throws TemplateException
-    {
+    public Object evaluate(Environment env) {
         Object value = getTarget().evaluate(env);
         if (value instanceof WrappedMethod) {
             WrappedMethod targetMethod = (WrappedMethod)value;
@@ -1040,7 +1040,7 @@ PositionalArgsList# :
 INJECT PositionalArgsList :
     import java.util.*;
     import freemarker.core.Environment;
-    import freemarker.template.*;
+    import freemarker.core.evaluation.*;
     import freemarker.template.utility.UndeclaredThrowableException;
     import freemarker.core.nodes.ParameterList;
     extends ArgsList
@@ -1197,11 +1197,11 @@ INJECT ArgsList :
 
     import freemarker.annotations.Parameters;
     import freemarker.core.Environment;
-    import freemarker.template.*;
+    import freemarker.core.evaluation.*;
     import freemarker.core.parser.*;
     import freemarker.core.parser.FMLexer.LexicalState;
-    import freemarker.core.evaluation.SimpleMethodModel;
     import freemarker.core.nodes.ParameterList;
+    import freemarker.template.TemplateException;
 {
 	/**
 	 * Cache the retrieved annotation information, since it seems like 
@@ -1308,8 +1308,7 @@ HashLiteral :
 INJECT HashLiteral :
     import java.util.*;
     import freemarker.core.Environment;
-    import freemarker.core.evaluation.ListModel;
-    import freemarker.template.*;
+    import freemarker.core.evaluation.*;
     import freemarker.core.ast.CollectionAndSequence;
     implements Expression
 {

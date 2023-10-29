@@ -23,6 +23,7 @@ import freemarker.cache.TemplateLoader;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.Scope;
+import freemarker.core.evaluation.WrappedHash;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
 import freemarker.log.Logger;

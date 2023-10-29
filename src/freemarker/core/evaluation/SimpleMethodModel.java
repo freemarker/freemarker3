@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Collections;
 
 import freemarker.annotations.Parameters;
-import freemarker.template.WrappedMethod;
-import freemarker.template.EvaluationException;
-import freemarker.template.WrappedSequence;
 
 /**
  * A class that will wrap a reflected method call into a

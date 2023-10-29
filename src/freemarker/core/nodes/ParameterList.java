@@ -4,7 +4,7 @@
 */
 package freemarker.core.nodes;
 
-import freemarker.template.EvaluationException;
+import freemarker.core.evaluation.EvaluationException;
 import freemarker.template.TemplateException;
 import freemarker.core.evaluation.SimpleMapModel;
 import freemarker.core.helpers.NamedParameterMapScope;

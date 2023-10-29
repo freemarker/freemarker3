@@ -2,10 +2,10 @@ package freemarker.core;
 
 import java.util.Date;
 
-import freemarker.template.WrappedDate;
 import freemarker.template.TemplateException;
 import freemarker.core.nodes.generated.Expression;
-import static freemarker.template.Constants.JAVA_NULL;
+import freemarker.core.evaluation.WrappedDate;
+import static freemarker.core.evaluation.Constants.JAVA_NULL;
 import static freemarker.core.evaluation.ObjectWrapper.*;
 
 /**

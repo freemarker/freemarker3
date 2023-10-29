@@ -2,8 +2,8 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.template.EvaluationException;
-import freemarker.template.WrappedVariable;
+import freemarker.core.evaluation.EvaluationException;
+import freemarker.core.evaluation.WrappedVariable;
 import freemarker.core.evaluation.Pojo;
 
 /**

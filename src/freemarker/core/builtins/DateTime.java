@@ -6,12 +6,8 @@ import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.core.evaluation.DateModel;
-import freemarker.template.WrappedDate;
+import freemarker.core.evaluation.*;
 import freemarker.template.TemplateException;
-import freemarker.template.WrappedHash;
-import freemarker.template.WrappedMethod;
-import freemarker.template.EvaluationException;
 
 /**
  * Implementations of builtins for standard functions

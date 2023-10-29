@@ -1,4 +1,4 @@
-package freemarker.template;
+package freemarker.core.evaluation;
 
 /**
  * <p>This is a marker interface that indicates

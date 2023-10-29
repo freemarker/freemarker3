@@ -1,7 +1,5 @@
 package freemarker.core.evaluation;
 
-import freemarker.template.EvaluationException;
-
 /**
  * An exception thrown when there is an attempt to access
  * an invalid bean property when we are in a "strict bean" mode

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import freemarker.template.WrappedVariable;
 import static freemarker.core.evaluation.ObjectWrapper.unwrap;
 
 /**

@@ -10,9 +10,6 @@ import java.util.Set;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import freemarker.template.WrappedMethod;
-import freemarker.template.WrappedVariable;
-import freemarker.template.EvaluationException;
 import static freemarker.core.evaluation.ObjectWrapper.asString;
 import static freemarker.core.evaluation.ObjectWrapper.wrap;
 import static freemarker.core.evaluation.ObjectWrapper.unwrap;
