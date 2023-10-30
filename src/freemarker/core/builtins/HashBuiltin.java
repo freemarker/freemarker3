@@ -5,6 +5,8 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.WrappedHash;
 import static freemarker.core.variables.ObjectWrapper.*;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -30,7 +32,7 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
         @Override
         public Iterable apply(Object hash) {
             if (hash instanceof Map) {
-                return ((Map)hash).keySet();
+                return new ArrayList(((Map)hash).keySet());
             }
             return ((WrappedHash) hash).keys();
         }
@@ -43,7 +45,7 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
             if (hash instanceof WrappedHash) {
                 return ((WrappedHash)hash).values();
             }
-            return ((Map) hash).values();
+            return new ArrayList(((Map) hash).values());
         }
     }
 }

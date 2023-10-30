@@ -1342,7 +1342,13 @@ INJECT HashLiteral :
     }
     
     public Object evaluate(Environment env) {
-        return new SequenceHash(env);
+        Map<Object,Object> result = new LinkedHashMap<>();
+        for (int i = 0; i < keys.size(); i++) {
+            Object key = keys.get(i).evaluate(env);
+            Object value = values.get(i).evaluate(env);
+            result.put(key, value);
+        }
+        return result;
     }
     
     public List<Expression> getKeys() {
@@ -1363,50 +1369,6 @@ INJECT HashLiteral :
         }
         result.close();
         return result;
-    }
-
-    private class SequenceHash implements WrappedHash {
-
-        private HashMap<String, Object> keyMap  = new HashMap<>(); // maps keys to integer offset
-        private Iterable<String> keyCollection;
-        private Iterable<Object> valueCollection; 
-
-        SequenceHash(Environment env) {
-            List<String> keyList = new ArrayList<String>(keys.size());
-            List<Object> valueList = new ArrayList<>(keys.size());
-            for (int i = 0; i< keys.size(); i++) {
-                Expression keyExp = keys.get(i);
-                Expression valExp = values.get(i);
-                String key = keyExp.getStringValue(env);
-                Object value = valExp.evaluate(env);
-                valExp.assertIsDefined(value, env);
-                keyMap.put(key, value);
-                keyList.add(key);
-                valueList.add(value);
-            }
-            keyCollection = keyList;
-            valueCollection = valueList;
-        }
-
-        public int size() {
-            return keys.size();
-        }
-
-        public Iterable keys() {
-            return keyCollection;
-        }
-
-        public Iterable values() {
-            return valueCollection;
-        }
-
-        public Object get(String key) {
-            return keyMap.get(key);
-        }
-
-        public boolean isEmpty() {
-            return size() == 0;
-        }
     }
 }
 

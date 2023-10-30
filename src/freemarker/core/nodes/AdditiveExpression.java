@@ -69,6 +69,15 @@ public class AdditiveExpression extends TemplateNode implements Expression {
                 return new ConcatenatedHash((WrappedHash) left, (WrappedHash) right);
             }
         }
+        if (isMap(left) && isMap(right)) {
+            Map leftMap = (Map) unwrap(left);
+            Map rightMap = (Map) unwrap(right);
+            Map result = new LinkedHashMap(leftMap);
+            for (Object key : rightMap.keySet()) {
+                result.put(key, rightMap.get(key));
+            }
+            return result;
+        }
         String msg = this.getLocation() + ": Cannot add or concatenate";
         throw new TemplateException(msg, env);
     }
