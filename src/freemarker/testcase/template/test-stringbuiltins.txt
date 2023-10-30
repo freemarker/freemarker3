@@ -15,7 +15,7 @@ trim:       ${x?trim}
 trim2:      ${"foo bar"?trim}
 trim3:      ${" foo bar"?trim}
 trim4:      ${"foo bar "?trim}
-upper_case: ${x?upper_case}
+upper_case: ${x?pojo.toUpperCase()}
 xml:        ${x?xml}
 xhtml:      ${('"' + "Blah's is > 1 & < 2" + '"')?xhtml}
 

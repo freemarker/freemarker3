@@ -31,42 +31,6 @@ public class ObjectWrapper {
     // private static final Object ARGTYPES = new Object();
     private static final Map<AccessibleObject, Class<?>[]> ARGTYPES = new HashMap<>();
 
-    /**
-     * At this level of exposure, all methods and properties of the
-     * wrapped objects are exposed to the template.
-     */
-    public static final int EXPOSE_ALL = 0;
-
-    /**
-     * At this level of exposure, all methods and properties of the wrapped
-     * objects are exposed to the template except methods that are deemed
-     * not safe. The not safe methods are java.lang.Object methods wait() and
-     * notify(), java.lang.Class methods getClassLoader() and newInstance(),
-     * java.lang.reflect.Method and java.lang.reflect.Constructor invoke() and
-     * newInstance() methods, all java.lang.reflect.Field set methods, all
-     * java.lang.Thread and java.lang.ThreadGroup methods that can change its
-     * state, as well as the usual suspects in java.lang.System and
-     * java.lang.Runtime.
-     */
-    public static final int EXPOSE_SAFE = 1;
-
-    /**
-     * At this level of exposure, only property getters are exposed.
-     * Additionally, property getters that map to unsafe methods are not
-     * exposed (i.e. Class.classLoader and Thread.contextClassLoader).
-     */
-    public static final int EXPOSE_PROPERTIES_ONLY = 2;
-
-    /**
-     * At this level of exposure, no bean properties and methods are exposed.
-     * Only map items, resource bundle items, and objects retrieved through
-     * the generic get method (on objects of classes that have a generic get
-     * method) can be retrieved through the hash interface. You might want to
-     * call {@link #setMethodsShadowItems(boolean)} with <tt>false</tt> value to
-     * speed up map item retrieval.
-     */
-    public static final int EXPOSE_NOTHING = 3;
-
     // Cache of hash maps that contain already discovered properties and methods
     // for a specified class. Each key is a Class, each value is a hash map. In
     // that hash map, each key is a property/method name, each value is a
@@ -74,18 +38,8 @@ public class ObjectWrapper {
     private static Map<Class<?>, Map<Object, Object>> classCache = new ConcurrentHashMap<>();
     private static Set<String> cachedClassNames = new HashSet<String>();
 
-    private static int exposureLevel = EXPOSE_SAFE;
-    private static boolean methodsShadowItems = true;
     private static int defaultDateType = WrappedDate.UNKNOWN;
 
-    private static boolean strict = false;
-
-    /**
-     * Creates a new instance of BeansWrapper. The newly created instance
-     * will use the null reference as its null object, it will use
-     * {@link #EXPOSE_SAFE} method exposure level, and will not cache
-     * model instances.
-     */
     private ObjectWrapper() {
     }
 
@@ -222,7 +176,7 @@ public class ObjectWrapper {
         }
         if (obj.getClass().isArray())
             return true;
-        return obj instanceof Iterable;
+        return obj instanceof Iterable || obj instanceof Iterator;
     }
 
     public static Iterator<?> asIterator(Object obj) {
@@ -264,41 +218,6 @@ public class ObjectWrapper {
     }
 
     /**
-     * Sets the method exposure level. By default, set to <code>EXPOSE_SAFE</code>.
-     * 
-     * @param exposureLevel can be any of the <code>EXPOSE_xxx</code>
-     *                      constants.
-     */
-    public static void setExposureLevel(int exposureLevel) {
-        if (exposureLevel < EXPOSE_ALL || exposureLevel > EXPOSE_NOTHING) {
-            throw new IllegalArgumentException("Illegal exposure level " + exposureLevel);
-        }
-        ObjectWrapper.exposureLevel = exposureLevel;
-    }
-
-    static int getExposureLevel() {
-        return exposureLevel;
-    }
-
-    /**
-     * Sets whether methods shadow items in beans. When true (this is the
-     * default value), <code>${object.name}</code> will first try to locate
-     * a bean method or property with the specified name on the object, and
-     * only if it doesn't find it will it try to call
-     * <code>object.get(name)</code>, the so-called "generic get method" that
-     * is usually used to access items of a container (i.e. elements of a map).
-     * When set to false, the lookup order is reversed and generic get method
-     * is called first, and only if it returns null is method lookup attempted.
-     */
-    public static synchronized void setMethodsShadowItems(boolean methodsShadowItems) {
-        ObjectWrapper.methodsShadowItems = methodsShadowItems;
-    }
-
-    static boolean isMethodsShadowItems() {
-        return methodsShadowItems;
-    }
-
-    /**
      * Sets the default date type to use for date models that result from
      * a plain <tt>java.util.Date</tt> instead of <tt>java.sql.Date</tt> or
      * <tt>java.sql.Time</tt> or <tt>java.sql.Timestamp</tt>. Default value is
@@ -332,10 +251,10 @@ public class ObjectWrapper {
             return object;
         }
         if (object instanceof CharSequence) {
-            return object.toString(); //REVISIT
+            return object.toString(); // REVISIT
         }
         if (object instanceof List) {
-            //return object;
+            // return object;
             return new Pojo(object);
         }
         if (object.getClass().isArray()) {
@@ -343,7 +262,6 @@ public class ObjectWrapper {
         }
         if (object instanceof Map) {
             return object;
-            //return new SimpleMapModel((Map<?, ?>) object);
         }
         if (object instanceof Date) {
             return new DateModel((Date) object);
@@ -408,7 +326,7 @@ public class ObjectWrapper {
                 return (Boolean) object;
             }
             if (object instanceof WrappedBoolean) {
-                return ((WrappedBoolean)object).getAsBoolean() ? Boolean.TRUE : Boolean.FALSE;
+                return ((WrappedBoolean) object).getAsBoolean() ? Boolean.TRUE : Boolean.FALSE;
             }
             return CAN_NOT_UNWRAP;
         }
@@ -451,7 +369,7 @@ public class ObjectWrapper {
             return new Object[0];
         }
         Object[] result = new Object[params.length];
-        for (int i = 0; i< params.length; i++) {
+        for (int i = 0; i < params.length; i++) {
             result[i] = unwrap(params[i], desiredTypes[i]);
         }
         return result;
@@ -569,20 +487,6 @@ public class ObjectWrapper {
     }
 
     /**
-     * Returns the Set of names of introspected methods/properties that
-     * should be available via the WrappedHash interface. Affected
-     * by the {@link #setMethodsShadowItems(boolean)} and {@link
-     * #setExposureLevel(int)} settings.
-     */
-    static Set<Object> keySet(Class<?> clazz) {
-        Set<Object> set = new HashSet<>(getClassKeyMap(clazz).keySet());
-        set.remove(CONSTRUCTORS);
-        set.remove(GENERIC_GET_KEY);
-        set.remove(ARGTYPES);
-        return set;
-    }
-
-    /**
      * Populates a map with property and method descriptors for a specified
      * class. If any property or method descriptors specifies a read method
      * that is not accessible, replaces it with appropriate accessible method
@@ -642,9 +546,6 @@ public class ObjectWrapper {
         if (genericGet != null) {
             classMap.put(GENERIC_GET_KEY, genericGet);
         }
-        if (exposureLevel == EXPOSE_NOTHING) {
-            return classMap;
-        }
         try {
             BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
             PropertyDescriptor[] pda = beanInfo.getPropertyDescriptors();
@@ -700,33 +601,31 @@ public class ObjectWrapper {
                     }
                 }
             }
-            if (exposureLevel < EXPOSE_PROPERTIES_ONLY) {
-                for (int i = mda.length - 1; i >= 0; --i) {
-                    MethodDescriptor md = mda[i];
-                    Method method = md.getMethod();
-                    Method publicMethod = getAccessibleMethod(method, accessibleMethods);
-                    if (publicMethod != null && isSafeMethod(publicMethod)) {
-                        String name = md.getName();
-                        Object previous = classMap.get(name);
-                        if (previous instanceof Method) {
-                            // Overloaded method - replace method with a method map
-                            MethodMap<Method> methodMap = new MethodMap<Method>(name);
-                            methodMap.addMember((Method) previous);
-                            methodMap.addMember(publicMethod);
-                            classMap.put(name, methodMap);
-                            // remove parameter type information
-                            getArgTypes(classMap).remove(previous);
-                        } else if (previous instanceof MethodMap) {
-                            // Already overloaded method - add new overload
-                            ((MethodMap<Method>) previous).addMember(publicMethod);
-                        } else {
-                            // Simple method (this far)
-                            classMap.put(name, publicMethod);
-                            getArgTypes(classMap).put(publicMethod,
-                                    componentizeLastArg(
-                                            publicMethod.getParameterTypes(),
-                                            publicMethod.isVarArgs()));
-                        }
+            for (int i = mda.length - 1; i >= 0; --i) {
+                MethodDescriptor md = mda[i];
+                Method method = md.getMethod();
+                Method publicMethod = getAccessibleMethod(method, accessibleMethods);
+                if (publicMethod != null && isSafeMethod(publicMethod)) {
+                    String name = md.getName();
+                    Object previous = classMap.get(name);
+                    if (previous instanceof Method) {
+                        // Overloaded method - replace method with a method map
+                        MethodMap<Method> methodMap = new MethodMap<Method>(name);
+                        methodMap.addMember((Method) previous);
+                        methodMap.addMember(publicMethod);
+                        classMap.put(name, methodMap);
+                        // remove parameter type information
+                        getArgTypes(classMap).remove(previous);
+                    } else if (previous instanceof MethodMap) {
+                        // Already overloaded method - add new overload
+                        ((MethodMap<Method>) previous).addMember(publicMethod);
+                    } else {
+                        // Simple method (this far)
+                        classMap.put(name, publicMethod);
+                        getArgTypes(classMap).put(publicMethod,
+                                componentizeLastArg(
+                                        publicMethod.getParameterTypes(),
+                                        publicMethod.isVarArgs()));
                     }
                 }
             }
@@ -778,27 +677,7 @@ public class ObjectWrapper {
     }
 
     private static boolean isSafeMethod(Method method) {
-        return exposureLevel < EXPOSE_SAFE || !UNSAFE_METHODS.contains(method);
-    }
-
-    static public boolean isEmpty(Object model) {
-        if (model instanceof Pojo) {
-            return ((Pojo) model).isEmpty();
-        } else if (model instanceof WrappedSequence) {
-            return ((WrappedSequence) model).size() == 0;
-        } else if (isString(model)) {
-            String s = asString(model);
-            return (s == null || s.length() == 0);
-        } else if (model instanceof Iterable) {
-            return !((Iterable<?>) model).iterator().hasNext();
-        } else if (model instanceof WrappedHash) {
-            return ((WrappedHash) model).isEmpty();
-        } else if (isNumber(model) || (model instanceof WrappedDate) ||
-                isBoolean(model)) {
-            return false;
-        } else {
-            return true;
-        }
+        return !UNSAFE_METHODS.contains(method);
     }
 
     /**

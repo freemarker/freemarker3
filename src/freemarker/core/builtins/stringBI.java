@@ -9,7 +9,6 @@ import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.EvaluationUtil;
-import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.*;
 
 import static freemarker.core.variables.ObjectWrapper.*;

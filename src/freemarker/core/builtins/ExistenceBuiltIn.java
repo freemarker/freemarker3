@@ -1,15 +1,19 @@
 package freemarker.core.builtins;
 
 import java.util.List;
+import java.util.Map;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.ParentheticalExpression;
-import freemarker.core.variables.ObjectWrapper;
+import freemarker.core.variables.Pojo;
+import freemarker.core.variables.WrappedHash;
 import freemarker.core.variables.WrappedMethod;
+
 import static freemarker.core.variables.Constants.*;
+import static freemarker.core.variables.ObjectWrapper.*;
 
 /**
  * @author Attila Szegedi
@@ -59,7 +63,23 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
         
     public static class HasContentBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
-            return model != null && !ObjectWrapper.isEmpty(model);
+            if (model == null || model == JAVA_NULL || model == NOTHING) return false;
+            if (isString(model)) {
+                return asString(model).length() > 0;
+            }
+            if (isIterable(model)) {
+                return asIterator(model).hasNext();
+            }
+            if (model instanceof Map) {
+                return !((Map<?,?>) model).isEmpty();
+            }
+            if (model instanceof Pojo) {
+                return ((Pojo)model).size() > 0;
+            }
+            if (model instanceof WrappedHash) {
+                return !((WrappedHash)model).isEmpty();
+            }
+            return true;
         }
     };
 

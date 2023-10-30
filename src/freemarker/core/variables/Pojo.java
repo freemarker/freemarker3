@@ -39,16 +39,8 @@ public class Pojo  {
     // values are either ReflectionMethodModels/ReflectionScalarModels
     private HashMap<Object, Object> memberMap;
 
-    /**
-     * Creates a new model that wraps the specified object. Note that there are
-     * specialized subclasses of this class for wrapping arrays, collections,
-     * enumeration, iterators, and maps. Note also that the superclass can be
-     * used to wrap String objects if only scalar functionality is needed.
-     * 
-     * @param object the object to wrap into a model.
-     */
     public Pojo(Object object) {
-        assert !(object instanceof WrappedVariable || object instanceof Pojo);
+        assert !(object instanceof WrappedVariable || object instanceof Pojo || object instanceof Number);
         this.object = object;
     }
 
@@ -86,22 +78,11 @@ public class Pojo  {
 
         introspectClass(object.getClass());
         try {
-            if (isMethodsShadowItems()) {
-                Object fd = classInfo.get(key);
-                if (fd != null) {
-                    retval = invokeThroughDescriptor(fd, classInfo);
-                } else {
-                    retval = invokeGenericGet(classInfo, key);
-                }
+            Object fd = classInfo.get(key);
+            if (fd != null) {
+                retval = invokeThroughDescriptor(fd, classInfo);
             } else {
-                Object object = invokeGenericGet(classInfo, key);
-                if (object != null && object != Constants.JAVA_NULL) {
-                    return object;
-                }
-                Object fd = classInfo.get(key);
-                if (fd != null) {
-                    retval = invokeThroughDescriptor(fd, classInfo);
-                }
+                retval = invokeGenericGet(classInfo, key);
             }
             if (retval == null) {
                 // REVISIT
@@ -200,36 +181,11 @@ public class Pojo  {
         if (object.getClass().isArray()) {
             return Array.getLength(object);
         }
-        throw new EvaluationException("not a container");
-        // return keyCount(object.getClass());
-    }
-
-    public Iterable<?> keys() {
-        return keySet();
-    }
-
-    public Iterable<?> values() {
-
-        List<Object> values = new ArrayList<>(size());
-        Iterator<?> it = keys().iterator();
-        while (it.hasNext()) {
-            values.add(asString(it.next()));
-        }
-        return values;
+        return -1; // REVISIT
     }
 
     public String toString() {
         return object.toString();
-    }
-
-    /**
-     * Helper method to support WrappedHash. Returns the Set of
-     * Strings which are available via the WrappedHash
-     * interface. Subclasses that override <tt>invokeGenericGet</tt> to
-     * provide additional hash keys should also override this method.
-     */
-    Set<Object> keySet() {
-        return ObjectWrapper.keySet(object.getClass());
     }
 
     public boolean equals(Object other) {
