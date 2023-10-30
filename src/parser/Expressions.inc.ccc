@@ -14,6 +14,7 @@ INJECT Expression :
    import freemarker.core.EvaluationUtil;
    import freemarker.core.InvalidReferenceException;
    import freemarker.template.TemplateException;
+   import java.lang.reflect.Array;
    import static freemarker.core.variables.ObjectWrapper.*;
    import static freemarker.core.variables.Constants.JAVA_NULL;
 {
@@ -72,10 +73,25 @@ INJECT Expression :
 
     default boolean isTrue(Environment env) {
         Object referent = evaluate(env);
+        if (referent == JAVA_NULL) {
+            return false;
+        }
+        assertNonNull(referent, env);
         if (isBoolean(referent)) {
             return asBoolean(referent);
         }
-        assertNonNull(referent, env);
+        if (referent instanceof Pojo) {
+            referent = ((Pojo)referent).getWrappedObject();
+        }
+        if (referent instanceof Collection) {
+            return ((Collection)referent).isEmpty();
+        }
+        if (referent.getClass().isArray()) {
+            return Array.getLength(referent) > 0;
+        }
+        if (referent instanceof WrappedSequence) {
+            return ((WrappedSequence)referent).size() > 0;
+        }
         String msg = "Error " + getLocation()
                      + "\nExpecting a boolean (true/false) expression here"
                      + "\nExpression " + this + " does not evaluate to true/false "
