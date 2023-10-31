@@ -5,7 +5,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.variables.*;
 
-import static freemarker.core.variables.ObjectWrapper.*;
+import static freemarker.core.variables.Invoke.*;
 import static freemarker.core.variables.Constants.JAVA_NULL;;
 
 /**

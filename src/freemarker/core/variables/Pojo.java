@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static freemarker.core.variables.ObjectWrapper.*;
+import static freemarker.core.variables.Invoke.*;
 
 /**
  * A class that will wrap an arbitrary POJO (a.k.a. Plain Old Java Object)
@@ -153,7 +153,7 @@ public class Pojo  {
     /**
      * Tells whether the model is empty. It is empty if either the wrapped
      * object is null, or it is a Boolean with false value.
-     */
+     *//*
     public boolean isEmpty() {
         if (object instanceof String) {
             return ((String) object).length() == 0;
@@ -165,7 +165,7 @@ public class Pojo  {
             return ((Map) object).isEmpty();
         }
         return object == null || Boolean.FALSE.equals(object);
-    }
+    }*/
 
     public Object getWrappedObject() {
         return object;

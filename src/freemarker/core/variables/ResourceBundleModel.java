@@ -10,9 +10,9 @@ import java.util.Set;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import static freemarker.core.variables.ObjectWrapper.asString;
-import static freemarker.core.variables.ObjectWrapper.wrap;
-import static freemarker.core.variables.ObjectWrapper.unwrap;
+import static freemarker.core.variables.Invoke.asString;
+import static freemarker.core.variables.Invoke.wrap;
+import static freemarker.core.variables.Invoke.unwrap;
 
 /**
  * <p>
@@ -54,14 +54,6 @@ public class ResourceBundleModel extends Pojo implements WrappedMethod {
         } catch (MissingResourceException e) {
             throw new EvaluationException("No such key: " + key);
         }
-    }
-
-    /**
-     * Returns true if this bundle contains no objects.
-     */
-    public boolean isEmpty() {
-        return !((ResourceBundle) object).getKeys().hasMoreElements() &&
-                super.isEmpty();
     }
 
     /**

@@ -1,7 +1,7 @@
 package freemarker.core.nodes;
 
 import static freemarker.core.variables.Constants.JAVA_NULL;
-import static freemarker.core.variables.ObjectWrapper.*;
+import static freemarker.core.variables.Invoke.*;
 import freemarker.core.EvaluationUtil;
 import freemarker.core.Scope;
 import freemarker.core.variables.*;

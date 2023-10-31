@@ -9,9 +9,9 @@ import freemarker.core.nodes.generated.TemplateNode;
 
 import freemarker.template.TemplateException;
 
-import static freemarker.core.variables.ObjectWrapper.isIterable;
-import static freemarker.core.variables.ObjectWrapper.asIterator;
-import static freemarker.core.variables.ObjectWrapper.wrap;
+import static freemarker.core.variables.Invoke.isIterable;
+import static freemarker.core.variables.Invoke.asIterator;
+import static freemarker.core.variables.Invoke.wrap;
 
 /**
  * Represents the local context of an iterator block  

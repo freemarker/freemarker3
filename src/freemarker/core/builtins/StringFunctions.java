@@ -16,7 +16,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.variables.*;
 import freemarker.template.utility.StringUtil;
 
-import static freemarker.core.variables.ObjectWrapper.*;
+import static freemarker.core.variables.Invoke.*;
 
 /**
  * Implementations of ?substring and other 

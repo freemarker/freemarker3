@@ -39,7 +39,7 @@ public final class SimpleMethodModel extends SimpleMemberModel<Method>
     public Object exec(List<Object> arguments) 
     {
         try {
-            return ObjectWrapper.invokeMethod(object, getMember(), unwrapArguments(
+            return Invoke.invokeMethod(object, getMember(), unwrapArguments(
                     arguments));
         }
         catch(Exception e) {

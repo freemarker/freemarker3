@@ -1,9 +1,9 @@
 
 package freemarker.core.variables;
+
 /*
  * 22 October 1999: This class added by Holger Arendt.
  */
-
 import java.util.List;
 
 /**

@@ -1,6 +1,6 @@
 package freemarker.core.nodes;
 
-import static freemarker.core.variables.ObjectWrapper.*;
+import static freemarker.core.variables.Invoke.*;
 import freemarker.core.EvaluationUtil;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.TemplateNode;

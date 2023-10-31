@@ -8,7 +8,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.variables.*;
 import freemarker.template.TemplateException;
 
-import static freemarker.core.variables.ObjectWrapper.*;
+import static freemarker.core.variables.Invoke.*;
 
 /**
  * Implementation of ?new built-in 
@@ -50,7 +50,7 @@ public class newBI extends ExpressionEvaluatingBuiltIn {
         }
 
         public Object exec(List arguments) {
-            return ObjectWrapper.newInstance(cl, arguments);
+            return Invoke.newInstance(cl, arguments);
         }
     }
 }

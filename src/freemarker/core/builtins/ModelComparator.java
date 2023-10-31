@@ -9,7 +9,7 @@ import freemarker.core.variables.WrappedDate;
 import freemarker.core.variables.EvaluationException;
 import freemarker.template.TemplateException;
 
-import static freemarker.core.variables.ObjectWrapper.*;
+import static freemarker.core.variables.Invoke.*;
 
 /**
  * @author Attila Szegedi

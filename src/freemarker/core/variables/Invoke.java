@@ -11,7 +11,7 @@ import java.math.BigInteger;
 import freemarker.log.Logger;
 import freemarker.core.Scope;
 
-public class ObjectWrapper {
+public class Invoke {
     private static final Class<java.math.BigInteger> BIGINTEGER_CLASS = java.math.BigInteger.class;
     private static final Class<Object> OBJECT_CLASS = Object.class;
     private static final Class<String> STRING_CLASS = String.class;
@@ -40,7 +40,7 @@ public class ObjectWrapper {
 
     private static int defaultDateType = WrappedDate.UNKNOWN;
 
-    private ObjectWrapper() {
+    private Invoke() {
     }
 
     public static boolean isMap(Object obj) {
@@ -226,7 +226,7 @@ public class ObjectWrapper {
      * @param defaultDateType the new default date type.
      */
     public static synchronized void setDefaultDateType(int defaultDateType) {
-        ObjectWrapper.defaultDateType = defaultDateType;
+        Invoke.defaultDateType = defaultDateType;
     }
 
     static synchronized int getDefaultDateType() {
@@ -768,7 +768,7 @@ public class ObjectWrapper {
 
     private static final Set<Method> createUnsafeMethodsSet() {
         Properties props = new Properties();
-        InputStream in = ObjectWrapper.class.getResourceAsStream("unsafeMethods.txt");
+        InputStream in = Invoke.class.getResourceAsStream("unsafeMethods.txt");
         if (in != null) {
             String methodSpec = null;
             try {

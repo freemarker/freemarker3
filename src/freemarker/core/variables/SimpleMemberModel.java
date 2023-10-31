@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
-import static freemarker.core.variables.ObjectWrapper.unwrap;
+import static freemarker.core.variables.Invoke.unwrap;
 
 /**
  * This class is used for constructors and as a base for non-overloaded methods
@@ -51,7 +51,7 @@ class SimpleMemberModel<T extends Member>
             }
         }
         if(args != null) {
-            ObjectWrapper.coerceBigDecimals(argTypes, args);
+            Invoke.coerceBigDecimals(argTypes, args);
             if(varArg && shouldPackVarArgs(args)) {
                 args = packVarArgs(args, argTypes);
             }

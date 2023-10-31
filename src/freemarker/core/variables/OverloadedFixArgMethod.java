@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static freemarker.core.variables.ObjectWrapper.unwrap;
+import static freemarker.core.variables.Invoke.unwrap;
 
 /**
  * @author Attila Szegedi
@@ -48,7 +48,7 @@ class OverloadedFixArgMethod<T extends Member> extends OverloadedMethod<T>
         Object objMember = getMemberForArgs(args, false);
         if(objMember instanceof Member) {
             T member = (T)objMember;
-            ObjectWrapper.coerceBigDecimals(getSignature(member), args);
+            Invoke.coerceBigDecimals(getSignature(member), args);
             return new MemberAndArguments<T>(member, args);
         }
         return objMember; // either NO_SUCH_METHOD or AMBIGUOUS_METHOD

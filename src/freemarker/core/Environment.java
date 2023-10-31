@@ -24,7 +24,7 @@ import freemarker.log.Logger;
 import freemarker.core.variables.*;
 import freemarker.template.*;
 
-import static freemarker.core.variables.ObjectWrapper.*;
+import static freemarker.core.variables.Invoke.*;
 
 /**
  * Object that represents the runtime environment during template processing.
@@ -184,8 +184,7 @@ public final class Environment extends Configurable implements Scope {
     /**
      * "Visit" the template element.
      */
-    public void render(TemplateElement element) throws TemplateException,
-            IOException {
+    public void render(TemplateElement element) throws IOException {
         pushElement(element);
         boolean createNewScope = element.createsScope();
         Scope prevScope = currentScope;

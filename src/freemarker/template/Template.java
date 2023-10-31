@@ -15,7 +15,7 @@ import freemarker.core.variables.WrappedHash;
 import freemarker.core.variables.WrappedNode;
 import freemarker.core.parser.*;
 
-import static freemarker.core.variables.ObjectWrapper.wrap;
+import static freemarker.core.variables.Invoke.wrap;
 /**
  * <p>A core FreeMarker API that represents a compiled template.
  * Typically, you will use a {@link Configuration} object to instantiate a template.

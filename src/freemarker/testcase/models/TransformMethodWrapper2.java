@@ -2,7 +2,7 @@ package freemarker.testcase.models;
 
 import java.util.*;
 import freemarker.core.variables.WrappedMethod;
-import static freemarker.core.variables.ObjectWrapper.asString;
+import static freemarker.core.variables.Invoke.asString;
 
 /**
  * Another test of the interaction between MethodModels and TransformModels.

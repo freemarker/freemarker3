@@ -10,7 +10,7 @@ import freemarker.template.TemplateException;
 import java.util.*;
 
 import static freemarker.core.parser.Token.TokenType.*;
-import static freemarker.core.variables.ObjectWrapper.*;
+import static freemarker.core.variables.Invoke.*;
 
 
 //THIS NEEDS TO BE SIMPLIFIED!

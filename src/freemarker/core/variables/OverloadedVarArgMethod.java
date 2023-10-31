@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static freemarker.core.variables.ObjectWrapper.unwrap;
+import static freemarker.core.variables.Invoke.unwrap;
 
 /**
  * @author Attila Szegedi
@@ -185,7 +185,7 @@ outer:  for(int j = Math.min(l + 1, marshalTypes.length - 1); j >= 0; --j) {
             if(args == null) {
                 return NO_SUCH_METHOD;
             }
-            ObjectWrapper.coerceBigDecimals(getSignature(member), args);
+            Invoke.coerceBigDecimals(getSignature(member), args);
             return new MemberAndArguments<T>(member, args);
         }
         return objMember; // either NOT_FOUND or AMBIGUOUS
