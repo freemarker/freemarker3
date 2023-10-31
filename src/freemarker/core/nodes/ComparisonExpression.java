@@ -1,7 +1,7 @@
 package freemarker.core.nodes;
 
 import static freemarker.core.variables.Wrap.*;
-import freemarker.core.EvaluationUtil;
+
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.ArithmeticEngine;
@@ -63,8 +63,8 @@ public class ComparisonExpression extends TemplateNode implements Expression {
             if (rtype == WrappedDate.UNKNOWN) {
                 throw new TemplateException("Right date is of UNKNOWN type, and can not be compared.", env);
             }
-            Date first = EvaluationUtil.getDate(ltdm, getLeft(), env);
-            Date second = EvaluationUtil.getDate(rtdm, getRight(), env);
+            Date first = Wrap.getDate(ltdm, getLeft(), env);
+            Date second = Wrap.getDate(rtdm, getRight(), env);
             comp = first.compareTo(second);
         } else if (isString(ltm) && isString(rtm)) {
             if (operation != EQUALS && operation != DOUBLE_EQUALS && operation != NOT_EQUALS) {

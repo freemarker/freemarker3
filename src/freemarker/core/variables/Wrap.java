@@ -3,8 +3,15 @@ package freemarker.core.variables;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
+
+import static freemarker.core.variables.Constants.JAVA_NULL;
+
 import java.lang.reflect.Array;
+
+import freemarker.core.Environment;
+import freemarker.core.nodes.generated.Expression;
 import freemarker.core.variables.scope.Scope;
+import freemarker.template.TemplateException;
 
 public class Wrap {
 
@@ -332,5 +339,36 @@ public class Wrap {
             return ((WrappedDate) object).getAsDate();
         }
         return CAN_NOT_UNWRAP;
+    }
+
+    static public Date getDate(WrappedDate model, Expression expr, Environment env)
+    {
+        Date value = model.getAsDate();
+        if(value == null) {
+            throw new TemplateException(expr + " evaluated to null date.", env);
+        }
+        return value;
+    }
+
+    static public Number getNumber(Object model, Expression expr, Environment env)
+    {
+        if(isNumber(model)) {
+            return asNumber(model);
+        }
+        else if(model == null) {
+            throw new InvalidReferenceException(expr + " is undefined.", env);
+        }
+        else if(model == JAVA_NULL) {
+            throw new InvalidReferenceException(expr + " is null.", env);
+        }
+        else {
+            throw new TemplateException(expr + " is not a number, it is " + model.getClass().getName(), env);
+        }
+    }
+
+    static public Number getNumber(Expression expr, Environment env)
+    {
+        Object value = expr.evaluate(env);
+        return getNumber(value, expr, env);
     }
 }

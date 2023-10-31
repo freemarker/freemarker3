@@ -11,7 +11,6 @@
 INJECT Expression :
    import freemarker.core.variables.*;
    import freemarker.core.Environment;
-   import freemarker.core.EvaluationUtil;
    import freemarker.core.variables.InvalidReferenceException;
    import freemarker.template.TemplateException;
    import java.lang.reflect.Array;
@@ -31,7 +30,7 @@ INJECT Expression :
         }
         if (referent instanceof WrappedDate) {
             WrappedDate dm = (WrappedDate) referent;
-            return env.formatDate(EvaluationUtil.getDate(dm, this, env), dm.getDateType());
+            return env.formatDate(getDate(dm, this, env), dm.getDateType());
         }
         if (referent instanceof Pojo) {
             return ((Pojo)referent).getWrappedObject().toString();
@@ -317,8 +316,8 @@ INJECT MultiplicativeExpression :
    import freemarker.template.TemplateException;
    import freemarker.core.Environment;
    import freemarker.core.ArithmeticEngine;
-   import freemarker.core.EvaluationUtil;
    import static freemarker.core.variables.Wrap.isNumber;
+   import static freemarker.core.variables.Wrap.getNumber;
    implements Expression
 {
     public Expression getLeft() {
@@ -350,8 +349,8 @@ INJECT MultiplicativeExpression :
             }
             throw new TemplateException(msg, env);
         }
-        Number first = EvaluationUtil.getNumber(leftModel, getLeft(), env);
-        Number second = EvaluationUtil.getNumber(rightModel, getRight(), env);
+        Number first = getNumber(leftModel, getLeft(), env);
+        Number second = getNumber(rightModel, getRight(), env);
         ArithmeticEngine ae = 
             env != null 
                 ? env.getArithmeticEngine()
@@ -424,8 +423,8 @@ RangeExpression :
 INJECT RangeExpression :
    import freemarker.core.variables.*;
    import freemarker.core.Environment;
-   import freemarker.core.EvaluationUtil;
    import freemarker.template.TemplateException;
+   import static freemarker.core.variables.Wrap.getNumber;
    implements Expression
 {
     public Expression getLeft() {
@@ -441,10 +440,10 @@ INJECT RangeExpression :
     }
     
     public Object evaluate(Environment env) {
-        int min = EvaluationUtil.getNumber(getLeft(), env).intValue();
+        int min = getNumber(getLeft(), env).intValue();
         int max = 0;
         if (hasRhs()) {
-            max = EvaluationUtil.getNumber(getRight(), env).intValue();
+            max = getNumber(getRight(), env).intValue();
             return new NumericalRange(min, max);
         }
         return new NumericalRange(min);

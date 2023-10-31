@@ -2,7 +2,7 @@ package freemarker.core.nodes;
 
 import static freemarker.core.variables.Constants.JAVA_NULL;
 import static freemarker.core.variables.Wrap.*;
-import freemarker.core.EvaluationUtil;
+
 import freemarker.core.Environment;
 import freemarker.core.variables.*;
 import freemarker.core.variables.scope.Scope;
@@ -93,11 +93,11 @@ public class DynamicKeyName extends TemplateNode implements Expression {
     }
 
     private Object dealWithRangeKey(Object targetModel, RangeExpression range, Environment env) {
-        int start = EvaluationUtil.getNumber(range.getLeft(), env).intValue();
+        int start = Wrap.getNumber(range.getLeft(), env).intValue();
         int end = 0;
         boolean hasRhs = range.hasRhs();
         if (hasRhs) {
-            end = EvaluationUtil.getNumber(range.getRight(), env).intValue();
+            end = Wrap.getNumber(range.getRight(), env).intValue();
         }
         if (isList(targetModel)) {
             List<?> list = asList(targetModel);

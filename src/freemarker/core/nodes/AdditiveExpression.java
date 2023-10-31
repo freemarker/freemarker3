@@ -1,6 +1,5 @@
 package freemarker.core.nodes;
 
-import freemarker.core.EvaluationUtil;
 import freemarker.core.ArithmeticEngine;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
@@ -33,14 +32,14 @@ public class AdditiveExpression extends TemplateNode implements Expression {
         Object right = getRight().evaluate(env);
         ArithmeticEngine ae = env != null ? env.getArithmeticEngine() : getTemplate().getArithmeticEngine();
         if (!isPlus()) {
-            Number first = EvaluationUtil.getNumber(left, getLeft(), env);
-            Number second = EvaluationUtil.getNumber(right, getRight(), env);
+            Number first = Wrap.getNumber(left, getLeft(), env);
+            Number second = Wrap.getNumber(right, getRight(), env);
             return ae.subtract(first, second);
         }
         boolean bothAreNumbers = isNumber(left) && isNumber(right);
         if (bothAreNumbers) {
-            Number first = EvaluationUtil.getNumber(left, getLeft(), env);
-            Number second = EvaluationUtil.getNumber(right, getRight(), env);
+            Number first = Wrap.getNumber(left, getLeft(), env);
+            Number second = Wrap.getNumber(right, getRight(), env);
             return ae.add(first, second);
         }
         if (isList(left) && isList(right)) {

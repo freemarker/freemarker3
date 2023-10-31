@@ -8,7 +8,6 @@ import java.util.List;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.core.EvaluationUtil;
 import freemarker.core.variables.*;
 
 import static freemarker.core.variables.Wrap.*;
@@ -29,7 +28,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         if (model instanceof WrappedDate) {
             WrappedDate dm = (WrappedDate) model;
             int dateType = dm.getDateType();
-            return new DateFormatter(EvaluationUtil.getDate(dm, caller.getTarget(), env), dateType, env);
+            return new DateFormatter(Wrap.getDate(dm, caller.getTarget(), env), dateType, env);
         }
         if (isBoolean(model)) {
             return new BooleanFormatter(model, env);
