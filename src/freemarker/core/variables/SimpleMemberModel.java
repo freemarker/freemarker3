@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
-import static freemarker.core.variables.Invoke.unwrap;
+import static freemarker.core.variables.Wrap.unwrap;
 
 /**
  * This class is used for constructors and as a base for non-overloaded methods

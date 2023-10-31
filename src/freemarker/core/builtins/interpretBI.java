@@ -14,7 +14,7 @@ import freemarker.core.variables.UserDirective;
 import freemarker.core.variables.EvaluationException;
 import freemarker.template.TemplateException;
 
-import static freemarker.core.variables.Invoke.*;
+import static freemarker.core.variables.Wrap.*;
 
 /**
  * Implementation of ?interpret built-in 

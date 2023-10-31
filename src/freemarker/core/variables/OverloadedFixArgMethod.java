@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import static freemarker.core.variables.Invoke.unwrap;
+import static freemarker.core.variables.Wrap.unwrap;
 
 /**
  * @author Attila Szegedi

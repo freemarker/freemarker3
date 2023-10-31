@@ -8,8 +8,8 @@ import freemarker.core.variables.*;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 
-import static freemarker.core.variables.Invoke.asBoolean;
-import static freemarker.core.variables.Invoke.asNumber;
+import static freemarker.core.variables.Wrap.asBoolean;
+import static freemarker.core.variables.Wrap.asNumber;
 
 /**
  * <p>A filter that compresses each sequence of consecutive whitespace

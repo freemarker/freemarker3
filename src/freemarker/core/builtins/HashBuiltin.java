@@ -4,7 +4,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.WrappedHash;
-import static freemarker.core.variables.Invoke.*;
+import static freemarker.core.variables.Wrap.*;
 
 import java.util.ArrayList;
 import java.util.Map;

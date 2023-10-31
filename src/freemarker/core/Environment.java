@@ -24,7 +24,7 @@ import freemarker.log.Logger;
 import freemarker.core.variables.*;
 import freemarker.template.*;
 
-import static freemarker.core.variables.Invoke.*;
+import static freemarker.core.variables.Wrap.*;
 
 /**
  * Object that represents the runtime environment during template processing.

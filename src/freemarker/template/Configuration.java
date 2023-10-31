@@ -3,23 +3,9 @@ package freemarker.template;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import freemarker.cache.CacheStorage;
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.cache.FileTemplateLoader;
-import freemarker.cache.MruCacheStorage;
-import freemarker.cache.TemplateCache;
-import freemarker.cache.TemplateLoader;
+import freemarker.cache.*;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.Scope;
@@ -32,7 +18,7 @@ import freemarker.template.utility.StandardCompress;
 import freemarker.template.utility.StringUtil;
 import freemarker.template.utility.XmlEscape;
 
-import static freemarker.core.variables.Invoke.*;
+import static freemarker.core.variables.Wrap.*;
 
 /**
  * Main entry point into the FreeMarker API, this class encapsulates the 

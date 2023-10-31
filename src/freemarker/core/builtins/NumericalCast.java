@@ -4,13 +4,12 @@ import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.template.*;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import static freemarker.core.variables.Invoke.*;
+import static freemarker.core.variables.Wrap.*;
 
 /**
  * Implementation of ?byte, ?int, ?double, ?float,

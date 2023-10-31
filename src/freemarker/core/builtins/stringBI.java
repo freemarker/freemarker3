@@ -11,7 +11,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.EvaluationUtil;
 import freemarker.core.variables.*;
 
-import static freemarker.core.variables.Invoke.*;
+import static freemarker.core.variables.Wrap.*;
 
 /**
  * Implementation of ?string built-in 

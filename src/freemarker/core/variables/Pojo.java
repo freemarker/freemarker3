@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static freemarker.core.variables.Wrap.*;
 import static freemarker.core.variables.Invoke.*;
 
 /**
@@ -149,23 +150,6 @@ public class Pojo  {
 
         return invokeMethod(object, genericGet, new Object[] { key });
     }
-
-    /**
-     * Tells whether the model is empty. It is empty if either the wrapped
-     * object is null, or it is a Boolean with false value.
-     *//*
-    public boolean isEmpty() {
-        if (object instanceof String) {
-            return ((String) object).length() == 0;
-        }
-        if (object instanceof Collection) {
-            return ((Collection) object).isEmpty();
-        }
-        if (object instanceof Map) {
-            return ((Map) object).isEmpty();
-        }
-        return object == null || Boolean.FALSE.equals(object);
-    }*/
 
     public Object getWrappedObject() {
         return object;

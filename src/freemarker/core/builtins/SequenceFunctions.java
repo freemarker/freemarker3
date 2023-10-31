@@ -15,7 +15,7 @@ import freemarker.core.variables.*;;
 import freemarker.template.TemplateException;
 import freemarker.template.utility.StringUtil;
 
-import static freemarker.core.variables.Invoke.*;
+import static freemarker.core.variables.Wrap.*;
 
 /**
  * Implementations of builtins for standard functions that operate on sequences

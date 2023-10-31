@@ -13,7 +13,7 @@ import freemarker.core.variables.WrappedHash;
 import freemarker.core.variables.WrappedMethod;
 
 import static freemarker.core.variables.Constants.*;
-import static freemarker.core.variables.Invoke.*;
+import static freemarker.core.variables.Wrap.*;
 
 /**
  * @author Attila Szegedi

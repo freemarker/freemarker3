@@ -15,7 +15,7 @@ INJECT Expression :
    import freemarker.core.InvalidReferenceException;
    import freemarker.template.TemplateException;
    import java.lang.reflect.Array;
-   import static freemarker.core.variables.Invoke.*;
+   import static freemarker.core.variables.Wrap.*;
    import static freemarker.core.variables.Constants.JAVA_NULL;
 {
     public abstract Object evaluate(Environment env);
@@ -251,7 +251,7 @@ INJECT UnaryPlusMinusExpression :
     import freemarker.core.ArithmeticEngine;
     import freemarker.core.variables.*;
     import freemarker.template.TemplateException;
-    import static freemarker.core.variables.Invoke.asNumber;
+    import static freemarker.core.variables.Wrap.asNumber;
     implements Expression
 {
     private static final Integer MINUS_ONE = Integer.valueOf(-1); 
@@ -318,7 +318,7 @@ INJECT MultiplicativeExpression :
    import freemarker.core.Environment;
    import freemarker.core.ArithmeticEngine;
    import freemarker.core.EvaluationUtil;
-   import static freemarker.core.variables.Invoke.isNumber;
+   import static freemarker.core.variables.Wrap.isNumber;
    implements Expression
 {
     public Expression getLeft() {
@@ -934,7 +934,7 @@ INJECT DotVariable :
     import freemarker.core.parser.Token;
     import freemarker.core.variables.WrappedHash;
     import freemarker.core.variables.Pojo;
-    import static freemarker.core.variables.Invoke.wrap;
+    import static freemarker.core.variables.Wrap.wrap;
     implements Expression
 {
     public Expression getTarget() {
@@ -982,7 +982,7 @@ INJECT MethodCall :
     import java.io.StringWriter;
     import freemarker.core.Environment;
     import freemarker.core.variables.*;
-    import static freemarker.core.variables.Invoke.wrap;
+    import static freemarker.core.variables.Wrap.wrap;
     implements Expression;
 {
 

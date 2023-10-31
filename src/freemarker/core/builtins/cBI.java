@@ -5,7 +5,7 @@ import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.TemplateException;
 
-import static freemarker.core.variables.Invoke.*;
+import static freemarker.core.variables.Wrap.asNumber;
 
 /**
  * Implementation of ?c built-in 

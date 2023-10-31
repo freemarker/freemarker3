@@ -28,7 +28,7 @@ public class DateModel extends Pojo implements WrappedDate
             type = DATETIME;
         }
         else {
-            type = Invoke.getDefaultDateType();
+            type = Wrap.getDefaultDateType();
         }
     }
 

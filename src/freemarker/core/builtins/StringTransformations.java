@@ -2,11 +2,11 @@ package freemarker.core.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.InvalidReferenceException;
-import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.utility.StringUtil;
 
-import static freemarker.core.variables.Invoke.*;
+import static freemarker.core.variables.Wrap.asString;
+import static freemarker.core.variables.Wrap.isString;
 
 /**
  * Implementations of ?cap_first, ?lower_case, ?upper_case and other

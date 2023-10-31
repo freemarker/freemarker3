@@ -3,16 +3,14 @@ package freemarker.core.variables;
 import java.text.MessageFormat;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import static freemarker.core.variables.Invoke.asString;
-import static freemarker.core.variables.Invoke.wrap;
-import static freemarker.core.variables.Invoke.unwrap;
+import static freemarker.core.variables.Wrap.asString;
+import static freemarker.core.variables.Wrap.wrap;
+import static freemarker.core.variables.Wrap.unwrap;
 
 /**
  * <p>

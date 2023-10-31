@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import static freemarker.core.variables.Invoke.unwrap;
+import static freemarker.core.variables.Wrap.unwrap;
 
 /**
  * @author Attila Szegedi

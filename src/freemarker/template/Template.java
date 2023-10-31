@@ -11,11 +11,9 @@ import freemarker.core.TemplateCore;
 import freemarker.core.nodes.generated.ImportDeclaration;
 import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.TemplateHeaderElement;
-import freemarker.core.variables.WrappedHash;
 import freemarker.core.variables.WrappedNode;
 import freemarker.core.parser.*;
 
-import static freemarker.core.variables.Invoke.wrap;
 /**
  * <p>A core FreeMarker API that represents a compiled template.
  * Typically, you will use a {@link Configuration} object to instantiate a template.
