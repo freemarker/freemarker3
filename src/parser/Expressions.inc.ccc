@@ -84,7 +84,7 @@ INJECT Expression :
             referent = ((Pojo)referent).getWrappedObject();
         }
         if (referent instanceof Collection) {
-            return ((Collection)referent).isEmpty();
+            return !((Collection)referent).isEmpty();
         }
         if (referent.getClass().isArray()) {
             return Array.getLength(referent) > 0;
@@ -593,7 +593,6 @@ INJECT ListLiteral :
   import java.util.List;
   import freemarker.core.Environment;
   import freemarker.template.TemplateException;
-  import freemarker.core.variables.*;
   import freemarker.core.variables.scope.TemplateNamespace;
   implements Expression
 {

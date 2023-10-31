@@ -6,11 +6,11 @@ package freemarker.core.nodes;
 
 import freemarker.core.variables.EvaluationException;
 import freemarker.template.TemplateException;
-import freemarker.core.helpers.NamedParameterMapScope;
-import freemarker.core.helpers.NamedParameterListScope;
 import freemarker.core.TemplateRunnable;
 import freemarker.core.variables.InvalidReferenceException;
 import freemarker.core.variables.scope.Scope;
+import freemarker.core.variables.scope.NamedParameterListScope;
+import freemarker.core.variables.scope.NamedParameterMapScope;
 import freemarker.core.Environment;
 import java.util.*;
 import java.io.IOException;

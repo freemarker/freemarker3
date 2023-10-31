@@ -1,11 +1,8 @@
-package freemarker.core.helpers;
+package freemarker.core.variables.scope;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import freemarker.core.variables.scope.AbstractScope;
-import freemarker.core.variables.scope.Scope;
 
 /**
  * @author Attila Szegedi
