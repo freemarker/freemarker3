@@ -8,7 +8,7 @@ import java.util.*;
 import freemarker.cache.*;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
-import freemarker.core.Scope;
+import freemarker.core.variables.scope.Scope;
 import freemarker.core.variables.WrappedHash;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;

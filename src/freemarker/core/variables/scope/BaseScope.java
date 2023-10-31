@@ -1,4 +1,4 @@
-package freemarker.core;
+package freemarker.core.variables.scope;
 
 import java.util.*;
 

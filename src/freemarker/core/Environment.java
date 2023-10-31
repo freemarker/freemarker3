@@ -22,6 +22,7 @@ import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.nodes.generated.UnifiedCall;
 import freemarker.log.Logger;
 import freemarker.core.variables.*;
+import freemarker.core.variables.scope.*;
 import freemarker.template.*;
 
 import static freemarker.core.variables.Wrap.*;
@@ -287,9 +288,9 @@ public final class Environment extends Configurable implements Scope {
     public void render(MacroInvocationBodyContext bctxt)
             throws TemplateException, IOException {
         MacroContext invokingMacroContext = getCurrentMacroContext();
-        TemplateElement body = invokingMacroContext.body;
+        TemplateElement body = invokingMacroContext.getBody();
         if (body != null) {
-            this.currentMacroContext = invokingMacroContext.invokingMacroContext;
+            this.currentMacroContext = invokingMacroContext.getInvokingMacroContext();
             Configurable prevParent = getFallback();
             Scope prevScope = currentScope;
             setFallback(getCurrentNamespace().getTemplate());
@@ -460,7 +461,7 @@ public final class Environment extends Configurable implements Scope {
                 } else {
                     macroContextLookup.remove(macro);
                 }
-                currentMacroContext = mc.invokingMacroContext;
+                currentMacroContext = mc.getInvokingMacroContext();
                 currentScope = prevScope;
                 setFallback(prevParent);
             }

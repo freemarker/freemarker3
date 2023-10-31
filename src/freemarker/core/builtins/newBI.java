@@ -3,7 +3,6 @@ package freemarker.core.builtins;
 import java.util.List;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.variables.*;
 import freemarker.template.TemplateException;

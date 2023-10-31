@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.lang.reflect.Array;
-import freemarker.core.Scope;
+import freemarker.core.variables.scope.Scope;
 
 public class Wrap {
 

@@ -216,6 +216,7 @@ INJECT IteratorBlock :
     import java.io.IOException;
     import freemarker.core.*;
     import freemarker.core.variables.*;
+    import freemarker.core.variables.scope.LoopContext;
     extends TemplateElement
 {
     public boolean isForeach() {
@@ -260,8 +261,8 @@ INJECT VisitNode :
     import java.util.List;
     import freemarker.template.TemplateException;
     import freemarker.core.Environment;
-    import freemarker.core.Scope;
-    import freemarker.core.TemplateNamespace;
+    import freemarker.core.variables.scope.Scope;
+    import freemarker.core.variables.scope.TemplateNamespace;
     import freemarker.core.variables.*;
     import static freemarker.core.variables.Wrap.*;
     extends TemplateElement
@@ -324,7 +325,7 @@ INJECT RecurseNode :
     import java.util.List;
     import freemarker.template.TemplateException;
     import freemarker.core.Environment;
-    import freemarker.core.Scope;
+    import freemarker.core.variables.scope.Scope;
     import freemarker.core.variables.*;
     import static freemarker.core.variables.Wrap.isList;
     import static freemarker.core.variables.Wrap.asString;
@@ -480,6 +481,7 @@ NestedInstruction# :
 INJECT NestedInstruction :
     import java.io.IOException;
     import freemarker.core.*;
+    import freemarker.core.variables.scope.MacroInvocationBodyContext;
     import freemarker.core.variables.*;
     extends TemplateElement
 {
@@ -583,10 +585,10 @@ INJECT BlockAssignment :
     import java.io.StringWriter;
     import java.io.Writer;
     import freemarker.core.Environment;
-    import freemarker.core.InvalidReferenceException;
-    import freemarker.core.Scope;
+    import freemarker.core.variables.InvalidReferenceException;
     import freemarker.core.variables.UserDirectiveBody;
     import freemarker.core.variables.UserDirective;
+    import freemarker.core.variables.scope.Scope;
     import freemarker.template.TemplateException;
     extends TemplateElement
 {
@@ -680,6 +682,8 @@ INJECT AssignmentInstruction :
     import java.util.*;
     import freemarker.template.TemplateException;
     import freemarker.core.*;
+    import freemarker.core.variables.InvalidReferenceException;
+    import freemarker.core.variables.scope.Scope;
     extends TemplateElement
 {
     public List<String> getVarNames() {
@@ -772,7 +776,7 @@ INJECT IncludeInstruction :
     import freemarker.template.*;
     import freemarker.template.utility.StringUtil;
     import freemarker.core.Environment;
-    import freemarker.core.InvalidReferenceException;
+    import freemarker.core.variables.InvalidReferenceException;
     import freemarker.core.parser.ParseException;
     import static freemarker.core.variables.Wrap.*;
     extends TemplateElement
@@ -858,7 +862,7 @@ INJECT ImportDeclaration :
     import freemarker.template.Template;
     import freemarker.template.TemplateException;
     import freemarker.core.Environment;
-    import freemarker.core.InvalidReferenceException;
+    import freemarker.core.variables.InvalidReferenceException;
     import freemarker.log.Logger;
     extends TemplateElement
 {
@@ -1547,6 +1551,7 @@ INJECT VarDirective :
    import java.util.*;
    import freemarker.template.*;
    import freemarker.core.*;
+   import freemarker.core.variables.scope.Scope;
    import static freemarker.core.variables.Constants.JAVA_NULL;
    extends TemplateElement
 {

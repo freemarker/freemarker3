@@ -1,4 +1,4 @@
-package freemarker.core;
+package freemarker.core.variables.scope;
 
 import freemarker.template.*;
 
@@ -11,7 +11,7 @@ public class TemplateNamespace extends BaseScope {
 	
 	Template template;
 	
-	TemplateNamespace(Scope env, Template template) {
+	public TemplateNamespace(Scope env, Template template) {
 		super(env);
 		this.template = template;
 	}

@@ -1,9 +1,9 @@
 package freemarker.core.builtins;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
+import freemarker.core.variables.InvalidReferenceException;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

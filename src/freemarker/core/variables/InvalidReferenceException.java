@@ -1,5 +1,6 @@
-package freemarker.core;
+package freemarker.core.variables;
 
+import freemarker.core.Environment;
 import freemarker.template.TemplateException;
 
 /**

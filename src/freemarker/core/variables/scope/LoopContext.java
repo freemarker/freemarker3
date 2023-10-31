@@ -1,8 +1,9 @@
-package freemarker.core;
+package freemarker.core.variables.scope;
 
 import java.io.IOException;
 import java.util.Iterator;
 
+import freemarker.core.Environment;
 import freemarker.core.nodes.generated.IteratorBlock;
 import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.TemplateNode;

@@ -2,7 +2,7 @@ package freemarker.core.builtins;
 
 import java.util.List;
 
-import freemarker.core.Scope;
+import freemarker.core.variables.scope.Scope;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;

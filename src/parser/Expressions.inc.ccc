@@ -12,7 +12,7 @@ INJECT Expression :
    import freemarker.core.variables.*;
    import freemarker.core.Environment;
    import freemarker.core.EvaluationUtil;
-   import freemarker.core.InvalidReferenceException;
+   import freemarker.core.variables.InvalidReferenceException;
    import freemarker.template.TemplateException;
    import java.lang.reflect.Array;
    import static freemarker.core.variables.Wrap.*;
@@ -592,9 +592,9 @@ INJECT ListLiteral :
   import java.util.ArrayList;
   import java.util.List;
   import freemarker.core.Environment;
-  import freemarker.core.TemplateNamespace;
   import freemarker.template.TemplateException;
   import freemarker.core.variables.*;
+  import freemarker.core.variables.scope.TemplateNamespace;
   implements Expression
 {
     public List<Expression> getElements() {
@@ -715,7 +715,6 @@ INJECT BuiltinVariable :
 
 INJECT DefaultToExpression : 
     import freemarker.core.Environment;
-    import freemarker.core.InvalidReferenceException;
     import freemarker.core.variables.*;
     implements Expression
 {
@@ -755,7 +754,7 @@ INJECT DefaultToExpression :
 
 INJECT ExistsExpression :
     import freemarker.core.Environment;
-    import freemarker.core.InvalidReferenceException;
+    import freemarker.core.variables.InvalidReferenceException;
     import static freemarker.core.variables.Constants.JAVA_NULL;
     implements Expression
 {
@@ -930,10 +929,10 @@ import java.util.HashMap;
 INJECT DotVariable : 
     import java.util.Map;
     import freemarker.core.Environment;
-    import freemarker.core.Scope;
     import freemarker.core.parser.Token;
     import freemarker.core.variables.WrappedHash;
     import freemarker.core.variables.Pojo;
+    import freemarker.core.variables.scope.Scope;
     import static freemarker.core.variables.Wrap.wrap;
     implements Expression
 {

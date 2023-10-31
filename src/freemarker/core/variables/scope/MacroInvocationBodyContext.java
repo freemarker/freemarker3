@@ -1,7 +1,8 @@
-package freemarker.core;
+package freemarker.core.variables.scope;
 
 import java.util.*;
 
+import freemarker.core.Environment;
 import freemarker.core.nodes.ParameterList;
 import freemarker.core.nodes.generated.PositionalArgsList;
 import freemarker.core.nodes.generated.TemplateElement;
@@ -18,9 +19,9 @@ public class MacroInvocationBodyContext extends BlockScope {
     public MacroInvocationBodyContext(Environment env, PositionalArgsList bodyArgs) {
     	super(null, env.getCurrentMacroContext().invokingScope);
         invokingMacroContext = env.getCurrentMacroContext();
-        block = invokingMacroContext.body;
-        if (invokingMacroContext.body != null) {
-        	enclosingDirective = (TemplateElement) invokingMacroContext.body.getParent();
+        block = invokingMacroContext.getBody();
+        if (invokingMacroContext.getBody() != null) {
+        	enclosingDirective = (TemplateElement) invokingMacroContext.getBody().getParent();
         }
         ParameterList bodyParameters = invokingMacroContext.bodyParameters;
         if (bodyParameters != null) {

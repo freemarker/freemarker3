@@ -1,4 +1,4 @@
-package freemarker.core;
+package freemarker.core.variables.scope;
 
 import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.template.*;

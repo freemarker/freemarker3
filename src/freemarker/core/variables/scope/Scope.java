@@ -1,8 +1,9 @@
-package freemarker.core;
+package freemarker.core.variables.scope;
 
 import java.util.Collection;
 
-import freemarker.template.*;
+import freemarker.template.Template;
+import freemarker.core.Environment;
 
 /**
  * Represents a variable resolution context in FTL. This 

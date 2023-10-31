@@ -1,7 +1,7 @@
 package freemarker.core.builtins;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
+import freemarker.core.variables.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.TemplateException;
 

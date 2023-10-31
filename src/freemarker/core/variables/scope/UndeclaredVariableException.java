@@ -1,4 +1,4 @@
-package freemarker.core;
+package freemarker.core.variables.scope;
 
 /**
  * This exception is thrown when a set directive in the template

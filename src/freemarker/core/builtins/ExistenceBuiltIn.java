@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.Map;
 
 import freemarker.core.Environment;
-import freemarker.core.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.ParentheticalExpression;
 import freemarker.core.variables.Pojo;
 import freemarker.core.variables.WrappedHash;
 import freemarker.core.variables.WrappedMethod;
+import freemarker.core.variables.InvalidReferenceException;
 
 import static freemarker.core.variables.Constants.*;
 import static freemarker.core.variables.Wrap.*;

@@ -1,7 +1,8 @@
-package freemarker.core;
+package freemarker.core.variables.scope;
 
 import java.io.IOException;
 
+import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.ParameterList;
 import freemarker.core.nodes.generated.TemplateElement;
@@ -15,9 +16,9 @@ import freemarker.template.*;
 
 public class MacroContext extends BlockScope {
     private Macro macro;
-    TemplateElement body; // REVISIT
+    private TemplateElement body; // REVISIT
     public ParameterList bodyParameters;
-    MacroContext invokingMacroContext;
+    private MacroContext invokingMacroContext;
     Scope invokingScope;
     
     public MacroContext(Macro macro,
@@ -32,8 +33,16 @@ public class MacroContext extends BlockScope {
         this.body = body;
         this.bodyParameters = bodyParameters;
     }
+
+    public MacroContext getInvokingMacroContext() {
+        return invokingMacroContext;
+    }
+
+    public TemplateElement getBody() {
+        return body;
+    }
     
-    void runMacro() throws TemplateException, IOException { 
+    public void runMacro() throws TemplateException, IOException { 
         TemplateElement nestedBlock = macro.firstChildOfType(TemplateElement.class);
         if (nestedBlock != null) {
             getEnvironment().render(nestedBlock);

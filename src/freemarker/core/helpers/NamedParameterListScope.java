@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import freemarker.core.AbstractScope;
-import freemarker.core.Scope;
+import freemarker.core.variables.scope.AbstractScope;
+import freemarker.core.variables.scope.Scope;
 
 /**
  * @author Attila Szegedi

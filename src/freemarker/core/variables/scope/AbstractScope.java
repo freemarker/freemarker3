@@ -1,6 +1,7 @@
-package freemarker.core;
+package freemarker.core.variables.scope;
 
 import freemarker.template.Template;
+import freemarker.core.Environment;
 
 /**
  * An abstract scope with no variable storage mechanism of its own; only 

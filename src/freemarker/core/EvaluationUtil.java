@@ -4,6 +4,7 @@ import java.util.Date;
 
 import freemarker.template.TemplateException;
 import freemarker.core.nodes.generated.Expression;
+import freemarker.core.variables.InvalidReferenceException;
 import freemarker.core.variables.WrappedDate;
 import static freemarker.core.variables.Constants.JAVA_NULL;
 import static freemarker.core.variables.Wrap.*;
