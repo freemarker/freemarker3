@@ -1,4 +1,4 @@
-package freemarker.core.builtins;
+package freemarker.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.ArithmeticEngine;

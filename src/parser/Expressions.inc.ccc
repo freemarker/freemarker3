@@ -783,7 +783,7 @@ INJECT BuiltInExpression :
 import java.util.HashMap;
 
     import freemarker.core.Environment;
-    import freemarker.core.builtins.*;
+    import freemarker.builtins.*;
     import freemarker.core.variables.WrappedDate;
     implements Expression;
 {
@@ -1020,7 +1020,7 @@ INJECT MethodCall :
             } finally {
                 env.setOut(prevOut);
             }
-            return sw != null ? wrap(sw.getBuffer().toString()) : env.getLastReturnValue();
+            return sw != null ? sw.getBuffer().toString() : env.getLastReturnValue();
         }
         else {
             throw invalidTypeException(value, getTarget(), env, "method");
@@ -1371,6 +1371,7 @@ INJECT HashLiteral :
 
 INJECT MethodReference :
     import freemarker.core.Environment;
+    import freemarker.core.variables.JavaMethodCall;
     implements Expression
 {
     public Expression getTarget() {
@@ -1378,7 +1379,9 @@ INJECT MethodReference :
     }
 
     public Object evaluate(Environment env) {
-        throw new UnsupportedOperationException("unimplemented");
+        Object target = getTarget().evaluate(env);
+        String methodName = get(2).toString();
+        return new JavaMethodCall(target, methodName);
     }
 
     public Expression _deepClone(String name, Expression subst) {

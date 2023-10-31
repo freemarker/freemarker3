@@ -1,4 +1,4 @@
-package freemarker.core.builtins;
+package freemarker.builtins;
 
 import java.util.Iterator;
 import java.util.List;

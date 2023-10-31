@@ -231,14 +231,14 @@ public class Wrap {
             return object.toString(); // REVISIT
         }
         if (object instanceof List) {
-            // return object;
-            return new Pojo(object);
-        }
-        if (object.getClass().isArray()) {
+            //return object;
             return new Pojo(object);
         }
         if (object instanceof Map) {
             return object;
+        }
+        if (object.getClass().isArray()) {
+            return new Pojo(object);
         }
         if (object instanceof Date) {
             return new DateModel((Date) object);

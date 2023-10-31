@@ -1,4 +1,4 @@
-package freemarker.core.builtins;
+package freemarker.builtins;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;

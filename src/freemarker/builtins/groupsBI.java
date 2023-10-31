@@ -1,9 +1,9 @@
-package freemarker.core.builtins;
+package freemarker.builtins;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.builtins.StringFunctions.RegexMatchModel;
+import freemarker.builtins.StringFunctions.RegexMatchModel;
 import static freemarker.core.variables.Wrap.unwrap;
 
 /**

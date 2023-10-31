@@ -18,6 +18,9 @@ public class JavaMethodCall implements WrappedMethod {
     private static Map<String,Method> methodCache = new ConcurrentHashMap<>();
 
     public JavaMethodCall(Object target, String methodName) {
+        if (target instanceof Pojo) {
+            target = ((Pojo)target).getWrappedObject();
+        }
         this.target = target;
         this.methodName = methodName;
         checkMethodName();

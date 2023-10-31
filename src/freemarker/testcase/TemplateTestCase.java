@@ -111,7 +111,13 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("array", new String[] { "array-0", "array-1"});
 // REVISIT            
 //            dataModel.put("list", new Pojo(Arrays.asList("list-0", "list-1", "list-2")));
-            dataModel.put("list", Arrays.asList("list-0", "list-1", "list-2"));
+//            dataModel.put("list", Arrays.asList("list-0", "list-1", "list-2"));
+            ArrayList<String> list = new ArrayList<>();
+            list.add("list-0");
+            list.add("list-1");
+            list.add("list-2");
+//            dataModel.put("list", Arrays.asList("list-0", "list-1", "list-2"));
+            dataModel.put("list",list);
             Map tmap = new HashMap();
             tmap.put("key", "value");
             Object objKey = new Object();
