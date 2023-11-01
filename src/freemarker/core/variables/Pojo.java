@@ -45,6 +45,50 @@ public class Pojo  {
         this.object = object;
     }
 
+    public Object get(String key) {
+        Method getter = getGetter(key);
+        Object result = null;
+        if (getter != null) try {
+            result = wrap(getter.invoke(object));
+        } catch (Exception e) {
+            throw new EvaluationException(e);
+        }
+        if (result == null) {
+            //result = _get(key);
+            if (methodOfNameExists(key)) {
+                return new JavaMethodCall(object, key);
+            }
+        }
+        return result;
+        //return new JavaMethodCall(object, key);
+    }
+
+    private Method getGetter(String name) {
+        if (!Character.isUpperCase(name.charAt(0))) {
+            name = name.substring(0,1).toUpperCase() + name.substring(1);
+        }
+        try {
+            Method m = object.getClass().getMethod("get" + name);
+            if (m.getReturnType() != Void.TYPE) return m;
+        } catch (NoSuchMethodException nsme) {
+        }
+        try {
+            Method m = object.getClass().getMethod("is" + name);
+            if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class) return m;
+        } catch (NoSuchMethodException nsme) {
+        }
+        return null; 
+    }
+
+    private boolean methodOfNameExists(String name) {
+        for (Method m : object.getClass().getMethods()) {
+            if (m.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * Uses Beans introspection to locate a property or method with name
      * matching the key name. If a method or property is found, it is wrapped
@@ -72,7 +116,7 @@ public class Pojo  {
      * @throws EvaluationException if there was no property nor method nor
      *                             a generic <tt>get</tt> method to invoke.
      */
-    public Object get(String key) {
+    private Object _get(String key) {
         Class<?> clazz = object.getClass();
         Map<Object, Object> classInfo = getClassKeyMap(clazz);
         Object retval = null;
@@ -81,8 +125,14 @@ public class Pojo  {
         try {
             Object fd = classInfo.get(key);
             if (fd != null) {
+                if (key.equals("assignment")) {
+                    System.out.println("KILROY 1");
+                }
                 retval = invokeThroughDescriptor(fd, classInfo);
             } else {
+                if (key.equals("assignment")) {
+                    System.out.println("KILROY 2");
+                }
                 retval = invokeGenericGet(classInfo, key);
             }
             if (retval == null) {
@@ -144,10 +194,20 @@ public class Pojo  {
 
     protected Object invokeGenericGet(Map keyMap, String key) throws IllegalAccessException,
             InvocationTargetException {
+        if (key.equals("assignment")) {
+            System.out.println("KILROY3! " + object.getClass());
+        }
         Method genericGet = (Method) keyMap.get(GENERIC_GET_KEY);
-        if (genericGet == null)
+        if (genericGet == null) {
+            if (key.equals("assignment")) {
+                new Exception().printStackTrace(System.out);
+                System.out.println("KILROY4! " + object.getClass());
+            }
             return null;
-
+        }
+        if (key.equals("assignment")) {
+            System.out.println("KILROY5! " + object.getClass());
+        }
         return invokeMethod(object, genericGet, new Object[] { key });
     }
 

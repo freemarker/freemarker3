@@ -1,6 +1,7 @@
 package freemarker.core.variables;
 
 import static freemarker.core.variables.Constants.JAVA_NULL;
+import static freemarker.core.variables.Constants.NOTHING;
 import static freemarker.core.variables.Wrap.unwrap;
 
 import java.lang.reflect.Method;
@@ -140,6 +141,9 @@ public class JavaMethodCall implements WrappedMethod {
             throw new EvaluationException("Error invoking method " + method, e);
         }
         methodCache.put(getLookupKey(params), method);
+        if (result == null && method.getReturnType() == Void.TYPE) {
+            result = NOTHING;
+        }
         return result;
     }
 
