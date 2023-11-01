@@ -414,6 +414,34 @@ INJECT BreakInstruction :
     }
 }
 
+AssertionInstruction :
+   <_ASSERT>
+   Expression
+   [
+      <COLON>
+      Expression
+   ]
+;
+
+INJECT AssertionInstruction :
+   import freemarker.core.Environment;
+   import freemarker.core.StopException;
+   extends TemplateElement;
+{
+    public void execute(Environment env) {
+        Expression exp = (Expression) get(1);
+        if (!exp.isTrue(env)) {
+            String message = "Assertion failed. Expression " + exp + " was false.";
+            if (size() == 4) {
+                String extraInfo = ((Expression)get(3)).getStringValue(env);
+                message += " ";
+                message += extraInfo;
+            }
+            throw new StopException(env, message);
+        }
+    }
+}
+
 /**
  * Production used to jump out of a macro.
  */

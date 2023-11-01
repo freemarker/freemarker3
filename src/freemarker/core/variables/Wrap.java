@@ -3,15 +3,12 @@ package freemarker.core.variables;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
-
-import static freemarker.core.variables.Constants.JAVA_NULL;
-
 import java.lang.reflect.Array;
-
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.variables.scope.Scope;
 import freemarker.template.TemplateException;
+import static freemarker.core.variables.Constants.JAVA_NULL;
 
 public class Wrap {
 
@@ -231,8 +228,8 @@ public class Wrap {
             return object.toString(); // REVISIT
         }
         if (object instanceof List) {
-            //return object;
-            return new Pojo(object);
+            return object;
+            //return new Pojo(object);
         }
         if (object instanceof Map) {
             return object;
@@ -292,6 +289,9 @@ public class Wrap {
             return null;
         }
         object = unwrap(object);
+        if (object == null) {
+            return null;
+        }
         if (desiredType.isInstance(object)) {
             return object;
         }

@@ -39,7 +39,7 @@ INJECT LEXER_CLASS :
     String templateName;
 
     private static EnumSet<TokenType> directiveNames = EnumSet.of(
-        _ATTEMPT, _RECOVER, IF, ELSE_IF, LIST, FOREACH, SWITCH,
+        _ATTEMPT, _ASSERT, _RECOVER, IF, ELSE_IF, LIST, FOREACH, SWITCH,
         CASE, ASSIGN, GLOBALASSIGN, LOCALASSIGN, SET, _INCLUDE,
         IMPORT, FUNCTION, _MACRO, VISIT, STOP, RETURN, SETTING, 
         EMBED, VAR, ELSE, BREAK, FLUSH, TRIM, LTRIM, RTRIM,
@@ -79,6 +79,7 @@ INJECT LEXER_CLASS :
 
     private TokenType directiveTypeFromString(String name) {
         switch(name) {
+            case "#assert" : return _ASSERT;
             case "#assign" : return ASSIGN;
             case "#attempt" : return _ATTEMPT;
             case "#break" : return BREAK;
@@ -253,6 +254,8 @@ TOKEN#Text :
     <#CLOSE_TAG2 : (<BLANK>)* ("/")? (">" | "]")>
     |
     <ASSIGN : "assign">
+    |
+    <_ASSERT : "assert">
     |
     <_ATTEMPT : "attempt" <CLOSE_TAG1>> 
     |
