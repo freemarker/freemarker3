@@ -1237,9 +1237,6 @@ INJECT ArgsList :
 	
 	public static ParameterList getParameterList(Object target) {
             String keyName = target.getClass().getName();
-            if (target instanceof SimpleMethodModel) {
-                keyName = target.toString();
-            }
             ParameterList result = parameterListCache.get(keyName);
             if(result == NO_PARAM_LIST) {
                 return null;
@@ -1277,10 +1274,7 @@ INJECT ArgsList :
 	private static Parameters getAnnotatedParameters(Object target) {
 		Parameters params = null;
 		Method keyMethod = null;
-        if (target instanceof SimpleMethodModel) {
-            params = ((SimpleMethodModel) target).getParametersAnnotation();
-        }
-		else if (target instanceof WrappedMethod) {
+		if (target instanceof WrappedMethod) {
 			try {
 				keyMethod = target.getClass().getMethod("exec", new Class[] {List.class});
 			} catch (Exception e) {
