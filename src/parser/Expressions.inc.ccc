@@ -794,7 +794,7 @@ import java.util.HashMap;
         knownBuiltins.put("pojo", new pojoBI());
         knownBuiltins.put("string", new stringBI());
         knownBuiltins.put("eval", new evalBI());
-        knownBuiltins.put("new", new newBI());
+//        knownBuiltins.put("new", new newBI());
         knownBuiltins.put("interpret", new interpretBI());
         knownBuiltins.put("resolve", new resolveBI());
         NumericalCast numericalCast = new NumericalCast();

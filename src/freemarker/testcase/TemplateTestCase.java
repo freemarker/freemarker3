@@ -128,6 +128,10 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("resourceBundle", new ResourceBundleModel(ResourceBundle.getBundle("freemarker.testcase.models.BeansTestResources")));
             dataModel.put("date", new GregorianCalendar(1974, 10, 14).getTime());
         }
+
+        else if (testName.equals("compress")) {
+            dataModel.put("compression", new freemarker.template.utility.StandardCompress());
+        }
         
         else if (testName.equals("boolean")) {
             dataModel.put( "boolean1", false);
@@ -149,6 +153,15 @@ public class TemplateTestCase extends TestCase {
             cal.setTimeZone(TimeZone.getTimeZone("GMT"));
             dataModel.put("date", new DateModel(cal.getTime(), WrappedDate.DATETIME));
             dataModel.put("unknownDate", new DateModel(cal.getTime(), WrappedDate.UNKNOWN));
+        }
+
+        else if (testName.equals("number-literal")) {
+            dataModel.put("testMethod", new SimpleTestMethod());
+        }
+
+        else if (testName.equals("transforms")) {
+            dataModel.put("htmlEscape", new freemarker.template.utility.HtmlEscape());
+            dataModel.put("utility", new TransformHashWrapper());
         }
     
         else if (testName.equals("number-format")) {

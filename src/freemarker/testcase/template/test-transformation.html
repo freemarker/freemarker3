@@ -1,6 +1,6 @@
 <#ftl strict_vars="false">
-<#assign htmlEscape = "freemarker.template.utility.HtmlEscape"?new(),
-         utility = "freemarker.testcase.models.TransformHashWrapper"?new()>
+<#-- assign htmlEscape = "freemarker.template.utility.HtmlEscape"?new(),
+         utility = "freemarker.testcase.models.TransformHashWrapper"?new() -->
 <html>
 <head>
 <title>FreeMarker: Transformation Test</title>
@@ -31,7 +31,8 @@
 <p    >This tests the compress transformation</p >
 </@html_escape>
 </@utility.compress>
-<#assign html_transform = "freemarker.template.utility.HtmlEscape"?new() />
+<#--assign html_transform = "freemarker.template.utility.HtmlEscape"?new() /-->
+<#assign html_transform = htmlEscape />
 <@html_transform><#--Using the transform via an instantiation -->
 <@compress>
 <p    >This tests the compress transformation</p >

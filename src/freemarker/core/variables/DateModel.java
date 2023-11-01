@@ -38,7 +38,7 @@ public class DateModel extends Pojo implements WrappedDate
     }
 
     public Date getAsDate() {
-        return (Date)object;
+        return (Date)getWrappedObject();
     }
 
     public int getDateType() {

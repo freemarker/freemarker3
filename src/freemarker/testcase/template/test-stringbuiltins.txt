@@ -28,10 +28,10 @@ word_list:
 interpret: <@canufeelitbabe/>
 <#setting locale="es_ES">number: ${"-123.45"?number + 1.1}
 
-${"freemarker.testcase.models.NewTestModel"?new()}
+[#-- ${"freemarker.testcase.models.NewTestModel"?new()}
 ${"freemarker.testcase.models.NewTestModel"?new(1)}
 ${"freemarker.testcase.models.NewTestModel"?new("xxx")}
-${"freemarker.testcase.models.NewTestModel"?new("xxx", "yyy")}
+${"freemarker.testcase.models.NewTestModel"?new("xxx", "yyy")} --]
 
 <#assign x = "In the beginning, God created the Heavens and The Earth.">
 

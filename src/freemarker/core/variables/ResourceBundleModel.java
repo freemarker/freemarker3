@@ -44,17 +44,6 @@ public class ResourceBundleModel extends Pojo implements WrappedMethod {
     }
 
     /**
-     * Overridden to invoke the getObject method of the resource bundle.
-     */
-    protected Object invokeGenericGet(Map keyMap, String key) {
-        try {
-            return wrap(((ResourceBundle) object).getObject(key));
-        } catch (MissingResourceException e) {
-            throw new EvaluationException("No such key: " + key);
-        }
-    }
-
-    /**
      * Takes first argument as a resource key, looks up a string in resource bundle
      * with this key, then applies a MessageFormat.format on the string with the
      * rest of the arguments. The created MessageFormats are cached for later reuse.
@@ -68,7 +57,7 @@ public class ResourceBundleModel extends Pojo implements WrappedMethod {
         String key = asString(it.next());
         try {
             if (!it.hasNext()) {
-                return wrap(((ResourceBundle) object).getObject(key));
+                return wrap((getWrappedObject()).getObject(key));
             }
             // Copy remaining arguments into an Object[]
             int args = arguments.size() - 1;
@@ -112,8 +101,8 @@ public class ResourceBundleModel extends Pojo implements WrappedMethod {
         {
             format = formats.get(key);
             if (format == null) {
-                format = new MessageFormat(((ResourceBundle) object).getString(key));
-                format.setLocale(getBundle().getLocale());
+                format = new MessageFormat(getWrappedObject().getString(key));
+                format.setLocale(getWrappedObject().getLocale());
                 formats.put(key, format);
             }
         }
@@ -125,7 +114,7 @@ public class ResourceBundleModel extends Pojo implements WrappedMethod {
         }
     }
 
-    public ResourceBundle getBundle() {
-        return (ResourceBundle) object;
+    public ResourceBundle getWrappedObject() {
+        return (ResourceBundle) super.getWrappedObject();
     }
 }
