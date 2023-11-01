@@ -20,7 +20,6 @@ EXTRA_TOKENS=DIRECTIVE_END;
  */
 
 INJECT LEXER_CLASS : 
-   import static freemarker.template.utility.StringUtil.isFTLIdentifier;
 {
     /**
     Keeps track of how deeply nested

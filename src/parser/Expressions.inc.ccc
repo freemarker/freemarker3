@@ -72,10 +72,10 @@ INJECT Expression :
 
     default boolean isTrue(Environment env) {
         Object referent = evaluate(env);
+        assertIsDefined(referent, env);
         if (referent == JAVA_NULL) {
             return false;
         }
-        assertNonNull(referent, env);
         if (isBoolean(referent)) {
             return asBoolean(referent);
         }

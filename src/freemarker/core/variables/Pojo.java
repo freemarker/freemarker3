@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static freemarker.core.variables.Wrap.*;
 
@@ -13,8 +14,10 @@ import static freemarker.core.variables.Wrap.*;
 public class Pojo  {
     private Object object;
 
+    private static Map<String,Method> getSetterCache = new ConcurrentHashMap<>();
+
     public Pojo(Object object) {
-        assert !(object instanceof WrappedVariable || object instanceof Pojo || object instanceof Number);
+        assert !(object instanceof WrappedVariable || object instanceof Pojo);
         this.object = object;
     }
 
@@ -32,20 +35,33 @@ public class Pojo  {
     }
 
     private Method getGetter(String name) {
-        if (!Character.isUpperCase(name.charAt(0))) {
-            name = name.substring(0,1).toUpperCase() + name.substring(1);
+        Method cachedMethod = getSetterCache.get(getLookupKey(name));
+        if (cachedMethod != null) {
+            return cachedMethod;
         }
+        String methodName = "get" + name.substring(0,1).toUpperCase() + name.substring(1);
         try {
-            Method m = object.getClass().getMethod("get" + name);
-            if (m.getReturnType() != Void.TYPE) return m;
+            Method m = object.getClass().getMethod(methodName);
+            if (m.getReturnType() != Void.TYPE) {
+                getSetterCache.put(getLookupKey(name), m);
+                return m;
+            }
         } catch (NoSuchMethodException nsme) {
         }
+        methodName = methodName.replaceFirst("get", "is");
         try {
-            Method m = object.getClass().getMethod("is" + name);
-            if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class) return m;
+            Method m = object.getClass().getMethod(methodName);
+            if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class) {
+                getSetterCache.put(getLookupKey(name), m);
+                return m;
+            }
         } catch (NoSuchMethodException nsme) {
         }
         return null; 
+    }
+
+    private String getLookupKey(String propertyName) {
+        return object.getClass().getName() + "#" + propertyName;
     }
 
     private boolean methodOfNameExists(String name) {
