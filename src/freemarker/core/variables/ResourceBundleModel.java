@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -36,7 +35,7 @@ import static freemarker.core.variables.Wrap.unwrap;
  * @version $Id: ResourceBundleModel.java,v 1.22 2004/01/06 17:06:42 szegedia
  *          Exp $
  */
-public class ResourceBundleModel extends Pojo implements WrappedMethod {
+public class ResourceBundleModel extends Pojo implements WrappedMethod, WrappedHash {
     private Hashtable<String, MessageFormat> formats = null;
 
     public ResourceBundleModel(ResourceBundle bundle) {
@@ -72,6 +71,10 @@ public class ResourceBundleModel extends Pojo implements WrappedMethod {
         } catch (Exception e) {
             throw new EvaluationException(e.getMessage());
         }
+    }
+
+    public Object get(String key) {
+        return getWrappedObject().getObject(key);
     }
 
     /**

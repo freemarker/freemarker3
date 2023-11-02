@@ -42,7 +42,7 @@ INJECT Interpolation :
 
     public String getDescription() {
         return this.getSource()  +
-        (escapedExpression == null 
+        (getExpression() == escapedExpression 
             ? "" 
             : " escaped ${" + escapedExpression.getDescription() + "}");
     }

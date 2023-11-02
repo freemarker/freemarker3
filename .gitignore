@@ -10,6 +10,7 @@ src/freemarker/core/parser/ParseException.java
 src/freemarker/core/parser/NonTerminalCall.java
 src/freemarker/core/parser/TokenSource.java
 src/freemarker/core/nodes/generated
+src/freemarker/xml
 src/freemarker/testcase/reference/*.out
 *.class
 *~

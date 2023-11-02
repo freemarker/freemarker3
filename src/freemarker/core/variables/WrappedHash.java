@@ -17,8 +17,9 @@ public interface WrappedHash extends WrappedVariable {
      */
     Object get(String key);
 
-    boolean isEmpty();
-
+    default boolean isEmpty() {
+        return false;
+    }
 
    /**
      * @return the number of key/value mappings in the hash.

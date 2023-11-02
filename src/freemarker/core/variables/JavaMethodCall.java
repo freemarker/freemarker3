@@ -2,8 +2,10 @@ package freemarker.core.variables;
 
 import static freemarker.core.variables.Constants.JAVA_NULL;
 import static freemarker.core.variables.Constants.NOTHING;
+import static freemarker.core.variables.Wrap.CAN_NOT_UNWRAP;
 import static freemarker.core.variables.Wrap.unwrap;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.ArrayList;
@@ -65,7 +67,7 @@ public class JavaMethodCall implements WrappedMethod {
         if (params == null) params = new ArrayList<>();
         if (!isMethodOverloaded())  {
             // If there is only one method of this name, just try to
-            // call it and that's that!
+            // call it and that's that! This is the percentage case, after all.
             return invokeMethod(possibleMethods.get(0), params);
         }
         Method method = methodCache.get(getLookupKey(params));
@@ -91,49 +93,81 @@ public class JavaMethodCall implements WrappedMethod {
                 return invokeMethod(method, params);
             }
         }
-        int numParams = params == null ? 0 : params.size();
-        List<Method> rightParamNumberMethods = new ArrayList<>();
+        Method compatibleMethod = null;
+        boolean hasVarArgs = false;
         for (Method m : possibleMethods) {
-            // TODO. Deal with varargs!
-            if (m.getParameterTypes().length == numParams) {
-                rightParamNumberMethods.add(m);
+            if (!m.isVarArgs() && isCompatibleMethod(m, params)) {
+                compatibleMethod = m;
+                break;
+            }
+            if (m.isVarArgs()) {
+                hasVarArgs = true;
             }
         }
-        if (rightParamNumberMethods.isEmpty()) {
-            throw new EvaluationException("Wrong number of parameters");
-        }
-        if (rightParamNumberMethods.size() == 1) {
-            // If there is only one method with the right number of parameters,
-            // we try that one!
-            return invokeMethod(rightParamNumberMethods.get(0), params);
-        }
-        for (int i = 0; i< rightParamNumberMethods.size() -1; i++) {
-            Method m = rightParamNumberMethods.get(i);
-            try {
-                return invokeMethod(m, params);
-            } catch (EvaluationException e) {}
-        }
-        return invokeMethod(rightParamNumberMethods.get(rightParamNumberMethods.size()-1), params);
-    }
-
-    private Object invokeMethod(Method method, List<Object> params) {
-        int numParams = params == null ? 0 : params.size();
-        Class<?>[] paramTypes = method.getParameterTypes();
-        if (paramTypes.length != numParams) {
-            throw new EvaluationException("Wrong number of parameters");
-        }
-        Object[] args = null;
-        if (params != null && !params.isEmpty()) {
-            args = new Object[params.size()];
-            for (int i = 0; i< numParams; i++) {
-                Object param = params.get(i);
-                Class<?> paramType = paramTypes[i];
-                args[i] = Wrap.unwrap(param, paramType);
-                if (args[i] == Wrap.CAN_NOT_UNWRAP) {
-                    throw new EvaluationException("Wrong parameter type: " + param.getClass());
+        if (hasVarArgs && compatibleMethod == null) {
+            for (Method m : possibleMethods) {
+                if (m.isVarArgs() && isCompatibleMethod(m, params)) {
+                    compatibleMethod = m;
+                    break;
                 }
             }
         }
+        if (compatibleMethod == null) {
+            throw new EvaluationException("Cannot invoke method " + methodName + " here.");
+        }
+        return invokeMethod(compatibleMethod, params);
+    }
+
+    private boolean isCompatibleMethod(Method method, List<Object> params) {
+        Class<?>[] paramTypes = method.getParameterTypes();
+        if (!method.isVarArgs() && paramTypes.length != params.size()) {
+            return false;
+        } else if (method.isVarArgs() && params.size() < paramTypes.length-1 ) {
+            return false;
+        }
+        int paramTypesToCheck = paramTypes.length;
+        if (method.isVarArgs()) paramTypesToCheck--;
+        for (int i = 0; i< paramTypesToCheck; i++) {
+            Object arg = Wrap.unwrap(params.get(i), paramTypes[i]);
+            if (arg == CAN_NOT_UNWRAP) {
+                return false;
+            }
+        }
+        if (!method.isVarArgs()) return true;
+        Class<?> varArgsType = paramTypes[paramTypes.length-1].getComponentType();
+        for (int i = paramTypes.length-1; i<params.size();i++) {
+            Object arg = Wrap.unwrap(params.get(i), varArgsType);
+            if (arg == CAN_NOT_UNWRAP) return false;
+        }
+        return true;
+    }
+
+    private Object[] unwrapArgsForMethod(Method method, List<Object> params) {
+        Class<?>[] paramTypes = method.getParameterTypes();
+        Object[] args = new Object[paramTypes.length];
+        int numFixedParams = paramTypes.length;
+        if (method.isVarArgs()) {
+            numFixedParams--;
+        }
+        for (int i = 0; i< numFixedParams; i++) {
+            Object param = params.get(i);
+            Class<?> paramType = paramTypes[i];
+            args[i] = Wrap.unwrap(param, paramType);
+        }
+        if (method.isVarArgs()) {
+            Class<?> varArgType = paramTypes[paramTypes.length-1].getComponentType();
+            Object varArgsArray = Array.newInstance(varArgType, params.size() - numFixedParams);
+            for (int i = numFixedParams; i<params.size(); i++) {
+                Object arg = Wrap.unwrap(params.get(i), varArgType);
+                Array.set(varArgsArray, i-numFixedParams, arg);
+            }
+            args[args.length-1] = varArgsArray;
+        }
+        return args;
+    }
+
+    private Object invokeMethod(Method method, List<Object> params) {
+        Object[] args = unwrapArgsForMethod(method, params);
         Object result = null;
         try {
            result =  method.invoke(target, args);

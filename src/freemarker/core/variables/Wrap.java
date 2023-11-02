@@ -290,13 +290,13 @@ public class Wrap {
         }
         object = unwrap(object);
         if (object == null) {
+            if (desiredType.isPrimitive()) {
+                return CAN_NOT_UNWRAP;
+            }
             return null;
         }
         if (desiredType.isInstance(object)) {
             return object;
-        }
-        if (desiredType == String.class) {
-            return object.toString();
         }
         if (desiredType == Boolean.TYPE || desiredType == Boolean.class) {
             if (object instanceof Boolean) {
@@ -334,6 +334,10 @@ public class Wrap {
                 return new BigInteger(num.toString());
             }
         }
+        //if (desiredType == String.class) {
+            // REVISIT
+          //  return object.toString();
+        //}
         if (desiredType == Date.class && object instanceof WrappedDate) {
             // REVISIT
             return ((WrappedDate) object).getAsDate();
