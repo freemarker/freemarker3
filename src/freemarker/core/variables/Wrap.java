@@ -6,6 +6,8 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.variables.scope.Scope;
 import freemarker.template.TemplateException;
+
+import org.w3c.dom.Node;
 import static freemarker.core.variables.Constants.JAVA_NULL;
 
 public class Wrap {
