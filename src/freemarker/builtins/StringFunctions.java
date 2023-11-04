@@ -72,7 +72,6 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         return result;
     }
 
-
     @Override 
     public Object get(Environment env, BuiltInExpression caller, Object model) {
         String string = asString(model);
@@ -116,10 +115,17 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
+    public static class Join extends StringFunctions {
+        @Override
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
+            return new JavaMethodCall(string, "join");
+        }
+    }
+
     public static class Split extends StringFunctions {
         @Override
         public Object apply(String string, Environment env, BuiltInExpression caller) {
-            return new SplitMethod(string);
+            return new JavaMethodCall(string, "split");
         }
     }
 
@@ -242,35 +248,6 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 return string.substring(left);
             } 
             return string.substring(left, right);
-        }
-    }
-
-
-    static class SplitMethod implements WrappedMethod {
-        private String string;
-
-        SplitMethod(String string) {
-            this.string = string;
-        }
-
-        public Object exec(List args) {
-            int numArgs = args.size();
-            if (numArgs < 1 || numArgs >2 ) {
-                throw new EvaluationException(
-                "?replace(...) needs 1 or 2 arguments.");
-            }
-            String splitString = (String) args.get(0);
-            String flags = numArgs >1 ? (String) args.get(1) : "";
-            boolean caseInsensitive = flags.indexOf('i') >=0;
-            boolean useRegexp = flags.indexOf('r') >=0;
-            String[] result = null;
-            if (!useRegexp) {
-                result = StringUtil.split(string, splitString, caseInsensitive);
-            } else {
-                Pattern pattern = getPattern(splitString, flags);
-                result = pattern.split(string);
-            } 
-            return wrap(result);
         }
     }
 

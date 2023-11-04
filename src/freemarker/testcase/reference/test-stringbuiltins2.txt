@@ -36,7 +36,7 @@ true = true
 [abb-dbb] = [abb-dbb]
 [a-=*cd-=*] = [a-=*cd-=*]
 --
-[a][][cd][][] == [a][][cd][][]
+[a][][cd] == [a][][cd][][]
 [][die][maggots][!] == [][die][maggots][!]
 [Die maggots!] == [Die maggots!]
 --

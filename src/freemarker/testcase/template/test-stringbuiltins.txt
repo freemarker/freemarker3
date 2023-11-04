@@ -55,10 +55,9 @@ ${matches?groups[1]}
 ${matches?groups[2]}
 
 <#assign x="foo, bar;baz,     foobar">
-<#list x?split("[,;] ?", "r") as word>
+<#list x?split("[,;] ?") as word>
    ${word}
 </#list>
-
 
 <#assign a = "foo", b="bar", c="(a+b)?upper_case">
 ${c?eval}

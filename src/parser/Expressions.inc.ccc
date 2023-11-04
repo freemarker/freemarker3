@@ -91,11 +91,13 @@ INJECT Expression :
         if (referent instanceof WrappedSequence) {
             return ((WrappedSequence)referent).size() > 0;
         }
-        String msg = "Error " + getLocation()
-                     + "\nExpecting a boolean (true/false) expression here"
-                     + "\nExpression " + this + " does not evaluate to true/false "
-                     + "\nit is an instance of " + referent.getClass().getName();
-        throw new TemplateException(msg, env);
+        if (isNumber(referent)) {
+            String msg = "Error " + getLocation()
+                     + "\nExpression " + this + " is numerical."
+                     + "\nIt does not resolve to a true/false.";
+            throw new EvaluationException(msg);
+        }
+        return referent.toString().length() == 0;
     }
 }
 
@@ -789,12 +791,15 @@ import java.util.HashMap;
 {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();
     {
+//        knownBuiltins.put("new", new newBI());
+//        knownBuiltins.put("sort_by", new SequenceFunctions.SortBy());
+//        knownBuiltins.put("seq_index_of", new SequenceFunctions.IndexOf());
+//        knownBuiltins.put("seq_last_index_of", new SequenceFunctions.LastIndexOf());
         knownBuiltins.put("c", new cBI());
         knownBuiltins.put("size", new sizeBI());
         knownBuiltins.put("pojo", new pojoBI());
         knownBuiltins.put("string", new stringBI());
         knownBuiltins.put("eval", new evalBI());
-//        knownBuiltins.put("new", new newBI());
         knownBuiltins.put("interpret", new interpretBI());
         knownBuiltins.put("resolve", new resolveBI());
         NumericalCast numericalCast = new NumericalCast();
@@ -838,6 +843,7 @@ import java.util.HashMap;
         knownBuiltins.put("is_sequence", typeChecks);
         knownBuiltins.put("is_string", typeChecks);
         knownBuiltins.put("is_transform", typeChecks);
+        knownBuiltins.put("join", new StringFunctions.Join());
         knownBuiltins.put("index_of", new StringFunctions.IndexOf());
         knownBuiltins.put("last_index_of", new StringFunctions.LastIndexOf());
         knownBuiltins.put("contains", new StringFunctions.Contains());
@@ -865,11 +871,8 @@ import java.util.HashMap;
         knownBuiltins.put("last", new SequenceFunctions.Last());
         knownBuiltins.put("reverse", new SequenceFunctions.Reverse());
         knownBuiltins.put("sort", new SequenceFunctions.Sort());
-        knownBuiltins.put("sort_by", new SequenceFunctions.SortBy());
         knownBuiltins.put("chunk", new SequenceFunctions.Chunk());
         knownBuiltins.put("seq_contains", new SequenceContainsBuiltIn());
-        knownBuiltins.put("seq_index_of", new SequenceFunctions.IndexOf());
-        knownBuiltins.put("seq_last_index_of", new SequenceFunctions.LastIndexOf());
         knownBuiltins.put("scope", new MacroBuiltins.Scope());
         knownBuiltins.put("namespace", new MacroBuiltins.Namespace());
         knownBuiltins.put("keys", new HashBuiltin.Keys());

@@ -15,6 +15,7 @@ public class Pojo implements WrappedVariable {
     private Object object;
 
     private static Map<String, Method> getterSetterCache = new ConcurrentHashMap<>();
+    private static Map<String, Boolean> classHasMethodCache = new ConcurrentHashMap<>();
 
     public Pojo(Object object) {
         assert !(object instanceof WrappedVariable) : "The object is already \"wrapped\"!";
@@ -66,11 +67,16 @@ public class Pojo implements WrappedVariable {
     }
 
     private boolean methodOfNameExists(String name) {
+        String lookupKey = getLookupKey(name);
+        Boolean b = classHasMethodCache.get(lookupKey);
+        if (b != null) return b;
         for (Method m : object.getClass().getMethods()) {
             if (m.getName().equals(name)) {
+                classHasMethodCache.put(lookupKey, true);
                 return true;
             }
         }
+        classHasMethodCache.put(lookupKey, false);
         return false;
     }
 

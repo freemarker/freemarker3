@@ -125,99 +125,6 @@ public class StringUtil {
         return s;
     }
 
-    /**
-     *  XML encoding for attributes valies quoted with <tt>"</tt> (not with <tt>'</tt>!).
-     *  Also can be used for HTML attributes that are quoted with <tt>"</tt>.
-     *  @see #XMLEnc(String)
-     */
-    public static String XMLEncQAttr(String s) {
-        int ln = s.length();
-        for (int i = 0; i < ln; i++) {
-            char c = s.charAt(i);
-            if (c == '<' || c == '&' || c == '"') {
-                StringBuilder b =
-                        new StringBuilder(s.substring(0, i));
-                switch (c) {
-                    case '<': b.append("&lt;"); break;
-                    case '&': b.append("&amp;"); break;
-                    case '"': b.append("&quot;"); break;
-                }
-                i++;
-                int next = i;
-                while (i < ln) {
-                    c = s.charAt(i);
-                    if (c == '<' || c == '&' || c == '"') {
-                        b.append(s.substring(next, i));
-                        switch (c) {
-                            case '<': b.append("&lt;"); break;
-                            case '&': b.append("&amp;"); break;
-                            case '"': b.append("&quot;"); break;
-                        }
-                        next = i + 1;
-                    }
-                    i++;
-                }
-                if (next < ln) {
-                    b.append(s.substring(next));
-                }
-                s = b.toString();
-                break;
-            } // if c ==
-        } // for
-        return s;
-    }
-
-    /**
-     *  XML encoding without replacing apostrophes and quotation marks and
-     *  greater-thans (except in {@code ]]>}).
-     *  @see #XMLEnc(String)
-     */
-    public static String XMLEncNQG(String s) {
-        int ln = s.length();
-        for (int i = 0; i < ln; i++) {
-            char c = s.charAt(i);
-            if (c == '<'
-                    || (c == '>' && i > 1
-                            && s.charAt(i - 1) == ']'
-                            && s.charAt(i - 2) == ']')
-                    || c == '&') {
-                StringBuffer b =
-                        new StringBuffer(s.substring(0, i));
-                switch (c) {
-                    case '<': b.append("&lt;"); break;
-                    case '>': b.append("&gt;"); break;
-                    case '&': b.append("&amp;"); break;
-                    default: throw new RuntimeException("Bug: unexpected char");
-                }
-                i++;
-                int next = i;
-                while (i < ln) {
-                    c = s.charAt(i);
-                    if (c == '<'
-                            || (c == '>' && i > 1
-                                    && s.charAt(i - 1) == ']'
-                                    && s.charAt(i - 2) == ']')
-                            || c == '&') {
-                        b.append(s.substring(next, i));
-                        switch (c) {
-                            case '<': b.append("&lt;"); break;
-                            case '>': b.append("&gt;"); break;
-                            case '&': b.append("&amp;"); break;
-                            default: throw new RuntimeException("Bug: unexpected char");
-                        }
-                        next = i + 1;
-                    }
-                    i++;
-                }
-                if (next < ln) {
-                    b.append(s.substring(next));
-                }
-                s = b.toString();
-                break;
-            } // if c ==
-        } // for
-        return s;
-    }
     
     /**
      *  Rich Text Format encoding (does not replace line breaks).
@@ -345,59 +252,6 @@ public class StringUtil {
         return escapes;
     }
 
-    public static String FTLStringLiteralEnc(String s)
-    {
-        StringBuilder buf = null;
-        int l = s.length();
-        int el = ESCAPES.length;
-        for(int i = 0; i < l; i++)
-        {
-            char c = s.charAt(i);
-            if(c < el)
-            {
-                char escape = ESCAPES[c];
-                switch(escape)
-                {
-                    case 0:
-                    {
-                        if (buf != null) {
-                            buf.append(c);
-                        }
-                        break;
-                    }
-                    case 1:
-                    {
-                        if (buf == null) {
-                            buf = new StringBuilder(s.length() + 3);
-                            buf.append(s.substring(0, i));
-                        }
-                        // hex encoding for characters below 0x20
-                        // that have no other escape representation
-                        buf.append("\\x00");
-                        int c2 = (c >> 4) & 0x0F;
-                        c = (char) (c & 0x0F);
-                        buf.append((char) (c2 < 10 ? c2 + '0' : c2 - 10 + 'A'));
-                        buf.append((char) (c < 10 ? c + '0' : c - 10 + 'A'));
-                        break;
-                    }
-                    default:
-                    {
-                        if (buf == null) {
-                            buf = new StringBuilder(s.length() + 2);
-                            buf.append(s.substring(0, i));
-                        }
-                        buf.append('\\');
-                        buf.append(escape);
-                    }
-                }
-            } else {
-                if (buf != null) {
-                    buf.append(c);
-                }
-            }
-        }
-        return buf == null ? s : buf.toString();
-    }
 
     /**
      * FTL string literal decoding.
@@ -572,39 +426,6 @@ public class StringUtil {
         throw new IllegalArgumentException("Illegal boolean value: " + s);
     }
 
-    /**
-     * Splits a string at the specified string.
-     */
-    public static String[] split(String s, String sep, boolean caseInsensitive) {
-        String splitString = caseInsensitive ? sep.toLowerCase() : sep;
-        String input = caseInsensitive ? s.toLowerCase() : s;
-        int i, b, e;
-        int cnt;
-        String res[];
-        int ln = s.length();
-        int sln = sep.length();
-
-        if (sln == 0) throw new IllegalArgumentException(
-                "The separator string has 0 length");
-
-        i = 0;
-        cnt = 1;
-        while ((i = input.indexOf(splitString, i)) != -1) {
-            cnt++;
-            i += sln;
-        }
-        res = new String[cnt];
-
-        i = 0;
-        b = 0;
-        while (b <= ln) {
-            e = input.indexOf(splitString, b);
-            if (e == -1) e = ln;
-            res[i++] = s.substring(b, e);
-            b = e + sln;
-        }
-        return res;
-    }
 
     /**
      * Replaces all occurrences of a sub-string in a string.
@@ -1002,48 +823,6 @@ public class StringUtil {
     }
     
     /**
-     * @return whether the name is a valid XML tagname.
-     * (This routine might only be 99% accurate. Should maybe REVISIT) 
-     */
-    static public boolean isXMLID(String name) {
-        for (int i=0; i<name.length(); i++) {
-            char c = name.charAt(i);
-            if (i==0) {
-                if (c== '-' || c=='.' || Character.isDigit(c))
-                    return false;
-            }
-            if (!Character.isLetterOrDigit(c) && c != ':' && c != '_' && c != '-' && c!='.') {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    /**
-     * @return whether the qname matches the combination of nodeName, nsURI, and environment prefix settings. 
-     */
-    
-    static public boolean matchesName(String qname, String nodeName, String nsURI, Environment env) {
-        String defaultNS = env.getDefaultNS();
-        if ((defaultNS != null) && defaultNS.equals(nsURI)) {
-            return qname.equals(nodeName) 
-               || qname.equals(Template.DEFAULT_NAMESPACE_PREFIX + ":" + nodeName); 
-        }
-        if ("".equals(nsURI)) {
-            if (defaultNS != null) {
-                return qname.equals(Template.NO_NS_PREFIX + ":" + nodeName);
-            } else {
-                return qname.equals(nodeName) || qname.equals(Template.NO_NS_PREFIX + ":" + nodeName);
-            }
-        }
-        String prefix = env.getPrefixForNamespace(nsURI);
-        if (prefix == null) {
-            return false; // Is this the right thing here???
-        }
-        return qname.equals(prefix + ":" + nodeName);
-    }
-    
-    /**
      * Pads the string at the left with spaces until it reaches the desired
      * length. If the string is longer than this length, then it returns the
      * unchanged string. 
@@ -1207,37 +986,6 @@ public class StringUtil {
         }
         
         return res.toString();
-    }
-    
-    /**
-     * Is this a valid identifier in FTL?
-     */
-    
-    public static boolean isFTLIdentifier(String s) {
-    	char[] chars = s.toCharArray();
-    	int size = chars.length;
-    	if (size == 0) {
-    		return false;
-    	}
-    	else {
-    		char firstChar = chars[0];
-    		if (firstChar != '_' && firstChar != '@' && !Character.isLetter(firstChar)) return false;
-    		for (int i=1; i<size; i++) {
-    			char c = chars[i];
-    			if (c != '_' && !Character.isLetterOrDigit(c)) return false;
-    		}
-        	return true;
-    	}
-    }
-    
-    /**
-     * Takes a string and puts it in quotes if it cannot
-     * be used directly as an identifier in FTL.
-     */
-    
-    public static String quoteStringIfNecessary(String s) {
-    	if (isFTLIdentifier(s)) return s;
-    	return "\"" + FTLStringLiteralEnc(s) + "\""; 
     }
 }
 
