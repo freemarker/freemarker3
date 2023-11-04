@@ -12,45 +12,38 @@ import freemarker.template.TemplateException;
 /**
  * Implementations of builtins for standard functions
  * that operate on sequences
- * @version $Id: $
  */
 public class DateTime extends ExpressionEvaluatingBuiltIn {
 
     private final int dateType;
-    
+
     public DateTime(int dateType) {
         this.dateType = dateType;
     }
 
-    public Object get(Environment env, BuiltInExpression caller, 
-            Object model) 
-    {
+    public Object get(Environment env, BuiltInExpression caller,
+            Object model) {
         if (model instanceof WrappedDate) {
             WrappedDate dmodel = (WrappedDate) model;
             int dtype = dmodel.getDateType();
             // Any date model can be coerced into its own type
-            if(dateType == dtype) {
+            if (dateType == dtype) {
                 return dmodel;
             }
             // unknown and datetime can be coerced into any date type
-            if(dtype == WrappedDate.UNKNOWN || dtype == WrappedDate.DATETIME) {
+            if (dtype == WrappedDate.UNKNOWN || dtype == WrappedDate.DATETIME) {
                 return new DateModel(dmodel.getAsDate(), dateType);
             }
             throw new TemplateException(
                     "Cannot convert " + WrappedDate.TYPE_NAMES.get(dtype)
-                    + " into " + WrappedDate.TYPE_NAMES.get(dateType), env);
-        }
-        else {
-            return new DateParser(model.toString(), dateType, caller,  env);
+                            + " into " + WrappedDate.TYPE_NAMES.get(dateType),
+                    env);
+        } else {
+            return new DateParser(model.toString(), dateType, caller, env);
         }
     }
 
-    static class DateParser
-    implements
-    WrappedDate,
-    WrappedMethod,
-    WrappedHash
-    {
+    static class DateParser implements WrappedDate, WrappedMethod, WrappedHash {
         private final String text;
         private final Environment env;
         private final DateFormat defaultFormat;
@@ -58,8 +51,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
         private int dateType;
         private Date cachedValue;
 
-        DateParser(String text, int dateType, BuiltInExpression caller, Environment env)
-        {
+        DateParser(String text, int dateType, BuiltInExpression caller, Environment env) {
             this.text = text;
             this.env = env;
             this.caller = caller;
@@ -68,7 +60,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
         }
 
         public Date getAsDate() {
-            if(cachedValue == null) {
+            if (cachedValue == null) {
                 cachedValue = parse(defaultFormat);
             }
             return cachedValue;
@@ -84,8 +76,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
                     dateType);
         }
 
-        public Object exec(List arguments)
-        {
+        public Object exec(List arguments) {
             if (arguments.size() != 1) {
                 throw new EvaluationException(
                         "string?" + caller.getName() + "(...) requires exactly 1 argument.");
@@ -93,19 +84,12 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
             return get((String) arguments.get(0));
         }
 
-        public boolean isEmpty()
-        {
-            return false;
-        }
-
-        private Date parse(DateFormat df) 
-        {
+        private Date parse(DateFormat df) {
             try {
                 return df.parse(text);
-            }
-            catch(java.text.ParseException e) {
+            } catch (java.text.ParseException e) {
                 String mess = "Error: " + caller.getLocation()
-                + "\nExpecting a date here, found: " + text;
+                        + "\nExpecting a date here, found: " + text;
                 throw new EvaluationException(mess);
             }
         }

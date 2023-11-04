@@ -8,8 +8,6 @@ import freemarker.core.nodes.generated.IteratorBlock;
 import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.TemplateNode;
 
-import freemarker.template.TemplateException;
-
 import static freemarker.core.variables.Wrap.isIterable;
 import static freemarker.core.variables.Wrap.asIterator;
 import static freemarker.core.variables.Wrap.wrap;
@@ -29,7 +27,7 @@ public class LoopContext extends BlockScope {
         this.list = list;
     }
     
-    public void runLoop() throws TemplateException, IOException {
+    public void runLoop() throws IOException {
     	IteratorBlock iteratorBlock = (IteratorBlock) block;
         TemplateElement nestedBlock = iteratorBlock.firstChildOfType(TemplateElement.class);
     	Environment env = getEnvironment();
@@ -44,9 +42,7 @@ public class LoopContext extends BlockScope {
                 //put(iteratorBlock.getIndexName(), loopVar);
                 put(iteratorBlock.getIndexName() + "_has_next", hasNext);
                 put(iteratorBlock.getIndexName() + "_index", index);
-                if (nestedBlock != null) {
-                    env.render(nestedBlock);
-                }
+                env.render(nestedBlock);
                 index++;
             }
         }

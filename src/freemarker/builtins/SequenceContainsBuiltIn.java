@@ -29,10 +29,10 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
 
     static class SequenceContainsFunction implements WrappedMethod {
         final WrappedSequence sequence;
-        final Iterable collection;
+        final Iterable<Object> collection;
         SequenceContainsFunction(Object seqModel) {
             if (seqModel instanceof Iterable) {
-                collection = (Iterable) seqModel;
+                collection = (Iterable<Object>) seqModel;
                 sequence = null;
             }
             else if (seqModel instanceof WrappedSequence) {
@@ -44,7 +44,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public Boolean exec(List args) {
+        public Boolean exec(List<Object> args) {
             if (args.size() != 1) {
                 throw new EvaluationException("Expecting exactly one argument for ?seq_contains(...)");
             }

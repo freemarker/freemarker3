@@ -1,7 +1,5 @@
 package freemarker.core.variables;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.*;
 import java.lang.reflect.Array;
 import freemarker.core.Environment;
@@ -12,14 +10,13 @@ import static freemarker.core.variables.Constants.JAVA_NULL;
 
 public class Wrap {
 
-    public static final Object CAN_NOT_UNWRAP = new Object();
     private static int defaultDateType = WrappedDate.UNKNOWN;
 
     private Wrap() {}
 
     public static boolean isMap(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
+        if (obj instanceof WrappedVariable) {
+            obj = ((WrappedVariable) obj).getWrappedObject();
         }
         return obj instanceof Map;
     }
@@ -215,11 +212,11 @@ public class Wrap {
             return new Pojo(object);
         }
         if (object instanceof WrappedVariable
+                || object instanceof String
                 || object instanceof Pojo
                 || object instanceof Scope
                 || object instanceof Boolean
                 || object instanceof Number
-                || object instanceof String
                 || object instanceof Iterator
                 || object instanceof Enumeration) {
             return object;
@@ -278,71 +275,13 @@ public class Wrap {
         if (object == Constants.JAVA_NULL) {
             return null;
         }
-        if (object instanceof Pojo) {
-            return ((Pojo) object).getWrappedObject();
+        if (object instanceof WrappedVariable) {
+            Object unwrapped = ((WrappedVariable) object).getWrappedObject();
+            if (unwrapped !=null) {
+                return unwrapped;
+            }
         }
         return object;
-    }
-
-    public static Object unwrap(Object object, Class<?> desiredType) {
-        if (object == null) {
-            return null;
-        }
-        object = unwrap(object);
-        if (object == null) {
-            if (desiredType.isPrimitive()) {
-                return CAN_NOT_UNWRAP;
-            }
-            return null;
-        }
-        if (desiredType.isInstance(object)) {
-            return object;
-        }
-        if (desiredType == Boolean.TYPE || desiredType == Boolean.class) {
-            if (object instanceof Boolean) {
-                return (Boolean) object;
-            }
-            if (object instanceof WrappedBoolean) {
-                return ((WrappedBoolean) object).getAsBoolean() ? Boolean.TRUE : Boolean.FALSE;
-            }
-            return CAN_NOT_UNWRAP;
-        }
-        if (object instanceof Number) {
-            Number num = (Number) object;
-            if (desiredType == Integer.class || desiredType == Integer.TYPE) {
-                return num.intValue();
-            }
-            if (desiredType == Long.class || desiredType == Long.TYPE) {
-                return num.longValue();
-            }
-            if (desiredType == Short.class || desiredType == Short.TYPE) {
-                return num.shortValue();
-            }
-            if (desiredType == Byte.class || desiredType == Byte.TYPE) {
-                return num.byteValue();
-            }
-            if (desiredType == Float.class || desiredType == Float.TYPE) {
-                return num.floatValue();
-            }
-            if (desiredType == Double.class || desiredType == Double.TYPE) {
-                return num.doubleValue();
-            }
-            if (desiredType == BigDecimal.class) {
-                return new BigDecimal(num.toString());
-            }
-            if (desiredType == BigInteger.class) {
-                return new BigInteger(num.toString());
-            }
-        }
-        //if (desiredType == String.class) {
-            // REVISIT
-          //  return object.toString();
-        //}
-        if (desiredType == Date.class && object instanceof WrappedDate) {
-            // REVISIT
-            return ((WrappedDate) object).getAsDate();
-        }
-        return CAN_NOT_UNWRAP;
     }
 
     static public Date getDate(WrappedDate model, Expression expr, Environment env)

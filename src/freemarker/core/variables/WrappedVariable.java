@@ -10,5 +10,7 @@ package freemarker.core.variables;
  *
  */
 public interface WrappedVariable {
-    //Object getWrappedObject();
+    default Object getWrappedObject() {
+        return null;
+    };
 }

@@ -996,11 +996,13 @@ INJECT MethodCall :
         if (value instanceof WrappedMethod) {
             WrappedMethod targetMethod = (WrappedMethod)value;
             ArgsList args = getArgs();
-            List argumentStrings = new ArrayList();
+            List<Object> argumentList;
             if (args !=null) {
-                argumentStrings = args.getParameterSequence(targetMethod, env);
+                argumentList = args.getParameterSequence(targetMethod, env);
+            } else {
+                argumentList = new ArrayList<>();
             }
-            Object result = targetMethod.exec(argumentStrings);
+            Object result = targetMethod.exec(argumentList);
             return wrap(result);
         }
         else if (value instanceof Macro) {

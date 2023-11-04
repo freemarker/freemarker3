@@ -7,9 +7,10 @@ import java.util.Date;
  * Beside acting as a {@link WrappedDate}, you can call all Java methods
  * on these objects as well.
  */
-public class DateModel extends Pojo implements WrappedDate
+public class DateModel implements WrappedDate
 {
     private int type;
+    private Date date;
     
     /**
      * Creates a new model that wraps the specified date object.
@@ -17,7 +18,7 @@ public class DateModel extends Pojo implements WrappedDate
      */
     public DateModel(Date date)
     {
-        super(date);
+        this.date = date;
         if(date instanceof java.sql.Date) {
             type = DATE;
         }
@@ -43,5 +44,9 @@ public class DateModel extends Pojo implements WrappedDate
 
     public int getDateType() {
         return type;
+    }
+
+    public Date getWrappedObject() {
+        return date;
     }
 }

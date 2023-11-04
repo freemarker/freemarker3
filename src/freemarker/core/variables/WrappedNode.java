@@ -44,7 +44,7 @@ public interface WrappedNode extends WrappedVariable {
      * trees could return whatever is appropriate for that application. It
      * can be null, if you don't want to use node-types.
      */
-    String getNodeType();
+    default String getNodeType() {return null;}
     
     
     /**
@@ -53,5 +53,5 @@ public interface WrappedNode extends WrappedVariable {
      * not XML-related, it will almost certainly be null. Even 
      * for XML nodes, this will often be null.
      */
-    String getNodeNamespace();
+    default String getNodeNamespace() {return null;};
 }
