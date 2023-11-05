@@ -55,7 +55,7 @@ public class BeanTestClass extends BeanTestSuperclass implements BeanTestInterfa
          * types of the current spec" rule when the varArgs(String) method
          * is processed.
          */
-        throw new AssertionFailedError("Not supposed to be called");
+        throw new AssertionFailedError("Not supposed to be called 1");
     }
 
     public String varArgs(String s) {
@@ -64,7 +64,7 @@ public class BeanTestClass extends BeanTestSuperclass implements BeanTestInterfa
          * arglen method as well, so when varArgs(1) is invoked, the method
          * map will be forced to rewrap the last argument.
          */
-        throw new AssertionFailedError("Not supposed to be called");
+        throw new AssertionFailedError("Not supposed to be called 2");
     }
 
     public String moreSpecific(String s) {

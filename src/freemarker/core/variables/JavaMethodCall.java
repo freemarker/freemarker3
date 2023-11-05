@@ -212,18 +212,15 @@ public class JavaMethodCall implements WrappedMethod {
     }
 
     private static Object unwrap(Object object, Class<?> desiredType) {
-        if (object == null) {
-            return null;
+        if (object == null || object == JAVA_NULL || object == NOTHING) {
+            return desiredType.isPrimitive() ? CAN_NOT_UNWRAP : null;
         }
         object = Wrap.unwrap(object);
-        if (object == null) {
-            if (desiredType.isPrimitive()) {
-                return CAN_NOT_UNWRAP;
-            }
-            return null;
-        }
         if (desiredType.isInstance(object)) {
             return object;
+        }
+        if (desiredType == String.class) {// && object instanceof CharSequence) { REVISIT
+            return object.toString();
         }
         if (desiredType == Boolean.TYPE || desiredType == Boolean.class) {
             if (object instanceof Boolean) {
