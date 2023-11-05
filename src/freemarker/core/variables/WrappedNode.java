@@ -11,7 +11,6 @@ package freemarker.core.variables;
  * @since FreeMarker 2.3
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  */
-
 public interface WrappedNode extends WrappedVariable {
     
     /**

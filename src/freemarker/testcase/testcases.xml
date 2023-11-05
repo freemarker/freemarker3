@@ -13,7 +13,6 @@
   <!ELEMENT config EMPTY>
      <!ATTLIST config 
             auto_import CDATA #IMPLIED
-            clear_encoding_map (Y|N) #IMPLIED
             input_encoding CDATA #IMPLIED
             locale CDATA #IMPLIED
             object_wrapper CDATA #IMPLIED
@@ -46,7 +45,6 @@
    <!--testcase name="block-trim" filename="trimblock.ftl"/-->
    <testcase name="boolean" filename="test-boolean.html" />
    <!--testcase name="charset-in-header" filename="test-charsetinheader.html">
-      <config clear_encoding_map="Y"/>
       <config input_encoding="ISO-8859-5"/>
    </testcase-->
    <testcase name="default" filename="test-default.ftl"/>

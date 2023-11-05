@@ -87,24 +87,10 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    public static class StartsWith extends StringFunctions {
-        @Override
-        public Object apply(String string, Environment env, BuiltInExpression caller) {
-            return new StartsOrEndsWithMethod(string, false);
-        }
-    }
-
-    public static class EndsWith extends StringFunctions {
-        @Override
-        public Object apply(String string, Environment env, BuiltInExpression caller) {
-            return new StartsOrEndsWithMethod(string, true);
-        }
-    }
-
     public static class Substring extends StringFunctions {
         @Override
         public Object apply(String string, Environment env, BuiltInExpression caller) {
-            return new SubstringMethod(string);
+            return new JavaMethodCall(string, "substring");
         }
     }
 
@@ -126,6 +112,20 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         @Override
         public Object apply(String string, Environment env, BuiltInExpression caller) {
             return new JavaMethodCall(string, "split");
+        }
+    }
+
+    public static class StartsWith extends StringFunctions {
+        @Override
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
+            return new JavaMethodCall(string, "startsWith");
+        }
+    }
+
+    public static class EndsWith extends StringFunctions {
+        @Override
+        public Object apply(String string, Environment env, BuiltInExpression caller) {
+            return new JavaMethodCall(string, "endsWith");
         }
     }
 
@@ -218,36 +218,6 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 result = firstOnly ? matcher.replaceFirst(second) : matcher.replaceAll(second);
             } 
             return result;
-        }
-    }
-
-    static class SubstringMethod implements WrappedMethod {
-
-        private final String string;
-
-        SubstringMethod(String string) {
-            this.string = string;
-        }
-
-        public Object exec(java.util.List args) {
-            int argCount = args.size(), left=0, right=0;
-            if (argCount != 1 && argCount != 2) {
-                throw new EvaluationException("Expecting 1 or 2 numerical arguments for ?substring(...)");
-            }
-            try {
-                Number tnm = asNumber(args.get(0));
-                left = tnm.intValue();
-                if (argCount == 2) {
-                    tnm = asNumber(args.get(1));
-                    right = asNumber(tnm).intValue();
-                }
-            } catch (ClassCastException cce) {
-                throw new EvaluationException("Expecting numerical arguments for ?substring(...)");
-            }
-            if (argCount == 1) {
-                return string.substring(left);
-            } 
-            return string.substring(left, right);
         }
     }
 
@@ -526,38 +496,6 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 throw new EvaluationException(
                         "Failed to execute URL encoding.", e);
             }
-        }
-    }
-
-    static class StartsOrEndsWithMethod implements WrappedMethod {
-        private final String string;
-        private final boolean reverse;
-
-        private StartsOrEndsWithMethod(String string, boolean reverse) {
-            this.string = string;
-            this.reverse = reverse;
-        }
-
-        private String getName() {
-            return reverse ? "?ends_with" : "?starts_with";
-        }
-        
-        public Object exec(List args) {
-            String sub;
-
-            if (args.size() != 1) {
-                throw new EvaluationException(
-                        getName()+ "(...) expects exactly 1 argument.");
-            }
-
-            Object obj = args.get(0);
-            if (!isString(obj)) {
-                throw new EvaluationException(
-                        getName() + "(...) expects a string argument");
-            }
-            sub = asString(obj);
-
-            return reverse ? string.endsWith(sub) : string.startsWith(sub);
         }
     }
 

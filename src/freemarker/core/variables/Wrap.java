@@ -6,8 +6,8 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.variables.scope.Scope;
 import freemarker.template.TemplateException;
+import freemarker.xml.NodeModel;
 
-import org.w3c.dom.Node;
 import static freemarker.core.variables.Constants.JAVA_NULL;
 
 public class Wrap {
@@ -241,6 +241,9 @@ public class Wrap {
         }
         if (object instanceof ResourceBundle) {
             return new ResourceBundleModel((ResourceBundle) object);
+        }
+        if (object instanceof org.w3c.dom.Node) {
+            return NodeModel.wrapNode((org.w3c.dom.Node)object);
         }
         return new Pojo(object);
     }

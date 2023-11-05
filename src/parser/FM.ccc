@@ -106,14 +106,12 @@ INJECT PARSER_CLASS :
         this.template = template;
         this.templateName = template != null ? template.getName() : "";
         token_source.templateName = templateName;
-        template.setTokenSource(token_source);
     }
 
     public FMParser(Template template, CharSequence input) {
         this (input);
         this.template = template;
         this.templateName = template != null ? template.getName() : "";
-        template.setTokenSource(token_source);
     }
 
     private String getErrorStart(Token t) {

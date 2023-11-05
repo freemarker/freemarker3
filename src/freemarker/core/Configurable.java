@@ -6,16 +6,16 @@ import java.util.*;
 
 import freemarker.template.*;
 import freemarker.template.utility.StringUtil;
-import freemarker.core.nodes.generated.TemplateNode;
 
 /**
  * This is a common superclass of {@link freemarker.template.Configuration},
  * {@link freemarker.template.Template}, and {@link Environment} classes.
  * It provides settings that are common to each of them. FreeMarker
  * uses a three-level setting hierarchy - the return value of every setting
- * getter method on <code>Configurable</code> objects inherits its value from its fallback 
- * <code>Configurable</code> object, unless explicitly overridden by a call to a 
- * corresponding setter method on the object itself. The fallback of an 
+ * getter method on <code>Configurable</code> objects inherits its value from
+ * its fallback
+ * <code>Configurable</code> object, unless explicitly overridden by a call to a
+ * corresponding setter method on the object itself. The fallback of an
  * <code>Environment</code> object is a <code>Template</code> object, the
  * fallback of a <code>Template</code> object is a <code>Configuration</code>
  * object.
@@ -23,8 +23,7 @@ import freemarker.core.nodes.generated.TemplateNode;
  * @version $Id: Configurable.java,v 1.24 2006/02/03 19:22:03 revusky Exp $
  * @author Attila Szegedi
  */
-abstract public class Configurable extends TemplateNode
-{
+abstract public class Configurable {
     public static final String LOCALE_KEY = "locale";
     public static final String NUMBER_FORMAT_KEY = "number_format";
     public static final String TIME_FORMAT_KEY = "time_format";
@@ -39,11 +38,11 @@ abstract public class Configurable extends TemplateNode
     public static final String URL_ESCAPING_CHARSET_KEY = "url_escaping_charset";
 
     private static final char COMMA = ',';
-    
+
     private Configurable fallback;
     private Properties properties;
     private HashMap<Object, Object> customAttributes;
-    
+
     private Locale locale;
     private String numberFormat;
     private String timeFormat;
@@ -58,7 +57,7 @@ abstract public class Configurable extends TemplateNode
     private boolean outputEncodingSet;
     private String urlEscapingCharset;
     private boolean urlEscapingCharsetSet;
-    
+
     public Configurable() {
         fallback = null;
         locale = Locale.getDefault();
@@ -73,7 +72,7 @@ abstract public class Configurable extends TemplateNode
         arithmeticEngine = ArithmeticEngine.BIGDECIMAL_ENGINE;
         // outputEncoding and urlEscapingCharset defaults to null,
         // which means "not specified"
-        
+
         properties = new Properties();
         properties.setProperty(LOCALE_KEY, locale.toString());
         properties.setProperty(TIME_FORMAT_KEY, timeFormat);
@@ -84,12 +83,12 @@ abstract public class Configurable extends TemplateNode
         properties.setProperty(TEMPLATE_EXCEPTION_HANDLER_KEY, templateExceptionHandler.getClass().getName());
         properties.setProperty(ARITHMETIC_ENGINE_KEY, arithmeticEngine.getClass().getName());
         properties.setProperty(BOOLEAN_FORMAT_KEY, "true,false");
-        // as outputEncoding and urlEscapingCharset defaults to null, 
+        // as outputEncoding and urlEscapingCharset defaults to null,
         // they are not set
-        
+
         customAttributes = new HashMap<Object, Object>();
     }
-    
+
     /**
      * Creates a new instance. Normally you do not need to use this constructor,
      * as you don't use <code>Configurable</code> directly, but its subclasses.
@@ -105,13 +104,6 @@ abstract public class Configurable extends TemplateNode
         customAttributes = new HashMap<Object, Object>();
     }
 
-    protected Object clone() throws CloneNotSupportedException {
-        Configurable copy = (Configurable)super.clone();
-        copy.properties = new Properties(properties);
-        copy.customAttributes = new HashMap<Object,Object>(customAttributes);
-        return copy;
-    }
-    
     /**
      * Returns the fallback <tt>Configurable</tt> object of this object.
      * The fallback stores the default values for this configurable. For example,
@@ -120,12 +112,12 @@ abstract public class Configurable extends TemplateNode
      * specfied on template level are specified by the confuration object.
      *
      * @return the fallback <tt>Configurable</tt> object, or null, if this is
-     *    the root <tt>Configurable</tt> object.
+     *         the root <tt>Configurable</tt> object.
      */
     public final Configurable getFallback() {
         return fallback;
     }
-    
+
     /**
      * Refallbacking support. This is used by Environment when it includes a
      * template - the included template becomes the fallback configurable during
@@ -134,19 +126,20 @@ abstract public class Configurable extends TemplateNode
     public void setFallback(Configurable fallback) {
         this.fallback = fallback;
     }
-    
+
     /**
-     * Sets the locale to assume when searching for template files with no 
+     * Sets the locale to assume when searching for template files with no
      * explicit requested locale.
      */
     public void setLocale(Locale locale) {
-        if (locale == null) throw new IllegalArgumentException("Setting \"locale\" can't be null");
+        if (locale == null)
+            throw new IllegalArgumentException("Setting \"locale\" can't be null");
         this.locale = locale;
         properties.setProperty(LOCALE_KEY, locale.toString());
     }
 
     /**
-     * Returns the time zone to use when formatting time values. Defaults to 
+     * Returns the time zone to use when formatting time values. Defaults to
      * system time zone.
      */
     public TimeZone getTimeZone() {
@@ -154,10 +147,11 @@ abstract public class Configurable extends TemplateNode
     }
 
     /**
-     * Sets the time zone to use when formatting time values. 
+     * Sets the time zone to use when formatting time values.
      */
     public void setTimeZone(TimeZone timeZone) {
-        if (timeZone == null) throw new IllegalArgumentException("Setting \"time_zone\" can't be null");
+        if (timeZone == null)
+            throw new IllegalArgumentException("Setting \"time_zone\" can't be null");
         this.timeZone = timeZone;
         properties.setProperty(TIME_ZONE_KEY, timeZone.getID());
     }
@@ -174,7 +168,8 @@ abstract public class Configurable extends TemplateNode
      * Sets the number format used to convert numbers to strings.
      */
     public void setNumberFormat(String numberFormat) {
-        if (numberFormat == null) throw new IllegalArgumentException("Setting \"number_format\" can't be null");
+        if (numberFormat == null)
+            throw new IllegalArgumentException("Setting \"number_format\" can't be null");
         this.numberFormat = numberFormat;
         properties.setProperty(NUMBER_FORMAT_KEY, numberFormat);
     }
@@ -190,33 +185,34 @@ abstract public class Configurable extends TemplateNode
     public void setBooleanFormat(String booleanFormat) {
         if (booleanFormat == null) {
             throw new IllegalArgumentException("Setting \"boolean_format\" can't be null");
-        } 
+        }
         int comma = booleanFormat.indexOf(COMMA);
-        if(comma == -1) {
-            throw new IllegalArgumentException("Setting \"boolean_format\" must consist of two comma-separated values for true and false respectively");
+        if (comma == -1) {
+            throw new IllegalArgumentException(
+                    "Setting \"boolean_format\" must consist of two comma-separated values for true and false respectively");
         }
         trueFormat = booleanFormat.substring(0, comma);
         falseFormat = booleanFormat.substring(comma + 1);
         properties.setProperty(BOOLEAN_FORMAT_KEY, booleanFormat);
     }
-    
+
     public String getBooleanFormat() {
-        if(trueFormat == null) {
-            return fallback.getBooleanFormat(); 
+        if (trueFormat == null) {
+            return fallback.getBooleanFormat();
         }
         return trueFormat + COMMA + falseFormat;
     }
-    
+
     public String getBooleanFormat(boolean value) {
-        return value ? getTrueFormat() : getFalseFormat(); 
+        return value ? getTrueFormat() : getFalseFormat();
     }
-    
+
     private String getTrueFormat() {
-        return trueFormat != null ? trueFormat : fallback.getTrueFormat(); 
+        return trueFormat != null ? trueFormat : fallback.getTrueFormat();
     }
-    
+
     private String getFalseFormat() {
-        return falseFormat != null ? falseFormat : fallback.getFalseFormat(); 
+        return falseFormat != null ? falseFormat : fallback.getFalseFormat();
     }
 
     /**
@@ -224,7 +220,8 @@ abstract public class Configurable extends TemplateNode
      * values to strings.
      */
     public void setTimeFormat(String timeFormat) {
-        if (timeFormat == null) throw new IllegalArgumentException("Setting \"time_format\" can't be null");
+        if (timeFormat == null)
+            throw new IllegalArgumentException("Setting \"time_format\" can't be null");
         this.timeFormat = timeFormat;
         properties.setProperty(TIME_FORMAT_KEY, timeFormat);
     }
@@ -243,13 +240,14 @@ abstract public class Configurable extends TemplateNode
      * dates to strings.
      */
     public void setDateFormat(String dateFormat) {
-        if (dateFormat == null) throw new IllegalArgumentException("Setting \"date_format\" can't be null");
+        if (dateFormat == null)
+            throw new IllegalArgumentException("Setting \"date_format\" can't be null");
         this.dateFormat = dateFormat;
         properties.setProperty(DATE_FORMAT_KEY, dateFormat);
     }
 
     /**
-     * Returns the date format used to convert date models representing 
+     * Returns the date format used to convert date models representing
      * date-only dates to strings.
      * Defaults to <tt>"date"</tt>
      */
@@ -262,7 +260,8 @@ abstract public class Configurable extends TemplateNode
      * dates to strings.
      */
     public void setDateTimeFormat(String dateTimeFormat) {
-        if (dateTimeFormat == null) throw new IllegalArgumentException("Setting \"datetime_format\" can't be null");
+        if (dateTimeFormat == null)
+            throw new IllegalArgumentException("Setting \"datetime_format\" can't be null");
         this.dateTimeFormat = dateTimeFormat;
         properties.setProperty(DATETIME_FORMAT_KEY, dateTimeFormat);
     }
@@ -277,35 +276,41 @@ abstract public class Configurable extends TemplateNode
     }
 
     /**
-     * Sets the exception handler used to handle template exceptions. 
+     * Sets the exception handler used to handle template exceptions.
      *
-     * @param templateExceptionHandler the template exception handler to use for 
-     * handling {@link TemplateException}s. By default, 
-     * {@link TemplateExceptionHandler#HTML_DEBUG_HANDLER} is used.
+     * @param templateExceptionHandler the template exception handler to use for
+     *                                 handling {@link TemplateException}s. By
+     *                                 default,
+     *                                 {@link TemplateExceptionHandler#HTML_DEBUG_HANDLER}
+     *                                 is used.
      */
     public void setTemplateExceptionHandler(TemplateExceptionHandler templateExceptionHandler) {
-        if (templateExceptionHandler == null) throw new IllegalArgumentException("Setting \"template_exception_handler\" can't be null");
+        if (templateExceptionHandler == null)
+            throw new IllegalArgumentException("Setting \"template_exception_handler\" can't be null");
         this.templateExceptionHandler = templateExceptionHandler;
         properties.setProperty(TEMPLATE_EXCEPTION_HANDLER_KEY, templateExceptionHandler.getClass().getName());
     }
 
     /**
-     * Retrieves the exception handler used to handle template exceptions. 
+     * Retrieves the exception handler used to handle template exceptions.
      */
     public TemplateExceptionHandler getTemplateExceptionHandler() {
         return templateExceptionHandler != null
-                ? templateExceptionHandler : fallback.getTemplateExceptionHandler();
+                ? templateExceptionHandler
+                : fallback.getTemplateExceptionHandler();
     }
 
     /**
      * Sets the arithmetic engine used to perform arithmetic operations.
      *
      * @param arithmeticEngine the arithmetic engine used to perform arithmetic
-     * operations.By default, {@link ArithmeticEngine#BIGDECIMAL_ENGINE} is 
-     * used.
+     *                         operations.By default,
+     *                         {@link ArithmeticEngine#BIGDECIMAL_ENGINE} is
+     *                         used.
      */
     public void setArithmeticEngine(ArithmeticEngine arithmeticEngine) {
-        if (arithmeticEngine == null) throw new IllegalArgumentException("Setting \"arithmetic_engine\" can't be null");
+        if (arithmeticEngine == null)
+            throw new IllegalArgumentException("Setting \"arithmetic_engine\" can't be null");
         this.arithmeticEngine = arithmeticEngine;
         properties.setProperty(ARITHMETIC_ENGINE_KEY, arithmeticEngine.getClass().getName());
     }
@@ -315,7 +320,8 @@ abstract public class Configurable extends TemplateNode
      */
     public ArithmeticEngine getArithmeticEngine() {
         return arithmeticEngine != null
-                ? arithmeticEngine : fallback.getArithmeticEngine();
+                ? arithmeticEngine
+                : fallback.getArithmeticEngine();
     }
 
     /**
@@ -332,17 +338,17 @@ abstract public class Configurable extends TemplateNode
         }
         outputEncodingSet = true;
     }
-    
+
     public void setNumbersForComputers(boolean b) {
-    	
+
     }
-    
+
     public String getOutputEncoding() {
         return outputEncodingSet
                 ? outputEncoding
                 : (fallback != null ? fallback.getOutputEncoding() : null);
     }
-    
+
     /**
      * Sets the URL escaping charset. Allows <code>null</code>, which means that the
      * output encoding will be used for URL escaping.
@@ -357,59 +363,65 @@ abstract public class Configurable extends TemplateNode
         }
         urlEscapingCharsetSet = true;
     }
-    
+
     public String getURLEscapingCharset() {
         return urlEscapingCharsetSet
                 ? urlEscapingCharset
                 : (fallback != null ? fallback.getURLEscapingCharset() : null);
     }
-    
+
     /**
      * Sets a setting by a name and string value.
      * 
-     * <p>List of supported names and their valid values:
+     * <p>
+     * List of supported names and their valid values:
      * <ul>
-     *   <li><code>"locale"</code>: local codes with the usual format, such as <code>"en_US"</code>.
-     *   <li><code>"template_exception_handler"</code>:  If the value contains dot, then it is
-     *       interpreted as class name, and the object will be created with
-     *       its parameterless constructor. If the value does not contain dot,
-     *       then it must be one of these special values:
-     *       <code>"rethrow"</code>, <code>"debug"</code>,
-     *       <code>"html_debug"</code>, <code>"ignore"</code> (case insensitive).
-     *   <li><code>"arithmetic_engine"</code>: If the value contains dot, then it is
-     *       interpreted as class name, and the object will be created with
-     *       its parameterless constructor. If the value does not contain dot,
-     *       then it must be one of these special values:
-     *       <code>"bigdecimal"</code>, <code>"conservative"</code> (case insensitive).  
-     *   <li><code>"object_wrapper"</code>: If the value contains dot, then it is
-     *       interpreted as class name, and the object will be created with
-     *       its parameterless constructor. If the value does not contain dot,
-     *       then it must be one of these special values:
-     *       <code>"simple"</code>, <code>"beans"</code>.
-     *   <li><code>"number_format"</code>: pattern as <code>java.text.DecimalFormat</code> defines.
-     *   <li><code>"boolean_format"</code>: the textual value for boolean true and false,
-     *       separated with comma. For example <code>"yes,no"</code>.
-     *   <li><code>"date_format", "time_format", "datetime_format"</code>: patterns as
-     *       <code>java.text.SimpleDateFormat</code> defines.
-     *   <li><code>"time_zone"</code>: time zone, with the format as
-     *       <code>java.util.TimeZone.getTimeZone</code> defines. For example <code>"GMT-8:00"</code> or
-     *       <code>"America/Los_Angeles"</code>
-     *   <li><code>"output_encoding"</code>: Informs FreeMarker about the charset
-     *       used for the output. As FreeMarker outputs character stream (not
-     *       byte stream), it is not aware of the output charset unless the
-     *       software that encloses it tells it explicitly with this setting.
-     *       Some templates may use FreeMarker features that require this.</code>
-     *   <li><code>"url_escaping_charset"</code>: If this setting is set, then it
-     *       overrides the value of the <code>"output_encoding"</code> setting when
-     *       FreeMarker does URL encoding.
+     * <li><code>"locale"</code>: local codes with the usual format, such as
+     * <code>"en_US"</code>.
+     * <li><code>"template_exception_handler"</code>: If the value contains dot,
+     * then it is
+     * interpreted as class name, and the object will be created with
+     * its parameterless constructor. If the value does not contain dot,
+     * then it must be one of these special values:
+     * <code>"rethrow"</code>, <code>"debug"</code>,
+     * <code>"html_debug"</code>, <code>"ignore"</code> (case insensitive).
+     * <li><code>"arithmetic_engine"</code>: If the value contains dot, then it is
+     * interpreted as class name, and the object will be created with
+     * its parameterless constructor. If the value does not contain dot,
+     * then it must be one of these special values:
+     * <code>"bigdecimal"</code>, <code>"conservative"</code> (case insensitive).
+     * <li><code>"object_wrapper"</code>: If the value contains dot, then it is
+     * interpreted as class name, and the object will be created with
+     * its parameterless constructor. If the value does not contain dot,
+     * then it must be one of these special values:
+     * <code>"simple"</code>, <code>"beans"</code>.
+     * <li><code>"number_format"</code>: pattern as
+     * <code>java.text.DecimalFormat</code> defines.
+     * <li><code>"boolean_format"</code>: the textual value for boolean true and
+     * false,
+     * separated with comma. For example <code>"yes,no"</code>.
+     * <li><code>"date_format", "time_format", "datetime_format"</code>: patterns as
+     * <code>java.text.SimpleDateFormat</code> defines.
+     * <li><code>"time_zone"</code>: time zone, with the format as
+     * <code>java.util.TimeZone.getTimeZone</code> defines. For example
+     * <code>"GMT-8:00"</code> or
+     * <code>"America/Los_Angeles"</code>
+     * <li><code>"output_encoding"</code>: Informs FreeMarker about the charset
+     * used for the output. As FreeMarker outputs character stream (not
+     * byte stream), it is not aware of the output charset unless the
+     * software that encloses it tells it explicitly with this setting.
+     * Some templates may use FreeMarker features that require this.</code>
+     * <li><code>"url_escaping_charset"</code>: If this setting is set, then it
+     * overrides the value of the <code>"output_encoding"</code> setting when
+     * FreeMarker does URL encoding.
      * </ul>
      * 
-     * @param key the name of the setting.
+     * @param key   the name of the setting.
      * @param value the string that describes the new value of the setting.
      * 
      * @throws UnknownSettingException if the key is wrong.
-     * @throws TemplateException if the new value of the setting can't be set
-     *     for any other reasons.
+     * @throws TemplateException       if the new value of the setting can't be set
+     *                                 for any other reasons.
      */
     public void setSetting(String key, String value) {
         try {
@@ -445,10 +457,10 @@ abstract public class Configurable extends TemplateNode
                 } else {
                     setTemplateExceptionHandler(
                             (TemplateExceptionHandler) Class.forName(value)
-                            .newInstance());
+                                    .newInstance());
                 }
             } else if (ARITHMETIC_ENGINE_KEY.equals(key)) {
-                if (value.indexOf('.') == -1) { 
+                if (value.indexOf('.') == -1) {
                     if ("bigdecimal".equalsIgnoreCase(value)) {
                         setArithmeticEngine(ArithmeticEngine.BIGDECIMAL_ENGINE);
                     } else if ("conservative".equalsIgnoreCase(value)) {
@@ -459,10 +471,9 @@ abstract public class Configurable extends TemplateNode
                 } else {
                     setArithmeticEngine(
                             (ArithmeticEngine) Class.forName(value)
-                            .newInstance());
+                                    .newInstance());
                 }
-            } 
-            else if (BOOLEAN_FORMAT_KEY.equals(key)) {
+            } else if (BOOLEAN_FORMAT_KEY.equals(key)) {
                 setBooleanFormat(value);
             } else if (OUTPUT_ENCODING_KEY.equals(key)) {
                 setOutputEncoding(value);
@@ -471,29 +482,32 @@ abstract public class Configurable extends TemplateNode
             } else {
                 throw unknownSettingException(key);
             }
-        } catch(TemplateException e) {
+        } catch (TemplateException e) {
             throw e;
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new TemplateException(
                     "Failed to set setting " + key + " to value " + value,
                     e, getEnvironment());
         }
     }
-    
+
     /**
      * Returns the textual representation of a setting.
+     * 
      * @param key the setting key. Can be any of standard <tt>XXX_KEY</tt>
-     * constants, or a custom key.
+     *            constants, or a custom key.
      *
      * @deprecated This method was always defective, and certainly it always
-     *     will be. Don't use it. (Simply, it's hardly possible in general to
-     *     convert setting values to text in a way that ensures that
-     *     {@link #setSetting(String, String)} will work with them correctly.)
+     *             will be. Don't use it. (Simply, it's hardly possible in general
+     *             to
+     *             convert setting values to text in a way that ensures that
+     *             {@link #setSetting(String, String)} will work with them
+     *             correctly.)
      */
     public String getSetting(String key) {
         return properties.getProperty(key);
     }
-    
+
     /**
      * This meant to return the String-to-String <code>Map</code> of the
      * settings. So it actually should return a <code>Properties</code> object,
@@ -501,18 +515,19 @@ abstract public class Configurable extends TemplateNode
      * but it will reflect the further configuration changes (aliasing effect).
      *
      * @deprecated This method was always defective, and certainly it always
-     *     will be. Don't use it. (Simply, it's hardly possible in general to
-     *     convert setting values to text in a way that ensures that
-     *     {@link #setSettings(Properties)} will work with them correctly.)
+     *             will be. Don't use it. (Simply, it's hardly possible in general
+     *             to
+     *             convert setting values to text in a way that ensures that
+     *             {@link #setSettings(Properties)} will work with them correctly.)
      */
     public Map getSettings() {
         return Collections.unmodifiableMap(properties);
     }
-    
+
     public Environment getEnvironment() {
         return Environment.getCurrentEnvironment();
     }
-    
+
     protected TemplateException unknownSettingException(String name) {
         return new UnknownSettingException(name, getEnvironment());
     }
@@ -520,7 +535,7 @@ abstract public class Configurable extends TemplateNode
     protected TemplateException invalidSettingValueException(String name, String value) {
         return new TemplateException("Invalid value for setting " + name + ": " + value, getEnvironment());
     }
-    
+
     public static class UnknownSettingException extends TemplateException {
 
         private UnknownSettingException(String name, Environment env) {
@@ -532,25 +547,28 @@ abstract public class Configurable extends TemplateNode
      * Set the settings stored in a <code>Properties</code> object.
      * 
      * @throws TemplateException if the <code>Properties</code> object contains
-     *     invalid keys, or invalid setting values, or any other error occurs
-     *     while changing the settings.
-     */    
+     *                           invalid keys, or invalid setting values, or any
+     *                           other error occurs
+     *                           while changing the settings.
+     */
     public void setSettings(Properties props) {
         Iterator<Object> it = props.keySet().iterator();
         while (it.hasNext()) {
             String key = (String) it.next();
-            setSetting(key, props.getProperty(key).trim()); 
+            setSetting(key, props.getProperty(key).trim());
         }
     }
-    
+
     /**
      * Reads a setting list (key and element pairs) from the input stream.
      * The stream has to follow the usual <code>.properties</code> format.
      *
      * @throws TemplateException if the stream contains
-     *     invalid keys, or invalid setting values, or any other error occurs
-     *     while changing the settings.
-     * @throws IOException if an error occurred when reading from the input stream.
+     *                           invalid keys, or invalid setting values, or any
+     *                           other error occurs
+     *                           while changing the settings.
+     * @throws IOException       if an error occurred when reading from the input
+     *                           stream.
      */
     public void setSettings(InputStream propsIn) throws TemplateException, IOException {
         Properties p = new Properties();
@@ -559,8 +577,8 @@ abstract public class Configurable extends TemplateNode
     }
 
     protected void doAutoImportsAndIncludes(Environment env)
-    throws TemplateException, IOException
-    {
-        if(fallback != null) fallback.doAutoImportsAndIncludes(env);
+            throws TemplateException, IOException {
+        if (fallback != null)
+            fallback.doAutoImportsAndIncludes(env);
     }
 }

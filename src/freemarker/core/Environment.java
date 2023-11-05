@@ -1470,7 +1470,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     void importMacros(Template template) {
-        for (Macro macro : ((TemplateCore) template).getMacros().values()) {
+        for (Macro macro : template.getMacros().values()) {
             visitMacroDef(macro);
         }
     }

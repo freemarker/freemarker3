@@ -8,7 +8,6 @@ import java.util.*;
 import freemarker.cache.*;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
-import freemarker.core.variables.scope.Scope;
 import freemarker.core.variables.WrappedHash;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
@@ -39,7 +38,7 @@ import static freemarker.core.variables.Wrap.*;
  */
 
 @SuppressWarnings("deprecation")
-public class Configuration extends Configurable {//implements Scope {
+public class Configuration extends Configurable {
 
     private static final Logger logger = Logger.getLogger("freemarker.parser");
     private static Configuration defaultConfig = new Configuration();
@@ -74,107 +73,6 @@ public class Configuration extends Configurable {//implements Scope {
         variables.put("compress", StandardCompress.INSTANCE);
         variables.put("html_escape", new HtmlEscape());
         variables.put("xml_escape", new XmlEscape());
-    }
-    
-    /**
-     * Loads a preset language-to-encoding map. It assumes the usual character
-     * encodings for most languages.
-     * The previous content of the encoding map will be lost.
-     * This default map currently contains the following mappings:
-     * <table>
-     *   <tr><td>ar</td><td>ISO-8859-6</td></tr>
-     *   <tr><td>be</td><td>ISO-8859-5</td></tr>
-     *   <tr><td>bg</td><td>ISO-8859-5</td></tr>
-     *   <tr><td>ca</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>cs</td><td>ISO-8859-2</td></tr>
-     *   <tr><td>da</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>de</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>el</td><td>ISO-8859-7</td></tr>
-     *   <tr><td>en</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>es</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>et</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>fi</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>fr</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>hr</td><td>ISO-8859-2</td></tr>
-     *   <tr><td>hu</td><td>ISO-8859-2</td></tr>
-     *   <tr><td>is</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>it</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>iw</td><td>ISO-8859-8</td></tr>
-     *   <tr><td>ja</td><td>Shift_JIS</td></tr>
-     *   <tr><td>ko</td><td>EUC-KR</td></tr>    
-     *   <tr><td>lt</td><td>ISO-8859-2</td></tr>
-     *   <tr><td>lv</td><td>ISO-8859-2</td></tr>
-     *   <tr><td>mk</td><td>ISO-8859-5</td></tr>
-     *   <tr><td>nl</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>no</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>pl</td><td>ISO-8859-2</td></tr>
-     *   <tr><td>pt</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>ro</td><td>ISO-8859-2</td></tr>
-     *   <tr><td>ru</td><td>ISO-8859-5</td></tr>
-     *   <tr><td>sh</td><td>ISO-8859-5</td></tr>
-     *   <tr><td>sk</td><td>ISO-8859-2</td></tr>
-     *   <tr><td>sl</td><td>ISO-8859-2</td></tr>
-     *   <tr><td>sq</td><td>ISO-8859-2</td></tr>
-     *   <tr><td>sr</td><td>ISO-8859-5</td></tr>
-     *   <tr><td>sv</td><td>ISO-8859-1</td></tr>
-     *   <tr><td>tr</td><td>ISO-8859-9</td></tr>
-     *   <tr><td>uk</td><td>ISO-8859-5</td></tr>
-     *   <tr><td>zh</td><td>GB2312</td></tr>
-     *   <tr><td>zh_TW</td><td>Big5</td></tr>
-     * </table>
-     * @see #clearEncodingMap
-     * @see #setEncoding
-     */
-    public void loadBuiltInEncodingMap() {
-        encodingMap.clear();
-        encodingMap.put("ar", "ISO-8859-6");
-        encodingMap.put("be", "ISO-8859-5");
-        encodingMap.put("bg", "ISO-8859-5");
-        encodingMap.put("ca", "ISO-8859-1");
-        encodingMap.put("cs", "ISO-8859-2");
-        encodingMap.put("da", "ISO-8859-1");
-        encodingMap.put("de", "ISO-8859-1");
-        encodingMap.put("el", "ISO-8859-7");
-        encodingMap.put("en", "ISO-8859-1");
-        encodingMap.put("es", "ISO-8859-1");
-        encodingMap.put("et", "ISO-8859-1");
-        encodingMap.put("fi", "ISO-8859-1");
-        encodingMap.put("fr", "ISO-8859-1");
-        encodingMap.put("hr", "ISO-8859-2");
-        encodingMap.put("hu", "ISO-8859-2");
-        encodingMap.put("is", "ISO-8859-1");
-        encodingMap.put("it", "ISO-8859-1");
-        encodingMap.put("iw", "ISO-8859-8");
-        encodingMap.put("ja", "Shift_JIS");
-        encodingMap.put("ko", "EUC-KR");    
-        encodingMap.put("lt", "ISO-8859-2");
-        encodingMap.put("lv", "ISO-8859-2");
-        encodingMap.put("mk", "ISO-8859-5");
-        encodingMap.put("nl", "ISO-8859-1");
-        encodingMap.put("no", "ISO-8859-1");
-        encodingMap.put("pl", "ISO-8859-2");
-        encodingMap.put("pt", "ISO-8859-1");
-        encodingMap.put("ro", "ISO-8859-2");
-        encodingMap.put("ru", "ISO-8859-5");
-        encodingMap.put("sh", "ISO-8859-5");
-        encodingMap.put("sk", "ISO-8859-2");
-        encodingMap.put("sl", "ISO-8859-2");
-        encodingMap.put("sq", "ISO-8859-2");
-        encodingMap.put("sr", "ISO-8859-5");
-        encodingMap.put("sv", "ISO-8859-1");
-        encodingMap.put("tr", "ISO-8859-9");
-        encodingMap.put("uk", "ISO-8859-5");
-        encodingMap.put("zh", "GB2312");
-        encodingMap.put("zh_TW", "Big5");
-    }
-
-    /**
-     * Clears language-to-encoding map.
-     * @see #loadBuiltInEncodingMap
-     * @see #setEncoding
-     */
-    public void clearEncodingMap() {
-        encodingMap.clear();
     }
 
     /**
@@ -770,63 +668,5 @@ public class Configuration extends Configurable {//implements Scope {
     
     public void setTolerateParsingProblems(boolean tolerateParsingProblems) {
     	this.tolerateParsingProblems = tolerateParsingProblems;
-    }
-    
-// The following methods are so that a Configuration object
-// implements freemarker.core.Scope. A Configuration is the final
-// fallback Scope for variable resolution.
-    
-    /**
-     * @return null
-     * The Configuration is the final fallback scope. It has
-     * no enclosing scope.
-     */
-    public Scope getEnclosingScope() {
-    	return null;
-    }
-    
-    public boolean definesVariable(String name) {
-    	return getSharedVariable(name) != null;
-    }
-    
-    /**
-     * @return null
-     * The Configuration object is not associated with a template.
-     */
-    
-    public Template getTemplate() {
-    	return null;
-    }
-    
-    public Object get(String name) {
-    	return variables.get(name);
-    }
-    
-    public Object resolveVariable(String name) {
-    	return variables.get(name);
-    }
-    
-    public Collection<String> getDirectVariableNames() {
-        return Collections.unmodifiableCollection(variables.keySet());
-    }
-    
-    public Object remove(String varname) {
-    	return variables.remove(varname);
-    }
-    
-    public boolean isEmpty() {
-    	return variables.isEmpty();
-    }
-    
-    public int size() {
-    	return variables.size();
-    }
-    
-    public Iterable keys() {
-    	return variables.keySet();
-    }
-    
-    public Iterable values() {
-    	return variables.values();
     }
 }

@@ -54,11 +54,6 @@ public class TemplateTestCase extends TestCase {
             String alias = st.nextToken();
             conf.addAutoImport(alias, libname);
         }
-        else if ("clear_encoding_map".equals(param)) {
-            if (StringUtil.getYesNo(value)) {
-                conf.clearEncodingMap();
-            }
-        }
         else if ("input_encoding".equals(param)) {
             conf.setDefaultEncoding(value);
         }

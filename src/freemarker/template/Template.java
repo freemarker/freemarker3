@@ -7,8 +7,8 @@ import java.util.*;
 
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
-import freemarker.core.TemplateCore;
 import freemarker.core.nodes.generated.ImportDeclaration;
+import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.TemplateHeaderElement;
 import freemarker.core.variables.WrappedNode;
@@ -46,11 +46,13 @@ import freemarker.core.parser.*;
  * @version $Id: Template.java,v 1.218 2005/12/07 00:31:18 revusky Exp $
  */
 
-public class Template extends TemplateCore {
+public class Template extends Configurable {
     public static final String DEFAULT_NAMESPACE_PREFIX = "D";
     public static final String NO_NS_PREFIX = "N";
 
-    private List<ImportDeclaration> imports = new Vector<>();
+    private TemplateElement rootElement;
+    private Map<String, Macro> macros = new HashMap<String, Macro>();
+    private List<ImportDeclaration> imports = new ArrayList<>();
     private String encoding, defaultNS;
     private final String name;
 
@@ -99,7 +101,8 @@ public class Template extends TemplateCore {
             CharSequence content = readInTemplateText(reader);
             FMParser parser = new FMParser(this, content);
             parser.setInputSource(getName());
-            setRootElement(parser.Root());
+            this.rootElement = parser.Root();
+            //setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
             ppv.visit(this);
         }
@@ -116,13 +119,12 @@ public class Template extends TemplateCore {
     {
         this(name, cfg);
         this.encoding = encoding;
-        
-        //readInTemplateText(reader);
         try {
             this.strictVariableDeclaration = getConfiguration().getStrictVariableDefinition();
             FMParser parser = new FMParser(this, input);
             parser.setInputSource(getName());
-            setRootElement(parser.Root());
+            this.rootElement = parser.Root();
+//            setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
             ppv.visit(this);
         }
@@ -150,9 +152,6 @@ public class Template extends TemplateCore {
         	reader.close();
         }
         return buf;
-//        char[] result = new char[buf.length()];
-//        buf.getChars(0, buf.length(), result, 0);
-//        return result;
 	}    
     
     /**
@@ -189,11 +188,11 @@ public class Template extends TemplateCore {
     static public Template getPlainTextTemplate(String name, String content, 
             Configuration config) {
         Template template = new Template(name, config);
-        template.setRootElement(new TemplateElement() {
+        template.rootElement = new TemplateElement() {
         	public void execute(Environment env) throws IOException {
         		env.getOut().write(content);
         	}
-        });
+        };
         return template;
     }
     
@@ -447,6 +446,25 @@ public class Template extends TemplateCore {
             this.specifiedEncoding = specifiedEncoding;
         }
 
+    }
+
+    /**
+     * Called by code internally to maintain
+     * a table of macros
+     */
+    public void addMacro(Macro macro) {
+        String macroName = macro.getName();
+        synchronized(macros) {
+            macros.put(macroName, macro);
+        }
+    }
+
+    public Map<String,Macro> getMacros() {
+        return macros;
+    }
+    
+    public TemplateElement getRootElement() {
+        return rootElement;
     }
 }
 
