@@ -219,9 +219,6 @@ public class JavaMethodCall implements WrappedMethod {
         if (desiredType.isInstance(object)) {
             return object;
         }
-        if (desiredType == String.class) {// && object instanceof CharSequence) { REVISIT
-            return object.toString();
-        }
         if (desiredType == Boolean.TYPE || desiredType == Boolean.class) {
             if (object instanceof Boolean) {
                 return (Boolean) object;
@@ -257,6 +254,13 @@ public class JavaMethodCall implements WrappedMethod {
             if (desiredType == BigInteger.class) {
                 return new BigInteger(num.toString());
             }
+            return CAN_NOT_UNWRAP;
+        }
+        if (desiredType == String.class) { 
+            //This is not really 100% maybe, but 
+            // for now is necessary to keep CongoCC templates
+            // all working! Will REVISIT later
+            return object.toString();
         }
         if (desiredType == Date.class && object instanceof WrappedDate) {
             // REVISIT
