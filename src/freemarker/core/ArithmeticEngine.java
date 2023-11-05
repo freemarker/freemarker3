@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import freemarker.template.*;
-import freemarker.template.utility.OptimizerUtil;
 
 /**
  * Class to perform arithmetic operations.
@@ -37,7 +36,7 @@ public abstract class ArithmeticEngine {
 
     protected int minScale = 12;
     protected int maxScale = 12;
-    protected int roundingPolicy = BigDecimal.ROUND_HALF_UP;
+    protected RoundingMode roundingMode = RoundingMode.HALF_UP;
 
     /**
      * Sets the minimal scale to use when dividing BigDecimal numbers. Default
@@ -61,20 +60,8 @@ public abstract class ArithmeticEngine {
         this.maxScale = maxScale;
     }
 
-    public void setRoundingPolicy(int roundingPolicy) {
-        if (roundingPolicy != BigDecimal.ROUND_CEILING
-            && roundingPolicy != BigDecimal.ROUND_DOWN
-            && roundingPolicy != BigDecimal.ROUND_FLOOR
-            && roundingPolicy != BigDecimal.ROUND_HALF_DOWN
-            && roundingPolicy != BigDecimal.ROUND_HALF_EVEN
-            && roundingPolicy != BigDecimal.ROUND_HALF_UP
-            && roundingPolicy != BigDecimal.ROUND_UNNECESSARY
-            && roundingPolicy != BigDecimal.ROUND_UP) 
-        {
-            throw new IllegalArgumentException("invalid rounding policy");        
-        }
-        
-        this.roundingPolicy = roundingPolicy;
+    public void setRoundingPolicy(RoundingMode roundingMode) {
+        this.roundingMode  = roundingMode;
     }
 
     /**
@@ -82,10 +69,8 @@ public abstract class ArithmeticEngine {
      * number it receives into {@link BigDecimal}, then operates on these
      * converted {@link BigDecimal}s.
      */
-    public static class BigDecimalEngine
-    extends
-        ArithmeticEngine    
-    {
+    public static class BigDecimalEngine extends ArithmeticEngine {
+
         public int compareNumbers(Number first, Number second) {
             BigDecimal left = toBigDecimal(first);
             BigDecimal right = toBigDecimal(second);
@@ -109,7 +94,7 @@ public abstract class ArithmeticEngine {
             BigDecimal right = toBigDecimal(second);
             BigDecimal result = left.multiply(right);
             if (result.scale() > maxScale) {
-                result = result.setScale(maxScale, roundingPolicy);
+                result = result.setScale(maxScale, roundingMode);
             }
             return result;
         }
@@ -135,7 +120,7 @@ public abstract class ArithmeticEngine {
             int scale2 = right.scale();
             int scale = Math.max(scale1, scale2);
             scale = Math.max(minScale, scale);
-            return left.divide(right, scale, roundingPolicy);
+            return left.divide(right, scale, roundingMode);
         }
     }
 
@@ -324,7 +309,7 @@ public abstract class ArithmeticEngine {
                     BigDecimal n1 = toBigDecimal(first);
                     BigDecimal n2 = toBigDecimal(second);
                     BigDecimal r = n1.multiply(n2);
-                    return r.scale() > maxScale ? r.setScale(maxScale, roundingPolicy) : r;
+                    return r.scale() > maxScale ? r.setScale(maxScale, roundingMode) : r;
                 }
             }
             // Make the compiler happy. getCommonClassCode() is guaranteed to 
@@ -366,7 +351,7 @@ public abstract class ArithmeticEngine {
                     else {
                         BigDecimal bd1 = new BigDecimal(n1);
                         BigDecimal bd2 = new BigDecimal(n2);
-                        return bd1.divide(bd2, minScale, roundingPolicy);
+                        return bd1.divide(bd2, minScale, roundingMode);
                     }
                 }
                 case BIGDECIMAL: {
@@ -376,7 +361,7 @@ public abstract class ArithmeticEngine {
                     int scale2 = n2.scale();
                     int scale = Math.max(scale1, scale2);
                     scale = Math.max(minScale, scale);
-                    return n1.divide(n2, scale, roundingPolicy);
+                    return n1.divide(n2, scale, roundingMode);
                 }
             }
             // Make the compiler happy. getCommonClassCode() is guaranteed to 
@@ -413,7 +398,7 @@ public abstract class ArithmeticEngine {
         }
     
         public Number toNumber(String s) {
-            return OptimizerUtil.optimizeNumberRepresentation(new BigDecimal(s));
+            return optimizeNumberRepresentation(new BigDecimal(s));
         }
         
         private static Map createClassCodesMap() {
@@ -475,5 +460,48 @@ public abstract class ArithmeticEngine {
 
     private static BigDecimal toBigDecimal(Number num) {
         return num instanceof BigDecimal ? (BigDecimal) num : new BigDecimal(num.toString());
+    }
+
+    private static final BigInteger INTEGER_MIN = new BigInteger(Integer.toString(Integer.MIN_VALUE));
+    private static final BigInteger INTEGER_MAX = new BigInteger(Integer.toString(Integer.MAX_VALUE));
+    private static final BigInteger LONG_MIN = new BigInteger(Long.toString(Long.MIN_VALUE));
+    private static final BigInteger LONG_MAX = new BigInteger(Long.toString(Long.MAX_VALUE));
+
+    /**
+     * This is needed to reverse the extreme conversions in arithmetic
+     * operations so that numbers can be meaningfully used with models that
+     * don't know what to do with a BigDecimal. Of course, this will make
+     * impossible for these models to receive a BigDecimal even if
+     * it was originally placed as such in the data model. However, since
+     * arithmetic operations aggressively erase the information regarding the
+     * original number type, we have no other choice to ensure expected operation
+     * in majority of cases.
+     */
+    private static Number optimizeNumberRepresentation(Number number) {
+        if (number instanceof BigDecimal) {
+            BigDecimal bd = (BigDecimal) number;
+            if (bd.scale() == 0) {
+                // BigDecimal -> BigInteger
+                number = bd.unscaledValue();
+            } else {
+                double d = bd.doubleValue();
+                if (d != Double.POSITIVE_INFINITY && d != Double.NEGATIVE_INFINITY) {
+                    // BigDecimal -> Double
+                    return d;
+                }
+            }
+        }
+        if (number instanceof BigInteger) {
+            BigInteger bi = (BigInteger) number;
+            if (bi.compareTo(INTEGER_MAX) <= 0 && bi.compareTo(INTEGER_MIN) >= 0) {
+                // BigInteger -> Integer
+                return Integer.valueOf(bi.intValue());
+            }
+            if (bi.compareTo(LONG_MAX) <= 0 && bi.compareTo(LONG_MIN) >= 0) {
+                // BigInteger -> Long
+                return Long.valueOf(bi.longValue());
+            }
+        }
+        return number;
     }
 }

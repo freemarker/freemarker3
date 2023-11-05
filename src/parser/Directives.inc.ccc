@@ -421,6 +421,7 @@ AssertionInstruction :
       <COLON>
       Expression
    ]
+   LooseDirectiveEnd
 ;
 
 INJECT AssertionInstruction :
@@ -1661,6 +1662,8 @@ TemplateElement#abstract :
    ReturnInstruction
    |
    StopInstruction
+   |
+   AssertionInstruction
    |
    FlushInstruction
    |

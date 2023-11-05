@@ -1,6 +1,7 @@
 PARSER_PACKAGE="freemarker.core.parser";
 TREE_BUILDING_ENABLED=false;
 EXTRA_TOKENS=DIRECTIVE_END;
+//PRESERVE_LINE_ENDINGS;
 
 /**
  * The lexer portion defines 3 lexical states:
@@ -207,15 +208,19 @@ INJECT LEXER_CLASS :
     }
 }
 
-UNPARSED :
-    <?COMMENT : ("<#--" | "[#--") (~[])* ("--]" | "-->")>
+<DEFAULT,EXPRESSION> UNPARSED#Comment :
+    <?SQUARE_COMMENT : "[#--" (~[])* "--]">
+    |    
+    <?POINTY_COMMENT : "<#--" (~[])* "-->">
+    |
+    <SINGLE_LINE_COMMENT : "#--" (~["\n"])* >
 ;
 
 MORE :
     <START_TAG : "<#" | "[#"> : DIRECTIVE_NAME
 ;    
 
-TOKEN :
+TOKEN#Delimiter :
     <CLOSE_DIRECTIVE_BLOCK : ("[/#" (["a"-"z"])* (<BLANK>)* "]") | ("</#" (["a"-"z"])* (<BLANK>)* ">")> 
     |
     <UNIFIED_CALL : "<@" | "[@" > 
@@ -333,10 +338,6 @@ TOKEN#Text :
 
 <EXPRESSION> SKIP :
     <IGNORED_WS : " " | "\t" | "\n" | "\r" >
-    |
-    <?EXPRESSION_COMMENT1 : "<#--" (~[])* "-->">
-    |
-    <?EXPRESSION_COMMENT2 : "[#--" (~[])* "--]">
 ;
 
 <EXPRESSION> TOKEN#Literal :
