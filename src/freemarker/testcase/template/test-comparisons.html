@@ -1,4 +1,4 @@
-[#ftl strict_vars="false"]
+[#ftl strict_vars="true"]
 
 
 <html>
@@ -11,48 +11,54 @@
 
 <p>${message}</p>
 
+#var a1 = 0
 <p>Start with the increment operator:</p>
-<#assign a1 = 0>
 <p>a1 = ${a1}</p>
-<#assign a1 = a1 + 1>
+   #set a1 = a1 + 1
 <p>a1 = ${a1}</p>
-<#assign a1 = a1 + 1>
+   #set a1 = a1 + 1
 <p>a1 = ${a1}</p>
 
 <p>Now the decrement operator:</p>
-<#assign a2 = 5>
+#var a2 = 5
 <p>a2 = ${a2}</p>
-<#assign a2 = a2 - 1>
+#set a2 = a2 - 1
 <p>a2 = ${a2}</p>
-<#assign a2 = a2 - 1>
+   #set a2 = a2 - 1
 <p>a2 = ${a2}</p>
-<#assign a2 = a2 - 1>
+   #set a2 = a2 - 1
 <p>a2 = ${a2}</p>
-<#assign a2 = a2 - 1>
+   #set a2 = a2 - 1
 <p>a2 = ${a2}</p>
-<#assign a2 = a2 - 1>
+   #set a2 = a2 - 1
 <p>a2 = ${a2}</p>
-<#assign a2 = a2 - 1>
+   #set a2 = a2 - 1
 <p>a2 = ${a2}</p>
-<#assign a2 = a2 - 1>
+   #set a2 = a2 - 1
 
 <p>Now the add operator:</p>
-<#assign op1 = 5>
-<#assign op2 = 3>
-<#assign op3 = op1 + op2>
+#var op1 = 5
+#var op2 = 3
+#var op3 = op1 + op2
 <p>op1 = ${op1}, op2 = ${op2}, op3 = ${op3}</p>
-<#assign op3 = op3 + op2>
+#set op3 = op3 + op2
 <p>op3 = ${op3}</p>
 
 <p>And the subtract operator:</p>
-<#assign op3 = op1 - op2 >
+#set op3 = op1 - op2 
 <p>op1 = ${op1}, op2 = ${op2}, op3 = ${op3}</p>
-<#assign op3 = op3 - op2 >
+#set op3 = op3 - op2 
 <p>op3 = ${op3}</p>
 
 <p>The comparison operators:</p>
-<#assign list1 = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ]>
+#var list1 = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ]
 #foreach item in list1
+
+${  
+   item = 7 
+   ?: "7 is a lucky number!" 
+   : "Item number " + item_index
+}
    <p>Item is: ${item}</p>
    #if item lt 5
    <p>Item is less than five.</p>

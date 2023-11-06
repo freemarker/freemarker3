@@ -373,6 +373,8 @@ TOKEN#Text :
   |
   <EXISTS : "??">
   |
+  <TERNARY : "?:">
+  |
   <EQUALS : "=">
   |
   <DOUBLE_EQUALS : "==">

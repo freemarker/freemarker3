@@ -2,7 +2,7 @@
 // grammar. It is INCLUDEd from the main template.
 
 #Expression#interface : 
-    OrExpression 
+    TernaryExpression 
     {
         return (Expression) peekNode();
     } 
@@ -98,6 +98,38 @@ INJECT Expression :
             throw new EvaluationException(msg);
         }
         return referent.toString().length() == 0;
+    }
+}
+
+TernaryExpression : 
+    OrExpression 
+    [
+        <TERNARY>
+        Expression
+        <COLON>
+        Expression
+    ]
+; 
+
+INJECT TernaryExpression :
+   import freemarker.core.Environment;
+   implements Expression
+{
+    public Object evaluate(Environment env) {
+        Expression condition = (Expression) get(0);
+        Expression trueChoice= (Expression) get(2);
+        Expression falseChoice = (Expression) get(4);
+        return condition.isTrue(env) ? trueChoice.evaluate(env) : falseChoice.evaluate(env);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        TernaryExpression result = new TernaryExpression();
+        result.add(((Expression) get(0)).deepClone(name, subst));
+        result.add(get(1));
+        result.add(((Expression) get(2)).deepClone(name, subst));
+        result.add(get(3));
+        result.add(((Expression) get(4)).deepClone(name, subst));
+        return result;
     }
 }
 
