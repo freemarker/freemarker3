@@ -114,11 +114,8 @@ public class Wrap {
         return obj.toString();
     }
 
-    public static boolean isDisplayableAsString(Object tm) {
-        return isString(tm)
-                || tm instanceof Pojo
-                || isNumber(tm)
-                || tm instanceof WrappedDate;
+    public static boolean isDisplayableAsString(Object object) {
+        return isString(object) || isNumber(object) || isDate(object);
     }
 
     public static boolean isBoolean(Object obj) {

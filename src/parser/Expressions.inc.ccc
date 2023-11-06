@@ -288,7 +288,7 @@ INJECT UnaryPlusMinusExpression :
     }
 }
 
-AdditiveExpression#freemarker.core.nodes.AdditiveExpression(>1) :
+AdditiveExpression :
    MultiplicativeExpression 
    [
       (
@@ -299,6 +299,70 @@ AdditiveExpression#freemarker.core.nodes.AdditiveExpression(>1) :
       AdditiveExpression
    ]
 ;
+
+INJECT AdditiveExpression : 
+    import freemarker.template.TemplateException;
+    import freemarker.core.ArithmeticEngine;
+    import freemarker.core.Environment;
+    import static freemarker.core.variables.Wrap.*;
+    implements Expression;
+{
+    public boolean isPlus() {
+        return get(1).getType() == PLUS;
+    }
+
+    public Expression getLeft() {
+        return (Expression) get(0);
+    }
+
+    public Expression getRight() {
+        return (Expression) get(2);
+    }
+
+    public Object evaluate(Environment env) {
+        Object left = getLeft().evaluate(env);
+        Object right = getRight().evaluate(env);
+        ArithmeticEngine ae = env != null ? env.getArithmeticEngine() : getTemplate().getArithmeticEngine();
+        if (!isPlus()) {
+            Number first = getNumber(left, getLeft(), env);
+            Number second = getNumber(right, getRight(), env);
+            return ae.subtract(first, second);
+        }
+        if (isNumber(left) && isNumber(right)) {
+            Number first = getNumber(left, getLeft(), env);
+            Number second = getNumber(right, getRight(), env);
+            return ae.add(first, second);
+        }
+        if (isList(left) && isList(right)) {
+            List leftList = asList(left);
+            List rightList = asList(right);
+            List result = new ArrayList();
+            result.addAll(leftList);
+            result.addAll(rightList);
+            return result;
+        }
+        if (isMap(left) && isMap(right)) {
+            Map leftMap = (Map) unwrap(left);
+            Map rightMap = (Map) unwrap(right);
+            Map result = new LinkedHashMap(leftMap);
+            for (Object key : rightMap.keySet()) {
+                result.put(key, rightMap.get(key));
+            }
+            return result;
+        }
+        return getLeft().getStringValue(env) + getRight().getStringValue(env);
+        //String msg = this.getLocation() + ": Cannot add or concatenate";
+        //throw new TemplateException(msg, env);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        AdditiveExpression result = new AdditiveExpression();
+        result.add(getLeft().deepClone(name, subst));
+        result.add(get(1));
+        result.add(getRight().deepClone(name, subst));
+        return result;
+    }
+}
 
 MultiplicativeExpression :
    UnaryExpression 

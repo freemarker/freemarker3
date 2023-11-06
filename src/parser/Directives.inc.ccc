@@ -1052,7 +1052,6 @@ Function#Macro :
 ;
 
 INJECT Macro :
-    import freemarker.template.*;
     import freemarker.core.Environment;
     import freemarker.core.nodes.ParameterList;
     import freemarker.core.variables.WrappedVariable;
