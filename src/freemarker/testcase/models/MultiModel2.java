@@ -23,19 +23,18 @@ public class MultiModel2 implements  WrappedMethod {
     /**
      * Executes a method call.
      *
-     * @param arguments a <tt>List</tt> of <tt>String</tt> objects containing the values
+     * @param arguments a <tt>List</tt> of objects containing the values
      * of the arguments passed to the method.
-     * @return the <tt>WrappedVariable</tt> produced by the method, or null.
+     * @return t Strin that just concatenates the string representations
+     * of all the arguments
      */
-    public Object exec(List arguments) {
+    @Override
+    public String exec(List arguments) {
         StringBuilder  aResults = new StringBuilder( "Arguments are:<br />" );
-        Iterator    iList = arguments.iterator();
-
-        while( iList.hasNext() ) {
-            aResults.append(asString(iList.next()));
+        for (Object arg : arguments) {
+            aResults.append(arg);
             aResults.append( "<br />" );
         }
-
         return aResults.toString();
     }
 }

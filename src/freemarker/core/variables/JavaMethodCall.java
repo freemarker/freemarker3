@@ -73,23 +73,6 @@ public class JavaMethodCall implements WrappedMethod {
             // to call and cached it, then we use that! 
             return invokeMethod(method, params);
         }
-        // Now we just see if the JVM will tell us the method.
-        // We have a problem if we have any nulls because there 
-        // can easily be ambiguity, but if not...
-        if (!params.contains(JAVA_NULL) && !params.contains(null)) {
-            Class<?>[] types = new Class<?>[params.size()];
-            for (int i = 0; i<params.size(); i++) {
-                types[i] = Wrap.unwrap(params.get(i)).getClass();
-            }
-            try {
-                method = target.getClass().getMethod(methodName, types);
-            } catch (NoSuchMethodException nsme) {
-                method = null;
-            }
-            if (method != null) {
-                return invokeMethod(method, params);
-            }
-        }
         Method matchedMethod = null;
         for (Method m : possibleMethods) {
             if (!isCompatibleMethod(m, params)) continue;

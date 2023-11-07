@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Date values in a template data model must implement this interface.
+ * Date values in a template data model should implement this interface.
  * Contrary to Java, FreeMarker actually distinguishes values that represent
  * only a time, only a date, or a combined date and time. All three are
  * represented using this single interface, however there's a method that
@@ -15,8 +15,7 @@ import java.util.List;
  *
  * @version $Id: WrappedDate.java,v 1.10 2004/03/13 13:05:09 ddekany Exp $
  */
-public interface WrappedDate extends WrappedVariable
-{
+public interface WrappedDate extends WrappedVariable {
     /**
      * It is not known whether the date model represents a time-only,
      * a date-only, or a datetime value.
@@ -48,7 +47,7 @@ public interface WrappedDate extends WrappedVariable
      * Returns the date value. The return value must not be null.
      * @return the {@link Date} instance associated with this date model.
      */
-    public Date getAsDate() throws EvaluationException;
+    public Date getAsDate();
 
     /**
      * Returns the type of the date. It can be any of <tt>TIME</tt>, 

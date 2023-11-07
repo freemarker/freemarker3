@@ -91,12 +91,6 @@ INJECT Expression :
         if (referent instanceof WrappedSequence) {
             return ((WrappedSequence)referent).size() > 0;
         }
-        if (isNumber(referent)) {
-            String msg = "Error " + getLocation()
-                     + "\nExpression " + this + " is numerical."
-                     + "\nIt does not resolve to a true/false.";
-            throw new EvaluationException(msg);
-        }
         return referent.toString().length() == 0;
     }
 }
