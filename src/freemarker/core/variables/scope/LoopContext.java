@@ -39,7 +39,6 @@ public class LoopContext extends BlockScope {
                 loopVar = it.next();
                 hasNext = it.hasNext();
                 put(iteratorBlock.getIndexName(), wrap(loopVar));
-                //put(iteratorBlock.getIndexName(), loopVar);
                 put(iteratorBlock.getIndexName() + "_has_next", hasNext);
                 put(iteratorBlock.getIndexName() + "_index", index);
                 env.render(nestedBlock);

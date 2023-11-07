@@ -248,7 +248,7 @@ public class JavaMethodCall implements WrappedMethod {
             // REVISIT
             return ((WrappedDate) object).getAsDate();
         }
-        if (desiredType == String.class && object instanceof CharSequence) { 
+        if (desiredType == String.class) { 
             return object.toString();
         }
         return CAN_NOT_UNWRAP;

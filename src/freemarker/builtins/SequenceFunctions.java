@@ -60,9 +60,9 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         @Override
         public Object apply(Object sequence) {
             List list = asList(sequence);
+            list = new ArrayList(list);
             Collections.reverse(list);
             return list;
-            //return new ReverseSequence(sequence);
         }
     }
 
@@ -100,22 +100,6 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         public Object apply(Object sequence) {
             List list = asList(sequence);
             return new SequenceIndexOf(list, true);
-        }
-    }
-
-    static class ReverseSequence implements WrappedSequence {
-        private final WrappedSequence seq;
-
-        ReverseSequence(WrappedSequence seq) {
-            this.seq = seq;
-        }
-
-        public int size() {
-            return seq.size();
-        }
-
-        public Object get(int index) {
-            return seq.get(seq.size() - 1 - index);
         }
     }
 

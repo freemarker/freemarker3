@@ -27,7 +27,6 @@ public class TransformMethodWrapper2 implements WrappedMethod {
 
         while( iArgument.hasNext() ) {
             String  aArgument = asString(iArgument.next());
-
             if( aArgument.equals( "quote" )) {
                 cTransformer.setQuotes( true );
             } else if( aArgument.equals( "tag" )) {

@@ -49,19 +49,6 @@ public class Constants {
         
     };
     
-    public static final WrappedSequence EMPTY_SEQUENCE
-            = new WrappedSequence() {
-    
-        public WrappedVariable get(int index) {
-            return null;
-        }
-    
-        public int size() {
-            return 0;
-        }
-        
-    };
-    
     public static final WrappedHash EMPTY_HASH = new WrappedHash() {
 
         public int size() {

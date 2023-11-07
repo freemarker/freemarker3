@@ -1,11 +1,10 @@
 
- package freemarker.xml;
+package freemarker.xml;
 
 import java.util.List;
 
 import org.w3c.dom.*;
 import freemarker.template.*;
-import freemarker.template.utility.StringUtil;
 import freemarker.core.Environment;
 import freemarker.core.variables.EvaluationException;
 import freemarker.core.variables.WrappedNode;
@@ -74,7 +73,15 @@ class ElementModel extends NodeModel {
             }
         }
         if (isXMLID(key)) {
-            NodeListModel result = ((NodeListModel) getChildNodes()).filterByName(key);
+            Environment env = Environment.getCurrentEnvironment();
+            NodeListModel result = new NodeListModel(this);
+            for (WrappedNode node : getChildNodes()) {
+                if (node instanceof ElementModel) {
+                    if (((ElementModel) node).matchesName(key, env)) {
+                        result.add(node);
+                    }                    
+                }
+            }
             if (result.size() == 1) {
                 return result.get(0);
             }

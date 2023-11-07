@@ -1,5 +1,8 @@
 package freemarker.core.variables;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * List values in a template data model whose elements are accessed by the 
  * index operator should implement this interface. In addition to
@@ -11,7 +14,7 @@ package freemarker.core.variables;
  * @author Attila Szegedi, szegedia at users dot sourceforge dot net
  * @version $Id: WrappedSequence.java,v 1.10 2004/11/27 14:49:57 ddekany Exp $
  */
-public interface WrappedSequence extends WrappedVariable {
+public interface WrappedSequence extends WrappedVariable, Iterable<Object> {
 
     /**
      * Retrieves the i-th template model in this sequence.
@@ -28,4 +31,17 @@ public interface WrappedSequence extends WrappedVariable {
      * @return the number of items in the list.
      */
     int size();
+
+    default Iterator<Object> iterator() {
+        return new Iterator<Object>() {
+            int index;
+            public boolean hasNext() {
+                return index < size();
+            }
+            public Object next() {
+                if (!hasNext()) throw new NoSuchElementException();
+                return get(index++);
+            }
+        };
+    }
 }

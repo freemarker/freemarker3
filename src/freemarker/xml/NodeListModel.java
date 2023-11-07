@@ -14,10 +14,6 @@ class NodeListModel implements WrappedSequence, WrappedHash {
     XPathSupport xpathSupport;
     private List<Object> list = new ArrayList<>();
     
-    NodeListModel(Node node) {
-        this(NodeModel.wrapNode(node));
-    }
-    
     NodeListModel(NodeModel contextNode) {
         this.contextNode = contextNode;
     }

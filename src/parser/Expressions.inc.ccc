@@ -663,7 +663,7 @@ INJECT RangeExpression :
         return result;
     }
 
-    private class NumericalRange implements WrappedSequence {
+    private class NumericalRange extends AbstractList<Integer> {
         private int lower, upper;
         private boolean descending, norhs; // if norhs is true, then we have a half-range, like n..
         
@@ -681,7 +681,7 @@ INJECT RangeExpression :
             descending = (left != lower);
         }
 
-        public Object get(int i) {
+        public Integer get(int i) {
             int index = descending ? (upper -i) : (lower + i);
             if ((norhs && index > upper) || index <lower) {
                 throw new EvaluationException("out of bounds of range");

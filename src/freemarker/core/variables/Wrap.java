@@ -114,16 +114,12 @@ public class Wrap {
         return obj.toString();
     }
 
-    public static boolean isDisplayableAsString(Object object) {
-        return isString(object) || isNumber(object) || isDate(object);
-    }
-
     public static boolean isBoolean(Object obj) {
         if (obj instanceof WrappedBoolean) {
             return true;
         }
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
+        if (obj instanceof WrappedVariable) {
+            obj = ((WrappedVariable) obj).getWrappedObject();
         }
         return obj instanceof Boolean;
     }
@@ -139,13 +135,12 @@ public class Wrap {
     }
 
     public static boolean isIterable(Object obj) {
-        if (obj instanceof WrappedSequence)
-            return true;
         if (obj instanceof Pojo) {
             obj = ((Pojo) obj).getWrappedObject();
         }
-        if (obj.getClass().isArray())
+        if (obj.getClass().isArray()) {
             return true;
+        }
         return obj instanceof Iterable || obj instanceof Iterator;
     }
 
@@ -167,20 +162,6 @@ public class Wrap {
 
                 public Object next() {
                     return Array.get(arr, index++);
-                }
-            };
-        }
-        if (obj instanceof WrappedSequence) {
-            final WrappedSequence seq = (WrappedSequence) obj;
-            return new Iterator<Object>() {
-                int index = 0;
-
-                public boolean hasNext() {
-                    return index < seq.size();
-                }
-
-                public Object next() {
-                    return seq.get(index++);
                 }
             };
         }
@@ -220,12 +201,8 @@ public class Wrap {
                 || object instanceof Enumeration) {
             return object;
         }
-        if (object instanceof CharSequence) {
-            return object.toString(); // REVISIT
-        }
         if (object instanceof List) {
             return object;
-            //return new Pojo(object);
         }
         if (object instanceof Map) {
             return object;

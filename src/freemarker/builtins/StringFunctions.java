@@ -247,7 +247,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
 
     static class RegexMatchModel 
-    implements WrappedBoolean, Iterable, WrappedSequence {
+    implements WrappedBoolean, WrappedSequence {
         Matcher matcher;
         String input;
         final boolean matches;
