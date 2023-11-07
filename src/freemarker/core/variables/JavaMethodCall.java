@@ -90,29 +90,17 @@ public class JavaMethodCall implements WrappedMethod {
                 return invokeMethod(method, params);
             }
         }
-        Method compatibleMethod = null;
-        boolean hasVarArgs = false;
+        Method matchedMethod = null;
         for (Method m : possibleMethods) {
-            if (!m.isVarArgs() && isCompatibleMethod(m, params)) {
-                compatibleMethod = m;
-                break;
-            }
-            if (m.isVarArgs()) {
-                hasVarArgs = true;
+            if (!isCompatibleMethod(m, params)) continue;
+            if (matchedMethod == null || isMoreSpecific(m, matchedMethod, params)) {
+                matchedMethod = m;
             }
         }
-        if (hasVarArgs && compatibleMethod == null) {
-            for (Method m : possibleMethods) {
-                if (m.isVarArgs() && isCompatibleMethod(m, params)) {
-                    compatibleMethod = m;
-                    break;
-                }
-            }
-        }
-        if (compatibleMethod == null) {
+        if (matchedMethod == null) {
             throw new EvaluationException("Cannot invoke method " + methodName + " here.");
         }
-        return invokeMethod(compatibleMethod, params);
+        return invokeMethod(matchedMethod, params);
     }
 
     private boolean isCompatibleMethod(Method method, List<Object> params) {
@@ -256,16 +244,43 @@ public class JavaMethodCall implements WrappedMethod {
             }
             return CAN_NOT_UNWRAP;
         }
-        if (desiredType == String.class) { 
-            //This is not really 100% maybe, but 
-            // for now is necessary to keep CongoCC templates
-            // all working! Will REVISIT later
-            return object.toString();
-        }
         if (desiredType == Date.class && object instanceof WrappedDate) {
             // REVISIT
             return ((WrappedDate) object).getAsDate();
         }
+        if (desiredType == String.class && object instanceof CharSequence) { 
+            return object.toString();
+        }
         return CAN_NOT_UNWRAP;
+    }
+
+    private boolean isMoreSpecific(Method method1, Method method2, List<Object> params) {
+        if (!method1.isVarArgs() && method2.isVarArgs()) return true;
+        if (method1.isVarArgs() && !method2.isVarArgs()) return false;
+        Class<?>[] types1 = method1.getParameterTypes();
+        Class<?>[] types2 = method2.getParameterTypes();
+        int numParams = types1.length;
+        if (method1.isVarArgs()) --numParams;
+        boolean moreSpecific = false, lessSpecific = false;
+        for (int i = 0; i < numParams; i++) {
+            Class<?> type1 = types1[i];
+            Class<?> type2 = types2[i];
+            if (type1 == type2) continue;
+            Object param = params.get(i);
+            if (type1.isInstance(param) && !type2.isInstance(param)) {
+                moreSpecific = true;
+                continue;
+            }
+            if (type2.isInstance(param) && !type1.isInstance(param)) {
+                lessSpecific = true;
+                continue;
+            }
+            if (type2.isAssignableFrom(type1)) {
+                moreSpecific = true;
+            } else {
+                lessSpecific = true;
+            }
+        }
+        return moreSpecific && !lessSpecific;
     }
 }

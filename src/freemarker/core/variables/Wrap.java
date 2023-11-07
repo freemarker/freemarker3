@@ -68,8 +68,8 @@ public class Wrap {
     }
 
     public static boolean isDate(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
+        if (obj instanceof WrappedVariable) {
+            obj = ((WrappedVariable) obj).getWrappedObject();
         }
         if (obj instanceof Date) {
             return true;

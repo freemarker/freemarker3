@@ -474,7 +474,7 @@ INJECT MultiplicativeExpression :
     }
 }
 
-EqualityExpression#freemarker.core.nodes.ComparisonExpression(>1) :
+EqualityExpression :
    RelationalExpression
    [
      (
@@ -488,7 +488,56 @@ EqualityExpression#freemarker.core.nodes.ComparisonExpression(>1) :
    ]
 ;
 
-RelationalExpression#freemarker.core.nodes.ComparisonExpression(>1) :
+INJECT EqualityExpression :
+    import freemarker.core.Environment;
+    import freemarker.core.ArithmeticEngine;
+    import static freemarker.core.variables.Wrap.*;
+    implements Expression
+{
+    public Expression getLeft() {
+        return (Expression) get(0);
+    }
+
+    public Expression getRight() {
+        return (Expression) get(2);
+    }
+
+    public Object evaluate(Environment env) {
+        return isTrue(env);
+    }
+
+    public boolean isTrue(Environment env) {
+        TokenType operation = (TokenType) get(1).getType();
+        Object left = getLeft().evaluate(env);
+        Object right = getRight().evaluate(env);
+        getLeft().assertNonNull(left, env);
+        getRight().assertNonNull(right, env);
+        if (isNumber(left) && isNumber(right)) {
+            ArithmeticEngine ae = env != null ? env.getArithmeticEngine() : getTemplate().getArithmeticEngine();
+            int comp = ae.compareNumbers(asNumber(left), asNumber(right));
+            return operation == NOT_EQUALS ? comp !=0 : comp == 0;
+        }
+        left = unwrap(left);
+        right = unwrap(right);
+        return operation == NOT_EQUALS ? !left.equals(right) : left.equals(right);
+    }
+
+    private boolean dealWithNumbers(Number left, Number right, TokenType operation, Environment env) {
+        ArithmeticEngine ae = env != null ? env.getArithmeticEngine() : getTemplate().getArithmeticEngine();
+        int comp = ae.compareNumbers(left, right);
+        return operation == NOT_EQUALS ? comp !=0 : comp == 0;
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        EqualityExpression result = new EqualityExpression();
+        result.add(getLeft().deepClone(name, subst));
+        result.add(get(1));
+        result.add(getRight().deepClone(name, subst));
+        return result;
+    }
+}
+
+RelationalExpression :
    RangeExpression 
    [
      (
@@ -507,6 +556,58 @@ RelationalExpression#freemarker.core.nodes.ComparisonExpression(>1) :
      RangeExpression
    ]
 ;
+
+INJECT RelationalExpression :
+    import freemarker.template.TemplateException;
+    import freemarker.core.Environment;
+    import freemarker.core.ArithmeticEngine;
+    import static freemarker.core.variables.Wrap.*;
+    implements Expression;
+{
+    public Expression getLeft() {
+        return (Expression) get(0);
+    }
+
+    public Expression getRight() {
+        return (Expression) get(2);
+    }
+
+    public Object evaluate(Environment env) {
+        return isTrue(env);
+    }
+
+    public boolean isTrue(Environment env) {
+        TokenType operation = (TokenType) get(1).getType();
+        Object left = getLeft().evaluate(env);
+        Object right = getRight().evaluate(env);
+        getLeft().assertNonNull(left, env);
+        getRight().assertNonNull(right, env);
+        if (!isNumber(left) || !isNumber(right)) {
+            throw new TemplateException("Can only compare numbers", env);
+        }
+        ArithmeticEngine ae = env != null ? env.getArithmeticEngine() : getTemplate().getArithmeticEngine();
+        int comp = ae.compareNumbers(asNumber(left), asNumber(right));
+        switch(operation) {
+            case LESS_THAN : 
+                return comp < 0;
+            case GREATER_THAN : case ESCAPED_GT : 
+                return comp > 0;
+            case LESS_THAN_EQUALS : 
+                return comp <= 0;
+            case GREATER_THAN_EQUALS : case ESCAPED_GTE : 
+                return comp >= 0;
+            default : throw new InternalError();
+        }
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        RelationalExpression result = new RelationalExpression();
+        result.add(getLeft().deepClone(name, subst));
+        result.add(get(1));
+        result.add(getRight().deepClone(name, subst));
+        return result;
+    }
+}
 
 RangeExpression :
    AdditiveExpression
