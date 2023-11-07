@@ -449,7 +449,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class urlBIResult implements WrappedString, WrappedMethod {
+    static class urlBIResult implements WrappedMethod {
 
         private final String target;
         private final Environment env;
@@ -460,7 +460,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.env = env;
         }
 
-        public String getAsString() {
+        public String toString() {
             if (cachedResult == null) {
                 String cs = env.getEffectiveURLEscapingCharset();
                 if (cs == null) {

@@ -273,12 +273,12 @@ public class TemplateTestCase extends TestCase {
         }
     }
     
-    static class TestBoolean implements WrappedBoolean, WrappedString {
+    static class TestBoolean implements WrappedBoolean {
         public boolean getAsBoolean() {
             return true;
         }
         
-        public String getAsString() {
+        public String toString() {
             return "de";
         }
     }

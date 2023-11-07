@@ -7,14 +7,14 @@ import freemarker.core.variables.*;
  *
  * @version $Id: MultiModel3.java,v 1.14 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel3 implements WrappedString, WrappedHash {
+public class MultiModel3 implements WrappedHash {
 
     /**
      * Returns the scalar's value as a String.
      *
      * @return the String value of this scalar.
      */
-    public String getAsString() {
+    public String toString() {
         return "Model3 is alive!";
     }
 

@@ -9,14 +9,14 @@ import static freemarker.core.variables.Wrap.asString;
  *
  * @version $Id: MultiModel2.java,v 1.15 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel2 implements WrappedString, WrappedMethod {
+public class MultiModel2 implements  WrappedMethod {
 
     /**
      * Returns the scalar's value as a String.
      *
      * @return the String value of this scalar.
      */
-    public String getAsString() {
+    public String toString() {
         return "Model2 is alive!";
     }
 

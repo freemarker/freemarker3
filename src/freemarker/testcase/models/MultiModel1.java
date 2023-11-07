@@ -12,8 +12,7 @@ import java.util.Map;
  *
  * @version $Id: MultiModel1.java,v 1.17 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel1 implements WrappedHash,
-        WrappedSequence, WrappedString {
+public class MultiModel1 implements WrappedHash, WrappedSequence {
 
     private WrappedVariable m_cSubModel = new MultiModel2();
     private WrappedVariable m_cListHashModel1 = new MultiModel4();
@@ -77,7 +76,7 @@ public class MultiModel1 implements WrappedHash,
      *
      * @return the String value of this scalar.
      */
-    public String getAsString() {
+    public String toString() {
         return "MultiModel1 as a string!";
     }
 

@@ -37,8 +37,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     }
 	
 	
-    static class BooleanFormatter
-    implements WrappedString, WrappedMethod  
+    static class BooleanFormatter implements WrappedMethod  
     {
         private final Object bool;
         private final Environment env;
@@ -48,7 +47,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             this.env = env;
         }
 
-        public String getAsString() {
+        public String toString() {
             if (isString(bool)) {
                 return (asString(bool));
             } else {
@@ -68,8 +67,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     }
     
     
-    static class DateFormatter
-    implements WrappedString, WrappedHash, WrappedMethod {
+    static class DateFormatter implements WrappedHash, WrappedMethod {
         private final Date date;
         private final int dateType;
         private final Environment env;
@@ -82,7 +80,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             defaultFormat = env.getDateFormatObject(dateType);
         }
 
-        public String getAsString() { 
+        public String toString() { 
             if(dateType == WrappedDate.UNKNOWN) {
                 throw new EvaluationException("Can't convert the date to string, because it is not known which parts of the date variable are in use. Use ?date, ?time or ?datetime built-in, or ?string.<format> or ?string(format) built-in with this date.");
             }
@@ -109,7 +107,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
     }
     
-    static class NumberFormatter implements WrappedString, WrappedHash, WrappedMethod {
+    static class NumberFormatter implements WrappedHash, WrappedMethod {
         private final Number number;
         private final Environment env;
         private final NumberFormat defaultFormat;
@@ -122,7 +120,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             defaultFormat = env.getNumberFormatObject(env.getNumberFormat());
         }
 
-        public String getAsString()
+        public String toString()
         {
             if(cachedValue == null) {
                 cachedValue = defaultFormat.format(number);
