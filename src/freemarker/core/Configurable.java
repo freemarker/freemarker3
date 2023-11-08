@@ -41,7 +41,6 @@ abstract public class Configurable {
 
     private Configurable fallback;
     private Properties properties;
-    private HashMap<Object, Object> customAttributes;
 
     private Locale locale;
     private String numberFormat;
@@ -70,8 +69,6 @@ abstract public class Configurable {
         falseFormat = "false";
         templateExceptionHandler = TemplateExceptionHandler.DEBUG_HANDLER;
         arithmeticEngine = ArithmeticEngine.BIGDECIMAL_ENGINE;
-        // outputEncoding and urlEscapingCharset defaults to null,
-        // which means "not specified"
 
         properties = new Properties();
         properties.setProperty(LOCALE_KEY, locale.toString());
@@ -83,10 +80,6 @@ abstract public class Configurable {
         properties.setProperty(TEMPLATE_EXCEPTION_HANDLER_KEY, templateExceptionHandler.getClass().getName());
         properties.setProperty(ARITHMETIC_ENGINE_KEY, arithmeticEngine.getClass().getName());
         properties.setProperty(BOOLEAN_FORMAT_KEY, "true,false");
-        // as outputEncoding and urlEscapingCharset defaults to null,
-        // they are not set
-
-        customAttributes = new HashMap<Object, Object>();
     }
 
     /**
@@ -101,7 +94,6 @@ abstract public class Configurable {
         falseFormat = null;
         templateExceptionHandler = null;
         properties = new Properties(fallback.properties);
-        customAttributes = new HashMap<Object, Object>();
     }
 
     /**

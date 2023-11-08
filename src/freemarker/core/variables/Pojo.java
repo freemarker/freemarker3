@@ -22,7 +22,7 @@ public class Pojo implements WrappedVariable {
         this.object = object;
     }
 
-    public Object get(String key) {
+    public Object get(String key, boolean looseSyntax) {
         Method getter = getGetter(key);
         if (getter != null)
             try {
@@ -30,7 +30,7 @@ public class Pojo implements WrappedVariable {
             } catch (Exception e) {
                 throw new EvaluationException(e);
             }
-        if (methodOfNameExists(key)) {
+        if (looseSyntax && methodOfNameExists(key)) {
             return new JavaMethodCall(object, key);
         }
         return null;

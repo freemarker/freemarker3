@@ -989,9 +989,9 @@ import java.util.HashMap;
 //        knownBuiltins.put("sort_by", new SequenceFunctions.SortBy());
 //        knownBuiltins.put("seq_index_of", new SequenceFunctions.IndexOf());
 //        knownBuiltins.put("seq_last_index_of", new SequenceFunctions.LastIndexOf());
+//        knownBuiltins.put("pojo", new pojoBI());
         knownBuiltins.put("c", new cBI());
         knownBuiltins.put("size", new sizeBI());
-        knownBuiltins.put("pojo", new pojoBI());
         knownBuiltins.put("string", new stringBI());
         knownBuiltins.put("eval", new evalBI());
         knownBuiltins.put("interpret", new interpretBI());
@@ -1151,7 +1151,8 @@ INJECT DotVariable :
             return wrap(((Scope) lhs).get(getKey()));
         }
         if (lhs instanceof Pojo) {
-            return wrap(((Pojo) lhs).get(getKey()));
+            boolean looseSyntax = !this.getTemplate().strictVariableDeclaration();
+            return wrap(((Pojo) lhs).get(getKey(), looseSyntax));
         }
         throw invalidTypeException(lhs, getTarget(), env, "hash");
     }

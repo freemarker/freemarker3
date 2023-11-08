@@ -7,7 +7,6 @@ ${array[1]}
 <#list list as item>
 ${item}
 </#list>
-[#--var list = list?pojo--]
 #var list = ["list-0", "list-1"] 
 #exec list::add("list-2")
 ${list::size()}
@@ -19,15 +18,15 @@ ${obj.foo}
 <#if obj.foo?exists>hasfoo<#else>nofoo</#if>
 ${obj.baz?exists ?: "hasbaz" : "nobaz"}
 ${obj::getBar(0)}
-${obj.getBar(0)}
-${obj.getFoo()}
-${obj.overloaded(1?int)}
-${obj.overloaded("String")}
-${obj.varArgs(1?int,2?int,3?int)}
-${obj.varArgs(1?int,2?int)}
-${obj.varArgs(1?int)}
-${obj.varArgs()}
-${obj.moreSpecific("someString")}
+${obj::getBar(0)}
+${obj::getFoo()}
+${obj::overloaded(1?int)}
+${obj::overloaded("String")}
+${obj::varArgs(1?int,2?int,3?int)}
+${obj::varArgs(1?int,2?int)}
+${obj::varArgs(1?int)}
+${obj::varArgs()}
+${obj::moreSpecific("someString")}
 ${resourceBundle.message}
 ${resourceBundle("format", date)}
 
