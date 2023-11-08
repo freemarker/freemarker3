@@ -9,7 +9,7 @@ ${item}
 </#list>
 [#--var list = list?pojo--]
 #var list = ["list-0", "list-1"] 
-#var unused = list::add("list-2")
+#exec list::add("list-2")
 ${list::size()}
 <#if !list>empty<#else>not empty</#if>
 ${list[0]}
@@ -17,7 +17,7 @@ ${map.key}
 ${map[objKey]}
 ${obj.foo}
 <#if obj.foo?exists>hasfoo<#else>nofoo</#if>
-<#if obj.baz?exists>hasbaz<#else>nobaz</#if>
+${obj.baz?exists ?: "hasbaz" : "nobaz"}
 ${obj::getBar(0)}
 ${obj.getBar(0)}
 ${obj.getFoo()}

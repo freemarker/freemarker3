@@ -85,6 +85,9 @@ INJECT Expression :
         if (referent instanceof Collection) {
             return !((Collection)referent).isEmpty();
         }
+        if (referent instanceof Map) {
+            return !((Map)referent).isEmpty();
+        }
         if (referent.getClass().isArray()) {
             return Array.getLength(referent) > 0;
         }

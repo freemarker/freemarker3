@@ -433,7 +433,7 @@ INJECT AssertionInstruction :
         Expression exp = (Expression) get(1);
         if (!exp.isTrue(env)) {
             String message = "Assertion failed. Expression " + exp + " was false.";
-            if (size() == 4) {
+            if (size() > 3) {
                 String extraInfo = ((Expression)get(3)).getStringValue(env);
                 message += " ";
                 message += extraInfo;
@@ -443,10 +443,24 @@ INJECT AssertionInstruction :
     }
 }
 
+ExecInstruction :
+    <EXEC> Expression LooseDirectiveEnd
+;
+
+INJECT ExecInstruction :
+    import freemarker.core.Environment;
+    extends TemplateElement
+{
+    public void execute(Environment env) {
+        Expression exp = (Expression) get(1);
+        exp.evaluate(env);
+    }
+}
+
 /**
  * Production used to jump out of a macro.
  */
-ReturnInstruction# :
+ReturnInstruction :
    <RETURN> [Expression] LooseDirectiveEnd
 ;
 
@@ -1659,6 +1673,8 @@ TemplateElement#abstract :
    BreakInstruction
    |
    ReturnInstruction
+   |
+   ExecInstruction
    |
    StopInstruction
    |
