@@ -1,4 +1,4 @@
-<#ftl strict_vars="false">
+#ftl legacy_syntax
 <html>
 <head>
 <title>FreeMarker: Function Test</title>
@@ -11,17 +11,17 @@
 
 <p>Now perform function tests:</p>
 
-<#assign urls = {"home" : "/home.html", "about" : "/about.html"}>
-<#assign images = {"home" : "/images/home.png", "about" : "/image/about-us.jpeg"}>
-<#assign preferences = {"showImages" : true}>
+#assign urls = {"home" : "/home.html", "about" : "/about.html"}
+#assign images = {"home" : "/images/home.png", "about" : "/image/about-us.jpeg"}
+#assign preferences = {"showImages" : true}
 <#assign "español" = français><#macro français(url, image, alt)>
-    <#local var = "Kilroy">
+    #local var = "Kilroy"
     <a href="${url}">
-    <#if preferences.showImages>
+    #if preferences.showImages
         <img src="${image}" border="0" alt="${alt}">
-    <#else>
+    #else
         ${alt}
-    </#if>
+    /#if
     </a>
     ${var} was here.
 </#macro>

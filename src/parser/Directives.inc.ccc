@@ -1846,8 +1846,10 @@ TemplateHeaderElement# :
   <FTL_HEADER> =>||
   (
     <ID>
-    <EQUALS>
-    Expression
+    [
+        <EQUALS>
+        Expression
+    ]
   )*
   LooseDirectiveEnd
 ; 
@@ -1873,8 +1875,13 @@ INJECT TemplateHeaderElement :
         List<Node> ids = childrenOfType(ID);
         for (Node n : ids) {
             String key = n.toString();
-            Expression exp = (Expression) n.nextSibling().nextSibling();
-            params.put(key, exp);
+            if (n.nextSibling().getType() == EQUALS) {
+                Expression exp = (Expression) n.nextSibling().nextSibling();
+                params.put(key, exp);
+            } else {
+                Expression syntheticBooleanToken = (Expression) Token.newToken(TRUE, getTokenSource(), n.getEndOffset(), n.getEndOffset());
+                params.put(key, syntheticBooleanToken);
+            }
         }
     }
 

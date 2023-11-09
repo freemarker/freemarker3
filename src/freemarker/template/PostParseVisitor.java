@@ -47,6 +47,10 @@ public class PostParseVisitor extends Node.Visitor {
 					boolean strictVariableDeclaration = header.getBooleanParameter("strict_vars");
 	         	   	template.setStrictVariableDeclaration(strictVariableDeclaration);
 	       	   	}
+				else if (key.equals("legacy_syntax")) {
+					boolean strictVariableDeclaration = !header.getBooleanParameter("legacy_syntax");
+					template.setStrictVariableDeclaration(strictVariableDeclaration);
+				}
 				else if (!key.equals("encoding")) {
 					ParsingProblem problem  = new ParsingProblem("Unknown ftl header parameter: " + entry.getKey(), header);
 					template.addParsingProblem(problem);
