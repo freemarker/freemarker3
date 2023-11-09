@@ -229,6 +229,10 @@ public class Configuration extends Configurable {
     public void setStrictVariableDefinition(boolean b) {
     	this.strictVariableDefinition = b;
     }
+
+    public void setLegacySyntax(boolean b) {
+        this.strictVariableDefinition = !b;
+    }
     
     /**
      * @return whether, by default, templates use strict variable
@@ -527,7 +531,10 @@ public class Configuration extends Configurable {
                 setLocalizedLookup(StringUtil.getYesNo(value));
             } else if ("strict_vars".equalsIgnoreCase(key)) {
             	setStrictVariableDefinition(StringUtil.getYesNo(value));
-            } else if ("cache_storage".equalsIgnoreCase(key)) {
+            } else if ("legacy_syntax".equalsIgnoreCase(key)) {
+                setStrictVariableDefinition(!StringUtil.getYesNo(value));
+            }
+            else if ("cache_storage".equalsIgnoreCase(key)) {
                 if (value.indexOf('.') == -1) {
                     int strongSize = 0;
                     int softSize = 0;

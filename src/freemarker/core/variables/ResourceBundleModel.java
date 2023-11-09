@@ -35,11 +35,12 @@ import static freemarker.core.variables.Wrap.unwrap;
  * @version $Id: ResourceBundleModel.java,v 1.22 2004/01/06 17:06:42 szegedia
  *          Exp $
  */
-public class ResourceBundleModel extends Pojo implements WrappedMethod, WrappedHash {
+public class ResourceBundleModel implements WrappedMethod, WrappedHash {
     private Hashtable<String, MessageFormat> formats = null;
+    private ResourceBundle bundle;
 
     public ResourceBundleModel(ResourceBundle bundle) {
-        super(bundle);
+        this.bundle = bundle;
     }
 
     /**
@@ -56,7 +57,7 @@ public class ResourceBundleModel extends Pojo implements WrappedMethod, WrappedH
         String key = asString(it.next());
         try {
             if (!it.hasNext()) {
-                return wrap((getWrappedObject()).getObject(key));
+                return wrap(bundle.getObject(key));
             }
             // Copy remaining arguments into an Object[]
             int args = arguments.size() - 1;
@@ -105,7 +106,7 @@ public class ResourceBundleModel extends Pojo implements WrappedMethod, WrappedH
             format = formats.get(key);
             if (format == null) {
                 format = new MessageFormat(getWrappedObject().getString(key));
-                format.setLocale(getWrappedObject().getLocale());
+                format.setLocale(bundle.getLocale());
                 formats.put(key, format);
             }
         }
@@ -118,6 +119,6 @@ public class ResourceBundleModel extends Pojo implements WrappedMethod, WrappedH
     }
 
     public ResourceBundle getWrappedObject() {
-        return (ResourceBundle) super.getWrappedObject();
+        return bundle;
     }
 }
