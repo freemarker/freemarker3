@@ -202,7 +202,8 @@ public class Wrap {
             return object;
         }
         if (object instanceof List) {
-            return object;
+            //return object;
+            return new Pojo(object);
         }
         if (object instanceof Map) {
             return object;
