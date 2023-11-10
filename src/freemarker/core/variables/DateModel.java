@@ -2,11 +2,6 @@ package freemarker.core.variables;
 
 import java.util.Date;
 
-/**
- * Wraps arbitrary subclass of {@link java.util.Date} into a reflective model.
- * Beside acting as a {@link WrappedDate}, you can call all Java methods
- * on these objects as well.
- */
 public class DateModel implements WrappedDate
 {
     private int type;

@@ -9,6 +9,7 @@ import freemarker.cache.*;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.variables.WrappedHash;
+import freemarker.core.variables.WrappedVariable;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
 import freemarker.log.Logger;
@@ -42,7 +43,7 @@ public class Configuration extends Configurable {
 
     private static final Logger logger = Logger.getLogger("freemarker.parser");
     private static Configuration defaultConfig = new Configuration();
-    private boolean localizedLookup = true, strictVariableDefinition=true;
+    private boolean localizedLookup = true, legacySyntax;
     private TemplateCache cache;
     private HashMap<String, Object> variables = new HashMap<String, Object>();
     private HashMap<String, String> encodingMap = new HashMap<String, String>();
@@ -219,19 +220,17 @@ public class Configuration extends Configurable {
         cache.setDelay(1000L * delay);
     }
     
-    /**
-     * Sets whether, by default, templates use strict variable
-     * definition syntax, such that any variable created 
-     * at the top template level must be declared with a #var
-     * directive. At the moment, the factory-set default is on.
-     */
-    
     public void setStrictVariableDefinition(boolean b) {
-    	this.strictVariableDefinition = b;
+    	this.legacySyntax = !b;
     }
 
+    /**
+     * Sets whether, by default, templates accep legacy syntax. 
+     * At the moment, the factory-set default is off.
+     */
+    
     public void setLegacySyntax(boolean b) {
-        this.strictVariableDefinition = !b;
+        this.legacySyntax = b;
     }
     
     /**
@@ -242,7 +241,7 @@ public class Configuration extends Configurable {
      */
     
     public boolean getStrictVariableDefinition() {
-    	return strictVariableDefinition;
+    	return !legacySyntax;
     }
 
     /**

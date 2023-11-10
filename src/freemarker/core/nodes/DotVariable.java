@@ -30,7 +30,7 @@ public class DotVariable extends TemplateNode implements Expression {
 
     public Object evaluate(Environment env) {
         Object lhs = getTarget().evaluate(env);
-        assertIsDefined(lhs, env);
+        assertNonNull(lhs, env);
         if (lhs instanceof Map) {
             return wrap(((Map) lhs).get(getKey()));
         }
