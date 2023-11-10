@@ -7,7 +7,6 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.ParentheticalExpression;
-import freemarker.core.variables.Pojo;
 import freemarker.core.variables.WrappedHash;
 import freemarker.core.variables.WrappedMethod;
 import freemarker.core.variables.InvalidReferenceException;
@@ -72,9 +71,6 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
             }
             if (model instanceof Map) {
                 return !((Map<?,?>) model).isEmpty();
-            }
-            if (model instanceof Pojo) {
-                return ((Pojo)model).size() > 0;
             }
             if (model instanceof WrappedHash) {
                 return !((WrappedHash)model).isEmpty();

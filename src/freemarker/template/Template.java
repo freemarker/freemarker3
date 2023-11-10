@@ -365,6 +365,14 @@ public class Template extends Configurable {
     public boolean strictVariableDeclaration() {
     	return strictVariableDeclaration;
     }
+
+    public boolean legacySyntax() {
+        return !strictVariableDeclaration;
+    }
+
+    public void setLegacySyntax(boolean legacySyntax) {
+        this.strictVariableDeclaration = !legacySyntax;
+    }
     
     public void setStrictVariableDeclaration(boolean strictVariableDeclaration) {
     	this.strictVariableDeclaration = strictVariableDeclaration;

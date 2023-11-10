@@ -32,9 +32,6 @@ INJECT Expression :
             WrappedDate dm = (WrappedDate) referent;
             return env.formatDate(getDate(dm, this, env), dm.getDateType());
         }
-        if (referent instanceof Pojo) {
-            return ((Pojo)referent).getWrappedObject().toString();
-        }
         if (isString(referent)) {
             return asString(referent);
         }
@@ -78,9 +75,6 @@ INJECT Expression :
         }
         if (isBoolean(referent)) {
             return asBoolean(referent);
-        }
-        if (referent instanceof Pojo) {
-            referent = ((Pojo)referent).getWrappedObject();
         }
         if (referent instanceof Collection) {
             return !((Collection)referent).isEmpty();

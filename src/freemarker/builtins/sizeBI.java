@@ -5,7 +5,6 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.WrappedHash;
 import freemarker.core.variables.WrappedSequence;
-import freemarker.core.variables.Pojo;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -32,9 +31,6 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
         }
         else if (model instanceof WrappedHash) {
             size = ((WrappedHash) model).size();
-        }
-        else if (model instanceof Pojo) {
-            size = ((Pojo)model).size();
         }
         else if (model.getClass().isArray()) {
             return Array.getLength(model);

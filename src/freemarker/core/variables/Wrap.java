@@ -4,7 +4,6 @@ import java.util.*;
 import java.lang.reflect.Array;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
-import freemarker.core.variables.scope.Scope;
 import freemarker.template.TemplateException;
 import freemarker.xml.NodeModel;
 
@@ -27,9 +26,6 @@ public class Wrap {
         if (obj instanceof WrappedSequence) {
             return true;
         }
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         if (obj.getClass().isArray()) {
             return true;
         }
@@ -37,9 +33,6 @@ public class Wrap {
     }
 
     public static List<?> asList(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         if (obj instanceof WrappedSequence) {
             WrappedSequence tsm = (WrappedSequence) obj;
             List<Object> result = new ArrayList<>();
@@ -58,13 +51,7 @@ public class Wrap {
     }
 
     public static boolean isNumber(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
-        if (obj instanceof Number) {
-            return true;
-        }
-        return false;
+        return obj instanceof Number;
     }
 
     public static boolean isDate(Object obj) {
@@ -81,9 +68,6 @@ public class Wrap {
     }
 
     public static Number asNumber(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         return (Number) obj;
     }
 
@@ -91,18 +75,12 @@ public class Wrap {
         if (obj instanceof WrappedDate) {
             return ((WrappedDate) obj).getAsDate();
         }
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         return (Date) obj;
     }
 
     public static boolean isString(Object obj) {
         if (obj instanceof WrappedString) {
             return true;
-        }
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
         }
         return obj instanceof CharSequence;
     }
@@ -128,26 +106,16 @@ public class Wrap {
         if (obj instanceof WrappedBoolean) {
             return ((WrappedBoolean) obj).getAsBoolean();
         }
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         return (Boolean) obj;
     }
 
     public static boolean isIterable(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
-        if (obj.getClass().isArray()) {
-            return true;
-        }
-        return obj instanceof Iterable || obj instanceof Iterator;
+        return obj instanceof Iterable 
+              || obj instanceof Iterator 
+              || obj.getClass().isArray();
     }
 
     public static Iterator<?> asIterator(Object obj) {
-        if (obj instanceof Pojo) {
-            obj = ((Pojo) obj).getWrappedObject();
-        }
         if (obj instanceof Iterator) {
             return (Iterator<?>) obj;
         }
@@ -188,29 +156,6 @@ public class Wrap {
         if (object == null) {
             return Constants.JAVA_NULL;
         }
-        if (isMarkedAsPojo(object.getClass())) {
-            return new Pojo(object);
-        }
-        if (object instanceof WrappedVariable
-                || object instanceof String
-                || object instanceof Pojo
-                || object instanceof Scope
-                || object instanceof Boolean
-                || object instanceof Number
-                || object instanceof Iterator
-                || object instanceof Enumeration) {
-            return object;
-        }
-        if (object instanceof List) {
-            //return object;
-            return new Pojo(object);
-        }
-        if (object instanceof Map) {
-            return object;
-        }
-        if (object.getClass().isArray()) {
-            return new Pojo(object);
-        }
         if (object instanceof Date) {
             return new DateModel((Date) object);
         }
@@ -220,32 +165,7 @@ public class Wrap {
         if (object instanceof org.w3c.dom.Node) {
             return NodeModel.wrapNode((org.w3c.dom.Node)object);
         }
-        return new Pojo(object);
-    }
-
-    private static Map<Class<?>, Boolean> markedAsPojoLookup = new HashMap<>();
-
-    private static boolean isMarkedAsPojo(Class<?> clazz) {
-        Boolean lookupValue = markedAsPojoLookup.get(clazz);
-        if (lookupValue != null)
-            return lookupValue;
-        if (clazz.getAnnotation(freemarker.annotations.Pojo.class) != null) {
-            markedAsPojoLookup.put(clazz, true);
-            return true;
-        }
-        for (Class<?> interf : clazz.getInterfaces()) {
-            if (isMarkedAsPojo(interf)) {
-                markedAsPojoLookup.put(clazz, true);
-                return true;
-            }
-        }
-        if (clazz.getSuperclass() != null) {
-            lookupValue = isMarkedAsPojo(clazz.getSuperclass());
-        } else {
-            lookupValue = false;
-        }
-        markedAsPojoLookup.put(clazz, lookupValue);
-        return lookupValue;
+        return object;
     }
 
     public static Object unwrap(Object object) {

@@ -82,14 +82,7 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         if (lhs instanceof Scope) {
             return wrap(((Scope) lhs).get(key));
         }
-        if (lhs instanceof Pojo) {
-            Object wrappedObject = ((Pojo)lhs).getWrappedObject();
-            if (wrappedObject instanceof Map) {
-                return wrap(((Map) wrappedObject).get(key));
-            }
-            //return wrap(((Pojo) lhs).get(key));
-        }
-        throw invalidTypeException(lhs, getTarget(), env, "hash");
+        throw invalidTypeException(lhs, getTarget(), env, "map");
     }
 
     private Object dealWithRangeKey(Object targetModel, RangeExpression range, Environment env) {
