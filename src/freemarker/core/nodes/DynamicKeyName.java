@@ -34,8 +34,8 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         if (key == null) {
             getNameExpression().assertNonNull(key, env);
         }
-        if (isNumber(key)) {
-            int index = asNumber(key).intValue();
+        if (key instanceof Number) {
+            int index = ((Number)(key)).intValue();
             return dealWithNumericalKey(lhs, index, env);
         }
         if (isString(key)) {
@@ -47,9 +47,9 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         throw invalidTypeException(key, getNameExpression(), env, "number, range, or string");
     }
 
-    private Object dealWithNumericalKey(Object targetModel, int index, Environment env) {
-        if (targetModel instanceof WrappedSequence) {
-            WrappedSequence tsm = (WrappedSequence) targetModel;
+    private Object dealWithNumericalKey(Object target, int index, Environment env) {
+        if (target instanceof WrappedSequence) {
+            WrappedSequence tsm = (WrappedSequence) target;
             int size = Integer.MAX_VALUE;
             try {
                 size = tsm.size();
@@ -57,9 +57,9 @@ public class DynamicKeyName extends TemplateNode implements Expression {
             }
             return index < size ? tsm.get(index) : JAVA_NULL;
         }
-        if (isList(targetModel)) {
+        if (isList(target)) {
             try {
-                return wrap(asList(targetModel).get(index));
+                return wrap(asList(target).get(index));
             } catch (IndexOutOfBoundsException ae) {
                 return JAVA_NULL;
             }
@@ -74,7 +74,13 @@ public class DynamicKeyName extends TemplateNode implements Expression {
 
     private Object dealWithStringKey(Object lhs, String key, Environment env) {
         if (lhs instanceof Map) {
-            return wrap(((Map) lhs).get(key));
+//            return wrap(((Map) lhs).get(key));
+            Map map = (Map) lhs;
+            Object result = map.get(key);
+            if (result == null) {
+                return map.containsKey(key) ? JAVA_NULL : null;
+            }
+            return wrap(result);
         }
         if (lhs instanceof WrappedHash) {
             return wrap(((WrappedHash) lhs).get(key));
@@ -85,15 +91,15 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         throw invalidTypeException(lhs, getTarget(), env, "map");
     }
 
-    private Object dealWithRangeKey(Object targetModel, RangeExpression range, Environment env) {
-        int start = Wrap.getNumber(range.getLeft(), env).intValue();
+    private Object dealWithRangeKey(Object target, RangeExpression range, Environment env) {
+        int start = getNumber(range.getLeft(), env).intValue();
         int end = 0;
         boolean hasRhs = range.hasRhs();
         if (hasRhs) {
-            end = Wrap.getNumber(range.getRight(), env).intValue();
+            end = getNumber(range.getRight(), env).intValue();
         }
-        if (isList(targetModel)) {
-            List<?> list = asList(targetModel);
+        if (isList(target)) {
+            List<?> list = asList(target);
             if (!hasRhs) end = list.size() - 1;
             if (start < 0) {
                 String msg = range.getRight().getLocation() + "\nNegative starting index for range, is " + range;
@@ -134,11 +140,11 @@ public class DynamicKeyName extends TemplateNode implements Expression {
             throw new TemplateException(msg, env);
         }
         if (start > s.length()) {
-            String msg = range.getLeft().getLocation() + "\nLeft side of range out of bounds, is: " + start + "\nbut string " + targetModel + " has " + s.length() + " elements.";
+            String msg = range.getLeft().getLocation() + "\nLeft side of range out of bounds, is: " + start + "\nbut string " + target + " has " + s.length() + " elements.";
             throw new TemplateException(msg, env);
         }
         if (end > s.length()) {
-            String msg = range.getRight().getLocation() + "\nRight side of range out of bounds, is: " + end + "\nbut string " + targetModel + " is only " + s.length() + " characters.";
+            String msg = range.getRight().getLocation() + "\nRight side of range out of bounds, is: " + end + "\nbut string " + target + " is only " + s.length() + " characters.";
             throw new TemplateException(msg, env);
         }
         try {

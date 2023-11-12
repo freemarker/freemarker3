@@ -25,8 +25,8 @@ INJECT Expression :
 
     default String getStringValue(Environment env) {
         Object referent = evaluate(env);
-        if (isNumber(referent)) {
-            return env.formatNumber(asNumber(referent));
+        if (referent instanceof Number) {
+            return env.formatNumber((Number)referent);
         }
         if (referent instanceof WrappedDate) {
             WrappedDate dm = (WrappedDate) referent;
@@ -275,7 +275,6 @@ INJECT UnaryPlusMinusExpression :
     import freemarker.core.ArithmeticEngine;
     import freemarker.core.variables.*;
     import freemarker.template.TemplateException;
-    import static freemarker.core.variables.Wrap.asNumber;
     implements Expression
 {
     private static final Integer MINUS_ONE = Integer.valueOf(-1); 
@@ -291,7 +290,7 @@ INJECT UnaryPlusMinusExpression :
     public Object evaluate(Environment env) {
         Number value = null;
         try {
-            value = asNumber(getTarget().evaluate(env));
+            value = (Number)getTarget().evaluate(env);
         } catch (ClassCastException cce) {
             String msg = "Error " + getLocation();
             msg += "\nExpression " + getTarget() + " is not numerical.";
@@ -351,10 +350,8 @@ INJECT AdditiveExpression :
             Number second = getNumber(right, getRight(), env);
             return ae.subtract(first, second);
         }
-        if (isNumber(left) && isNumber(right)) {
-            Number first = getNumber(left, getLeft(), env);
-            Number second = getNumber(right, getRight(), env);
-            return ae.add(first, second);
+        if (left instanceof Number && right instanceof Number) {
+            return ae.add((Number) left, (Number) right);
         }
         if (isList(left) && isList(right)) {
             List leftList = asList(left);
@@ -405,7 +402,6 @@ INJECT MultiplicativeExpression :
    import freemarker.template.TemplateException;
    import freemarker.core.Environment;
    import freemarker.core.ArithmeticEngine;
-   import static freemarker.core.variables.Wrap.isNumber;
    import static freemarker.core.variables.Wrap.getNumber;
    implements Expression
 {
@@ -425,8 +421,8 @@ INJECT MultiplicativeExpression :
     {
         Object leftModel = getLeft().evaluate(env);
         Object rightModel = getRight().evaluate(env);
-        boolean leftIsNumber = isNumber(leftModel);
-        boolean rightIsNumber = isNumber(rightModel);
+        boolean leftIsNumber = leftModel instanceof Number;
+        boolean rightIsNumber = rightModel instanceof Number;
         boolean bothNumbers = leftIsNumber && rightIsNumber;
         if (!bothNumbers) {
             String msg = "Error " + getLocation();
@@ -503,9 +499,9 @@ INJECT EqualityExpression :
         Object right = getRight().evaluate(env);
         getLeft().assertNonNull(left, env);
         getRight().assertNonNull(right, env);
-        if (isNumber(left) && isNumber(right)) {
+        if (left instanceof Number && right instanceof Number) {
             ArithmeticEngine ae = env != null ? env.getArithmeticEngine() : getTemplate().getArithmeticEngine();
-            int comp = ae.compareNumbers(asNumber(left), asNumber(right));
+            int comp = ae.compareNumbers((Number)left, (Number)right);
             return operation == NOT_EQUALS ? comp !=0 : comp == 0;
         }
         left = unwrap(left);
@@ -573,11 +569,11 @@ INJECT RelationalExpression :
         Object right = getRight().evaluate(env);
         getLeft().assertNonNull(left, env);
         getRight().assertNonNull(right, env);
-        if (!isNumber(left) || !isNumber(right)) {
+        if (!(left instanceof Number && right instanceof Number)) {
             throw new TemplateException("Can only compare numbers", env);
         }
         ArithmeticEngine ae = env != null ? env.getArithmeticEngine() : getTemplate().getArithmeticEngine();
-        int comp = ae.compareNumbers(asNumber(left), asNumber(right));
+        int comp = ae.compareNumbers((Number)left, (Number)right);
         switch(operation) {
             case LESS_THAN : 
                 return comp < 0;
@@ -682,10 +678,6 @@ INJECT RangeExpression :
 
         public int size() {
             return 1 + upper - lower;
-        }
-        
-        boolean hasRhs() {
-            return !norhs;
         }
     }
 }
@@ -983,7 +975,6 @@ import java.util.HashMap;
 //        knownBuiltins.put("sort_by", new SequenceFunctions.SortBy());
 //        knownBuiltins.put("seq_index_of", new SequenceFunctions.IndexOf());
 //        knownBuiltins.put("seq_last_index_of", new SequenceFunctions.LastIndexOf());
-//        knownBuiltins.put("pojo", new pojoBI());
         knownBuiltins.put("c", new cBI());
         knownBuiltins.put("size", new sizeBI());
         knownBuiltins.put("string", new stringBI());

@@ -361,12 +361,12 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
 
             obj = args.get(0);
-            if (!isNumber(obj)) {
+            if (!(obj instanceof Number)) {
                 throw new EvaluationException(
                         "?left_pad(...) expects a number as "
                         + "its 1st argument.");
             }
-            int width = asNumber(obj).intValue();
+            int width = ((Number)obj).intValue();
 
             if (ln > 1) {
                 obj = args.get(1);
@@ -416,12 +416,12 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
 
             obj = args.get(0);
-            if (!isNumber(obj)) {
+            if (!(obj instanceof Number)) {
                 throw new EvaluationException(
                         "?right_pad(...) expects a number as "
                         + "its 1st argument.");
             }
-            int width = asNumber(obj).intValue();
+            int width = ((Number)obj).intValue();
             if (ln > 1) {
                 obj = args.get(1);
                 if (!isString(obj)) {
@@ -533,11 +533,11 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
             if (ln > 1) {
                 obj = args.get(1);
-                if (!isNumber(obj)) {
+                if (!(obj instanceof Number)) {
                     throw new EvaluationException(getName() + "(...) expects a number as "
                             + "its second argument.");
                 }
-                fidx = asNumber(obj).intValue();
+                fidx = ((Number)obj).intValue();
             } else {
                 fidx = 0;
             }

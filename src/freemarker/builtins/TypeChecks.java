@@ -23,7 +23,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = isString(value);
 		}
 		else if (builtInName == "is_number") {
-			result = isNumber(value);
+			result = value instanceof Number;
 		}
 		else if (builtInName == "is_date") {
 			result = value instanceof WrappedDate;

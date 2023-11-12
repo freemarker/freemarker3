@@ -1,5 +1,6 @@
 package freemarker.core.nodes;
 
+import static freemarker.core.variables.Constants.JAVA_NULL;
 import static freemarker.core.variables.Wrap.wrap;
 import freemarker.core.variables.scope.Scope;
 import freemarker.core.variables.EvaluationException;
@@ -32,7 +33,13 @@ public class DotVariable extends TemplateNode implements Expression {
         Object lhs = getTarget().evaluate(env);
         assertNonNull(lhs, env);
         if (lhs instanceof Map) {
-            return wrap(((Map) lhs).get(getKey()));
+//            return wrap(((Map) lhs).get(getKey()));
+            Map map = (Map) lhs;
+            Object result = map.get(getKey());
+            if (result == null) {
+                return map.containsKey(getKey()) ? JAVA_NULL : null;
+            }
+            return wrap(result);
         }
         if (lhs instanceof WrappedHash) {
             return wrap(((WrappedHash) lhs).get(getKey()));

@@ -1342,8 +1342,8 @@ INJECT SwitchBlock :
     }
 
     private boolean equals(Environment env, Object first, Object second) {
-        if (isNumber(first) && isNumber(second)) {
-            return asNumber(first).equals(asNumber(second));
+        if (first instanceof Number && second instanceof Number) {
+            return ((Number)first).equals((Number)second);
         }
         if (isString(first) && isString(second)) {
             return asString(first).equals(asString(second));
@@ -1542,8 +1542,8 @@ INJECT PropertySetting :
             strval = asString(mval);
         } else if (isBoolean(mval)) {
             strval = asBoolean(mval) ? "true" : "false";
-        } else if (isNumber(mval)) {
-            strval = asNumber(mval).toString();
+        } else if (mval instanceof Number) {
+            strval = ((Number)mval).toString();
         } else {
             strval = getValue().getStringValue(env);
         }

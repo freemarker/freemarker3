@@ -9,7 +9,6 @@ import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 
 import static freemarker.core.variables.Wrap.asBoolean;
-import static freemarker.core.variables.Wrap.asNumber;
 
 /**
  * <p>A filter that compresses each sequence of consecutive whitespace
@@ -85,7 +84,7 @@ public class StandardCompress implements UserDirective {
         boolean singleLine = false;
         if (args != null) {
             try {
-                Number num = asNumber(args.get(BUFFER_SIZE_KEY));
+                Number num = (Number)args.get(BUFFER_SIZE_KEY);
                 bufferSize = num.intValue();
             } catch (ClassCastException e) {
                 throw new EvaluationException("Expecting numerical argument to " + BUFFER_SIZE_KEY);

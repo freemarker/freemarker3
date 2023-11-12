@@ -22,8 +22,8 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
         Object model) 
     {
-        if (isNumber(model)) {
-            return new NumberFormatter(asNumber(model), env);
+        if (model instanceof Number) {
+            return new NumberFormatter((Number)model, env);
         }
         if (model instanceof WrappedDate) {
             WrappedDate dm = (WrappedDate) model;

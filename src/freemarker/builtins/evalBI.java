@@ -9,7 +9,7 @@ import freemarker.core.parser.ParseException;
 import freemarker.template.TemplateException;
 import freemarker.core.variables.EvaluationException;
 
-import static freemarker.core.variables.Wrap.*;
+import static freemarker.core.variables.Wrap.asString;
 
 /**
  * Implementation of ?eval built-in 

@@ -118,12 +118,12 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 "?chunk(...) expects 1 or 2 arguments.");
             }
             Object chunkSize = args.get(0);
-            if (!isNumber(chunkSize)) {
+            if (!(chunkSize instanceof Number)) {
                 throw new EvaluationException(
                         "?chunk(...) expects a number as "
                         + "its 1st argument.");
             }
-            return new ChunkedSequence(tsm, asNumber(chunkSize).intValue(),
+            return new ChunkedSequence(tsm, ((Number)chunkSize).intValue(),
                     numArgs > 1 ? args.get(1) : null);
         }
     }
@@ -240,7 +240,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
 
         int keyType;
-        if (isNumber(item)) {
+        if (item instanceof Number) {
             keyType = KEY_TYPE_NUMBER;
         } else if (isDate(item)) {
             keyType = KEY_TYPE_DATE;
@@ -268,7 +268,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 for (i = 0; i < ln; i++) {
                     item = seq.get(i);
                     try {
-                        result.add(new KVP(asNumber(item), item));
+                        result.add(new KVP((Number)item, item));
                     } catch (ClassCastException e) {
                         throw new EvaluationException(
                                 "sorting failed: " 
@@ -286,7 +286,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                         result.add(new KVP(((WrappedDate) item).getAsDate(),
                                 item));
                     } catch (ClassCastException e) {
-                        if (!isNumber(item)) {
+                        if (!(item instanceof Number)) {
                             throw new EvaluationException(
                                     "sorting failed: " 
                                     + "All values in the sequence must be "
@@ -346,7 +346,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 } else if (keyType == KEY_TYPE_NUMBER) {
                     try {
-                        result.add(new KVP(asNumber(key), item));
+                        result.add(new KVP((Number)key, item));
                     } catch (ClassCastException e) {
                             throw new EvaluationException(
                                     "sorting failed: "
@@ -505,7 +505,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             Object compareToThis = args.get(0);
             if (argc == 2) {
                 try {
-                    startIndex = asNumber(args.get(1)).intValue();
+                    startIndex = ((Number)args.get(1)).intValue();
                 } catch (ClassCastException cce) {
                     throw new EvaluationException("Expecting number as second argument to ?seq_" + (reverse ? "last_" : "") + "index_of");
                 }

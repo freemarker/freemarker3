@@ -3,12 +3,8 @@ package freemarker.builtins;
 import freemarker.core.ArithmeticEngine;
 import freemarker.core.Environment;
 
-import static freemarker.core.variables.Wrap.*;
+import static freemarker.core.variables.Wrap.unwrap;
 
-/**
- * @author Attila Szegedi
- * @version $Id: $
- */
 public class ModelComparator
 {
     private final ArithmeticEngine arithmeticEngine;
@@ -21,8 +17,8 @@ public class ModelComparator
     {
         left = unwrap(left);
         right = unwrap(right);
-        if(isNumber(left) && isNumber(right)) {
-            return arithmeticEngine.compareNumbers(asNumber(left), asNumber(right)) == 0;
+        if(left instanceof Number && right instanceof Number) {
+            return arithmeticEngine.compareNumbers((Number)left, (Number)right) == 0;
         }
         return left.equals(right);
     }

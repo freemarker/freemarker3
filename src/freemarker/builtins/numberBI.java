@@ -14,7 +14,7 @@ public class numberBI extends ExpressionEvaluatingBuiltIn
     public Object get(Environment env, BuiltInExpression caller,
             Object value) throws TemplateException
     {
-        if(isNumber(value)) {
+        if(value instanceof Number) {
             return value;
         }
         final String string;

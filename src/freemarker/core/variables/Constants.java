@@ -76,7 +76,7 @@ public class Constants {
     /**
      * A general-purpose object to represent nothing. It acts as
      * an empty string, false, empty sequence, empty hash, and
-     * null-returning method model. It is useful if you want
+     * null-returning method. It is useful if you want
      * to simulate typical loose scripting language sorts of 
      * behaviors in your templates. 
      * @deprecated Try not to use this.

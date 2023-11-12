@@ -9,8 +9,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import static freemarker.core.variables.Wrap.*;
-
 /**
  * Implementation of ?byte, ?int, ?double, ?float,
  * ?short and ?long built-ins 
@@ -24,7 +22,7 @@ public class NumericalCast extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller, Object model) 
     {
         try {
-            return getNumber(asNumber(model), caller.getName());
+            return getNumber((Number)model, caller.getName());
         } catch (ClassCastException cce) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "number");
         } catch (NullPointerException npe) {

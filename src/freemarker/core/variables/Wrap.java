@@ -50,10 +50,6 @@ public class Wrap {
         return (List<?>) obj;
     }
 
-    public static boolean isNumber(Object obj) {
-        return obj instanceof Number;
-    }
-
     public static boolean isDate(Object obj) {
         if (obj instanceof WrappedVariable) {
             obj = ((WrappedVariable) obj).getWrappedObject();
@@ -65,10 +61,6 @@ public class Wrap {
             return true;
         }
         return false;
-    }
-
-    public static Number asNumber(Object obj) {
-        return (Number) obj;
     }
 
     public static Date asDate(Object obj) {
@@ -195,8 +187,8 @@ public class Wrap {
 
     static public Number getNumber(Object model, Expression expr, Environment env)
     {
-        if(isNumber(model)) {
-            return asNumber(model);
+        if(model instanceof Number) {
+            return (Number) model;
         }
         else if(model == null) {
             throw new InvalidReferenceException(expr + " is undefined.", env);

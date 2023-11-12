@@ -5,8 +5,6 @@ import freemarker.core.variables.InvalidReferenceException;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.TemplateException;
 
-import static freemarker.core.variables.Wrap.asNumber;
-
 /**
  * Implementation of ?c built-in 
  */
@@ -17,7 +15,7 @@ public class cBI extends ExpressionEvaluatingBuiltIn {
     {
         Number num;
         try {
-            num = asNumber(model);
+            num = (Number)model;
         } catch (ClassCastException e) {
             throw new TemplateException(
                     "Expecting a number on the left side of ?c", env);
