@@ -159,7 +159,7 @@ PrimaryExpression(boolean noSpace)#void :
         <DOT>
         DEACTIVATE_TOKENS IN, AS, USING, TRUE, FALSE, NULL
         (<ID>|<TIMES>|<DOUBLE_STAR>) 
-      ) #freemarker.core.nodes.DotVariable(+1) 
+      ) #DotVariable(+1) 
       |
       <OPEN_BRACKET> Expression <CLOSE_BRACKET> #freemarker.core.nodes.DynamicKeyName(4)
       |
@@ -211,6 +211,48 @@ INJECT ParentheticalExpression :
         result.add(get(2));
         return result;
     }   
+}
+
+INJECT DotVariable :
+    import freemarker.core.Environment;
+    import freemarker.core.variables.*;
+    import freemarker.core.variables.scope.Scope;
+    import static freemarker.core.variables.Wrap.wrap;
+    implements Expression
+{
+    public Expression getTarget() {
+        return (Expression) get(0);
+    }
+
+    public String getKey() {
+        return get(2).toString();
+    }
+
+    public Object evaluate(Environment env) {
+        Object lhs = getTarget().evaluate(env);
+        assertNonNull(lhs, env);
+        if (lhs instanceof Map) {
+            return wrap(((Map) lhs).get(getKey()));
+        }
+        if (lhs instanceof WrappedHash) {
+            return wrap(((WrappedHash) lhs).get(getKey()));
+        }
+        if (lhs instanceof Scope) {
+            return wrap(((Scope) lhs).get(getKey()));
+        }
+        return ReflectionCode.getProperty(lhs, getKey(), getTemplate().legacySyntax());
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        Expression clonedTarget = getTarget().deepClone(name, subst);
+        Token op = (Token) get(1);
+        Token key = (Token) get(2);
+        Expression result = new DotVariable();
+        result.add(clonedTarget);
+        result.add(op);
+        result.add(key);
+        return result;
+    }    
 }
 
 /**

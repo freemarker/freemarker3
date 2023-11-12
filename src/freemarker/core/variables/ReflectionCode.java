@@ -10,18 +10,21 @@ import java.util.Date;
 import java.lang.reflect.Array;
 import static freemarker.core.variables.Constants.JAVA_NULL;
 import static freemarker.core.variables.Constants.NOTHING;
+import static freemarker.core.variables.Wrap.wrap;
 
 /**
  * Code for invoking a Java method by reflection
  */
-class ReflectionCode {
+public class ReflectionCode {
 
     private static final Object CAN_NOT_UNWRAP = new Object();
     private static Map<String,Method> methodCache = new ConcurrentHashMap<>();
+    private static Map<String, Method> getterSetterCache = new ConcurrentHashMap<>();
+    private static Map<String, Boolean> classHasMethodCache = new ConcurrentHashMap<>();
 
     private ReflectionCode() {}
 
-    static Object invokeMethod(Object target, Method method, List<Object> params) {
+    public static Object invokeMethod(Object target, Method method, List<Object> params) {
         if (isBannedMethod(method)) {
             throw new EvaluationException("Cannot run method: " + method);
         }
@@ -34,10 +37,25 @@ class ReflectionCode {
         }
         methodCache.put(getLookupKey(target, method.getName(), params), method);
         if (result == null && method.getReturnType() == Void.TYPE) {
-            result = NOTHING;
-//            result = null;
+//            result = NOTHING;
+            result = null;
         }
         return result;
+    }
+
+    public static Object getProperty(Object object, String key, boolean looseSyntax) {
+        Method getter = getGetter(object, key);
+        if (getter != null) {
+            try {
+                return wrap(getter.invoke(object));
+            } catch (Exception e) {
+                throw new EvaluationException(e);
+            }
+        }
+        if (looseSyntax && methodOfNameExists(object, key)) {
+            return new JavaMethodCall(object, key);
+        }
+        return null;
     }
 
     static Method getCachedMethod(Object target, String methodName, List<Object> params) {
@@ -96,7 +114,47 @@ class ReflectionCode {
             }
         }
         return moreSpecific && !lessSpecific;
-    } 
+    }
+
+    private static boolean methodOfNameExists(Object object, String name) {
+        String lookupKey = getLookupKey(object, name);
+        Boolean b = classHasMethodCache.get(lookupKey);
+        if (b != null) return b;
+        for (Method m : object.getClass().getMethods()) {
+            if (m.getName().equals(name)) {
+                classHasMethodCache.put(lookupKey, true);
+                return true;
+            }
+        }
+        classHasMethodCache.put(lookupKey, false);
+        return false;
+    }
+
+    private static Method getGetter(Object object, String name) {
+        Method cachedMethod = getterSetterCache.get(getLookupKey(object, name));
+        if (cachedMethod != null) {
+            return cachedMethod;
+        }
+        String methodName = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
+        try {
+            Method m = object.getClass().getMethod(methodName);
+            if (m.getReturnType() != Void.TYPE) {
+                getterSetterCache.put(getLookupKey(object, name), m);
+                return m;
+            }
+        } catch (NoSuchMethodException nsme) {
+        }
+        methodName = methodName.replaceFirst("get", "is");
+        try {
+            Method m = object.getClass().getMethod(methodName);
+            if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class) {
+                getterSetterCache.put(getLookupKey(object, name), m);
+                return m;
+            }
+        } catch (NoSuchMethodException nsme) {
+        }
+        return null;
+    }
 
     private static Object[] unwrapArgsForMethod(Method method, List<Object> params) {
         Class<?>[] paramTypes = method.getParameterTypes();
@@ -205,5 +263,9 @@ class ReflectionCode {
             buf.append(':');
         }
         return buf.toString();
+    }
+
+    private static String getLookupKey(Object object, String propertyName) {
+        return object.getClass().getName() + "##" + propertyName;
     }
 }

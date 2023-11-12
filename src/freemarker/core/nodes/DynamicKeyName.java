@@ -74,13 +74,7 @@ public class DynamicKeyName extends TemplateNode implements Expression {
 
     private Object dealWithStringKey(Object lhs, String key, Environment env) {
         if (lhs instanceof Map) {
-//            return wrap(((Map) lhs).get(key));
-            Map map = (Map) lhs;
-            Object result = map.get(key);
-            if (result == null) {
-                return map.containsKey(key) ? JAVA_NULL : null;
-            }
-            return wrap(result);
+            return wrap(((Map) lhs).get(key));
         }
         if (lhs instanceof WrappedHash) {
             return wrap(((WrappedHash) lhs).get(key));
@@ -88,7 +82,7 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         if (lhs instanceof Scope) {
             return wrap(((Scope) lhs).get(key));
         }
-        throw invalidTypeException(lhs, getTarget(), env, "map");
+        return ReflectionCode.getProperty(lhs, key, getTemplate().legacySyntax()) ;
     }
 
     private Object dealWithRangeKey(Object target, RangeExpression range, Environment env) {
