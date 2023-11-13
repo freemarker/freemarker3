@@ -475,7 +475,7 @@ INJECT Identifier :
 
 INJECT NullLiteral : 
    import freemarker.core.Environment;
-   import static freemarker.core.variables.Constants.JAVA_NULL;
+   import static freemarker.core.variables.Wrap.JAVA_NULL;
    implements Expression
 {
     public Object evaluate(Environment env) {

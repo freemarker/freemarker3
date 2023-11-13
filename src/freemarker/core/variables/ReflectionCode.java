@@ -8,9 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Date;
 import java.lang.reflect.Array;
-import static freemarker.core.variables.Constants.JAVA_NULL;
-import static freemarker.core.variables.Constants.NOTHING;
-import static freemarker.core.variables.Wrap.wrap;
+import static freemarker.core.variables.Wrap.*;
 
 /**
  * Code for invoking Java methods by reflection

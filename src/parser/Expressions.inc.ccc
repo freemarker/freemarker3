@@ -15,7 +15,6 @@ INJECT Expression :
    import freemarker.template.TemplateException;
    import java.lang.reflect.Array;
    import static freemarker.core.variables.Wrap.*;
-   import static freemarker.core.variables.Constants.JAVA_NULL;
 {
     public abstract Object evaluate(Environment env);
     
@@ -939,6 +938,8 @@ INJECT BuiltinVariable :
 INJECT DefaultToExpression : 
     import freemarker.core.Environment;
     import freemarker.core.variables.*;
+    import static freemarker.core.variables.Wrap.NOTHING;
+    import static freemarker.core.variables.Wrap.JAVA_NULL;
     implements Expression
 {
 	public Expression getLeft() {
@@ -959,8 +960,8 @@ INJECT DefaultToExpression :
 				throw ire;
 			}
 		}
-		if (left != null && left != Constants.JAVA_NULL) return left;
-		if (getRight() == null) return Constants.NOTHING;
+		if (left != null && left != JAVA_NULL) return left;
+		if (getRight() == null) return NOTHING;
 		return getRight().evaluate(env);
 	}
 
@@ -978,7 +979,7 @@ INJECT DefaultToExpression :
 INJECT ExistsExpression :
     import freemarker.core.Environment;
     import freemarker.core.variables.InvalidReferenceException;
-    import static freemarker.core.variables.Constants.JAVA_NULL;
+    import static freemarker.core.variables.Wrap.JAVA_NULL;
     implements Expression
 {
 	public Expression getExpression() {

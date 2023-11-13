@@ -1,7 +1,6 @@
 package freemarker.xml;
 
 import freemarker.core.Environment;
-import freemarker.core.variables.WrappedBoolean;
 import freemarker.template.*;
 
 import javax.xml.xpath.XPath;
@@ -11,7 +10,7 @@ import javax.xml.namespace.NamespaceContext;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import static freemarker.core.variables.Constants.JAVA_NULL;
+import static freemarker.core.variables.Wrap.JAVA_NULL;
 
 import java.util.Iterator;
 import java.util.LinkedList;

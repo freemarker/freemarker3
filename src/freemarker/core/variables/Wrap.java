@@ -7,9 +7,25 @@ import freemarker.core.nodes.generated.Expression;
 import freemarker.template.TemplateException;
 import freemarker.xml.NodeModel;
 
-import static freemarker.core.variables.Constants.JAVA_NULL;
-
 public class Wrap {
+    /**
+     * A general-purpose object to represent nothing. It acts as
+     * an empty string, false, empty sequence, empty hash, and
+     * null-returning method. It is useful if you want
+     * to simulate typical loose scripting language sorts of 
+     * behaviors in your templates. 
+     * @deprecated Try not to use this.
+     */
+    public static final WrappedVariable NOTHING = GeneralPurposeNothing.getInstance();
+
+    /**
+     * A singleton value used to represent a java null
+     * which comes from a wrapped Java API, for example, i.e.
+     * is intentional. A null that comes from a generic container
+     * like a map is assumed to be unintentional and a 
+     * result of programming error.
+     */
+    public static final Object JAVA_NULL = new Object();    
 
     private static int defaultDateType = WrappedDate.UNKNOWN;
 
@@ -146,7 +162,7 @@ public class Wrap {
 
     public static Object wrap(Object object) {
         if (object == null) {
-            return Constants.JAVA_NULL;
+            return JAVA_NULL;
         }
         if (object instanceof Date) {
             return new DateModel((Date) object);
@@ -164,7 +180,7 @@ public class Wrap {
         if (object == null) {
             throw new EvaluationException("invalid reference");
         }
-        if (object == Constants.JAVA_NULL) {
+        if (object == JAVA_NULL) {
             return null;
         }
         if (object instanceof WrappedVariable) {

@@ -7,7 +7,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.WrappedNode;
-import static freemarker.core.variables.Constants.JAVA_NULL;
+import static freemarker.core.variables.Wrap.JAVA_NULL;
 
 /**
  * Implementations of ?children, ?node_name, and other 
