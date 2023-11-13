@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Collections;
 
 /**
- * Singleton object representing nothing, used by ?if_exists built-in.
- * It is meant to be interpreted in the most sensible way possible in various contexts.
- * This can be returned to avoid exceptions.
+ * Singleton object representing nothing, used to implement certain existence 
+ * related builtins. It is meant to be interpreted in the most sensible way 
+ * possible in various contexts. Basically, this can be returned to avoid exceptions.
  *
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  */

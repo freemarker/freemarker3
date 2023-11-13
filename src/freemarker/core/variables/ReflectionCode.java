@@ -13,7 +13,7 @@ import static freemarker.core.variables.Constants.NOTHING;
 import static freemarker.core.variables.Wrap.wrap;
 
 /**
- * Code for invoking a Java method by reflection
+ * Code for invoking Java methods by reflection
  */
 public class ReflectionCode {
 

@@ -369,6 +369,7 @@ INJECT AdditiveExpression :
     import freemarker.core.ArithmeticEngine;
     import freemarker.core.Environment;
     import static freemarker.core.variables.Wrap.*;
+//    @SuppressWarnings("typesafety")
     implements Expression;
 {
     public boolean isPlus() {
@@ -1017,6 +1018,8 @@ import java.util.HashMap;
 //        knownBuiltins.put("sort_by", new SequenceFunctions.SortBy());
 //        knownBuiltins.put("seq_index_of", new SequenceFunctions.IndexOf());
 //        knownBuiltins.put("seq_last_index_of", new SequenceFunctions.LastIndexOf());
+//        knownBuiltins.put("if_exists", new ExistenceBuiltIn.IfExistsBuiltIn());
+        knownBuiltins.put("exists", new ExistenceBuiltIn.ExistsBuiltIn());
         knownBuiltins.put("c", new cBI());
         knownBuiltins.put("size", new sizeBI());
         knownBuiltins.put("string", new stringBI());
@@ -1102,8 +1105,6 @@ import java.util.HashMap;
         knownBuiltins.put("time", new DateTime(WrappedDate.TIME));
         knownBuiltins.put("datetime", new DateTime(WrappedDate.DATETIME));
         knownBuiltins.put("is_defined", new ExistenceBuiltIn.IsDefinedBuiltIn());
-        knownBuiltins.put("if_exists", new ExistenceBuiltIn.IfExistsBuiltIn());
-        knownBuiltins.put("exists", new ExistenceBuiltIn.ExistsBuiltIn());
         knownBuiltins.put("default", new ExistenceBuiltIn.DefaultBuiltIn());
         knownBuiltins.put("has_content", new ExistenceBuiltIn.HasContentBuiltIn());
         knownBuiltins.put("source", new sourceBI());
