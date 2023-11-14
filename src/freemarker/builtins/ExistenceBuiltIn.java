@@ -11,13 +11,8 @@ import freemarker.core.variables.WrappedHash;
 import freemarker.core.variables.WrappedMethod;
 import freemarker.core.variables.InvalidReferenceException;
 
-import static freemarker.core.variables.Constants.*;
 import static freemarker.core.variables.Wrap.*;
 
-/**
- * @author Attila Szegedi
- * @version $Id: $
- */
 public abstract class ExistenceBuiltIn extends BuiltIn {
     public Object get(Environment env, BuiltInExpression caller) 
     {

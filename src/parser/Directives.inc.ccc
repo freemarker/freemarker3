@@ -1591,7 +1591,6 @@ VarDirective :
 
 INJECT VarDirective :
    import java.util.*;
-   import freemarker.template.*;
    import freemarker.core.*;
    import freemarker.core.variables.scope.Scope;
    import static freemarker.core.variables.Wrap.JAVA_NULL;
@@ -1790,6 +1789,7 @@ INJECT TextElement :
 		       || (elem instanceof BlockAssignment) 
 		       || (elem instanceof VarDirective)
 		       || (elem instanceof ImportDeclaration)
+		       || (elem instanceof ExecInstruction)
 		       || (elem instanceof PropertySetting);
  	}
 }
