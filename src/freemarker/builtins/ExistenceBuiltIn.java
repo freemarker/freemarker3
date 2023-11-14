@@ -58,9 +58,6 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
     public static class HasContentBuiltIn extends ExistenceBuiltIn {
         public Object apply(final Object model) {
             if (model == null || model == JAVA_NULL || model == NOTHING) return false;
-            if (isString(model)) {
-                return asString(model).length() > 0;
-            }
             if (isIterable(model)) {
                 return asIterator(model).hasNext();
             }
@@ -69,6 +66,9 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
             }
             if (model instanceof WrappedHash) {
                 return !((WrappedHash)model).isEmpty();
+            }
+            if (isString(model)) {
+                return asString(model).length() > 0;
             }
             return true;
         }

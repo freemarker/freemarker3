@@ -67,13 +67,13 @@ public class Wrap {
     }
 
     public static boolean isDate(Object obj) {
+        if (obj instanceof WrappedDate) {
+            return true;
+        }
         if (obj instanceof WrappedVariable) {
             obj = ((WrappedVariable) obj).getWrappedObject();
         }
         if (obj instanceof Date) {
-            return true;
-        }
-        if (obj instanceof WrappedDate) {
             return true;
         }
         return false;
