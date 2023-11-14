@@ -13,8 +13,8 @@ import freemarker.core.nodes.generated.TemplateElement;
  */
 
 public class MacroInvocationBodyContext extends BlockScope {
-    MacroContext invokingMacroContext;
-    TemplateElement enclosingDirective;
+    private MacroContext invokingMacroContext;
+    private TemplateElement enclosingDirective;
     
     public MacroInvocationBodyContext(Environment env, PositionalArgsList bodyArgs) {
     	super(null, env.getCurrentMacroContext().invokingScope);

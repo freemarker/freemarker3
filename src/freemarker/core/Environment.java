@@ -190,8 +190,8 @@ public final class Environment extends Configurable implements Scope {
         pushElement(element);
         Block nestedBlock = element.getNestedBlock();
         boolean createNewScope = nestedBlock != null 
-                                 //&& nestedBlock != mainTemplate.getRootElement() 
                                  && !nestedBlock.isTemplateRoot()
+                                 && !(nestedBlock.getParent() instanceof Macro)
                                  && nestedBlock.createsScope();
         Scope prevScope = currentScope;
         if (createNewScope) {
@@ -441,8 +441,7 @@ public final class Environment extends Configurable implements Scope {
         }
         pushElement(macro);
         try {
-            MacroContext mc = new MacroContext(macro, this, nestedBlock,
-                    bodyParameters);
+            MacroContext mc = new MacroContext(macro, this, nestedBlock, bodyParameters);
             MacroContext prevMc = macroContextLookup.get(macro);
             macroContextLookup.put(macro, mc);
             if (args != null) {
@@ -452,11 +451,10 @@ public final class Environment extends Configurable implements Scope {
                 }
             }
             Scope prevScope = currentScope;
-
             Configurable prevParent = getFallback();
             currentScope = currentMacroContext = mc;
             try {
-                mc.runMacro();
+                render(macro.getNestedBlock());                
             } catch (ReturnException re) {
             } catch (TemplateException te) {
                 handleTemplateException(te);

@@ -6,16 +6,12 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.ParameterList;
 import freemarker.core.nodes.generated.TemplateElement;
-import freemarker.template.*;
 
 /**
  * Represents the context or scope of the 
  * execution of an FTL macro. 
  */
-
-
 public class MacroContext extends BlockScope {
-    private Macro macro;
     private TemplateElement body; // REVISIT
     public ParameterList bodyParameters;
     private MacroContext invokingMacroContext;
@@ -27,7 +23,6 @@ public class MacroContext extends BlockScope {
             ParameterList bodyParameters)
     {
     	super(macro.getNestedBlock(), env.getMacroNamespace(macro)); // REVISIT
-    	this.macro = macro;
         this.invokingMacroContext = env.getCurrentMacroContext();
         this.invokingScope = env.getCurrentScope();
         this.body = body;
@@ -40,11 +35,6 @@ public class MacroContext extends BlockScope {
 
     public TemplateElement getBody() {
         return body;
-    }
-    
-    public void runMacro() throws TemplateException, IOException { 
-        TemplateElement nestedBlock = macro.firstChildOfType(TemplateElement.class);
-        getEnvironment().render(nestedBlock);
     }
 }
 

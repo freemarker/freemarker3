@@ -87,7 +87,7 @@ INJECT Expression :
         if (referent instanceof WrappedSequence) {
             return ((WrappedSequence)referent).size() > 0;
         }
-        return referent.toString().length() == 0;
+        return referent.toString().length() > 0;
     }
 }
 
