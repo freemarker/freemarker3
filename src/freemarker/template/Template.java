@@ -7,6 +7,7 @@ import java.util.*;
 
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
+import freemarker.core.nodes.generated.Block;
 import freemarker.core.nodes.generated.ImportDeclaration;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.generated.TemplateElement;
@@ -50,7 +51,7 @@ public class Template extends Configurable {
     public static final String DEFAULT_NAMESPACE_PREFIX = "D";
     public static final String NO_NS_PREFIX = "N";
 
-    private TemplateElement rootElement;
+    private Block rootElement;
     private Map<String, Macro> macros = new HashMap<String, Macro>();
     private List<ImportDeclaration> imports = new ArrayList<>();
     private String encoding, defaultNS;
@@ -102,7 +103,6 @@ public class Template extends Configurable {
             FMParser parser = new FMParser(this, content);
             parser.setInputSource(getName());
             this.rootElement = parser.Root();
-            //setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
             ppv.visit(this);
         }
@@ -124,7 +124,6 @@ public class Template extends Configurable {
             FMParser parser = new FMParser(this, input);
             parser.setInputSource(getName());
             this.rootElement = parser.Root();
-//            setRootElement(parser.Root());
             PostParseVisitor ppv = new PostParseVisitor(this);
             ppv.visit(this);
         }
@@ -135,8 +134,6 @@ public class Template extends Configurable {
         namespaceURIToPrefixLookup = Collections.unmodifiableMap(namespaceURIToPrefixLookup);
         prefixToNamespaceURILookup = Collections.unmodifiableMap(prefixToNamespaceURILookup);
 	}
-
-    
 	
 	private CharSequence readInTemplateText(Reader reader) throws IOException {
         int charsRead = 0;
@@ -188,7 +185,7 @@ public class Template extends Configurable {
     static public Template getPlainTextTemplate(String name, String content, 
             Configuration config) {
         Template template = new Template(name, config);
-        template.rootElement = new TemplateElement() {
+        template.rootElement = new Block() {
         	public void execute(Environment env) throws IOException {
         		env.getOut().write(content);
         	}
@@ -350,16 +347,11 @@ public class Template extends Configurable {
     }
     
     public boolean declaresVariable(String name) {
-    	return declaredVariables.contains(name);
-    }
-    
-    public Set<String> getDeclaredVariables() {
-    	return Collections.unmodifiableSet(declaredVariables);
+        return getRootElement().declaresVariable(name);
     }
     
     public void declareVariable(String name) {
-    	if (declaredVariables == null) declaredVariables = new HashSet<String>();
-    	declaredVariables.add(name);
+        getRootElement().declareVariable(name);
     }
     
     public boolean strictVariableDeclaration() {
@@ -471,7 +463,7 @@ public class Template extends Configurable {
         return macros;
     }
     
-    public TemplateElement getRootElement() {
+    public Block getRootElement() {
         return rootElement;
     }
 }

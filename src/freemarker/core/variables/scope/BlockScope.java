@@ -1,36 +1,65 @@
 package freemarker.core.variables.scope;
 
-import freemarker.core.nodes.generated.TemplateElement;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import freemarker.core.nodes.generated.Block;
 import freemarker.template.*;
 
 
-public class BlockScope extends BaseScope {
+public class BlockScope extends AbstractScope {
 	
+	Block block;
+    private Map<String,Object> variables = new HashMap<>();
 	
-	TemplateElement block;
-	
-	public BlockScope(TemplateElement block, Scope enclosingScope) {
+	public BlockScope(Block block, Scope enclosingScope) {
 		super(enclosingScope);
 		this.block = block;
 	}
+
+    public Object get(String key) { 
+        return variables.get(key);
+    }
 	
 	public Template getTemplate() {
 		return block.getTemplate();
 	}
 	
 	public void put(String key, Object tm) {
-		if (!definesVariable(key)) {
+		if (getTemplate().strictVariableDeclaration() && !definesVariable(key)) {
 			throw new IllegalArgumentException("The variable " + key + " is not declared here.");
 		}
-		super.put(key, tm);
+		variables.put(key, tm);
 	}
-	
-	public TemplateElement getBlock() {
+
+	protected void putUnconditionally(String key, Object var) {
+		variables.put(key, var);
+	}
+
+	public Block getBlock() {
 		return block;
 	}
 	
 	public boolean definesVariable(String name) {
 		return getBlock().declaresVariable(name);
+	}
+
+    public Collection<String> getDirectVariableNames() {
+        return Collections.unmodifiableCollection(variables.keySet());
+    }
+
+    public Object remove(String key) {
+        return variables.remove(key);
+    }
+
+    public void clear() {
+        variables.clear();
+    }
+
+	public boolean isTemplateNamespace() {
+		return block.isTemplateRoot();
 	}
 }
 

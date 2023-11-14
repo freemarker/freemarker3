@@ -26,7 +26,7 @@ public class MacroContext extends BlockScope {
             TemplateElement body,
             ParameterList bodyParameters)
     {
-    	super(macro, env.getMacroNamespace(macro)); // REVISIT
+    	super(macro.getNestedBlock(), env.getMacroNamespace(macro)); // REVISIT
     	this.macro = macro;
         this.invokingMacroContext = env.getCurrentMacroContext();
         this.invokingScope = env.getCurrentScope();
@@ -44,9 +44,7 @@ public class MacroContext extends BlockScope {
     
     public void runMacro() throws TemplateException, IOException { 
         TemplateElement nestedBlock = macro.firstChildOfType(TemplateElement.class);
-        if (nestedBlock != null) {
-            getEnvironment().render(nestedBlock);
-        }
+        getEnvironment().render(nestedBlock);
     }
 }
 

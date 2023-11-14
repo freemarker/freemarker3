@@ -81,8 +81,8 @@ public class PostParseVisitor extends Node.Visitor {
         		template.addParsingProblem(problem);
         	}
         	else for (String varname : node.getVarNames()) {
-        		if (!macro.declaresVariable(varname)) {
-       				macro.declareVariable(varname);
+        		if (!macro.getNestedBlock().declaresVariable(varname)) {
+       				macro.getNestedBlock().declareVariable(varname);
         		}
         	}
         }
@@ -105,8 +105,8 @@ public class PostParseVisitor extends Node.Visitor {
 			if (macro == null) {
 				template.addParsingProblem(new ParsingProblem("The local directive can only be used inside a function or macro.", node));
 			} else {
-				if (!macro.declaresVariable(node.getVarName())) {
-					macro.declareVariable(node.getVarName());
+				if (!macro.getNestedBlock().declaresVariable(node.getVarName())) {
+					macro.getNestedBlock().declareVariable(node.getVarName());
 				}
 			}
 		}
@@ -169,9 +169,9 @@ public class PostParseVisitor extends Node.Visitor {
 	}
 	
 	public void visit(IteratorBlock node) {
-		node.declareVariable(node.getIndexName());
-		node.declareVariable(node.getIndexName() + "_has_next");
-		node.declareVariable(node.getIndexName() + "_index");
+		node.getNestedBlock().declareVariable(node.getIndexName());
+		node.getNestedBlock().declareVariable(node.getIndexName() + "_has_next");
+		node.getNestedBlock().declareVariable(node.getIndexName() + "_index");
 		recurse(node);
 	}
 	
@@ -206,25 +206,25 @@ public class PostParseVisitor extends Node.Visitor {
 	}
 	
 	public void visit(VarDirective node) {
-        Node parent = node.getParent();
-        while (parent instanceof Block 
-        		|| parent instanceof EscapeBlock 
-        		|| parent instanceof NoEscapeBlock) {
-            parent = parent.getParent();
-        }
+        Block parent = (Block) node.getParent();
+//        while (parent instanceof Block 
+//        		|| parent instanceof EscapeBlock 
+//        		|| parent instanceof NoEscapeBlock) {
+//            parent = parent.getParent();
+//        }
        	for (String key : node.getVariables().keySet()) {
        		if (parent == null) {
        			template.declareVariable(key);
        		} else {
-       			if (((TemplateElement)parent).declaresVariable(key)) {
+       			if (parent.declaresVariable(key)) {
        				String msg = "The variable " + key + " has already been declared in this block.";
-       				if (parent instanceof Macro) {
-       					String macroName = ((Macro) parent).getName();
-       					msg = "The variable " + key + " has already been declared in macro " + macroName + ".";
-       				}
+//       				if (parent instanceof Macro) {
+//       					String macroName = ((Macro) parent).getName();
+//       					msg = "The variable " + key + " has already been declared in macro " + macroName + ".";
+//       				}
        				template.addParsingProblem(new ParsingProblem(msg, node));
        			}
-       			((TemplateElement)parent).declareVariable(key);
+       			parent.declareVariable(key);
        		}
        	}
 	}

@@ -816,7 +816,7 @@ INJECT ListLiteral :
   import java.util.List;
   import freemarker.core.Environment;
   import freemarker.template.TemplateException;
-  import freemarker.core.variables.scope.TemplateNamespace;
+  import freemarker.core.variables.scope.Scope;
   implements Expression
 {
     public List<Expression> getElements() {
@@ -840,7 +840,7 @@ INJECT ListLiteral :
             if (exp instanceof StringLiteral) {
                 String s = ((StringLiteral) exp).getAsString();
                 try {
-                    TemplateNamespace ns = env.importLib(s, null);
+                    Scope ns = env.importLib(s, null);
                     result.add(ns);
                 } catch (IOException ioe) {
                     throw new TemplateException("Could not import library '" + s + "', " + ioe.getMessage(), env);

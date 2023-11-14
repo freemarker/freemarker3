@@ -53,7 +53,7 @@ ${""}  <@x t="IC"/><#rt>
 --
    <#lt>  IB
   IC1<#rt>
-  <#var x = 1> <#-- just a comment -->
+  <#set x = 1> #-- just a comment 
   C2<#t>
   <#set x = 1>
   IB

@@ -19,7 +19,7 @@ public class MacroInvocationBodyContext extends BlockScope {
     public MacroInvocationBodyContext(Environment env, PositionalArgsList bodyArgs) {
     	super(null, env.getCurrentMacroContext().invokingScope);
         invokingMacroContext = env.getCurrentMacroContext();
-        block = invokingMacroContext.getBody();
+        block = invokingMacroContext.getBody().getNestedBlock();
         if (invokingMacroContext.getBody() != null) {
         	enclosingDirective = (TemplateElement) invokingMacroContext.getBody().getParent();
         }
@@ -33,6 +33,6 @@ public class MacroInvocationBodyContext extends BlockScope {
     }
     
     public boolean definesVariable(String name) {
-    	return enclosingDirective.declaresVariable(name);
+    	return enclosingDirective.getNestedBlock().declaresVariable(name);
     }
 }

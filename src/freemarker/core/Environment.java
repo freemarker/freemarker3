@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import freemarker.core.nodes.generated.ArgsList;
+import freemarker.core.nodes.generated.Block;
 import freemarker.core.nodes.generated.IncludeInstruction;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.ParameterList;
@@ -67,7 +68,6 @@ public final class Environment extends Configurable implements Scope {
         C_NUMBER_FORMAT.setDecimalSeparatorAlwaysShown(false);
     }
 
-    //private final WrappedHash rootDataModel;
     private final Map<String,Object> rootDataModel;
 
     private final List<TemplateElement> elementStack = new ArrayList<TemplateElement>();
@@ -90,17 +90,17 @@ public final class Environment extends Configurable implements Scope {
 
     private MacroContext currentMacroContext;
 
-    private TemplateNamespace mainNamespace;
+    private Scope mainNamespace;
 
     private Scope currentScope;
 
-    private Map<Macro, MacroContext> macroContextLookup = new HashMap<Macro, MacroContext>();
+    private Map<Macro, MacroContext> macroContextLookup = new HashMap<>();
 
-    private Map<Macro, TemplateNamespace> macroToNamespaceLookup = new HashMap<Macro, TemplateNamespace>();
+    private Map<Macro, Scope> macroToNamespaceLookup = new HashMap<>();
 
     private HashMap<String, Object> globalVariables = new HashMap<>();
 
-    private HashMap<String, TemplateNamespace> loadedLibs;
+    private HashMap<String, Scope> loadedLibs;
 
     private Throwable lastThrowable;
 
@@ -131,7 +131,9 @@ public final class Environment extends Configurable implements Scope {
 
     public Environment(Template template, Map<String,Object> rootDataModel, Writer out) {
         super(template);
-        this.currentScope = mainNamespace = new TemplateNamespace( this, template);
+        //this.currentScope = mainNamespace = new TemplateNamespace(this, template);
+        this.currentScope = mainNamespace = new BlockScope(template.getRootElement(), this);
+        //System.out.println("Current scope is " + currentScope);
         this.out = out;
         this.rootDataModel = rootDataModel;
         importMacros(template);
@@ -186,10 +188,14 @@ public final class Environment extends Configurable implements Scope {
      */
     public void render(TemplateElement element) throws IOException {
         pushElement(element);
-        boolean createNewScope = element.createsScope();
+        Block nestedBlock = element.getNestedBlock();
+        boolean createNewScope = nestedBlock != null 
+                                 //&& nestedBlock != mainTemplate.getRootElement() 
+                                 && !nestedBlock.isTemplateRoot()
+                                 && nestedBlock.createsScope();
         Scope prevScope = currentScope;
         if (createNewScope) {
-            currentScope = new BlockScope(element, currentScope);
+            currentScope = new BlockScope(nestedBlock, currentScope);
         }
         try {
             element.execute(this);
@@ -210,7 +216,7 @@ public final class Environment extends Configurable implements Scope {
         UserDirectiveBody nested = null;
         boolean createsNewScope = false;
         if (element != null) {
-            createsNewScope = ((TemplateElement) element.getParent()).createsScope();
+            createsNewScope = element instanceof Block && ((Block)element).createsScope();
             nested = new UserDirectiveBody() {
                 public void render(Writer newOut) throws TemplateException, IOException {
                     Writer prevOut = out;
@@ -477,8 +483,8 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    public TemplateNamespace getMacroNamespace(Macro macro) {
-        TemplateNamespace result = macroToNamespaceLookup.get(macro);
+    public Scope getMacroNamespace(Macro macro) {
+        Scope result = macroToNamespaceLookup.get(macro);
         if (result == null) {
             result = mainNamespace; // REVISIT ??
         }
@@ -487,11 +493,6 @@ public final class Environment extends Configurable implements Scope {
 
     public MacroContext getMacroContext(Macro macro) {
         return macroContextLookup.get(macro);
-    }
-
-    public void setCurriedMacroNamespace(Macro curriedMacro, Macro baseMacro) {
-        TemplateNamespace tns = macroToNamespaceLookup.get(baseMacro);
-        macroToNamespaceLookup.put(curriedMacro, tns);
     }
 
     public void process(WrappedNode node, List<Scope> namespaces)
@@ -960,7 +961,7 @@ public final class Environment extends Configurable implements Scope {
      */
     public void unqualifiedSet(String name, Object model) {
         Scope scope = this.currentScope;
-        while (!(scope instanceof TemplateNamespace)) {
+        while (!scope.isTemplateNamespace()) {
             if (scope.get(name) != null) {
                 scope.put(name, model);
                 return;
@@ -1077,7 +1078,7 @@ public final class Environment extends Configurable implements Scope {
      *             That is, the path must be an absolute path, and it must not
      *             contain "/../" or "/./". The leading "/" is optional.
      */
-    public TemplateNamespace getNamespace(String name) {
+    public Scope getNamespace(String name) {
         if (name.startsWith("/"))
             name = name.substring(1);
         if (loadedLibs != null) {
@@ -1091,7 +1092,7 @@ public final class Environment extends Configurable implements Scope {
      * Returns the main name-space. This is correspondent of FTL
      * <code>.main</code> hash.
      */
-    public TemplateNamespace getMainNamespace() {
+    public Scope getMainNamespace() {
         return mainNamespace;
     }
 
@@ -1099,12 +1100,13 @@ public final class Environment extends Configurable implements Scope {
      * Returns the current name-space. This is correspondent of FTL
      * <code>.namespace</code> hash.
      */
-    public TemplateNamespace getCurrentNamespace() {
+    public Scope getCurrentNamespace() {
         Scope scope = currentScope;
-        while (!(scope instanceof TemplateNamespace)) {
+        //while (!(scope instanceof TemplateNamespace)) {
+        while (scope.getEnclosingScope() != this) {
             scope = scope.getEnclosingScope();
         }
-        return (TemplateNamespace) scope;
+        return scope;
     }
 
     /**
@@ -1216,9 +1218,9 @@ public final class Environment extends Configurable implements Scope {
         Object result = null;
         int i;
         for (i = startIndex; i < nodeNamespaces.size(); i++) {
-            TemplateNamespace ns = null;
+            Scope ns = null;
             try {
-                ns = (TemplateNamespace) nodeNamespaces.get(i);
+                ns = nodeNamespaces.get(i);
             } catch (ClassCastException cce) {
                 throw new InvalidReferenceException(
                         "A using clause should contain a sequence of namespaces or strings that indicate the location of importable macro libraries.",
@@ -1236,8 +1238,7 @@ public final class Environment extends Configurable implements Scope {
         return result;
     }
 
-    private Object getNodeProcessor(TemplateNamespace ns,
-            String localName, String nsURI) {
+    private Object getNodeProcessor(Scope ns, String localName, String nsURI) {
         Object result = null;
         if (nsURI == null) {
             result = ns.get(localName);
@@ -1352,10 +1353,11 @@ public final class Environment extends Configurable implements Scope {
         setFallback(includedTemplate);
         Scope prevScope = this.currentScope;
         if (freshNamespace) {
-            this.currentScope = new TemplateNamespace(this, includedTemplate);
+            this.currentScope = new BlockScope(includedTemplate.getRootElement(), this);
             importMacros(includedTemplate);
         } else {
-            this.currentScope = new IncludedTemplateNamespace(includedTemplate, prevScope);
+            //this.currentScope = new BlockScope(includedTemplate.getRootElement(), prevScope);
+            this.currentScope = getCurrentNamespace();
             importMacros(includedTemplate);
         }
         try {
@@ -1380,7 +1382,7 @@ public final class Environment extends Configurable implements Scope {
      * @see #getTemplateForImporting(String name)
      * @see #importLib(Template includedTemplate, String namespace, boolean global)
      */
-    public TemplateNamespace importLib(String name, String namespace)
+    public Scope importLib(String name, String namespace)
             throws IOException, TemplateException {
         return importLib(getTemplateForImporting(name), namespace, true);
     }
@@ -1412,20 +1414,19 @@ public final class Environment extends Configurable implements Scope {
      *                       to be a template returned by
      *                       {@link #getTemplateForImporting(String name)}.
      */
-    public TemplateNamespace importLib(Template loadedTemplate, String namespace, boolean global)
+    public Scope importLib(Template loadedTemplate, String namespace, boolean global)
             throws IOException, TemplateException {
         if (loadedLibs == null) {
-            loadedLibs = new HashMap<String, TemplateNamespace>();
+            loadedLibs = new HashMap<>();
         }
         String templateName = loadedTemplate.getName();
-        TemplateNamespace existingNamespace = loadedLibs.get(templateName);
+        Scope existingNamespace = loadedLibs.get(templateName);
         if (existingNamespace != null) {
             if (namespace != null) {
                 setVariable(namespace, existingNamespace);
             }
         } else {
-            TemplateNamespace newNamespace = new TemplateNamespace(this,
-                    loadedTemplate);
+            Scope newNamespace = new BlockScope(loadedTemplate.getRootElement(), this);
             if (namespace != null) {
                 if (global) {
                     setGlobalVariable(namespace, newNamespace);

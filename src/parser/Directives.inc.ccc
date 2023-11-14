@@ -262,7 +262,6 @@ INJECT VisitNode :
     import freemarker.template.TemplateException;
     import freemarker.core.Environment;
     import freemarker.core.variables.scope.Scope;
-    import freemarker.core.variables.scope.TemplateNamespace;
     import freemarker.core.variables.*;
     import static freemarker.core.variables.Wrap.*;
     extends TemplateElement
@@ -292,7 +291,7 @@ INJECT VisitNode :
             nss = ((ListLiteral) namespaces).evaluateStringsToNamespaces(env);
         }
         if (nss != null) {
-            if (nss instanceof TemplateNamespace) {
+            if (nss instanceof Scope) {
                 List<Scope> ss = new ArrayList<>();
                 ss.add((Scope)nss);
                 nss = ss;
@@ -1097,11 +1096,11 @@ INJECT Macro :
     public void close() {
     	ParameterList params = getParams();
     	for (String paramName : params.getParams()) {
-    		declareVariable(paramName);
+    		getNestedBlock().declareVariable(paramName);
     	}
     	String catchallVar = params.getCatchAll();
     	if (catchallVar != null) {
-    		declareVariable(catchallVar);
+    		getNestedBlock().declareVariable(catchallVar);
     	}
     }
 
@@ -1158,11 +1157,11 @@ INJECT UnifiedCall :
     	ParameterList bodyParameters = getBodyParameters();
     	if (bodyParameters != null) {
     		for (String paramName : bodyParameters.getParams()) {
-    			declareVariable(paramName);
+    			getNestedBlock().declareVariable(paramName);
     		}
     		String catchallParam = bodyParameters.getCatchAll();
     		if (catchallParam != null) {
-    			declareVariable(catchallParam);
+    			getNestedBlock().declareVariable(catchallParam);
     		}
     	}
     }
@@ -1603,6 +1602,7 @@ INJECT VarDirective :
             String varname = entry.getKey();
             Expression exp = entry.getValue();
             Scope scope = env.getCurrentScope();
+            //System.out.println("The current scope is " + scope);
             if (exp == null) {
                 if (scope.get(varname) == null) {
                     scope.put(varname, JAVA_NULL);
@@ -1714,25 +1714,15 @@ INJECT TemplateElement :
      */
     abstract public void execute(Environment env) throws IOException;
 
-    // The scoped variables defined in this element.
-    private HashSet<String> declaredVariables;
+    public Block getNestedBlock() {
+        if (this instanceof Block) return (Block) this;
+        return firstChildOfType(Block.class);
+    }
 
-    public boolean declaresVariable(String name) {
-    	return declaredVariables != null && declaredVariables.contains(name);
-    }
-    
-    public void declareVariable(String varName) {
-    	if (declaredVariables == null) declaredVariables = new HashSet<String>();
-    	declaredVariables.add(varName);
-    }
-    
     public boolean isIgnorable() {
         return false;
     }
 
-    public final boolean createsScope() {
-    	return declaredVariables != null && !declaredVariables.isEmpty();
-    }
 }
 
 TextElement# :
@@ -1809,11 +1799,32 @@ INJECT Block :
     import freemarker.core.Environment;
     extends TemplateElement
 {
+
+    // The scoped variables defined in this element.
+    private HashSet<String> declaredVariables;
+    
+    public boolean declaresVariable(String name) {
+    	return declaredVariables != null && declaredVariables.contains(name);
+    }
+    
+    public void declareVariable(String varName) {
+    	if (declaredVariables == null) declaredVariables = new HashSet<String>();
+    	declaredVariables.add(varName);
+    }
+
+    public final boolean createsScope() {
+    	return declaredVariables != null && !declaredVariables.isEmpty();
+    }
+ 
     public void execute(Environment env) throws IOException 
     {
         for (TemplateElement element : childrenOfType(TemplateElement.class)) {
             env.render(element);
         }
+    }
+
+    public boolean isTemplateRoot() {
+        return getParent() == null;
     }
 
     public String getDescription() {
@@ -1962,10 +1973,10 @@ Expression IdentifierOrStringLiteral#void :
  * Root production to be used when parsing
  * an entire file.
  */
-TemplateElement Root#void :
+Block Root#void :
 {
    TemplateHeaderElement header;
-   TemplateElement doc;
+   Block doc;
 }
    [
        header=TemplateHeaderElement
@@ -1984,6 +1995,7 @@ TemplateElement Root#void :
        }
    ]
    doc=Block
+   {assert doc.getParent() == null;}
    <EOF>
    {
        return doc;

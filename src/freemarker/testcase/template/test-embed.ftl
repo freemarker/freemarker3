@@ -1,4 +1,4 @@
-[#ftl strict_vars="false"]
+[#ftl legacy_syntax]
 [#var x="set in main template"]
 [#embed "embedded.ftl"]
 ${x}

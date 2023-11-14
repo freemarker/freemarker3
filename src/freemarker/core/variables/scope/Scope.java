@@ -77,4 +77,8 @@ public interface Scope {
      * or null if not found.
      */
     Object get(String key);
+
+    default boolean isTemplateNamespace() {
+        return false;
+    }
 }

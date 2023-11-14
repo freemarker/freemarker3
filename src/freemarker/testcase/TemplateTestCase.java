@@ -4,7 +4,6 @@ import freemarker.template.*;
 import freemarker.annotations.Parameters;
 import freemarker.core.variables.*;
 import freemarker.testcase.models.*;
-import freemarker.template.utility.*;
 import junit.framework.*;
 import java.util.*;
 import java.io.*;

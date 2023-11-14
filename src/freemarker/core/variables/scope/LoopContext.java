@@ -23,12 +23,12 @@ public class LoopContext extends BlockScope {
     private Object list;
     
     public LoopContext(IteratorBlock iteratorBlock, Scope enclosingScope, Object list) {
-    	super(iteratorBlock, enclosingScope);
+    	super(iteratorBlock.getNestedBlock(), enclosingScope);
         this.list = list;
     }
     
     public void runLoop() throws IOException {
-    	IteratorBlock iteratorBlock = (IteratorBlock) block;
+    	IteratorBlock iteratorBlock = (IteratorBlock) getBlock().getParent();
         TemplateElement nestedBlock = iteratorBlock.firstChildOfType(TemplateElement.class);
     	Environment env = getEnvironment();
         if (isIterable(list)) {
