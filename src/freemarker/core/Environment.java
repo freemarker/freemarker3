@@ -1017,14 +1017,14 @@ public final class Environment extends Configurable implements Scope {
                 .listIterator(elementStack.size());
         if (iter.hasPrevious()) {
             pw.print("==> ");
-            TemplateNode prev = iter.previous();
+            TemplateElement prev = iter.previous();
             pw.print(prev.getDescription());
             pw.print(" [");
             pw.print(prev.getLocation());
             pw.println("]");
         }
         while (iter.hasPrevious()) {
-            TemplateNode prev = iter.previous();
+            TemplateElement prev = iter.previous();
             if (prev instanceof UnifiedCall || prev instanceof IncludeInstruction) {
                 String location = prev.getDescription() + " ["
                         + prev.getLocation() + "]";

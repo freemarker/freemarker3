@@ -16,7 +16,7 @@ INJECT Interpolation :
     import java.io.IOException;
     import freemarker.core.Environment;
     import freemarker.template.TemplateException;
-    extends TemplateElement
+    implements TemplateElement
 {
     private Expression escapedExpression; // This will be the same as the expression if we are not within an escape block.
 
@@ -93,7 +93,7 @@ INJECT IfBlock :
     import java.util.*;
     import java.io.IOException;
     import freemarker.core.Environment;
-    extends TemplateElement
+    implements TemplateElement
 {
     public void execute(Environment env) throws IOException {
         for (ConditionalBlock cblock : childrenOfType(ConditionalBlock.class)) {
@@ -115,7 +115,7 @@ INJECT IfBlock :
 INJECT ConditionalBlock :
     import java.io.IOException;
     import freemarker.core.Environment;
-    extends TemplateElement
+    implements TemplateElement
 {
     public Expression getCondition() {
     	return firstChildOfType(Expression.class);
@@ -152,7 +152,7 @@ INJECT AttemptBlock :
     import java.util.*;
     import freemarker.core.Environment;
     import freemarker.core.variables.*;
-    extends TemplateElement
+    implements TemplateElement
 {
     public TemplateElement getAttemptBlock() {
         return childrenOfType(TemplateElement.class).get(0);
@@ -176,7 +176,7 @@ INJECT RecoveryBlock :
     import java.io.IOException;
     import freemarker.core.Environment;
     import freemarker.core.variables.*;
-    extends TemplateElement
+    implements TemplateElement
 {
     public void execute(Environment env) throws IOException 
     {
@@ -217,7 +217,7 @@ INJECT IteratorBlock :
     import freemarker.core.*;
     import freemarker.core.variables.*;
     import freemarker.core.variables.scope.LoopContext;
-    extends TemplateElement
+    implements TemplateElement
 {
     public boolean isForeach() {
         return get(0).getType() == FOREACH;
@@ -264,7 +264,7 @@ INJECT VisitNode :
     import freemarker.core.variables.scope.Scope;
     import freemarker.core.variables.*;
     import static freemarker.core.variables.Wrap.*;
-    extends TemplateElement
+    implements TemplateElement
 {
     public Expression getTargetNode() {
     	return (Expression) get(1);
@@ -328,7 +328,7 @@ INJECT RecurseNode :
     import freemarker.core.variables.*;
     import static freemarker.core.variables.Wrap.isList;
     import static freemarker.core.variables.Wrap.asString;
-    extends TemplateElement
+    implements TemplateElement
 {
     public Expression getTargetNode() {
         if (get(1) instanceof Expression) {
@@ -381,7 +381,7 @@ FallbackInstruction# :
 INJECT FallbackInstruction :
     import java.io.IOException;
     import freemarker.core.Environment;
-    extends TemplateElement;
+    implements TemplateElement;
 {
     public void execute(Environment env) throws IOException {
         env.fallback();
@@ -402,7 +402,7 @@ BreakInstruction# :
 INJECT BreakInstruction :
     import freemarker.core.Environment;
     import freemarker.core.BreakException;
-    extends TemplateElement
+    implements TemplateElement
 {
     public void execute(Environment env) {
         throw BreakException.INSTANCE;
@@ -426,7 +426,7 @@ AssertionInstruction :
 INJECT AssertionInstruction :
    import freemarker.core.Environment;
    import freemarker.core.StopException;
-   extends TemplateElement;
+   implements TemplateElement;
 {
     public void execute(Environment env) {
         Expression exp = (Expression) get(1);
@@ -448,7 +448,7 @@ ExecInstruction :
 
 INJECT ExecInstruction :
     import freemarker.core.Environment;
-    extends TemplateElement
+    implements TemplateElement
 {
     public void execute(Environment env) {
         Expression exp = (Expression) get(1);
@@ -466,7 +466,7 @@ ReturnInstruction :
 INJECT ReturnInstruction :
     import freemarker.core.Environment;
     import freemarker.core.ReturnException;
-    extends TemplateElement
+    implements TemplateElement
 {
     public Object getReturnValue(Environment env) {
         if (!(get(1) instanceof Expression)) return null;
@@ -497,7 +497,7 @@ StopInstruction# :
 INJECT StopInstruction :
    import freemarker.core.Environment;
    import freemarker.core.StopException;
-   extends TemplateElement
+   implements TemplateElement
 {
    public String getMessage(Environment env) {
       return get(1) instanceof Expression ? 
@@ -525,7 +525,7 @@ INJECT NestedInstruction :
     import freemarker.core.*;
     import freemarker.core.variables.scope.MacroInvocationBodyContext;
     import freemarker.core.variables.*;
-    extends TemplateElement
+    implements TemplateElement
 {
     public ArgsList getArgs() {
     	return firstChildOfType(ArgsList.class);
@@ -557,7 +557,7 @@ FlushInstruction# :
 INJECT FlushInstruction :
    import java.io.IOException;
    import freemarker.core.Environment;
-   extends TemplateElement
+   implements TemplateElement
 {
     public void execute(Environment env) throws IOException {
         env.getOut().flush();
@@ -572,7 +572,7 @@ TrimInstruction# : <TRIM>|<LTRIM>|<RTRIM>;
 
 INJECT TrimInstruction :
    import freemarker.core.Environment;
-   extends TemplateElement
+   implements TemplateElement
 {
     public boolean isLeft() {
     	return get(0).getType() != RTRIM;
@@ -632,7 +632,7 @@ INJECT BlockAssignment :
     import freemarker.core.variables.UserDirective;
     import freemarker.core.variables.scope.Scope;
     import freemarker.template.TemplateException;
-    extends TemplateElement
+    implements TemplateElement
 {
     public String getVarName() {
         if (get(1) instanceof StringLiteral) {
@@ -726,7 +726,7 @@ INJECT AssignmentInstruction :
     import freemarker.core.*;
     import freemarker.core.variables.InvalidReferenceException;
     import freemarker.core.variables.scope.Scope;
-    extends TemplateElement
+    implements TemplateElement
 {
     public List<String> getVarNames() {
         List<String> result = new ArrayList<>();
@@ -821,7 +821,7 @@ INJECT IncludeInstruction :
     import freemarker.core.variables.InvalidReferenceException;
     import freemarker.core.parser.ParseException;
     import static freemarker.core.variables.Wrap.*;
-    extends TemplateElement
+    implements TemplateElement
 {
     @Property Template template;
 
@@ -906,7 +906,7 @@ INJECT ImportDeclaration :
     import freemarker.core.Environment;
     import freemarker.core.variables.InvalidReferenceException;
     import freemarker.log.Logger;
-    extends TemplateElement
+    implements TemplateElement
 {
     private String templatePath="";
     @Property Template template;
@@ -1068,7 +1068,7 @@ INJECT Macro :
     import freemarker.core.Environment;
     import freemarker.core.nodes.ParameterList;
     import freemarker.core.variables.WrappedVariable;
-    extends TemplateElement implements WrappedVariable
+    implements TemplateElement, WrappedVariable
 {
     static public final Macro DO_NOTHING_MACRO = new Macro();
     static {
@@ -1137,7 +1137,7 @@ INJECT UnifiedCall :
     import freemarker.core.nodes.ParameterList;
     import freemarker.core.variables.UserDirective;
     import freemarker.template.TemplateException;
-    extends TemplateElement
+    implements TemplateElement
 {
     public Expression getNameExp() {
         return (Expression) get(1);
@@ -1238,7 +1238,7 @@ NoParseBlock# :
 INJECT NoParseBlock : 
     import java.io.IOException;
     import freemarker.core.Environment;
-    extends TemplateElement
+    implements TemplateElement
 {
     public void execute(Environment env) throws IOException {
         String source = getSource();
@@ -1321,7 +1321,7 @@ INJECT SwitchBlock :
     import freemarker.core.BreakException;
     import freemarker.template.TemplateException;
     import static freemarker.core.variables.Wrap.*;
-    extends TemplateElement  
+    implements TemplateElement  
 {
     public void execute(Environment env) throws IOException {
         boolean foundMatch = false;
@@ -1354,7 +1354,7 @@ INJECT SwitchBlock :
 INJECT CaseBlock :
     import java.io.IOException;
     import freemarker.core.Environment;
-    extends TemplateElement  
+    implements TemplateElement  
 {
     public Expression getExpression() {
         return firstChildOfType(Expression.class);
@@ -1384,7 +1384,7 @@ INJECT EscapeBlock :
     import java.io.IOException;
     import freemarker.core.Environment;
     import freemarker.template.*;
-    extends TemplateElement
+    implements TemplateElement
 {
     private Expression escapedExpression;
 
@@ -1436,7 +1436,7 @@ NoEscapeBlock :
 INJECT NoEscapeBlock :
     import java.io.IOException;
     import freemarker.core.Environment;
-    extends TemplateElement
+    implements TemplateElement
 {
     public void execute(Environment env) throws IOException {
         if (firstChildOfType(TemplateElement.class) != null) {
@@ -1524,7 +1524,7 @@ PropertySetting :
 INJECT PropertySetting :
     import freemarker.core.Environment;
     import static freemarker.core.variables.Wrap.*;
-    extends TemplateElement
+    implements TemplateElement
 {
     public String getKey() {
     	return firstChildOfType(ID).toString();
@@ -1593,7 +1593,7 @@ INJECT VarDirective :
    import freemarker.core.*;
    import freemarker.core.variables.scope.Scope;
    import static freemarker.core.variables.Wrap.JAVA_NULL;
-   extends TemplateElement
+   implements TemplateElement
 {
     private Map<String, Expression> vars = new LinkedHashMap<String, Expression>();
 
@@ -1640,7 +1640,7 @@ INJECT VarDirective :
 /**
  * A production for FreeMarker directives.
  */
-TemplateElement#abstract :
+TemplateElement#interface :
    IfBlock
    |
    ListBlock
@@ -1712,17 +1712,18 @@ INJECT TemplateElement :
      *
      * @param env The runtime environment
      */
-    abstract public void execute(Environment env) throws IOException;
+    void execute(Environment env) throws IOException;
 
-    public Block getNestedBlock() {
+    String getDescription();
+
+    default Block getNestedBlock() {
         if (this instanceof Block) return (Block) this;
         return firstChildOfType(Block.class);
     }
 
-    public boolean isIgnorable() {
+    default boolean isIgnorable() {
         return false;
     }
-
 }
 
 TextElement# :
@@ -1746,7 +1747,7 @@ INJECT TextElement :
    import java.io.IOException;
    import freemarker.core.Environment;
    import freemarker.core.nodes.Whitespace;
-   extends TemplateElement
+   implements TemplateElement
 {
     private String outputText;
 
@@ -1797,7 +1798,7 @@ Block#(true) :
 INJECT Block :
     import java.io.IOException;
     import freemarker.core.Environment;
-    extends TemplateElement
+    implements TemplateElement
 {
 
     // The scoped variables defined in this element.
@@ -1840,7 +1841,6 @@ INJECT Block :
  * A production freemarker text that may contain
  * ${...} but no directives.
  */
-
 TemplateElement FreeMarkerText#Block :
     (
         TextElement
