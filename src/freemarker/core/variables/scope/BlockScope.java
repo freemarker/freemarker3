@@ -7,14 +7,19 @@ import freemarker.core.nodes.generated.Block;
 import freemarker.template.*;
 
 
-public class BlockScope extends AbstractScope {
+public class BlockScope implements Scope {
 	
 	Block block;
     private Map<String,Object> variables = new HashMap<>();
+	private Scope enclosingScope;
 	
 	public BlockScope(Block block, Scope enclosingScope) {
-		super(enclosingScope);
 		this.block = block;
+		this.enclosingScope = enclosingScope;
+	}
+
+	public Scope getEnclosingScope() {
+		return enclosingScope;
 	}
 
     public Object get(String key) { 

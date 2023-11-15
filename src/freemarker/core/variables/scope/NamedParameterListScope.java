@@ -1,24 +1,26 @@
 package freemarker.core.variables.scope;
 
-import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Attila Szegedi
- * @version $Id: $
- */
-public class NamedParameterListScope extends AbstractScope {
+public class NamedParameterListScope implements Scope {
     private final List<String> paramNames;
     private final List<Object> paramValues;
     private final boolean readOnly;
+    private Scope enclosingScope;
     
     public NamedParameterListScope(Scope enclosingScope, 
-            List<String> paramNames, List<Object> paramValues, boolean
-            readOnly) {
-        super(enclosingScope);
+                                   List<String> paramNames, 
+                                   List<Object> paramValues, 
+                                   boolean readOnly) 
+    {
+        this.enclosingScope = enclosingScope;
         this.paramNames = paramNames;
         this.paramValues = paramValues;
         this.readOnly = readOnly;
+    }
+
+    public Scope getEnclosingScope() {
+        return enclosingScope;
     }
 
     public boolean definesVariable(String name) {
@@ -43,18 +45,6 @@ public class NamedParameterListScope extends AbstractScope {
         throw new UnsupportedOperationException();
     }
 
-    public Iterable keys() {
-        int size = Math.min(paramNames.size(), paramValues.size());
-        List<String> nonNullValueKeys = new ArrayList<String>(size);
-        for(int i = 0; i < size; ++i) {
-            if(paramValues.get(i) != null) {
-                nonNullValueKeys.add(paramNames.get(i));
-            }
-        }
-        return nonNullValueKeys;
-        //return new CollectionModel(nonNullValueKeys);
-    }
-    
     public int size() {
         int nonNullCount = 0;
         int size = Math.min(paramNames.size(), paramValues.size());
@@ -64,18 +54,6 @@ public class NamedParameterListScope extends AbstractScope {
             }
         }
         return nonNullCount;
-    }
-
-    public Iterable values()  {
-        int size = Math.min(paramNames.size(), paramValues.size());
-        List<Object> nonNullValues = new ArrayList<>(size);
-        for(int i = 0; i < size; ++i) {
-            Object value = paramValues.get(i);
-            if(value != null) {
-                nonNullValues.add(value);
-            }
-        }
-        return nonNullValues;
     }
 
     public Object get(String key) {

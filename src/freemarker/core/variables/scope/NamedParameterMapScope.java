@@ -1,19 +1,22 @@
 package freemarker.core.variables.scope;
 
-import java.util.Collection;
 import java.util.Map;
 
 /**
  * @author Attila Szegedi
  * @version $Id: $
  */
-public class NamedParameterMapScope extends AbstractScope {
+public class NamedParameterMapScope implements Scope {
     private final Map<String, Object> parameters;
+    private Scope enclosingScope;
     
-    public NamedParameterMapScope(Scope enclosingScope, 
-            Map<String, Object> parameters) {
-        super(enclosingScope);
+    public NamedParameterMapScope(Scope enclosingScope, Map<String, Object> parameters) {
+        this.enclosingScope = enclosingScope;
         this.parameters = parameters;
+    }
+
+    public Scope getEnclosingScope() {
+        return enclosingScope;
     }
 
     public boolean definesVariable(String name) {
@@ -28,16 +31,8 @@ public class NamedParameterMapScope extends AbstractScope {
         return parameters.remove(key);
     }
 
-    public Iterable keys() {
-        return parameters.keySet();
-    }
-    
     public int size() {
         return parameters.size();
-    }
-
-    public Iterable values()  {
-        return parameters.values();
     }
 
     public Object get(String key) {

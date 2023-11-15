@@ -11,6 +11,22 @@ import freemarker.core.Environment;
  */
 public interface Scope {
 
+    default Object resolveVariable(String key) {
+    	Object result = get(key);
+    	if (result == null && getEnclosingScope() != null) {
+    		return getEnclosingScope().resolveVariable(key);
+    	}
+    	return result;
+    }
+
+    default Template getTemplate() {
+        return getEnclosingScope().getTemplate();
+    }
+
+    default Environment getEnvironment() {
+        return getEnclosingScope().getEnvironment();
+    }
+
     /**
      * Gets a variable from the hash.
      *
@@ -34,17 +50,6 @@ public interface Scope {
     Object remove(String key);
 
     /**
-     * @return the Environment object associated with this Scope.
-     */
-
-    Environment getEnvironment();
-
-    /**
-     * @return the Template object associated with this Scope.
-     */
-    Template getTemplate();
-
-    /**
      * @return whether the variable is defined in
      * this specific scope. (It could be defined in a 
      * fallback scope and this method will return false.)
@@ -55,14 +60,6 @@ public interface Scope {
      * @return the fallback Scope for variable resolution
      */
     Scope getEnclosingScope();
-
-
-    /**
-     * Evaluates the variable of this name in this scope,
-     * falling back to the enclosing Scope if it is not
-     * defined in this one.
-     */
-    Object resolveVariable(String name);
 
     default boolean isTemplateNamespace() {
         return false;
