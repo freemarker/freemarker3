@@ -1022,8 +1022,8 @@ public final class Environment extends Configurable implements Scope {
         return globalVariables.containsKey(name) || rootDataModel.get(name) != null;
     }
 
-    public void put(String varname, Object value) {
-        globalVariables.put(varname, value);
+    public Object put(String varname, Object value) {
+        return globalVariables.put(varname, value);
     }
 
     public Object remove(String varname) {

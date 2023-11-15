@@ -20,8 +20,8 @@ public class NamedParameterMapScope extends AbstractScope {
         return parameters.containsKey(name);
     }
 
-    public void put(String key, Object value) {
-        parameters.put(key, value);
+    public Object put(String key, Object value) {
+        return parameters.put(key, value);
     }
 
     public Object remove(String key) {

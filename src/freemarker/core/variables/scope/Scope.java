@@ -12,10 +12,20 @@ import freemarker.core.Environment;
 public interface Scope {
 
     /**
+     * Gets a variable from the hash.
+     *
+     * @param key the name by which the <tt>WrappedVariable</tt>
+     * is identified in the template.
+     * @return the value referred to by the key,
+     * or null if not found.
+     */
+    Object get(String key);
+
+    /**
      * Set a variable in this scope. This 
      * will typically only be used internally by the FreeMarker engine.
      */
-    void put(String key, Object value);
+    Object put(String key, Object value);
 
     /**
      * Removes a variable in this scope.
@@ -53,16 +63,6 @@ public interface Scope {
      * defined in this one.
      */
     Object resolveVariable(String name);
-
-    /**
-     * Gets a variable from the hash.
-     *
-     * @param key the name by which the <tt>WrappedVariable</tt>
-     * is identified in the template.
-     * @return the value referred to by the key,
-     * or null if not found.
-     */
-    Object get(String key);
 
     default boolean isTemplateNamespace() {
         return false;

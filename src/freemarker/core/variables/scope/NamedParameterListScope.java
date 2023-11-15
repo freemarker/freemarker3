@@ -1,7 +1,6 @@
 package freemarker.core.variables.scope;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,7 +25,7 @@ public class NamedParameterListScope extends AbstractScope {
         return paramNames.contains(name);
     }
 
-    public void put(String key, Object value) {
+    public Object put(String key, Object value) {
         if(readOnly) {
             throw new UnsupportedOperationException();
         }
@@ -37,7 +36,7 @@ public class NamedParameterListScope extends AbstractScope {
         while(i >= paramValues.size()) {
             paramValues.add(null);
         }
-        paramValues.set(i, value);
+        return paramValues.set(i, value);
     }
 
     public Object remove(String key) {

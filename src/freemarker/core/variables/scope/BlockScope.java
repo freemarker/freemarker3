@@ -25,11 +25,11 @@ public class BlockScope extends AbstractScope {
 		return block.getTemplate();
 	}
 	
-	public void put(String key, Object tm) {
+	public Object put(String key, Object tm) {
 		if (getTemplate().strictVariableDeclaration() && !definesVariable(key)) {
 			throw new IllegalArgumentException("The variable " + key + " is not declared here.");
 		}
-		variables.put(key, tm);
+		return variables.put(key, tm);
 	}
 
 	protected void putUnconditionally(String key, Object var) {

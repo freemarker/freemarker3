@@ -1,7 +1,5 @@
 package freemarker.core.variables.scope;
 
-import java.io.IOException;
-
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.ParameterList;
