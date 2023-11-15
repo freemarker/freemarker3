@@ -216,7 +216,10 @@ INJECT IteratorBlock :
     import java.io.IOException;
     import freemarker.core.*;
     import freemarker.core.variables.*;
+    import freemarker.core.variables.scope.BlockScope;
     import freemarker.core.variables.scope.LoopContext;
+    import static freemarker.core.variables.Wrap.isIterable;
+    import static freemarker.core.variables.Wrap.asIterator;
     implements TemplateElement
 {
     public boolean isForeach() {
@@ -232,9 +235,12 @@ INJECT IteratorBlock :
     }
 
     public void execute(Environment env) throws IOException {
-        Object baseModel = getListExpression().evaluate(env);
-        getListExpression().assertNonNull(baseModel, env);
-        env.process(new LoopContext(this, env.getCurrentScope(), baseModel)); // REVISIT
+        Object listVar = getListExpression().evaluate(env);
+        getListExpression().assertNonNull(listVar, env);
+        if (!isIterable(listVar)) {
+            throw TemplateNode.invalidTypeException(listVar, getListExpression(), env, "collection or sequence");            
+        }
+        env.process(asIterator(listVar), getNestedBlock(), getIndexName());
     }
 
     public String getDescription() {

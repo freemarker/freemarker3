@@ -15,6 +15,7 @@ import java.util.*;
 import freemarker.core.nodes.generated.ArgsList;
 import freemarker.core.nodes.generated.Block;
 import freemarker.core.nodes.generated.IncludeInstruction;
+import freemarker.core.nodes.generated.IteratorBlock;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.ParameterList;
 import freemarker.core.nodes.generated.TemplateElement;
@@ -312,13 +313,22 @@ public final class Environment extends Configurable implements Scope {
     }
 
     /**
-     * "visit" an IteratorBlock
+     * Loop over a block, using the iterator passed in and
+     * the given variable name for the loop variable.
      */
-    public void process(LoopContext ictxt) throws IOException {
+    public void process(Iterator<?> it, Block block, String loopVarName) throws IOException {
         Scope prevScope = currentScope;
-        currentScope = ictxt;
+        int index = 0;
+        String hasNextName = loopVarName + "_has_next";
+        String indexName = loopVarName + "_index";
         try {
-            ictxt.runLoop();
+            while (it.hasNext()) {
+                currentScope = new BlockScope(block, prevScope);
+                currentScope.put(loopVarName, wrap(it.next()));
+                currentScope.put(hasNextName, it.hasNext());
+                currentScope.put(indexName, index++);
+                render(block);
+            }
         } catch (BreakException br) {
         } catch (TemplateException te) {
             handleTemplateException(te);
