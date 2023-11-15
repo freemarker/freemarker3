@@ -1,7 +1,5 @@
 package freemarker.core.variables.scope;
 
-import java.util.Collection;
-
 import freemarker.template.Template;
 import freemarker.core.Environment;
 
@@ -55,18 +53,6 @@ public interface Scope {
      * defined in this one.
      */
     Object resolveVariable(String name);
-
-    /**
-     * Returns the names of variables directly managed by this scope (i.e. it 
-     * does not traverse the chain of enclosing scopes, but limits itself to 
-     * this scope only).
-     * @return a collection of known variable names for this scope, without
-     * enclosing scopes. The returned collection should be either immutable, or
-     * it should be disconnected from the scope, so any modifications to the
-     * collection don't affect the scope.
-     * @throws EvaluationException
-     */
-    Collection<String> getDirectVariableNames();
 
     /**
      * Gets a variable from the hash.

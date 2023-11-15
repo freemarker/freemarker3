@@ -46,10 +46,6 @@ public class BlockScope extends AbstractScope {
 		return getBlock().declaresVariable(name);
 	}
 
-    public Collection<String> getDirectVariableNames() {
-        return Collections.unmodifiableCollection(variables.keySet());
-    }
-
     public Object remove(String key) {
         return variables.remove(key);
     }

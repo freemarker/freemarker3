@@ -100,7 +100,7 @@ public class PostParseVisitor extends Node.Visitor {
 				template.addParsingProblem(problem);
 			}
 		}
-		if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
+		else if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
 			Macro macro = getContainingMacro(node);
 			if (macro == null) {
 				template.addParsingProblem(new ParsingProblem("The local directive can only be used inside a function or macro.", node));

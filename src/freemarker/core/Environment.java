@@ -899,17 +899,6 @@ public final class Environment extends Configurable implements Scope {
         return result;
     }
 
-    public Collection<String> getDirectVariableNames() {
-        Collection<String> coll = new HashSet<String>(globalVariables.keySet());
-        if (rootDataModel instanceof WrappedHash) {
-            Iterator<?> rootNames = ((WrappedHash) rootDataModel).keys().iterator();
-            while (rootNames.hasNext()) {
-                coll.add(asString(rootNames.next()));
-            }
-        }
-        return coll;
-    }
-
     /**
      * Sets a variable that is visible globally. This is correspondent to FTL
      * <code><#global <i>name</i>=<i>model</i>></code>.
@@ -979,28 +968,6 @@ public final class Environment extends Configurable implements Scope {
 
     public Scope getCurrentScope() {
         return currentScope;
-    }
-
-    /**
-     * Returns a set of variable names that are known at the time of call. This
-     * includes names of all shared variables in the {@link Configuration},
-     * names of all global variables that were assigned during the template
-     * processing, names of all variables in the current name-space, names of
-     * all local variables and loop variables. If the passed root data model
-     * implements the {@link WrappedHash} interface, then all names it
-     * retrieves through a call to {@link WrappedHash#keys()} method are
-     * returned as well. The method returns a new Set object on each call that
-     * is completely disconnected from the Environment. That is, modifying the
-     * set will have no effect on the Environment object.
-     */
-    public Collection<String> getKnownVariableNames() {
-        Collection<String> coll = new HashSet<String>();
-        Scope scope = currentScope;
-        while (scope != null) {
-            coll.addAll(scope.getDirectVariableNames());
-            scope = scope.getEnclosingScope();
-        }
-        return coll;
     }
 
     /**

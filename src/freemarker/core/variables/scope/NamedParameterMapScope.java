@@ -20,10 +20,6 @@ public class NamedParameterMapScope extends AbstractScope {
         return parameters.containsKey(name);
     }
 
-    public Collection<String> getDirectVariableNames() {
-        return parameters.keySet();
-    }
-
     public void put(String key, Object value) {
         parameters.put(key, value);
     }

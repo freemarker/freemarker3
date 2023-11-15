@@ -26,10 +26,6 @@ public class NamedParameterListScope extends AbstractScope {
         return paramNames.contains(name);
     }
 
-    public Collection<String> getDirectVariableNames() {
-        return paramNames;
-    }
-
     public void put(String key, Object value) {
         if(readOnly) {
             throw new UnsupportedOperationException();

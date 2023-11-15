@@ -1595,7 +1595,7 @@ INJECT VarDirective :
    import static freemarker.core.variables.Wrap.JAVA_NULL;
    implements TemplateElement
 {
-    private Map<String, Expression> vars = new LinkedHashMap<String, Expression>();
+    private Map<String, Expression> vars = new LinkedHashMap<>();
 
     public void execute(Environment env) {
         for (Map.Entry<String, Expression> entry : vars.entrySet()) {
