@@ -10,13 +10,13 @@ import freemarker.template.TemplateException;
  * directive is encountered. 
  */
 
-public class StopException extends TemplateException
+public class AssertionFailedException extends TemplateException
 {
-    public StopException(Environment env) {
+    public AssertionFailedException(Environment env) {
         super(env);
     }
 
-    public StopException(Environment env, String s) {
+    public AssertionFailedException(Environment env, String s) {
         super(s, env);
     }
 

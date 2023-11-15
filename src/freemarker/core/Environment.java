@@ -15,11 +15,9 @@ import java.util.*;
 import freemarker.core.nodes.generated.ArgsList;
 import freemarker.core.nodes.generated.Block;
 import freemarker.core.nodes.generated.IncludeInstruction;
-import freemarker.core.nodes.generated.IteratorBlock;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.ParameterList;
 import freemarker.core.nodes.generated.TemplateElement;
-import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.nodes.generated.UnifiedCall;
 import freemarker.log.Logger;
 import freemarker.core.variables.*;
@@ -540,9 +538,9 @@ public final class Environment extends Configurable implements Scope {
             logger.error(te.getMessage(), te);
         }
 
-        // Stop exception is not passed to the handler, but
+        // An assertion failing is not passed to the handler, but
         // explicitly rethrown.
-        if (te instanceof StopException) {
+        if (te instanceof AssertionFailedException) {
             throw te;
         }
 
@@ -884,14 +882,7 @@ public final class Environment extends Configurable implements Scope {
      * </ol>
      */
     public Object getVariable(String name) {
-        //return currentScope.resolveVariable(name);
-        Object result = currentScope.resolveVariable(name);
-        if (result == null) return result;
-        Object wrapped = wrap(currentScope.resolveVariable(name));
-//        if (wrapped != result) { REVISIT
-//            currentScope.put(name, wrapped);
-//        }
-        return wrapped;
+        return currentScope.resolveVariable(name);
     }
 
     /**
@@ -1553,5 +1544,4 @@ public final class Environment extends Configurable implements Scope {
         public void close() {
         }
     };
-
 }

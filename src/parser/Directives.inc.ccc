@@ -431,7 +431,7 @@ AssertionInstruction :
 
 INJECT AssertionInstruction :
    import freemarker.core.Environment;
-   import freemarker.core.StopException;
+   import freemarker.core.AssertionFailedException;
    implements TemplateElement;
 {
     public void execute(Environment env) {
@@ -443,7 +443,7 @@ INJECT AssertionInstruction :
                 message += " ";
                 message += extraInfo;
             }
-            throw new StopException(env, message);
+            throw new AssertionFailedException(env, message);
         }
     }
 }
@@ -502,7 +502,7 @@ StopInstruction# :
 
 INJECT StopInstruction :
    import freemarker.core.Environment;
-   import freemarker.core.StopException;
+   import freemarker.core.AssertionFailedException;
    implements TemplateElement
 {
    public String getMessage(Environment env) {
@@ -512,7 +512,7 @@ INJECT StopInstruction :
    }
 
     public void execute(Environment env) {
-        throw new StopException(env, getMessage(env));
+        throw new AssertionFailedException(env, getMessage(env));
     }
 
     public String getDescription() {
