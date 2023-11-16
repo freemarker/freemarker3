@@ -148,6 +148,10 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         }
     }
 
+    public boolean isAssignableTo() {
+        return true;
+    }
+
     public Expression _deepClone(String name, Expression subst) {
         DynamicKeyName result = new DynamicKeyName();
         result.add(getTarget().deepClone(name, subst));

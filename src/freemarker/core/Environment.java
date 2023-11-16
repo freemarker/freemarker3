@@ -856,10 +856,6 @@ public final class Environment extends Configurable implements Scope {
         return (NumberFormat) C_NUMBER_FORMAT.clone();
     }
 
-    public Object resolveVariable(String name) {
-        return get(name);
-    }
-
     /**
      * Returns the variable that is visible in this context. This is the
      * correspondent to an FTL top-level variable reading expression. That is,
@@ -1028,10 +1024,6 @@ public final class Environment extends Configurable implements Scope {
 
     public Object remove(Object varname) {
         return globalVariables.remove(varname);
-    }
-
-    public boolean isEmpty() {
-        return false; // REVISIT, is this right?
     }
 
     /**

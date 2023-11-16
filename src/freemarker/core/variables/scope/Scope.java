@@ -47,6 +47,13 @@ public interface Scope extends Map<String,Object> {
         return getEnclosingScope().getEnvironment();
     }
 
+    // All of the following 10 default methods exist so
+    // that it is not too onerous to implement this 
+    // interface.
+    default boolean isEmpty() {
+        return size() == 0;
+    }
+
     default Object remove(Object key) {
         throw new UnsupportedOperationException();
     }
@@ -56,10 +63,6 @@ public interface Scope extends Map<String,Object> {
     }
 
     default int size() {
-        throw new UnsupportedOperationException();
-    }
-
-    default boolean isEmpty() {
         throw new UnsupportedOperationException();
     }
 

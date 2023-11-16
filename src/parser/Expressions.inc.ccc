@@ -22,6 +22,10 @@ INJECT Expression :
     	return "the expression: "  + this;
     }
 
+    default boolean isAssignableTo() {
+        return false;
+    }
+
     default String getStringValue(Environment env) {
         Object referent = evaluate(env);
         if (referent instanceof Number) {
@@ -201,6 +205,10 @@ INJECT ParentheticalExpression :
     
     public Object evaluate(Environment env) {
         return getNested().evaluate(env);
+    }
+
+    public boolean isAssignableTo() {
+        return getNested().isAssignableTo();
     }
 
     public Expression _deepClone(String name, Expression subst) {

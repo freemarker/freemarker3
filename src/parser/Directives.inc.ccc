@@ -666,11 +666,11 @@ INJECT BlockAssignment :
     	}
     	else {
     		if (get(0).getType() == ASSIGN) {
-    			scope = (Map) env.getCurrentNamespace();
+    			scope = env.getCurrentNamespace();
     		} else if (get(0).getType() == LOCALASSIGN) {
-    			scope = (Map) env.getCurrentMacroContext();
+    			scope = env.getCurrentMacroContext();
     		} else if (get(0).getType() == GLOBALASSIGN) {
-    			scope = (Map) env.getGlobalNamespace();
+    			scope = env.getGlobalNamespace();
     		} 
     	}
     	CaptureOutput filter = new CaptureOutput();

@@ -471,6 +471,10 @@ INJECT Identifier :
         }
         return this; 
     }
+
+    public boolean isAssignableTo() {
+        return true;
+    }
 }
 
 INJECT NullLiteral : 
@@ -604,6 +608,10 @@ INJECT StringLiteral :
                 env.setTemplateExceptionHandler(teh);
             }
         }
+    }
+
+    public boolean isAssignableTo() {
+        return true;
     }
 
     public Expression _deepClone(String name, Expression subst) {
