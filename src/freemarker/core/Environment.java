@@ -889,13 +889,13 @@ public final class Environment extends Configurable implements Scope {
      * This method returns a variable from the "global" namespace and falls back
      * to the data model.
      */
-    public Object get(String name) {
+    public Object get(Object name) {
         Object result = globalVariables.get(name);
         if (result == null) {
             result = rootDataModel.get(name);
         }
         if (result == null) {
-            result = getConfiguration().getSharedVariable(name);
+            result = getConfiguration().getSharedVariable(name.toString());
         }
         return result;
     }
@@ -1026,7 +1026,7 @@ public final class Environment extends Configurable implements Scope {
         return globalVariables.put(varname, value);
     }
 
-    public Object remove(String varname) {
+    public Object remove(Object varname) {
         return globalVariables.remove(varname);
     }
 

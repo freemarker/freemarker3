@@ -35,7 +35,7 @@ public class NamedParameterMapScope implements Scope {
         return parameters.size();
     }
 
-    public Object get(String key) {
+    public Object get(Object key) {
         return parameters.get(key);
     }
 }

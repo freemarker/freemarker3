@@ -41,7 +41,7 @@ public class NamedParameterListScope implements Scope {
         return paramValues.set(i, value);
     }
 
-    public Object remove(String key) {
+    public Object remove(Object key) {
         throw new UnsupportedOperationException();
     }
 
@@ -56,7 +56,7 @@ public class NamedParameterListScope implements Scope {
         return nonNullCount;
     }
 
-    public Object get(String key) {
+    public Object get(Object key) {
         int i = paramNames.indexOf(key);
         return i != -1 && i < paramValues.size() ? paramValues.get(i) : null;
     }

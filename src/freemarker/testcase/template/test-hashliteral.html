@@ -13,8 +13,10 @@
 
 <p>Now perform a hash assignment:</p>
 
-[#set mymessage = "hello", foo = "bar", one = "1"]
-[#set test = {"test1" : "test23", "test45" : message, mymessage : "hello all", foo : one}]
+#set mymessage = "hello", foo = "bar", one = "1"
+#set test = {"test1" : "test23", "test45" : message, mymessage : "hello all", foo : one}
+#set test1 = "NOT test23!" in test
+#exec test::put("test45", "NOT " + test.test45)
 
 ${test.test1}
 ${test.test45}

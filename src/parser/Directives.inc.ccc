@@ -766,11 +766,11 @@ INJECT AssignmentInstruction :
     }
 
     public void execute(Environment env) throws TemplateException, IOException {
-    	Scope scope = null;
+    	Map scope = null;
         Expression namespaceExp = getNamespaceExp();
     	if (namespaceExp != null) {
     		try {
-    			scope = (Scope) namespaceExp.evaluate(env); 
+    			scope = (Map) namespaceExp.evaluate(env); 
     		} catch (ClassCastException cce) {
                 throw new InvalidReferenceException(getLocation() + "\nInvalid reference to namespace: " + namespaceExp, env);
     		}

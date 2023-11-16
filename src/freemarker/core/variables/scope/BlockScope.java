@@ -18,10 +18,6 @@ public class BlockScope extends HashMap<String,Object> implements Scope {
 		return enclosingScope;
 	}
 
-    public Object get(String key) { 
-        return super.get(key);
-    }
-	
 	public Template getTemplate() {
 		return block.getTemplate();
 	}

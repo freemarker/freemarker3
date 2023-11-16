@@ -3,13 +3,17 @@ package freemarker.core.variables.scope;
 import freemarker.template.Template;
 import freemarker.core.Environment;
 
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * Represents a variable resolution context in FTL. This 
  * may be the local variables in a macro, the context of a loop
  * or a template namespace 
  * @author Jonathan Revusky
  */
-public interface Scope {
+public interface Scope extends Map<String,Object> {
 
     default Object resolveVariable(String key) {
     	Object result = get(key);
@@ -18,36 +22,6 @@ public interface Scope {
     	}
     	return result;
     }
-
-    default Template getTemplate() {
-        return getEnclosingScope().getTemplate();
-    }
-
-    default Environment getEnvironment() {
-        return getEnclosingScope().getEnvironment();
-    }
-
-    /**
-     * Gets a variable from the hash.
-     *
-     * @param key the name by which the <tt>WrappedVariable</tt>
-     * is identified in the template.
-     * @return the value referred to by the key,
-     * or null if not found.
-     */
-    Object get(String key);
-
-    /**
-     * Set a variable in this scope. This 
-     * will typically only be used internally by the FreeMarker engine.
-     */
-    Object put(String key, Object value);
-
-    /**
-     * Removes a variable in this scope.
-     * This will typically only be used by FreeMarker engine internals 
-     */
-    Object remove(String key);
 
     /**
      * @return whether the variable is defined in
@@ -64,4 +38,53 @@ public interface Scope {
     default boolean isTemplateNamespace() {
         return false;
     }
+
+    default Template getTemplate() {
+        return getEnclosingScope().getTemplate();
+    }
+
+    default Environment getEnvironment() {
+        return getEnclosingScope().getEnvironment();
+    }
+
+    default Object remove(Object key) {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean containsKey(Object value) {
+        throw new UnsupportedOperationException();
+    }
+
+    default int size() {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean isEmpty() {
+        throw new UnsupportedOperationException();
+    }
+
+    default boolean containsValue(Object value) {
+        throw new UnsupportedOperationException();
+    }
+
+    default Set<Map.Entry<String,Object>> entrySet() {
+        throw new UnsupportedOperationException();
+    }
+
+    default Set<String> keySet() {
+        throw new UnsupportedOperationException();
+    }
+
+    default Collection<Object> values() {
+        throw new UnsupportedOperationException();
+    }
+
+    default void putAll(Map<? extends String,? extends Object> m) {
+        throw new UnsupportedOperationException();
+    }
+    
+    default void clear() {
+        throw new UnsupportedOperationException();
+    }
+
 }
