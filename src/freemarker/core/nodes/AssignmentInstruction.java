@@ -2,6 +2,7 @@ package freemarker.core.nodes;
 
 import java.io.IOException;
 import java.util.*;
+import java.lang.reflect.Array;
 import freemarker.template.TemplateException;
 import freemarker.core.Environment;
 import freemarker.core.variables.EvaluationException;
@@ -12,8 +13,8 @@ import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.Token;
+import freemarker.core.variables.ReflectionCode;
 import static freemarker.core.parser.Token.TokenType.*;
-import static freemarker.core.variables.Wrap.isList;
 
 public class AssignmentInstruction extends TemplateNode implements TemplateElement {
     public List<String> getVarNames() {
@@ -84,18 +85,24 @@ public class AssignmentInstruction extends TemplateNode implements TemplateEleme
         Expression keyExp = (Expression) lhs.get(2);
         Object target = targetExp.evaluate(env);
         Object key = lhs instanceof DynamicKeyName ? keyExp.evaluate(env) : keyExp.toString();
-        if (key instanceof Number && isList(target)) {
-            if (!(target instanceof List)) {
-                //deal with this later
-                // TODO also look at maybe parametrized lists
-                throw new UnsupportedOperationException();
-            }
+        if (key instanceof Number && (target instanceof List || target.getClass().isArray())) {
             int index = ((Number)key).intValue();
-            ((List)target).set(index, value);
+            if (target instanceof List) {
+                // REVISIT: There is a way of checking the 
+                // parametrized type of the List at runtime, I think...
+                ((List)target).set(index, value);
+            } else try {
+                Array.set(target, index, value);
+            } catch (Exception e) {
+                throw new EvaluationException(e);
+            }
             return;
         }
         if (target instanceof Map) {
             ((Map)target).put(key, value);
+            return;
+        }
+        if (key instanceof String && ReflectionCode.setProperty(target, (String) key, value)) {
             return;
         }
         // TODO: check for the beans setter setXXX method

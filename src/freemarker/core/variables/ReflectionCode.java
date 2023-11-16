@@ -15,10 +15,19 @@ import static freemarker.core.variables.Wrap.*;
  */
 public class ReflectionCode {
 
-    private static final Object CAN_NOT_UNWRAP = new Object();
     private static Map<String,Method> methodCache = new ConcurrentHashMap<>();
     private static Map<String, Method> getterCache = new ConcurrentHashMap<>();
+    private static Map<String, Method> setterCache = new ConcurrentHashMap<>();
     private static Map<String, Boolean> classHasMethodCache = new ConcurrentHashMap<>();
+    private static final Object CAN_NOT_UNWRAP = new Object();
+    private static final Method NO_SUCH_METHOD;
+    static {
+        try {
+            NO_SUCH_METHOD = Object.class.getMethod("wait");
+        } catch (Exception e) {
+            throw new InternalError("This should be impossible!");
+        }
+    }
 
     private ReflectionCode() {}
 
@@ -43,7 +52,7 @@ public class ReflectionCode {
 
     public static Object getProperty(Object object, String key, boolean looseSyntax) {
         Method getter = getGetter(object, key);
-        if (getter != null) {
+        if (getter != NO_SUCH_METHOD) {
             try {
                 return wrap(getter.invoke(object));
             } catch (Exception e) {
@@ -54,6 +63,19 @@ public class ReflectionCode {
             return new JavaMethodCall(object, key);
         }
         return null;
+    }
+
+    public static boolean setProperty(Object object, String key, Object value) {
+        Method setter = getSetter(object, key, value);
+        if (setter == NO_SUCH_METHOD) return false;
+        Class<?> desiredType = setter.getParameterTypes()[0];
+        value = unwrap(value, desiredType);
+        try {
+           setter.invoke(object, value);
+        } catch (Exception e) {
+            throw new EvaluationException(e);
+        }
+        return true;
     }
 
     static Method getCachedMethod(Object target, String methodName, List<Object> params) {
@@ -129,7 +151,8 @@ public class ReflectionCode {
     }
 
     private static Method getGetter(Object object, String name) {
-        Method cachedMethod = getterCache.get(getLookupKey(object, name));
+        String lookupKey = getLookupKey(object, name);
+        Method cachedMethod = getterCache.get(lookupKey);
         if (cachedMethod != null) {
             return cachedMethod;
         }
@@ -137,7 +160,7 @@ public class ReflectionCode {
         try {
             Method m = object.getClass().getMethod(methodName);
             if (m.getReturnType() != Void.TYPE) {
-                getterCache.put(getLookupKey(object, name), m);
+                getterCache.put(lookupKey, m);
                 return m;
             }
         } catch (NoSuchMethodException nsme) {
@@ -151,7 +174,30 @@ public class ReflectionCode {
             }
         } catch (NoSuchMethodException nsme) {
         }
-        return null;
+        getterCache.put(lookupKey, NO_SUCH_METHOD);
+        return NO_SUCH_METHOD;
+    }
+
+    private static Method getSetter(Object target, String name, Object value) {
+        String lookupKey = getLookupKey(target, name, value);
+        Method cachedMethod = setterCache.get(lookupKey);
+        if (cachedMethod != null) {
+            return cachedMethod;
+        }
+        String methodName = "set" + name.substring(0,1).toUpperCase() + name.substring(1);
+        for (Method m : target.getClass().getMethods()) {
+            if (!m.getName().equals(methodName)) continue;
+            if (m.getReturnType() != Void.TYPE) continue;
+            if (m.getParameterTypes().length != 1) continue;
+            Class<?> type = m.getParameterTypes()[0];
+            Object unwrapped = unwrap(value, type);
+            if (unwrapped != CAN_NOT_UNWRAP) {
+                setterCache.put(lookupKey, m);
+                return m;
+            }
+        }
+        setterCache.put(lookupKey, NO_SUCH_METHOD);
+        return NO_SUCH_METHOD;
     }
 
     private static Object[] unwrapArgsForMethod(Method method, List<Object> params) {
@@ -265,5 +311,9 @@ public class ReflectionCode {
 
     private static String getLookupKey(Object object, String propertyName) {
         return object.getClass().getName() + "##" + propertyName;
+    }
+
+    private static String getLookupKey(Object object, String propertyName, Object value) {
+        return object.getClass().getName() + "###" + value.getClass().getName();
     }
 }

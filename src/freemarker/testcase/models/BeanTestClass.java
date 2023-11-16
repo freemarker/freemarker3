@@ -9,9 +9,14 @@ import junit.framework.AssertionFailedError;
 public class BeanTestClass extends BeanTestSuperclass implements BeanTestInterface<Integer> {
     public static final String STATIC_FINAL_FIELD = "static-final-field";
     public static String STATIC_FIELD = "static-field";
+    private String foo = "foo-value";
 
     public String getFoo() {
-        return "foo-value";
+        return foo;
+    }
+
+    public void setFoo(String foo) {
+        this.foo = "prefix:" + foo;
     }
 
     public String getBar(int index) {

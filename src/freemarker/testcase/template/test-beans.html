@@ -8,6 +8,7 @@ ${array[1]}
 ${item}
 </#list>
 #var list = ["list-0", "list-1"] 
+${list?size}
 #exec list::add("list-2")
 #set list[0] = "list-0 modified"
 ${list::size()}
@@ -17,8 +18,8 @@ ${list[2]}
 ${map.key}
 ${map[objKey]}
 ${obj.foo}
-<#if obj.foo?exists>hasfoo<#else>nofoo</#if>
-${obj.baz?exists ?: "hasbaz" : "nobaz"}
+<#if obj.foo??>hasfoo<#else>nofoo</#if>
+${obj.baz?? ?: "hasbaz" : "nobaz"}
 ${obj::getBar(0)}
 ${obj::getBar(0)}
 ${obj::getFoo()}
@@ -34,3 +35,7 @@ ${resourceBundle("format", date)}
 
 
 ${obj.something}
+
+#set obj.foo = "Yeah, mon!"
+
+${obj.foo}
