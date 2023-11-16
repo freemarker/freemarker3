@@ -208,14 +208,14 @@ public final class Environment extends Configurable implements Scope {
 
     private static final Object[] NO_OUT_ARGS = new Object[0];
 
-    public void render(final TemplateElement block,
+    public void render(final Block block,
             UserDirective directiveModel, Map<String, Object> args,
             final List<String> bodyParameterNames)
             throws IOException {
         UserDirectiveBody nested = null;
         boolean createsNewScope = false;
         if (block != null) {
-            createsNewScope = block instanceof Block && ((Block)block).createsScope();
+            createsNewScope = block.createsScope();
             nested = new UserDirectiveBody() {
                 public void render(Writer newOut) throws TemplateException, IOException {
                     Writer prevOut = out;
@@ -1068,7 +1068,6 @@ public final class Environment extends Configurable implements Scope {
      */
     public Scope getCurrentNamespace() {
         Scope scope = currentScope;
-        //while (!(scope instanceof TemplateNamespace)) {
         while (scope.getEnclosingScope() != this) {
             scope = scope.getEnclosingScope();
         }

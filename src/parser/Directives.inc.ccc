@@ -655,27 +655,27 @@ INJECT BlockAssignment :
     }
 
     public void execute(Environment env) throws IOException {
-    	Scope scope = null;
+    	Map scope = null;
         Expression namespaceExp = getNamespaceExp();
     	if (namespaceExp != null) {
     		try {
-    			scope = (Scope) namespaceExp.evaluate(env); 
+    			scope = (Map) namespaceExp.evaluate(env); 
     		} catch (ClassCastException cce) {
                 throw new InvalidReferenceException(getLocation() + "\nInvalid reference to namespace: " + namespaceExp, env);
     		}
     	}
     	else {
     		if (get(0).getType() == ASSIGN) {
-    			scope = env.getCurrentNamespace();
+    			scope = (Map) env.getCurrentNamespace();
     		} else if (get(0).getType() == LOCALASSIGN) {
-    			scope = env.getCurrentMacroContext();
+    			scope = (Map) env.getCurrentMacroContext();
     		} else if (get(0).getType() == GLOBALASSIGN) {
-    			scope = env.getGlobalNamespace();
+    			scope = (Map) env.getGlobalNamespace();
     		} 
     	}
     	CaptureOutput filter = new CaptureOutput();
-        if (firstChildOfType(TemplateElement.class) != null) {
-            env.render(firstChildOfType(TemplateElement.class), filter, null, null);
+        if (firstChildOfType(Block.class) != null) {
+            env.render(firstChildOfType(Block.class), filter, null, null);
         }
         String text = filter.capturedText;
     	if (scope != null) {
@@ -1198,7 +1198,7 @@ INJECT UnifiedCall :
             else {
                 paramNames = bodyParameters.getParamNames();
             }
-            env.render(firstChildOfType(TemplateElement.class), (UserDirective) tm, argMap, paramNames);
+            env.render(firstChildOfType(Block.class), (UserDirective) tm, argMap, paramNames);
         }
         else {
             nameExp.assertNonNull(tm, env);
