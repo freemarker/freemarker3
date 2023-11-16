@@ -16,6 +16,7 @@ import freemarker.core.parser.Token;
 import freemarker.core.variables.ReflectionCode;
 import static freemarker.core.parser.Token.TokenType.*;
 
+@SuppressWarnings("unchecked")
 public class AssignmentInstruction extends TemplateNode implements TemplateElement {
     public List<String> getVarNames() {
         List<String> result = new ArrayList<>();
@@ -41,11 +42,11 @@ public class AssignmentInstruction extends TemplateNode implements TemplateEleme
     }
 
     public void execute(Environment env) throws TemplateException, IOException {
-    	Map scope = null;
+    	Map<String,Object> scope = null;
         Expression namespaceExp = getNamespaceExp();
     	if (namespaceExp != null) {
     		try {
-    			scope = (Map) namespaceExp.evaluate(env); 
+    			scope = (Map<String,Object>) namespaceExp.evaluate(env); 
     		} catch (ClassCastException cce) {
                 throw new InvalidReferenceException(getLocation() + "\nInvalid reference to namespace: " + namespaceExp, env);
     		}
@@ -88,9 +89,7 @@ public class AssignmentInstruction extends TemplateNode implements TemplateEleme
         if (key instanceof Number && (target instanceof List || target.getClass().isArray())) {
             int index = ((Number)key).intValue();
             if (target instanceof List) {
-                // REVISIT: There is a way of checking the 
-                // parametrized type of the List at runtime, I think...
-                ((List)target).set(index, value);
+                ((List<Object>)target).set(index, value);
             } else try {
                 Array.set(target, index, value);
             } catch (Exception e) {
@@ -99,7 +98,7 @@ public class AssignmentInstruction extends TemplateNode implements TemplateEleme
             return;
         }
         if (target instanceof Map) {
-            ((Map)target).put(key, value);
+            ((Map<Object,Object>)target).put(key, value);
             return;
         }
         if (key instanceof String && ReflectionCode.setProperty(target, (String) key, value)) {

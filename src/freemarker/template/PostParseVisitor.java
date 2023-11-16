@@ -16,12 +16,12 @@ import java.util.*;
  * @author revusky
  */
 
-public class PostParseVisitor extends Node.Visitor {
+class PostParseVisitor extends Node.Visitor {
 	
 	private Template template;
 	private List<EscapeBlock> escapes = new ArrayList<>();
 
-	public PostParseVisitor(Template template) {
+	PostParseVisitor(Template template) {
 		this.template = template;
 	}
 	
@@ -33,13 +33,13 @@ public class PostParseVisitor extends Node.Visitor {
 		return lastEscape.doEscape(exp);
 	}
 
-	 public void visit(Template template) {
+	 void visit(Template template) {
 		TemplateHeaderElement header = template.getHeaderElement();
 		if (header != null) visit(header);
 		visit(template.getRootTreeNode());
 	}
 	
-	public void visit(TemplateHeaderElement header) {
+	void visit(TemplateHeaderElement header) {
 		if (header == null) return;
 		for (Map.Entry<String, Expression> entry : header.getParams().entrySet()) {
 			String key = entry.getKey();
@@ -63,7 +63,7 @@ public class PostParseVisitor extends Node.Visitor {
 		}
 	}
 	
-	public void visit(AssignmentInstruction node) {
+	void visit(AssignmentInstruction node) {
 		recurse(node);
 		if (template.strictVariableDeclaration()) {
 			if (node.get(0).getType() == Token.TokenType.ASSIGN) {
@@ -89,7 +89,7 @@ public class PostParseVisitor extends Node.Visitor {
         }
 	}
 	
-	public void visit(BlockAssignment node) {
+	void visit(BlockAssignment node) {
 		recurse(node);
 		if (template.strictVariableDeclaration()) {
 			if (node.get(0).getType() == Token.TokenType.ASSIGN) {
@@ -105,15 +105,11 @@ public class PostParseVisitor extends Node.Visitor {
 			Macro macro = getContainingMacro(node);
 			if (macro == null) {
 				template.addParsingProblem(new ParsingProblem("The local directive can only be used inside a function or macro.", node));
-			} else {
-				if (!macro.getNestedBlock().declaresVariable(node.getVarName())) {
-					macro.getNestedBlock().declareVariable(node.getVarName());
-				}
-			}
+			} 
 		}
 	}
 	
-	public void visit(BuiltInExpression node) {
+	void visit(BuiltInExpression node) {
 		recurse(node);
 		if (node.getBuiltIn() == null) {
 			ParsingProblem problem = new ParsingProblem("Unknown builtin: " + node.getName(), node);
@@ -121,13 +117,13 @@ public class PostParseVisitor extends Node.Visitor {
 		}
 	}
 	
-	public void visit(Interpolation node) {
+	void visit(Interpolation node) {
 		recurse(node);
 		Expression escapedExpression = escapedExpression(node.getExpression());
 		node.setEscapedExpression(escapedExpression);
 	}
 	
-	public void visit(EscapeBlock node) {
+	void visit(EscapeBlock node) {
 		Expression escapedExpression = escapedExpression(node.getExpression());
 		node.setEscapedExpression(escapedExpression);
 		escapes.add(node);
@@ -135,7 +131,7 @@ public class PostParseVisitor extends Node.Visitor {
 		escapes.remove(escapes.size() -1);
 	}
 	
-	public void visit(Macro node) {
+	void visit(Macro node) {
 		String macroName = node.getName();
 		if (template.strictVariableDeclaration() && template.declaresVariable(macroName)) {
 			ParsingProblem problem = new ParsingProblem("You already have declared a variable (or declared another macro) as " + macroName + ". You cannot reuse the variable name in the same template.", node);
@@ -156,7 +152,7 @@ public class PostParseVisitor extends Node.Visitor {
 		recurse(node);
 	}
 	
-	public void visit(NoEscapeBlock node) {
+	void visit(NoEscapeBlock node) {
 		Node parent = node;
 		while (parent != null && !(parent instanceof EscapeBlock)) {
 			parent = parent.getParent();
@@ -169,14 +165,14 @@ public class PostParseVisitor extends Node.Visitor {
 		escapes.add(last);
 	}
 	
-	public void visit(IteratorBlock node) {
+	void visit(IteratorBlock node) {
 		node.getNestedBlock().declareVariable(node.getIndexName());
 		node.getNestedBlock().declareVariable(node.getIndexName() + "_has_next");
 		node.getNestedBlock().declareVariable(node.getIndexName() + "_index");
 		recurse(node);
 	}
 	
-	public void visit(BreakInstruction node) {
+	void visit(BreakInstruction node) {
 		recurse(node);
 		Node parent = node;
 		while (parent != null && !(parent instanceof SwitchBlock) && !(parent instanceof IteratorBlock)) { 
@@ -187,7 +183,7 @@ public class PostParseVisitor extends Node.Visitor {
 		}
 	}
 	
-	public void visit(ReturnInstruction node) {
+	void visit(ReturnInstruction node) {
 		recurse(node);
 		Node parent = node;
 		while (parent != null && !(parent instanceof Macro)) {
@@ -206,23 +202,14 @@ public class PostParseVisitor extends Node.Visitor {
 		}
 	}
 	
-	public void visit(VarDirective node) {
+	void visit(VarDirective node) {
         Block parent = (Block) node.getParent();
-//        while (parent instanceof Block 
-//        		|| parent instanceof EscapeBlock 
-//        		|| parent instanceof NoEscapeBlock) {
-//            parent = parent.getParent();
-//        }
        	for (String key : node.getVariables().keySet()) {
        		if (parent == null) {
        			template.declareVariable(key);
        		} else {
        			if (parent.declaresVariable(key)) {
        				String msg = "The variable " + key + " has already been declared in this block.";
-//       				if (parent instanceof Macro) {
-//       					String macroName = ((Macro) parent).getName();
-//       					msg = "The variable " + key + " has already been declared in macro " + macroName + ".";
-//       				}
        				template.addParsingProblem(new ParsingProblem(msg, node));
        			}
        			parent.declareVariable(key);
@@ -230,7 +217,7 @@ public class PostParseVisitor extends Node.Visitor {
        	}
 	}
 	
-	public void visit(StringLiteral node) {
+	void visit(StringLiteral node) {
 		if (!node.isRaw()) {
 			try {
 				node.checkInterpolation();
@@ -242,7 +229,7 @@ public class PostParseVisitor extends Node.Visitor {
 		}
 	}
 	
-	public void visit(ImportDeclaration node) {
+	void visit(ImportDeclaration node) {
 		String namespaceName = node.getNamespace();
 		if (template.strictVariableDeclaration() && 
 				template.declaresVariable(namespaceName)) { 
@@ -253,7 +240,7 @@ public class PostParseVisitor extends Node.Visitor {
 		recurse(node);
 	}
 
-    public void visit(PropertySetting node) {
+    void visit(PropertySetting node) {
     	String key = node.getKey();
         if (!key.equals(Configurable.LOCALE_KEY) &&
                 !key.equals(Configurable.NUMBER_FORMAT_KEY) &&
