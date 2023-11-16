@@ -617,7 +617,7 @@ BlockAssignment :
     <SET>
    )
    {start = lastConsumedToken;}
-   IdentifierOrStringLiteral
+   PrimaryExpression(false)
    [ 
       <IN>
       Expression
@@ -706,103 +706,29 @@ INJECT BlockAssignment :
     }
 }
 
-AssignmentInstruction :
+AssignmentInstruction#freemarker.core.nodes.AssignmentInstruction :
+ {boolean complexLHS = false;}
    (<ASSIGN>|<GLOBALASSIGN>|<LOCALASSIGN>|<SET>)
-   IdentifierOrStringLiteral
+   PrimaryExpression(false)
+   {if (!(peekNode() instanceof Token)) complexLHS = true;}
    <EQUALS> =>||
    Expression
    (
      [<COMMA>]
-     IdentifierOrStringLiteral
+     PrimaryExpression(false)
+     {if (!(peekNode() instanceof Token)) complexLHS = true;}
      <EQUALS>
      Expression
    )*
    [
+      SCAN {!complexLHS} =>
       <IN>
       Expression     
    ]
    LooseDirectiveEnd
 ;
 
-INJECT AssignmentInstruction :
-    import java.io.IOException;
-    import java.util.*;
-    import freemarker.template.TemplateException;
-    import freemarker.core.*;
-    import freemarker.core.variables.InvalidReferenceException;
-    import freemarker.core.variables.scope.Scope;
-    implements TemplateElement
-{
-    public List<String> getVarNames() {
-        List<String> result = new ArrayList<>();
-        List<Node> equalsToks = childrenOfType(EQUALS);
-        for (Node tok : equalsToks) {
-            Node varExp = tok.previousSibling();
-            if (varExp instanceof StringLiteral) {
-                result.add(((StringLiteral)varExp).getAsString());
-            }
-            else {
-                result.add(varExp.toString());
-            }
-        }
-        return result;
-    }
-
-    public List<Expression> getValues() {
-        List<Expression> result = new ArrayList<>();
-        List<Node> equalsToks = childrenOfType(EQUALS);
-        for (Node tok : equalsToks) {
-            result.add((Expression)tok.nextSibling());
-        }
-        return result;
-    }
-    
-    public Expression getNamespaceExp() {
-        Node inToken = firstChildOfType(IN);
-        if (inToken != null) {
-            return (Expression) inToken.nextSibling();
-        }
-        return null;
-    }
-
-    public void execute(Environment env) throws TemplateException, IOException {
-    	Map scope = null;
-        Expression namespaceExp = getNamespaceExp();
-    	if (namespaceExp != null) {
-    		try {
-    			scope = (Map) namespaceExp.evaluate(env); 
-    		} catch (ClassCastException cce) {
-                throw new InvalidReferenceException(getLocation() + "\nInvalid reference to namespace: " + namespaceExp, env);
-    		}
-    	}
-    	else {
-    		if (get(0).getType() == ASSIGN) {
-    			scope = env.getCurrentNamespace();
-    		} else if (get(0).getType() == LOCALASSIGN) {
-    			scope = env.getCurrentMacroContext();
-    		} else if (get(0).getType() == GLOBALASSIGN) {
-    			scope = env.getGlobalNamespace();
-    		}
-    	}
-        List<String> varNames = getVarNames();
-        List<Expression> values = getValues();
-    	for (int i=0; i< varNames.size(); i++) {
-    		String varname = varNames.get(i);
-    		Expression valueExp = values.get(i);
-    		Object value = valueExp.evaluate(env);
-    		valueExp.assertIsDefined(value, env);
-    		if (scope != null) {
-    			scope.put(varname, value);
-    		} else {
-    			env.unqualifiedSet(varname, value);
-    		}
-    	}
-    }
-    
-    public String getDescription() {
-    	return "assignment instruction";
-    }
-}
+//INJECT AssignmentInstruction :
 
 IncludeInstruction :
 {
@@ -1752,6 +1678,7 @@ INJECT TextElement :
    import java.io.IOException;
    import freemarker.core.Environment;
    import freemarker.core.nodes.Whitespace;
+   import freemarker.core.nodes.AssignmentInstruction;
    implements TemplateElement
 {
     private String outputText;

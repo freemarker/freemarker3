@@ -9,9 +9,11 @@ ${item}
 </#list>
 #var list = ["list-0", "list-1"] 
 #exec list::add("list-2")
+#set list[0] = "list-0 modified"
 ${list::size()}
 <#if !list>empty<#else>not empty</#if>
 ${list[0]}
+${list[2]}
 ${map.key}
 ${map[objKey]}
 ${obj.foo}

@@ -6,6 +6,7 @@ import freemarker.core.parser.Node;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
 import freemarker.core.parser.Token;
+import freemarker.core.nodes.AssignmentInstruction;
 
 import java.util.*;
 
