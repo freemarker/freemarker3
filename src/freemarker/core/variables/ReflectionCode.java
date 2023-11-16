@@ -17,7 +17,7 @@ public class ReflectionCode {
 
     private static final Object CAN_NOT_UNWRAP = new Object();
     private static Map<String,Method> methodCache = new ConcurrentHashMap<>();
-    private static Map<String, Method> getterSetterCache = new ConcurrentHashMap<>();
+    private static Map<String, Method> getterCache = new ConcurrentHashMap<>();
     private static Map<String, Boolean> classHasMethodCache = new ConcurrentHashMap<>();
 
     private ReflectionCode() {}
@@ -129,7 +129,7 @@ public class ReflectionCode {
     }
 
     private static Method getGetter(Object object, String name) {
-        Method cachedMethod = getterSetterCache.get(getLookupKey(object, name));
+        Method cachedMethod = getterCache.get(getLookupKey(object, name));
         if (cachedMethod != null) {
             return cachedMethod;
         }
@@ -137,7 +137,7 @@ public class ReflectionCode {
         try {
             Method m = object.getClass().getMethod(methodName);
             if (m.getReturnType() != Void.TYPE) {
-                getterSetterCache.put(getLookupKey(object, name), m);
+                getterCache.put(getLookupKey(object, name), m);
                 return m;
             }
         } catch (NoSuchMethodException nsme) {
@@ -146,7 +146,7 @@ public class ReflectionCode {
         try {
             Method m = object.getClass().getMethod(methodName);
             if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class) {
-                getterSetterCache.put(getLookupKey(object, name), m);
+                getterCache.put(getLookupKey(object, name), m);
                 return m;
             }
         } catch (NoSuchMethodException nsme) {

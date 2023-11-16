@@ -619,6 +619,7 @@ BlockAssignment :
    {start = lastConsumedToken;}
    PrimaryExpression(false)
    [ 
+      SCAN 1 {peekNode() instanceof Token} =>
       <IN>
       Expression
    ]
@@ -637,13 +638,11 @@ INJECT BlockAssignment :
     import freemarker.core.variables.UserDirective;
     import freemarker.core.variables.scope.Scope;
     import freemarker.template.TemplateException;
+    import freemarker.core.nodes.AssignmentInstruction;
     implements TemplateElement
 {
-    public String getVarName() {
-        if (get(1) instanceof StringLiteral) {
-            return ((StringLiteral)get(1)).getAsString();
-        }
-        return get(1).toString();
+    public Expression getTargetExpression() {
+        return (Expression) get(1);
     }
 
     public Expression getNamespaceExp() {
@@ -678,11 +677,7 @@ INJECT BlockAssignment :
             env.render(firstChildOfType(Block.class), filter, null, null);
         }
         String text = filter.capturedText;
-    	if (scope != null) {
-    		scope.put(getVarName(), text);
-    	} else {
-    		env.unqualifiedSet(getVarName(), text);
-    	}
+        AssignmentInstruction.set(getTargetExpression(), text, env, scope);
     }
     
     private static class CaptureOutput implements UserDirective {
@@ -702,7 +697,7 @@ INJECT BlockAssignment :
     }
     
     public String getDescription() {
-        return "block assignment to variable: " + getVarName();
+        return "block assignment to: " + getTargetExpression();
     }
 }
 
@@ -721,14 +716,12 @@ AssignmentInstruction#freemarker.core.nodes.AssignmentInstruction :
      Expression
    )*
    [
-      SCAN {!complexLHS} =>
+      SCAN 1 {!complexLHS} =>
       <IN>
       Expression     
    ]
    LooseDirectiveEnd
 ;
-
-//INJECT AssignmentInstruction :
 
 IncludeInstruction :
 {
