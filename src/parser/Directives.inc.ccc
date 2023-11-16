@@ -530,7 +530,6 @@ INJECT NestedInstruction :
     import java.io.IOException;
     import freemarker.core.*;
     import freemarker.core.variables.scope.MacroInvocationBodyContext;
-    import freemarker.core.variables.*;
     implements TemplateElement
 {
     public ArgsList getArgs() {

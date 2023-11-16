@@ -208,20 +208,20 @@ public final class Environment extends Configurable implements Scope {
 
     private static final Object[] NO_OUT_ARGS = new Object[0];
 
-    public void render(final TemplateElement element,
+    public void render(final TemplateElement block,
             UserDirective directiveModel, Map<String, Object> args,
             final List<String> bodyParameterNames)
             throws IOException {
         UserDirectiveBody nested = null;
         boolean createsNewScope = false;
-        if (element != null) {
-            createsNewScope = element instanceof Block && ((Block)element).createsScope();
+        if (block != null) {
+            createsNewScope = block instanceof Block && ((Block)block).createsScope();
             nested = new UserDirectiveBody() {
                 public void render(Writer newOut) throws TemplateException, IOException {
                     Writer prevOut = out;
                     out = newOut;
                     try {
-                        Environment.this.render(element);
+                        Environment.this.render(block);
                     } finally {
                         out.flush();
                         out = prevOut;

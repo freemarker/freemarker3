@@ -14,9 +14,7 @@ import freemarker.core.variables.scope.NamedParameterMapScope;
 import freemarker.core.Environment;
 import java.util.*;
 import java.io.IOException;
-
 import freemarker.core.nodes.generated.*;
-
 
 public class ParameterList extends TemplateNode {
     private List<String> params = new ArrayList<String>();
@@ -32,7 +30,7 @@ public class ParameterList extends TemplateNode {
     }
 
     public List<String> getParamNames() {
-        List<String> result = new ArrayList<String>(params);
+        List<String> result = new ArrayList<>(params);
         if (catchall != null) result.add(catchall);
         return result;
     }
@@ -135,7 +133,7 @@ public class ParameterList extends TemplateNode {
 
     /**
     * Given a positional list of argument expressions, create a positional
-    * list of template models. Used to pass positional arguments to a template
+    * list of variables. Used to pass positional arguments to a template
     * method model.
     */
     public List<Object> getParameterSequence(final PositionalArgsList args, final Environment env) {
@@ -259,10 +257,8 @@ public class ParameterList extends TemplateNode {
             Scope scope = new NamedParameterMapScope(env.getCurrentScope(), result);
             fillInDefaults(env, scope, unresolvedParamNames);
         }
-//        SimpleMapModel catchAllMap = null;
         Map catchAllMap = null;
         if (catchall != null) {
-//            catchAllMap = new SimpleMapModel();
             catchAllMap = new HashMap();
             result.put(catchall, catchAllMap);
         }

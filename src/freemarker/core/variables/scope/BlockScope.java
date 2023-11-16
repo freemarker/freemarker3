@@ -1,16 +1,12 @@
 package freemarker.core.variables.scope;
 
 import java.util.HashMap;
-import java.util.Map;
-
 import freemarker.core.nodes.generated.Block;
 import freemarker.template.*;
 
-
-public class BlockScope implements Scope {
+public class BlockScope extends HashMap<String,Object> implements Scope {
 	
 	Block block;
-    private Map<String,Object> variables = new HashMap<>();
 	private Scope enclosingScope;
 	
 	public BlockScope(Block block, Scope enclosingScope) {
@@ -23,7 +19,7 @@ public class BlockScope implements Scope {
 	}
 
     public Object get(String key) { 
-        return variables.get(key);
+        return super.get(key);
     }
 	
 	public Template getTemplate() {
@@ -34,11 +30,11 @@ public class BlockScope implements Scope {
 		if (getTemplate().strictVariableDeclaration() && !definesVariable(key)) {
 			throw new IllegalArgumentException("The variable " + key + " is not declared here.");
 		}
-		return variables.put(key, tm);
+		return super.put(key, tm);
 	}
 
 	protected void putUnconditionally(String key, Object var) {
-		variables.put(key, var);
+		super.put(key, var);
 	}
 
 	public Block getBlock() {
@@ -50,11 +46,11 @@ public class BlockScope implements Scope {
 	}
 
     public Object remove(String key) {
-        return variables.remove(key);
+        return super.remove(key);
     }
 
     public void clear() {
-        variables.clear();
+        super.clear();
     }
 
 	public boolean isTemplateNamespace() {
