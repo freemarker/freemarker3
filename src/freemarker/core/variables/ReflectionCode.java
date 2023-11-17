@@ -314,6 +314,6 @@ public class ReflectionCode {
     }
 
     private static String getLookupKey(Object object, String propertyName, Object value) {
-        return object.getClass().getName() + "###" + value.getClass().getName();
+        return object.getClass().getName() + "#" + propertyName + "#" + value.getClass().getName();
     }
 }

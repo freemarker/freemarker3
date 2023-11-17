@@ -33,7 +33,7 @@ class PostParseVisitor extends Node.Visitor {
 		return lastEscape.doEscape(exp);
 	}
 
-	 void visit(Template template) {
+	void visit(Template template) {
 		TemplateHeaderElement header = template.getHeaderElement();
 		if (header != null) visit(header);
 		visit(template.getRootTreeNode());
