@@ -1101,7 +1101,7 @@ INJECT UnifiedCall :
                         + " is a function. A function can only be called " +
                         "within the evaluation of an expression.", env);
             }    
-            env.render(macro, args, bodyParameters, firstChildOfType(TemplateElement.class));
+            env.render(macro, args, bodyParameters, firstChildOfType(Block.class));
         }
         else if (tm instanceof UserDirective) {
             Map<String, Object> argMap

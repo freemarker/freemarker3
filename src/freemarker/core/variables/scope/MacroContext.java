@@ -1,23 +1,23 @@
 package freemarker.core.variables.scope;
 
 import freemarker.core.Environment;
+import freemarker.core.nodes.generated.Block;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.nodes.ParameterList;
-import freemarker.core.nodes.generated.TemplateElement;
 
 /**
  * Represents the context or scope of the 
  * execution of an FTL macro. 
  */
 public class MacroContext extends BlockScope {
-    private TemplateElement body; // REVISIT
+    private Block body; // REVISIT
     public ParameterList bodyParameters;
     private MacroContext invokingMacroContext;
     Scope invokingScope;
     
     public MacroContext(Macro macro,
     		Environment env,
-            TemplateElement body,
+            Block body,
             ParameterList bodyParameters)
     {
     	super(macro.getNestedBlock(), env.getMacroNamespace(macro)); // REVISIT
@@ -35,7 +35,7 @@ public class MacroContext extends BlockScope {
         return invokingMacroContext;
     }
 
-    public TemplateElement getBody() {
+    public Block getBody() {
         return body;
     }
 }

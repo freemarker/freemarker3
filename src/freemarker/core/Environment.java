@@ -303,7 +303,6 @@ public final class Environment extends Configurable implements Scope {
         }
         MacroContext invokingMacroContext = currentMacroContext;
         TemplateElement body = invokingMacroContext.getBody();
-        System.err.println(body.getClass().getName());
         if (body != null) {
             this.currentMacroContext = invokingMacroContext.getInvokingMacroContext();
             Configurable prevParent = getFallback();
@@ -453,7 +452,7 @@ public final class Environment extends Configurable implements Scope {
      */
     public void render(Macro macro, ArgsList args,
             ParameterList bodyParameters,
-            TemplateElement nestedBlock)
+            Block nestedBlock)
             throws TemplateException, IOException {
         if (macro == Macro.DO_NOTHING_MACRO) {
             return;
