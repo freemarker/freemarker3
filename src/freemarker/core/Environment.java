@@ -148,37 +148,17 @@ public final class Environment extends Configurable implements Scope {
     }
 
     /**
-     * Deletes cached values that are meant to be valid only during a single
-     * template execution.
-     */
-    private void clearCachedValues() {
-        numberFormats = null;
-        numberFormat = null;
-        dateFormats = null;
-        collator = null;
-        cachedURLEscapingCharset = null;
-        urlEscapingCharsetCached = false;
-    }
-
-    /**
      * Processes the template to which this environment belongs.
      */
     public void process() throws TemplateException, IOException {
         Environment savedEnv = threadEnv.get();
         threadEnv.set(this);
         try {
-            // Cached values from a previous execution are possibly outdated.
-            clearCachedValues();
-            try {
-                doAutoImportsAndIncludes(this);
-                Template template = getTemplate();
-                render(template.getRootElement());
-                // Do not flush if there was an exception.
-                out.flush();
-            } finally {
-                // It's just to allow the GC to free memory...
-                clearCachedValues();
-            }
+            doAutoImportsAndIncludes(this);
+            Template template = getTemplate();
+            render(template.getRootElement());
+            // Do not flush if there was an exception.
+            out.flush();
         } finally {
             threadEnv.set(savedEnv);
         }
@@ -678,10 +658,6 @@ public final class Environment extends Configurable implements Scope {
         this.lastReturnValue = lastReturnValue;
     }
 
-    void clearLastReturnValue() {
-        this.lastReturnValue = null;
-    }
-
     public NumberFormat getNumberFormatObject(String pattern) {
         if (numberFormats == null) {
             numberFormats = new HashMap<String, NumberFormat>();
@@ -1033,26 +1009,6 @@ public final class Environment extends Configurable implements Scope {
 
     public Object remove(Object varname) {
         return globalVariables.remove(varname);
-    }
-
-    /**
-     * Returns the name-space for the name if exists, or null.
-     * 
-     * @param name
-     *             the template path that you have used with the
-     *             <code>import</code> directive or
-     *             {@link #importLib(String, String)} call, in normalized form.
-     *             That is, the path must be an absolute path, and it must not
-     *             contain "/../" or "/./". The leading "/" is optional.
-     */
-    public Scope getNamespace(String name) {
-        if (name.startsWith("/"))
-            name = name.substring(1);
-        if (loadedLibs != null) {
-            return loadedLibs.get(name);
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -1520,22 +1476,6 @@ public final class Environment extends Configurable implements Scope {
 
     static public final Writer NULL_WRITER = new Writer() {
         public void write(char cbuf[], int off, int len) {
-        }
-
-        public void flush() {
-        }
-
-        public void close() {
-        }
-    };
-
-    private static final Writer EMPTY_BODY_WRITER = new Writer() {
-
-        public void write(char[] cbuf, int off, int len) throws IOException {
-            if (len > 0) {
-                throw new IOException(
-                        "This transform does not allow nested content.");
-            }
         }
 
         public void flush() {

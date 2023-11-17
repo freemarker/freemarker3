@@ -27,7 +27,7 @@ ${test.bar}
 
 <p>Now update the assignment and repeat:</p>
 
-[#set mymessage = "world"]
+    #set mymessage = "world"
 
 ${test.test1}
 ${test.test45}
@@ -37,8 +37,8 @@ ${test.bar}
 
 <p>Now reassign the list and repeat:</p>
 
-[#set hash = {"temp" : "Temporary"}]
-[#set test = {"test1" : "test23", "test45" : message, mymessage : "hello all", foo : one, "hash" : hash["temp"], "true" : hash.temp, "newhash" : hash}]
+#set hash = {"temp" : "Temporary"}
+#set (test) = {"test1" : "test23", "test45" : message, mymessage : "hello all", foo : one, "hash" : hash["temp"], "true" : hash.temp, "newhash" : hash}
 
 ${test.test1}
 ${test.test45}
@@ -51,8 +51,8 @@ ${test.newhash.temp}
 
 <p>Pathological case: zero item hash:</p>
 
-[#set test = {}]
-${test.test1!}
+#set test = {}
+${test.test1!"Undefined!"}
 
 <p>Hash of number literals:</p>
 [#set test = {"1" : 2}]

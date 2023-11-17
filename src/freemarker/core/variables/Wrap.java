@@ -25,7 +25,9 @@ public class Wrap {
      * like a map is assumed to be unintentional and a 
      * result of programming error.
      */
-    public static final Object JAVA_NULL = new Object();    
+    public static final Object JAVA_NULL = new JavaNull(); 
+    
+    static private class JavaNull {}
 
     private static int defaultDateType = WrappedDate.UNKNOWN;
 
