@@ -8,6 +8,7 @@ import freemarker.core.Environment;
 import freemarker.core.variables.EvaluationException;
 import freemarker.core.variables.InvalidReferenceException;
 import freemarker.core.nodes.generated.Expression;
+import freemarker.core.nodes.generated.ParentheticalExpression;
 import freemarker.core.nodes.generated.StringLiteral;
 import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.TemplateNode;
@@ -31,6 +32,10 @@ public class AssignmentInstruction extends TemplateNode implements TemplateEleme
             }
         }
         return result;
+    }
+
+    public List<Expression> getTargetExpressions() {
+        return childrenOfType(Expression.class, exp->exp.nextSibling().getType() == EQUALS);
     }
 
     public Expression getNamespaceExp() {
@@ -69,6 +74,9 @@ public class AssignmentInstruction extends TemplateNode implements TemplateEleme
     }
 
     public static void set(Expression lhs, Object value, Environment env, Map scope) {
+        while (lhs instanceof ParentheticalExpression) {
+            lhs = ((ParentheticalExpression)lhs).getNested();
+        }
         if (lhs instanceof Token) {
             String varName = lhs.toString();
             if (lhs instanceof StringLiteral) {

@@ -21,6 +21,6 @@ public class ParsingProblem extends TemplateNode {
 	}
 
 	public String getMessage() {
-		return description + getLocation();
+		return description + " " + getLocation();
 	}
 }

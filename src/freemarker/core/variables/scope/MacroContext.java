@@ -10,7 +10,7 @@ import freemarker.core.nodes.ParameterList;
  * execution of an FTL macro. 
  */
 public class MacroContext extends BlockScope {
-    private Block body; // REVISIT
+    private Block body; 
     public ParameterList bodyParameters;
     private MacroContext invokingMacroContext;
     Scope invokingScope;

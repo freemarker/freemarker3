@@ -452,8 +452,7 @@ public final class Environment extends Configurable implements Scope {
      */
     public void render(Macro macro, ArgsList args,
             ParameterList bodyParameters,
-            Block nestedBlock)
-            throws TemplateException, IOException {
+            Block nestedBlock) throws IOException {
         if (macro == Macro.DO_NOTHING_MACRO) {
             return;
         }

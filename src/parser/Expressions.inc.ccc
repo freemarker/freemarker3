@@ -235,6 +235,10 @@ INJECT DotVariable :
         return get(2).toString();
     }
 
+    public boolean isAssignableTo() {
+        return true;
+    }
+
     public Object evaluate(Environment env) {
         Object lhs = getTarget().evaluate(env);
         assertNonNull(lhs, env);

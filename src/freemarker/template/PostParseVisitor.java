@@ -65,32 +65,38 @@ class PostParseVisitor extends Node.Visitor {
 	
 	void visit(AssignmentInstruction node) {
 		recurse(node);
+		for (Expression target : node.getTargetExpressions()) {
+			if (!target.isAssignableTo()) {
+				ParsingProblem problem = new ParsingProblem("Cannot assign to expression" + target + " ", target);
+				template.addParsingProblem(problem);
+			}
+		}
 		if (template.strictVariableDeclaration()) {
 			if (node.get(0).getType() == Token.TokenType.ASSIGN) {
 				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
-			if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
+			else if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
 				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 		}
-        if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
+        else if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
         	Macro macro = getContainingMacro(node);
         	if (macro == null) {
         		ParsingProblem problem = new ParsingProblem("The local directive can only be used inside a function or macro.", node);
         		template.addParsingProblem(problem);
-        	}
-        	else for (String varname : node.getVarNames()) {
-        		if (!macro.getNestedBlock().declaresVariable(varname)) {
-       				macro.getNestedBlock().declareVariable(varname);
-        		}
         	}
         }
 	}
 	
 	void visit(BlockAssignment node) {
 		recurse(node);
+		Expression targetExpression = node.getTargetExpression();
+		if (!targetExpression.isAssignableTo()) {
+			ParsingProblem problem = new ParsingProblem("The expression " + targetExpression + " cannot be assigned to.", targetExpression);
+			template.addParsingProblem(problem);
+		}
 		if (template.strictVariableDeclaration()) {
 			if (node.get(0).getType() == Token.TokenType.ASSIGN) {
 				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
@@ -251,7 +257,7 @@ class PostParseVisitor extends Node.Visitor {
                 !key.equals(Configurable.BOOLEAN_FORMAT_KEY) &&
                 !key.equals(Configurable.URL_ESCAPING_CHARSET_KEY)) 
             {
-        		ParsingProblem problem = new ParsingProblem("Invalid setting name, or it is not allowed to change the "
+        		ParsingProblem problem = new ParsingProblem("Invalid setting name, or it is not allowed to change the"
                         + "value of the setting with FTL: "
                         + key, node);
         		template.addParsingProblem(problem);

@@ -37,7 +37,8 @@ INJECT Interpolation :
      * Outputs the string value of the enclosed expression.
      */
     public void execute(Environment env) throws TemplateException, IOException {
-        env.getOut().write(getEscapedExpression().getStringValue(env));
+        Expression exp = getEscapedExpression();
+        env.getOut().write(exp.getStringValue(env));
     }
 
     public String getDescription() {

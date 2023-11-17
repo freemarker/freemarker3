@@ -42,7 +42,6 @@ public class ReflectionCode {
         } catch (Exception e) {
             throw new EvaluationException("Error invoking method " + method, e);
         }
-        methodCache.put(getLookupKey(target, method.getName(), params), method);
         if (result == null && method.getReturnType() == Void.TYPE) {
 //            result = NOTHING;
             result = null;
@@ -80,6 +79,10 @@ public class ReflectionCode {
 
     static Method getCachedMethod(Object target, String methodName, List<Object> params) {
         return methodCache.get(getLookupKey(target, methodName, params));
+    }
+
+    static void cacheMethod(Method m, Object target, List<Object> params) {
+        methodCache.put(getLookupKey(target, m.getName(), params), m);
     }
 
     static boolean isCompatibleMethod(Method method, List<Object> params) {
@@ -161,6 +164,7 @@ public class ReflectionCode {
             Method m = object.getClass().getMethod(methodName);
             if (m.getReturnType() != Void.TYPE) {
                 getterCache.put(lookupKey, m);
+                m.setAccessible(true);
                 return m;
             }
         } catch (NoSuchMethodException nsme) {
@@ -170,6 +174,7 @@ public class ReflectionCode {
             Method m = object.getClass().getMethod(methodName);
             if (m.getReturnType() == Boolean.TYPE || m.getReturnType() == Boolean.class) {
                 getterCache.put(getLookupKey(object, name), m);
+                m.setAccessible(true);
                 return m;
             }
         } catch (NoSuchMethodException nsme) {
@@ -193,6 +198,7 @@ public class ReflectionCode {
             Object unwrapped = unwrap(value, type);
             if (unwrapped != CAN_NOT_UNWRAP) {
                 setterCache.put(lookupKey, m);
+                m.setAccessible(true);
                 return m;
             }
         }

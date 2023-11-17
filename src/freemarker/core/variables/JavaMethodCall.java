@@ -74,6 +74,7 @@ public class JavaMethodCall implements WrappedMethod {
         if (matchedMethod == null) {
             throw new EvaluationException("Cannot invoke method " + methodName + " here.");
         }
+        cacheMethod(matchedMethod, target, params);
         return invokeMethod(target, matchedMethod, params);
     }
 }
