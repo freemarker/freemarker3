@@ -27,6 +27,10 @@ public class MacroContext extends BlockScope {
         this.bodyParameters = bodyParameters;
     }
 
+    public Scope getInvokingScope() {
+        return invokingScope;
+    }
+
     public MacroContext getInvokingMacroContext() {
         return invokingMacroContext;
     }

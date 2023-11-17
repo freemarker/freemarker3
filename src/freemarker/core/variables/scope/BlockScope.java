@@ -6,7 +6,7 @@ import freemarker.template.*;
 
 public class BlockScope extends HashMap<String,Object> implements Scope {
 	
-	Block block;
+	private Block block;
 	private Scope enclosingScope;
 	
 	public BlockScope(Block block, Scope enclosingScope) {

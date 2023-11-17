@@ -529,11 +529,10 @@ NestedInstruction# :
 INJECT NestedInstruction :
     import java.io.IOException;
     import freemarker.core.*;
-    import freemarker.core.variables.scope.MacroInvocationBodyContext;
     implements TemplateElement
 {
-    public ArgsList getArgs() {
-    	return firstChildOfType(ArgsList.class);
+    public PositionalArgsList getArgs() {
+    	return firstChildOfType(PositionalArgsList.class);
     }
     
     /**
@@ -546,8 +545,7 @@ INJECT NestedInstruction :
      * I (JR) realized this thanks to some incisive comments from Daniel Dekany.
      */
     public void execute(Environment env) throws IOException {
-        MacroInvocationBodyContext bodyContext = new MacroInvocationBodyContext(env, (PositionalArgsList) getArgs());
-        env.render(bodyContext);
+        env.render(this);
     }
 
     public String getDescription() {

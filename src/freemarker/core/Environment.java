@@ -16,6 +16,8 @@ import freemarker.core.nodes.generated.ArgsList;
 import freemarker.core.nodes.generated.Block;
 import freemarker.core.nodes.generated.IncludeInstruction;
 import freemarker.core.nodes.generated.Macro;
+import freemarker.core.nodes.generated.NestedInstruction;
+import freemarker.core.nodes.generated.PositionalArgsList;
 import freemarker.core.nodes.ParameterList;
 import freemarker.core.nodes.generated.TemplateElement;
 import freemarker.core.nodes.generated.UnifiedCall;
@@ -289,16 +291,25 @@ public final class Environment extends Configurable implements Scope {
         return recoveredErrorStack.get(recoveredErrorStack.size() - 1);
     }
 
-    public void render(MacroInvocationBodyContext bctxt)
-            throws TemplateException, IOException {
-        MacroContext invokingMacroContext = getCurrentMacroContext();
+    public void render(NestedInstruction nestedInstruction) throws IOException {
+        BlockScope mibc = new BlockScope(currentMacroContext.getBody().getNestedBlock(), currentMacroContext.getInvokingScope());
+        ParameterList bodyParameters = currentMacroContext.bodyParameters;
+        PositionalArgsList bodyArgs = (PositionalArgsList) nestedInstruction.getArgs();
+        if (bodyParameters != null) {
+            Map<String, Object> bodyParamsMap = bodyParameters.getParameterMap(bodyArgs, this, true);
+            for (Map.Entry<String, Object> entry : bodyParamsMap.entrySet()) {
+            	mibc.put(entry.getKey(), entry.getValue());
+            }
+        }
+        MacroContext invokingMacroContext = currentMacroContext;
         TemplateElement body = invokingMacroContext.getBody();
+        System.err.println(body.getClass().getName());
         if (body != null) {
             this.currentMacroContext = invokingMacroContext.getInvokingMacroContext();
             Configurable prevParent = getFallback();
             Scope prevScope = currentScope;
             setFallback(getCurrentNamespace().getTemplate());
-            currentScope = bctxt;
+            currentScope = mibc;
             try {
                 render(body);
             } finally {
