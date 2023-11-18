@@ -73,9 +73,7 @@ public class HtmlEscape implements UserDirective {
         }
 
         @Override
-        public void write(char cbuf[], int off, int len)
-        throws
-            IOException
+        public void write(char cbuf[], int off, int len) throws IOException
         {
             int lastoff = off;
             int lastpos = off + len;

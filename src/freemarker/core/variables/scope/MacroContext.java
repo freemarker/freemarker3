@@ -15,11 +15,7 @@ public class MacroContext extends BlockScope {
     private MacroContext invokingMacroContext;
     Scope invokingScope;
     
-    public MacroContext(Macro macro,
-    		Environment env,
-            Block body,
-            ParameterList bodyParameters)
-    {
+    public MacroContext(Macro macro, Environment env, Block body, ParameterList bodyParameters) {
     	super(macro.getNestedBlock(), env.getMacroNamespace(macro)); // REVISIT
         this.invokingMacroContext = env.getCurrentMacroContext();
         this.invokingScope = env.getCurrentScope();

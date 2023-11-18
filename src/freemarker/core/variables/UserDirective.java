@@ -40,7 +40,5 @@ public interface UserDirective extends WrappedVariable
      *
      * @throws IOException
      */
-    public void execute(Environment env, Map<String, Object> params, 
-            Object[] loopVars, UserDirectiveBody body) 
-    throws IOException;
+    public void execute(Environment env, Map<String, Object> params, Object[] loopVars, UserDirectiveBody body) throws IOException;
 }

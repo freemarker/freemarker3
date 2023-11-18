@@ -67,9 +67,7 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
             this.template = template;
         }
 
-        public void execute(Environment env, Map<String, Object> params,
-                Object[] loopVars, UserDirectiveBody body)
-                throws IOException {
+        public void execute(Environment env, Map<String, Object> params, Object[] loopVars, UserDirectiveBody body) throws IOException {
             try {
                 env.include(template, false);
             }

@@ -196,51 +196,38 @@ public final class Environment extends Configurable implements Scope {
 
     private static final Object[] NO_OUT_ARGS = new Object[0];
 
-    public void render(final Block block,
-            UserDirective directiveModel, Map<String, Object> args,
-            final List<String> bodyParameterNames)
-            throws IOException {
+    public void render(Block block, UserDirective directiveModel, Map<String, Object> args, final List<String> bodyParameterNames) throws IOException {
         UserDirectiveBody nested = null;
-        boolean createsNewScope = false;
         if (block != null) {
-            createsNewScope = block.createsScope();
-            nested = new UserDirectiveBody() {
-                public void render(Writer newOut) throws TemplateException, IOException {
-                    Writer prevOut = out;
-                    out = newOut;
-                    try {
-                        Environment.this.render(block);
-                    } finally {
-                        out.flush();
-                        out = prevOut;
-                    }
+            nested = newOut -> {
+                Writer prevOut = out;
+                out = newOut;
+                try {
+                    render(block);
+                } finally {
+                    out.flush();
+                    out = prevOut;
                 }
             };
         }
-        final Object[] outArgs;
-        if (bodyParameterNames == null || bodyParameterNames.isEmpty()) {
-            outArgs = NO_OUT_ARGS;
-        } else {
-            outArgs = new Object[bodyParameterNames.size()];
-        }
-        final Scope scope = currentScope;
-        if (createsNewScope) {
-            currentScope = new NamedParameterListScope(scope,
-                    bodyParameterNames, Arrays.asList(outArgs), true);
+        Object[] outArgs = bodyParameterNames != null && !bodyParameterNames.isEmpty() 
+                           ? new Object[bodyParameterNames.size()]
+                           : NO_OUT_ARGS;
+        Scope scope = this.currentScope;
+        if (block != null && block.createsScope()) {
+            currentScope = new NamedParameterListScope(scope, bodyParameterNames, Arrays.asList(outArgs), true);
         }
         try {
             directiveModel.execute(this, args, outArgs, nested);
         } finally {
-            currentScope = scope;
+            this.currentScope = scope;
         }
     }
-
 
     /**
      * Visit a block using buffering/recovery
      */
-    public void render(TemplateElement attemptBlock,
-            TemplateElement recoveryBlock) throws IOException {
+    public void render(TemplateElement attemptBlock, TemplateElement recoveryBlock) throws IOException {
         Writer prevOut = this.out;
         StringWriter sw = new StringWriter();
         this.out = sw;
@@ -278,13 +265,13 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public void render(NestedInstruction nestedInstruction) throws IOException {
-        BlockScope mibc = new BlockScope(currentMacroContext.getBody().getNestedBlock(), currentMacroContext.getInvokingScope());
+        BlockScope blockScope = new BlockScope(currentMacroContext.getBody().getNestedBlock(), currentMacroContext.getInvokingScope());
         ParameterList bodyParameters = currentMacroContext.bodyParameters;
         PositionalArgsList bodyArgs = (PositionalArgsList) nestedInstruction.getArgs();
         if (bodyParameters != null) {
             Map<String, Object> bodyParamsMap = bodyParameters.getParameterMap(bodyArgs, this, true);
             for (Map.Entry<String, Object> entry : bodyParamsMap.entrySet()) {
-            	mibc.put(entry.getKey(), entry.getValue());
+            	blockScope.put(entry.getKey(), entry.getValue());
             }
         }
         MacroContext invokingMacroContext = currentMacroContext;
@@ -294,7 +281,7 @@ public final class Environment extends Configurable implements Scope {
             Configurable prevParent = getFallback();
             Scope prevScope = currentScope;
             setFallback(getCurrentNamespace().getTemplate());
-            currentScope = mibc;
+            currentScope = blockScope;
             try {
                 render(body);
             } finally {
@@ -350,9 +337,9 @@ public final class Environment extends Configurable implements Scope {
             this.nodeNamespaces = namespaces;
         }
         try {
-            Object macroOrTransform = getNodeProcessor(node);
-            if (macroOrTransform instanceof Macro) {
-                render((Macro) macroOrTransform, (ArgsList) null, null, null);
+            Macro macro = getNodeProcessor(node);
+            if (macro !=null) {
+                render(macro, (ArgsList) null, null, null);
             } else {
                 String nodeType = node.getNodeType();
                 if (nodeType != null) {
@@ -378,7 +365,7 @@ public final class Environment extends Configurable implements Scope {
                             }
                         }
                         throw new TemplateException(
-                                "No macro or transform defined for node named "
+                                "No handler defined for node named "
                                         + node.getNodeName()
                                         + nsBit
                                         + ", and there is no fallback handler called @"
@@ -396,7 +383,7 @@ public final class Environment extends Configurable implements Scope {
                         }
                     }
                     throw new TemplateException(
-                            "No macro or transform defined for node with name "
+                            "No handler defined for node with name "
                                     + node.getNodeName()
                                     + nsBit
                                     + ", and there is no macro or transform called @default either.",
@@ -423,7 +410,6 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    @SuppressWarnings("deprecation")
     public void fallback() throws IOException {
         Object macroOrTransform = getNodeProcessor(currentNodeName,
                 currentNodeNS, nodeNamespaceIndex);
@@ -435,9 +421,7 @@ public final class Environment extends Configurable implements Scope {
     /**
      * "visit" a macro.
      */
-    public void render(Macro macro, ArgsList args,
-            ParameterList bodyParameters,
-            Block nestedBlock) throws IOException {
+    public void render(Macro macro, ArgsList args, ParameterList bodyParameters, Block nestedBlock) throws IOException {
         if (macro == Macro.DO_NOTHING_MACRO) {
             return;
         }
@@ -1075,12 +1059,12 @@ public final class Environment extends Configurable implements Scope {
         currentVisitorNode = node;
     }
 
-    Object getNodeProcessor(WrappedNode node) {
+    Macro getNodeProcessor(WrappedNode node) {
         String nodeName = node.getNodeName();
         if (nodeName == null) {
             throw new TemplateException("Node name is null.", this);
         }
-        Object result = getNodeProcessor(nodeName, node.getNodeNamespace(), 0);
+        Macro result = getNodeProcessor(nodeName, node.getNodeNamespace(), 0);
         if (result == null) {
             String type = node.getNodeType();
             if (type != null) {
@@ -1093,8 +1077,8 @@ public final class Environment extends Configurable implements Scope {
         return result;
     }
 
-    private Object getNodeProcessor(final String nodeName, final String nsURI, int startIndex) {
-        Object result = null;
+    private Macro getNodeProcessor(final String nodeName, final String nsURI, int startIndex) {
+        Macro result = null;
         int i;
         for (i = startIndex; i < nodeNamespaces.size(); i++) {
             Scope ns = null;
@@ -1117,49 +1101,32 @@ public final class Environment extends Configurable implements Scope {
         return result;
     }
 
-    private Object getNodeProcessor(Scope ns, String localName, String nsURI) {
-        Object result = null;
+    private Macro getNodeProcessor(Scope ns, String localName, String nsURI) {
+        Object value = null;
         if (nsURI == null) {
-            result = ns.get(localName);
-            if (!(result instanceof Macro)) {
-                result = null;
-            }
-        } else {
-            Template template = ns.getTemplate();
-            String prefix = template.getPrefixForNamespace(nsURI);
-            if (prefix == null) {
-                // The other template cannot handle this node
-                // since it has no prefix registered for the namespace
-                return null;
-            }
-            if (prefix.length() > 0) {
-                result = ns.get(prefix + ":" + localName);
-                if (!(result instanceof Macro)) {
-                    result = null;
-                }
-            } else {
-                if (nsURI.length() == 0) {
-                    result = ns.get(Template.NO_NS_PREFIX + ":" + localName);
-                    if (!(result instanceof Macro)) {
-                        result = null;
-                    }
-                }
-                if (nsURI.equals(template.getDefaultNS())) {
-                    result = ns.get(Template.DEFAULT_NAMESPACE_PREFIX + ":"
-                            + localName);
-                    if (!(result instanceof Macro)) {
-                        result = null;
-                    }
-                }
-                if (result == null) {
-                    result = ns.get(localName);
-                    if (!(result instanceof Macro)) {
-                        result = null;
-                    }
-                }
-            }
+            value = ns.get(localName);
+            return (value instanceof Macro) ? (Macro) value : null;
+        } 
+        Template template = ns.getTemplate();
+        String prefix = template.getPrefixForNamespace(nsURI);
+        if (prefix == null) {
+            // The other template cannot handle this node
+            // since it has no prefix registered for the namespace
+            return null;
         }
-        return result;
+        if (prefix.length() > 0) {
+            value = ns.get(prefix + ":" + localName);
+        } 
+        else if (nsURI.length() == 0) {
+            value = ns.get(Template.NO_NS_PREFIX + ":" + localName);
+        }
+        else if (nsURI.equals(template.getDefaultNS())) {
+            value = ns.get(Template.DEFAULT_NAMESPACE_PREFIX + ":" + localName);
+        }
+        else if (value == null) {
+            value = ns.get(localName);
+        }
+        return (value instanceof Macro) ? (Macro) value : null;
     }
 
     /**
@@ -1232,7 +1199,6 @@ public final class Environment extends Configurable implements Scope {
             this.currentScope = new BlockScope(includedTemplate.getRootElement(), this);
             importMacros(includedTemplate);
         } else {
-            //this.currentScope = new BlockScope(includedTemplate.getRootElement(), prevScope);
             this.currentScope = getCurrentNamespace();
             importMacros(includedTemplate);
         }

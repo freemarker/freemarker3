@@ -59,7 +59,6 @@ public class Template extends Configurable {
 
     private Map<String, String> prefixToNamespaceURILookup = new HashMap<String, String>();
     private Map<String, String> namespaceURIToPrefixLookup = new HashMap<String, String>();
-    private Set<String> declaredVariables = new HashSet<String>();
     
     private boolean strictVariableDeclaration;
     

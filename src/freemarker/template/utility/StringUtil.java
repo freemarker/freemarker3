@@ -2,8 +2,6 @@ package freemarker.template.utility;
 
 import java.io.UnsupportedEncodingException;
 import java.util.*;
-import freemarker.template.Template;
-import freemarker.core.Environment;
 import freemarker.core.parser.ParseException;
 
 /**
@@ -12,12 +10,6 @@ import freemarker.core.parser.ParseException;
  *  @version $Id: StringUtil.java,v 1.48 2005/06/01 22:39:08 ddekany Exp $
  */
 public class StringUtil {
-    private static final char[] ESCAPES = createEscapes();
-
-    /*
-     *  For better performance most methods are folded down. Don't you scream... :)
-     */
-
     /**
      *  HTML encoding (does not convert line breaks).
      *  Replaces all '&gt;' '&lt;' '&amp;' and '"' with entity reference
@@ -230,29 +222,6 @@ public class StringUtil {
         return b.toString();
     }
     
-    private static char[] createEscapes()
-    {
-        char[] escapes = new char['\\' + 1];
-        for(int i = 0; i < 32; ++i)
-        {
-            escapes[i] = 1;
-        }
-        escapes['\\'] = '\\';
-        escapes['\''] = '\'';
-        escapes['"'] = '"';
-        escapes['<'] = 'l';
-        escapes['>'] = 'g';
-        escapes['&'] = 'a';
-        escapes['\b'] = 'b';
-        escapes['\t'] = 't';
-        escapes['\n'] = 'n';
-        escapes['\f'] = 'f';
-        escapes['\r'] = 'r';
-        escapes['$'] = '$';
-        return escapes;
-    }
-
-
     /**
      * FTL string literal decoding.
      *

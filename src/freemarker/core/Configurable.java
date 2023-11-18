@@ -331,10 +331,6 @@ abstract public class Configurable {
         outputEncodingSet = true;
     }
 
-    public void setNumbersForComputers(boolean b) {
-
-    }
-
     public String getOutputEncoding() {
         return outputEncodingSet
                 ? outputEncoding
@@ -481,39 +477,6 @@ abstract public class Configurable {
                     "Failed to set setting " + key + " to value " + value,
                     e, getEnvironment());
         }
-    }
-
-    /**
-     * Returns the textual representation of a setting.
-     * 
-     * @param key the setting key. Can be any of standard <tt>XXX_KEY</tt>
-     *            constants, or a custom key.
-     *
-     * @deprecated This method was always defective, and certainly it always
-     *             will be. Don't use it. (Simply, it's hardly possible in general
-     *             to
-     *             convert setting values to text in a way that ensures that
-     *             {@link #setSetting(String, String)} will work with them
-     *             correctly.)
-     */
-    public String getSetting(String key) {
-        return properties.getProperty(key);
-    }
-
-    /**
-     * This meant to return the String-to-String <code>Map</code> of the
-     * settings. So it actually should return a <code>Properties</code> object,
-     * but it doesn't by mistake. The returned <code>Map</code> is read-only,
-     * but it will reflect the further configuration changes (aliasing effect).
-     *
-     * @deprecated This method was always defective, and certainly it always
-     *             will be. Don't use it. (Simply, it's hardly possible in general
-     *             to
-     *             convert setting values to text in a way that ensures that
-     *             {@link #setSettings(Properties)} will work with them correctly.)
-     */
-    public Map getSettings() {
-        return Collections.unmodifiableMap(properties);
     }
 
     public Environment getEnvironment() {
