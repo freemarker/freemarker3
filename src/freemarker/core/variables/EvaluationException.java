@@ -4,8 +4,8 @@ import freemarker.core.Environment;
 import freemarker.template.TemplateException;
 
 /**
- * Template model implementation classes should throw this exception if
- * requested data cannot be retrieved.  
+ * This exception is thrown if there is some problem 
+ * evaluating an expression.
  */
 public class EvaluationException extends TemplateException {
 

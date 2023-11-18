@@ -13,8 +13,8 @@ import static freemarker.core.variables.Wrap.unwrap;
 
 /**
  * <p>
- * A hash model that wraps a resource bundle. Makes it convenient to store
- * localized content in the data model. It also acts as a method model that will
+ * An object that wraps a resource bundle. Makes it convenient to store
+ * localized content in the data model. It also acts as a method that will
  * take a resource key and arbitrary number of arguments and will apply
  * {@link MessageFormat} with arguments on the string represented by the key.
  * </p>
@@ -32,8 +32,6 @@ import static freemarker.core.variables.Wrap.unwrap;
  * </ul>
  * 
  * @author Attila Szegedi
- * @version $Id: ResourceBundleModel.java,v 1.22 2004/01/06 17:06:42 szegedia
- *          Exp $
  */
 public class ResourceBundleWrapper implements WrappedMethod, WrappedHash {
     private Hashtable<String, MessageFormat> formats = null;

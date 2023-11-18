@@ -13,7 +13,7 @@ public class DefaultComparator
         arithmeticEngine = env.getArithmeticEngine();
     }
     
-    public boolean modelsEqual(Object left, Object right)
+    public boolean areEqual(Object left, Object right)
     {
         left = unwrap(left);
         right = unwrap(right);

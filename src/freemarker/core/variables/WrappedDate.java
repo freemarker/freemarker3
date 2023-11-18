@@ -45,7 +45,7 @@ public interface WrappedDate extends WrappedVariable {
                 }));
     /**
      * Returns the date value. The return value must not be null.
-     * @return the {@link Date} instance associated with this date model.
+     * @return the {@link Date} instance associated with this date wrapper.
      */
     public Date getAsDate();
 

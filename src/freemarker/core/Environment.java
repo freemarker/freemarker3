@@ -871,8 +871,8 @@ public final class Environment extends Configurable implements Scope {
      * Sets a variable that is visible globally. This is correspondent to FTL
      * <code><#global <i>name</i>=<i>model</i>></code>.
      */
-    public void setGlobalVariable(String name, Object model) {
-        globalVariables.put(name, model);
+    public void setGlobalVariable(String name, Object value) {
+        globalVariables.put(name, value);
     }
 
     /**
@@ -881,8 +881,8 @@ public final class Environment extends Configurable implements Scope {
      * considered a convenient shorthand for: getCurrentNamespace().put(name,
      * model)
      */
-    private void setVariable(String name, Object model) {
-        getCurrentNamespace().put(name, model);
+    private void setVariable(String name, Object value) {
+        getCurrentNamespace().put(name, value);
     }
 
     /**
@@ -890,22 +890,22 @@ public final class Environment extends Configurable implements Scope {
      * unqualified #set instruction)
      * 
      * @param name the identifier of the variable
-     * @param model the value of the variable
+     * @param value the value of the variable
      */
-    public void unqualifiedSet(String name, Object model) {
+    public void unqualifiedSet(String name, Object value) {
         Scope scope = this.currentScope;
         while (!scope.isTemplateNamespace()) {
             if (scope.get(name) != null) {
-                scope.put(name, model);
+                scope.put(name, value);
                 return;
             }
             scope = scope.getEnclosingScope();
         }
         try {
-            scope.put(name, model);
+            scope.put(name, value);
         } catch (UndeclaredVariableException uve) {
             if (globalVariables.containsKey(name)) {
-                globalVariables.put(name, model);
+                globalVariables.put(name, value);
             } else {
                 throw new TemplateException(uve, this);
             }

@@ -53,7 +53,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             if (collection != null) {
                 Iterator<Object> tmi = collection.iterator();
                 while (tmi.hasNext()) {
-                    if (modelComparator.modelsEqual(tmi.next(), compareToThis)) {
+                    if (modelComparator.areEqual(tmi.next(), compareToThis)) {
                         return true;
                     }
                 }
@@ -61,7 +61,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             }
             else {
                 for (int i=0; i<sequence.size(); i++) {
-                    if (modelComparator.modelsEqual(sequence.get(i), compareToThis)) {
+                    if (modelComparator.areEqual(sequence.get(i), compareToThis)) {
                         return true;
                     }
                 }

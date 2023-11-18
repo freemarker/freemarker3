@@ -4,12 +4,12 @@
 </head>
 <body>
 
-<p>Provides model implementations that allow access to arbitrary Java objects.</p>
-<p>Most of the issues dealing with beans are handled by the 
-{@link freemarker.core.variables.Invoke#wrap(Object)}. In normal cases, 
- this is thee only method you should use to turn an arbitrary Java object into a 
-FreeMarker {@link freemarker.core.variables.Pojo}. Additionally, you can manually create 
-a Pojo wrapper its constructor.</p>
+<p>The classes in this package mostly involve evaluating variables on the FreeMarker template level
+    and "unwrapping" them into Java objects. Or the opposite, taking Java variables and munging them
+    in some way to present them to the template layer. Provides model implementations that allow access 
+    to arbitrary Java objects.</p>
+<p>Also, pretty much all the usage of the Java reflection API is now hidden away in 
+{@link freemarker.core.variables.ReflectionCode}. </p>
 
 </body>
 </html>
