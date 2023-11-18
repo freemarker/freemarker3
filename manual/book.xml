@@ -3918,7 +3918,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         directive. <phrase role="forProgrammers">Java programmers who want to
         implement the directive in Java Language, rather than in a template,
         should use
-        <literal>freemarker.template.UserDirective</literal> (see
+        <literal>freemarker.template.TemplateDirectiveModel</literal> (see
         <link linkend="pgui_datamodel_directive">more
         here...</link>).</phrase></para>
 
@@ -5433,14 +5433,14 @@ public class Test {
         classes (<literal>Map</literal>, <literal>String</literal>, etc.).
         Internally, the variables available in the template are java objects
         that implement the
-        <literal>freemarker.template.WrappedVariable</literal> interface. But
+        <literal>freemarker.template.TemplateModel</literal> interface. But
         you could use standard java collections as variables in your data
         model, because these were replaced with the appropriate
-        <literal>WrappedVariable</literal> instances behind the scenes. This
+        <literal>TemplateModel</literal> instances behind the scenes. This
         facility is called <emphasis role="term">object wrapping</emphasis>.
         The object wrapping facility can convert <emphasis>any</emphasis> kind
         of object transparently to the instances of classes that implement
-        <literal>WrappedVariable</literal> interface. This makes it possible,
+        <literal>TemplateModel</literal> interface. This makes it possible,
         for example, to access <literal>java.sql.ResultSet</literal> as
         sequence variable in templates, or to access
         <literal>javax.servlet.ServletRequest</literal> objects as a hash
@@ -5452,27 +5452,27 @@ public class Test {
         linkend="pgui_datamodel_objectWrapper">later</link>. The meat for now
         is that any object that you want to access from the templates, sooner
         or later must be converted to an object that implements
-        <literal>WrappedVariable</literal> interface. So first you should
-        familiarize yourself with writing of <literal>WrappedVariable</literal>
+        <literal>TemplateModel</literal> interface. So first you should
+        familiarize yourself with writing of <literal>TemplateModel</literal>
         implementations.</para>
 
         <para>There is roughly one
-        <literal>freemarker.template.WrappedVariable</literal> descendant
+        <literal>freemarker.template.TemplateModel</literal> descendant
         interface corresponding to each basic type of variable
-        (<literal>WrappedHash</literal> for hashes,
-        <literal>WrappedSequence</literal> sequences,
-        <literal>WrappedNumber</literal> for numbers, etc.). For
+        (<literal>TemplateHashModel</literal> for hashes,
+        <literal>TemplateSequenceModel</literal> sequences,
+        <literal>TemplateNumberModel</literal> for numbers, etc.). For
         example, if you want to expose a <literal>java.sql.ResultSet</literal>
         as a sequence for the templates, then you have to write a
-        <literal>WrappedSequence</literal> implementation that can read
+        <literal>TemplateSequenceModel</literal> implementation that can read
         <literal>java.sql.ResultSet</literal>-s. We used to say on this, that
         you <emphasis>wrap</emphasis> the
         <literal>java.sql.ResultSet</literal> with your
-        <literal>WrappedVariable</literal> implementation, as basically you just
+        <literal>TemplateModel</literal> implementation, as basically you just
         encapsulate the <literal>java.sql.ResultSet</literal> to provide
-        access to it with the common <literal>WrappedSequence</literal>
+        access to it with the common <literal>TemplateSequenceModel</literal>
         interface. Note that a class can implement multiple
-        <literal>WrappedVariable</literal> interfaces; this is why FTL variables
+        <literal>TemplateModel</literal> interfaces; this is why FTL variables
         can have multiple types (see: <xref
         linkend="dgui_datamodel_basics" />)</para>
 
@@ -5483,11 +5483,11 @@ public class Test {
         <literal>java.util.Map</literal> to FTL hash variable, you can use
         <literal>SimpleHash</literal>, etc.</para>
 
-        <para>An easy way to try your own <literal>WrappedVariable</literal>
+        <para>An easy way to try your own <literal>TemplateModel</literal>
         implementation, is to create an instance of that, and drop it directly
         into the data-model (as <literal>put</literal> it into the root hash).
         The object wrapper will expose it untouched for the template, as it
-        already implements <literal>WrappedVariable</literal>, so no conversion
+        already implements <literal>TemplateModel</literal>, so no conversion
         (wrapping) needed. (This trick is also useful in cases when you do not
         want the object wrapper to try to wrap (convert) a certain
         object.)</para>
@@ -5564,7 +5564,7 @@ public class Test {
 
         <note>
           <para>For historical reasons the interface for string scalars is
-          called <literal>WrappedString</literal>, not
+          called <literal>TemplateScalarModel</literal>, not
           <literal>TemplateStringModel</literal>.</para>
         </note>
 
@@ -5573,8 +5573,8 @@ public class Test {
         <literal>Simple<replaceable>Type</replaceable></literal> class name.
         However, there is no <literal>SimpleBooleanModel</literal>; to
         represent the boolean values you can use the
-        <literal>WrappedBoolean.TRUE</literal> and
-        <literal>WrappedBoolean.FALSE</literal> singletons.</para>
+        <literal>TemplateBooleanModel.TRUE</literal> and
+        <literal>TemplateBooleanModel.FALSE</literal> singletons.</para>
 
         <note>
           <para>For historical reasons the class for string scalars is called
@@ -5616,20 +5616,20 @@ public class Test {
           corresponding <literal>java.util.Date</literal> subclasses for
           them.</para>
 
-          <para><literal>WrappedDate</literal> interface has two
+          <para><literal>TemplateDateModel</literal> interface has two
           methods: <literal>java.util.Date getAsDate()</literal> and
           <literal>int getDateType()</literal>. A typical implementation of
           this interface, stores a <literal>java.util.Date</literal> object,
           plus an integer that tells the "database style type". The value of
           this integer must be a constant from the
-          <literal>WrappedDate</literal> interface:
+          <literal>TemplateDateModel</literal> interface:
           <literal>DATE</literal>, <literal>TIME</literal>,
           <literal>DATETIME</literal> and <literal>UNKNOWN</literal>.</para>
 
           <para>What is <literal>UNKNOWN</literal>? As we told earlier,
           <literal>java.lang</literal> and <literal>java.util</literal>
           classes are usually converted automatically into
-          <literal>WrappedVariable</literal> implementations, be so called
+          <literal>TemplateModel</literal> implementations, be so called
           object wrappers. If the object wrapper faces a
           <literal>java.util.Date</literal>, that is not an instance of a
           <literal>java.sql</literal> date class, it can't decide what the
@@ -5668,23 +5668,23 @@ public class Test {
           </indexterm>
 
           <para>Hashes are java objects that implement
-          <literal>WrappedHash</literal> interface.
-          <literal>WrappedHash</literal> contains two methods:
-          <literal>WrappedVariable get(String key)</literal>, which returns the
+          <literal>TemplateHashModel</literal> interface.
+          <literal>TemplateHashModel</literal> contains two methods:
+          <literal>TemplateModel get(String key)</literal>, which returns the
           subvariable of the given name, and <literal>boolean
           isEmpty()</literal>, which indicates if the hash has zero
           subvariable or not. The <literal>get</literal> method returns null
           if no subvariable with the given name exists.</para>
 
-          <para>The <literal>WrappedHash</literal> interface extends
-          <literal>WrappedHash</literal>. It adds methods by which <link
+          <para>The <literal>TemplateHashModelEx</literal> interface extends
+          <literal>TemplateHashModel</literal>. It adds methods by which <link
           linkend="ref_builtin_values">values</link> and <link
           linkend="ref_builtin_keys">keys</link> built-ins can enumerate the
           subvariables of the hash.</para>
 
           <para>The commonly used implementation is
           <literal>SimpleHash</literal>, which implements
-          <literal>WrappedHash</literal>. Internally it uses a
+          <literal>TemplateHashModelEx</literal>. Internally it uses a
           <literal>java.util.Hash</literal> to store the subvariables.
           <literal>SimpleHash</literal> has methods by which you can add and
           remove subvariable. These methods should be used to initialize the
@@ -5704,8 +5704,8 @@ public class Test {
           </indexterm>
 
           <para>Sequences are java objects that implement
-          <literal>WrappedSequence</literal>. It contains two methods:
-          <literal>WrappedVariable get(int index)</literal> and <literal>int
+          <literal>TemplateSequenceModel</literal>. It contains two methods:
+          <literal>TemplateModel get(int index)</literal> and <literal>int
           size()</literal>.</para>
 
           <para>The commonly used implementation is
@@ -5749,8 +5749,8 @@ public class Test {
         </indexterm>
 
         <para>Method variables exposed to a template implement the
-        <literal>WrappedMethod</literal> interface. This contains one
-        method: <literal>WrappedVariable exec(java.util.List
+        <literal>TemplateMethodModel</literal> interface. This contains one
+        method: <literal>TemplateModel exec(java.util.List
         arguments)</literal>. When you call a method with a <link
         linkend="dgui_template_exp_methodcall">method call expression</link>,
         then the <literal>exec</literal> method will be called. The arguments
@@ -5759,11 +5759,11 @@ public class Test {
         method call expression.</para>
 
         <para>The <literal>TemplateMethodModelEx</literal> interface extends
-        <literal>WrappedMethod</literal>. It does not add any new
+        <literal>TemplateMethodModel</literal>. It does not add any new
         methods. The fact that the object implements this
         <emphasis>marker</emphasis> interface indicates to the FTL engine that
         the arguments should be put to the <literal>java.util.List</literal>
-        directly as <literal>WrappedVariable</literal>-s. Otherwise they will be
+        directly as <literal>TemplateModel</literal>-s. Otherwise they will be
         put to the list as <literal>String</literal>-s.</para>
 
         <para>For obvious reasons there is no default implementation for these
@@ -5773,9 +5773,9 @@ public class Test {
         second string of the first occurrence of the first string, or -1 if
         the second string doesn't contains the first.</para>
 
-        <programlisting role="unspecified">public class IndexOfMethod implements WrappedMethod {
+        <programlisting role="unspecified">public class IndexOfMethod implements TemplateMethodModel {
     
-    public WrappedVariable exec(List args) {
+    public TemplateModel exec(List args) throws TemplateModelException {
         if (args.size() != 2) {
             throw new TemplateModelException("Wrong arguments");
         }
@@ -5809,7 +5809,7 @@ ${indexOf("foo", x)}</programlisting>
           <para>A method class can also implement the
           <literal>LazilyEvaluatableArguments</literal> marker interface. This
           interface has no methods and can be implemented by either
-          <literal>WrappedMethod</literal> or
+          <literal>TemplateMethodModel</literal> or
           <literal>TemplateMethodModelEx</literal> implementors. A method
           class implementing it declares that it wants its argument
           expressions to be lazily evaluated. This means that each expression
@@ -5854,11 +5854,11 @@ ${indexOf("foo", x)}</programlisting>
         </indexterm>
 
         <para>Java programmers can implement user-defined directives in Java
-        using the <literal>UserDirective</literal> interface. See in
+        using the <literal>TemplateDirectiveModel</literal> interface. See in
         the API documentation.</para>
 
         <note>
-          <para><literal>UserDirective</literal> was introduced in
+          <para><literal>TemplateDirectiveModel</literal> was introduced in
           FreeMarker 2.3.11, replacing the now depreciated
           <literal>TemplateTransformModel</literal>.</para>
         </note>
@@ -5901,10 +5901,10 @@ import java.io.Writer;
 import java.util.Map;
 
 import freemarker.core.Environment;
-import freemarker.template.UserDirectiveBody;
-import freemarker.template.UserDirective;
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
-import freemarker.template.WrappedVariable;
+import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 
 /**
@@ -5918,11 +5918,11 @@ import freemarker.template.TemplateModelException;
  *  &lt;p&gt;Loop variables: None
  *  &lt;p&gt;Directive nested content: Yes
  */
-public class UpperDirective implements UserDirective {
+public class UpperDirective implements TemplateDirectiveModel {
     
     public void execute(Environment env,
-            Map params, WrappedVariable[] loopVars,
-            UserDirectiveBody body)
+            Map params, TemplateModel[] loopVars,
+            TemplateDirectiveBody body)
             throws TemplateException, IOException {
         // Check if no parameters were given:
         if (!params.isEmpty()) {
@@ -6053,13 +6053,13 @@ import java.util.Map;
 
 import freemarker.core.Environment;
 import freemarker.template.SimpleNumber;
-import freemarker.template.WrappedBoolean;
-import freemarker.template.UserDirectiveBody;
-import freemarker.template.UserDirective;
+import freemarker.template.TemplateBooleanModel;
+import freemarker.template.TemplateDirectiveBody;
+import freemarker.template.TemplateDirectiveModel;
 import freemarker.template.TemplateException;
-import freemarker.template.WrappedVariable;
+import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
-import freemarker.template.WrappedNumber;
+import freemarker.template.TemplateNumberModel;
 
 /**
  * FreeMarker user-defined directive for repeating a section of a template,
@@ -6083,14 +6083,14 @@ import freemarker.template.WrappedNumber;
  * 
  * &lt;p&gt;Nested content: Yes
  */
-public class RepeatDirective implements UserDirective {
+public class RepeatDirective implements TemplateDirectiveModel {
     
     private static final String PARAM_NAME_COUNT = "count";
     private static final String PARAM_NAME_HR = "hr";
     
     public void execute(Environment env,
-            Map params, WrappedVariable[] loopVars,
-            UserDirectiveBody body)
+            Map params, TemplateModel[] loopVars,
+            TemplateDirectiveBody body)
             throws TemplateException, IOException {
         
         // ---------------------------------------------------------------------
@@ -6105,15 +6105,15 @@ public class RepeatDirective implements UserDirective {
             Map.Entry ent = (Map.Entry) paramIter.next();
             
             String paramName = (String) ent.getKey();
-            WrappedVariable paramValue = (WrappedVariable) ent.getValue();
+            TemplateModel paramValue = (TemplateModel) ent.getValue();
             
             if (paramName.equals(PARAM_NAME_COUNT)) {
-                if (!(paramValue instanceof WrappedNumber)) {
+                if (!(paramValue instanceof TemplateNumberModel)) {
                     throw new TemplateModelException(
                             "The \"" + PARAM_NAME_HR + "\" parameter "
                             + "must be a number.");
                 }
-                countParam = ((WrappedNumber) paramValue)
+                countParam = ((TemplateNumberModel) paramValue)
                         .getAsNumber().intValue();
                 countParamSet = true;
                 if (countParam &lt; 0) {
@@ -6122,12 +6122,12 @@ public class RepeatDirective implements UserDirective {
                             + "can't be negative.");
                 }
             } else if (paramName.equals(PARAM_NAME_HR)) {
-                if (!(paramValue instanceof WrappedBoolean)) {
+                if (!(paramValue instanceof TemplateBooleanModel)) {
                     throw new TemplateModelException(
                             "The \"" + PARAM_NAME_HR + "\" parameter "
                             + "must be a boolean.");
                 }
-                hrParam = ((WrappedBoolean) paramValue)
+                hrParam = ((TemplateBooleanModel) paramValue)
                         .getAsBoolean();
             } else {
                 throw new TemplateModelException(
@@ -6178,7 +6178,7 @@ public class RepeatDirective implements UserDirective {
           <title>Notices</title>
 
           <para>It's important that a
-          <literal>UserDirective</literal> object usually should not
+          <literal>TemplateDirectiveModel</literal> object usually should not
           be stateful. The typical mistake is the storing of the state of the
           directive call execution in the fields of the object. Think of
           nested calls of the same directive, or directive objects used as
@@ -6211,7 +6211,7 @@ public class RepeatDirective implements UserDirective {
         linkend="dgui_datamodel_node">read this earlier section</link>.</para>
 
         <para>A node variable has the following properties, provided by the
-        methods of <literal>WrappedNode</literal> interface:</para>
+        methods of <literal>TemplateNodeModel</literal> interface:</para>
 
         <itemizedlist>
           <listitem>
@@ -6219,7 +6219,7 @@ public class RepeatDirective implements UserDirective {
 
             <itemizedlist>
               <listitem>
-                <para><literal>WrappedSequence
+                <para><literal>TemplateSequenceModel
                 getChildNodes()</literal>: A node has sequence of children
                 (except if the node is a leaf node, in which case the method
                 return an empty sequence or null). The child nodes should be
@@ -6227,7 +6227,7 @@ public class RepeatDirective implements UserDirective {
               </listitem>
 
               <listitem>
-                <para><literal>WrappedNode getParentNode()</literal>: A
+                <para><literal>TemplateNodeModel getParentNode()</literal>: A
                 node has exactly 1 parent node, except if the node is root
                 node of the tree, in which case the method returns
                 <literal>null</literal>.</para>
@@ -6282,7 +6282,7 @@ public class RepeatDirective implements UserDirective {
         macros.</para>
 
         <para>In most use cases, variables that implement
-        <literal>WrappedNode</literal>, implement other interfaces as
+        <literal>TemplateNodeModel</literal>, implement other interfaces as
         well, since node variable properties just provide the basic
         infrastructure for navigating between nodes. For a concrete example,
         see <link linkend="xgui">how FreeMarker deals with XML</link>.</para>
@@ -6301,9 +6301,9 @@ public class RepeatDirective implements UserDirective {
 
         <para>When you add something to a container, it may receive any java
         object as a parameter, not necessarily a
-        <literal>WrappedVariable</literal>, as you could see in the FreeMarker
+        <literal>TemplateModel</literal>, as you could see in the FreeMarker
         API. This is because the container implementation can silently replace
-        that object with the appropriate <literal>WrappedVariable</literal>
+        that object with the appropriate <literal>TemplateModel</literal>
         object. For example if you add a <literal>String</literal> to the
         container, perhaps it will be replaced with a
         <literal>SimpleScalar</literal> instance which stores the same
@@ -6313,22 +6313,22 @@ public class RepeatDirective implements UserDirective {
         container in question (i.e., the business of the class that implements
         the container interface), but it must happen at the latest when you
         get the subvariable, as the getter methods (according to the
-        interfaces) return <literal>WrappedVariable</literal>, not
+        interfaces) return <literal>TemplateModel</literal>, not
         <literal>Object</literal>. For example, <literal>SimpleHash</literal>,
         <literal>SimpleSequence</literal> and
         <literal>SimpleCollection</literal> use the laziest strategy; they
-        replace a non-<literal>WrappedVariable</literal> subvariable with an
-        appropriate <literal>WrappedVariable</literal> object when you get the
+        replace a non-<literal>TemplateModel</literal> subvariable with an
+        appropriate <literal>TemplateModel</literal> object when you get the
         subvariable for the first time.</para>
 
         <para>As for what java objects can be replaced, and with what
-        <literal>WrappedVariable</literal> implementations, it is either handled
+        <literal>TemplateModel</literal> implementations, it is either handled
         by the container implementation itself, or it delegates this to an
         <literal>ObjectWrapper</literal> instance.
         <literal>ObjectWrapper</literal> is an interface that specifies one
-        method: <literal>WrappedVariable wrap(java.lang.Object obj)</literal>.
+        method: <literal>TemplateModel wrap(java.lang.Object obj)</literal>.
         You pass in an <literal>Object</literal>, and it returns the
-        corresponding <literal>WrappedVariable</literal> object, or throws a
+        corresponding <literal>TemplateModel</literal> object, or throws a
         <literal>TemplateModelException</literal> if this is not possible. The
         replacement rules are coded into the <literal>ObjectWrapper</literal>
         implementation.</para>
@@ -6344,8 +6344,8 @@ public class RepeatDirective implements UserDirective {
             <literal>SimpleNumber</literal>, <literal>List</literal> and array
             with <literal>SimpleSequence</literal>, <literal>Map</literal>
             with <literal>SimpleHash</literal>, <literal>Boolean</literal>
-            with <literal>WrappedBoolean.TRUE</literal> or
-            <literal>WrappedBoolean.FALSE</literal>, W3C DOM nodes with
+            with <literal>TemplateBooleanModel.TRUE</literal> or
+            <literal>TemplateBooleanModel.FALSE</literal>, W3C DOM nodes with
             <literal>freemarker.ext.dom.NodeModel</literal>. For Jython
             objects, this wrapper will invoke
             <literal>freemarker.ext.jython.JythonWrapper</literal>. For all
@@ -6357,7 +6357,7 @@ public class RepeatDirective implements UserDirective {
             <para><literal>ObjectWrapper.BEANS_WRAPPER</literal>: It can
             expose java Bean properties and other members of arbitrary objects
             using Java reflection. At least in FreeMarker 2.3, it is a
-            <literal>freemarker.core.variables.BeansWrapper</literal> instance;
+            <literal>freemarker.ext.beans.BeansWrapper</literal> instance;
             there is a separated <link linkend="pgui_misc_beanwrapper">chapter
             about it</link>.</para>
           </listitem>
@@ -6491,9 +6491,9 @@ ${theObject.sin(123)}</programlisting>
         <literal>object_wrapper</literal> (unless you explicitly specify an
         <literal>ObjectWrapper</literal> as its parameter). Thus, in simple
         FreeMarker application you need not know about
-        <literal>WrappedVariable</literal>-s at all. Note that the root need not
+        <literal>TemplateModel</literal>-s at all. Note that the root need not
         be a <literal>java.util.Map</literal>. It can be anything that is
-        wrapped so that it implements the <literal>WrappedHash</literal>
+        wrapped so that it implements the <literal>TemplateHashModel</literal>
         interface.</para>
 
         <para>The factory default value of the
@@ -6509,7 +6509,7 @@ ${theObject.sin(123)}</programlisting>
         <literal>ObjectWrapper</literal>, so you can set your custom
         implementation as well.</para>
 
-        <para>For <literal>WrappedVariable</literal> implementations that wrap
+        <para>For <literal>TemplateModel</literal> implementations that wrap
         basic Java container types, as <literal>java.util.Map</literal>-s and
         <literal>java.util.List</literal>-s, the convention is that they use
         the same object wrapper to wrap their subvariables as their parent
@@ -6588,7 +6588,7 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         the same name.</para>
 
         <warning>
-          <para>Never use <literal>WrappedVariable</literal> implementation that
+          <para>Never use <literal>TemplateModel</literal> implementation that
           is not <link linkend="gloss.threadSafe">thread-safe</link> for
           shared variables, if the configuration is used by multiple threads!
           This is the typical situation for Servlet based Web sites.</para>
@@ -7289,7 +7289,7 @@ cfg.setTemplateLoader(mtl);</programlisting>
 
           <programlisting role="unspecified">class MyTemplateExceptionHandler implements TemplateExceptionHandler {
     public void handleTemplateException(TemplateException te, Environment env, java.io.Writer out)
-            {
+            throws TemplateException {
         try {
             out.write("[ERROR: " + te.getMessage() + "]");
         } catch (IOException e) {
@@ -7734,10 +7734,10 @@ env.process();</programlisting>
           <secondary>wrapping</secondary>
         </indexterm>
 
-        <para>The <literal>freemarker.core.variables.BeansWrapper</literal> is an
+        <para>The <literal>freemarker.ext.beans.BeansWrapper</literal> is an
         <link linkend="pgui_datamodel_objectWrapper">object wrapper</link>
         that was originally added to FreeMarker so arbitrary POJO-s (Plain Old
-        Java Objects) can be wrapped into <literal>WrappedVariable</literal>
+        Java Objects) can be wrapped into <literal>TemplateModel</literal>
         interfaces. Since then it has becomed the normal way of doing things,
         and in fact the <literal>DefaultObjectWrapper</literal> itself is a
         <literal>BeansWrapper</literal> extension. So everything described
@@ -7790,17 +7790,17 @@ env.process();</programlisting>
           </listitem>
         </itemizedlist>
 
-        <para>Below is a summary of the <literal>WrappedVariable</literal>-s
+        <para>Below is a summary of the <literal>TemplateModel</literal>-s
         that the <literal>BeansWrapper</literal> creates. Let's assume that
         the object is called <literal>obj</literal> before wrapping, and
         <literal>model</literal> after wrapping for the sake of the following
         discussion.</para>
 
         <section xml:id="beanswrapper_hash">
-          <title>WrappedHash functionality</title>
+          <title>TemplateHashModel functionality</title>
 
           <para>Every object will be wrapped into a
-          <literal>WrappedHash</literal> that will expose JavaBeans
+          <literal>TemplateHashModel</literal> that will expose JavaBeans
           properties and methods of the object. This way, you can use
           <literal>model.foo</literal> in the template to invoke
           <literal>obj.getFoo()</literal> or <literal>obj.isFoo()</literal>
@@ -7875,10 +7875,10 @@ env.process();</programlisting>
         </section>
 
         <section>
-          <title>WrappedString functionality</title>
+          <title>TemplateScalarModel functionality</title>
 
           <para>Models for <literal>java.lang.String</literal> objects will
-          implement <literal>WrappedString</literal> whose
+          implement <literal>TemplateScalarModel</literal> whose
           <literal>getAsString()</literal> method simply delegates to
           <literal>toString()</literal>. Note that wrapping
           <literal>String</literal> objects into Bean wrappers provides much
@@ -7890,11 +7890,11 @@ env.process();</programlisting>
         </section>
 
         <section>
-          <title>WrappedNumber functionality</title>
+          <title>TemplateNumberModel functionality</title>
 
           <para>Model wrappers for objects that are instances of
           <literal>java.lang.Number</literal> implement
-          <literal>WrappedNumber</literal> whose
+          <literal>TemplateNumberModel</literal> whose
           <literal>getAsNumber()</literal> method returns the wrapped number
           object. Note that wrapping <literal>Number</literal> objects into
           Bean wrappers provides much more functionality than just them being
@@ -7914,11 +7914,11 @@ env.process();</programlisting>
         </section>
 
         <section>
-          <title>WrappedSequence functionality</title>
+          <title>TemplateSequenceModel functionality</title>
 
           <para>Model wrappers for native Java arrays and all classes that
           implement <literal>java.util.List</literal> will implement
-          <literal>WrappedSequence</literal> and thus their elements
+          <literal>TemplateSequenceModel</literal> and thus their elements
           will be accessible by index using the <literal>model[i]</literal>
           syntax. You can also query the length of the array or the size of
           the list using the <literal>model?size</literal> built-in.</para>
@@ -7938,7 +7938,7 @@ env.process();</programlisting>
         </section>
 
         <section xml:id="beanswrapper_method">
-          <title>WrappedMethod functionality</title>
+          <title>TemplateMethodModel functionality</title>
 
           <para>All methods of an object are represented as
           <literal>TemplateMethodModelEx</literal> objects accessible using a
@@ -7958,7 +7958,7 @@ env.process();</programlisting>
           <literal>TemplateModelException</literal> is thrown.</para>
 
           <para>Methods of return type <literal>void</literal> return
-          <literal>WrappedVariable.NOTHING</literal>, so they can be safely
+          <literal>TemplateModel.NOTHING</literal>, so they can be safely
           called with the <literal>${obj.method(args)}</literal>
           syntax.</para>
 
@@ -8034,9 +8034,9 @@ env.process();</programlisting>
             <listitem>
               <para>If <literal>T</literal> is
               <literal>java.lang.String</literal>, then if model implements
-              <literal>WrappedString</literal> its string value is
+              <literal>TemplateScalarModel</literal> its string value is
               returned. <phrase role="forProgrammers">Note that if the model
-              doesn't implement WrappedString we don't attempt to
+              doesn't implement TemplateScalarModel we don't attempt to
               automatically convert the model to string using
               String.valueOf(model). You'll have to use the ?string built-in
               explicitly to pass non-scalars as strings.</phrase></para>
@@ -8046,7 +8046,7 @@ env.process();</programlisting>
               <para>If <literal>T</literal> is a primitive numeric type or
               <literal>java.lang.Number</literal> is assignable from
               <literal>T</literal>, and model implements
-              <literal>WrappedNumber</literal>, then its numeric value
+              <literal>TemplateNumberModel</literal>, then its numeric value
               is returned if it is instance of <literal>T</literal> or its
               boxing type (if <literal>T</literal> is primitive type).
               Otherwise, if <literal>T</literal> is a built-in Java numeric
@@ -8061,21 +8061,21 @@ env.process();</programlisting>
             <listitem>
               <para>If <literal>T</literal> is <literal>boolean</literal> or
               <literal>java.lang.Boolean</literal>, and model implements
-              <literal>WrappedBoolean</literal>, then its boolean value
+              <literal>TemplateBooleanModel</literal>, then its boolean value
               is returned.</para>
             </listitem>
 
             <listitem>
               <para>If <literal>T</literal> is
               <literal>java.util.Map</literal> and the model implements
-              <literal>WrappedHash</literal>, then a special Map
+              <literal>TemplateHashModel</literal>, then a special Map
               representation of the hash model is returned.</para>
             </listitem>
 
             <listitem>
               <para>If <literal>T</literal> is
               <literal>java.util.List</literal> and the model implements
-              <literal>WrappedSequence</literal>, then a special List
+              <literal>TemplateSequenceModel</literal>, then a special List
               representation of the sequence model is returned.</para>
             </listitem>
 
@@ -8091,14 +8091,14 @@ env.process();</programlisting>
               <literal>java.util.Collection</literal> or
               <literal>java.lang.Iterable</literal> and the model implements
               either <literal>TemplateCollectionModel</literal> or
-              <literal>WrappedSequence</literal>, then a special Set or
+              <literal>TemplateSequenceModel</literal>, then a special Set or
               List representation of the collection or sequence model
               (respectively) is returned.</para>
             </listitem>
 
             <listitem>
               <para>If <literal>T</literal> is a Java array type and the model
-              implements <literal>WrappedSequence</literal>, then a new
+              implements <literal>TemplateSequenceModel</literal>, then a new
               array of the specified type is created and its elements
               unwrapped into the array recursively using the array's component
               type as <literal>T</literal>.</para>
@@ -8107,7 +8107,7 @@ env.process();</programlisting>
             <listitem>
               <para>If <literal>T</literal> is <literal>char</literal> or
               <literal>java.lang.Character</literal>, and model implements
-              <literal>WrappedString</literal>, and its string
+              <literal>TemplateScalarModel</literal>, and its string
               representation contains exactly one character, then a
               <literal>java.lang.Character</literal> with that value is
               retured.</para>
@@ -8116,7 +8116,7 @@ env.process();</programlisting>
             <listitem>
               <para>If <literal>java.util.Date</literal> is assignable from
               <literal>T</literal>, and model implements
-              <literal>WrappedDate</literal>, and its date value is
+              <literal>TemplateDateModel</literal>, and its date value is
               instance of <literal>T</literal>, then its date value is
               returned.</para>
             </listitem>
@@ -8154,7 +8154,7 @@ env.process();</programlisting>
             <listitem>
               <para>If model is a hash model, and <literal>T</literal> is
               assignable from
-              <literal>freemarker.core.variables.HashAdapter</literal>, a hash
+              <literal>freemarker.ext.beans.HashAdapter</literal>, a hash
               adapter is returned. <phrase role="forProgrammers">Same as
               (**)</phrase></para>
             </listitem>
@@ -8162,7 +8162,7 @@ env.process();</programlisting>
             <listitem>
               <para>If model is a sequence model, and <literal>T</literal> is
               assignable from
-              <literal>freemarker.core.variables.SequenceAdapter</literal>, a
+              <literal>freemarker.ext.beans.SequenceAdapter</literal>, a
               sequence adapter is returned. <phrase role="forProgrammers">Same
               as (**)</phrase></para>
             </listitem>
@@ -8170,7 +8170,7 @@ env.process();</programlisting>
             <listitem>
               <para>If model is a collection model, and <literal>T</literal>
               is assignable from
-              <literal>freemarker.core.variables.SetAdapter</literal>, a set
+              <literal>freemarker.ext.beans.SetAdapter</literal>, a set
               adapter for the collection is returned. <phrase
               role="forProgrammers">Same as (**)</phrase></para>
             </listitem>
@@ -8200,15 +8200,15 @@ env.process();</programlisting>
             <secondary>accessing from templates</secondary>
           </indexterm>
 
-          <para>The <literal>WrappedHash</literal> returned from
+          <para>The <literal>TemplateHashModel</literal> returned from
           <literal>BeansWrapper.getStaticModels()</literal> can be used to
           create hash models for accessing static methods and fields of an
           arbitrary class.</para>
 
           <programlisting role="unspecified">BeansWrapper wrapper = BeansWrapper.getDefaultInstance();
-WrappedHash staticModels = wrapper.getStaticModels();
-WrappedHash fileStatics =
-    (WrappedHash) staticModels.get("java.io.File");</programlisting>
+TemplateHashModel staticModels = wrapper.getStaticModels();
+TemplateHashModel fileStatics =
+    (TemplateHashModel) staticModels.get("java.io.File");</programlisting>
 
           <para>And you will get a template hash model that exposes all static
           methods and static fields (both final and non-final) of the
@@ -8257,7 +8257,7 @@ WrappedHash fileStatics =
             <primary>enum</primary>
           </indexterm>
 
-          <para>The <literal>WrappedHash</literal> returned from
+          <para>The <literal>TemplateHashModel</literal> returned from
           <literal>BeansWrapper.getEnumModels()</literal> can be used to
           create hash models for accessing values of enums on JRE 1.5 or
           later. (An attempt to invoke this method on an earlier JRE will
@@ -8265,9 +8265,9 @@ WrappedHash fileStatics =
           <literal>UnsupportedOperationException</literal>.)</para>
 
           <programlisting role="unspecified">BeansWrapper wrapper = BeansWrapper.getDefaultInstance();
-WrappedHash enumModels = wrapper.getEnumModels();
-WrappedHash roundingModeEnums =
-    (WrappedHash) enumModels.get("java.math.RoundingMode");</programlisting>
+TemplateHashModel enumModels = wrapper.getEnumModels();
+TemplateHashModel roundingModeEnums =
+    (TemplateHashModel) enumModels.get("java.math.RoundingMode");</programlisting>
 
           <para>And you will get a template hash model that exposes all enum
           values of the <literal>java.math.RoundingMode</literal> class as
@@ -9335,7 +9335,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         semantics:</para>
 
         <section>
-          <title>WrappedString</title>
+          <title>TemplateScalarModel</title>
 
           <para>When used as a scalar, the node list will render the XML
           fragment that represents its contained nodes. This makes it handy
@@ -9351,7 +9351,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         </section>
 
         <section>
-          <title>WrappedSequence</title>
+          <title>TemplateSequenceModel</title>
 
           <para>When used as a sequence, it will return the i-th node as a new
           node list consisting of the single requested node. I.e., to return
@@ -9363,7 +9363,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         </section>
 
         <section>
-          <title>WrappedHash</title>
+          <title>TemplateHashModel</title>
 
           <para>When used as a hash, it is basically used to traverse
           children. That is, if you have a node list named
@@ -9622,7 +9622,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         </section>
 
         <section>
-          <title>WrappedMethod</title>
+          <title>TemplateMethodModel</title>
 
           <para>When used as a method model, it returns a node list that is
           the result of evaluating an XPath expression on the current contents
@@ -9767,22 +9767,22 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
 
         <para>The <literal>freemarker.ext.jython</literal> package consists of
         models that enable any Jython object to be used as a
-        <literal>WrappedVariable</literal>. In the very basic case, you only
+        <literal>TemplateModel</literal>. In the very basic case, you only
         need to call the</para>
 
-        <programlisting role="unspecified">public WrappedVariable wrap(Object obj);</programlisting>
+        <programlisting role="unspecified">public TemplateModel wrap(Object obj);</programlisting>
 
         <para>method of the
         <literal>freemarker.ext.jython.JythonWrapper</literal> class. This
         method will wrap the passed object into an appropriate
-        <literal>WrappedVariable</literal>. Below is a summary of the properties
+        <literal>TemplateModel</literal>. Below is a summary of the properties
         of returned model wrappers. Let's assume that the model that resulted
         from the <literal>JythonWrapper</literal> call on object
         <literal>obj</literal> is named <literal>model</literal> in the
         template model root for the sake of the following discussion.</para>
 
         <section>
-          <title>WrappedHash functionality</title>
+          <title>TemplateHashModel functionality</title>
 
           <para><literal>PyDictionary</literal> and
           <literal>PyStringMap</literal> will be wrapped into a hash model.
@@ -9792,40 +9792,40 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         </section>
 
         <section>
-          <title>WrappedString functionality</title>
+          <title>TemplateScalarModel functionality</title>
 
           <para>Every python object will implement
-          <literal>WrappedString</literal> whose
+          <literal>TemplateScalarModel</literal> whose
           <literal>getAsString()</literal> method simply delegates to
           <literal>toString()</literal>.</para>
         </section>
 
         <section>
-          <title>WrappedBoolean functionality</title>
+          <title>TemplateBooleanModel functionality</title>
 
           <para>Every python object will implement
-          <literal>WrappedBoolean</literal> whose
+          <literal>TemplateBooleanModel</literal> whose
           <literal>getAsBoolean()</literal> method simply delegates to
           <literal>__nonzero__()</literal> in accordance with Python semantics
           of true/false.</para>
         </section>
 
         <section>
-          <title>WrappedNumber functionality</title>
+          <title>TemplateNumberModel functionality</title>
 
           <para>Model wrappers for <literal>PyInteger</literal>,
           <literal>PyLong</literal>, and <literal>PyFloat</literal> objects
-          implement <literal>WrappedNumber</literal> whose
+          implement <literal>TemplateNumberModel</literal> whose
           <literal>getAsNumber()</literal> method returns
           <literal>__tojava__(java.lang.Number.class)</literal>.</para>
         </section>
 
         <section>
-          <title>WrappedSequence functionality</title>
+          <title>TemplateSequenceModel functionality</title>
 
           <para>Model wrappers for all classes that extend
           <literal>PySequence</literal> will implement
-          <literal>WrappedSequence</literal> and thus their elements
+          <literal>TemplateSequenceModel</literal> and thus their elements
           will be accessible by index using the <literal>model[i]</literal>
           syntax, which will delegate to <literal>__finditem__(i)</literal>.
           You can also query the length of the array or the size of the list
@@ -10608,13 +10608,13 @@ Test Book</programlisting>
 
         <para>Every variable that corresponds to a single node in the DOM tree
         is a multi-type variable of type node and type hash (for programmers:
-        implements both <literal>WrappedNode</literal> and
-        <literal>WrappedHash</literal>). Thus, you can use the <link
+        implements both <literal>TemplateNodeModel</literal> and
+        <literal>TemplateHashModel</literal>). Thus, you can use the <link
         linkend="ref_builtins_node">node built-ins</link> with them. Hash keys
         are interpreted as XPath expressions, except the special keys shown in
         the table below. Some of the node variables also have string type, so
         you can use them as string variables (for programmers: they implement
-        <literal>WrappedString</literal>).</para>
+        <literal>TemplateScalarModel</literal>).</para>
 
         <anchor xml:id="misc.xguiTable" />
 
@@ -14327,7 +14327,7 @@ Sorted by name.last:
           same value as the original variable, but uses
           <literal>java.lang.<replaceable>Type</replaceable></literal> for the
           internal representation of the value. This is useful if a method is
-          overloaded, or if a <literal>WrappedVariable</literal> unwrapper has
+          overloaded, or if a <literal>TemplateModel</literal> unwrapper has
           problem with automatically choosing the suitable
           <literal>java.lang.*</literal> type. Note that since version 2.3.9
           the unwrapper has been improved substantially, so you will hardly
@@ -14577,7 +14577,7 @@ Sorted by name.last:
 
                 <td>Whatever kind of directive (for example a macro, <phrase
                 role="forProgrammers">or
-                <literal>UserDirective</literal>,
+                <literal>TemplateDirectiveModel</literal>,
                 <literal>TemplateTransformModel</literal>, etc.</phrase>)</td>
               </tr>
 
@@ -14613,10 +14613,10 @@ Sorted by name.last:
           </indexterm>
 
           <para>This is to create a variable of a certain
-          <literal>WrappedVariable</literal> implementation.</para>
+          <literal>TemplateModel</literal> implementation.</para>
 
           <para>On the left side of <literal>?</literal> you specify a string,
-          the full-qualified class name of a <literal>WrappedVariable</literal>
+          the full-qualified class name of a <literal>TemplateModel</literal>
           implementation. The result is a method variable that calls the
           constructor, and returns the new variable.</para>
 
@@ -19216,7 +19216,7 @@ or
             templates, but makes unwrapping on the Java side a tricky
             question. For example, it is possible to wrap a
             non-<literal>java.util.Map</literal> object as
-            <literal>WrappedHash</literal> (FTL hash variable). But
+            <literal>TemplateHashModel</literal> (FTL hash variable). But
             then, it can't be unwrapped to <literal>java.util.Map</literal>,
             since there is no wrapped <literal>java.util.Map</literal> around
             at all.</para>
@@ -19228,7 +19228,7 @@ or
                 <para>Transforms and methods that are written for presentation
                 purposes (like kind of ''tools'' for helping FreeMarker
                 templates) should declare their arguments as
-                <literal>WrappedVariable</literal>-s and the more specific sub
+                <literal>TemplateModel</literal>-s and the more specific sub
                 interfaces of that. After all, the object wrapping is about
                 apparently transforming the data-model to something that
                 serves the purpose of the presentation layer, and these
@@ -19300,15 +19300,15 @@ or
 
             <para>If you read the programmer's guide, then you know that
             technically, the data-model is a tree of
-            <literal>freemarker.template.WrappedVariable</literal> objects. The
+            <literal>freemarker.template.TemplateModel</literal> objects. The
             building of the data-model usually (but not necessary) happens by
             automatically wrapping (enclosing) plain Java objects into
-            <literal>WrappedVariable</literal> objects. The object that does
+            <literal>TemplateModel</literal> objects. The object that does
             this wrapping is the object wrapper, and it's specified when you
             configure FreeMarker. FreeMarker comes with a few object wrapper
             implementations out-of-the-box, and probably the most widely used
             of them is <link
-            linkend="pgui_misc_beanwrapper"><literal>freemarker.core.variables.BeansWrapper</literal></link>.
+            linkend="pgui_misc_beanwrapper"><literal>freemarker.ext.beans.BeansWrapper</literal></link>.
             If you use an instance of this as the object wrapper, then
             <literal>java.util.Map</literal>-s you put into the data-model
             will also act as a method, so you can write
@@ -19322,7 +19322,7 @@ or
             the template, then the value will be automatically unwrapped to
             plain Java object before the actual invocation of the
             <literal>Map.get(Object key)</literal> method, so it will not be
-            invoked with <literal>WrappedVariable</literal>-s.</para>
+            invoked with <literal>TemplateModel</literal>-s.</para>
 
             <para>But there still will be a problem. Java's
             <literal>Map</literal> is particular about the exact class of the
@@ -19460,8 +19460,8 @@ or
                 <para>You can write a <literal>TemplateMethodModelEx</literal>
                 and <literal>TemplateTransform</literal> implementation that
                 can modify certain types of sequences/hashes. Just certain
-                types, because <literal>WrappedSequence</literal> and
-                <literal>WrappedHash</literal> doesn't have methods for
+                types, because <literal>TemplateSequenceModel</literal> and
+                <literal>TemplateHashModel</literal> doesn't have methods for
                 modification, so you will need the sequence or hash to
                 implement some additional methods. An example of this solution
                 can be seen in FMPP. It allows you to do things like this
@@ -19659,7 +19659,7 @@ myTemplate.process(root, out);</programlisting>
 
             <programlisting role="unspecified">Environment env = myTemplate.createProcessingEnvironment(root, out);
 env.process();  // process the template
-WrappedVariable x = env.getVariable("x");  // get variable x</programlisting>
+TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
           </answer>
         </qandaentry>
 
@@ -19689,7 +19689,7 @@ WrappedVariable x = env.getVariable("x");  // get variable x</programlisting>
             model before calling the template, or into the shared variable map
             (see:
             <literal>freemarker.template.Configuration.setSharedVariable(String,
-            WrappedVariable)</literal>) when you initialize the
+            TemplateModel)</literal>) when you initialize the
             application.)</para>
           </answer>
         </qandaentry>
@@ -20477,8 +20477,8 @@ WrappedVariable x = env.getVariable("x");  // get variable x</programlisting>
               <literal>[@myDirective width=50 color="red"]</literal> and
               <literal>myMethod(from=10, to=20)</literal>). This applies both
               to methods/directives implemented directly by using the
-              <literal>WrappedMethod</literal> and
-              <literal>UserDirective</literal> (and
+              <literal>TemplateMethodModel</literal> and
+              <literal>TemplateDirectiveModel</literal> (and
               <literal>TemplateTransformModel</literal>) interfaces, and to
               Java methods exposed by the object wrapper. The names of the
               parameters can be specified using the newly introduced
@@ -20521,7 +20521,7 @@ ${obj.myMethod("foo")}</programlisting>
               <para>New marker interface,
               <literal>freemarker.template.LazilyEvaluatableArguments</literal>
               can be implemented by custom
-              <literal>WrappedMethod</literal>-s to have their argument
+              <literal>TemplateMethodModel</literal>-s to have their argument
               lists lazily evaluated (each argument evaluated only when first
               used by the method during the call, instead of evaluating all
               arguments in left-to-right order before the call). <link
@@ -20587,7 +20587,7 @@ ${obj.myMethod("foo")}</programlisting>
 
             <listitem>
               <para><literal>TemplateTransformModel</literal> is now
-              deprecated, <literal>UserDirective</literal> is
+              deprecated, <literal>TemplateDirectiveModel</literal> is
               recommended instead.</para>
             </listitem>
 
@@ -20604,13 +20604,13 @@ ${obj.myMethod("foo")}</programlisting>
 
             <listitem>
               <para>XML wrapping: <literal>NodeListModel</literal> now
-              implements <literal>WrappedBoolean</literal>. It will be
+              implements <literal>TemplateBooleanModel</literal>. It will be
               <literal>false</literal> if the node list contains no nodes,
               <literal>true</literal> otherwise.</para>
             </listitem>
 
             <listitem>
-              <para><literal>WrappedVariable.JAVA_NULL</literal> was added that
+              <para><literal>TemplateModel.JAVA_NULL</literal> was added that
               corresponds to the new <literal>null</literal> value of the
               template language.</para>
             </listitem>
@@ -20688,8 +20688,8 @@ ${obj.myMethod("foo")}</programlisting>
 
             <listitem>
               <para>Bugfix:
-              <literal>freemarker.core.variables.SimpleMapModel</literal> (unlike
-              either <literal>freemarker.core.variables.MapModel</literal> or
+              <literal>freemarker.ext.beans.SimpleMapModel</literal> (unlike
+              either <literal>freemarker.ext.beans.MapModel</literal> or
               <literal>freemarker.template.SimpleHash</literal>) didn't allow
               lookup by <literal>java.lang.Character</literal> key when passed
               a single-character string as a key.</para>
@@ -20703,7 +20703,7 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Bugfix: <literal>freemarker.core.variables.MapModel</literal>
+              <para>Bugfix: <literal>freemarker.ext.beans.MapModel</literal>
               returns <literal>BeansWrapper.wrap(null)</literal> instead of
               <literal>null</literal> for <literal>null</literal> values
               explicitly bound into the map.</para>
@@ -20893,7 +20893,7 @@ ${obj.myMethod("foo")}</programlisting>
 
             <listitem>
               <para>A new model interface,
-              <literal>UserDirective</literal> provides an easier
+              <literal>TemplateDirectiveModel</literal> provides an easier
               paradigm for implementing user-defined directives than
               <literal>TemplateTransformModel</literal> did previously.
               <literal>TemplateTransformModel</literal> will be
@@ -21008,7 +21008,7 @@ ${obj.myMethod("foo")}</programlisting>
               documentation. Instead the more general "user-defined directive"
               term is used, which encompasses macros,
               <literal>TemplateTransformModel</literal>-s and the new
-              <literal>UserDirective</literal>-s, which are just
+              <literal>TemplateDirectiveModel</literal>-s, which are just
               different ways of implementing user-defined directives.</para>
             </listitem>
 
@@ -21605,7 +21605,7 @@ ${obj.myMethod("foo")}</programlisting>
               <para>Bugfix: The Jython wrapper didn't wrapped
               <literal>java.util.Date</literal> objects well. Now it wraps
               them with <literal>BeanWrapper</literal> to
-              <literal>WrappedDate</literal>.</para>
+              <literal>TemplateDateModel</literal>.</para>
             </listitem>
 
             <listitem>
@@ -21979,7 +21979,7 @@ ${obj.myMethod("foo")}</programlisting>
               <para>The
               <literal>freemarker.template.utility.Constants</literal> class
               was added that contains various static final fields that store
-              frequently used constant <literal>WrappedVariable</literal>
+              frequently used constant <literal>TemplateModel</literal>
               values, as <literal>EMPTY_SEQUENCE</literal>,
               <literal>ZERO</literal>, etc.</para>
             </listitem>
@@ -22227,9 +22227,9 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para><literal>freemarker.template.WrappedMethod.exec</literal>
+              <para><literal>freemarker.template.TemplateMethodModel.exec</literal>
               now returns <literal>Object</literal> instead of
-              <literal>WrappedVariable</literal>.</para>
+              <literal>TemplateModel</literal>.</para>
             </listitem>
 
             <listitem>
@@ -22274,7 +22274,7 @@ ${obj.myMethod("foo")}</programlisting>
               <para>The <literal>?new</literal> built-in, as it was
               implemented, was a security hole. Now, it only allows you to
               instantiate a java object that implements the
-              <literal>freemarker.template.WrappedVariable</literal> interface.
+              <literal>freemarker.template.TemplateModel</literal> interface.
               If you want the functionality of the <literal>?new</literal>
               built-in as it existed in prior versions, make available an
               instance of the
@@ -22398,7 +22398,7 @@ ${obj.myMethod("foo")}</programlisting>
               In practical terms this means you can access their sizes or
               retrieve their subvariables by index, and use all of the <link
               linkend="ref_builtins_sequence">sequence built-ins</link>. (Note
-              for the programmers: The <literal>WrappedHash</literal>
+              for the programmers: The <literal>TemplateHashModelEx</literal>
               interface has not been changed. Your old code will work. See the
               API documentation to see why.)</para>
             </listitem>
@@ -22499,7 +22499,7 @@ ${obj.myMethod("foo")}</programlisting>
               <para>The <literal>?new</literal> built-in, as it was
               implemented, was a security hole. Now, it only allows you to
               instantiate a java object that implements the
-              <literal>freemarker.template.WrappedVariable</literal> interface.
+              <literal>freemarker.template.TemplateModel</literal> interface.
               <phrase role="forProgrammers">If you want the functionality of
               the <literal>?new</literal> built-in as it existed in prior
               versions, make available an instance of the
@@ -22555,7 +22555,7 @@ ${obj.myMethod("foo")}</programlisting>
               wrapper is now
               <literal>freemarker.template.DefaultObjectWrapper</literal>,
               which falls back on wrapping arbitrary objects as beans using
-              the <literal>freemarker.core.variables.BeansWrapper</literal>. Also,
+              the <literal>freemarker.ext.beans.BeansWrapper</literal>. Also,
               it will wrap <literal>org.w3c.dom.Node</literal> objects with
               the new DOM wrapper. Also, it is aware of Jython objects, and
               will use <literal>freemarker.ext.jython.JythonWrapper</literal>
@@ -22566,9 +22566,9 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para><literal>freemarker.template.WrappedMethod.exec</literal>
+              <para><literal>freemarker.template.TemplateMethodModel.exec</literal>
               now returns <literal>Object</literal> instead of
-              <literal>WrappedVariable</literal>.</para>
+              <literal>TemplateModel</literal>.</para>
             </listitem>
 
             <listitem>
@@ -22619,7 +22619,7 @@ ${obj.myMethod("foo")}</programlisting>
               can now use the <literal>${obj.method(args)}</literal> syntax to
               invoke methods whose return type is <literal>void</literal>.
               <literal>void</literal> methods now return
-              <literal>WrappedVariable.NOTHING</literal> as their return
+              <literal>TemplateModel.NOTHING</literal> as their return
               value.</para>
             </listitem>
 
@@ -22630,7 +22630,7 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>The <literal>WrappedNode</literal> interface was
+              <para>The <literal>TemplateNodeModel</literal> interface was
               introduced to support recursive processing of trees of nodes.
               Typically, this will be used in relation to XML.</para>
             </listitem>
@@ -23019,9 +23019,9 @@ ${obj.myMethod("foo")}</programlisting>
 
             <itemizedlist>
               <listitem>
-                <para><literal>freemarker.template.WrappedMethod.exec</literal>
+                <para><literal>freemarker.template.TemplateMethodModel.exec</literal>
                 now returns <literal>Object</literal> instead of
-                <literal>WrappedVariable</literal>.</para>
+                <literal>TemplateModel</literal>.</para>
               </listitem>
 
               <listitem>
@@ -23519,7 +23519,7 @@ ${obj.myMethod("foo")}</programlisting>
               <listitem>
                 <para>XML processing: the <literal>namespace_uri</literal>
                 built-in, the <literal>xmlnsuri</literal> header parameter,
-                and the <literal>WrappedNode.getNodeNamespace</literal>
+                and the <literal>TemplateNodeModel.getNodeNamespace</literal>
                 method were renamed to <literal>node_namespace</literal> and
                 <literal>getNodeNamespace</literal> respectively.</para>
               </listitem>
@@ -23550,7 +23550,7 @@ ${obj.myMethod("foo")}</programlisting>
                 you can now use the <literal>${obj.method(args)}</literal>
                 syntax to invoke methods whose return type is
                 <literal>void</literal>. <literal>void</literal> methods now
-                return <literal>WrappedVariable.NOTHING</literal> as their
+                return <literal>TemplateModel.NOTHING</literal> as their
                 return value.</para>
               </listitem>
             </itemizedlist>
@@ -23589,7 +23589,7 @@ ${obj.myMethod("foo")}</programlisting>
                 <para>The <literal>?new</literal> built-in, as it was
                 implemented, was a security hole. Now, it only allows you to
                 instantiate a java object that implements the
-                <literal>freemarker.template.WrappedVariable</literal>
+                <literal>freemarker.template.TemplateModel</literal>
                 interface. If you want the functionality of the
                 <literal>?new</literal> built-in as it existed in prior
                 versions, make available an instance of the new
@@ -23965,8 +23965,8 @@ ${obj.myMethod("foo")}</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>New <literal>WrappedVariable</literal> subinterface:
-              <literal>WrappedDate</literal>. For more information read
+              <para>New <literal>TemplateModel</literal> subinterface:
+              <literal>TemplateDateModel</literal>. For more information read
               <xref linkend="pgui_datamodel_scalar" /></para>
             </listitem>
 
@@ -23993,11 +23993,11 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Changes to <literal>freemarker.core.variables</literal>
+              <para>Changes to <literal>freemarker.ext.beans</literal>
               package: <literal>BeanModel</literal>,
               <literal>MapModel</literal>, and
               <literal>ResourceModel</literal> now implement
-              <literal>WrappedHash</literal>.</para>
+              <literal>TemplateHashModelEx</literal>.</para>
             </listitem>
 
             <listitem>
@@ -24070,7 +24070,7 @@ ${obj.myMethod("foo")}</programlisting>
             <listitem>
               <para>The <literal>BeansWrapper</literal> no longer exposes
               native Java arrays, booleans, numbers, enumerations, iterators,
-              and resource bundles as <literal>WrappedString</literal>.
+              and resource bundles as <literal>TemplateScalarModel</literal>.
               This way, number objects wrapped through
               <literal>BeansWrapper</literal> are subject to FreeMarker's
               number formatting machinery. Also, booleans can be formatted
@@ -24311,7 +24311,7 @@ ${obj.myMethod("foo")}</programlisting>
 
             <listitem>
               <para>New built-in for experts to create a variable of certain
-              Java <literal>WrappedVariable</literal> implementation. See: <link
+              Java <literal>TemplateModel</literal> implementation. See: <link
               linkend="ref_builtin_new"><literal>new</literal>
               built-in</link></para>
             </listitem>
@@ -24421,7 +24421,7 @@ ${obj.myMethod("foo")}</programlisting>
                 <listitem>
                   <para>The <literal>BeansWrapper</literal> no longer exposes
                   arbitrary objects as
-                  <literal>WrappedString</literal>s, only
+                  <literal>TemplateScalarModel</literal>s, only
                   <literal>java.lang.String</literal> and
                   <literal>Character</literal> objects. This way, number
                   objects wrapped through <literal>BeansWrapper</literal> are
@@ -24443,7 +24443,7 @@ ${obj.myMethod("foo")}</programlisting>
                   <literal>setSimpleMapWrapper</literal> method of
                   <literal>BeansWrapper</literal> you can configure it to wrap
                   <literal>java.util.Map</literal>-s as
-                  <literal>WrappedHash</literal>-s, and do not expose
+                  <literal>TemplateHashModelEx</literal>-s, and do not expose
                   the methods of the object.</para>
                 </listitem>
               </itemizedlist>
@@ -24880,7 +24880,7 @@ ${obj.myMethod("foo")}</programlisting>
                 <literal>setSimpleMapWrapper</literal> method of
                 <literal>BeansWrapper</literal> you can configure it to wrap
                 <literal>java.util.Map</literal>-s as
-                <literal>WrappedHash</literal>-s, and do not expose
+                <literal>TemplateHashModelEx</literal>-s, and do not expose
                 the methods of the object.</para>
               </listitem>
 
@@ -25014,11 +25014,11 @@ ${obj.myMethod("foo")}</programlisting>
                 <para>Jython wrapper can now wrap arbitrary Java objects, not
                 only <literal>PyObject</literal>-s. If an object is passed to
                 the wrapper that is neither a
-                <literal>WrappedVariable</literal>, nor a
+                <literal>TemplateModel</literal>, nor a
                 <literal>PyObject</literal>, it is first coerced into a
                 <literal>PyObject</literal> using Jython's own wrapping
                 machinery, and then wrapped into a
-                <literal>WrappedVariable</literal> as any other
+                <literal>TemplateModel</literal> as any other
                 <literal>PyObject</literal>.</para>
               </listitem>
 
@@ -25082,11 +25082,11 @@ ${obj.myMethod("foo")}</programlisting>
               integration with Jython much smoother: Jython wrapper can now
               wrap arbitrary Java objects, not only
               <literal>PyObject</literal>-s. If an object is passed to the
-              wrapper that is neither a <literal>WrappedVariable</literal>, nor
+              wrapper that is neither a <literal>TemplateModel</literal>, nor
               a <literal>PyObject</literal>, it is first coerced into a
               <literal>PyObject</literal> using Jython's own wrapping
               machinery, and then wrapped into a
-              <literal>WrappedVariable</literal> as any other
+              <literal>TemplateModel</literal> as any other
               <literal>PyObject</literal>.</para>
             </listitem>
           </itemizedlist>
@@ -25482,15 +25482,15 @@ ${obj.myMethod("foo")}</programlisting>
           <itemizedlist>
             <listitem>
               <para><literal>ObjectWrapper</literal>: You can put
-              non-<literal>WrappedVariable</literal> objects directly into
+              non-<literal>TemplateModel</literal> objects directly into
               hashes, sequences and collections, and they will be
               automatically wrapped with the appropriate
-              <literal>WrappedVariable</literal> implementation. The API of
+              <literal>TemplateModel</literal> implementation. The API of
               objects that are exposed to templates
               (<literal>Simple<replaceable>XXX</replaceable></literal>) has
               been changed according to this, for example in
               <literal>SimpleHash</literal> the old <literal>put(String key,
-              WrappedVariable value)</literal> is now <literal>put(String key,
+              TemplateModel value)</literal> is now <literal>put(String key,
               Object object)</literal>. Also, you can pass any kind of object
               as data-model to <literal>Template.process</literal>. The
               alternative reflection based <literal>ObjectWrapper</literal>
@@ -25516,7 +25516,7 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para><literal>WrappedNumber</literal>-s do not control
+              <para><literal>TemplateNumberModel</literal>-s do not control
               their formatting anymore. They just store the data (i.e., a
               number). Number formatting is done by the FreeMarker core based
               on the <literal>locale</literal> and
@@ -25525,14 +25525,14 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para><literal>WrappedBoolean</literal> introduced: Only
+              <para><literal>TemplateBooleanModel</literal> introduced: Only
               objects that implements this interface can be used as a boolean
               in true/false conditions. More info: <xref
               linkend="pgui_datamodel_scalar" /></para>
             </listitem>
 
             <listitem>
-              <para><literal>WrappedDate</literal> introduced: objects
+              <para><literal>TemplateDateModel</literal> introduced: objects
               that implements this interface are recognized as dates and can
               be locale-sensitively formatted. <emphasis>Date support is
               experimental in FreeMarker 2.1. It can change substantially in
@@ -25542,7 +25542,7 @@ ${obj.myMethod("foo")}</programlisting>
             <listitem>
               <para>The <literal>TemplateModelRoot</literal> interface was
               deprecated. As of FreeMarker 2.1, you can simply use any
-              instance of <literal>WrappedHash</literal> instead. This
+              instance of <literal>TemplateHashModel</literal> instead. This
               actually is due to a significant architectural change. Variables
               set or defined in a template are stored in a separate
               <literal>Environment</literal> object that only exists while the
@@ -25585,13 +25585,13 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>User-defined <literal>WrappedVariable</literal> objects now
+              <para>User-defined <literal>TemplateModel</literal> objects now
               can access the runtime environment (read and set variables, get
               the current locale, etc.) using an
               <literal>Environment</literal> instance, which can be obtained
               by the static
               <literal>Environment.getCurrentEnvironment()</literal> method.
-              As a result, <literal>WrappedString.getAsString</literal>
+              As a result, <literal>TemplateScalarModel.getAsString</literal>
               has been changed: it has no locale parameter.</para>
             </listitem>
 
@@ -25633,7 +25633,7 @@ ${obj.myMethod("foo")}</programlisting>
             </listitem>
 
             <listitem>
-              <para>Changes to <literal>freemarker.core.variables</literal>
+              <para>Changes to <literal>freemarker.ext.beans</literal>
               package: The JavaBeans adapter layer has suffered several major
               changes. First, <literal>BeansWrapper</literal> is no longer a
               static utility class - you can now create instances of it, and
@@ -25742,11 +25742,11 @@ ${obj.myMethod("foo")}</programlisting>
               constants have been moved from <literal>Constants</literal> to
               <literal>ObjectWrapper</literal>,
               <literal>EMPTY_STRING</literal> constant was moved to
-              <literal>WrappedString</literal>,
+              <literal>TemplateScalarModel</literal>,
               <literal>NOTHING</literal> constant was moved to
-              <literal>WrappedVariable</literal>, <literal>TRUE</literal> and
+              <literal>TemplateModel</literal>, <literal>TRUE</literal> and
               <literal>FALSE</literal> constants were moved to
-              <literal>WrappedBoolean</literal>.</para>
+              <literal>TemplateBooleanModel</literal>.</para>
             </listitem>
 
             <listitem>
@@ -25867,7 +25867,7 @@ ${obj.myMethod("foo")}</programlisting>
           <itemizedlist>
             <listitem>
               <para>The <literal>getAsString()</literal> method in the
-              <literal>WrappedString</literal> interface now takes a
+              <literal>TemplateScalarModel</literal> interface now takes a
               <literal>java.util.Locale</literal> as a parameter. For the most
               part, this is a hook for later use. In the default
               implementation, <literal>SimpleScalar</literal>, this parameter
@@ -26084,7 +26084,7 @@ ${obj.myMethod("foo")}</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>The <literal>WrappedSequence</literal> interface now
+              <para>The <literal>TemplateSequenceModel</literal> interface now
               has a <literal>size()</literal> method for getting the number of
               elements in the sequence in question.</para>
             </listitem>
@@ -26269,7 +26269,7 @@ ${obj.myMethod("foo")}</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>The <literal>WrappedNumber</literal> interface and
+              <para>The <literal>TemplateNumberModel</literal> interface and
               the <literal>SimpleNumber</literal> implementation were added to
               support exposing numerical values.</para>
             </listitem>
@@ -26279,7 +26279,7 @@ ${obj.myMethod("foo")}</programlisting>
               Classic had some design problems -- particularly in terms of
               supporting thread-safe code. It has been deprecated in favor of
               the following API's: <literal>TemplateCollectionModel</literal>
-              and <literal>WrappedSequence</literal>. The
+              and <literal>TemplateSequenceModel</literal>. The
               <literal>SimpleList</literal> class was refactored to implement
               the above interfaces (and paradoxically, does not implement the
               TemplateListModel interface.) Code that uses the deprecated
