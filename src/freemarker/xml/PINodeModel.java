@@ -4,7 +4,7 @@
 import org.w3c.dom.*;
 import freemarker.template.*;
 
-class PINodeModel extends NodeModel {
+class PINodeModel extends WrappedDomNode {
     
     public PINodeModel(ProcessingInstruction pi) {
         super(pi);

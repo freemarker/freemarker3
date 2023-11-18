@@ -9,7 +9,7 @@ import freemarker.core.Environment;
 import freemarker.core.variables.EvaluationException;
 import freemarker.core.variables.WrappedNode;
 
-class ElementModel extends NodeModel {
+class ElementModel extends WrappedDomNode {
     
     public ElementModel(Element element) {
         super(element);
@@ -35,7 +35,7 @@ class ElementModel extends NodeModel {
             NodeListModel ns = new NodeListModel(this);
             List<WrappedNode> children = getChildNodes();
             for (int i=0;i < children.size();i++) {
-                NodeModel child = (NodeModel) children.get(i);
+                WrappedDomNode child = (WrappedDomNode) children.get(i);
                 if (child.node.getNodeType() == Node.ELEMENT_NODE) {
                     ns.add(child);
                 }

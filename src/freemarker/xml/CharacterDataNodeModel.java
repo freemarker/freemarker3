@@ -2,7 +2,7 @@ package freemarker.xml;
 
 import org.w3c.dom.*;
 
-class CharacterDataNodeModel extends NodeModel {
+class CharacterDataNodeModel extends WrappedDomNode {
     
     public CharacterDataNodeModel(CharacterData text) {
         super(text);

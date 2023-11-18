@@ -227,7 +227,7 @@ public final class Environment extends Configurable implements Scope {
     /**
      * Visit a block using buffering/recovery
      */
-    public void render(TemplateElement attemptBlock, TemplateElement recoveryBlock) throws IOException {
+    public void render(Block attemptBlock, Block recoveryBlock) throws IOException {
         Writer prevOut = this.out;
         StringWriter sw = new StringWriter();
         this.out = sw;
@@ -876,43 +876,21 @@ public final class Environment extends Configurable implements Scope {
     }
 
     /**
-     * Sets a variable in the current namespace. This is correspondent to FTL
-     * <code><#assign <i>name</i>=<i>model</i>></code>. This can be
+     * Sets a variable in the current namespace. This corresponds to the
+     * legacy <code><#assign <i>name</i>=<i>model</i>></code>. This can be
      * considered a convenient shorthand for: getCurrentNamespace().put(name,
      * model)
      */
-    public void setVariable(String name, Object model) {
+    private void setVariable(String name, Object model) {
         getCurrentNamespace().put(name, model);
-    }
-
-    /**
-     * Sets a local variable (one effective only during a macro invocation).
-     * This is correspondent to FTL
-     * <code><#local <i>name</i>=<i>model</i>></code>.
-     * 
-     * @param name
-     *              the identifier of the variable
-     * @param model
-     *              the value of the variable.
-     * @throws IllegalStateException
-     *                               if the environment is not executing a macro
-     *                               body.
-     */
-    public void setLocalVariable(String name, Object model) {
-        if (currentMacroContext == null) {
-            throw new IllegalStateException("Not executing macro body");
-        }
-        currentMacroContext.put(name, model);
     }
 
     /**
      * Sets a variable in the most local scope available (corresponds to an
      * unqualified #set instruction)
      * 
-     * @param name
-     *              the identifier of the variable
-     * @param model
-     *              the value of the variable
+     * @param name the identifier of the variable
+     * @param model the value of the variable
      */
     public void unqualifiedSet(String name, Object model) {
         Scope scope = this.currentScope;
@@ -1081,14 +1059,7 @@ public final class Environment extends Configurable implements Scope {
         Macro result = null;
         int i;
         for (i = startIndex; i < nodeNamespaces.size(); i++) {
-            Scope ns = null;
-            try {
-                ns = nodeNamespaces.get(i);
-            } catch (ClassCastException cce) {
-                throw new InvalidReferenceException(
-                        "A using clause should contain a sequence of namespaces or strings that indicate the location of importable macro libraries.",
-                        this);
-            }
+            Scope ns = nodeNamespaces.get(i);
             result = getNodeProcessor(ns, nodeName, nsURI);
             if (result != null)
                 break;
@@ -1392,13 +1363,10 @@ public final class Environment extends Configurable implements Scope {
     }
 
     static public final Writer NULL_WRITER = new Writer() {
-        public void write(char cbuf[], int off, int len) {
-        }
+        public void write(char cbuf[], int off, int len) {}
+        
+        public void flush() {}
 
-        public void flush() {
-        }
-
-        public void close() {
-        }
+        public void close() {}
     };
 }

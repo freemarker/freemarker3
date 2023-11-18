@@ -4,7 +4,7 @@
 import org.w3c.dom.*;
 import freemarker.core.variables.*;
 
-class DocumentTypeModel extends NodeModel {
+class DocumentTypeModel extends WrappedDomNode {
     
     public DocumentTypeModel(DocumentType docType) {
         super(docType);

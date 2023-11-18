@@ -9,7 +9,7 @@ import static freemarker.xml.ElementModel.isXMLID;
  * the W3C DOM API.
  */
 
-class DocumentModel extends NodeModel {
+class DocumentModel extends WrappedDomNode {
     
     private ElementModel rootElement;
     
@@ -30,7 +30,7 @@ class DocumentModel extends NodeModel {
             return new NodeListModel(nl, this);
         }
         else if (isXMLID(key)) {
-            ElementModel em = (ElementModel) NodeModel.wrapNode(((Document) node).getDocumentElement());
+            ElementModel em = (ElementModel) WrappedDomNode.wrapNode(((Document) node).getDocumentElement());
             if (em.matchesName(key, Environment.getCurrentEnvironment())) {
                 return em;
             } else {

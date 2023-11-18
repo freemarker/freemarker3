@@ -100,7 +100,7 @@ INJECT IfBlock :
         for (ConditionalBlock cblock : childrenOfType(ConditionalBlock.class)) {
             Expression condition = cblock.getCondition();
             if (condition == null || condition.isTrue(env)) {
-                if (cblock.firstChildOfType(TemplateElement.class) != null) {
+                if (cblock.firstChildOfType(Block.class) != null) {
                     env.render(cblock);
                 }
                 return;
@@ -123,7 +123,7 @@ INJECT ConditionalBlock :
     }
     
     public void execute(Environment env) throws IOException {
-        env.render(firstChildOfType(TemplateElement.class));
+        env.render(firstChildOfType(Block.class));
     }
 
     public String getDescription() {
@@ -144,23 +144,21 @@ AttemptBlock :
             throw new ParseException(message, lastConsumedToken, parsingStack);
         }
    }
-   Block #RecoveryBlock(2)
+   Block 
    CloseDirectiveBlock(start)
 ;
 
 INJECT AttemptBlock :
     import java.io.IOException;
-    import java.util.*;
     import freemarker.core.Environment;
-    import freemarker.core.variables.*;
     implements TemplateElement
 {
-    public TemplateElement getAttemptBlock() {
-        return childrenOfType(TemplateElement.class).get(0);
+    public Block getAttemptBlock() {
+        return firstChildOfType(Block.class);
     }
     
-    public TemplateElement getRecoverBlock() {
-        return childrenOfType(TemplateElement.class).get(1);
+    public Block getRecoverBlock() {
+        return childrenOfType(Block.class).get(1);
     }
 
     public void execute(Environment env) throws IOException 
@@ -170,24 +168,6 @@ INJECT AttemptBlock :
 
     public String getDescription() {
         return "attempt block";
-    }
-}
-
-INJECT RecoveryBlock :
-    import java.io.IOException;
-    import freemarker.core.Environment;
-    import freemarker.core.variables.*;
-    implements TemplateElement
-{
-    public void execute(Environment env) throws IOException 
-    {
-    	if (firstChildOfType(TemplateElement.class) != null) {
-    		env.render(firstChildOfType(TemplateElement.class));
-    	}
-    }
-
-    public String getDescription() {
-        return "recover block";
     }
 }
 
@@ -1742,8 +1722,7 @@ INJECT Block :
     	return declaredVariables != null && !declaredVariables.isEmpty();
     }
  
-    public void execute(Environment env) throws IOException 
-    {
+    public void execute(Environment env) throws IOException {
         for (TemplateElement element : childrenOfType(TemplateElement.class)) {
             env.render(element);
         }
@@ -1766,7 +1745,7 @@ INJECT Block :
  * A production freemarker text that may contain
  * ${...} but no directives.
  */
-TemplateElement FreeMarkerText#Block :
+#FreeMarkerText#Block :
     (
         TextElement
         |

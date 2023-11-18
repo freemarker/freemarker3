@@ -5,7 +5,7 @@ import java.lang.reflect.Array;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.template.TemplateException;
-import freemarker.xml.NodeModel;
+import freemarker.xml.WrappedDomNode;
 
 public class Wrap {
     /**
@@ -147,7 +147,7 @@ public class Wrap {
     }
 
     /**
-     * Sets the default date type to use for date models that result from
+     * Sets the default date type to use for dates that result from
      * a plain <tt>java.util.Date</tt> instead of <tt>java.sql.Date</tt> or
      * <tt>java.sql.Time</tt> or <tt>java.sql.Timestamp</tt>. Default value is
      * {@link WrappedDate#UNKNOWN}.
@@ -167,13 +167,13 @@ public class Wrap {
             return JAVA_NULL;
         }
         if (object instanceof Date) {
-            return new DateModel((Date) object);
+            return new DateWrapper((Date) object);
         }
         if (object instanceof ResourceBundle) {
-            return new ResourceBundleModel((ResourceBundle) object);
+            return new ResourceBundleWrapper((ResourceBundle) object);
         }
         if (object instanceof org.w3c.dom.Node) {
-            return NodeModel.wrapNode((org.w3c.dom.Node)object);
+            return WrappedDomNode.wrapNode((org.w3c.dom.Node)object);
         }
         return object;
     }
@@ -194,28 +194,28 @@ public class Wrap {
         return object;
     }
 
-    static public Date getDate(WrappedDate model, Expression expr, Environment env)
+    static public Date getDate(WrappedDate wrappedDate, Expression expr, Environment env)
     {
-        Date value = model.getAsDate();
+        Date value = wrappedDate.getAsDate();
         if(value == null) {
             throw new TemplateException(expr + " evaluated to null date.", env);
         }
         return value;
     }
 
-    static public Number getNumber(Object model, Expression expr, Environment env)
+    static public Number getNumber(Object object, Expression expr, Environment env)
     {
-        if(model instanceof Number) {
-            return (Number) model;
+        if(object instanceof Number) {
+            return (Number) object;
         }
-        else if(model == null) {
+        else if(object == null) {
             throw new InvalidReferenceException(expr + " is undefined.", env);
         }
-        else if(model == JAVA_NULL) {
+        else if(object == JAVA_NULL) {
             throw new InvalidReferenceException(expr + " is null.", env);
         }
         else {
-            throw new TemplateException(expr + " is not a number, it is " + model.getClass().getName(), env);
+            throw new TemplateException(expr + " is not a number, it is " + object.getClass().getName(), env);
         }
     }
 

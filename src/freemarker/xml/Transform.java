@@ -68,7 +68,7 @@ public class Transform {
     void transform() throws Exception {
         String templateName = ftlFile.getName();
         Template template = cfg.getTemplate(templateName, locale);
-        NodeModel rootNode = NodeModel.parse(inputFile);
+        WrappedDomNode rootNode = WrappedDomNode.parse(inputFile);
         OutputStream outputStream = System.out;
         if (outputFile != null) {
             outputStream = new FileOutputStream(outputFile);

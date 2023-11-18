@@ -35,11 +35,11 @@ import static freemarker.core.variables.Wrap.unwrap;
  * @version $Id: ResourceBundleModel.java,v 1.22 2004/01/06 17:06:42 szegedia
  *          Exp $
  */
-public class ResourceBundleModel implements WrappedMethod, WrappedHash {
+public class ResourceBundleWrapper implements WrappedMethod, WrappedHash {
     private Hashtable<String, MessageFormat> formats = null;
     private ResourceBundle bundle;
 
-    public ResourceBundleModel(ResourceBundle bundle) {
+    public ResourceBundleWrapper(ResourceBundle bundle) {
         this.bundle = bundle;
     }
 

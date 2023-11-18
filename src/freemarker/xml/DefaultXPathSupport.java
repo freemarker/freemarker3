@@ -37,7 +37,7 @@ public class DefaultXPathSupport implements XPathSupport {
             NodeList nl = (NodeList) xp.evaluate(xpathQuery, context, XPathConstants.NODESET);
             if (nl.getLength() == 1){
                 Node n = nl.item(0);
-                return NodeModel.wrapNode(n);
+                return WrappedDomNode.wrapNode(n);
             }
             return new NodeListModel(nl, null);
         } catch (Exception e) {

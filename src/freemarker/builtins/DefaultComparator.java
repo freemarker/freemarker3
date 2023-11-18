@@ -5,11 +5,11 @@ import freemarker.core.Environment;
 
 import static freemarker.core.variables.Wrap.unwrap;
 
-public class ModelComparator
+public class DefaultComparator
 {
     private final ArithmeticEngine arithmeticEngine;
     
-    public ModelComparator(Environment env) {
+    public DefaultComparator(Environment env) {
         arithmeticEngine = env.getArithmeticEngine();
     }
     

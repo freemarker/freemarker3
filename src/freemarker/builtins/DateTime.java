@@ -32,7 +32,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
             }
             // unknown and datetime can be coerced into any date type
             if (dtype == WrappedDate.UNKNOWN || dtype == WrappedDate.DATETIME) {
-                return new DateModel(dmodel.getAsDate(), dateType);
+                return new DateWrapper(dmodel.getAsDate(), dateType);
             }
             throw new TemplateException(
                     "Cannot convert " + WrappedDate.TYPE_NAMES.get(dtype)
@@ -71,7 +71,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
         }
 
         public Object get(String pattern) {
-            return new DateModel(
+            return new DateWrapper(
                     parse(env.getDateFormatObject(dateType, pattern)),
                     dateType);
         }

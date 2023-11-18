@@ -4,7 +4,7 @@ import freemarker.core.Environment;
 
 import org.w3c.dom.*;
 
-class AttributeNodeModel extends NodeModel {
+class AttributeNodeModel extends WrappedDomNode {
     
     public AttributeNodeModel(Attr att) {
         super(att);

@@ -17,7 +17,7 @@ import java.util.List;
  */
 public interface WrappedDate extends WrappedVariable {
     /**
-     * It is not known whether the date model represents a time-only,
+     * It is not known whether the date object represents a time-only,
      * a date-only, or a datetime value.
      */
     public static final int UNKNOWN = 0;

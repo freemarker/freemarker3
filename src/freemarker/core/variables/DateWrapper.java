@@ -2,7 +2,7 @@ package freemarker.core.variables;
 
 import java.util.Date;
 
-public class DateModel implements WrappedDate
+public class DateWrapper implements WrappedDate
 {
     private int type;
     private Date date;
@@ -11,7 +11,7 @@ public class DateModel implements WrappedDate
      * Creates a new model that wraps the specified date object.
      * @param date the date object to wrap into a model.
      */
-    public DateModel(Date date)
+    public DateWrapper(Date date)
     {
         this.date = date;
         if(date instanceof java.sql.Date) {
@@ -28,7 +28,7 @@ public class DateModel implements WrappedDate
         }
     }
 
-    public DateModel(Date date, int type) {
+    public DateWrapper(Date date, int type) {
         this(date);
         this.type = type;
     }

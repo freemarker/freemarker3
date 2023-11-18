@@ -10,29 +10,29 @@ import static freemarker.xml.ElementModel.isXMLID;
 
 class NodeListModel implements WrappedSequence, WrappedHash {
 
-    NodeModel contextNode;
+    WrappedDomNode contextNode;
     XPathSupport xpathSupport;
     private List<Object> list = new ArrayList<>();
     
-    NodeListModel(NodeModel contextNode) {
+    NodeListModel(WrappedDomNode contextNode) {
         this.contextNode = contextNode;
     }
     
-    NodeListModel(NodeList nodeList, NodeModel contextNode) {
+    NodeListModel(NodeList nodeList, WrappedDomNode contextNode) {
         for (int i=0; i<nodeList.getLength();i++) {
             list.add(nodeList.item(i));
         }
         this.contextNode = contextNode;
     }
     
-    NodeListModel(NamedNodeMap nodeList, NodeModel contextNode) {
+    NodeListModel(NamedNodeMap nodeList, WrappedDomNode contextNode) {
         for (int i=0; i<nodeList.getLength();i++) {
             list.add(nodeList.item(i));
         }
         this.contextNode = contextNode;
     }
     
-    NodeListModel(List<Object> list, NodeModel contextNode) {
+    NodeListModel(List<Object> list, WrappedDomNode contextNode) {
         this.list = list;
         this.contextNode = contextNode;
     }
@@ -57,7 +57,7 @@ class NodeListModel implements WrappedSequence, WrappedHash {
         }
         Environment env = Environment.getCurrentEnvironment();
         for (int i = 0; i<size; i++) {
-            NodeModel nm = (NodeModel) get(i);
+            WrappedDomNode nm = (WrappedDomNode) get(i);
             if (nm instanceof ElementModel) {
                 if (((ElementModel) nm).matchesName(name, env)) {
                     result.add(nm);
@@ -73,7 +73,7 @@ class NodeListModel implements WrappedSequence, WrappedHash {
     
     public Object get(String key) {
         if (size() ==1) {
-            NodeModel nm = (NodeModel) get(0);
+            WrappedDomNode nm = (WrappedDomNode) get(0);
             return nm.get(key);
         }
         if (key.equals("@@markup") 
@@ -82,7 +82,7 @@ class NodeListModel implements WrappedSequence, WrappedHash {
         {
             StringBuilder result = new StringBuilder();
             for (int i=0; i<size(); i++) {
-                NodeModel nm = (NodeModel) get(i);
+                WrappedDomNode nm = (WrappedDomNode) get(i);
                 Object textModel = nm.get(key);
                 result.append(textModel.toString());
             }
@@ -94,7 +94,7 @@ class NodeListModel implements WrappedSequence, WrappedHash {
         {
             NodeListModel result = new NodeListModel(contextNode);
             for (int i=0; i<size(); i++) {
-                NodeModel nm = (NodeModel) get(i);
+                WrappedDomNode nm = (WrappedDomNode) get(i);
                 if (nm instanceof ElementModel) {
                     WrappedSequence tsm = (WrappedSequence) ((ElementModel) nm).get(key);
                     if(tsm != null) {
@@ -126,7 +126,7 @@ class NodeListModel implements WrappedSequence, WrappedHash {
         int size = size();
         ArrayList<Node> al = new ArrayList<>(size);
         for (int i=0; i<size; i++) {
-            al.add(((NodeModel) get(i)).node);
+            al.add(((WrappedDomNode) get(i)).node);
         }
         return al;
     }
@@ -137,7 +137,7 @@ class NodeListModel implements WrappedSequence, WrappedHash {
                 xpathSupport = contextNode.getXPathSupport();
             }
             else if (size() >0) {
-                xpathSupport = ((NodeModel) get(0)).getXPathSupport();
+                xpathSupport = ((WrappedDomNode) get(0)).getXPathSupport();
             }
         }
         return xpathSupport;

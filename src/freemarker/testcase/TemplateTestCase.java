@@ -119,7 +119,7 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("map", tmap);
             dataModel.put("objKey", objKey);
             dataModel.put("obj", new freemarker.testcase.models.BeanTestClass());
-            dataModel.put("resourceBundle", new ResourceBundleModel(ResourceBundle.getBundle("freemarker.testcase.models.BeansTestResources")));
+            dataModel.put("resourceBundle", new ResourceBundleWrapper(ResourceBundle.getBundle("freemarker.testcase.models.BeansTestResources")));
             dataModel.put("date", new GregorianCalendar(1974, 10, 14).getTime());
         }
 
@@ -145,8 +145,8 @@ public class TemplateTestCase extends TestCase {
         else if (testName.equals("dateformat")) {
             GregorianCalendar cal = new GregorianCalendar(2002, 10, 15, 14, 54, 13);
             cal.setTimeZone(TimeZone.getTimeZone("GMT"));
-            dataModel.put("date", new DateModel(cal.getTime(), WrappedDate.DATETIME));
-            dataModel.put("unknownDate", new DateModel(cal.getTime(), WrappedDate.UNKNOWN));
+            dataModel.put("date", new DateWrapper(cal.getTime(), WrappedDate.DATETIME));
+            dataModel.put("unknownDate", new DateWrapper(cal.getTime(), WrappedDate.UNKNOWN));
         }
 
         else if (testName.equals("number-literal")) {

@@ -34,7 +34,7 @@ import freemarker.core.variables.*;
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  * @version $Id: NodeModel.java,v 1.80 2005/06/22 11:33:31 ddekany Exp $
  */
-abstract public class NodeModel implements WrappedNode, WrappedHash, WrappedSequence {
+abstract public class WrappedDomNode implements WrappedNode, WrappedHash, WrappedSequence {
 
     static final Logger logger = Logger.getLogger("freemarker.dom");
 
@@ -68,14 +68,14 @@ abstract public class NodeModel implements WrappedNode, WrappedHash, WrappedSequ
      */
     final Node node;
     private NodeList children;
-    private NodeModel parent;
+    private WrappedDomNode parent;
 
     /**
      * Sets the DOM Parser implementation to be used when building NodeModel
      * objects from XML files.
      */
     static public void setDocumentBuilderFactory(DocumentBuilderFactory docBuilderFactory) {
-        NodeModel.docBuilderFactory = docBuilderFactory;
+        WrappedDomNode.docBuilderFactory = docBuilderFactory;
     }
 
     /**
@@ -95,7 +95,7 @@ abstract public class NodeModel implements WrappedNode, WrappedHash, WrappedSequ
      * sets the error handler to use when parsing the document.
      */
     static public void setErrorHandler(ErrorHandler errorHandler) {
-        NodeModel.errorHandler = errorHandler;
+        WrappedDomNode.errorHandler = errorHandler;
     }
 
     /**
@@ -108,7 +108,7 @@ abstract public class NodeModel implements WrappedNode, WrappedHash, WrappedSequ
      * @param removePIs      whether to remove all processing instruction nodes
      *                       (recursively from the tree before processing
      */
-    static public NodeModel parse(InputSource is, boolean removeComments, boolean removePIs)
+    static public WrappedDomNode parse(InputSource is, boolean removeComments, boolean removePIs)
             throws SAXException, IOException, ParserConfigurationException {
         DocumentBuilder builder = getDocumentBuilderFactory().newDocumentBuilder();
         if (errorHandler != null)
@@ -133,7 +133,7 @@ abstract public class NodeModel implements WrappedNode, WrappedHash, WrappedSequ
      * all comments and processing instruction nodes are
      * stripped from the tree.
      */
-    static public NodeModel parse(InputSource is)
+    static public WrappedDomNode parse(InputSource is)
             throws SAXException, IOException, ParserConfigurationException {
         return parse(is, true, true);
     }
@@ -146,7 +146,7 @@ abstract public class NodeModel implements WrappedNode, WrappedHash, WrappedSequ
      * @param removePIs      whether to remove all processing instruction nodes
      *                       (recursively from the tree before processing
      */
-    static public NodeModel parse(File f, boolean removeComments, boolean removePIs)
+    static public WrappedDomNode parse(File f, boolean removeComments, boolean removePIs)
             throws SAXException, IOException, ParserConfigurationException {
         DocumentBuilder builder = getDocumentBuilderFactory().newDocumentBuilder();
         if (errorHandler != null)
@@ -167,12 +167,12 @@ abstract public class NodeModel implements WrappedNode, WrappedHash, WrappedSequ
      * all comments and processing instruction nodes are
      * stripped from the tree.
      */
-    static public NodeModel parse(File f)
+    static public WrappedDomNode parse(File f)
             throws SAXException, IOException, ParserConfigurationException {
         return parse(f, true, true);
     }
 
-    protected NodeModel(Node node) {
+    protected WrappedDomNode(Node node) {
         this.node = node;
     }
 
@@ -325,14 +325,14 @@ abstract public class NodeModel implements WrappedNode, WrappedHash, WrappedSequ
         if (other == null)
             return false;
         return other.getClass() == this.getClass()
-                && ((NodeModel) other).node.equals(this.node);
+                && ((WrappedDomNode) other).node.equals(this.node);
     }
 
-    static public NodeModel wrapNode(Node node) {
+    static public WrappedDomNode wrapNode(Node node) {
         if (node == null) {
             return null;
         }
-        NodeModel result = null;
+        WrappedDomNode result = null;
         switch (node.getNodeType()) {
             case Node.DOCUMENT_NODE:
                 result = new DocumentModel((Document) node);
@@ -477,7 +477,7 @@ abstract public class NodeModel implements WrappedNode, WrappedHash, WrappedSequ
         }
     }
 
-    NodeModel getDocumentNodeModel() {
+    WrappedDomNode getDocumentNodeModel() {
         if (node instanceof Document) {
             return this;
         } else {

@@ -49,7 +49,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
                 throw new EvaluationException("Expecting exactly one argument for ?seq_contains(...)");
             }
             Object compareToThis = args.get(0);
-            final ModelComparator modelComparator = new ModelComparator(Environment.getCurrentEnvironment());
+            final DefaultComparator modelComparator = new DefaultComparator(Environment.getCurrentEnvironment());
             if (collection != null) {
                 Iterator<Object> tmi = collection.iterator();
                 while (tmi.hasNext()) {
