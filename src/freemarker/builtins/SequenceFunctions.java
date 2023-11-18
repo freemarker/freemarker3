@@ -519,7 +519,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             final DefaultComparator comparator = new DefaultComparator(env);
             if (reverse) {
                 for (int i = startIndex; i > -1; --i) {
-                    if (comparator.modelsEqual(sequence.get(i), compareToThis)) {
+                    if (comparator.areEqual(sequence.get(i), compareToThis)) {
                         return i; 
                     }
                 }
@@ -527,7 +527,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             else {
                 final int s = sequence.size();
                 for (int i = startIndex; i < s; ++i) {
-                    if (comparator.modelsEqual(sequence.get(i), compareToThis)) {
+                    if (comparator.areEqual(sequence.get(i), compareToThis)) {
                         return i;
                     }
                 }
