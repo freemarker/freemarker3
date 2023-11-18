@@ -668,7 +668,8 @@ INJECT BlockAssignment :
     		} else if (get(0).getType() == LOCALASSIGN) {
     			scope = env.getCurrentMacroContext();
     		} else if (get(0).getType() == GLOBALASSIGN) {
-    			scope = env.getGlobalNamespace();
+    			//scope = env.getGlobalNamespace();
+                scope=env;
     		} 
     	}
     	CaptureOutput filter = new CaptureOutput();

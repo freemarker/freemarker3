@@ -62,7 +62,8 @@ public class AssignmentInstruction extends TemplateNode implements TemplateEleme
     		} else if (get(0).getType() == LOCALASSIGN) {
     			scope = env.getCurrentMacroContext();
     		} else if (get(0).getType() == GLOBALASSIGN) {
-    			scope = env.getGlobalNamespace();
+    			//scope = env.getGlobalNamespace();
+                scope = env;
     		}
     	}
         for (Expression exp : childrenOfType(Expression.class)) {
