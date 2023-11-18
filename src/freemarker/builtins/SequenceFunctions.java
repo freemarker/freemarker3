@@ -516,7 +516,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             if (startIndex>=sequence.size()) startIndex = sequence.size()-1;
             if (startIndex<0) startIndex = 0;
             final Environment env = Environment.getCurrentEnvironment();
-            final ModelComparator comparator = new ModelComparator(env);
+            final DefaultComparator comparator = new DefaultComparator(env);
             if (reverse) {
                 for (int i = startIndex; i > -1; --i) {
                     if (comparator.modelsEqual(sequence.get(i), compareToThis)) {
