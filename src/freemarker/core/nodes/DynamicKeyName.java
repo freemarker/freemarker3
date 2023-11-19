@@ -4,7 +4,6 @@ import static freemarker.core.variables.Wrap.*;
 
 import freemarker.core.Environment;
 import freemarker.core.variables.*;
-import freemarker.core.variables.scope.Scope;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.RangeExpression;
 import freemarker.core.nodes.generated.TemplateNode;

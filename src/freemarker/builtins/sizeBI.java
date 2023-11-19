@@ -16,28 +16,25 @@ import java.util.Map;
 public class sizeBI extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public Object get(Environment env, BuiltInExpression caller,
-            Object model) 
-    {
-        int size = -1;
-        if (model instanceof Collection) {
-            size = ((Collection<?>)model).size();
+    @SuppressWarnings("rawtypes")
+    public Object get(Environment env, BuiltInExpression caller, Object value) {
+        if (value instanceof Collection) {
+            return ((Collection)value).size();
         }
-        else if (model instanceof Map) {
-            size = ((Map<?,?>) model).size();
+        else if (value instanceof Map) {
+            return ((Map) value).size();
         }
-        else if (model instanceof Sequence) {
-            size = ((Sequence) model).size();
+        else if (value instanceof Sequence) {
+            return ((Sequence) value).size();
         }
-        else if (model instanceof Hash) {
-            size = ((Hash) model).size();
+        else if (value instanceof Hash) {
+            return ((Hash) value).size();
         }
-        else if (model.getClass().isArray()) {
-            return Array.getLength(model);
+        else if (value.getClass().isArray()) {
+            return Array.getLength(value);
         }
         else {
-            throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "a sequence or extended hash");
+            throw TemplateNode.invalidTypeException(value, caller.getTarget(), env, "a sequence or extended hash");
         }
-        return size;
     }
 }

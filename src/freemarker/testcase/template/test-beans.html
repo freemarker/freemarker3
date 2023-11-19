@@ -7,7 +7,10 @@ ${array[1]}
 <#list list as item>
 ${item}
 </#list>
-#var list = ["list-0", "list-1"] 
+#var list = ["list-0", "list-1"]
+#assert list?instanceof("java.util.ArrayList")
+#assert 1?instanceof("java.math.BigDecimal")
+#assert 1?int?instanceof("java.lang.Integer")
 ${list?size}
 #exec list::add("list-2")
 #set list[0] = "list-0 modified"
@@ -27,7 +30,7 @@ ${obj::overloaded(1?int)}
 ${obj::overloaded("String")}
 ${obj::varArgs(1?int,2?int,3?int)}
 ${obj::varArgs(1?int,2?int)}
-${obj::varArgs(1?int)}
+${obj::varArgs(1)}#-- There is really no need for the cast, eh?
 ${obj::varArgs()}
 ${obj::moreSpecific("someString")}
 ${resourceBundle.message}

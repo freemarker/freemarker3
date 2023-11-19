@@ -4,6 +4,7 @@ import freemarker.core.ArithmeticEngine;
 import freemarker.core.Environment;
 
 import static freemarker.core.variables.Wrap.unwrap;
+import static freemarker.core.variables.Wrap.JAVA_NULL;;
 
 public class DefaultComparator
 {
@@ -15,6 +16,7 @@ public class DefaultComparator
     
     public boolean areEqual(Object left, Object right)
     {
+        if (left == JAVA_NULL || right == JAVA_NULL) return left == right;
         left = unwrap(left);
         right = unwrap(right);
         if(left instanceof Number && right instanceof Number) {

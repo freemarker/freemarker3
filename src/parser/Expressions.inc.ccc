@@ -1035,6 +1035,7 @@ import java.util.HashMap;
 //        knownBuiltins.put("seq_index_of", new SequenceFunctions.IndexOf());
 //        knownBuiltins.put("seq_last_index_of", new SequenceFunctions.LastIndexOf());
 //        knownBuiltins.put("if_exists", new ExistenceBuiltIn.IfExistsBuiltIn());
+        knownBuiltins.put("instanceof", new instanceofBI());
         knownBuiltins.put("exists", new ExistenceBuiltIn.ExistsBuiltIn());
         knownBuiltins.put("c", new cBI());
         knownBuiltins.put("size", new sizeBI());
