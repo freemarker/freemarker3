@@ -4,17 +4,13 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * List values in a template data model whose elements are accessed by the 
- * index operator should implement this interface. In addition to
- * accessing elements by index and querying size using the <code>?size</code>
- * built-in, objects that implement this interface can be iterated in 
- * <code>&lt;#foreach ...></code> and <code>&lt;#list ...></code> directives. The 
- * iteration is implemented by calling the {@link #get(int)} method 
- * repeatedly starting from zero and going to <tt>{@link #size()} - 1</tt>.
- * @author Attila Szegedi, szegedia at users dot sourceforge dot net
- * @version $Id: WrappedSequence.java,v 1.10 2004/11/27 14:49:57 ddekany Exp $
+ * An interface you can implement to indicate that an object can 
+ * be treated as a list. Not only can you iterate over it, but you
+ * can get get the elements using an integer index. 
+ * In FreeMarker 3, the normal usage is just to use regular 
+ * Java objects from the standard class library, i.e. java.util.List
  */
-public interface WrappedSequence extends WrappedVariable, Iterable<Object> {
+public interface Sequence extends Iterable<Object> {
 
     /**
      * Retrieves the i-th template model in this sequence.

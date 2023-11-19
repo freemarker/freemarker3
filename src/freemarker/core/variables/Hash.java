@@ -5,7 +5,7 @@ package freemarker.core.variables;
  * are FreeMarker data objects that contain other objects through key-value 
  * mappings.
  */
-public interface WrappedHash extends WrappedVariable {
+public interface Hash {
     
     /**
      * Gets a variable from the hash.
