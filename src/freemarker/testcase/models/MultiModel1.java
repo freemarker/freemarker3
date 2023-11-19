@@ -12,11 +12,11 @@ import java.util.Map;
  *
  * @version $Id: MultiModel1.java,v 1.17 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel1 implements WrappedHash, WrappedSequence {
+public class MultiModel1 implements Hash, Sequence {
 
-    private WrappedVariable m_cSubModel = new MultiModel2();
-    private WrappedVariable m_cListHashModel1 = new MultiModel4();
-    private WrappedVariable m_cListHashModel2 = new MultiModel5();
+    private Object m_cSubModel = new MultiModel2();
+    private Object m_cListHashModel1 = new MultiModel4();
+    private Object m_cListHashModel2 = new MultiModel5();
     private List<Object> m_cListModel = new ArrayList<>();
     private Map<String,Object> m_cHashModel = new HashMap<>();
 

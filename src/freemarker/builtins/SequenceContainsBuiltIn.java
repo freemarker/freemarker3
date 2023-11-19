@@ -8,7 +8,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.EvaluationException;
 import freemarker.core.variables.WrappedMethod;
-import freemarker.core.variables.WrappedSequence;
+import freemarker.core.variables.Sequence;
 
 /**
  * @author Attila Szegedi
@@ -20,7 +20,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
             Object model) 
     {
-        if (!(model instanceof WrappedSequence || model instanceof Iterable)) {
+        if (!(model instanceof Sequence || model instanceof Iterable)) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "sequence or collection");
         }
         
@@ -28,15 +28,15 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
     }
 
     static class SequenceContainsFunction implements WrappedMethod {
-        final WrappedSequence sequence;
+        final Sequence sequence;
         final Iterable<Object> collection;
         SequenceContainsFunction(Object seqModel) {
             if (seqModel instanceof Iterable) {
                 collection = (Iterable<Object>) seqModel;
                 sequence = null;
             }
-            else if (seqModel instanceof WrappedSequence) {
-                sequence = (WrappedSequence) seqModel;
+            else if (seqModel instanceof Sequence) {
+                sequence = (Sequence) seqModel;
                 collection = null;
             }
             else {

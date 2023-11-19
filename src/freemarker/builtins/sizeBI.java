@@ -3,8 +3,8 @@ package freemarker.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.variables.WrappedHash;
-import freemarker.core.variables.WrappedSequence;
+import freemarker.core.variables.Hash;
+import freemarker.core.variables.Sequence;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -26,11 +26,11 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
         else if (model instanceof Map) {
             size = ((Map<?,?>) model).size();
         }
-        else if (model instanceof WrappedSequence) {
-            size = ((WrappedSequence) model).size();
+        else if (model instanceof Sequence) {
+            size = ((Sequence) model).size();
         }
-        else if (model instanceof WrappedHash) {
-            size = ((WrappedHash) model).size();
+        else if (model instanceof Hash) {
+            size = ((Hash) model).size();
         }
         else if (model.getClass().isArray()) {
             return Array.getLength(model);

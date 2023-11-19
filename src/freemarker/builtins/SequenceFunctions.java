@@ -128,7 +128,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ChunkedSequence implements WrappedSequence {
+    static class ChunkedSequence implements Sequence {
 
         private final List wrappedTsm;
 
@@ -157,7 +157,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 return null;
             }
 
-            return new WrappedSequence() {
+            return new Sequence() {
 
                 private final int baseIndex = chunkIndex * chunkSize;
 
@@ -206,7 +206,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 keys = null;
             } else {
                 for (i = 0; i < keyCnt; i++) {
-                    if (!(item instanceof WrappedHash)) {
+                    if (!(item instanceof Hash)) {
                         throw new EvaluationException(
                                 "sorting failed: "
                                 + (i == 0 ? "You can't use ?sort_by when the "
@@ -221,7 +221,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                                             + " subvariable."));
                     }
 
-                    item = ((WrappedHash) item).get(keys[i]);
+                    item = ((Hash) item).get(keys[i]);
                     if (item == null) {
                         throw new EvaluationException(
                                 "sorting failed: "
@@ -308,9 +308,9 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 Object key = item;
                 for (int j = 0; j < keyCnt; j++) {
                     try {
-                        key = ((WrappedHash) key).get(keys[j]);
+                        key = ((Hash) key).get(keys[j]);
                     } catch (ClassCastException e) {
-                        if (!(key instanceof WrappedHash)) {
+                        if (!(key instanceof Hash)) {
                             throw new EvaluationException(
                                     "sorting failed: " 
                                     + "Problem with the sequence item at index "
@@ -458,8 +458,8 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             Object obj = params.get(0);
             if (isString(obj)) {
                 subvars = new String[]{asString(obj)};
-            } else if (obj instanceof WrappedSequence) {
-                WrappedSequence seq = (WrappedSequence) obj;
+            } else if (obj instanceof Sequence) {
+                Sequence seq = (Sequence) obj;
                 int ln = seq.size();
                 subvars = new String[ln];
                 for (int i = 0; i < ln; i++) {

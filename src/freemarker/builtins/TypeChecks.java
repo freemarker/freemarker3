@@ -43,10 +43,10 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = isBoolean(value);
 		}
 		else if (builtInName == "is_hash") {
-			result = value instanceof WrappedHash;
+			result = value instanceof Hash;
 		}
 		else if (builtInName == "is_hash_ex") {
-			result = value instanceof WrappedHash;
+			result = value instanceof Hash;
 		}
 		else if (builtInName == "is_method") {
 			result = value instanceof WrappedMethod;

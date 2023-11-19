@@ -88,8 +88,8 @@ INJECT Expression :
         if (referent.getClass().isArray()) {
             return Array.getLength(referent) > 0;
         }
-        if (referent instanceof WrappedSequence) {
-            return ((WrappedSequence)referent).size() > 0;
+        if (referent instanceof Sequence) {
+            return ((Sequence)referent).size() > 0;
         }
         return referent.toString().length() > 0;
     }
@@ -245,8 +245,8 @@ INJECT DotVariable :
         if (lhs instanceof Map) {
             return wrap(((Map) lhs).get(getKey()));
         }
-        if (lhs instanceof WrappedHash) {
-            return wrap(((WrappedHash) lhs).get(getKey()));
+        if (lhs instanceof Hash) {
+            return wrap(((Hash) lhs).get(getKey()));
         }
         if (lhs instanceof Scope) {
             return wrap(((Scope) lhs).get(getKey()));
@@ -929,7 +929,7 @@ INJECT BuiltinVariable :
         return this;
     }
 
-    static class VarsHash implements WrappedHash {
+    static class VarsHash implements Hash {
         
         private final Environment env;
         

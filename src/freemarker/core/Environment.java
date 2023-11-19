@@ -555,7 +555,7 @@ public final class Environment extends Configurable implements Scope {
     }
 
     /*
-     * Note that altough it is not allowed to set this setting with the
+     * Note that although it is not allowed to set this setting with the
      * <tt>setting</tt>
      * directive, it still must be allowed to set it from Java code while the
      * template executes, since some frameworks allow templates to actually
@@ -997,8 +997,8 @@ public final class Environment extends Configurable implements Scope {
      * of the root hash passed to the <code>Template.process(...)</code>, and
      * the shared variables in the <code>Configuration</code>.
      */
-    public WrappedHash getDataModel() {
-        final WrappedHash result = new WrappedHash() {
+    public Hash getDataModel() {
+        final Hash result = new Hash() {
             public boolean isEmpty() {
                 return false;
             }

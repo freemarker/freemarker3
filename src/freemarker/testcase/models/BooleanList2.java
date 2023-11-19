@@ -1,6 +1,6 @@
 package freemarker.testcase.models;
 
-import freemarker.core.variables.WrappedSequence;
+import freemarker.core.variables.Sequence;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * @author  <a href="mailto:run2000@users.sourceforge.net">Nicholas Cull</a>
  * @version $Id: BooleanList2.java,v 1.12 2003/01/12 23:40:25 revusky Exp $
  */
-public class BooleanList2 implements WrappedSequence {
+public class BooleanList2 implements Sequence {
 
     private List<Object>  cList = new ArrayList<>();
 

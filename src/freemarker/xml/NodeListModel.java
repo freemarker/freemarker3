@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 import static freemarker.xml.ElementModel.isXMLID;
 
-class NodeListModel implements WrappedSequence, WrappedHash {
+class NodeListModel implements Sequence, Hash {
 
     WrappedDomNode contextNode;
     XPathSupport xpathSupport;
@@ -96,7 +96,7 @@ class NodeListModel implements WrappedSequence, WrappedHash {
             for (int i=0; i<size(); i++) {
                 WrappedDomNode nm = (WrappedDomNode) get(i);
                 if (nm instanceof ElementModel) {
-                    WrappedSequence tsm = (WrappedSequence) ((ElementModel) nm).get(key);
+                    Sequence tsm = (Sequence) ((ElementModel) nm).get(key);
                     if(tsm != null) {
                         int size = tsm.size();
                         for (int j=0; j < size; j++) {

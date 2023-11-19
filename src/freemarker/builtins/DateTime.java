@@ -43,7 +43,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class DateParser implements WrappedDate, WrappedMethod, WrappedHash {
+    static class DateParser implements WrappedDate, WrappedMethod, Hash {
         private final String text;
         private final Environment env;
         private final DateFormat defaultFormat;

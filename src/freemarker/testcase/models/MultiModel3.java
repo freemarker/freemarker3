@@ -7,7 +7,7 @@ import freemarker.core.variables.*;
  *
  * @version $Id: MultiModel3.java,v 1.14 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel3 implements WrappedHash {
+public class MultiModel3 implements Hash {
 
     /**
      * Returns the scalar's value as a String.

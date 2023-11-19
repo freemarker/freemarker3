@@ -247,11 +247,11 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
 
     static class RegexMatchModel 
-    implements WrappedBoolean, WrappedSequence {
+    implements Truthy, Sequence {
         Matcher matcher;
         String input;
         final boolean matches;
-        WrappedSequence groups;
+        Sequence groups;
         private ArrayList<Object> data;
 
         RegexMatchModel(Matcher matcher, String input) {
@@ -284,7 +284,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
         public Object getGroups() {
             if (groups == null) {
-                groups = new WrappedSequence() {
+                groups = new Sequence() {
                     public int size() {
                         try {
                             return matcher.groupCount() + 1;

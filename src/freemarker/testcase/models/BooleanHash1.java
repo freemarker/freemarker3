@@ -8,7 +8,7 @@ import freemarker.core.variables.*;
  * @author  <a href="mailto:run2000@users.sourceforge.net">Nicholas Cull</a>
  * @version $Id: BooleanHash1.java,v 1.15 2004/01/06 17:06:44 szegedia Exp $
  */
-public class BooleanHash1 implements WrappedHash {
+public class BooleanHash1 implements Hash {
 
     /**
      * Gets a <tt>WrappedVariable</tt> from the hash.

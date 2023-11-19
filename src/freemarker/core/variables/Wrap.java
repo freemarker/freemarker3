@@ -16,7 +16,7 @@ public class Wrap {
      * behaviors in your templates. 
      * @deprecated Try not to use this.
      */
-    public static final WrappedVariable NOTHING = GeneralPurposeNothing.getInstance();
+    public static final Object NOTHING = GeneralPurposeNothing.getInstance();
 
     /**
      * A singleton value used to represent a java null
@@ -41,7 +41,7 @@ public class Wrap {
     }
 
     public static boolean isList(Object obj) {
-        if (obj instanceof WrappedSequence) {
+        if (obj instanceof Sequence) {
             return true;
         }
         if (obj.getClass().isArray()) {
@@ -51,8 +51,8 @@ public class Wrap {
     }
 
     public static List<?> asList(Object obj) {
-        if (obj instanceof WrappedSequence) {
-            WrappedSequence tsm = (WrappedSequence) obj;
+        if (obj instanceof Sequence) {
+            Sequence tsm = (Sequence) obj;
             List<Object> result = new ArrayList<>();
             for (int i = 0; i < tsm.size(); i++)
                 result.add(tsm.get(i));
@@ -103,7 +103,7 @@ public class Wrap {
     }
 
     public static boolean isBoolean(Object obj) {
-        if (obj instanceof WrappedBoolean) {
+        if (obj instanceof Truthy) {
             return true;
         }
         if (obj instanceof WrappedVariable) {
@@ -113,8 +113,8 @@ public class Wrap {
     }
 
     public static boolean asBoolean(Object obj) {
-        if (obj instanceof WrappedBoolean) {
-            return ((WrappedBoolean) obj).getAsBoolean();
+        if (obj instanceof Truthy) {
+            return ((Truthy) obj).getAsBoolean();
         }
         return (Boolean) obj;
     }

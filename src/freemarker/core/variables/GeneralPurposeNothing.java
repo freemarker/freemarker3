@@ -11,14 +11,14 @@ import java.util.Collections;
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  */
 
-final class GeneralPurposeNothing implements WrappedBoolean, WrappedSequence, WrappedHash, WrappedMethod {
+final class GeneralPurposeNothing implements Truthy, Sequence, Hash, WrappedMethod {
 
-    private static final WrappedVariable instance = new GeneralPurposeNothing();
+    private static final Object instance = new GeneralPurposeNothing();
       
     private GeneralPurposeNothing() {
     }
 
-    static WrappedVariable getInstance()  {
+    static Object getInstance()  {
         return instance;
     }
 

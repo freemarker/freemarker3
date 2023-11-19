@@ -47,8 +47,8 @@ public class DynamicKeyName extends TemplateNode implements Expression {
     }
 
     private Object dealWithNumericalKey(Object target, int index, Environment env) {
-        if (target instanceof WrappedSequence) {
-            WrappedSequence tsm = (WrappedSequence) target;
+        if (target instanceof Sequence) {
+            Sequence tsm = (Sequence) target;
             int size = Integer.MAX_VALUE;
             try {
                 size = tsm.size();
@@ -75,8 +75,8 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         if (lhs instanceof Map) {
             return wrap(((Map) lhs).get(key));
         }
-        if (lhs instanceof WrappedHash) {
-            return wrap(((WrappedHash) lhs).get(key));
+        if (lhs instanceof Hash) {
+            return wrap(((Hash) lhs).get(key));
         }
         if (lhs instanceof Scope) {
             return wrap(((Scope) lhs).get(key));

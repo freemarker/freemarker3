@@ -8,7 +8,7 @@ import java.util.*;
 import freemarker.cache.*;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
-import freemarker.core.variables.WrappedHash;
+import freemarker.core.variables.Hash;
 import freemarker.core.variables.WrappedVariable;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
@@ -407,7 +407,7 @@ public class Configuration extends Configurable {
      * @see #setSharedVariable(String,Object)
      * @see #setSharedVariable(String,WrappedVariable)
      */
-    public void setAllSharedVariables(WrappedHash hash) {
+    public void setAllSharedVariables(Hash hash) {
         Iterator<?> keys = hash.keys().iterator();
         Iterator<?> values = hash.values().iterator();
         while(keys.hasNext())

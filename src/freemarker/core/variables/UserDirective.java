@@ -13,9 +13,8 @@ import freemarker.core.Environment;
  *
  * @since 2.3.11
  * @author Attila Szegedi
- * @version $Id: $
  */
-public interface UserDirective extends WrappedVariable
+public interface UserDirective
 {
     /**
      * Executes this user-defined directive; called by FreeMarker when the user-defined

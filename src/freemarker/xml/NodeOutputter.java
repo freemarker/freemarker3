@@ -1,7 +1,6 @@
 
  package freemarker.xml;
 
-import freemarker.template.utility.StringUtil;
 import freemarker.template.Template;
 import freemarker.core.Environment;
 

@@ -259,8 +259,8 @@ public class ReflectionCode {
             if (object instanceof Boolean) {
                 return (Boolean) object;
             }
-            if (object instanceof WrappedBoolean) {
-                return ((WrappedBoolean) object).getAsBoolean();
+            if (object instanceof Truthy) {
+                return ((Truthy) object).getAsBoolean();
             }
             return CAN_NOT_UNWRAP;
         }

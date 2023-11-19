@@ -272,7 +272,7 @@ public class TemplateTestCase extends TestCase {
         }
     }
     
-    static class TestBoolean implements WrappedBoolean {
+    static class TestBoolean implements Truthy {
         public boolean getAsBoolean() {
             return true;
         }
