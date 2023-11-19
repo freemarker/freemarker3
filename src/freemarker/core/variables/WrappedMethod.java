@@ -11,7 +11,7 @@ import java.util.List;
  * interface.
  * @version $Id: WrappedMethod.java,v 1.11 2003/09/22 23:56:54 revusky Exp $
  */
-public interface WrappedMethod {//extends WrappedVariable {
+public interface WrappedMethod {
 
     /**
      * Executes a method call. 

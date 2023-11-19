@@ -31,13 +31,13 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
     public abstract Object apply(Object obj);
 
     public static final class DefaultBuiltIn extends ExistenceBuiltIn {
-        public Object apply(final Object model) {
-            if(model == null || model == JAVA_NULL) {
+        public Object apply(final Object value) {
+            if(value == null || value == JAVA_NULL) {
                 return FirstDefined.INSTANCE;
             }
             return new WrappedMethod() {
-                public Object exec(List arguments) {
-                    return model;
+                public Object exec(List<Object> arguments) {
+                    return value;
                 }
             };
         }
@@ -56,21 +56,18 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
     };
         
     public static class HasContentBuiltIn extends ExistenceBuiltIn {
-        public Object apply(final Object model) {
-            if (model == null || model == JAVA_NULL || model == NOTHING) return false;
-            if (isIterable(model)) {
-                return asIterator(model).hasNext();
+        public Object apply(final Object value) {
+            if (value == null || value == JAVA_NULL || value == NOTHING) return false;
+            if (isIterable(value)) {
+                return asIterator(value).hasNext();
             }
-            if (model instanceof Map) {
-                return !((Map<?,?>) model).isEmpty();
+            if (value instanceof Map) {
+                return !((Map<?,?>) value).isEmpty();
             }
-            if (model instanceof Hash) {
-                return !((Hash)model).isEmpty();
+            if (value instanceof Hash) {
+                return !((Hash)value).isEmpty();
             }
-            if (isString(model)) {
-                return asString(model).length() > 0;
-            }
-            return true;
+            return value.toString().length() > 0;
         }
     };
 

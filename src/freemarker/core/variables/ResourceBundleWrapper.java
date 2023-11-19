@@ -51,7 +51,7 @@ public class ResourceBundleWrapper implements WrappedMethod, Hash {
         if (arguments.size() < 1)
             throw new EvaluationException("No message key was specified");
         // Read it
-        Iterator<Object> it = arguments.iterator();
+        Iterator it = arguments.iterator();
         String key = asString(it.next());
         try {
             if (!it.hasNext()) {

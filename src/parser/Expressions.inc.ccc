@@ -225,6 +225,7 @@ INJECT DotVariable :
     import freemarker.core.variables.*;
     import freemarker.core.variables.scope.Scope;
     import static freemarker.core.variables.Wrap.wrap;
+    import static freemarker.core.variables.Wrap.JAVA_NULL;
     implements Expression
 {
     public Expression getTarget() {
@@ -243,13 +244,15 @@ INJECT DotVariable :
         Object lhs = getTarget().evaluate(env);
         assertNonNull(lhs, env);
         if (lhs instanceof Map) {
-            return wrap(((Map) lhs).get(getKey()));
+            Object key = getKey();
+            Object value = ((Map)lhs).get(key);
+            if (value == null) {
+                return ((Map)lhs).containsKey(key) ? JAVA_NULL : null;
+            } 
+            return wrap(value);
         }
         if (lhs instanceof Hash) {
             return wrap(((Hash) lhs).get(getKey()));
-        }
-        if (lhs instanceof Scope) {
-            return wrap(((Scope) lhs).get(getKey()));
         }
         return ReflectionCode.getProperty(lhs, getKey(), getTemplate().legacySyntax());
     }

@@ -1,16 +1,16 @@
 package freemarker.core.variables;
 
 /**
- * Hashes in a data model must implement this interface. Hashes
- * are FreeMarker data objects that contain other objects through key-value 
- * mappings.
+ * An interface used to indicate show that the object represents a set of 
+ * key-value mappings. In FreeMarker 3, one will mostly just use Java API objects
+ * that implement java.util.Map. 
  */
 public interface Hash {
     
     /**
      * Gets a variable from the hash.
      *
-     * @param key the name by which the <tt>WrappedVariable</tt>
+     * @param key the name by which the value
      * is identified in the template.
      * @return the value referred to by the key,
      * or null if not found.

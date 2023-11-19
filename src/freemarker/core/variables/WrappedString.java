@@ -1,6 +1,13 @@
 package freemarker.core.variables;
 
-public interface WrappedString extends WrappedVariable, CharSequence {
+/**
+ * This evolved from FreeMarker 2.x's TemplateScalarModel 
+ * and is really not used any more. You can implement this 
+ * interface if you want to override * how an object is 
+ * interpreted in a string context (the default being to 
+ * call Object.toString()). 
+ */
+public interface WrappedString extends CharSequence, WrappedVariable {
 
     default String getAsString() {
         return toString();  

@@ -27,7 +27,11 @@ public class Wrap {
      */
     public static final Object JAVA_NULL = new JavaNull(); 
     
-    static private class JavaNull {}
+    static private class JavaNull implements WrappedVariable {
+        public Object getWrappedObject() {
+            return null;
+        }
+    }
 
     private static int defaultDateType = WrappedDate.UNKNOWN;
 
