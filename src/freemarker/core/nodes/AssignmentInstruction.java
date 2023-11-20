@@ -46,7 +46,7 @@ public class AssignmentInstruction extends TemplateNode implements TemplateEleme
         return null;
     }
 
-    public void execute(Environment env) throws TemplateException, IOException {
+    public void execute(Environment env) throws IOException {
     	Map<String,Object> scope = null;
         Expression namespaceExp = getNamespaceExp();
     	if (namespaceExp != null) {

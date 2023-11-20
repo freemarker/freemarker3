@@ -36,7 +36,7 @@ INJECT Interpolation :
     /**
      * Outputs the string value of the enclosed expression.
      */
-    public void execute(Environment env) throws TemplateException, IOException {
+    public void execute(Environment env) throws IOException {
         Expression exp = getEscapedExpression();
         env.getOut().write(exp.getStringValue(env));
     }
@@ -1315,7 +1315,7 @@ INJECT EscapeBlock :
         this.add(nestedBlock);
     }
 
-    public void execute(Environment env) throws TemplateException, IOException {
+    public void execute(Environment env) throws IOException {
         if (firstChildOfType(TemplateElement.class) != null) {
             env.render(firstChildOfType(TemplateElement.class));
         }

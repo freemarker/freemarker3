@@ -274,9 +274,7 @@ public class Template extends Configurable {
     * @return the {@link freemarker.core.Environment Environment} object created for processing
     * @throws TemplateException if an exception occurs while setting up the Environment object.
     */
-    public Environment createProcessingEnvironment(Map<String,Object> rootMap, Writer out)
-    throws TemplateException
-    {
+    public Environment createProcessingEnvironment(Map<String,Object> rootMap, Writer out) {
         return new Environment(this, rootMap, out);
     }
 

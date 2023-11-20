@@ -156,7 +156,7 @@ public final class Environment extends Configurable implements Scope {
     /**
      * Processes the template to which this environment belongs.
      */
-    public void process() throws TemplateException, IOException {
+    public void process() throws IOException {
         Environment savedEnv = threadEnv.get();
         threadEnv.set(this);
         try {
@@ -196,7 +196,7 @@ public final class Environment extends Configurable implements Scope {
 
     private static final Object[] NO_OUT_ARGS = new Object[0];
 
-    public void render(Block block, UserDirective directiveModel, Map<String, Object> args, final List<String> bodyParameterNames) throws IOException {
+    public void render(Block block, UserDirective directive, Map<String, Object> args, final List<String> bodyParameterNames) throws IOException {
         UserDirectiveBody nested = null;
         if (block != null) {
             nested = newOut -> {
@@ -218,7 +218,7 @@ public final class Environment extends Configurable implements Scope {
             currentScope = new NamedParameterListScope(scope, bodyParameterNames, Arrays.asList(outArgs), true);
         }
         try {
-            directiveModel.execute(this, args, outArgs, nested);
+            directive.execute(this, args, outArgs, nested);
         } finally {
             this.currentScope = scope;
         }
@@ -399,8 +399,7 @@ public final class Environment extends Configurable implements Scope {
         }
     }
 
-    public <T> T runInScope(Scope scope, TemplateRunnable<T> runnable)
-            throws TemplateException, IOException {
+    public <T> T runInScope(Scope scope, TemplateRunnable<T> runnable) throws IOException {
         Scope currentScope = this.currentScope;
         this.currentScope = scope;
         try {
@@ -479,8 +478,7 @@ public final class Environment extends Configurable implements Scope {
         return macroContextLookup.get(macro);
     }
 
-    public void process(WrappedNode node, List<Scope> namespaces)
-            throws TemplateException, IOException {
+    public void process(WrappedNode node, List<Scope> namespaces) throws IOException {
         if (node == null) {
             node = this.getCurrentVisitorNode();
             if (node == null) {

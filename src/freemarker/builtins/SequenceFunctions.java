@@ -38,7 +38,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         return apply(model);
     }
     
-    public abstract Object apply(Object model) throws TemplateException;
+    public abstract Object apply(Object model);
     
     public static class First extends SequenceFunctions {
         @Override

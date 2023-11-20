@@ -26,12 +26,12 @@ public abstract class ArithmeticEngine {
      */
     public static final ConservativeEngine CONSERVATIVE_ENGINE = new ConservativeEngine();
 
-    public abstract int compareNumbers(Number first, Number second) throws TemplateException;
-    public abstract Number add(Number first, Number second) throws TemplateException;
-    public abstract Number subtract(Number first, Number second) throws TemplateException;
-    public abstract Number multiply(Number first, Number second) throws TemplateException;
-    public abstract Number divide(Number first, Number second) throws TemplateException;
-    public abstract Number modulus(Number first, Number second) throws TemplateException;
+    public abstract int compareNumbers(Number first, Number second);
+    public abstract Number add(Number first, Number second);
+    public abstract Number subtract(Number first, Number second);
+    public abstract Number multiply(Number first, Number second);
+    public abstract Number divide(Number first, Number second);
+    public abstract Number modulus(Number first, Number second);
     public abstract Number toNumber(String s);
 
     protected int minScale = 12;

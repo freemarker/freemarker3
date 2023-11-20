@@ -11,9 +11,7 @@ import static freemarker.core.variables.Wrap.*;
 public class numberBI extends ExpressionEvaluatingBuiltIn
 {
     @Override
-    public Object get(Environment env, BuiltInExpression caller,
-            Object value) throws TemplateException
-    {
+    public Object get(Environment env, BuiltInExpression caller, Object value) {
         if(value instanceof Number) {
             return value;
         }

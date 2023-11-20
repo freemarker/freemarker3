@@ -57,15 +57,15 @@ INJECT Expression :
         return clone;
     }
 
-    default void assertNonNull(Object model, Environment env) {
-        assertIsDefined(model, env);
-        if (model == JAVA_NULL) {
+    default void assertNonNull(Object value, Environment env) {
+        assertIsDefined(value, env);
+        if (value == JAVA_NULL) {
             throw new InvalidReferenceException("Expression " + this + " is null " + getLocation() + ".", env);
         }
     }
 
-    default void assertIsDefined(Object model, Environment env) {
-        if (model == null) {
+    default void assertIsDefined(Object value, Environment env) {
+        if (value == null) {
             throw new InvalidReferenceException("Expression " + this + " is undefined " + getLocation() + ".", env);
         }
     }
@@ -474,12 +474,11 @@ INJECT MultiplicativeExpression :
         return (TokenType) get(1).getType();
     }
 
-    public Object evaluate(Environment env) throws TemplateException 
-    {
-        Object leftModel = getLeft().evaluate(env);
-        Object rightModel = getRight().evaluate(env);
-        boolean leftIsNumber = leftModel instanceof Number;
-        boolean rightIsNumber = rightModel instanceof Number;
+    public Object evaluate(Environment env) {
+        Object leftSide = getLeft().evaluate(env);
+        Object rightSide = getRight().evaluate(env);
+        boolean leftIsNumber = leftSide instanceof Number;
+        boolean rightIsNumber = rightSide instanceof Number;
         boolean bothNumbers = leftIsNumber && rightIsNumber;
         if (!bothNumbers) {
             String msg = "Error " + getLocation();
@@ -491,8 +490,8 @@ INJECT MultiplicativeExpression :
             }
             throw new TemplateException(msg, env);
         }
-        Number first = getNumber(leftModel, getLeft(), env);
-        Number second = getNumber(rightModel, getRight(), env);
+        Number first = getNumber(leftSide, getLeft(), env);
+        Number second = getNumber(rightSide, getRight(), env);
         ArithmeticEngine ae = 
             env != null 
                 ? env.getArithmeticEngine()

@@ -15,6 +15,5 @@ public abstract class ExpressionEvaluatingBuiltIn extends BuiltIn {
         return get(env, caller, caller.getTarget().evaluate(env));
     }
     
-    public abstract Object get(Environment env, BuiltInExpression caller, 
-            Object model);
+    public abstract Object get(Environment env, BuiltInExpression caller, Object lhs);
 }

@@ -22,7 +22,7 @@ public class DynamicKeyName extends TemplateNode implements Expression {
         return (Expression) get(0);
     }
 
-    public Object evaluate(Environment env) throws TemplateException {
+    public Object evaluate(Environment env) {
         Object lhs = getTarget().evaluate(env);
         getTarget().assertNonNull(lhs, env);
         if (getNameExpression() instanceof RangeExpression) {

@@ -16,14 +16,13 @@ import java.util.Map;
 public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public Object get(Environment env, BuiltInExpression caller,
-            Object model) 
+    public Object get(Environment env, BuiltInExpression caller, Object lhs) 
     {
-        if (!(model instanceof Hash) && !isMap(model)) {
-            throw TemplateNode.invalidTypeException(model, 
+        if (!(lhs instanceof Hash) && !isMap(lhs)) {
+            throw TemplateNode.invalidTypeException(lhs, 
                     caller.getTarget(), env, "hash");
         }
-        return apply(unwrap(model));
+        return apply(unwrap(lhs));
     }
     
     public abstract Iterable apply(Object hash); 

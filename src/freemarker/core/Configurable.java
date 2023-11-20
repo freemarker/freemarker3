@@ -525,14 +525,13 @@ abstract public class Configurable {
      * @throws IOException       if an error occurred when reading from the input
      *                           stream.
      */
-    public void setSettings(InputStream propsIn) throws TemplateException, IOException {
+    public void setSettings(InputStream propsIn) throws IOException {
         Properties p = new Properties();
         p.load(propsIn);
         setSettings(p);
     }
 
-    protected void doAutoImportsAndIncludes(Environment env)
-            throws TemplateException, IOException {
+    protected void doAutoImportsAndIncludes(Environment env) throws IOException {
         if (fallback != null)
             fallback.doAutoImportsAndIncludes(env);
     }

@@ -16,11 +16,10 @@ import static freemarker.core.variables.Wrap.isString;
 public abstract class StringTransformations extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public Object get(Environment env, BuiltInExpression caller,
-            Object model) {
+    public Object get(Environment env, BuiltInExpression caller, Object lhs) {
         String string = null;
-        if (isString(model)) {
-            string = asString(model);
+        if (isString(lhs)) {
+            string = asString(lhs);
         }
         else {
             string = caller.getTarget().getStringValue(env);

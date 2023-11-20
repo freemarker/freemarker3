@@ -616,9 +616,7 @@ public class Configuration extends Configurable {
     }
     
     @Override
-    protected void doAutoImportsAndIncludes(Environment env)
-    throws TemplateException, IOException
-    {
+    protected void doAutoImportsAndIncludes(Environment env) throws IOException {
     	for (String namespace : autoImports) {
             String templateName = autoImportMap.get(namespace);
             env.importLib(templateName, namespace);
