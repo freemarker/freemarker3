@@ -11,7 +11,7 @@ import freemarker.core.Environment;
 import freemarker.core.ArithmeticEngine;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.variables.*;;
+import freemarker.core.variables.*;
 import freemarker.template.TemplateException;
 import freemarker.template.utility.StringUtil;
 
