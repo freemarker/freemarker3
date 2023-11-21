@@ -15,10 +15,6 @@ class ElementModel extends WrappedDomNode {
         super(element);
     }
     
-    public boolean isEmpty() {
-        return false;
-    }
-    
     /**
      * An Element node supports various hash keys.
      * Any key that corresponds to the tag name of any child elements

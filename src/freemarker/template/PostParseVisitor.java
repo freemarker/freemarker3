@@ -52,6 +52,16 @@ class PostParseVisitor extends Node.Visitor {
 					boolean strictVariableDeclaration = !header.getBooleanParameter("legacy_syntax");
 					template.setStrictVariableDeclaration(strictVariableDeclaration);
 				}
+				else if (key.equals("nsPrefixes")) {
+					Object obj = header.getParameter("nsPrefixes");
+					if (obj instanceof Map) {
+						Map map = (Map) obj;
+						for (Object prefix : map.keySet()) {
+							Object value = map.get(prefix);
+							template.addPrefixNSMapping(key.toString(), value.toString());
+						}
+					}
+				}
 				else if (!key.equals("encoding")) {
 					ParsingProblem problem  = new ParsingProblem("Unknown ftl header parameter: " + entry.getKey(), header);
 					template.addParsingProblem(problem);

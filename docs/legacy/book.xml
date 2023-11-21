@@ -18708,7 +18708,7 @@ or
                 <para>Easier to read, more terse syntax. For example:
                 <literal>[#if x]...[/#if]</literal> instead of
                 <literal>&lt;c:if
-                test="${x}"&gt;...&lt;/c:if&gt;</literaltemplate></para>
+                test="${x}"&gt;...&lt;/c:if&gt;</literal>template</para>
               </listitem>
 
               <listitem>

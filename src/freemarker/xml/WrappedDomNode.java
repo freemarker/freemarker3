@@ -180,6 +180,7 @@ abstract public class WrappedDomNode implements WrappedNode, Hash, Sequence {
      * @return the underlying W3C DOM Node object that this WrappedNode
      *         is wrapping.
      */
+    @Override
     public Node getWrappedObject() {
         return node;
     }

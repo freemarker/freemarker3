@@ -291,6 +291,7 @@ public class Configuration extends Configurable {
         if (result.hasParsingProblems() && !tolerateParsingProblems) {
             for (ParsingProblem pp : result.getParsingProblems()) {
                 logger.error(pp.getMessage());
+                //System.err.println(pp.getMessage());
             }
             throw new ParseException(result.getParsingProblems());
         } else {
@@ -391,29 +392,6 @@ public class Configuration extends Configurable {
      */
     public Set<String> getSharedVariableNames() {
         return new HashSet<String>(variables.keySet());
-    }
-    
-    /**
-     * Adds all object in the hash as shared variable to the configuration.
-     *
-     * <p>Never use <tt>WrappedVariable</tt> implementation that is not thread-safe for shared variables,
-     * if the configuration is used by multiple threads! It is the typical situation for Servlet based Web sites.
-     *
-     * @param hash a hash model whose objects will be copied to the
-     * configuration with same names as they are given in the hash.
-     * If a shared variable with these names already exist, it will be replaced
-     * with those from the map.
-     *
-     * @see #setSharedVariable(String,Object)
-     * @see #setSharedVariable(String,WrappedVariable)
-     */
-    public void setAllSharedVariables(Hash hash) {
-        Iterator<?> keys = hash.keys().iterator();
-        Iterator<?> values = hash.values().iterator();
-        while(keys.hasNext())
-        {
-            setSharedVariable(asString(keys.next()), values.next());
-        }
     }
     
     /**
