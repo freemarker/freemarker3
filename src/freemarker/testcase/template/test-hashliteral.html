@@ -14,14 +14,19 @@
 <p>Now perform a hash assignment:</p>
 
   #set mymessage = "hello", foo = "bar", one = "1"
-  #set test = {"test1" : "test23", "test45" : message, mymessage : "hello all", foo : one}
+  #set test = {"test1" : "test23", "in" : message, mymessage : "hello all", foo : one}
+
+#list test as key,value
+   ${key_index+1}. Key is "${key}". Value is: ${value}.
+/#list
+
   #set test1 = "NOT test23!" in test
   #set (test["bar"]) = "foobar" #-- Some superfluous parentheses
 test["bar"] is ${test.bar}
-#exec test::put("test45", "NOT " + test.test45)
+#exec test::put("in", "NOT " + test.in)
 
 ${test.test1}
-${test.test45}
+${test.in}
 ${test.hello}
 ${test.bar}
 
@@ -30,7 +35,7 @@ ${test.bar}
     #set mymessage = "world"
 
 ${test.test1}
-${test.test45}
+${test.in}
 ${test.hello}
 
 ${test.bar}
@@ -38,10 +43,10 @@ ${test.bar}
 <p>Now reassign the list and repeat:</p>
 
 #set hash = {"temp" : "Temporary"}
-#set (test) = {"test1" : "test23", "test45" : message, mymessage : "hello all", foo : one, "hash" : hash["temp"], "true" : hash.temp, "newhash" : hash}
+#set (test) = {"test1" : "test23", "in" : message, mymessage : "hello all", foo : one, "hash" : hash["temp"], "true" : hash.temp, "newhash" : hash}
 
 ${test.test1}
-${test.test45}
+${test.in}
 ${test.hello!}
 
 ${test.bar}
