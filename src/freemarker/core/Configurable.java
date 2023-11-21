@@ -57,6 +57,11 @@ abstract public class Configurable {
     private String urlEscapingCharset;
     private boolean urlEscapingCharsetSet;
 
+    public enum OutputFormat {
+        RAW, HTML, XML, RTF
+    }
+
+
     public Configurable() {
         fallback = null;
         locale = Locale.getDefault();
@@ -95,6 +100,20 @@ abstract public class Configurable {
         templateExceptionHandler = null;
         properties = new Properties(fallback.properties);
     }
+
+    private OutputFormat outputFormat = OutputFormat.RAW;
+
+    public void setOutputFormat(OutputFormat outputFormat) {
+        this.outputFormat = outputFormat;
+    }
+
+    public OutputFormat getOutputFormat() {
+        return this.outputFormat;
+    }
+    
+
+
+
 
     /**
      * Returns the fallback <tt>Configurable</tt> object of this object.

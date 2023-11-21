@@ -8,7 +8,6 @@ import java.util.*;
 import freemarker.cache.*;
 import freemarker.core.Configurable;
 import freemarker.core.Environment;
-import freemarker.core.variables.Hash;
 import freemarker.core.variables.WrappedVariable;
 import freemarker.core.parser.ParseException;
 import freemarker.core.parser.ParsingProblem;
@@ -52,14 +51,13 @@ public class Configuration extends Configurable {
     private ArrayList<String> autoIncludes = new ArrayList<String>();
     private String defaultEncoding = "UTF-8";
     private boolean tolerateParsingProblems = false;
-
     public Configuration() {
         cache = new TemplateCache();
         cache.setConfiguration(this);
         cache.setDelay(5000);
         loadBuiltInSharedVariables();
     }
-    
+
     public void setTemplateCache(TemplateCache cache) {
     	this.cache = cache;
     	cache.setConfiguration(this);
