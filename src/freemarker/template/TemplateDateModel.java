@@ -1,9 +1,11 @@
-package freemarker.core.variables;
+package freemarker.template;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import freemarker.core.variables.WrappedVariable;
 
 /**
  * Date values in a template data model should implement this interface.

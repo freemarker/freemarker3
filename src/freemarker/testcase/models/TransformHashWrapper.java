@@ -1,10 +1,9 @@
 package freemarker.testcase.models;
 
-import freemarker.core.variables.TemplateHashModel;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import freemarker.template.TemplateHashModel;
 import freemarker.template.utility.*;
 
 /**

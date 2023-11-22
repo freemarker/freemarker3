@@ -207,6 +207,7 @@ INJECT IteratorBlock :
     import freemarker.core.variables.*;
     import freemarker.core.variables.scope.BlockScope;
     import freemarker.core.variables.scope.LoopContext;
+    import freemarker.template.TemplateHashModel;
     import static freemarker.core.variables.Wrap.isIterable;
     import static freemarker.core.variables.Wrap.asIterator;
     implements TemplateElement

@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.core.variables.*;
+import freemarker.template.TemplateHashModel;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.

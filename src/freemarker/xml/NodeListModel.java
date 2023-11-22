@@ -1,6 +1,7 @@
 package freemarker.xml;
 
 import freemarker.core.variables.*;
+import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.core.Environment;
 

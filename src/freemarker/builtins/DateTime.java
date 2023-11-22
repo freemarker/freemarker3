@@ -7,7 +7,9 @@ import java.util.List;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.variables.*;
+import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateHashModel;
 
 /**
  * Implementations of builtins for standard functions

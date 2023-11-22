@@ -4,6 +4,8 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.variables.*;
+import freemarker.template.TemplateDateModel;
+import freemarker.template.TemplateHashModel;
 
 import static freemarker.core.variables.Wrap.*;
 

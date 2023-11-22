@@ -3,7 +3,7 @@ package freemarker.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.variables.TemplateHashModel;
+import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateSequenceModel;
 
 import java.lang.reflect.Array;

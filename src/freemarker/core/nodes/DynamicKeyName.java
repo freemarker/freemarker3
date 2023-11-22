@@ -8,6 +8,7 @@ import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.RangeExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateSequenceModel;
 
 import java.util.Map;

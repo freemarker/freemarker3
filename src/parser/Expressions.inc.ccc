@@ -13,6 +13,7 @@ INJECT Expression :
    import freemarker.core.Environment;
    import freemarker.core.variables.InvalidReferenceException;
    import freemarker.template.TemplateException;
+   import freemarker.template.TemplateDateModel;
    import freemarker.template.TemplateSequenceModel;
    import java.lang.reflect.Array;
    import static freemarker.core.variables.Wrap.*;
@@ -225,6 +226,7 @@ INJECT DotVariable :
     import freemarker.core.Environment;
     import freemarker.core.variables.*;
     import freemarker.core.variables.scope.Scope;
+    import freemarker.template.TemplateHashModel;
     import static freemarker.core.variables.Wrap.wrap;
     import static freemarker.core.variables.Wrap.JAVA_NULL;
     implements Expression
@@ -893,6 +895,7 @@ INJECT BuiltinVariable :
     import freemarker.core.parser.ParseException;
     import freemarker.template.Configuration;
     import freemarker.template.TemplateException;
+    import freemarker.template.TemplateHashModel;
     implements Expression
 {
     private String name;
@@ -1021,11 +1024,11 @@ INJECT ExistsExpression :
 }
 
 INJECT BuiltInExpression :
-import java.util.HashMap;
-
+    import java.util.HashMap;
     import freemarker.core.Environment;
     import freemarker.builtins.*;
-    import freemarker.core.variables.TemplateDateModel;
+    import freemarker.template.TemplateDateModel;
+    import freemarker.template.TemplateHashModel;
     implements Expression;
 {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();

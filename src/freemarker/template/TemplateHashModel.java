@@ -1,4 +1,6 @@
-package freemarker.core.variables;
+package freemarker.template;
+
+import freemarker.core.variables.EvaluationException;
 
 /**
  * An interface used to indicate show that the object represents a set of 

@@ -1,4 +1,4 @@
-package freemarker.core.variables;
+package freemarker.template;
 
 /**
  * Objects that will be interpreted as true/false in the appropriate

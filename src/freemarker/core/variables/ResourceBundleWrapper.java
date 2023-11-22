@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import freemarker.template.TemplateHashModel;
+
 import static freemarker.core.variables.Wrap.asString;
 import static freemarker.core.variables.Wrap.wrap;
 import static freemarker.core.variables.Wrap.unwrap;

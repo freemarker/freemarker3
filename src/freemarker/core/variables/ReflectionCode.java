@@ -6,6 +6,10 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import freemarker.template.TemplateBooleanModel;
+import freemarker.template.TemplateDateModel;
+
 import java.util.Date;
 import java.lang.reflect.Array;
 import static freemarker.core.variables.Wrap.*;

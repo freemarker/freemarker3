@@ -4,7 +4,10 @@ import java.util.*;
 import java.lang.reflect.Array;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.Expression;
+import freemarker.template.TemplateBooleanModel;
+import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateException;
+import freemarker.template.TemplateScalarModel;
 import freemarker.template.TemplateSequenceModel;
 import freemarker.xml.WrappedDomNode;
 

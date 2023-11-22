@@ -1,4 +1,6 @@
-package freemarker.core.variables;
+package freemarker.template;
+
+import freemarker.core.variables.WrappedVariable;
 
 /**
  * This evolved from FreeMarker 2.x's TemplateScalarModel 

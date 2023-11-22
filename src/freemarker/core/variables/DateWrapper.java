@@ -2,6 +2,8 @@ package freemarker.core.variables;
 
 import java.util.Date;
 
+import freemarker.template.TemplateDateModel;
+
 public class DateWrapper implements TemplateDateModel
 {
     private int type;

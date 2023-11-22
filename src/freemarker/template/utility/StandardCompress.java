@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.Map;
 
 import freemarker.core.variables.*;
+import freemarker.template.TemplateBooleanModel;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 

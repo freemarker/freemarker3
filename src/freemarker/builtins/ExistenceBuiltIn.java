@@ -6,9 +6,9 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.ParentheticalExpression;
-import freemarker.core.variables.TemplateHashModel;
 import freemarker.core.variables.Callable;
 import freemarker.core.variables.InvalidReferenceException;
+import freemarker.template.TemplateHashModel;
 
 import static freemarker.core.variables.Wrap.*;
 

@@ -2,6 +2,8 @@ package freemarker.core.variables;
 
 import java.util.List;
 
+import freemarker.template.TemplateBooleanModel;
+import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateSequenceModel;
 
 import java.util.Collections;
