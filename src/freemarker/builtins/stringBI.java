@@ -39,7 +39,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     }
 	
 	
-    static class BooleanFormatter implements Callable  
+    static class BooleanFormatter implements VarArgsFunction  
     {
         private final Object bool;
         private final Environment env;
@@ -57,7 +57,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public Object call(Object... arguments)
+        public Object apply(Object... arguments)
                 {
             if (arguments.length != 2) {
                 throw new EvaluationException(
@@ -69,7 +69,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     }
     
     
-    static class DateFormatter implements TemplateHashModel, Callable {
+    static class DateFormatter implements TemplateHashModel, VarArgsFunction {
         private final Date date;
         private final int dateType;
         private final Environment env;
@@ -94,7 +94,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             return env.getDateFormatObject(dateType, key).format(date);
         }
         
-        public Object call(Object... arguments)
+        public Object apply(Object... arguments)
             {
             if (arguments.length != 1) {
                 throw new EvaluationException(
@@ -109,7 +109,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
     }
     
-    static class NumberFormatter implements TemplateHashModel, Callable {
+    static class NumberFormatter implements TemplateHashModel, VarArgsFunction {
         private final Number number;
         private final Environment env;
         private final NumberFormat defaultFormat;
@@ -136,7 +136,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
         
         @Parameters("format")
-        public Object call(Object... arguments) {
+        public Object apply(Object... arguments) {
             if (arguments.length != 1) {
                 throw new EvaluationException(
                         "number?string(...) requires exactly 1 argument.");

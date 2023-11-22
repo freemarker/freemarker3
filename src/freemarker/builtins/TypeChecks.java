@@ -51,7 +51,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = value instanceof TemplateHashModel;
 		}
 		else if (builtInName == "is_method") {
-			result = value instanceof Callable;
+			result = value instanceof VarArgsFunction;
 		}
 		else if (builtInName == "is_node") {
 			result = value instanceof WrappedNode;

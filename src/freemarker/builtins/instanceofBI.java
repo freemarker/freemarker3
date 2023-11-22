@@ -3,7 +3,7 @@ package freemarker.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.variables.EvaluationException;
-import freemarker.core.variables.Callable;
+import freemarker.core.variables.VarArgsFunction;
 
 /**
  * Implementation of ?instanceof built-in 
@@ -11,7 +11,7 @@ import freemarker.core.variables.Callable;
 public class instanceofBI extends ExpressionEvaluatingBuiltIn {
     
     @Override
-    public Callable get(Environment env, BuiltInExpression caller, Object object) {
+    public VarArgsFunction get(Environment env, BuiltInExpression caller, Object object) {
         return args -> {
             if (args.length != 1) {
                 throw new EvaluationException("Expecting exactly one argument here");

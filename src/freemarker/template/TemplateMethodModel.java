@@ -14,13 +14,13 @@ package freemarker.template;
 import java.util.Arrays;
 import java.util.List;
 
-import freemarker.core.variables.Callable;
+import freemarker.core.variables.VarArgsFunction;
 
-public interface TemplateMethodModel extends Callable<Object> {
+public interface TemplateMethodModel extends VarArgsFunction<Object> {
 
     public Object exec(List<Object> arguments);
 
-    default Object call(Object... arguments) {
+    default Object apply(Object... arguments) {
         return exec(Arrays.asList(arguments));
     }
 }

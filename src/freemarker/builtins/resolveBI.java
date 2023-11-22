@@ -6,7 +6,7 @@ import freemarker.core.variables.scope.Scope;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.core.variables.Callable;
+import freemarker.core.variables.VarArgsFunction;
 //import freemarker.core.variables.WrappedMethod;
 import freemarker.template.TemplateException;
 
@@ -17,7 +17,7 @@ import freemarker.template.TemplateException;
 public class resolveBI extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public Callable get(Environment env, BuiltInExpression caller, Object lhs) 
+    public VarArgsFunction get(Environment env, BuiltInExpression caller, Object lhs) 
     {
         if (!(lhs instanceof Scope)) {
             throw new TemplateException("Expecting scope on left of ?resolve built-in", env);

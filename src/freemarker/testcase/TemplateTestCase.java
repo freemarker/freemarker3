@@ -283,8 +283,8 @@ public class TemplateTestCase extends TestCase {
     }
     
     @Parameters("foo")    
-    static class TestMethod implements Callable<String> {
-        public String call(Object... arguments) {
+    static class TestMethod implements VarArgsFunction<String> {
+        public String apply(Object... arguments) {
             return "Parameter foo is: " + arguments[0];
         }
     }

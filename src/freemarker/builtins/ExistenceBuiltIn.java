@@ -6,7 +6,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.ParentheticalExpression;
-import freemarker.core.variables.Callable;
+import freemarker.core.variables.VarArgsFunction;
 import freemarker.core.variables.InvalidReferenceException;
 import freemarker.template.TemplateHashModel;
 
@@ -34,8 +34,8 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
             if(value == null || value == JAVA_NULL) {
                 return FirstDefined.INSTANCE;
             }
-            return new Callable() {
-                public Object call(Object... arguments) {
+            return new VarArgsFunction() {
+                public Object apply(Object... arguments) {
                     return value;
                 }
             };
@@ -76,9 +76,9 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
         }
     };
 
-    private static class FirstDefined implements Callable {
+    private static class FirstDefined implements VarArgsFunction {
         static final FirstDefined INSTANCE = new FirstDefined();
-        public Object call(Object... args) {
+        public Object apply(Object... args) {
             for (Object arg : args) {
                 if (arg != null && arg != JAVA_NULL) {
                     return arg;

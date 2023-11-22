@@ -7,7 +7,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
-import freemarker.core.variables.Callable;
+import freemarker.core.variables.VarArgsFunction;
 
 /**
  * @author Attila Szegedi
@@ -26,7 +26,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
         return new SequenceContainsFunction(model);
     }
 
-    static class SequenceContainsFunction implements Callable {
+    static class SequenceContainsFunction implements VarArgsFunction {
         final TemplateSequenceModel sequence;
         final Iterable<Object> collection;
         SequenceContainsFunction(Object seqModel) {
@@ -43,7 +43,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public Boolean call(Object... args) {
+        public Boolean apply(Object... args) {
             if (args.length != 1) {
                 throw new EvaluationException("Expecting exactly one argument for ?seq_contains(...)");
             }

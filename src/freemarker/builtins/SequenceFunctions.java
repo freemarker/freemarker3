@@ -105,7 +105,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ChunkFunction implements Callable {
+    static class ChunkFunction implements VarArgsFunction {
 
         private final List tsm;
 
@@ -113,7 +113,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.tsm = tsm;
         }
         
-        public Object call(Object... args) {
+        public Object apply(Object... args) {
             int numArgs = args.length;
             if (numArgs != 1 && numArgs != 2) {
                 throw new EvaluationException(
@@ -443,14 +443,14 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SortByMethod implements Callable {
+    static class SortByMethod implements VarArgsFunction {
         List seq;
 
         SortByMethod(List seq) {
             this.seq = seq;
         }
 
-        public Object call(Object... params)
+        public Object apply(Object... params)
         {
             if (params.length == 0) {
                 throw new EvaluationException(
@@ -488,7 +488,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SequenceIndexOf implements Callable {
+    static class SequenceIndexOf implements VarArgsFunction {
 
         private final List sequence;
         private final boolean reverse;
@@ -498,7 +498,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.reverse = reverse;
         }
 
-        public Object call(Object... args) {
+        public Object apply(Object... args) {
             final int argc = args.length;
             int startIndex;
             if (argc != 1 && argc != 2) {

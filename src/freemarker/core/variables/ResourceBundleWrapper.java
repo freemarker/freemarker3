@@ -35,7 +35,7 @@ import static freemarker.core.variables.Wrap.unwrap;
  * 
  * @author Attila Szegedi
  */
-public class ResourceBundleWrapper implements Callable, TemplateHashModel {
+public class ResourceBundleWrapper implements VarArgsFunction, TemplateHashModel {
     private Hashtable<String, MessageFormat> formats = null;
     private ResourceBundle bundle;
 
@@ -48,7 +48,7 @@ public class ResourceBundleWrapper implements Callable, TemplateHashModel {
      * with this key, then applies a MessageFormat.format on the string with the
      * rest of the arguments. The created MessageFormats are cached for later reuse.
      */
-    public Object call(Object... arguments) throws EvaluationException {
+    public Object apply(Object... arguments) throws EvaluationException {
         // Must have at least one argument - the key
         if (arguments.length < 1)
             throw new EvaluationException("No message key was specified");

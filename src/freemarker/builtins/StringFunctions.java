@@ -192,14 +192,14 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ReplaceMethod implements Callable<String> {
+    static class ReplaceMethod implements VarArgsFunction<String> {
         String string;
 
         ReplaceMethod(String string) {
             this.string = string;
         }
 
-        public String call(Object... args) {
+        public String apply(Object... args) {
             if (args.length < 2 || args.length >3 ) {
                 throw new EvaluationException(
                 "?replace(...) needs 2 or 3 arguments.");
@@ -222,7 +222,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class MatcherBuilder implements Callable<Object> {
+    static class MatcherBuilder implements VarArgsFunction<Object> {
 
         String matchString;
 
@@ -230,7 +230,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.matchString = matchString;
         }
 
-        public Object call(Object... args) {
+        public Object apply(Object... args) {
             int numArgs = args.length;
             if (numArgs == 0) {
                 throw new EvaluationException("Expecting at least one argument");
@@ -341,14 +341,14 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class LeftPadMethod implements Callable<String> {
+    static class LeftPadMethod implements VarArgsFunction<String> {
         private String string;
 
         LeftPadMethod(String s) {
             this.string = s;
         }
 
-        public String call(Object... args) {
+        public String apply(Object... args) {
             int ln  = args.length;
             if (ln == 0) {
                 throw new EvaluationException(
@@ -393,14 +393,14 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }        
     }
 
-    static class RightPadMethod implements Callable<String> {
+    static class RightPadMethod implements VarArgsFunction<String> {
         private String string;
 
         private RightPadMethod(String string) {
             this.string = string;
         }
 
-        public String call(Object... args) {
+        public String apply(Object... args) {
             int ln  = args.length;
             if (ln == 0) {
                 throw new EvaluationException(
@@ -445,7 +445,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
     }
 
-    static class urlBIResult implements Callable {
+    static class urlBIResult implements VarArgsFunction {
 
         private final String target;
         private final Environment env;
@@ -481,7 +481,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return cachedResult;
         }
 
-        public Object call(Object... args) {
+        public Object apply(Object... args) {
             if (args.length != 1) {
                 throw new EvaluationException("The \"url\" built-in "
                         + "needs exactly 1 parameter, the charset.");
@@ -495,7 +495,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class IndexOfMethod implements Callable {
+    static class IndexOfMethod implements VarArgsFunction {
         private final String s;
         private final boolean reverse;
 
@@ -508,7 +508,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return "?" + (reverse ? "last_" : "") + "index_of";
         }
         
-        public Object call(Object... args) {
+        public Object apply(Object... args) {
             Object obj;
             String sub;
             int fidx;
@@ -550,14 +550,14 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ContainsMethod implements Callable<Boolean> {
+    static class ContainsMethod implements VarArgsFunction<Boolean> {
         private String s;
 
         private ContainsMethod(String s) {
             this.s = s;
         }
 
-        public Boolean call(Object... args) {
+        public Boolean apply(Object... args) {
             int ln  = args.length;
             if (ln != 1) {
                 throw new EvaluationException(

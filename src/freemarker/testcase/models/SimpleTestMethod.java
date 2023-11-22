@@ -1,10 +1,10 @@
 package freemarker.testcase.models;
 
-import freemarker.core.variables.Callable;
+import freemarker.core.variables.VarArgsFunction;
 
-public class SimpleTestMethod implements Callable {
+public class SimpleTestMethod implements VarArgsFunction {
 
-    public Object call(Object... arguments) {
+    public Object apply(Object... arguments) {
         if( arguments.length == 0 ) {
             return "Empty list provided";
         } else if( arguments.length > 1 ) {

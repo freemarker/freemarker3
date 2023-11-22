@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 import static freemarker.core.variables.ReflectionCode.*;
 
-public class JavaMethodCall implements Callable<Object> {
+public class JavaMethodCall implements VarArgsFunction<Object> {
 
     private String methodName;
     private Object target;
@@ -56,7 +56,7 @@ public class JavaMethodCall implements Callable<Object> {
      * Call the apropriate Java method using the params
      * passed in
      */
-    public Object call(Object... params) {
+    public Object apply(Object... params) {
         if (isInvalidMethodName()) throw new EvaluationException("No such method " + methodName + " in class: " + target.getClass());
         if (!isMethodOverloaded())  {
             // If there is only one method of this name, just try to

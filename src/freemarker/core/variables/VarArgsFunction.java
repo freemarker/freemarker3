@@ -6,7 +6,7 @@ package freemarker.core.variables;
  * so it can actually be used in conjunction with lambdas and
  * method references. For example:
  * Foo myMethod(Object... args) {...}
- * dataModel.put("myMethod", (Callable<Foo>) this::myMethod);
+ * dataModel.put("myMethod", (VarArgsFunction<Foo>) this::myMethod);
  * You can also use a few of the functional interfaces defined 
  * in the core Java class libraries, notably: 
  * java.util.function.Function,
@@ -14,6 +14,6 @@ package freemarker.core.variables;
  * and java.util.function.Supplier
  */
 @FunctionalInterface
-public interface Callable<T> {
-   T call(Object... args);
+public interface VarArgsFunction<T> {
+   T apply(Object... args);
 }

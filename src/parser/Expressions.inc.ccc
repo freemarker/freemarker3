@@ -1194,8 +1194,8 @@ INJECT MethodCall :
     
     public Object evaluate(Environment env) {
         Object value = getTarget().evaluate(env);
-        if (value instanceof Callable) {
-            Callable targetMethod = (Callable)value;
+        if (value instanceof VarArgsFunction) {
+            VarArgsFunction targetMethod = (VarArgsFunction)value;
             ArgsList args = getArgs();
             List<Object> argumentList;
             if (args !=null) {
@@ -1203,7 +1203,7 @@ INJECT MethodCall :
             } else {
                 argumentList = new ArrayList<>();
             }
-            Object result = targetMethod.call(argumentList.toArray(new Object[argumentList.size()]));
+            Object result = targetMethod.apply(argumentList.toArray(new Object[argumentList.size()]));
             return wrap(result);
         }
         else if (value instanceof Supplier) {
@@ -1538,12 +1538,12 @@ INJECT ArgsList :
                 throw new InternalError(e.getMessage());
             }
         }
-        else if (target instanceof Callable) {
+        else if (target instanceof VarArgsFunction) {
             try {
-                keyMethod = target.getClass().getMethod("call", new Class[] {new Object[0].getClass()});
+                keyMethod = target.getClass().getMethod("apply", new Class[] {new Object[0].getClass()});
             } catch (Exception e) {
                 // Again, this condition should be impossible. If something is
-                // a Callable, it must implement this method.
+                // a VarArgsFunction, it must implement this method.
                 throw new InternalError(e.getMessage());
             }
         }

@@ -2,16 +2,16 @@ package freemarker.testcase.models;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import freemarker.core.variables.Callable;
+import freemarker.core.variables.VarArgsFunction;
 
 /**
  * Another test of the interaction between MethodModels and TransformModels.
  *
  * @version $Id: TransformMethodWrapper2.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class TransformMethodWrapper2 implements Callable {
+public class TransformMethodWrapper2 implements VarArgsFunction {
 
-    public Object call(Object... arguments) {
+    public Object apply(Object... arguments) {
         TransformModel1 cTransformer = new TransformModel1();
         Iterator<Object> iArgument = Arrays.asList(arguments).iterator();
         while( iArgument.hasNext() ) {

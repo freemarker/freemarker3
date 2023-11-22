@@ -14,7 +14,7 @@ import java.util.Collections;
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  */
 
-final class GeneralPurposeNothing implements TemplateBooleanModel, TemplateSequenceModel, TemplateHashModel, Callable {
+final class GeneralPurposeNothing implements TemplateBooleanModel, TemplateSequenceModel, TemplateHashModel, VarArgsFunction {
 
     private static final Object instance = new GeneralPurposeNothing();
       
@@ -49,7 +49,7 @@ final class GeneralPurposeNothing implements TemplateBooleanModel, TemplateSeque
         return null;
     }
 
-    public Object call(Object... args) {
+    public Object apply(Object... args) {
         return null;
     }
     

@@ -45,7 +45,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class DateParser implements TemplateDateModel, Callable, TemplateHashModel {
+    static class DateParser implements TemplateDateModel, VarArgsFunction, TemplateHashModel {
         private final String text;
         private final Environment env;
         private final DateFormat defaultFormat;
@@ -78,7 +78,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
                     dateType);
         }
 
-        public Object call(Object... arguments) {
+        public Object apply(Object... arguments) {
             if (arguments.length != 1) {
                 throw new EvaluationException(
                         "string?" + caller.getName() + "(...) requires exactly 1 argument.");

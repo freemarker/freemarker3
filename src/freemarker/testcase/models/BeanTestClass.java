@@ -3,7 +3,7 @@ package freemarker.testcase.models;
 import junit.framework.AssertionFailedError;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import freemarker.core.variables.Callable;
+import freemarker.core.variables.VarArgsFunction;
 
 /**
  * @author Attila Szegedi, szegedia at freemail dot hu
@@ -108,12 +108,12 @@ public class BeanTestClass extends BeanTestSuperclass implements BeanTestInterfa
         return (Function<String,String>) s->hello+s;
     }
 
-    public Callable<String> getByeBye() {
+    public VarArgsFunction<String> getByeBye() {
         return this::varArgs2;
     }
 
     public Object getOneMore() {
-        return (Callable<Integer>) this::varArgs3;
+        return (VarArgsFunction<Integer>) this::varArgs3;
     }
 
     public Function<String,StringBuffer> tryThis() {
