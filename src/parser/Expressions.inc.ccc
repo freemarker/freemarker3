@@ -386,7 +386,6 @@ INJECT AdditiveExpression :
     import freemarker.core.ArithmeticEngine;
     import freemarker.core.Environment;
     import static freemarker.core.variables.Wrap.*;
-//    @SuppressWarnings("typesafety")
     implements Expression;
 {
     public boolean isPlus() {
@@ -1234,6 +1233,31 @@ INJECT MethodCall :
             Object firstArg = argExpressions.get(0).evaluate(env);
             Object secondArg = argExpressions.get(1).evaluate(env);
             Object result = ((BiFunction)value).apply(firstArg, secondArg);
+            return wrap(result);
+        }
+        else if (value instanceof TriFunction) {
+            ArgsList args = getArgs();
+            List<Expression> argExpressions = args == null ? new ArrayList<>() : args.childrenOfType(Expression.class);
+            if (argExpressions.size() != 3) {
+                throw new EvaluationException("The method " + getTarget() + " takes exactly three arguments.");
+            }
+            Object firstArg = argExpressions.get(0).evaluate(env);
+            Object secondArg = argExpressions.get(1).evaluate(env);
+            Object thirdArg = argExpressions.get(2).evaluate(env);
+            Object result = ((TriFunction)value).apply(firstArg, secondArg, thirdArg);
+            return wrap(result);
+        }
+        else if (value instanceof QuadFunction) {
+            ArgsList args = getArgs();
+            List<Expression> argExpressions = args == null ? new ArrayList<>() : args.childrenOfType(Expression.class);
+            if (argExpressions.size() != 4) {
+                throw new EvaluationException("The method " + getTarget() + " takes exactly four arguments.");
+            }
+            Object firstArg = argExpressions.get(0).evaluate(env);
+            Object secondArg = argExpressions.get(1).evaluate(env);
+            Object thirdArg = argExpressions.get(2).evaluate(env);
+            Object fourthArg = argExpressions.get(3).evaluate(env);
+            Object result = ((QuadFunction)value).apply(firstArg, secondArg, thirdArg, fourthArg);
             return wrap(result);
         }
         else if (value instanceof Macro) {

@@ -48,3 +48,7 @@ ${obj.hello("Brave New World")}
 ${obj.byeBye("one", "two", "three")}<#t>
 
 ${obj.oneMore("one", "two", "three")}
+
+[#var func = obj::tryThis()]
+
+${func("KILROY")}

@@ -2,6 +2,7 @@ package freemarker.testcase.models;
 
 import junit.framework.AssertionFailedError;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import freemarker.core.variables.Callable;
 
 /**
@@ -12,6 +13,7 @@ public class BeanTestClass extends BeanTestSuperclass implements BeanTestInterfa
     public static final String STATIC_FINAL_FIELD = "static-final-field";
     public static String STATIC_FIELD = "static-field";
     private String foo = "foo-value";
+    private String hello = "Hello, ";
 
     public String getFoo() {
         return foo;
@@ -96,19 +98,25 @@ public class BeanTestClass extends BeanTestSuperclass implements BeanTestInterfa
         return "moreSpecific-Object";
     }
 
-    static String hello(String name) {
-        return "Hello, " + name;
+    public String hello(String name) {
+        return hello + name;
     }
 
-    public Function<String, String> getHello() {
-        return BeanTestClass::hello;
+    //public Function<String,String> getHello() {
+    public Object getHello() {
+        //return (Function<String,String>) this::hello;
+        return (Function<String,String>) s->hello+s;
     }
 
     public Callable<String> getByeBye() {
         return this::varArgs2;
     }
 
-    public Callable getOneMore() {
-        return this::varArgs3;
+    public Object getOneMore() {
+        return (Callable<Integer>) this::varArgs3;
+    }
+
+    public Function<String,StringBuffer> tryThis() {
+        return StringBuffer::new;
     }
 }

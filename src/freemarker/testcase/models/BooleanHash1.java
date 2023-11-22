@@ -1,6 +1,5 @@
 package freemarker.testcase.models;
 
-import freemarker.core.variables.*;
 import freemarker.template.TemplateHashModel;
 
 /**
@@ -27,12 +26,5 @@ public class BooleanHash1 implements TemplateHashModel {
         } else {
             return "Just another key...";
         }
-    }
-
-    /**
-     * @return true if this object is empty.
-     */
-    public boolean isEmpty() {
-        return true;
     }
 }

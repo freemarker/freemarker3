@@ -5,7 +5,6 @@ import java.io.Writer;
 import java.util.Map;
 
 import freemarker.core.variables.*;
-import freemarker.template.TemplateBooleanModel;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 
@@ -120,9 +119,9 @@ public class StandardCompress implements UserDirective {
                 throw new EvaluationException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
             }
             try {
-                TemplateBooleanModel flag = (TemplateBooleanModel)args.get(SINGLE_LINE_KEY);
+                Object flag = args.get(SINGLE_LINE_KEY);
                 if (flag != null)
-                    singleLine = flag.getAsBoolean();
+                    singleLine = asBoolean(flag);
             } catch (ClassCastException e) {
                 throw new EvaluationException("Expecting boolean argument to " + SINGLE_LINE_KEY);
             }

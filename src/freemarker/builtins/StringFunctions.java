@@ -192,22 +192,21 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ReplaceMethod implements Callable {
+    static class ReplaceMethod implements Callable<String> {
         String string;
 
         ReplaceMethod(String string) {
             this.string = string;
         }
 
-        public Object call(Object... args) {
-            int numArgs = args.length;
-            if (numArgs < 2 || numArgs >3 ) {
+        public String call(Object... args) {
+            if (args.length < 2 || args.length >3 ) {
                 throw new EvaluationException(
                 "?replace(...) needs 2 or 3 arguments.");
             }
             String first = (String) args[0];
             String second = (String) args[1];
-            String flags = numArgs >2 ? (String) args[2] : "";
+            String flags = args.length == 3 ? (String) args[2] : "";
             boolean caseInsensitive = flags.indexOf('i') >=0;
             boolean useRegexp = flags.indexOf('r') >=0;
             boolean firstOnly = flags.indexOf('f') >=0;
@@ -223,7 +222,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class MatcherBuilder implements Callable {
+    static class MatcherBuilder implements Callable<Object> {
 
         String matchString;
 
@@ -342,15 +341,14 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class LeftPadMethod implements Callable {
+    static class LeftPadMethod implements Callable<String> {
         private String string;
 
         LeftPadMethod(String s) {
             this.string = s;
         }
 
-        public Object call(Object... args) {
-            Object obj;
+        public String call(Object... args) {
             int ln  = args.length;
             if (ln == 0) {
                 throw new EvaluationException(
@@ -360,7 +358,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 throw new EvaluationException(
                 "?left_pad(...) expects at most 2 arguments.");
             }
-            obj = args[0];
+            Object obj = args[0];
             if (!(obj instanceof Number)) {
                 throw new EvaluationException(
                         "?left_pad(...) expects a number as "
@@ -395,14 +393,14 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }        
     }
 
-    static class RightPadMethod implements Callable {
+    static class RightPadMethod implements Callable<String> {
         private String string;
 
         private RightPadMethod(String string) {
             this.string = string;
         }
 
-        public Object call(Object... args) {
+        public String call(Object... args) {
             int ln  = args.length;
             if (ln == 0) {
                 throw new EvaluationException(
@@ -552,14 +550,14 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ContainsMethod implements Callable {
+    static class ContainsMethod implements Callable<Boolean> {
         private String s;
 
         private ContainsMethod(String s) {
             this.s = s;
         }
 
-        public Object call(Object... args) {
+        public Boolean call(Object... args) {
             int ln  = args.length;
             if (ln != 1) {
                 throw new EvaluationException(

@@ -4,10 +4,11 @@ import freemarker.core.variables.WrappedVariable;
 
 /**
  * This evolved from FreeMarker 2.x's TemplateScalarModel 
- * and is really not used any more. You can implement this 
- * interface if you want to override * how an object is 
- * interpreted in a string context (the default being to 
- * call Object.toString()). 
+ * and is really not used any more. You can have your
+ * object this implement if you want to override how an object is 
+ * displayed in a string (a.k.a. scalar) context (the default being to 
+ * call Object.toString()). If you implement getAsString()
+ * then that method will be used instead.
  */
 public interface TemplateScalarModel extends CharSequence, WrappedVariable {
 

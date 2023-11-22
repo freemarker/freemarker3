@@ -7,7 +7,9 @@ package freemarker.template;
  * and then there was TemplateMethodModelEx (now gone)
  * that took a list of objects. The interface has been
  * retrofitted into the newer freemarker.core.variables.Callable
- * interface.
+ * interface. It is provided to make it somewhat easier
+ * to migrate older code. But if you are not migrating older
+ * code there is no real reason to use this interface.
  */
 import java.util.Arrays;
 import java.util.List;

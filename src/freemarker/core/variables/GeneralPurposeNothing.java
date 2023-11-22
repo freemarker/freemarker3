@@ -1,7 +1,5 @@
 package freemarker.core.variables;
 
-import java.util.List;
-
 import freemarker.template.TemplateBooleanModel;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateSequenceModel;
@@ -55,11 +53,11 @@ final class GeneralPurposeNothing implements TemplateBooleanModel, TemplateSeque
         return null;
     }
     
-    public Iterable keys() {
+    public Iterable<?> keys() {
         return Collections.EMPTY_LIST;
     }
 
-    public Iterable values() {
+    public Iterable<?> values() {
         return Collections.EMPTY_LIST;
     }
 }

@@ -283,8 +283,8 @@ public class TemplateTestCase extends TestCase {
     }
     
     @Parameters("foo")    
-    static class TestMethod implements Callable {
-        public Object call(Object... arguments) {
+    static class TestMethod implements Callable<String> {
+        public String call(Object... arguments) {
             return "Parameter foo is: " + arguments[0];
         }
     }
@@ -310,24 +310,5 @@ public class TemplateTestCase extends TestCase {
       public String getNodeNamespace() {
           return null;
       }
-    }
-
-   public Object getTestBean()
-    {
-        Map testBean = new TestBean();
-        testBean.put("name", "Chris");
-        testBean.put("location", "San Francisco");
-        testBean.put("age", 27);
-        return testBean;
-    }
-
-    public static class TestBean extends HashMap {
-  
-		public String getName() {
-            return "Christopher";
-        }
-        public int getLuckyNumber() {
-            return 7;
-        }
     }
 }
