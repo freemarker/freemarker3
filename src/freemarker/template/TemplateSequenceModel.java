@@ -1,4 +1,4 @@
-package freemarker.core.variables;
+package freemarker.template;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

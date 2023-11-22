@@ -1,7 +1,9 @@
 package freemarker.testcase.models;
 
-import freemarker.core.variables.TemplateSequenceModel;
 import java.util.List;
+
+import freemarker.template.TemplateSequenceModel;
+
 import java.util.ArrayList;
 
 /**

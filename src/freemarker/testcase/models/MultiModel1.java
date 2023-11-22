@@ -1,6 +1,7 @@
 package freemarker.testcase.models;
 
 import freemarker.core.variables.*;
+import freemarker.template.TemplateSequenceModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

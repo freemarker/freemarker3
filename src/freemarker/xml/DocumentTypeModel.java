@@ -3,6 +3,7 @@
 
 import org.w3c.dom.*;
 import freemarker.core.variables.*;
+import freemarker.template.TemplateSequenceModel;
 
 class DocumentTypeModel extends WrappedDomNode {
     

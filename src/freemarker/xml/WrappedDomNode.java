@@ -26,6 +26,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import freemarker.log.Logger;
+import freemarker.template.TemplateSequenceModel;
 import freemarker.core.variables.*;
 
 /**

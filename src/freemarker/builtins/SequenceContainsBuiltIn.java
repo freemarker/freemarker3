@@ -6,8 +6,8 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.EvaluationException;
+import freemarker.template.TemplateSequenceModel;
 import freemarker.core.variables.Callable;
-import freemarker.core.variables.TemplateSequenceModel;
 
 /**
  * @author Attila Szegedi

@@ -12,6 +12,7 @@ import freemarker.core.ArithmeticEngine;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.*;
+import freemarker.template.TemplateSequenceModel;
 import freemarker.template.utility.StringUtil;
 
 import static freemarker.core.variables.Wrap.*;

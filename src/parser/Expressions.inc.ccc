@@ -13,6 +13,7 @@ INJECT Expression :
    import freemarker.core.Environment;
    import freemarker.core.variables.InvalidReferenceException;
    import freemarker.template.TemplateException;
+   import freemarker.template.TemplateSequenceModel;
    import java.lang.reflect.Array;
    import static freemarker.core.variables.Wrap.*;
 {

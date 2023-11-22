@@ -4,7 +4,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.Hash;
-import freemarker.core.variables.TemplateSequenceModel;
+import freemarker.template.TemplateSequenceModel;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
