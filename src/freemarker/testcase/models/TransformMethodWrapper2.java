@@ -11,7 +11,7 @@ import freemarker.core.variables.Callable;
  */
 public class TransformMethodWrapper2 implements Callable {
 
-    public Object exec(Object... arguments) {
+    public Object call(Object... arguments) {
         TransformModel1 cTransformer = new TransformModel1();
         Iterator<Object> iArgument = Arrays.asList(arguments).iterator();
         while( iArgument.hasNext() ) {

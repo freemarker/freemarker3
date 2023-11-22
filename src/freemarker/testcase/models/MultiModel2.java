@@ -27,7 +27,7 @@ public class MultiModel2 implements  Callable {
      * of all the arguments
      */
     @Override
-    public String exec(Object... arguments) {
+    public String call(Object... arguments) {
         StringBuilder  aResults = new StringBuilder( "Arguments are:<br />" );
         for (Object arg : arguments) {
             aResults.append(arg);

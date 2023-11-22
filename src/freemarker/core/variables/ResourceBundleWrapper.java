@@ -46,7 +46,7 @@ public class ResourceBundleWrapper implements Callable, Hash {
      * with this key, then applies a MessageFormat.format on the string with the
      * rest of the arguments. The created MessageFormats are cached for later reuse.
      */
-    public Object exec(Object... arguments) throws EvaluationException {
+    public Object call(Object... arguments) throws EvaluationException {
         // Must have at least one argument - the key
         if (arguments.length < 1)
             throw new EvaluationException("No message key was specified");

@@ -197,7 +197,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = string;
         }
 
-        public Object exec(Object... args) {
+        public Object call(Object... args) {
             int numArgs = args.length;
             if (numArgs < 2 || numArgs >3 ) {
                 throw new EvaluationException(
@@ -229,7 +229,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.matchString = matchString;
         }
 
-        public Object exec(Object... args) {
+        public Object call(Object... args) {
             int numArgs = args.length;
             if (numArgs == 0) {
                 throw new EvaluationException("Expecting at least one argument");
@@ -247,11 +247,11 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
 
     static class RegexMatchModel 
-    implements Truthy, Sequence {
+    implements Truthy, TemplateSequenceModel {
         Matcher matcher;
         String input;
         final boolean matches;
-        Sequence groups;
+        TemplateSequenceModel groups;
         private ArrayList<Object> data;
 
         RegexMatchModel(Matcher matcher, String input) {
@@ -284,7 +284,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
         public Object getGroups() {
             if (groups == null) {
-                groups = new Sequence() {
+                groups = new TemplateSequenceModel() {
                     public int size() {
                         try {
                             return matcher.groupCount() + 1;
@@ -347,7 +347,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = s;
         }
 
-        public Object exec(Object... args) {
+        public Object call(Object... args) {
             Object obj;
             int ln  = args.length;
             if (ln == 0) {
@@ -400,7 +400,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = string;
         }
 
-        public Object exec(Object... args) {
+        public Object call(Object... args) {
             int ln  = args.length;
             if (ln == 0) {
                 throw new EvaluationException(
@@ -481,7 +481,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return cachedResult;
         }
 
-        public Object exec(Object... args) {
+        public Object call(Object... args) {
             if (args.length != 1) {
                 throw new EvaluationException("The \"url\" built-in "
                         + "needs exactly 1 parameter, the charset.");
@@ -508,7 +508,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return "?" + (reverse ? "last_" : "") + "index_of";
         }
         
-        public Object exec(Object... args) {
+        public Object call(Object... args) {
             Object obj;
             String sub;
             int fidx;
@@ -557,7 +557,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.s = s;
         }
 
-        public Object exec(Object... args) {
+        public Object call(Object... args) {
             int ln  = args.length;
             if (ln != 1) {
                 throw new EvaluationException(

@@ -110,7 +110,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.tsm = tsm;
         }
         
-        public Object exec(Object... args) {
+        public Object call(Object... args) {
             int numArgs = args.length;
             if (numArgs != 1 && numArgs != 2) {
                 throw new EvaluationException(
@@ -127,7 +127,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ChunkedSequence implements Sequence {
+    static class ChunkedSequence implements TemplateSequenceModel {
 
         private final List wrappedTsm;
 
@@ -156,7 +156,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 return null;
             }
 
-            return new Sequence() {
+            return new TemplateSequenceModel() {
 
                 private final int baseIndex = chunkIndex * chunkSize;
 
@@ -447,7 +447,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.seq = seq;
         }
 
-        public Object exec(Object... params)
+        public Object call(Object... params)
         {
             if (params.length == 0) {
                 throw new EvaluationException(
@@ -457,8 +457,8 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             Object obj = params[0];
             if (isString(obj)) {
                 subvars = new String[]{asString(obj)};
-            } else if (obj instanceof Sequence) {
-                Sequence seq = (Sequence) obj;
+            } else if (obj instanceof TemplateSequenceModel) {
+                TemplateSequenceModel seq = (TemplateSequenceModel) obj;
                 int ln = seq.size();
                 subvars = new String[ln];
                 for (int i = 0; i < ln; i++) {
@@ -495,7 +495,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.reverse = reverse;
         }
 
-        public Object exec(Object... args) {
+        public Object call(Object... args) {
             final int argc = args.length;
             int startIndex;
             if (argc != 1 && argc != 2) {

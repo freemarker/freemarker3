@@ -11,7 +11,7 @@ import java.util.Collections;
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  */
 
-final class GeneralPurposeNothing implements Truthy, Sequence, Hash, Callable {
+final class GeneralPurposeNothing implements Truthy, TemplateSequenceModel, Hash, Callable {
 
     private static final Object instance = new GeneralPurposeNothing();
       
@@ -46,7 +46,7 @@ final class GeneralPurposeNothing implements Truthy, Sequence, Hash, Callable {
         return null;
     }
 
-    public Object exec(Object... args) {
+    public Object call(Object... args) {
         return null;
     }
     

@@ -76,7 +76,7 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
                     dateType);
         }
 
-        public Object exec(Object... arguments) {
+        public Object call(Object... arguments) {
             if (arguments.length != 1) {
                 throw new EvaluationException(
                         "string?" + caller.getName() + "(...) requires exactly 1 argument.");

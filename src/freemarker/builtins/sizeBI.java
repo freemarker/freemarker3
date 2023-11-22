@@ -4,7 +4,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.Hash;
-import freemarker.core.variables.Sequence;
+import freemarker.core.variables.TemplateSequenceModel;
 
 import java.lang.reflect.Array;
 import java.util.Collection;
@@ -24,8 +24,8 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
         else if (value instanceof Map) {
             return ((Map) value).size();
         }
-        else if (value instanceof Sequence) {
-            return ((Sequence) value).size();
+        else if (value instanceof TemplateSequenceModel) {
+            return ((TemplateSequenceModel) value).size();
         }
         else if (value instanceof Hash) {
             return ((Hash) value).size();

@@ -4,7 +4,7 @@ import freemarker.core.variables.Callable;
 
 public class SimpleTestMethod implements Callable {
 
-    public Object exec(Object... arguments) {
+    public Object call(Object... arguments) {
         if( arguments.length == 0 ) {
             return "Empty list provided";
         } else if( arguments.length > 1 ) {

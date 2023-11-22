@@ -11,7 +11,7 @@ import freemarker.template.utility.XmlEscape;
  */
 public class TransformMethodWrapper1 extends Object implements Callable {
 
-    public Object exec(Object... arguments) {
+    public Object call(Object... arguments) {
 
         if (arguments.length > 0 && arguments[0].toString().equals("xml")) {
             return new XmlEscape();

@@ -7,7 +7,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.EvaluationException;
 import freemarker.core.variables.Callable;
-import freemarker.core.variables.Sequence;
+import freemarker.core.variables.TemplateSequenceModel;
 
 /**
  * @author Attila Szegedi
@@ -19,7 +19,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
     public Object get(Environment env, BuiltInExpression caller,
             Object model) 
     {
-        if (!(model instanceof Sequence || model instanceof Iterable)) {
+        if (!(model instanceof TemplateSequenceModel || model instanceof Iterable)) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "sequence or collection");
         }
         
@@ -27,15 +27,15 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
     }
 
     static class SequenceContainsFunction implements Callable {
-        final Sequence sequence;
+        final TemplateSequenceModel sequence;
         final Iterable<Object> collection;
         SequenceContainsFunction(Object seqModel) {
             if (seqModel instanceof Iterable) {
                 collection = (Iterable<Object>) seqModel;
                 sequence = null;
             }
-            else if (seqModel instanceof Sequence) {
-                sequence = (Sequence) seqModel;
+            else if (seqModel instanceof TemplateSequenceModel) {
+                sequence = (TemplateSequenceModel) seqModel;
                 collection = null;
             }
             else {
@@ -43,7 +43,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public Boolean exec(Object... args) {
+        public Boolean call(Object... args) {
             if (args.length != 1) {
                 throw new EvaluationException("Expecting exactly one argument for ?seq_contains(...)");
             }

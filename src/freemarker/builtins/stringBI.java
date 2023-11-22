@@ -55,7 +55,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public Object exec(Object... arguments)
+        public Object call(Object... arguments)
                 {
             if (arguments.length != 2) {
                 throw new EvaluationException(
@@ -92,7 +92,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             return env.getDateFormatObject(dateType, key).format(date);
         }
         
-        public Object exec(Object... arguments)
+        public Object call(Object... arguments)
             {
             if (arguments.length != 1) {
                 throw new EvaluationException(
@@ -134,7 +134,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
         
         @Parameters("format")
-        public Object exec(Object... arguments) {
+        public Object call(Object... arguments) {
             if (arguments.length != 1) {
                 throw new EvaluationException(
                         "number?string(...) requires exactly 1 argument.");

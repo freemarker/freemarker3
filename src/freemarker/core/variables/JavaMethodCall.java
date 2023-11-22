@@ -2,6 +2,9 @@ package freemarker.core.variables;
 
 import java.lang.reflect.Method;
 import java.util.List;
+
+import freemarker.template.TemplateMethodModel;
+
 import java.util.ArrayList;
 import static freemarker.core.variables.ReflectionCode.*;
 

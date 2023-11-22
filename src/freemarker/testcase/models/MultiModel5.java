@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @version $Id: MultiModel5.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel5 implements Sequence, Hash {
+public class MultiModel5 implements TemplateSequenceModel, Hash {
 
     private List  list = new ArrayList();
 

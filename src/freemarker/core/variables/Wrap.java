@@ -45,7 +45,7 @@ public class Wrap {
     }
 
     public static boolean isList(Object obj) {
-        if (obj instanceof Sequence) {
+        if (obj instanceof TemplateSequenceModel) {
             return true;
         }
         if (obj.getClass().isArray()) {
@@ -55,8 +55,8 @@ public class Wrap {
     }
 
     public static List<?> asList(Object obj) {
-        if (obj instanceof Sequence) {
-            Sequence tsm = (Sequence) obj;
+        if (obj instanceof TemplateSequenceModel) {
+            TemplateSequenceModel tsm = (TemplateSequenceModel) obj;
             List<Object> result = new ArrayList<>();
             for (int i = 0; i < tsm.size(); i++)
                 result.add(tsm.get(i));

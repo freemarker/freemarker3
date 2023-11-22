@@ -14,7 +14,7 @@ class DocumentTypeModel extends WrappedDomNode {
         return ((ProcessingInstruction) node).getData();
     }
     
-    public Sequence getChildren() {
+    public TemplateSequenceModel getChildren() {
         throw new EvaluationException("entering the child nodes of a DTD node is not currently supported");
     }
     

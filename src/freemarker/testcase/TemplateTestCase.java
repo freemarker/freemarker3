@@ -284,7 +284,7 @@ public class TemplateTestCase extends TestCase {
     
     @Parameters("foo")    
     static class TestMethod implements Callable {
-        public Object exec(Object... arguments) {
+        public Object call(Object... arguments) {
             return "Parameter foo is: " + arguments[0];
         }
     }

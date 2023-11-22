@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
  * In FreeMarker 3, the normal usage is just to use regular 
  * Java objects from the standard class library, i.e. java.util.List
  */
-public interface Sequence extends Iterable<Object> {
+public interface TemplateSequenceModel extends Iterable<Object> {
 
     /**
      * Retrieves the i-th template model in this sequence.

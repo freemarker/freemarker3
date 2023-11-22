@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @version $Id: MultiModel1.java,v 1.17 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel1 implements Hash, Sequence {
+public class MultiModel1 implements Hash, TemplateSequenceModel {
 
     private Object m_cSubModel = new MultiModel2();
     private Object m_cListHashModel1 = new MultiModel4();

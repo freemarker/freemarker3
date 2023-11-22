@@ -46,8 +46,8 @@ public class DynamicKeyName extends TemplateNode implements Expression {
     }
 
     private Object dealWithNumericalKey(Object target, int index, Environment env) {
-        if (target instanceof Sequence) {
-            Sequence tsm = (Sequence) target;
+        if (target instanceof TemplateSequenceModel) {
+            TemplateSequenceModel tsm = (TemplateSequenceModel) target;
             int size = Integer.MAX_VALUE;
             try {
                 size = tsm.size();

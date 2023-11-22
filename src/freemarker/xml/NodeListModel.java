@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 import static freemarker.xml.ElementModel.isXMLID;
 
-class NodeListModel implements Sequence, Hash {
+class NodeListModel implements TemplateSequenceModel, Hash {
 
     WrappedDomNode contextNode;
     XPathSupport xpathSupport;
@@ -96,7 +96,7 @@ class NodeListModel implements Sequence, Hash {
             for (int i=0; i<size(); i++) {
                 WrappedDomNode nm = (WrappedDomNode) get(i);
                 if (nm instanceof ElementModel) {
-                    Sequence tsm = (Sequence) ((ElementModel) nm).get(key);
+                    TemplateSequenceModel tsm = (TemplateSequenceModel) ((ElementModel) nm).get(key);
                     if(tsm != null) {
                         int size = tsm.size();
                         for (int j=0; j < size; j++) {

@@ -35,7 +35,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
                 return FirstDefined.INSTANCE;
             }
             return new Callable() {
-                public Object exec(Object... arguments) {
+                public Object call(Object... arguments) {
                     return value;
                 }
             };
@@ -78,7 +78,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
 
     private static class FirstDefined implements Callable {
         static final FirstDefined INSTANCE = new FirstDefined();
-        public Object exec(Object... args) {
+        public Object call(Object... args) {
             for (Object arg : args) {
                 if (arg != null && arg != JAVA_NULL) {
                     return arg;
