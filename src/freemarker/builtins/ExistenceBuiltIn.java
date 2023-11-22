@@ -1,6 +1,5 @@
 package freemarker.builtins;
 
-import java.util.List;
 import java.util.Map;
 
 import freemarker.core.Environment;
@@ -36,7 +35,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
                 return FirstDefined.INSTANCE;
             }
             return new WrappedMethod() {
-                public Object exec(List<Object> arguments) {
+                public Object exec(Object... arguments) {
                     return value;
                 }
             };
@@ -79,7 +78,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
 
     private static class FirstDefined implements WrappedMethod {
         static final FirstDefined INSTANCE = new FirstDefined();
-        public Object exec(List args) {
+        public Object exec(Object... args) {
             for (Object arg : args) {
                 if (arg != null && arg != JAVA_NULL) {
                     return arg;

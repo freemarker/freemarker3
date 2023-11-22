@@ -1,7 +1,6 @@
 package freemarker.builtins;
 
 import java.util.Iterator;
-import java.util.List;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
@@ -44,11 +43,11 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public Boolean exec(List<Object> args) {
-            if (args.size() != 1) {
+        public Boolean exec(Object... args) {
+            if (args.length != 1) {
                 throw new EvaluationException("Expecting exactly one argument for ?seq_contains(...)");
             }
-            Object compareToThis = args.get(0);
+            Object compareToThis = args[0];
             final DefaultComparator modelComparator = new DefaultComparator(Environment.getCurrentEnvironment());
             if (collection != null) {
                 Iterator<Object> tmi = collection.iterator();

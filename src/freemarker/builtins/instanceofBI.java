@@ -3,7 +3,7 @@ package freemarker.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.variables.EvaluationException;
-import freemarker.core.variables.WrappedMethod;
+import freemarker.core.variables.LegacyWrappedMethod;
 import java.util.List;
 
 /**
@@ -13,7 +13,7 @@ public class instanceofBI extends ExpressionEvaluatingBuiltIn {
     
     @Override
     public Object get(Environment env, BuiltInExpression caller, Object object) {
-        return new WrappedMethod() {
+        return new LegacyWrappedMethod() {
             public Object exec(List<Object> args) {
                 if (args.size() != 1) {
                     throw new EvaluationException("Expecting exactly one argument here");

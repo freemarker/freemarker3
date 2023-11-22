@@ -111,10 +111,6 @@ abstract public class Configurable {
         return this.outputFormat;
     }
     
-
-
-
-
     /**
      * Returns the fallback <tt>Configurable</tt> object of this object.
      * The fallback stores the default values for this configurable. For example,

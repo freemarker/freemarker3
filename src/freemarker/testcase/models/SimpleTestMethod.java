@@ -2,14 +2,14 @@ package freemarker.testcase.models;
 
 import java.util.List;
 
-import freemarker.core.variables.WrappedMethod;
+import freemarker.core.variables.LegacyWrappedMethod;
 
 /**
  * A simple method model used as a test bed.
  *
  * @version $Id: SimpleTestMethod.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class SimpleTestMethod implements WrappedMethod {
+public class SimpleTestMethod implements LegacyWrappedMethod {
 
     /**
      * Executes a method call.

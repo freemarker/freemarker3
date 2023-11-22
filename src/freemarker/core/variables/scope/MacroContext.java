@@ -11,9 +11,9 @@ import freemarker.core.nodes.ParameterList;
  */
 public class MacroContext extends BlockScope {
     private Block body; 
-    public ParameterList bodyParameters;
+    private ParameterList bodyParameters;
     private MacroContext invokingMacroContext;
-    Scope invokingScope;
+    private Scope invokingScope;
     
     public MacroContext(Macro macro, Environment env, Block body, ParameterList bodyParameters) {
     	super(macro.getNestedBlock(), env.getMacroNamespace(macro)); // REVISIT
@@ -21,6 +21,10 @@ public class MacroContext extends BlockScope {
         this.invokingScope = env.getCurrentScope();
         this.body = body;
         this.bodyParameters = bodyParameters;
+    }
+
+    public ParameterList getBodyParameters() {
+        return bodyParameters;
     }
 
     public Scope getInvokingScope() {

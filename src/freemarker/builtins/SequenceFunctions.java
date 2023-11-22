@@ -110,20 +110,20 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.tsm = tsm;
         }
         
-        public Object exec(List args) {
-            int numArgs = args.size();
+        public Object exec(Object... args) {
+            int numArgs = args.length;
             if (numArgs != 1 && numArgs != 2) {
                 throw new EvaluationException(
                 "?chunk(...) expects 1 or 2 arguments.");
             }
-            Object chunkSize = args.get(0);
+            Object chunkSize = args[0];
             if (!(chunkSize instanceof Number)) {
                 throw new EvaluationException(
                         "?chunk(...) expects a number as "
                         + "its 1st argument.");
             }
             return new ChunkedSequence(tsm, ((Number)chunkSize).intValue(),
-                    numArgs > 1 ? args.get(1) : null);
+                    numArgs > 1 ? args[1] : null);
         }
     }
 
@@ -447,14 +447,14 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.seq = seq;
         }
 
-        public Object exec(List params)
+        public Object exec(Object... params)
         {
-            if (params.size() == 0) {
+            if (params.length == 0) {
                 throw new EvaluationException(
                         "?sort_by(key) needs exactly 1 argument.");
             }
             String[] subvars;
-            Object obj = params.get(0);
+            Object obj = params[0];
             if (isString(obj)) {
                 subvars = new String[]{asString(obj)};
             } else if (obj instanceof Sequence) {
@@ -495,16 +495,16 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.reverse = reverse;
         }
 
-        public Object exec(List args) {
-            final int argc = args.size();
+        public Object exec(Object... args) {
+            final int argc = args.length;
             int startIndex;
             if (argc != 1 && argc != 2) {
                 throw new EvaluationException("Expecting one or two arguments for ?seq_" + (reverse ? "last_" : "") + "index_of");
             }
-            Object compareToThis = args.get(0);
+            Object compareToThis = args[0];
             if (argc == 2) {
                 try {
-                    startIndex = ((Number)args.get(1)).intValue();
+                    startIndex = ((Number)args[1]).intValue();
                 } catch (ClassCastException cce) {
                     throw new EvaluationException("Expecting number as second argument to ?seq_" + (reverse ? "last_" : "") + "index_of");
                 }

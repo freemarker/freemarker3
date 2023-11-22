@@ -1,7 +1,7 @@
 package freemarker.testcase.models;
 
 import java.util.*;
-import freemarker.core.variables.WrappedMethod;
+import freemarker.core.variables.LegacyWrappedMethod;
 import static freemarker.core.variables.Wrap.asString;
 
 /**
@@ -9,7 +9,7 @@ import static freemarker.core.variables.Wrap.asString;
  *
  * @version $Id: TransformMethodWrapper2.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class TransformMethodWrapper2 implements WrappedMethod {
+public class TransformMethodWrapper2 implements LegacyWrappedMethod {
 
     /**
      * Executes a method call.

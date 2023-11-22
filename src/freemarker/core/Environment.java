@@ -265,8 +265,8 @@ public final class Environment extends Configurable implements Scope {
     }
 
     public void render(NestedInstruction nestedInstruction) throws IOException {
-        BlockScope blockScope = new BlockScope(currentMacroContext.getBody().getNestedBlock(), currentMacroContext.getInvokingScope());
-        ParameterList bodyParameters = currentMacroContext.bodyParameters;
+        BlockScope blockScope = new BlockScope(currentMacroContext.getBody(), currentMacroContext.getInvokingScope());
+        ParameterList bodyParameters = currentMacroContext.getBodyParameters();
         PositionalArgsList bodyArgs = (PositionalArgsList) nestedInstruction.getArgs();
         if (bodyParameters != null) {
             Map<String, Object> bodyParamsMap = bodyParameters.getParameterMap(bodyArgs, this, true);

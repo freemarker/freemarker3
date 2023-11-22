@@ -76,12 +76,12 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
                     dateType);
         }
 
-        public Object exec(List arguments) {
-            if (arguments.size() != 1) {
+        public Object exec(Object... arguments) {
+            if (arguments.length != 1) {
                 throw new EvaluationException(
                         "string?" + caller.getName() + "(...) requires exactly 1 argument.");
             }
-            return get((String) arguments.get(0));
+            return get((String) arguments[0]);
         }
 
         private Date parse(DateFormat df) {

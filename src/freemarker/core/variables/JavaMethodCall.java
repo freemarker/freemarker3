@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.ArrayList;
 import static freemarker.core.variables.ReflectionCode.*;
 
-public class JavaMethodCall implements WrappedMethod {
+public class JavaMethodCall implements LegacyWrappedMethod {
 
     private String methodName;
     private Object target;

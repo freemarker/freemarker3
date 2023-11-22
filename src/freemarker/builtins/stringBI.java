@@ -37,7 +37,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     }
 	
 	
-    static class BooleanFormatter implements WrappedMethod  
+    static class BooleanFormatter implements LegacyWrappedMethod  
     {
         private final Object bool;
         private final Environment env;
@@ -67,7 +67,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     }
     
     
-    static class DateFormatter implements Hash, WrappedMethod {
+    static class DateFormatter implements Hash, LegacyWrappedMethod {
         private final Date date;
         private final int dateType;
         private final Environment env;
@@ -107,7 +107,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
     }
     
-    static class NumberFormatter implements Hash, WrappedMethod {
+    static class NumberFormatter implements Hash, LegacyWrappedMethod {
         private final Number number;
         private final Environment env;
         private final NumberFormat defaultFormat;

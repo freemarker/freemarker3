@@ -49,7 +49,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = value instanceof Hash;
 		}
 		else if (builtInName == "is_method") {
-			result = value instanceof WrappedMethod;
+			result = value instanceof LegacyWrappedMethod;
 		}
 		else if (builtInName == "is_node") {
 			result = value instanceof WrappedNode;

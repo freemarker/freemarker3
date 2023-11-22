@@ -46,7 +46,7 @@ final class GeneralPurposeNothing implements Truthy, Sequence, Hash, WrappedMeth
         return null;
     }
 
-    public Object exec(List args) {
+    public Object exec(Object... args) {
         return null;
     }
     

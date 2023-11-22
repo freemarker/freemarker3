@@ -197,15 +197,15 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = string;
         }
 
-        public Object exec(List args) {
-            int numArgs = args.size();
+        public Object exec(Object... args) {
+            int numArgs = args.length;
             if (numArgs < 2 || numArgs >3 ) {
                 throw new EvaluationException(
                 "?replace(...) needs 2 or 3 arguments.");
             }
-            String first = (String) args.get(0);
-            String second = (String) args.get(1);
-            String flags = numArgs >2 ? (String) args.get(2) : "";
+            String first = (String) args[0];
+            String second = (String) args[1];
+            String flags = numArgs >2 ? (String) args[2] : "";
             boolean caseInsensitive = flags.indexOf('i') >=0;
             boolean useRegexp = flags.indexOf('r') >=0;
             boolean firstOnly = flags.indexOf('f') >=0;
@@ -229,16 +229,16 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.matchString = matchString;
         }
 
-        public Object exec(List args) {
-            int numArgs = args.size();
+        public Object exec(Object... args) {
+            int numArgs = args.length;
             if (numArgs == 0) {
                 throw new EvaluationException("Expecting at least one argument");
             }
             if (numArgs > 2) {
                 throw new EvaluationException("Expecting at most two argumnets");
             }
-            String patternString = (String) args.get(0);
-            String flagString = (numArgs >1) ? (String) args.get(1) : "";
+            String patternString = (String) args[0];
+            String flagString = (numArgs >1) ? (String) args[1] : "";
             Pattern pattern = getPattern(patternString, flagString);
             Matcher matcher = pattern.matcher(matchString);
             return new RegexMatchModel(matcher, matchString);
@@ -347,10 +347,9 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = s;
         }
 
-        public Object exec(List args) {
+        public Object exec(Object... args) {
             Object obj;
-
-            int ln  = args.size();
+            int ln  = args.length;
             if (ln == 0) {
                 throw new EvaluationException(
                 "?left_pad(...) expects at least 1 argument.");
@@ -359,8 +358,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 throw new EvaluationException(
                 "?left_pad(...) expects at most 2 arguments.");
             }
-
-            obj = args.get(0);
+            obj = args[0];
             if (!(obj instanceof Number)) {
                 throw new EvaluationException(
                         "?left_pad(...) expects a number as "
@@ -369,7 +367,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             int width = ((Number)obj).intValue();
 
             if (ln > 1) {
-                obj = args.get(1);
+                obj = args[1];
                 if (!isString(obj)) {
                     throw new EvaluationException(
                             "?left_pad(...) expects a string as "
@@ -392,7 +390,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             } else {
                 return StringUtil.leftPad(string, width);
             }
-        }
+        }        
     }
 
     static class RightPadMethod implements WrappedMethod {
@@ -402,10 +400,8 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.string = string;
         }
 
-        public Object exec(List args) {
-            Object obj;
-
-            int ln  = args.size();
+        public Object exec(Object... args) {
+            int ln  = args.length;
             if (ln == 0) {
                 throw new EvaluationException(
                 "?right_pad(...) expects at least 1 argument.");
@@ -414,8 +410,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 throw new EvaluationException(
                 "?right_pad(...) expects at most 2 arguments.");
             }
-
-            obj = args.get(0);
+            Object obj = args[0];
             if (!(obj instanceof Number)) {
                 throw new EvaluationException(
                         "?right_pad(...) expects a number as "
@@ -423,7 +418,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
             int width = ((Number)obj).intValue();
             if (ln > 1) {
-                obj = args.get(1);
+                obj = args[1];
                 if (!isString(obj)) {
                     throw new EvaluationException(
                             "?right_pad(...) expects a string as "
@@ -447,6 +442,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 return StringUtil.rightPad(string, width);
             }
         }
+
     }
 
     static class urlBIResult implements WrappedMethod {
@@ -485,13 +481,13 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return cachedResult;
         }
 
-        public Object exec(List args) {
-            if (args.size() != 1) {
+        public Object exec(Object... args) {
+            if (args.length != 1) {
                 throw new EvaluationException("The \"url\" built-in "
                         + "needs exactly 1 parameter, the charset.");
             }	
             try {
-                return StringUtil.URLEnc(target, (String) args.get(0));
+                return StringUtil.URLEnc(target, (String) args[0]);
             } catch (UnsupportedEncodingException e) {
                 throw new EvaluationException(
                         "Failed to execute URL encoding.", e);
@@ -512,12 +508,12 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return "?" + (reverse ? "last_" : "") + "index_of";
         }
         
-        public Object exec(List args) {
+        public Object exec(Object... args) {
             Object obj;
             String sub;
             int fidx;
 
-            int ln  = args.size();
+            int ln  = args.length;
             if (ln == 0) {
                 throw new EvaluationException(getName() + "(...) expects at least one argument.");
             }
@@ -525,14 +521,14 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 throw new EvaluationException(getName() + "(...) expects at most two arguments.");
             }
 
-            obj = args.get(0);       
+            obj = args[0];       
             if (!isString(obj)) {
                 throw new EvaluationException(getName() + "(...) expects a string as its first argument.");
             }
             sub = asString(obj);
 
             if (ln > 1) {
-                obj = args.get(1);
+                obj = args[1];
                 if (!(obj instanceof Number)) {
                     throw new EvaluationException(getName() + "(...) expects a number as "
                             + "its second argument.");
@@ -561,14 +557,14 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             this.s = s;
         }
 
-        public Object exec(List args) {
-            int ln  = args.size();
+        public Object exec(Object... args) {
+            int ln  = args.length;
             if (ln != 1) {
                 throw new EvaluationException(
                 "?contains(...) expects one argument.");
             }
 
-            Object firstArg = args.get(0);
+            Object firstArg = args[0];
             if (!isString(firstArg)) {
                 throw new EvaluationException(
                         "?contains(...) expects a string as "
