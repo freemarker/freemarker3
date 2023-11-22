@@ -6,7 +6,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
 import freemarker.core.variables.EvaluationException;
-import freemarker.core.variables.WrappedMethod;
+import freemarker.core.variables.Callable;
 import freemarker.core.variables.Sequence;
 
 /**
@@ -26,7 +26,7 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
         return new SequenceContainsFunction(model);
     }
 
-    static class SequenceContainsFunction implements WrappedMethod {
+    static class SequenceContainsFunction implements Callable {
         final Sequence sequence;
         final Iterable<Object> collection;
         SequenceContainsFunction(Object seqModel) {

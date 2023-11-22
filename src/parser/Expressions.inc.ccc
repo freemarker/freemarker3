@@ -1187,8 +1187,8 @@ INJECT MethodCall :
     
     public Object evaluate(Environment env) {
         Object value = getTarget().evaluate(env);
-        if (value instanceof WrappedMethod) {
-            WrappedMethod targetMethod = (WrappedMethod)value;
+        if (value instanceof Callable) {
+            Callable targetMethod = (Callable)value;
             ArgsList args = getArgs();
             List<Object> argumentList;
             if (args !=null) {
@@ -1421,12 +1421,11 @@ INJECT ArgsList :
 	private static final ParameterList NO_PARAM_LIST = new ParameterList();
         
 	/**
-	 * The target will be either a TemplateTranformModel or LegacyWrappedMethod.
+	 * The target will be either a TemplateTranformModel or a TemplateMethodModel.
 	 * This returns a key-value map of the arguments to be passed to the target.
 	 * A TemplateException will be thrown if the target's parameters do not match
 	 * this ArgList in some way.
 	 */
-	
 	public abstract Map<String, Object> getParameterMap(Object target, Environment env);
 	
 	public abstract List<Object> getParameterSequence(Object target, Environment env);
@@ -1470,21 +1469,21 @@ INJECT ArgsList :
     private static Parameters getAnnotatedParameters(Object target) {
         Parameters params = null;
         Method keyMethod = null;
-        if (target instanceof LegacyWrappedMethod) {
+        if (target instanceof TemplateMethodModel) {
             try {
                 keyMethod = target.getClass().getMethod("exec", new Class[] {List.class});
             } catch (Exception e) {
                 // This condition should be impossible. If something is
-                // a LegacyWrappedMethod, it must implement this method.
+                // a TemplateMethodModel, it must implement this method.
                 throw new InternalError(e.getMessage());
             }
         }
-        else if (target instanceof WrappedMethod) {
+        else if (target instanceof Callable) {
             try {
                 keyMethod = target.getClass().getMethod("exec", new Class[] {new Object[0].getClass()});
             } catch (Exception e) {
                 // Again, this condition should be impossible. If something is
-                // a WrappedMethod, it must implement this method.
+                // a Callable, it must implement this method.
                 throw new InternalError(e.getMessage());
             }
         }

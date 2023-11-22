@@ -1,8 +1,8 @@
 package freemarker.testcase.models;
 
-import freemarker.core.variables.WrappedMethod;
+import freemarker.core.variables.Callable;
 
-public class SimpleTestMethod implements WrappedMethod {
+public class SimpleTestMethod implements Callable {
 
     public Object exec(Object... arguments) {
         if( arguments.length == 0 ) {

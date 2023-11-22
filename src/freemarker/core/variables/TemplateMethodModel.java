@@ -7,7 +7,7 @@ package freemarker.core.variables;
 import java.util.Arrays;
 import java.util.List;
 
-public interface LegacyWrappedMethod extends WrappedMethod {
+public interface TemplateMethodModel extends Callable {
 
     public Object exec(List<Object> arguments);
 

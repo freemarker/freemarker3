@@ -11,7 +11,7 @@ import java.util.Collections;
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  */
 
-final class GeneralPurposeNothing implements Truthy, Sequence, Hash, WrappedMethod {
+final class GeneralPurposeNothing implements Truthy, Sequence, Hash, Callable {
 
     private static final Object instance = new GeneralPurposeNothing();
       

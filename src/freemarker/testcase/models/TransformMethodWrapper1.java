@@ -1,6 +1,6 @@
 package freemarker.testcase.models;
 
-import freemarker.core.variables.WrappedMethod;
+import freemarker.core.variables.Callable;
 import freemarker.template.utility.HtmlEscape;
 import freemarker.template.utility.XmlEscape;
 
@@ -9,7 +9,7 @@ import freemarker.template.utility.XmlEscape;
  *
  * @version $Id: TransformMethodWrapper1.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class TransformMethodWrapper1 extends Object implements WrappedMethod {
+public class TransformMethodWrapper1 extends Object implements Callable {
 
     public Object exec(Object... arguments) {
 

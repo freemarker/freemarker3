@@ -190,7 +190,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ReplaceMethod implements WrappedMethod {
+    static class ReplaceMethod implements Callable {
         String string;
 
         ReplaceMethod(String string) {
@@ -221,7 +221,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class MatcherBuilder implements WrappedMethod {
+    static class MatcherBuilder implements Callable {
 
         String matchString;
 
@@ -340,7 +340,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class LeftPadMethod implements WrappedMethod {
+    static class LeftPadMethod implements Callable {
         private String string;
 
         LeftPadMethod(String s) {
@@ -393,7 +393,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }        
     }
 
-    static class RightPadMethod implements WrappedMethod {
+    static class RightPadMethod implements Callable {
         private String string;
 
         private RightPadMethod(String string) {
@@ -445,7 +445,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
     }
 
-    static class urlBIResult implements WrappedMethod {
+    static class urlBIResult implements Callable {
 
         private final String target;
         private final Environment env;
@@ -495,7 +495,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class IndexOfMethod implements WrappedMethod {
+    static class IndexOfMethod implements Callable {
         private final String s;
         private final boolean reverse;
 
@@ -550,7 +550,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ContainsMethod implements WrappedMethod {
+    static class ContainsMethod implements Callable {
         private String s;
 
         private ContainsMethod(String s) {

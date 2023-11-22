@@ -1,13 +1,13 @@
 package freemarker.testcase.models;
 
-import freemarker.core.variables.WrappedMethod;
+import freemarker.core.variables.Callable;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.
  *
  * @version $Id: MultiModel2.java,v 1.15 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel2 implements  WrappedMethod {
+public class MultiModel2 implements  Callable {
 
     /**
      * Returns the scalar's value as a String.

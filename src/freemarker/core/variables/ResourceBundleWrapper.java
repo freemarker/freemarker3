@@ -33,7 +33,7 @@ import static freemarker.core.variables.Wrap.unwrap;
  * 
  * @author Attila Szegedi
  */
-public class ResourceBundleWrapper implements WrappedMethod, Hash {
+public class ResourceBundleWrapper implements Callable, Hash {
     private Hashtable<String, MessageFormat> formats = null;
     private ResourceBundle bundle;
 

@@ -7,7 +7,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.ParentheticalExpression;
 import freemarker.core.variables.Hash;
-import freemarker.core.variables.WrappedMethod;
+import freemarker.core.variables.Callable;
 import freemarker.core.variables.InvalidReferenceException;
 
 import static freemarker.core.variables.Wrap.*;
@@ -34,7 +34,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
             if(value == null || value == JAVA_NULL) {
                 return FirstDefined.INSTANCE;
             }
-            return new WrappedMethod() {
+            return new Callable() {
                 public Object exec(Object... arguments) {
                     return value;
                 }
@@ -76,7 +76,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
         }
     };
 
-    private static class FirstDefined implements WrappedMethod {
+    private static class FirstDefined implements Callable {
         static final FirstDefined INSTANCE = new FirstDefined();
         public Object exec(Object... args) {
             for (Object arg : args) {

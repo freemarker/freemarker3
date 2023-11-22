@@ -102,7 +102,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class ChunkFunction implements WrappedMethod {
+    static class ChunkFunction implements Callable {
 
         private final List tsm;
 
@@ -440,7 +440,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SortByMethod implements WrappedMethod {
+    static class SortByMethod implements Callable {
         List seq;
 
         SortByMethod(List seq) {
@@ -485,7 +485,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SequenceIndexOf implements WrappedMethod {
+    static class SequenceIndexOf implements Callable {
 
         private final List sequence;
         private final boolean reverse;
