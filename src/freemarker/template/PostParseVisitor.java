@@ -185,6 +185,11 @@ class PostParseVisitor extends Node.Visitor {
 		node.getNestedBlock().declareVariable(node.getIndexName());
 		node.getNestedBlock().declareVariable(node.getIndexName() + "_has_next");
 		node.getNestedBlock().declareVariable(node.getIndexName() + "_index");
+		if (node.getValueVarName() != null) {
+			node.getNestedBlock().declareVariable(node.getValueVarName());
+			node.getNestedBlock().declareVariable(node.getValueVarName() + "_has_next");
+			node.getNestedBlock().declareVariable(node.getValueVarName() + "_index");
+		}
 		recurse(node);
 	}
 	

@@ -177,6 +177,10 @@ ListBlock#IteratorBlock :
    Expression
    <AS>
    <ID>
+   [
+      <COMMA>
+      <ID>
+   ]
    <DIRECTIVE_END>
    Block
    CloseDirectiveBlock(start)
@@ -186,6 +190,10 @@ ForEachBlock#IteratorBlock :
 {Token start;}
    start=<FOREACH> 
    <ID>
+   [ 
+      <COMMA>
+      <ID>
+   ]
    <IN>
    Expression
    <DIRECTIVE_END>
@@ -207,28 +215,46 @@ INJECT IteratorBlock :
         return get(0).getType() == FOREACH;
     }
 
+    public boolean isOverMap() {
+        return firstChildOfType(COMMA) != null;
+    }
+
     public String getIndexName() {
         return isForeach() ? get(1).toString() : get(3).toString();
     }
+
+    public String getValueVarName() {
+        Node comma = firstChildOfType(COMMA);
+        return comma == null ? null : comma.nextSibling().toString();
+    }
     
     public Expression getListExpression() {
-        return isForeach() ? (Expression) get(3) : (Expression) get(1);
+        if (!isForeach()) return (Expression) get(1);
+        return isOverMap() ? (Expression) get(5) : (Expression) get(3);
     }
 
     public void execute(Environment env) throws IOException {
         Object listVar = getListExpression().evaluate(env);
         getListExpression().assertNonNull(listVar, env);
-        if (!isIterable(listVar)) {
-            throw TemplateNode.invalidTypeException(listVar, getListExpression(), env, "collection or sequence");            
+        if (!isOverMap()) {
+            if (!isIterable(listVar)) {
+                throw TemplateNode.invalidTypeException(listVar, getListExpression(), env, "collection or sequence");            
+            }
+            env.process(asIterator(listVar), getNestedBlock(), getIndexName());
+        } else if (listVar instanceof Map || listVar instanceof Hash) {
+            env.process(listVar, getNestedBlock(), getIndexName(), getValueVarName());
         }
-        env.process(asIterator(listVar), getNestedBlock(), getIndexName());
+        else {
+            String message = "Expecting map or hash, at " + getListExpression().getLocation();
+            throw new EvaluationException(message);
+        }
     }
 
     public String getDescription() {
         return isForeach() ?
-            "foreach " + getIndexName() + " in " + getListExpression() 
+            "foreach " + getIndexName() + (getValueVarName() == null ? "" : "," + getValueVarName()) + " in " + getListExpression() 
             :
-            "list " + getListExpression() + " as " + getIndexName();
+            "list " + getListExpression() + " as " + getIndexName() + (getValueVarName() == null ? "" : "," + getValueVarName());
     }
 }
 

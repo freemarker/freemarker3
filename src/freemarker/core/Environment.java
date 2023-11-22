@@ -49,6 +49,7 @@ import static freemarker.core.variables.Wrap.*;
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  * @author Attila Szegedi
  */
+@SuppressWarnings("rawtypes")
 public final class Environment extends Configurable implements Scope {
     private static final ThreadLocal<Environment> threadEnv = new ThreadLocal<Environment>();
 
@@ -308,6 +309,46 @@ public final class Environment extends Configurable implements Scope {
                 currentScope.put(loopVarName, wrap(it.next()));
                 currentScope.put(hasNextName, it.hasNext());
                 currentScope.put(indexName, index++);
+                render(block);
+            }
+        } catch (BreakException br) {
+        } catch (TemplateException te) {
+            handleTemplateException(te);
+        } finally {
+            currentScope = prevScope;
+        }
+    }
+
+    public void process(Object mapOrHash, Block block, String keyName, String valueName) throws IOException {
+        Iterator it = null;
+        Hash hash = null;
+        Map map = null;
+        if (mapOrHash instanceof Map) {
+            map = (Map) mapOrHash;
+            it = map.keySet().iterator();
+        }
+        else {
+            hash = (Hash) mapOrHash;
+            it = hash.keys().iterator();
+        }
+        Scope prevScope = currentScope;
+        int index = 0;
+        String keyHasNext = keyName + "_has_next";
+        String valueHasNext = valueName + "_has_next";
+        String keyIndexName = keyName + "_index";
+        String valueIndexName = valueName + "_index";
+        try {
+            while (it.hasNext()) {
+                currentScope = new BlockScope(block, prevScope);
+                Object key = it.next();
+                Object value = map != null ? map.get(key) : hash.get(key.toString());
+                boolean hasNext = it.hasNext();
+                currentScope.put(keyName, wrap(key));
+                currentScope.put(valueName, wrap(value));
+                currentScope.put(keyHasNext, hasNext);
+                currentScope.put(valueHasNext, hasNext);
+                currentScope.put(keyIndexName, index);
+                currentScope.put(valueIndexName, index++);
                 render(block);
             }
         } catch (BreakException br) {
