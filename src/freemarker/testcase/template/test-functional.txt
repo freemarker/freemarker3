@@ -1,0 +1,12 @@
+${upper("kilroy")}
+${lower("KilRoy")}
+${index("England", "land")}
+${concat("one",2,3,4,"five")}
+${last_index("instagram", "a")}
+
+#var table = {"func1" : upper, "func2" : lower}
+
+${table.func1("Yes, sir")}
+${table["func2"]("No, Ma'am")}
+
+${table::get("func2")("Yah, Mon!")}

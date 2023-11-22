@@ -55,6 +55,7 @@
    <testcase name="embed" filename="test-embed.ftl"/>
    <testcase name="encoding-builtins" filename="test-encodingbuiltins.txt" />
    <testcase name="escapes" filename="test-escapes.txt" />
+   <testcase name="functional" filename="test-functional.txt" />
    <testcase name="hashliteral" filename="test-hashliteral.html" />
    <testcase name="identifier" filename="test-identifier.html" />
    <testcase name="import" filename="test-import.txt">

@@ -6,6 +6,7 @@ import freemarker.core.variables.*;
 import freemarker.testcase.models.*;
 import junit.framework.*;
 import java.util.*;
+import java.util.function.*;
 import java.io.*;
 
 public class TemplateTestCase extends TestCase {
@@ -147,6 +148,25 @@ public class TemplateTestCase extends TestCase {
             cal.setTimeZone(TimeZone.getTimeZone("GMT"));
             dataModel.put("date", new DateWrapper(cal.getTime(), TemplateDateModel.DATETIME));
             dataModel.put("unknownDate", new DateWrapper(cal.getTime(), TemplateDateModel.UNKNOWN));
+        }
+
+        else if (testName.equals("functional")) {
+            Function<String,String> upper = s->s.toUpperCase();
+            dataModel.put("upper", upper);
+            dataModel.put("lower", (Function<String,String>) String::toLowerCase);
+            dataModel.put("index", (BiFunction<String,String,Integer>) (s,t)->s.indexOf(t));
+            dataModel.put("last_index", (BiFunction<String,String,Integer>) String::lastIndexOf);
+            VarArgsFunction<String> concat = args -> {
+                String result = "";
+                boolean first = true;
+                for (Object arg : args) {
+                    if (!first) result += ", ";
+                    result += arg;
+                    first = false;
+                }
+                return result;
+            };
+            dataModel.put("concat", concat);
         }
 
         else if (testName.equals("number-literal")) {
