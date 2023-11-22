@@ -283,10 +283,10 @@ public class TemplateTestCase extends TestCase {
     }
     
     @Parameters("foo")    
-    static class TestMethod implements LegacyWrappedMethod {
-      public Object exec(java.util.List<Object> arguments) {
-          return "Parameter foo is: " + arguments.get(0);
-      }
+    static class TestMethod implements WrappedMethod {
+        public Object exec(Object... arguments) {
+            return "Parameter foo is: " + arguments[0];
+        }
     }
     
     static class TestNode implements WrappedNode {

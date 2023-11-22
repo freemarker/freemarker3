@@ -1465,29 +1465,38 @@ INJECT ArgsList :
 		FMParser parser = new FMParser(token_source);
 		return parser.ParameterList();
 	}
-	
-	@SuppressWarnings("deprecation")
-	private static Parameters getAnnotatedParameters(Object target) {
-		Parameters params = null;
-		Method keyMethod = null;
-		if (target instanceof LegacyWrappedMethod) {
-			try {
-				keyMethod = target.getClass().getMethod("exec", new Class[] {List.class});
-			} catch (Exception e) {
-				// Again, this condition should be impossible. If something is
-				// a LegacyWrappedMethod, it must implement this exec method.
-				throw new InternalError(e.getMessage());
-			}
-		}
-		if (keyMethod != null) {
-			params = keyMethod.getAnnotation(Parameters.class);
-		}
-		if (params == null) {
-			// Check if the class is annotated now
-			params = target.getClass().getAnnotation(Parameters.class);
-		}
-		return params;
-	}
+
+    @SuppressWarnings("deprecation")
+    private static Parameters getAnnotatedParameters(Object target) {
+        Parameters params = null;
+        Method keyMethod = null;
+        if (target instanceof LegacyWrappedMethod) {
+            try {
+                keyMethod = target.getClass().getMethod("exec", new Class[] {List.class});
+            } catch (Exception e) {
+                // This condition should be impossible. If something is
+                // a LegacyWrappedMethod, it must implement this method.
+                throw new InternalError(e.getMessage());
+            }
+        }
+        else if (target instanceof WrappedMethod) {
+            try {
+                keyMethod = target.getClass().getMethod("exec", new Class[] {new Object[0].getClass()});
+            } catch (Exception e) {
+                // Again, this condition should be impossible. If something is
+                // a WrappedMethod, it must implement this method.
+                throw new InternalError(e.getMessage());
+            }
+        }
+        if (keyMethod != null) {
+            params = keyMethod.getAnnotation(Parameters.class);
+        }
+        if (params == null) {
+            // Check if the class is annotated now
+            params = target.getClass().getAnnotation(Parameters.class);
+        }
+        return params;
+    }
 	
 	public abstract ArgsList deepClone(String name, Expression subst);
 }

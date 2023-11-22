@@ -37,7 +37,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     }
 	
 	
-    static class BooleanFormatter implements LegacyWrappedMethod  
+    static class BooleanFormatter implements WrappedMethod  
     {
         private final Object bool;
         private final Environment env;
@@ -55,19 +55,19 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public Object exec(List arguments)
+        public Object exec(Object... arguments)
                 {
-            if (arguments.size() != 2) {
+            if (arguments.length != 2) {
                 throw new EvaluationException(
                         "boolean?string(...) requires exactly "
                         + "2 arguments.");
             }
-            return asString(arguments.get(asBoolean(bool) ? 0 : 1));
+            return asString(arguments[asBoolean(bool) ? 0 : 1]);
         }
     }
     
     
-    static class DateFormatter implements Hash, LegacyWrappedMethod {
+    static class DateFormatter implements Hash, WrappedMethod {
         private final Date date;
         private final int dateType;
         private final Environment env;
@@ -92,13 +92,13 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             return env.getDateFormatObject(dateType, key).format(date);
         }
         
-        public Object exec(List arguments)
+        public Object exec(Object... arguments)
             {
-            if (arguments.size() != 1) {
+            if (arguments.length != 1) {
                 throw new EvaluationException(
                         "date?string(...) requires exactly 1 argument.");
             }
-            return get((String) arguments.get(0));
+            return get((String) arguments[0]);
         }
 
         public boolean isEmpty()
@@ -107,7 +107,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
     }
     
-    static class NumberFormatter implements Hash, LegacyWrappedMethod {
+    static class NumberFormatter implements Hash, WrappedMethod {
         private final Number number;
         private final Environment env;
         private final NumberFormat defaultFormat;
@@ -134,12 +134,12 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
         
         @Parameters("format")
-        public Object exec(List arguments) {
-            if (arguments.size() != 1) {
+        public Object exec(Object... arguments) {
+            if (arguments.length != 1) {
                 throw new EvaluationException(
                         "number?string(...) requires exactly 1 argument.");
             }
-            return get(asString(arguments.get(0)));
+            return get(asString(arguments[0]));
         }
 
         public boolean isEmpty()

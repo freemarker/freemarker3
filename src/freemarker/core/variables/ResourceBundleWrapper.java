@@ -1,9 +1,9 @@
 package freemarker.core.variables;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -33,7 +33,7 @@ import static freemarker.core.variables.Wrap.unwrap;
  * 
  * @author Attila Szegedi
  */
-public class ResourceBundleWrapper implements LegacyWrappedMethod, Hash {
+public class ResourceBundleWrapper implements WrappedMethod, Hash {
     private Hashtable<String, MessageFormat> formats = null;
     private ResourceBundle bundle;
 
@@ -46,19 +46,19 @@ public class ResourceBundleWrapper implements LegacyWrappedMethod, Hash {
      * with this key, then applies a MessageFormat.format on the string with the
      * rest of the arguments. The created MessageFormats are cached for later reuse.
      */
-    public Object exec(List<Object> arguments) throws EvaluationException {
+    public Object exec(Object... arguments) throws EvaluationException {
         // Must have at least one argument - the key
-        if (arguments.size() < 1)
+        if (arguments.length < 1)
             throw new EvaluationException("No message key was specified");
         // Read it
-        Iterator it = arguments.iterator();
+        Iterator<Object> it = Arrays.asList(arguments).iterator();
         String key = asString(it.next());
         try {
             if (!it.hasNext()) {
                 return wrap(bundle.getObject(key));
             }
             // Copy remaining arguments into an Object[]
-            int args = arguments.size() - 1;
+            int args = arguments.length - 1;
             Object[] params = new Object[args];
             for (int i = 0; i < args; ++i) {
                 params[i] = unwrap(it.next());

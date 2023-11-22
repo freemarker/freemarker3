@@ -1,15 +1,13 @@
 package freemarker.testcase.models;
 
-import freemarker.core.variables.*;
-import java.util.*;
-import static freemarker.core.variables.Wrap.asString;
+import freemarker.core.variables.WrappedMethod;
 
 /**
  * Testcase to see how FreeMarker deals with multiple Template models.
  *
  * @version $Id: MultiModel2.java,v 1.15 2004/01/06 17:06:44 szegedia Exp $
  */
-public class MultiModel2 implements  LegacyWrappedMethod {
+public class MultiModel2 implements  WrappedMethod {
 
     /**
      * Returns the scalar's value as a String.
@@ -29,7 +27,7 @@ public class MultiModel2 implements  LegacyWrappedMethod {
      * of all the arguments
      */
     @Override
-    public String exec(List arguments) {
+    public String exec(Object... arguments) {
         StringBuilder  aResults = new StringBuilder( "Arguments are:<br />" );
         for (Object arg : arguments) {
             aResults.append(arg);

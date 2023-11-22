@@ -7,10 +7,6 @@ package freemarker.core.variables;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Objects that act as methods in a template data model implement this 
- * interface.
- */
 public interface LegacyWrappedMethod extends WrappedMethod {
 
     public Object exec(List<Object> arguments);

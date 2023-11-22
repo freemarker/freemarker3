@@ -1,32 +1,21 @@
 package freemarker.testcase.models;
 
-import java.util.*;
-import freemarker.core.variables.LegacyWrappedMethod;
-import static freemarker.core.variables.Wrap.asString;
+import java.util.Arrays;
+import java.util.Iterator;
+import freemarker.core.variables.WrappedMethod;
 
 /**
  * Another test of the interaction between MethodModels and TransformModels.
  *
  * @version $Id: TransformMethodWrapper2.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class TransformMethodWrapper2 implements LegacyWrappedMethod {
+public class TransformMethodWrapper2 implements WrappedMethod {
 
-    /**
-     * Executes a method call.
-     *
-     * @param arguments a <tt>List</tt> of <tt>String</tt> objects containing
-     * the values of the arguments passed to the method.
-     * @return the <tt>WrappedVariable</tt> produced by the method, or null.
-     */
-    public Object exec(List arguments) {
+    public Object exec(Object... arguments) {
         TransformModel1 cTransformer = new TransformModel1();
-        Iterator    iArgument = arguments.iterator();
-
-        // Sets up properties of the Transform model based on the arguments
-        // passed into this method
-
+        Iterator<Object> iArgument = Arrays.asList(arguments).iterator();
         while( iArgument.hasNext() ) {
-            String  aArgument = asString(iArgument.next());
+            String aArgument = iArgument.next().toString();
             if( aArgument.equals( "quote" )) {
                 cTransformer.setQuotes( true );
             } else if( aArgument.equals( "tag" )) {
@@ -37,8 +26,6 @@ public class TransformMethodWrapper2 implements LegacyWrappedMethod {
                 cTransformer.setComment( aArgument );
             }
         }
-
-        // Now return the transform class.
         return cTransformer;
     }
 }

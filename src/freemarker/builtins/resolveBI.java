@@ -6,7 +6,8 @@ import freemarker.core.variables.scope.Scope;
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
-import freemarker.core.variables.LegacyWrappedMethod;
+import freemarker.core.variables.WrappedMethod;
+//import freemarker.core.variables.WrappedMethod;
 import freemarker.template.TemplateException;
 
 /**
@@ -16,18 +17,12 @@ import freemarker.template.TemplateException;
 public class resolveBI extends ExpressionEvaluatingBuiltIn {
 
     @Override
-    public Object get(Environment env, BuiltInExpression caller,
-            Object model) 
+    public WrappedMethod get(Environment env, BuiltInExpression caller, Object lhs) 
     {
-        if (!(model instanceof Scope)) {
+        if (!(lhs instanceof Scope)) {
             throw new TemplateException("Expecting scope on left of ?resolve built-in", env);
         }
-        final Scope scope = (Scope) model;
-        return new LegacyWrappedMethod() {
-            @Parameters("key")
-            public Object exec(List args) {
-                return scope.resolveVariable((String) args.get(0)); 
-            }
-        };
+        Scope scope = (Scope) lhs;
+        return args->scope.resolveVariable((String)args[0]);
     }
 }
