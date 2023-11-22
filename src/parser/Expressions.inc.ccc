@@ -1175,9 +1175,13 @@ INJECT MethodCall :
     import java.io.Writer;
     import java.io.IOException;
     import java.io.StringWriter;
+    import java.util.function.BiFunction;
+    import java.util.function.Function;
+    import java.util.function.Supplier;
     import freemarker.core.Environment;
     import freemarker.core.variables.*;
     import static freemarker.core.variables.Wrap.wrap;
+    import static freemarker.core.variables.Wrap.unwrap;
     implements Expression;
 {
 
@@ -1203,6 +1207,16 @@ INJECT MethodCall :
             Object result = targetMethod.call(argumentList.toArray(new Object[argumentList.size()]));
             return wrap(result);
         }
+        else if (value instanceof Supplier) {
+            Object result = ((Supplier)value).get();
+            return wrap(result);
+        }
+        else if (value instanceof Function) {
+            Expression argExp = (Expression)getArgs().get(0);
+            Object arg = unwrap(argExp.evaluate(env));
+            Object result = ((Function)value).apply(arg);
+            return wrap(result);
+        }
         else if (value instanceof Macro) {
             Macro func = (Macro) value;
             StringWriter sw = null;
@@ -1222,9 +1236,7 @@ INJECT MethodCall :
             }
             return sw != null ? sw.getBuffer().toString() : env.getLastReturnValue();
         }
-        else {
-            throw invalidTypeException(value, getTarget(), env, "method");
-        }
+        throw invalidTypeException(value, getTarget(), env, "method");
     }
 
     public Expression _deepClone(String name, Expression subst) {
