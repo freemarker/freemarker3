@@ -206,7 +206,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 keys = null;
             } else {
                 for (i = 0; i < keyCnt; i++) {
-                    if (!(item instanceof Hash)) {
+                    if (!(item instanceof TemplateHashModel)) {
                         throw new EvaluationException(
                                 "sorting failed: "
                                 + (i == 0 ? "You can't use ?sort_by when the "
@@ -221,7 +221,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                                             + " subvariable."));
                     }
 
-                    item = ((Hash) item).get(keys[i]);
+                    item = ((TemplateHashModel) item).get(keys[i]);
                     if (item == null) {
                         throw new EvaluationException(
                                 "sorting failed: "
@@ -283,7 +283,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 for (i = 0; i < ln; i++) {
                     item = seq.get(i);
                     try {
-                        result.add(new KVP(((WrappedDate) item).getAsDate(),
+                        result.add(new KVP(((TemplateDateModel) item).getAsDate(),
                                 item));
                     } catch (ClassCastException e) {
                         if (!(item instanceof Number)) {
@@ -308,9 +308,9 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                 Object key = item;
                 for (int j = 0; j < keyCnt; j++) {
                     try {
-                        key = ((Hash) key).get(keys[j]);
+                        key = ((TemplateHashModel) key).get(keys[j]);
                     } catch (ClassCastException e) {
-                        if (!(key instanceof Hash)) {
+                        if (!(key instanceof TemplateHashModel)) {
                             throw new EvaluationException(
                                     "sorting failed: " 
                                     + "Problem with the sequence item at index "
@@ -358,10 +358,10 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     }
                 } else if (keyType == KEY_TYPE_DATE) {
                     try {
-                        result.add(new KVP(((WrappedDate) key).getAsDate(),
+                        result.add(new KVP(((TemplateDateModel) key).getAsDate(),
                                 item));
                     } catch (ClassCastException e) {
-                        if (!(key instanceof WrappedDate)) {
+                        if (!(key instanceof TemplateDateModel)) {
                             throw new EvaluationException(
                                     "sorting failed: "
                                     + "All key values in the sequence must be "

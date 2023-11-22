@@ -6,7 +6,7 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Expression;
 import freemarker.core.nodes.generated.ParentheticalExpression;
-import freemarker.core.variables.Hash;
+import freemarker.core.variables.TemplateHashModel;
 import freemarker.core.variables.Callable;
 import freemarker.core.variables.InvalidReferenceException;
 
@@ -63,8 +63,8 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
             if (value instanceof Map) {
                 return !((Map<?,?>) value).isEmpty();
             }
-            if (value instanceof Hash) {
-                return !((Hash)value).isEmpty();
+            if (value instanceof TemplateHashModel) {
+                return !((TemplateHashModel)value).isEmpty();
             }
             return value.toString().length() > 0;
         }

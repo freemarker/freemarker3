@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.ArrayList;
 import static freemarker.xml.ElementModel.isXMLID;
 
-class NodeListModel implements TemplateSequenceModel, Hash {
+class NodeListModel implements TemplateSequenceModel, TemplateHashModel {
 
     WrappedDomNode contextNode;
     XPathSupport xpathSupport;

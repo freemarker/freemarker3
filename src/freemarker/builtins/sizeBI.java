@@ -3,7 +3,7 @@ package freemarker.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.variables.Hash;
+import freemarker.core.variables.TemplateHashModel;
 import freemarker.template.TemplateSequenceModel;
 
 import java.lang.reflect.Array;
@@ -27,8 +27,8 @@ public class sizeBI extends ExpressionEvaluatingBuiltIn {
         else if (value instanceof TemplateSequenceModel) {
             return ((TemplateSequenceModel) value).size();
         }
-        else if (value instanceof Hash) {
-            return ((Hash) value).size();
+        else if (value instanceof TemplateHashModel) {
+            return ((TemplateHashModel) value).size();
         }
         else if (value.getClass().isArray()) {
             return Array.getLength(value);

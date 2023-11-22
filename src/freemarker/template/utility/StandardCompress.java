@@ -119,7 +119,7 @@ public class StandardCompress implements UserDirective {
                 throw new EvaluationException("Expecting numerical argument to " + BUFFER_SIZE_KEY);
             }
             try {
-                Truthy flag = (Truthy)args.get(SINGLE_LINE_KEY);
+                TemplateBooleanModel flag = (TemplateBooleanModel)args.get(SINGLE_LINE_KEY);
                 if (flag != null)
                     singleLine = flag.getAsBoolean();
             } catch (ClassCastException e) {

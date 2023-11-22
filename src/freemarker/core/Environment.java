@@ -321,14 +321,14 @@ public final class Environment extends Configurable implements Scope {
 
     public void process(Object mapOrHash, Block block, String keyName, String valueName) throws IOException {
         Iterator it = null;
-        Hash hash = null;
+        TemplateHashModel hash = null;
         Map map = null;
         if (mapOrHash instanceof Map) {
             map = (Map) mapOrHash;
             it = map.keySet().iterator();
         }
         else {
-            hash = (Hash) mapOrHash;
+            hash = (TemplateHashModel) mapOrHash;
             it = hash.keys().iterator();
         }
         Scope prevScope = currentScope;
@@ -725,22 +725,22 @@ public final class Environment extends Configurable implements Scope {
 
     public DateFormat getDateFormatObject(int dateType) {
         switch (dateType) {
-            case WrappedDate.UNKNOWN: {
+            case TemplateDateModel.UNKNOWN: {
                 return null;
             }
-            case WrappedDate.TIME: {
+            case TemplateDateModel.TIME: {
                 if (timeFormat == null) {
                     timeFormat = getDateFormatObject(dateType, getTimeFormat());
                 }
                 return timeFormat;
             }
-            case WrappedDate.DATE: {
+            case TemplateDateModel.DATE: {
                 if (dateFormat == null) {
                     dateFormat = getDateFormatObject(dateType, getDateFormat());
                 }
                 return dateFormat;
             }
-            case WrappedDate.DATETIME: {
+            case TemplateDateModel.DATETIME: {
                 if (dateTimeFormat == null) {
                     dateTimeFormat = getDateFormatObject(dateType,
                             getDateTimeFormat());
@@ -757,10 +757,10 @@ public final class Environment extends Configurable implements Scope {
     public DateFormat getDateFormatObject(int dateType, String pattern) {
         if (dateFormats == null) {
             dateFormats = new Map[4];
-            dateFormats[WrappedDate.UNKNOWN] = new HashMap<String, DateFormat>();
-            dateFormats[WrappedDate.TIME] = new HashMap<String, DateFormat>();
-            dateFormats[WrappedDate.DATE] = new HashMap<String, DateFormat>();
-            dateFormats[WrappedDate.DATETIME] = new HashMap<String, DateFormat>();
+            dateFormats[TemplateDateModel.UNKNOWN] = new HashMap<String, DateFormat>();
+            dateFormats[TemplateDateModel.TIME] = new HashMap<String, DateFormat>();
+            dateFormats[TemplateDateModel.DATE] = new HashMap<String, DateFormat>();
+            dateFormats[TemplateDateModel.DATETIME] = new HashMap<String, DateFormat>();
         }
         Map<String, DateFormat> typedDateFormat = dateFormats[dateType];
 
@@ -784,7 +784,7 @@ public final class Environment extends Configurable implements Scope {
                         .nextToken()) : DateFormat.DEFAULT;
                 if (style != -1) {
                     switch (dateType) {
-                        case WrappedDate.UNKNOWN: {
+                        case TemplateDateModel.UNKNOWN: {
                             throw new EvaluationException(
                                     "Can't convert the date to string using a "
                                             + "built-in format, because it is not known which "
@@ -793,15 +793,15 @@ public final class Environment extends Configurable implements Scope {
                                             + "?string.<format> or ?string(<format>) built-in "
                                             + "with explicit formatting pattern with this date.");
                         }
-                        case WrappedDate.TIME: {
+                        case TemplateDateModel.TIME: {
                             format = DateFormat.getTimeInstance(style, locale);
                             break;
                         }
-                        case WrappedDate.DATE: {
+                        case TemplateDateModel.DATE: {
                             format = DateFormat.getDateInstance(style, locale);
                             break;
                         }
-                        case WrappedDate.DATETIME: {
+                        case TemplateDateModel.DATETIME: {
                             int timestyle = tok.hasMoreTokens() ? parseDateStyleToken(tok
                                     .nextToken())
                                     : style;
@@ -1036,8 +1036,8 @@ public final class Environment extends Configurable implements Scope {
      * of the root hash passed to the <code>Template.process(...)</code>, and
      * the shared variables in the <code>Configuration</code>.
      */
-    public Hash getDataModel() {
-        final Hash result = new Hash() {
+    public TemplateHashModel getDataModel() {
+        final TemplateHashModel result = new TemplateHashModel() {
             public boolean isEmpty() {
                 return false;
             }

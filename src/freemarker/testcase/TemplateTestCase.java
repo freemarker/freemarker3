@@ -145,8 +145,8 @@ public class TemplateTestCase extends TestCase {
         else if (testName.equals("dateformat")) {
             GregorianCalendar cal = new GregorianCalendar(2002, 10, 15, 14, 54, 13);
             cal.setTimeZone(TimeZone.getTimeZone("GMT"));
-            dataModel.put("date", new DateWrapper(cal.getTime(), WrappedDate.DATETIME));
-            dataModel.put("unknownDate", new DateWrapper(cal.getTime(), WrappedDate.UNKNOWN));
+            dataModel.put("date", new DateWrapper(cal.getTime(), TemplateDateModel.DATETIME));
+            dataModel.put("unknownDate", new DateWrapper(cal.getTime(), TemplateDateModel.UNKNOWN));
         }
 
         else if (testName.equals("number-literal")) {
@@ -272,7 +272,7 @@ public class TemplateTestCase extends TestCase {
         }
     }
     
-    static class TestBoolean implements Truthy {
+    static class TestBoolean implements TemplateBooleanModel {
         public boolean getAsBoolean() {
             return true;
         }

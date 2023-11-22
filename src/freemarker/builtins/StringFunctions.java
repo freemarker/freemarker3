@@ -248,7 +248,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
 
     static class RegexMatchModel 
-    implements Truthy, TemplateSequenceModel {
+    implements TemplateBooleanModel, TemplateSequenceModel {
         Matcher matcher;
         String input;
         final boolean matches;

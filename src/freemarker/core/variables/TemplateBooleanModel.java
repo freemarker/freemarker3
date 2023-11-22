@@ -6,7 +6,7 @@ package freemarker.core.variables;
  * is already implicit via some rules of thumb, like an empty container
  * is taken to be false.
  */
-public interface Truthy {
+public interface TemplateBooleanModel {
 
     /**
      * @return whether to interpret this object as true or false in a boolean context

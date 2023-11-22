@@ -25,7 +25,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = value instanceof Number;
 		}
 		else if (builtInName == "is_date") {
-			result = value instanceof WrappedDate;
+			result = value instanceof TemplateDateModel;
 		}
 		else if (builtInName == "is_enumerable" || builtInName == "is_collection") {
 			result = isIterable(value);
@@ -43,10 +43,10 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = isBoolean(value);
 		}
 		else if (builtInName == "is_hash") {
-			result = value instanceof Hash;
+			result = value instanceof TemplateHashModel;
 		}
 		else if (builtInName == "is_hash_ex") {
-			result = value instanceof Hash;
+			result = value instanceof TemplateHashModel;
 		}
 		else if (builtInName == "is_method") {
 			result = value instanceof Callable;

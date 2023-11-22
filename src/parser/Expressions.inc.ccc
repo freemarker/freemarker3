@@ -32,8 +32,8 @@ INJECT Expression :
         if (referent instanceof Number) {
             return env.formatNumber((Number)referent);
         }
-        if (referent instanceof WrappedDate) {
-            WrappedDate dm = (WrappedDate) referent;
+        if (referent instanceof TemplateDateModel) {
+            TemplateDateModel dm = (TemplateDateModel) referent;
             return env.formatDate(getDate(dm, this, env), dm.getDateType());
         }
         if (isString(referent)) {
@@ -252,8 +252,8 @@ INJECT DotVariable :
             } 
             return wrap(value);
         }
-        if (lhs instanceof Hash) {
-            return wrap(((Hash) lhs).get(getKey()));
+        if (lhs instanceof TemplateHashModel) {
+            return wrap(((TemplateHashModel) lhs).get(getKey()));
         }
         return ReflectionCode.getProperty(lhs, getKey(), getTemplate().legacySyntax());
     }
@@ -932,7 +932,7 @@ INJECT BuiltinVariable :
         return this;
     }
 
-    static class VarsHash implements Hash {
+    static class VarsHash implements TemplateHashModel {
         
         private final Environment env;
         
@@ -1025,7 +1025,7 @@ import java.util.HashMap;
 
     import freemarker.core.Environment;
     import freemarker.builtins.*;
-    import freemarker.core.variables.WrappedDate;
+    import freemarker.core.variables.TemplateDateModel;
     implements Expression;
 {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();
@@ -1118,9 +1118,9 @@ import java.util.HashMap;
         knownBuiltins.put("namespace", new MacroBuiltins.Namespace());
         knownBuiltins.put("keys", new HashBuiltin.Keys());
         knownBuiltins.put("values", new HashBuiltin.Values());
-        knownBuiltins.put("date", new DateTime(WrappedDate.DATE));
-        knownBuiltins.put("time", new DateTime(WrappedDate.TIME));
-        knownBuiltins.put("datetime", new DateTime(WrappedDate.DATETIME));
+        knownBuiltins.put("date", new DateTime(TemplateDateModel.DATE));
+        knownBuiltins.put("time", new DateTime(TemplateDateModel.TIME));
+        knownBuiltins.put("datetime", new DateTime(TemplateDateModel.DATETIME));
         knownBuiltins.put("is_defined", new ExistenceBuiltIn.IsDefinedBuiltIn());
         knownBuiltins.put("default", new ExistenceBuiltIn.DefaultBuiltIn());
         knownBuiltins.put("has_content", new ExistenceBuiltIn.HasContentBuiltIn());

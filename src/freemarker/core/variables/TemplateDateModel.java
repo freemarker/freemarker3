@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @version $Id: WrappedDate.java,v 1.10 2004/03/13 13:05:09 ddekany Exp $
  */
-public interface WrappedDate extends WrappedVariable {
+public interface TemplateDateModel extends WrappedVariable {
     /**
      * It is not known whether the date object represents a time-only,
      * a date-only, or a datetime value.

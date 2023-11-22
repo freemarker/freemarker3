@@ -35,7 +35,7 @@ import freemarker.core.variables.*;
  * @author <a href="mailto:jon@revusky.com">Jonathan Revusky</a>
  * @version $Id: NodeModel.java,v 1.80 2005/06/22 11:33:31 ddekany Exp $
  */
-abstract public class WrappedDomNode implements WrappedNode, Hash, TemplateSequenceModel {
+abstract public class WrappedDomNode implements WrappedNode, TemplateHashModel, TemplateSequenceModel {
 
     static final Logger logger = Logger.getLogger("freemarker.dom");
 

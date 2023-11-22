@@ -5,7 +5,7 @@ package freemarker.core.variables;
  * key-value mappings. In FreeMarker 3, one will mostly just use Java API objects
  * that implement java.util.Map. 
  */
-public interface Hash {
+public interface TemplateHashModel {
     
     /**
      * Gets a variable from the hash.

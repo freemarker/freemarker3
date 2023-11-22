@@ -23,27 +23,27 @@ public class DateTime extends ExpressionEvaluatingBuiltIn {
 
     public Object get(Environment env, BuiltInExpression caller,
             Object model) {
-        if (model instanceof WrappedDate) {
-            WrappedDate dmodel = (WrappedDate) model;
+        if (model instanceof TemplateDateModel) {
+            TemplateDateModel dmodel = (TemplateDateModel) model;
             int dtype = dmodel.getDateType();
             // Any date model can be coerced into its own type
             if (dateType == dtype) {
                 return dmodel;
             }
             // unknown and datetime can be coerced into any date type
-            if (dtype == WrappedDate.UNKNOWN || dtype == WrappedDate.DATETIME) {
+            if (dtype == TemplateDateModel.UNKNOWN || dtype == TemplateDateModel.DATETIME) {
                 return new DateWrapper(dmodel.getAsDate(), dateType);
             }
             throw new TemplateException(
-                    "Cannot convert " + WrappedDate.TYPE_NAMES.get(dtype)
-                            + " into " + WrappedDate.TYPE_NAMES.get(dateType),
+                    "Cannot convert " + TemplateDateModel.TYPE_NAMES.get(dtype)
+                            + " into " + TemplateDateModel.TYPE_NAMES.get(dateType),
                     env);
         } else {
             return new DateParser(model.toString(), dateType, caller, env);
         }
     }
 
-    static class DateParser implements WrappedDate, Callable, Hash {
+    static class DateParser implements TemplateDateModel, Callable, TemplateHashModel {
         private final String text;
         private final Environment env;
         private final DateFormat defaultFormat;

@@ -7,7 +7,7 @@ package freemarker.core.variables;
  * interpreted in a string context (the default being to 
  * call Object.toString()). 
  */
-public interface WrappedString extends CharSequence, WrappedVariable {
+public interface TemplateScalarModel extends CharSequence, WrappedVariable {
 
     default String getAsString() {
         return toString();  

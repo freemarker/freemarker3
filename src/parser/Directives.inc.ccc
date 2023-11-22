@@ -241,7 +241,7 @@ INJECT IteratorBlock :
                 throw TemplateNode.invalidTypeException(listVar, getListExpression(), env, "collection or sequence");            
             }
             env.process(asIterator(listVar), getNestedBlock(), getIndexName());
-        } else if (listVar instanceof Map || listVar instanceof Hash) {
+        } else if (listVar instanceof Map || listVar instanceof TemplateHashModel) {
             env.process(listVar, getNestedBlock(), getIndexName(), getValueVarName());
         }
         else {

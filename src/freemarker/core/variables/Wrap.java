@@ -34,7 +34,7 @@ public class Wrap {
         }
     }
 
-    private static int defaultDateType = WrappedDate.UNKNOWN;
+    private static int defaultDateType = TemplateDateModel.UNKNOWN;
 
     private Wrap() {}
 
@@ -74,7 +74,7 @@ public class Wrap {
     }
 
     public static boolean isDate(Object obj) {
-        if (obj instanceof WrappedDate) {
+        if (obj instanceof TemplateDateModel) {
             return true;
         }
         if (obj instanceof WrappedVariable) {
@@ -87,28 +87,28 @@ public class Wrap {
     }
 
     public static Date asDate(Object obj) {
-        if (obj instanceof WrappedDate) {
-            return ((WrappedDate) obj).getAsDate();
+        if (obj instanceof TemplateDateModel) {
+            return ((TemplateDateModel) obj).getAsDate();
         }
         return (Date) obj;
     }
 
     public static boolean isString(Object obj) {
-        if (obj instanceof WrappedString) {
+        if (obj instanceof TemplateScalarModel) {
             return true;
         }
         return obj instanceof CharSequence;
     }
 
     public static String asString(Object obj) {
-        if (obj instanceof WrappedString) {
-            return ((WrappedString) obj).getAsString();
+        if (obj instanceof TemplateScalarModel) {
+            return ((TemplateScalarModel) obj).getAsString();
         }
         return obj.toString();
     }
 
     public static boolean isBoolean(Object obj) {
-        if (obj instanceof Truthy) {
+        if (obj instanceof TemplateBooleanModel) {
             return true;
         }
         if (obj instanceof WrappedVariable) {
@@ -118,8 +118,8 @@ public class Wrap {
     }
 
     public static boolean asBoolean(Object obj) {
-        if (obj instanceof Truthy) {
-            return ((Truthy) obj).getAsBoolean();
+        if (obj instanceof TemplateBooleanModel) {
+            return ((TemplateBooleanModel) obj).getAsBoolean();
         }
         return (Boolean) obj;
     }
@@ -155,7 +155,7 @@ public class Wrap {
      * Sets the default date type to use for dates that result from
      * a plain <tt>java.util.Date</tt> instead of <tt>java.sql.Date</tt> or
      * <tt>java.sql.Time</tt> or <tt>java.sql.Timestamp</tt>. Default value is
-     * {@link WrappedDate#UNKNOWN}.
+     * {@link TemplateDateModel#UNKNOWN}.
      * 
      * @param defaultDateType the new default date type.
      */
@@ -199,7 +199,7 @@ public class Wrap {
         return object;
     }
 
-    static public Date getDate(WrappedDate wrappedDate, Expression expr, Environment env)
+    static public Date getDate(TemplateDateModel wrappedDate, Expression expr, Environment env)
     {
         Date value = wrappedDate.getAsDate();
         if(value == null) {

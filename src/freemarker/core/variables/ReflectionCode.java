@@ -259,8 +259,8 @@ public class ReflectionCode {
             if (object instanceof Boolean) {
                 return (Boolean) object;
             }
-            if (object instanceof Truthy) {
-                return ((Truthy) object).getAsBoolean();
+            if (object instanceof TemplateBooleanModel) {
+                return ((TemplateBooleanModel) object).getAsBoolean();
             }
             return CAN_NOT_UNWRAP;
         }
@@ -292,9 +292,9 @@ public class ReflectionCode {
             }
             return CAN_NOT_UNWRAP;
         }
-        if (desiredType == Date.class && object instanceof WrappedDate) {
+        if (desiredType == Date.class && object instanceof TemplateDateModel) {
             // REVISIT
-            return ((WrappedDate) object).getAsDate();
+            return ((TemplateDateModel) object).getAsDate();
         }
         if (desiredType == String.class) { 
             return object.toString();

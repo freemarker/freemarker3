@@ -3,7 +3,7 @@ package freemarker.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.variables.Hash;
+import freemarker.core.variables.TemplateHashModel;
 import static freemarker.core.variables.Wrap.*;
 
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
     @Override
     public Object get(Environment env, BuiltInExpression caller, Object lhs) 
     {
-        if (!(lhs instanceof Hash) && !isMap(lhs)) {
+        if (!(lhs instanceof TemplateHashModel) && !isMap(lhs)) {
             throw TemplateNode.invalidTypeException(lhs, 
                     caller.getTarget(), env, "hash");
         }
@@ -33,7 +33,7 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
             if (hash instanceof Map) {
                 return new ArrayList(((Map)hash).keySet());
             }
-            return ((Hash) hash).keys();
+            return ((TemplateHashModel) hash).keys();
         }
     }
 
@@ -41,8 +41,8 @@ public abstract class HashBuiltin extends ExpressionEvaluatingBuiltIn {
         @Override
         public Iterable apply(Object hash)
         {
-            if (hash instanceof Hash) {
-                return ((Hash)hash).values();
+            if (hash instanceof TemplateHashModel) {
+                return ((TemplateHashModel)hash).values();
             }
             return new ArrayList(((Map) hash).values());
         }

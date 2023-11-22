@@ -80,8 +80,8 @@ public class DynamicKeyName extends TemplateNode implements Expression {
             }
             return wrap(obj);
         }
-        if (lhs instanceof Hash) {
-            return wrap(((Hash) lhs).get(key));
+        if (lhs instanceof TemplateHashModel) {
+            return wrap(((TemplateHashModel) lhs).get(key));
         }
         return ReflectionCode.getProperty(lhs, key, getTemplate().legacySyntax()) ;
     }

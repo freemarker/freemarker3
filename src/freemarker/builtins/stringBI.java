@@ -25,8 +25,8 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         if (model instanceof Number) {
             return new NumberFormatter((Number)model, env);
         }
-        if (model instanceof WrappedDate) {
-            WrappedDate dm = (WrappedDate) model;
+        if (model instanceof TemplateDateModel) {
+            TemplateDateModel dm = (TemplateDateModel) model;
             int dateType = dm.getDateType();
             return new DateFormatter(Wrap.getDate(dm, caller.getTarget(), env), dateType, env);
         }
@@ -67,7 +67,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     }
     
     
-    static class DateFormatter implements Hash, Callable {
+    static class DateFormatter implements TemplateHashModel, Callable {
         private final Date date;
         private final int dateType;
         private final Environment env;
@@ -81,7 +81,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
 
         public String toString() { 
-            if(dateType == WrappedDate.UNKNOWN) {
+            if(dateType == TemplateDateModel.UNKNOWN) {
                 throw new EvaluationException("Can't convert the date to string, because it is not known which parts of the date variable are in use. Use ?date, ?time or ?datetime built-in, or ?string.<format> or ?string(format) built-in with this date.");
             }
             return defaultFormat.format(date);
@@ -107,7 +107,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
     }
     
-    static class NumberFormatter implements Hash, Callable {
+    static class NumberFormatter implements TemplateHashModel, Callable {
         private final Number number;
         private final Environment env;
         private final NumberFormat defaultFormat;
