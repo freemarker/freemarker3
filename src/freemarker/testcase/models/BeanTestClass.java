@@ -1,6 +1,8 @@
 package freemarker.testcase.models;
 
 import junit.framework.AssertionFailedError;
+import java.util.function.Function;
+import freemarker.core.variables.Callable;
 
 /**
  * @author Attila Szegedi, szegedia at freemail dot hu
@@ -63,6 +65,20 @@ public class BeanTestClass extends BeanTestSuperclass implements BeanTestInterfa
         throw new AssertionFailedError("Not supposed to be called 1");
     }
 
+    public String varArgs2(Object... args) {
+        String result = "";
+        for (Object arg : args) {
+            result += arg;
+            result += "\n";
+        }
+        return result;
+    }
+
+    public int varArgs3(Object... args) {
+        return 64;
+    }
+    
+
     public String varArgs(String s) {
         /*
          * This isn't invoked ever, but is here only to have a 1-arg fixed
@@ -78,5 +94,21 @@ public class BeanTestClass extends BeanTestSuperclass implements BeanTestInterfa
 
     public String moreSpecific(Object s) {
         return "moreSpecific-Object";
+    }
+
+    static String hello(String name) {
+        return "Hello, " + name;
+    }
+
+    public Function<String, String> getHello() {
+        return BeanTestClass::hello;
+    }
+
+    public Callable<String> getByeBye() {
+        return this::varArgs2;
+    }
+
+    public Callable getOneMore() {
+        return this::varArgs3;
     }
 }

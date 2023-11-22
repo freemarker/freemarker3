@@ -3,12 +3,10 @@ package freemarker.core.variables;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import freemarker.template.TemplateMethodModel;
-
 import java.util.ArrayList;
 import static freemarker.core.variables.ReflectionCode.*;
 
-public class JavaMethodCall implements TemplateMethodModel {
+public class JavaMethodCall implements Callable<Object> {
 
     private String methodName;
     private Object target;
@@ -52,6 +50,33 @@ public class JavaMethodCall implements TemplateMethodModel {
     public boolean isInvalidMethodName() {
         return possibleMethods.size() == 0;
     }
+
+    public Object call(Object... params) {
+        if (isInvalidMethodName()) throw new EvaluationException("No such method " + methodName + " in class: " + target.getClass());
+        if (!isMethodOverloaded())  {
+            // If there is only one method of this name, just try to
+            // call it and that's that! This is the percentage case, after all.
+            return invokeMethod(target, possibleMethods.get(0), params);
+        }
+        Method method = getCachedMethod(target, methodName, params);
+        if (method != null) {
+            // If we have already figured out which method
+            // to call and cached it, then we use that! 
+            return invokeMethod(target, method, params);
+        }
+        Method matchedMethod = null;
+        for (Method m : possibleMethods) {
+            if (!isCompatibleMethod(m, params)) continue;
+            if (matchedMethod == null || isMoreSpecific(m, matchedMethod, params)) {
+                matchedMethod = m;
+            }
+        }
+        if (matchedMethod == null) {
+            throw new EvaluationException("Cannot invoke method " + methodName + " here.");
+        }
+        cacheMethod(matchedMethod, target, params);
+        return invokeMethod(target, matchedMethod, params);
+    }    
 
     public Object exec(List<Object> params) {
         if (isInvalidMethodName()) throw new EvaluationException("No such method " + methodName + " in class: " + target.getClass());

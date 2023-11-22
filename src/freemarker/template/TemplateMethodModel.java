@@ -14,7 +14,7 @@ import java.util.List;
 
 import freemarker.core.variables.Callable;
 
-public interface TemplateMethodModel extends Callable {
+public interface TemplateMethodModel extends Callable<Object> {
 
     public Object exec(List<Object> arguments);
 

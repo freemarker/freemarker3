@@ -1,6 +1,6 @@
 package freemarker.core.variables;
 
 @FunctionalInterface
-public interface Callable {
-   Object call(Object... args);
+public interface Callable<T> {
+   T call(Object... args);
 }

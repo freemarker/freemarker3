@@ -1208,13 +1208,32 @@ INJECT MethodCall :
             return wrap(result);
         }
         else if (value instanceof Supplier) {
+            ArgsList argsList = getArgs();
+            if (argsList != null && argsList.firstChildOfType(Expression.class) !=null) {
+                throw new EvaluationException("The method " + getTarget() + " takes no arguments.");
+            }
             Object result = ((Supplier)value).get();
             return wrap(result);
         }
         else if (value instanceof Function) {
+            ArgsList args = getArgs();
+            if (args == null || args.childrenOfType(Expression.class).size() != 1) {
+                throw new EvaluationException("The method " + getTarget() + " takes exactly one argument.");
+            }
             Expression argExp = (Expression)getArgs().get(0);
             Object arg = unwrap(argExp.evaluate(env));
             Object result = ((Function)value).apply(arg);
+            return wrap(result);
+        }
+        else if (value instanceof BiFunction) {
+            ArgsList args = getArgs();
+            List<Expression> argExpressions = args == null ? new ArrayList<>() : args.childrenOfType(Expression.class);
+            if (argExpressions.size() != 2) {
+                throw new EvaluationException("The method " + getTarget() + " takes exactly two arguments.");
+            }
+            Object firstArg = argExpressions.get(0).evaluate(env);
+            Object secondArg = argExpressions.get(1).evaluate(env);
+            Object result = ((BiFunction)value).apply(firstArg, secondArg);
             return wrap(result);
         }
         else if (value instanceof Macro) {
