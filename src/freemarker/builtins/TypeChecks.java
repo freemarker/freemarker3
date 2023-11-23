@@ -4,7 +4,6 @@ import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.Macro;
 import freemarker.core.variables.*;
-import freemarker.template.TemplateDateModel;
 import freemarker.template.TemplateHashModel;
 
 import static freemarker.core.variables.Wrap.*;
@@ -27,7 +26,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 			result = value instanceof Number;
 		}
 		else if (builtInName == "is_date") {
-			result = value instanceof TemplateDateModel;
+			result = isDate(value);
 		}
 		else if (builtInName == "is_enumerable" || builtInName == "is_collection") {
 			result = isIterable(value);

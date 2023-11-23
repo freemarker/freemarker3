@@ -3,7 +3,8 @@ package freemarker.builtins;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
-import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import freemarker.annotations.Parameters;
 import freemarker.core.Environment;
@@ -39,8 +40,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
     }
 	
 	
-    static class BooleanFormatter implements VarArgsFunction  
-    {
+    static class BooleanFormatter implements BiFunction<Object,Object,String>  {
         private final Object bool;
         private final Environment env;
         
@@ -57,19 +57,13 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             }
         }
 
-        public Object apply(Object... arguments)
-                {
-            if (arguments.length != 2) {
-                throw new EvaluationException(
-                        "boolean?string(...) requires exactly "
-                        + "2 arguments.");
-            }
-            return asString(arguments[asBoolean(bool) ? 0 : 1]);
+        public String apply(Object left, Object right) {
+            return asString(asBoolean(bool) ? left : right);
         }
     }
     
     
-    static class DateFormatter implements TemplateHashModel, VarArgsFunction {
+    static class DateFormatter implements TemplateHashModel, Function<String,Object> {
         private final Date date;
         private final int dateType;
         private final Environment env;
@@ -89,64 +83,41 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
             return defaultFormat.format(date);
         }
 
-        public Object get(String key) 
-        {
+        public Object get(String key) {
             return env.getDateFormatObject(dateType, key).format(date);
         }
         
-        public Object apply(Object... arguments)
-            {
-            if (arguments.length != 1) {
-                throw new EvaluationException(
-                        "date?string(...) requires exactly 1 argument.");
-            }
-            return get((String) arguments[0]);
-        }
-
-        public boolean isEmpty()
-        {
-            return false;
+        public Object apply(String arg) {
+            return get(arg);
         }
     }
     
-    static class NumberFormatter implements TemplateHashModel, VarArgsFunction {
+    static class NumberFormatter implements TemplateHashModel, Function<String,Object> {
         private final Number number;
         private final Environment env;
         private final NumberFormat defaultFormat;
         private String cachedValue;
 
-        NumberFormatter(Number number, Environment env)
-        {
+        NumberFormatter(Number number, Environment env) {
             this.number = number;
             this.env = env;
             defaultFormat = env.getNumberFormatObject(env.getNumberFormat());
         }
 
-        public String toString()
-        {
+        public String toString() {
             if(cachedValue == null) {
                 cachedValue = defaultFormat.format(number);
             }
             return cachedValue;
         }
 
-        public Object get(String key)
-        {
+        public Object get(String key) {
             return env.getNumberFormatObject(key).format(number);
         }
         
         @Parameters("format")
-        public Object apply(Object... arguments) {
-            if (arguments.length != 1) {
-                throw new EvaluationException(
-                        "number?string(...) requires exactly 1 argument.");
-            }
-            return get(asString(arguments[0]));
-        }
-
-        public boolean isEmpty()
-        {
-            return false;
+        public Object apply(String arg) {
+            return get(arg);
         }
     }
 }

@@ -1,6 +1,8 @@
 package freemarker.builtins;
 
 import java.util.Map;
+//import java.util.function.Supplier;
+import java.util.function.Function;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
@@ -34,11 +36,7 @@ public abstract class ExistenceBuiltIn extends BuiltIn {
             if(value == null || value == JAVA_NULL) {
                 return FirstDefined.INSTANCE;
             }
-            return new VarArgsFunction() {
-                public Object apply(Object... arguments) {
-                    return value;
-                }
-            };
+            return (Function<Object,Object>) arg->value;
         }
     };
 

@@ -9,7 +9,7 @@ import freemarker.core.variables.VarArgsFunction;
  *
  * @version $Id: TransformMethodWrapper2.java,v 1.12 2004/01/06 17:06:44 szegedia Exp $
  */
-public class TransformMethodWrapper2 implements VarArgsFunction {
+public class TransformMethodWrapper2 implements VarArgsFunction<Object> {
 
     public Object apply(Object... arguments) {
         TransformModel1 cTransformer = new TransformModel1();

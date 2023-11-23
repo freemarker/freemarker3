@@ -3,7 +3,7 @@ package freemarker.builtins;
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.variables.EvaluationException;
-import freemarker.core.variables.VarArgsFunction;
+import java.util.function.Function;
 
 /**
  * Implementation of ?instanceof built-in 
@@ -11,13 +11,10 @@ import freemarker.core.variables.VarArgsFunction;
 public class instanceofBI extends ExpressionEvaluatingBuiltIn {
     
     @Override
-    public VarArgsFunction get(Environment env, BuiltInExpression caller, Object object) {
-        return args -> {
-            if (args.length != 1) {
-                throw new EvaluationException("Expecting exactly one argument here");
-            }
+    public Function<String,Boolean> get(Environment env, BuiltInExpression caller, Object object) {
+        return arg -> {
             try {
-                Class<?> clazz = Class.forName(args[0].toString());
+                Class<?> clazz = Class.forName(arg);
                 return clazz.isInstance(object);
             } catch (Exception e) {
                 throw new EvaluationException(e);

@@ -14,6 +14,6 @@ package freemarker.core.variables;
  * and java.util.function.Supplier
  */
 @FunctionalInterface
-public interface VarArgsFunction<T> {
-   T apply(Object... args);
+public interface VarArgsFunction<R> {
+   R apply(Object... args);
 }

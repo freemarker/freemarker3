@@ -488,7 +488,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class SequenceIndexOf implements VarArgsFunction {
+    static class SequenceIndexOf implements VarArgsFunction<Integer> {
 
         private final List sequence;
         private final boolean reverse;
@@ -498,7 +498,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             this.reverse = reverse;
         }
 
-        public Object apply(Object... args) {
+        public Integer apply(Object... args) {
             final int argc = args.length;
             int startIndex;
             if (argc != 1 && argc != 2) {

@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.function.Function;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
@@ -154,8 +155,8 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
     public static class Contains extends StringFunctions {
         @Override
-        public Object apply(String string, Environment env, BuiltInExpression caller) {
-            return new ContainsMethod(string);
+        public Function<String,Boolean> apply(String string, Environment env, BuiltInExpression caller) {
+            return s->string.indexOf(s) >=0;
         }
     }
 
@@ -445,7 +446,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
     }
 
-    static class urlBIResult implements VarArgsFunction {
+    static class urlBIResult implements Function<String,String> {
 
         private final String target;
         private final Environment env;
@@ -481,13 +482,9 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return cachedResult;
         }
 
-        public Object apply(Object... args) {
-            if (args.length != 1) {
-                throw new EvaluationException("The \"url\" built-in "
-                        + "needs exactly 1 parameter, the charset.");
-            }	
+        public String apply(String arg) {
             try {
-                return StringUtil.URLEnc(target, (String) args[0]);
+                return StringUtil.URLEnc(target, arg);
             } catch (UnsupportedEncodingException e) {
                 throw new EvaluationException(
                         "Failed to execute URL encoding.", e);
@@ -495,7 +492,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
         }
     }
 
-    static class IndexOfMethod implements VarArgsFunction {
+    static class IndexOfMethod implements VarArgsFunction<Integer> {
         private final String s;
         private final boolean reverse;
 
@@ -508,7 +505,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             return "?" + (reverse ? "last_" : "") + "index_of";
         }
         
-        public Object apply(Object... args) {
+        public Integer apply(Object... args) {
             Object obj;
             String sub;
             int fidx;
@@ -547,30 +544,6 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
                 index = s.indexOf(sub, fidx);
             }
             return index;
-        }
-    }
-
-    static class ContainsMethod implements VarArgsFunction<Boolean> {
-        private String s;
-
-        private ContainsMethod(String s) {
-            this.s = s;
-        }
-
-        public Boolean apply(Object... args) {
-            int ln  = args.length;
-            if (ln != 1) {
-                throw new EvaluationException(
-                "?contains(...) expects one argument.");
-            }
-
-            Object firstArg = args[0];
-            if (!isString(firstArg)) {
-                throw new EvaluationException(
-                        "?contains(...) expects a string as "
-                        + "its first argument.");
-            }
-            return s.indexOf(asString(firstArg)) != -1;
         }
     }
 }

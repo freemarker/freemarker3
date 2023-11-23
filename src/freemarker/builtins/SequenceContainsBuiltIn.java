@@ -1,13 +1,12 @@
 package freemarker.builtins;
 
 import java.util.Iterator;
+import java.util.function.Function;
 
 import freemarker.core.Environment;
 import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.core.nodes.generated.TemplateNode;
-import freemarker.core.variables.EvaluationException;
 import freemarker.template.TemplateSequenceModel;
-import freemarker.core.variables.VarArgsFunction;
 
 /**
  * @author Attila Szegedi
@@ -22,50 +21,30 @@ public class SequenceContainsBuiltIn extends ExpressionEvaluatingBuiltIn {
         if (!(model instanceof TemplateSequenceModel || model instanceof Iterable)) {
             throw TemplateNode.invalidTypeException(model, caller.getTarget(), env, "sequence or collection");
         }
-        
         return new SequenceContainsFunction(model);
     }
 
-    static class SequenceContainsFunction implements VarArgsFunction {
-        final TemplateSequenceModel sequence;
-        final Iterable<Object> collection;
+    static class SequenceContainsFunction implements Function<Object, Boolean> {
+        final Iterable collection;
         SequenceContainsFunction(Object seqModel) {
             if (seqModel instanceof Iterable) {
-                collection = (Iterable<Object>) seqModel;
-                sequence = null;
-            }
-            else if (seqModel instanceof TemplateSequenceModel) {
-                sequence = (TemplateSequenceModel) seqModel;
-                collection = null;
+                collection = (Iterable) seqModel;
             }
             else {
                 throw new AssertionError();
             }
         }
 
-        public Boolean apply(Object... args) {
-            if (args.length != 1) {
-                throw new EvaluationException("Expecting exactly one argument for ?seq_contains(...)");
-            }
-            Object compareToThis = args[0];
+        public Boolean apply(Object arg) {
+            Object compareToThis = arg;
             final DefaultComparator modelComparator = new DefaultComparator(Environment.getCurrentEnvironment());
-            if (collection != null) {
-                Iterator<Object> tmi = collection.iterator();
-                while (tmi.hasNext()) {
-                    if (modelComparator.areEqual(tmi.next(), compareToThis)) {
-                        return true;
-                    }
+            Iterator<Object> it = collection.iterator();
+            while (it.hasNext()) {
+                if (modelComparator.areEqual(it.next(), compareToThis)) {
+                    return true;
                 }
-                return false;
             }
-            else {
-                for (int i=0; i<sequence.size(); i++) {
-                    if (modelComparator.areEqual(sequence.get(i), compareToThis)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
+            return false;
         }
     }
 }
