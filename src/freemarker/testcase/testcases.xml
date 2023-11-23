@@ -92,6 +92,9 @@
        
    </testcase>
    <testcase name="precedence" filename="test-precedence.html"/>
+   <!-- testcase name="records" filename="test-records.txt" >
+      <config locale="es_AR"/>
+   </testcase-->
    <testcase name="recover" filename="test-recover.ftl" />
    <testcase name="root" filename="test-root.html" />
    <!--testcase name="sequence-builtins" filename="test-sequencebuiltins.txt"/-->

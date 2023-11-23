@@ -5,8 +5,23 @@ ${concat("one",2,3,4,"five")}
 ${last_index("instagram", "a")}
 
 #var table = {"func1" : upper, "func2" : lower}
+#set table.func3 = cap
 
 ${table.func1("Yes, sir")}
 ${table["func2"]("No, Ma'am")}
 
 ${table::get("func2")("Yah, Mon!")}
+${table::get("func2")::apply("Yah, Mon!!")}
+${table.func3("hello")}
+
+#list table as name, func
+    ${name_index+1}. ${name} : ${func("HellO")}
+/#list
+
+#list table?keys as name
+    ${name_index+1}. ${name} : ${table[name]("HHaa")}
+/#list
+
+#function cap string
+    #return string?cap_first
+/#function

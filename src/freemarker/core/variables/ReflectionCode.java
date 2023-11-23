@@ -162,6 +162,17 @@ public class ReflectionCode {
         if (cachedMethod != null) {
             return cachedMethod;
         }
+        if (isRecord(object)) {
+            try {
+                Method m = object.getClass().getMethod(name);
+                if (m.getReturnType() != Void.TYPE) {
+                    getterCache.put(lookupKey, m);
+                    m.setAccessible(true);
+                    return m;
+                }
+            } catch (NoSuchMethodException nsme) {
+            }
+        }
         String methodName = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
         try {
             Method m = object.getClass().getMethod(methodName);

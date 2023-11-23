@@ -2,7 +2,6 @@ package freemarker.testcase.models;
 
 import junit.framework.AssertionFailedError;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import freemarker.core.variables.VarArgsFunction;
 
 /**

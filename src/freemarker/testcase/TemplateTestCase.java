@@ -104,9 +104,6 @@ public class TemplateTestCase extends TestCase {
         
         if (testName.equals("beans")) {
             dataModel.put("array", new String[] { "array-0", "array-1"});
-// REVISIT            
-//            dataModel.put("list", new Pojo(Arrays.asList("list-0", "list-1", "list-2")));
-//            dataModel.put("list", Arrays.asList("list-0", "list-1", "list-2"));
             ArrayList<String> list = new ArrayList<>();
             list.add("list-0");
             list.add("list-1");
@@ -193,7 +190,12 @@ public class TemplateTestCase extends TestCase {
             dataModel.put("zero", 0);
             dataModel.put("data", new MultiModel1());
         }
-        
+/*
+        else if (testName.equals("records")) {
+            record Rectangle(double length, double width) {}
+            dataModel.put("rectangle", new Rectangle(1.2, 2.3));
+        }
+*/        
         else if (testName.equals("string-builtins3")) {
             dataModel.put("multi", new TestBoolean());
         }

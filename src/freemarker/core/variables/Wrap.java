@@ -39,7 +39,28 @@ public class Wrap {
 
     private static int defaultDateType = TemplateDateModel.UNKNOWN;
 
+    private static final Class<?> RECORD_CLASS;
+
+    static {
+        Class<?> clazz = null;
+        try {
+            clazz = Class.forName("java.lang.Record");
+        } catch (Exception e) {
+        }
+        finally {
+            RECORD_CLASS = clazz;
+        }
+    }
+
+    public static boolean isJdk14OrGreater() {
+        return RECORD_CLASS != null;
+    }
+
     private Wrap() {}
+
+    public static boolean isRecord(Object obj) {
+        return RECORD_CLASS != null && RECORD_CLASS.isInstance(obj);
+    }
 
     public static boolean isMap(Object obj) {
         if (obj instanceof WrappedVariable) {

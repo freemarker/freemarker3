@@ -41,6 +41,9 @@ public class JavaMethodCall implements VarArgsFunction<Object> {
                 possibleMethods.add(method);
             }
         }
+        if (possibleMethods.size() == 1) {
+            possibleMethods.get(0).setAccessible(true);
+        }
     }
 
     public boolean isMethodOverloaded() {
