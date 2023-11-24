@@ -562,6 +562,10 @@ INJECT EqualityExpression :
             int comp = ae.compareNumbers((Number)left, (Number)right);
             return operation == NOT_EQUALS ? comp !=0 : comp == 0;
         }
+        if (left == JAVA_NULL || right == JAVA_NULL) {
+            boolean areEqual = left==right;
+            return operation == NOT_EQUALS ? !areEqual : areEqual;
+        }
         left = unwrap(left);
         right = unwrap(right);
         return operation == NOT_EQUALS ? !left.equals(right) : left.equals(right);
@@ -1028,6 +1032,7 @@ INJECT BuiltInExpression :
     import freemarker.builtins.*;
     import freemarker.template.TemplateDateModel;
     import freemarker.template.TemplateHashModel;
+    import freemarker.core.variables.JavaMethodCall;
     import static freemarker.core.variables.Wrap.asString;
     implements Expression;
 {
@@ -1042,6 +1047,7 @@ INJECT BuiltInExpression :
         knownBuiltins.put("upper_case", (env,caller)->asString(caller.getTarget().evaluate(env)).toUpperCase(env.getLocale()));
         knownBuiltins.put("lower_case", (env,caller)->asString(caller.getTarget().evaluate(env)).toLowerCase(env.getLocale()));
         knownBuiltins.put("length", (env,caller)->asString(caller.getTarget().evaluate(env)).length());
+        knownBuiltins.put("substring", (env,caller)->new JavaMethodCall(asString(caller.getTarget().evaluate(env)),"substring"));
         knownBuiltins.put("trim", (env,caller)->asString(caller.getTarget().evaluate(env)).trim());
         knownBuiltins.put("instanceof", new instanceofBI());
         knownBuiltins.put("exists", new ExistenceBuiltIn.ExistsBuiltIn());
@@ -1102,7 +1108,6 @@ INJECT BuiltInExpression :
         knownBuiltins.put("matches", new StringFunctions.Matches());
         knownBuiltins.put("starts_with", new StringFunctions.StartsWith());
         knownBuiltins.put("ends_with", new StringFunctions.EndsWith());
-        knownBuiltins.put("substring", new StringFunctions.Substring());
         knownBuiltins.put("word_list", new StringFunctions.WordList());
         knownBuiltins.put("url", new StringFunctions.Url());
         knownBuiltins.put("parent", new NodeFunctions.Parent());
