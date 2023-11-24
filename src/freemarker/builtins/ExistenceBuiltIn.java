@@ -14,7 +14,7 @@ import freemarker.template.TemplateHashModel;
 
 import static freemarker.core.variables.Wrap.*;
 
-public abstract class ExistenceBuiltIn extends BuiltIn {
+public abstract class ExistenceBuiltIn implements BuiltIn {
     public Object get(Environment env, BuiltInExpression caller) 
     {
         final Expression target = caller.getTarget();

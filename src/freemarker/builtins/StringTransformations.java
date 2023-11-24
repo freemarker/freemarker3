@@ -32,20 +32,6 @@ public abstract class StringTransformations extends ExpressionEvaluatingBuiltIn 
 
     public abstract String apply(String string);
     
-    public static class UpperCase extends StringTransformations {
-        @Override
-        public String apply(String string) {
-            return string.toUpperCase();
-        }
-    }
-    
-    public static class LowerCase extends StringTransformations {
-        @Override
-        public String apply(String string) {
-            return string.toLowerCase();
-        }
-    }
-
     public static class Html extends StringTransformations {
         @Override
         public String apply(String string) {
@@ -98,13 +84,6 @@ public abstract class StringTransformations extends ExpressionEvaluatingBuiltIn 
         }
     }
 
-    public static class Trim extends StringTransformations {
-        @Override
-        public String apply(String string) {
-            return string.trim();
-        }
-    }
-    
     public static class Java extends StringTransformations {
         @Override
         public String apply(String string) {

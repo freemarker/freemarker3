@@ -7,7 +7,7 @@ import freemarker.core.nodes.generated.BuiltInExpression;
  * @author Attila Szegedi
  * @version $Id: $
  */
-public abstract class ExpressionEvaluatingBuiltIn extends BuiltIn {
+public abstract class ExpressionEvaluatingBuiltIn implements BuiltIn {
 
     @Override
     public Object get(Environment env, BuiltInExpression caller) 

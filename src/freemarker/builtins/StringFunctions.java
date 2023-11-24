@@ -83,13 +83,6 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
     
     public abstract Object apply(final String string, final Environment env, final BuiltInExpression callingExpression);
     
-    public static class Length extends StringFunctions {
-        @Override
-        public Object apply(String string, Environment env, BuiltInExpression caller) {
-            return string.length();
-        }
-    }
-
     public static class Substring extends StringFunctions {
         @Override
         public Object apply(String string, Environment env, BuiltInExpression caller) {
