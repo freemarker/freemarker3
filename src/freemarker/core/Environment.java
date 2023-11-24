@@ -946,7 +946,7 @@ public final class Environment extends Configurable implements Scope {
             if (globalVariables.containsKey(name)) {
                 globalVariables.put(name, value);
             } else {
-                throw new TemplateException(uve, this);
+                throw uve;
             }
         }
     }

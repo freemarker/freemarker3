@@ -1038,6 +1038,11 @@ INJECT BuiltInExpression :
 //        knownBuiltins.put("seq_index_of", new SequenceFunctions.IndexOf());
 //        knownBuiltins.put("seq_last_index_of", new SequenceFunctions.LastIndexOf());
 //        knownBuiltins.put("if_exists", new ExistenceBuiltIn.IfExistsBuiltIn());
+        knownBuiltins.put("source", (env,caller)->caller.getTarget().getSource());
+        knownBuiltins.put("upper_case", (env,caller)->asString(caller.getTarget().evaluate(env)).toUpperCase(env.getLocale()));
+        knownBuiltins.put("lower_case", (env,caller)->asString(caller.getTarget().evaluate(env)).toLowerCase(env.getLocale()));
+        knownBuiltins.put("length", (env,caller)->asString(caller.getTarget().evaluate(env)).length());
+        knownBuiltins.put("trim", (env,caller)->asString(caller.getTarget().evaluate(env)).trim());
         knownBuiltins.put("instanceof", new instanceofBI());
         knownBuiltins.put("exists", new ExistenceBuiltIn.ExistsBuiltIn());
         knownBuiltins.put("c", new cBI());
@@ -1123,16 +1128,6 @@ INJECT BuiltInExpression :
         knownBuiltins.put("is_defined", new ExistenceBuiltIn.IsDefinedBuiltIn());
         knownBuiltins.put("default", new ExistenceBuiltIn.DefaultBuiltIn());
         knownBuiltins.put("has_content", new ExistenceBuiltIn.HasContentBuiltIn());
-        //knownBuiltins.put("length", new StringFunctions.Length());
-        //knownBuiltins.put("source", new sourceBI());
-        //knownBuiltins.put("lower_case", new StringTransformations.LowerCase());
-        //knownBuiltins.put("upper_case", new StringTransformations.UpperCase());
-        //knownBuiltins.put("trim", new StringTransformations.Trim());
-        knownBuiltins.put("source", (env,caller)->caller.getTarget().getSource());
-        knownBuiltins.put("upper_case", (env,caller)->asString(caller.getTarget().evaluate(env)).toUpperCase(env.getLocale()));
-        knownBuiltins.put("lower_case", (env,caller)->asString(caller.getTarget().evaluate(env)).toLowerCase(env.getLocale()));
-        knownBuiltins.put("length", (env,caller)->asString(caller.getTarget().evaluate(env)).length());
-        knownBuiltins.put("trim", (env,caller)->asString(caller.getTarget().evaluate(env)).trim());
     }
 
     private String key;

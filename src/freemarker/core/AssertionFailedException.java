@@ -12,10 +12,6 @@ import freemarker.template.TemplateException;
 
 public class AssertionFailedException extends TemplateException
 {
-    public AssertionFailedException(Environment env) {
-        super(env);
-    }
-
     public AssertionFailedException(Environment env, String s) {
         super(s, env);
     }

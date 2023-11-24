@@ -1,5 +1,7 @@
 package freemarker.core.variables.scope;
 
+import freemarker.template.TemplateException;
+
 /**
  * This exception is thrown when a set directive in the template
  * tries to set a variable which is not declared in that scope or 
@@ -8,7 +10,7 @@ package freemarker.core.variables.scope;
  * @author revusky
  */
 
-public class UndeclaredVariableException extends RuntimeException {
+public class UndeclaredVariableException extends TemplateException {
 
 	public UndeclaredVariableException(String message) {
 		super(message);

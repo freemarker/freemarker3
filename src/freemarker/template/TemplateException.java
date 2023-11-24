@@ -24,9 +24,6 @@ public class TemplateException extends RuntimeException {
 
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[]{};
     
-    /** The underlying cause of this exception, if any */
-    private final Environment env;
-    
     private List<TemplateElement> ftlStack;
 
 
@@ -36,6 +33,10 @@ public class TemplateException extends RuntimeException {
      */
     public TemplateException(Environment env) {
         this(null, null, env);
+    }
+
+    public TemplateException(String message) {
+        super(message);
     }
 
     /**
@@ -49,17 +50,6 @@ public class TemplateException extends RuntimeException {
     }
 
     /**
-     * Constructs a TemplateException with the given underlying Exception,
-     * but no detail message.
-     *
-     * @param cause the underlying <code>Exception</code> that caused this
-     * exception to be raised
-     */
-    public TemplateException(Exception cause, Environment env) {
-        this(null, cause, env);
-    }
-
-    /**
      * Constructs a TemplateException with both a description of the error
      * that occurred and the underlying Exception that caused this exception
      * to be raised.
@@ -70,7 +60,6 @@ public class TemplateException extends RuntimeException {
      */
     public TemplateException(String description, Exception cause, Environment env) {
         super(getDescription(description, cause), cause);
-        this.env = env;
         if(env != null) {
             ftlStack = new ArrayList<>();
             for (TemplateElement location : env.getElementStack()) {
@@ -78,6 +67,10 @@ public class TemplateException extends RuntimeException {
             }
             Collections.reverse(ftlStack); // We put this in opposite order, as the trace is usually displayed that way.
         }
+    }
+
+    public TemplateException(Exception cause, Environment env) {
+        this(null, cause, env);
     }
 
     private static String getDescription(String description, Exception cause)  {
@@ -148,13 +141,6 @@ public class TemplateException extends RuntimeException {
     		return Collections.emptyList();
     	}
     	return Collections.unmodifiableList(ftlStack);
-    }
-
-    /**
-     * @return the execution environment in which the exception occurred
-     */
-    public Environment getEnvironment() {
-        return env;
     }
 
     public void printStackTrace(java.io.PrintStream ps) {
