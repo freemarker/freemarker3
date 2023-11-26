@@ -786,7 +786,7 @@ INJECT IncludeInstruction :
         if (parseExp != null) {
             Object tm = parseExp.evaluate(env);
             parseExp.assertNonNull(tm, env);
-            if (isString(tm)) {
+            if (tm instanceof CharSequence) {
                 parse = StringUtil.getYesNo(asString(tm));
             }
             else {
@@ -1275,7 +1275,7 @@ INJECT SwitchBlock :
         if (first instanceof Number && second instanceof Number) {
             return ((Number)first).equals((Number)second);
         }
-        if (isString(first) && isString(second)) {
+        if (first instanceof CharSequence && second instanceof CharSequence) {
             return asString(first).equals(asString(second));
         }
         throw new TemplateException("Can only compare numbers and strings", env);
@@ -1468,7 +1468,7 @@ INJECT PropertySetting :
     public void execute(Environment env) {
         Object mval = getValue().evaluate(env);
         String strval;
-        if (isString(mval)) {
+        if (mval instanceof CharSequence) {
             strval = asString(mval);
         } else if (isBoolean(mval)) {
             strval = asBoolean(mval) ? "true" : "false";
@@ -1861,7 +1861,7 @@ INJECT TemplateHeaderElement :
 		if (isBoolean(tm)) {
 			return asBoolean(tm);
 		}
-		if (isString(tm)) {
+		if (tm instanceof CharSequence) {
 			try {
 				return getYesNo(asString(tm));
 			} catch (Exception e) {

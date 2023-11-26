@@ -20,7 +20,7 @@ public class TypeChecks extends ExpressionEvaluatingBuiltIn {
 		boolean result = false;
 		final String builtInName = caller.getName(); 
 		if (builtInName == "is_string") {
-			result = isString(value);
+			result = value instanceof CharSequence;
 		}
 		else if (builtInName == "is_number") {
 			result = value instanceof Number;

@@ -458,7 +458,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
             }
             String[] subvars;
             Object obj = params[0];
-            if (isString(obj)) {
+            if ((obj instanceof CharSequence)) {
                 subvars = new String[]{asString(obj)};
             } else if (obj instanceof TemplateSequenceModel) {
                 TemplateSequenceModel seq = (TemplateSequenceModel) obj;
@@ -469,7 +469,7 @@ public abstract class SequenceFunctions extends ExpressionEvaluatingBuiltIn {
                     try {
                         subvars[i] = asString(item);
                     } catch (ClassCastException e) {
-                        if (!isString(item)) {
+                        if (!(item instanceof CharSequence)) {
                             throw new EvaluationException(
                                     "The argument to ?sort_by(key), when it "
                                     + "is a sequence, must be a sequence of "

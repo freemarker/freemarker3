@@ -29,7 +29,7 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
             List tsm = asList(model);
             Object tm = tsm.size() >1 ? tsm.get(1) : null;
             if (tm != null) {
-                if (isString(tm)) {
+                if (tm instanceof CharSequence) {
                     id = asString(tm);
                 }
                 else {
@@ -37,12 +37,12 @@ public class interpretBI extends ExpressionEvaluatingBuiltIn {
                 }
             }
             tm = tsm.get(0);
-            if (!isString(tm)) {
+            if (!(tm instanceof CharSequence)) {
                 throw new EvaluationException("Expecting string as first item of sequence of left of ?interpret built-in");
             }
             interpretString = asString(tm);
         }
-        else if (isString(model)) {
+        else if (model instanceof CharSequence) {
             interpretString = asString(model);
         }
         if (id == null) id = "anonymous_interpreted";

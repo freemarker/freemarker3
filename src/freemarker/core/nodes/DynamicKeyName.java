@@ -39,7 +39,7 @@ public class DynamicKeyName extends TemplateNode implements Expression {
             int index = ((Number)(key)).intValue();
             return dealWithNumericalKey(lhs, index, env);
         }
-        if (isString(key)) {
+        if (key instanceof CharSequence) {
             return dealWithStringKey(lhs, asString(key), env);
         }
         if (isMap(lhs)) {

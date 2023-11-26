@@ -117,13 +117,6 @@ public class Wrap {
         return (Date) obj;
     }
 
-    public static boolean isString(Object obj) {
-        if (obj instanceof TemplateScalarModel) {
-            return true;
-        }
-        return obj instanceof CharSequence;
-    }
-
     public static String asString(Object obj) {
         if (obj instanceof TemplateScalarModel) {
             return ((TemplateScalarModel) obj).getAsString();

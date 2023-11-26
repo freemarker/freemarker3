@@ -6,7 +6,6 @@ import freemarker.core.nodes.generated.BuiltInExpression;
 import freemarker.template.utility.StringUtil;
 
 import static freemarker.core.variables.Wrap.asString;
-import static freemarker.core.variables.Wrap.isString;
 
 /**
  * Implementations of ?cap_first, ?lower_case, ?upper_case and other
@@ -18,7 +17,7 @@ public abstract class StringTransformations extends ExpressionEvaluatingBuiltIn 
     @Override
     public Object get(Environment env, BuiltInExpression caller, Object lhs) {
         String string = null;
-        if (isString(lhs)) {
+        if (lhs instanceof CharSequence) {
             string = asString(lhs);
         }
         else {

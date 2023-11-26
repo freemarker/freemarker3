@@ -362,7 +362,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
 
             if (ln > 1) {
                 obj = args[1];
-                if (!isString(obj)) {
+                if (!(obj instanceof CharSequence)) {
                     throw new EvaluationException(
                             "?left_pad(...) expects a string as "
                             + "its 2nd argument.");
@@ -413,7 +413,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             int width = ((Number)obj).intValue();
             if (ln > 1) {
                 obj = args[1];
-                if (!isString(obj)) {
+                if (!(obj instanceof CharSequence)) {
                     throw new EvaluationException(
                             "?right_pad(...) expects a string as "
                             + "its 2nd argument.");
@@ -512,7 +512,7 @@ public abstract class StringFunctions extends ExpressionEvaluatingBuiltIn {
             }
 
             obj = args[0];       
-            if (!isString(obj)) {
+            if (!(obj instanceof CharSequence)) {
                 throw new EvaluationException(getName() + "(...) expects a string as its first argument.");
             }
             sub = asString(obj);

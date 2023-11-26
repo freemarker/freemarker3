@@ -50,7 +50,7 @@ public class stringBI extends ExpressionEvaluatingBuiltIn {
         }
 
         public String toString() {
-            if (isString(bool)) {
+            if (bool instanceof CharSequence) {
                 return (asString(bool));
             } else {
                 return env.getBooleanFormat(asBoolean(bool));

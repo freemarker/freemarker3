@@ -30,6 +30,7 @@ INJECT Expression :
 
     default String getStringValue(Environment env) {
         Object referent = evaluate(env);
+        assertNonNull(referent, env);
         if (referent instanceof Number) {
             return env.formatNumber((Number)referent);
         }
@@ -37,17 +38,10 @@ INJECT Expression :
             TemplateDateModel dm = (TemplateDateModel) referent;
             return env.formatDate(getDate(dm, this, env), dm.getDateType());
         }
-        if (isString(referent)) {
+        if (referent instanceof CharSequence) {
             return asString(referent);
         }
-        assertNonNull(referent, env);
         return referent.toString();
-/*        String msg = "Error " + getLocation()
-                     +"\nExpecting a string, " 
-                     + "date or number here, Expression " + this 
-                     + " is instead a " 
-                     + referent.getClass().getName();
-        throw new TemplateException(msg, env);*/
     }
     
     Expression _deepClone(String name, Expression subst);
@@ -555,6 +549,8 @@ INJECT EqualityExpression :
         TokenType operation = (TokenType) get(1).getType();
         Object left = getLeft().evaluate(env);
         Object right = getRight().evaluate(env);
+        assertIsDefined(left, env);
+        assertIsDefined(right, env);
         getLeft().assertNonNull(left, env);
         getRight().assertNonNull(right, env);
         if (left instanceof Number && right instanceof Number) {
@@ -1047,8 +1043,8 @@ INJECT BuiltInExpression :
         knownBuiltins.put("upper_case", (env,caller)->asString(caller.getTarget().evaluate(env)).toUpperCase(env.getLocale()));
         knownBuiltins.put("lower_case", (env,caller)->asString(caller.getTarget().evaluate(env)).toLowerCase(env.getLocale()));
         knownBuiltins.put("length", (env,caller)->asString(caller.getTarget().evaluate(env)).length());
-        knownBuiltins.put("substring", (env,caller)->new JavaMethodCall(asString(caller.getTarget().evaluate(env)),"substring"));
         knownBuiltins.put("trim", (env,caller)->asString(caller.getTarget().evaluate(env)).trim());
+        knownBuiltins.put("substring", (env,caller)->new JavaMethodCall(asString(caller.getTarget().evaluate(env)),"substring"));
         knownBuiltins.put("instanceof", new instanceofBI());
         knownBuiltins.put("exists", new ExistenceBuiltIn.ExistsBuiltIn());
         knownBuiltins.put("c", new cBI());
