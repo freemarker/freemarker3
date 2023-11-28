@@ -3,6 +3,7 @@ PARSER_PACKAGE=freemarker.core.parser;
 NODE_PACKAGE=freemarker.core.nodes.generated;
 BASE_NODE_CLASS=TemplateNode;
 PRESERVE_TABS;
+EXTRA_TOKENS=DIRECTIVE_END;
 DEACTIVATE_TOKENS=EOL;
 
 INCLUDE "FMLexer.ccc"

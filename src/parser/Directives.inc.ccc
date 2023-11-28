@@ -20,12 +20,16 @@ INJECT Interpolation :
 {
     private Expression escapedExpression; // This will be the same as the expression if we are not within an escape block.
 
+    public boolean isNoEscapeSet() {
+        return ((Token)get(0)).charAt(1) == '\\';
+    }
+
     public void setEscapedExpression(Expression escapedExpression) {
     	this.escapedExpression = escapedExpression;
     }
     
     public Expression getEscapedExpression() {
-      if (escapedExpression==null) return getExpression();
+        if (escapedExpression==null || isNoEscapeSet()) return getExpression();
     	return this.escapedExpression;
     }
     
@@ -43,7 +47,7 @@ INJECT Interpolation :
 
     public String getDescription() {
         return this.getSource()  +
-        (getExpression() == escapedExpression 
+        (getExpression() == escapedExpression || isNoEscapeSet()
             ? "" 
             : " escaped ${" + escapedExpression.getDescription() + "}");
     }

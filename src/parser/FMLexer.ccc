@@ -1,8 +1,3 @@
-PARSER_PACKAGE="freemarker.core.parser";
-TREE_BUILDING_ENABLED=false;
-EXTRA_TOKENS=DIRECTIVE_END;
-//PRESERVE_LINE_ENDINGS;
-
 /**
  * The lexer portion defines 3 lexical states:
  * DEFAULT, EXPRESSION, DIRECTIVE_NAME
@@ -228,7 +223,7 @@ TOKEN#Delimiter :
     |
     <UNIFIED_CALL_END : ("<" | "[") "/@" (~[" ", "\t", "\n", "\r", ">", "]"])* (">" | "]")> 
     |
-    <OUTPUT_ESCAPE : "${" > : EXPRESSION
+    <OUTPUT_ESCAPE : "$" ("\\")? "{" > : EXPRESSION
     |
     <?NOPARSE : <NOPARSE_BEGIN> (~[])* <NOPARSE_END> > #LegacyNoParse
     |
