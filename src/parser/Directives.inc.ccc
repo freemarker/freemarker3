@@ -1433,20 +1433,7 @@ INJECT PARSER_CLASS :
 /**
  * Production to terminate potentially empty elements. Either a ">" or "/>"
  */
-
-Token LooseDirectiveEnd#void :
-{
-    Token t;
-}
-   (
-      t=<DIRECTIVE_END>
-      |
-      t=<EMPTY_DIRECTIVE_END>
-   )
-   {
-      return t;
-   }
-;
+LooseDirectiveEnd : <DIRECTIVE_END> | <EMPTY_DIRECTIVE_END> ;
 
 PropertySetting :
    <SETTING>
