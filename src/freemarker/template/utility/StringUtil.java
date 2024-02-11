@@ -15,7 +15,7 @@ public class StringUtil {
      *  Replaces all '&gt;' '&lt;' '&amp;' and '"' with entity reference
      */
     public static String HTMLEnc(String s) {
-        return XMLEncNA(s);
+        return XMLOrXHTMLEnc(s, "'");
     }
 
     /**
@@ -36,46 +36,23 @@ public class StringUtil {
     public static String XHTMLEnc(String s) {
         return XMLOrXHTMLEnc(s, "&#39;");
     }
-    
+
     private static String XMLOrXHTMLEnc(String s, String aposReplacement) {
-        int ln = s.length();
-        for (int i = 0; i < ln; i++) {
-            char c = s.charAt(i);
-            if (c == '<' || c == '>' || c == '&' || c == '"' || c == '\'') {
-                StringBuilder b =
-                        new StringBuilder(s.substring(0, i));
-                switch (c) {
-                    case '<': b.append("&lt;"); break;
-                    case '>': b.append("&gt;"); break;
-                    case '&': b.append("&amp;"); break;
-                    case '"': b.append("&quot;"); break;
-                    case '\'': b.append(aposReplacement); break;
-                }
-                i++;
-                int next = i;
-                while (i < ln) {
-                    c = s.charAt(i);
-                    if (c == '<' || c == '>' || c == '&' || c == '"' || c == '\'') {
-                        b.append(s.substring(next, i));
-                        switch (c) {
-                            case '<': b.append("&lt;"); break;
-                            case '>': b.append("&gt;"); break;
-                            case '&': b.append("&amp;"); break;
-                            case '"': b.append("&quot;"); break;
-                            case '\'': b.append(aposReplacement); break;
-                        }
-                        next = i + 1;
-                    }
-                    i++;
-                }
-                if (next < ln) b.append(s.substring(next));
-                s = b.toString();
-                break;
-            } // if c ==
-        } // for
-        return s;
+        StringBuilder buf = new StringBuilder();
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            switch (ch) {
+                case '<' : buf.append("&lt;"); break;
+                case '>' : buf.append("&gt;"); break;
+                case '&' : buf.append("&amp;"); break;
+                case '"' : buf.append("&quot;"); break;
+                case '\'' : buf.append(aposReplacement); break;
+                default : buf.append(ch);
+            }
+        }
+        return buf.toString();
     }
-    
+
     public static String RTFEnc(String s) {
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
@@ -87,26 +64,6 @@ public class StringUtil {
         }
         return buf.length() == s.length() ? s : buf.toString();
     }
-
-    /**
-     *  XML encoding without replacing apostrophes.
-     *  @see #XMLEnc(String)
-     */
-    public static String XMLEncNA(String s) {
-        StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
-            switch (ch) {
-                case '<' : buf.append("&lt;"); break;
-                case '>' : buf.append("&gt;"); break;
-                case '&' : buf.append("&amp;"); break;
-                case '"' : buf.append("&quot;"); break;
-                default : buf.append(ch);
-            }
-        }
-        return buf.toString();
-    }
-
 
     /**
      * URL encoding (like%20this).
@@ -192,12 +149,10 @@ public class StringUtil {
      * @throws ParseException if there string contains illegal escapes
      */
     public static String FTLStringLiteralDec(String s) {
-
         int idx = s.indexOf('\\');
         if (idx == -1) {
             return s;
         }
-
         int lidx = s.length() - 1;
         int bidx = 0;
         StringBuilder buf = new StringBuilder(lidx);
@@ -408,9 +363,8 @@ public class StringUtil {
      */
     public static String chomp(String s) {
         if (s.endsWith("\r\n")) return s.substring(0, s.length() - 2);
-        if (s.endsWith("\r") || s.endsWith("\n"))
-                return s.substring(0, s.length() - 1);
-        return s;
+        char lastChar = s.length() == 0 ? 0 : s.charAt(s.length()-1);
+        return (lastChar != '\n' && lastChar != '\r') ? s : s.substring(0, s.length() - 1);
     }
 
     /**

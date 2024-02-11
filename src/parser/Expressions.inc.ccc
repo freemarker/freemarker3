@@ -29,7 +29,10 @@ INJECT Expression :
     }
 
     default String getStringValue(Environment env) {
-        Object referent = evaluate(env);
+        return getStringValue(env, evaluate(env));
+    }
+
+    default String getStringValue(Environment env, Object referent) {
         assertNonNull(referent, env);
         if (referent instanceof Number) {
             return env.formatNumber((Number)referent);
@@ -423,9 +426,8 @@ INJECT AdditiveExpression :
             }
             return result;
         }
-        return getLeft().getStringValue(env) + getRight().getStringValue(env);
-        //String msg = this.getLocation() + ": Cannot add or concatenate";
-        //throw new TemplateException(msg, env);
+        return getLeft().getStringValue(env, left) + getRight().getStringValue(env, right);
+        //  return getLeft().getStringValue(env) + getRight().getStringValue(env);
     }
 
     public Expression _deepClone(String name, Expression subst) {
