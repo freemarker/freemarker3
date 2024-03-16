@@ -125,7 +125,7 @@ INJECT ParseException  :
 {
     int lineNumber, columnNumber;
     String templateName;
-    public List<ParsingProblem> problems;
+    public List<ParsingProblemImpl> problems;
 
     public ParseException(String message, int lineNumber, int columnNumber) {
         super(message);
@@ -133,7 +133,7 @@ INJECT ParseException  :
         this.columnNumber = columnNumber;
     }
 
-    public ParseException(List<ParsingProblem> problems) {
+    public ParseException(List<ParsingProblemImpl> problems) {
         this.problems = problems;
     }
 

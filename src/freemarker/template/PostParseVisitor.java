@@ -4,7 +4,7 @@ import freemarker.core.Configurable;
 import freemarker.core.nodes.generated.*;
 import freemarker.core.parser.Node;
 import freemarker.core.parser.ParseException;
-import freemarker.core.parser.ParsingProblem;
+import freemarker.core.parser.ParsingProblemImpl;
 import freemarker.core.parser.Token;
 import freemarker.core.nodes.AssignmentInstruction;
 
@@ -63,11 +63,11 @@ class PostParseVisitor extends Node.Visitor {
 					}
 				}
 				else if (!key.equals("encoding")) {
-					ParsingProblem problem  = new ParsingProblem("Unknown ftl header parameter: " + entry.getKey(), header);
+					ParsingProblemImpl problem  = new ParsingProblemImpl("Unknown ftl header parameter: " + entry.getKey(), header);
 					template.addParsingProblem(problem);
 				}
 			} catch (Exception e) {
-				ParsingProblem problem = new ParsingProblem(e.getMessage(), header);
+				ParsingProblemImpl problem = new ParsingProblemImpl(e.getMessage(), header);
 				template.addParsingProblem(problem);
 			}
 		}
@@ -77,24 +77,24 @@ class PostParseVisitor extends Node.Visitor {
 		recurse(node);
 		for (Expression target : node.getTargetExpressions()) {
 			if (!target.isAssignableTo()) {
-				ParsingProblem problem = new ParsingProblem("Cannot assign to expression" + target + " ", target);
+				ParsingProblemImpl problem = new ParsingProblemImpl("Cannot assign to expression" + target + " ", target);
 				template.addParsingProblem(problem);
 			}
 		}
 		if (template.strictVariableDeclaration()) {
 			if (node.get(0).getType() == Token.TokenType.ASSIGN) {
-				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
+				ParsingProblemImpl problem = new ParsingProblemImpl("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 			else if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
-				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
+				ParsingProblemImpl problem = new ParsingProblemImpl("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 		}
         else if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
         	Macro macro = getContainingMacro(node);
         	if (macro == null) {
-        		ParsingProblem problem = new ParsingProblem("The local directive can only be used inside a function or macro.", node);
+        		ParsingProblemImpl problem = new ParsingProblemImpl("The local directive can only be used inside a function or macro.", node);
         		template.addParsingProblem(problem);
         	}
         }
@@ -104,23 +104,23 @@ class PostParseVisitor extends Node.Visitor {
 		recurse(node);
 		Expression targetExpression = node.getTargetExpression();
 		if (!targetExpression.isAssignableTo()) {
-			ParsingProblem problem = new ParsingProblem("The expression " + targetExpression + " cannot be assigned to.", targetExpression);
+			ParsingProblemImpl problem = new ParsingProblemImpl("The expression " + targetExpression + " cannot be assigned to.", targetExpression);
 			template.addParsingProblem(problem);
 		}
 		if (template.strictVariableDeclaration()) {
 			if (node.get(0).getType() == Token.TokenType.ASSIGN) {
-				ParsingProblem problem = new ParsingProblem("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
+				ParsingProblemImpl problem = new ParsingProblemImpl("The assign directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 			if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
-				ParsingProblem problem = new ParsingProblem("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
+				ParsingProblemImpl problem = new ParsingProblemImpl("The local directive is deprecated and cannot be used in strict_vars mode. See the var and set directives.", node);
 				template.addParsingProblem(problem);
 			}
 		}
 		else if (node.get(0).getType() == Token.TokenType.LOCALASSIGN) {
 			Macro macro = getContainingMacro(node);
 			if (macro == null) {
-				template.addParsingProblem(new ParsingProblem("The local directive can only be used inside a function or macro.", node));
+				template.addParsingProblem(new ParsingProblemImpl("The local directive can only be used inside a function or macro.", node));
 			} 
 		}
 	}
@@ -128,7 +128,7 @@ class PostParseVisitor extends Node.Visitor {
 	void visit(BuiltInExpression node) {
 		recurse(node);
 		if (node.getBuiltIn() == null) {
-			ParsingProblem problem = new ParsingProblem("Unknown builtin: " + node.getName(), node);
+			ParsingProblemImpl problem = new ParsingProblemImpl("Unknown builtin: " + node.getName(), node);
 			template.addParsingProblem(problem);
 		}
 	}
@@ -150,7 +150,7 @@ class PostParseVisitor extends Node.Visitor {
 	void visit(Macro node) {
 		String macroName = node.getName();
 		if (template.strictVariableDeclaration() && template.declaresVariable(macroName)) {
-			ParsingProblem problem = new ParsingProblem("You already have declared a variable (or declared another macro) as " + macroName + ". You cannot reuse the variable name in the same template.", node);
+			ParsingProblemImpl problem = new ParsingProblemImpl("You already have declared a variable (or declared another macro) as " + macroName + ". You cannot reuse the variable name in the same template.", node);
 			template.addParsingProblem(problem);
 		}
 		if (template.strictVariableDeclaration()) {
@@ -159,7 +159,7 @@ class PostParseVisitor extends Node.Visitor {
 			while (parent != null) {
 				parent = parent.getParent();
 				if (parent != null && !(parent instanceof EscapeBlock) && !(parent instanceof NoEscapeBlock) && !(parent instanceof Block)) {
-					ParsingProblem problem = new ParsingProblem("Macro " + macroName + " is within a " + ((TemplateNode)parent).getDescription() + ". It must be a top-level element.", node);
+					ParsingProblemImpl problem = new ParsingProblemImpl("Macro " + macroName + " is within a " + ((TemplateNode)parent).getDescription() + ". It must be a top-level element.", node);
 					template.addParsingProblem(problem);
 				}
 			}
@@ -174,7 +174,7 @@ class PostParseVisitor extends Node.Visitor {
 			parent = parent.getParent();
 		}
 		if (parent == null) {
-			template.addParsingProblem(new ParsingProblem("The noescape directive only makes sense inside an escape block.", node));
+			template.addParsingProblem(new ParsingProblemImpl("The noescape directive only makes sense inside an escape block.", node));
 		}
 		EscapeBlock last = escapes.remove(escapes.size() -1);
 		recurse(node);
@@ -200,7 +200,7 @@ class PostParseVisitor extends Node.Visitor {
 			parent = parent.getParent();
 		}
 		if (parent == null) {
-			template.addParsingProblem(new ParsingProblem("The break directive can only be used within a loop or a switch-case construct.", node));
+			template.addParsingProblem(new ParsingProblemImpl("The break directive can only be used within a loop or a switch-case construct.", node));
 		}
 	}
 	
@@ -211,14 +211,14 @@ class PostParseVisitor extends Node.Visitor {
 			parent = parent.getParent();
 		}
 		if (parent == null) {
-       		template.addParsingProblem(new ParsingProblem("The return directive can only be used inside a function or macro.", node));
+       		template.addParsingProblem(new ParsingProblemImpl("The return directive can only be used inside a function or macro.", node));
 		} else {
 			Macro macro = (Macro) parent;
 			if (!macro.isFunction() && node.size() > 2) {
-				template.addParsingProblem(new ParsingProblem("Can only return a value from a function, not a macro", node));
+				template.addParsingProblem(new ParsingProblemImpl("Can only return a value from a function, not a macro", node));
 			}
 			else if (macro.isFunction() && node.size() ==2) {
-				template.addParsingProblem(new ParsingProblem("A function must return a value.", node));
+				template.addParsingProblem(new ParsingProblemImpl("A function must return a value.", node));
 			}
 		}
 	}
@@ -231,7 +231,7 @@ class PostParseVisitor extends Node.Visitor {
        		} else {
        			if (parent.declaresVariable(key)) {
        				String msg = "The variable " + key + " has already been declared in this block.";
-       				template.addParsingProblem(new ParsingProblem(msg, node));
+       				template.addParsingProblem(new ParsingProblemImpl(msg, node));
        			}
        			parent.declareVariable(key);
        		}
@@ -245,7 +245,7 @@ class PostParseVisitor extends Node.Visitor {
 			} catch (ParseException pe) {
 				String msg = "Error in string " + node.getLocation();
 				msg += "\n" + pe.getMessage();
-				template.addParsingProblem(new ParsingProblem(msg, node));
+				template.addParsingProblem(new ParsingProblemImpl(msg, node));
 			}
 		}
 	}
@@ -255,7 +255,7 @@ class PostParseVisitor extends Node.Visitor {
 		if (template.strictVariableDeclaration() && 
 				template.declaresVariable(namespaceName)) { 
 			String msg = "The variable "+namespaceName + " is already declared and should not be used as a namespace name to import.";
-			template.addParsingProblem(new ParsingProblem(msg, node));
+			template.addParsingProblem(new ParsingProblemImpl(msg, node));
 		}
 		template.declareVariable(namespaceName);
 		recurse(node);
@@ -272,7 +272,7 @@ class PostParseVisitor extends Node.Visitor {
                 !key.equals(Configurable.BOOLEAN_FORMAT_KEY) &&
                 !key.equals(Configurable.URL_ESCAPING_CHARSET_KEY)) 
             {
-        		ParsingProblem problem = new ParsingProblem("Invalid setting name, or it is not allowed to change the"
+        		ParsingProblemImpl problem = new ParsingProblemImpl("Invalid setting name, or it is not allowed to change the"
                         + "value of the setting with FTL: "
                         + key, node);
         		template.addParsingProblem(problem);

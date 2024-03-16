@@ -7,11 +7,11 @@ import freemarker.core.nodes.generated.TemplateNode;
  * @author revusky
  */
 
-public class ParsingProblem extends TemplateNode {
+public class ParsingProblemImpl extends TemplateNode {
 	
 	private String description;
 	
-	public ParsingProblem(String description, Node location) {
+	public ParsingProblemImpl(String description, Node location) {
 		this.description = description;
 		this.copyLocationFrom(location);
 	}

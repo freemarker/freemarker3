@@ -62,7 +62,7 @@ public class Template extends Configurable {
     
     private boolean strictVariableDeclaration;
     
-    private List<ParsingProblem> parsingProblems = new ArrayList<>();
+    private List<ParsingProblemImpl> parsingProblems = new ArrayList<>();
     private TemplateHeaderElement headerElement;
     
     /**
@@ -298,7 +298,7 @@ public class Template extends Configurable {
         return (Configuration) getFallback();
     }
     
-    public List<ParsingProblem> getParsingProblems() {
+    public List<ParsingProblemImpl> getParsingProblems() {
     	return parsingProblems;
     }
     
@@ -306,7 +306,7 @@ public class Template extends Configurable {
     	return !parsingProblems.isEmpty();
     }
     
-    public void addParsingProblem(ParsingProblem problem) {
+    public void addParsingProblem(ParsingProblemImpl problem) {
     	parsingProblems.add(problem);
     }
     

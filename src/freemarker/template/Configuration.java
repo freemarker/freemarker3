@@ -10,7 +10,7 @@ import freemarker.core.Configurable;
 import freemarker.core.Environment;
 import freemarker.core.variables.WrappedVariable;
 import freemarker.core.parser.ParseException;
-import freemarker.core.parser.ParsingProblem;
+import freemarker.core.parser.ParsingProblemImpl;
 import freemarker.log.Logger;
 import freemarker.template.utility.HtmlEscape;
 import freemarker.template.utility.StandardCompress;
@@ -287,13 +287,13 @@ public class Configuration extends Configurable {
             throw new FileNotFoundException("Template " + name + " not found.");
         }
         if (result.hasParsingProblems() && !tolerateParsingProblems) {
-            for (ParsingProblem pp : result.getParsingProblems()) {
+            for (ParsingProblemImpl pp : result.getParsingProblems()) {
                 logger.error(pp.getMessage());
                 //System.err.println(pp.getMessage());
             }
             throw new ParseException(result.getParsingProblems());
         } else {
-            for (ParsingProblem pp : result.getParsingProblems()) {
+            for (ParsingProblemImpl pp : result.getParsingProblems()) {
                 logger.warn(pp.getMessage());
             }
         }
