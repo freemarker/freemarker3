@@ -441,7 +441,7 @@ INJECT AdditiveExpression :
 
 MultiplicativeExpression :
    UnaryExpression 
-   [
+   (
       (
          <TIMES>
          |
@@ -449,8 +449,8 @@ MultiplicativeExpression :
          |
          <PERCENT>
       )
-      MultiplicativeExpression
-   ]
+      UnaryExpression
+   )*
 ;
 
 INJECT MultiplicativeExpression :
@@ -468,13 +468,17 @@ INJECT MultiplicativeExpression :
     	return (Expression) get(2);
     }
     
-    public TokenType getOperation() {
-        return (TokenType) get(1).getType();
+    public Object evaluate(Environment env) {
+        Object result = ((Expression) get(0)).evaluate(env);
+        for (int i=0; i<size()/2; i++) {
+            TokenType operation = (TokenType) get(i*2+1).getType();
+            Object rightSide = ((Expression) get(i*2+2)).evaluate(env);
+            result = mulDivMod(env, result, rightSide, operation);
+        }
+        return result;
     }
 
-    public Object evaluate(Environment env) {
-        Object leftSide = getLeft().evaluate(env);
-        Object rightSide = getRight().evaluate(env);
+    public Object mulDivMod(Environment env, Object leftSide, Object rightSide, TokenType operation) {
         boolean leftIsNumber = leftSide instanceof Number;
         boolean rightIsNumber = rightSide instanceof Number;
         boolean bothNumbers = leftIsNumber && rightIsNumber;
@@ -494,7 +498,7 @@ INJECT MultiplicativeExpression :
             env != null 
                 ? env.getArithmeticEngine()
                 : getTemplate().getArithmeticEngine();
-        switch (getOperation()) {
+        switch (operation) {
             case TIMES :
                 return ae.multiply(first, second);
             case DIVIDE :
@@ -502,7 +506,7 @@ INJECT MultiplicativeExpression :
             case PERCENT :
                 return ae.modulus(first, second);
             default:
-                throw new TemplateException("unknown operation : " + getOperation(), env);
+                throw new TemplateException("unknown operation : " + operation, env);
         }
     }
 
