@@ -368,16 +368,97 @@ INJECT UnaryPlusMinusExpression :
 
 AdditiveExpression :
    MultiplicativeExpression 
-   [
+   (
       (
          <PLUS> 
          |
          <MINUS>
       )
-      AdditiveExpression
-   ]
+      MultiplicativeExpression
+   )*
 ;
 
+INJECT AdditiveExpression : 
+    import freemarker.template.TemplateException;
+    import freemarker.core.ArithmeticEngine;
+    import freemarker.core.Environment;
+    import freemarker.core.variables.EvaluationException;
+    import static freemarker.core.variables.Wrap.*;
+    implements Expression;
+{
+
+    public Expression getLeft() {
+        return (Expression) get(0);
+    }
+
+    public Expression getRight() {
+        return (Expression) get(2);
+    }
+
+    public Object evaluate(Environment env) {
+        Object result = ((Expression) get(0)).evaluate(env);
+        for (int i = 0; i < size()/2; i++) {
+            boolean isMinus = get(i*2+1).getType() == MINUS;
+            if (isMinus) {
+                if (!(result instanceof Number)) {
+                    throw new EvaluationException("Expecting number here");
+                }
+                Number leftSide = (Number) result;
+                Expression rhs = (Expression) get(i*2+2);
+                Object rightSide = rhs.evaluate(env);
+                if (!(rightSide instanceof Number)) {
+                    throw new EvaluationException("Expecting number at: " + rhs.getLocation());
+                }
+                ArithmeticEngine ae = env != null ? env.getArithmeticEngine() : getTemplate().getArithmeticEngine();
+                result = ae.subtract(leftSide, (Number) rightSide);
+                continue;
+            }
+            Object right = ((Expression)get(i*2+2)).evaluate(env);
+            result = addOrConcatenate(env, result, right);
+        }
+        return result;
+    }
+
+    private Object addOrConcatenate(Environment env, Object left, Object right) {
+        ArithmeticEngine ae = env != null ? env.getArithmeticEngine() : getTemplate().getArithmeticEngine();
+        if (left instanceof Number && right instanceof Number) {
+            return ae.add((Number) left, (Number) right);
+        }
+        if (isList(left) && isList(right)) {
+            List leftList = asList(left);
+            List rightList = asList(right);
+            List result = new ArrayList();
+            result.addAll(leftList);
+            result.addAll(rightList);
+            return result;
+        }
+        if (isMap(left) && isMap(right)) {
+            Map leftMap = (Map) unwrap(left);
+            Map rightMap = (Map) unwrap(right);
+            Map result = new LinkedHashMap(leftMap);
+            for (Object key : rightMap.keySet()) {
+                result.put(key, rightMap.get(key));
+            }
+            return result;
+        }
+        return getLeft().getStringValue(env, left) + getRight().getStringValue(env, right);
+    }
+
+    public Expression _deepClone(String name, Expression subst) {
+        AdditiveExpression result = new AdditiveExpression();
+        for (Node n : this) {
+            if (n instanceof Expression) {
+                result.add(((Expression)n).deepClone(name, subst));
+            }
+            else {
+                result.add(n);
+            }
+        }
+        return result;
+    }
+}
+
+#if false
 INJECT AdditiveExpression : 
     import freemarker.template.TemplateException;
     import freemarker.core.ArithmeticEngine;
@@ -427,7 +508,6 @@ INJECT AdditiveExpression :
             return result;
         }
         return getLeft().getStringValue(env, left) + getRight().getStringValue(env, right);
-        //  return getLeft().getStringValue(env) + getRight().getStringValue(env);
     }
 
     public Expression _deepClone(String name, Expression subst) {
@@ -438,6 +518,7 @@ INJECT AdditiveExpression :
         return result;
     }
 }
+#endif
 
 MultiplicativeExpression :
    UnaryExpression 
@@ -512,9 +593,14 @@ INJECT MultiplicativeExpression :
 
     public Expression _deepClone(String name, Expression subst) {
         MultiplicativeExpression result = new MultiplicativeExpression();
-        result.add(getLeft().deepClone(name, subst));
-        result.add(get(1));
-        result.add(getRight().deepClone(name, subst));
+        for (Node n : this) {
+            if (n instanceof Expression) {
+                result.add(((Expression)n).deepClone(name, subst));
+            }
+            else {
+                result.add(n);
+            }
+        }
         return result;
     }
 }
