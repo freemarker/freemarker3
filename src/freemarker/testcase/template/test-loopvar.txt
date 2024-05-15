@@ -12,17 +12,17 @@
       L2 ${k}: <#list 1..3 as l>${l}; </#list>
     </@>
   </@>
-</#list>
+#endlist
 ---
 <#macro repeat count>
-  <#list 1..count as x>
+  #list 1..count as x
     <#nested x, x/2, x==count>
-  </#list>
+  #endlist
 </#macro>
 <#macro test2>
-<#var c = 123>
+#var c = 123
 <@repeat count=4 ; d, halfc, last>
-  <#set c = c + 0.1>
+  #set c = c + 0.1
   ${d} ${halfc}<#if last> Last!</#if>
 </@repeat>
 ${c}

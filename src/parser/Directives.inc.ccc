@@ -1384,11 +1384,11 @@ INJECT NoEscapeBlock :
     }
 }
 
-
 CloseDirectiveBlock(Token startToken)#void :
     <CLOSE_DIRECTIVE_BLOCK>
 	{
-        String nameAtEnd = stripNonLetter(lastConsumedToken.toString());
+        String image = lastConsumedToken.toString();
+        String nameAtEnd = image.startsWith("#end") ? image.substring(4) : stripNonLetter(image);
         String nameAtStart = stripNonLetter(startToken.toString());
         if (nameAtEnd.length() > 0) {
             if (!nameAtStart.equals(nameAtEnd)) {

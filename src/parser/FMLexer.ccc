@@ -149,7 +149,11 @@ INJECT LEXER_CLASS :
     }
 
     private Token TOKEN_HOOK(Token token) {
-        if (directiveNames.contains(token.getType())) {
+        TokenType type = token.getType();
+        if (type == UNIFIED_CALL) {
+            inPointySyntax = token.charAt(0) == '<';
+        }
+        else if (directiveNames.contains(type)) {
             inPointySyntax = token.charAt(0) == '<';
             if (emptyDirectives.contains(token.getType())) {
                 switchTo(LexicalState.DEFAULT);
@@ -239,9 +243,9 @@ TOKEN#Text :
     |
     <PROBLEMATIC_CHAR : "$" | "<" | "["> #Printable
     |
-    <POSSIBLE_DIRECTIVE : "#" (["a"-"z","A"-"Z"])+> #Printable
+    <POSSIBLE_END_DIRECTIVE : ("/#" (["a"-"z","A"-"Z"])*) | ("#end" (["a"-"z","A"-"Z"])*)> #Printable
     |
-    <POSSIBLE_END_DIRECTIVE : "/#" (["a"-"z","A"-"Z"])*> #Printable
+    <POSSIBLE_DIRECTIVE : "#" (["a"-"z","A"-"Z"])+> #Printable
     |
     <REGULAR_PRINTABLE : (~["$", "<", "[" ,"\t", " ", "\n"])+> #Printable
 ;
