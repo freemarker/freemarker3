@@ -83,6 +83,7 @@ INJECT LEXER_CLASS :
             case "#embed" : return EMBED;
             case "#escape" : return ESCAPE;
             case "#else" : return ELSE;
+            case "#elif" : return ELSE_IF;
             case "#elseif" : return ELSE_IF;
             case "#exec" : return EXEC;
             case "#fallback" : return FALLBACK;
@@ -124,7 +125,9 @@ INJECT LEXER_CLASS :
             if (directiveType == UNKNOWN_DIRECTIVE) return token;
             if (!emptyDirectives.contains(directiveType)) {
                 switchTo(LexicalState.EXPRESSION);
-                activeTokenTypes.add(EOL);
+                if (token.charAt(0) != '[' && token.charAt(0) != '<') {
+                    activeTokenTypes.add(EOL);
+                }
             }
         }
         else if (type == POSSIBLE_END_DIRECTIVE) {
@@ -136,6 +139,7 @@ INJECT LEXER_CLASS :
             if (parenthesisNesting > 0 || 
                 bracketNesting > 0 ||
                 hashLiteralNesting > 0 ||
+                prevTok.getType() == EOL ||
                 prevTok != null && continueLineTokens.contains(prevTok.getType())) 
             {
                 token.setUnparsed(true);
@@ -216,6 +220,14 @@ INJECT LEXER_CLASS :
     <SINGLE_LINE_COMMENT : "#--" (~["\n"])* >
 ;
 
+<EXPRESSION> UNPARSED#Comment :
+    <EXPRESSION_SINGLE_LINE_COMMENT : <SINGLE_LINE_COMMENT> "\n"> {
+        if (activeTokenTypes.contains(EOL) && !atLineStart(matchedToken)) {
+            matchedToken.truncate(1);
+        }
+    }
+;
+
 MORE :
     <START_TAG : "<#" | "[#"> : DIRECTIVE_NAME
 ;    
@@ -243,7 +255,7 @@ TOKEN#Text :
     |
     <PROBLEMATIC_CHAR : "$" | "<" | "["> #Printable
     |
-    <POSSIBLE_END_DIRECTIVE : ("/#" (["a"-"z","A"-"Z"])*) | ("#end" (["a"-"z","A"-"Z"])*)> #Printable
+    <POSSIBLE_END_DIRECTIVE : ( "#end" | "/#") (["a"-"z","A"-"Z"])* > #Printable
     |
     <POSSIBLE_DIRECTIVE : "#" (["a"-"z","A"-"Z"])+> #Printable
     |
@@ -271,7 +283,7 @@ TOKEN#Text :
     |
     <ELSE : "else" <CLOSE_TAG2>> 
     |
-    <ELSE_IF : "elseif">
+    <ELSE_IF : "elseif" | "elif">
     |
     <EMBED : "embed"> 
     |

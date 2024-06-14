@@ -18,7 +18,6 @@ public class Wrap {
      * null-returning method. It is useful if you want
      * to simulate typical loose scripting language sorts of 
      * behaviors in your templates. 
-     * @deprecated Try not to use this.
      */
     public static final Object NOTHING = GeneralPurposeNothing.getInstance();
 

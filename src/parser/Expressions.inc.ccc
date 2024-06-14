@@ -99,20 +99,26 @@ TernaryExpression :
     [
         <TERNARY>
         Expression
-        <COLON>
-        Expression
+        [
+          <COLON>
+          Expression
+        ]
     ]
 ; 
 
 INJECT TernaryExpression :
    import freemarker.core.Environment;
+   import static freemarker.core.variables.Wrap.NOTHING;
    implements Expression
 {
     public Object evaluate(Environment env) {
         Expression condition = (Expression) get(0);
         Expression trueChoice= (Expression) get(2);
-        Expression falseChoice = (Expression) get(4);
-        return condition.isTrue(env) ? trueChoice.evaluate(env) : falseChoice.evaluate(env);
+        Expression falseChoice = size() > 4 ? (Expression) get(4) : null;
+        if (condition.isTrue(env)) {
+            return trueChoice.evaluate(env);
+        }
+        return falseChoice == null ? NOTHING : falseChoice.evaluate(env);
     }
 
     public Expression _deepClone(String name, Expression subst) {
