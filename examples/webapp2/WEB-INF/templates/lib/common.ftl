@@ -14,7 +14,7 @@
         <td align="left">
           <i>FreeMarker Example 2</i>
         <td align="right">
-          <a href="http://freemarker.org"><img src="poweredby_ffffff.png" border=0></a>
+          <a href="http://freemarker3.org"><img src="poweredby_ffffff.png" border=0></a>
     </table>
   </body>
   </html>

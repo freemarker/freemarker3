@@ -5,7 +5,7 @@ import java.util.*;
 import java.lang.reflect.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import freemarker.template.*;
+import freemarker3.template.*;
 
 /**
  * <p>This is very very primitive MVC Controller servlet base class, based

@@ -3914,7 +3914,7 @@ ${("green " + "mouse")?upper_case} [#-- GREEN MOUSE --]
         directive. <phrase role="forProgrammers">Java programmers who want to
         implement the directive in Java Language, rather than in a template,
         should use
-        <literal>freemarker.core.variables.UserDirective</literal> (see
+        <literal>freemarker3.core.variables.UserDirective</literal> (see
         <link linkend="pgui_datamodel_directive">more
         here...</link>).</phrase></para>
 
@@ -4826,7 +4826,7 @@ jsmith@other.com, jsmith@other.com, jsmith@other.com</programlisting>
           <para>If you have written a good quality library that can be useful
           for other people, you may want to make it available on the Internet
           (like on <link
-          xlink:href="http://freemarker.org/libraries.html">http://freemarker.org/libraries.html</link>).
+          xlink:href="http://freemarker3.org/libraries.html">http://freemarker3.org/libraries.html</link>).
           To prevent clashes with the names of libraries used by other
           authors, and to make it easy to write libraries that import other
           published libraries, there is a de-facto standard that specifies the
@@ -5167,7 +5167,7 @@ That's all.</programlisting>
           <primary>configuration</primary>
         </indexterm>
 
-        <para>First you have to create a <literal>freemarker.template.Configuration</literal> instance and adjust its settings. A <literal>Configuration</literal> instance is a central place to store the application level settings of FreeMarker.  Also, it deals with the creation and caching of pre-parsed templates.</para>
+        <para>First you have to create a <literal>freemarker3.template.Configuration</literal> instance and adjust its settings. A <literal>Configuration</literal> instance is a central place to store the application level settings of FreeMarker.  Also, it deals with the creation and caching of pre-parsed templates.</para>
 
         <para>Probably you will <emphasis>do it only once</emphasis> at the
         beginning of the application (possibly servlet) life-cycle:</para>
@@ -5280,7 +5280,7 @@ latest.put("name", "green mouse");</programlisting>
         </indexterm>
 
         <para>Templates are represented by
-        <literal>freemarker.template.Template</literal> instances. Typically
+        <literal>freemarker3.template.Template</literal> instances. Typically
         you obtain a <literal>Template</literal> instance from the
         <literal>Configuration</literal> instance. Whenever you need a
         template instance you can get it with its
@@ -5347,10 +5347,10 @@ out.flush();</programlisting>
         <title>Putting all together</title>
 
         <para>This is a working source file assembled from the previous
-        fragments. Don't forget to put <literal>freemarker.jar</literal> into
+        fragments. Don't forget to put <literal>freemarker3.jar</literal> into
         the <literal>CLASSPATH</literal>.</para>
 
-        <programlisting role="unspecified">import freemarker.template.*;
+        <programlisting role="unspecified">import freemarker3.template.*;
 import java.util.*;
 import java.io.*;
 
@@ -5417,7 +5417,7 @@ public class Test {
         <para>You have seen how to build a data-model in the <link linkend="pgui_quickstart">Quick Start</link> using the standard Java classes (<literal>Map</literal>, <literal>String</literal>, etc.).  But you could use standard java collections as variables in your data model, because these were replaced with the appropriate <literal>TemplateModel</literal> instances behind the scenes. This facility is called <emphasis role="term">object wrapping</emphasis>.  The object wrapping facility can convert <emphasis>any</emphasis> kind of object transparently to the instances of classes that implement <literal>TemplateModel</literal> interface. This makes it possible, for example, to access <literal>java.sql.ResultSet</literal> as sequence variable in templates, or to access <literal>javax.servlet.ServletRequest</literal> objects as a hash variable that contains the request attributes, or even to traverse XML documents as FTL variables (<link linkend="xgui">see here</link>). To wrap (convert) these objects, however, you need to plug the proper, so called, object wrapper implementation (possibly your custom implementation); this will be discussed <link linkend="pgui_datamodel_objectWrapper">later</link>. The meat for now is that any object that you want to access from the templates, sooner or later must be converted to an object that implements <literal>TemplateModel</literal> interface. So first you should familiarize yourself with writing of <literal>TemplateModel</literal> implementations.</para>
 
         <para>There is roughly one
-        <literal>freemarker.template.TemplateModel</literal> descendant
+        <literal>freemarker3.template.TemplateModel</literal> descendant
         interface corresponding to each basic type of variable
         (<literal>TemplateHashModel</literal> for hashes,
         <literal>TemplateSequenceModel</literal> sequences,
@@ -5437,7 +5437,7 @@ public class Test {
         linkend="dgui_datamodel_basics" />)</para>
 
         <para>Note that a trivial implementation of these interfaces is
-        provided with the <literal>freemarker.template</literal> package. For
+        provided with the <literal>freemarker3.template</literal> package. For
         example, to convert a <literal>String</literal> to FTL string
         variable, you can use <literal>SimpleScalar</literal>, to convert a
         <literal>java.util.Map</literal> to FTL hash variable, you can use
@@ -5529,7 +5529,7 @@ public class Test {
         </note>
 
         <para>A trivial implementation of these interfaces are available in
-        <literal>freemarker.template</literal> package with
+        <literal>freemarker3.template</literal> package with
         <literal>Simple<replaceable>Type</replaceable></literal> class name.
         However, there is no <literal>SimpleBooleanModel</literal>; to
         represent the boolean values you can use the
@@ -5798,7 +5798,7 @@ ${indexOf("foo", x)}</programlisting>
           <para>Note that any <literal>TemplateException</literal>-s that
           occur during lazy argument evaluation will be wrapped into an
           instance of runtime exception
-          <literal>freemarker.template.utility.UndeclaredThrowableException</literal>
+          <literal>freemarker3.template.utility.UndeclaredThrowableException</literal>
           as <literal>TemplateException</literal> can not be thrown from
           <literal>java.util.List</literal> methods.</para>
         </section>
@@ -5860,12 +5860,12 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-import freemarker.core.Environment;
-import freemarker.template.TemplateDirectiveBody;
-import freemarker.template.TemplateDirectiveModel;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
+import freemarker3.core.Environment;
+import freemarker3.template.TemplateDirectiveBody;
+import freemarker3.template.TemplateDirectiveModel;
+import freemarker3.template.TemplateException;
+import freemarker3.template.TemplateModel;
+import freemarker3.template.TemplateModelException;
 
 /**
  *  FreeMarker user-defined directive that progressively transforms
@@ -6011,15 +6011,15 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 
-import freemarker.core.Environment;
-import freemarker.template.SimpleNumber;
-import freemarker.template.TemplateBooleanModel;
-import freemarker.template.TemplateDirectiveBody;
-import freemarker.template.TemplateDirectiveModel;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateModel;
-import freemarker.template.TemplateModelException;
-import freemarker.template.TemplateNumberModel;
+import freemarker3.core.Environment;
+import freemarker3.template.SimpleNumber;
+import freemarker3.template.TemplateBooleanModel;
+import freemarker3.template.TemplateDirectiveBody;
+import freemarker3.template.TemplateDirectiveModel;
+import freemarker3.template.TemplateException;
+import freemarker3.template.TemplateModel;
+import freemarker3.template.TemplateModelException;
+import freemarker3.template.TemplateNumberModel;
 
 /**
  * FreeMarker user-defined directive for repeating a section of a template,
@@ -6306,9 +6306,9 @@ public class RepeatDirective implements TemplateDirectiveModel {
             with <literal>SimpleHash</literal>, <literal>Boolean</literal>
             with <literal>TemplateBooleanModel.TRUE</literal> or
             <literal>TemplateBooleanModel.FALSE</literal>, W3C DOM nodes with
-            <literal>freemarker.ext.dom.NodeModel</literal>. For Jython
+            <literal>freemarker3.ext.dom.NodeModel</literal>. For Jython
             objects, this wrapper will invoke
-            <literal>freemarker.ext.jython.JythonWrapper</literal>. For all
+            <literal>freemarker3.ext.jython.JythonWrapper</literal>. For all
             other objects, it will invoke <link
             linkend="pgui_misc_beanwrapper"><literal>BEANS_WRAPPER</literal></link>.</para>
           </listitem>
@@ -6317,7 +6317,7 @@ public class RepeatDirective implements TemplateDirectiveModel {
             <para><literal>ObjectWrapper.BEANS_WRAPPER</literal>: It can
             expose java Bean properties and other members of arbitrary objects
             using Java reflection. At least in FreeMarker 2.3, it is a
-            <literal>freemarker.ext.beans.BeansWrapper</literal> instance;
+            <literal>freemarker3.ext.beans.BeansWrapper</literal> instance;
             there is a separated <link linkend="pgui_misc_beanwrapper">chapter
             about it</link>.</para>
           </listitem>
@@ -6503,7 +6503,7 @@ ${theObject.sin(123)}</programlisting>
         (application level) settings and defines certain variables that you
         want to be available in all templates. Also it deals with the creation
         and caching of <literal>Template</literal> instances. A configuration
-        is a <literal>freemarker.template.Configuration</literal> instances,
+        is a <literal>freemarker3.template.Configuration</literal> instances,
         that you can create with its constructor. An application typically
         uses only a single shared <literal>Configuration</literal>
         instance.</para>
@@ -6574,31 +6574,31 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
             <tr>
               <td><literal>capture_output</literal></td>
 
-              <td><literal>freemarker.template.utility.CaptureOutput</literal></td>
+              <td><literal>freemarker3.template.utility.CaptureOutput</literal></td>
             </tr>
 
             <tr>
               <td><literal>compress</literal></td>
 
-              <td><literal>freemarker.template.utility.StandardCompress</literal></td>
+              <td><literal>freemarker3.template.utility.StandardCompress</literal></td>
             </tr>
 
             <tr>
               <td><literal>html_escape</literal></td>
 
-              <td><literal>freemarker.template.utility.HtmlEscape</literal></td>
+              <td><literal>freemarker3.template.utility.HtmlEscape</literal></td>
             </tr>
 
             <tr>
               <td><literal>normalize_newlines</literal></td>
 
-              <td><literal>freemarker.template.utility.NormalizeNewlines</literal></td>
+              <td><literal>freemarker3.template.utility.NormalizeNewlines</literal></td>
             </tr>
 
             <tr>
               <td><literal>xml_escape</literal></td>
 
-              <td><literal>freemarker.template.utility.XmlEscape</literal></td>
+              <td><literal>freemarker3.template.utility.XmlEscape</literal></td>
             </tr>
           </tbody>
         </informaltable>
@@ -6628,7 +6628,7 @@ cfg.setSharedVariable("company", "Foo Inc.");  // Using ObjectWrapper.DEFAULT_WR
         <literal>Configuration</literal> instance or
         <literal>Template</literal> instance can be further overridden for a
         single <literal>Template.process</literal> call. For each such call a
-        <literal>freemarker.core.Environment</literal> object is created
+        <literal>freemarker3.core.Environment</literal> object is created
         internally that holds the runtime environment of the template
         processing, including the setting values that were overridden on that
         level. The values stored there can even be changed during the template
@@ -6749,7 +6749,7 @@ myCfg.setNumberFormat("0.####");</programlisting>
             Framework:</para>
 
             <programlisting role="unspecified">&lt;bean id="freemarkerConfig"
-    class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer"&gt;
+    class="org.springframework.web.servlet.view.freemarker3.FreeMarkerConfigurer"&gt;
   &lt;property name="freemarkerSettings"&gt;
     &lt;props&gt;
       &lt;prop key="locale"&gt;it_IT&lt;/prop&gt;
@@ -6768,7 +6768,7 @@ myCfg.setNumberFormat("0.####");</programlisting>
             <para><literal>Template</literal> layer: You shouldn't set
             settings here, unless you manage the <literal>Template</literal>
             objects instead of a
-            <literal>freemarker.cache.TemplateCache</literal>, in which case
+            <literal>freemarker3.cache.TemplateCache</literal>, in which case
             you should set the setting before the <literal>Template</literal>
             object is first used, and then treat the
             <literal>Template</literal> object as read-only.</para>
@@ -6817,26 +6817,26 @@ env.process();  // process the template</programlisting>
         <itemizedlist>
           <listitem>
             <para>Setter methods of
-            <literal>freemarker.core.Configurable</literal> for the settings
+            <literal>freemarker3.core.Configurable</literal> for the settings
             that are in all three layers</para>
           </listitem>
 
           <listitem>
             <para>Setter methods of
-            <literal>freemarker.template.Configuration</literal> for the
+            <literal>freemarker3.template.Configuration</literal> for the
             settings that are available only in the
             <literal>Configuration</literal> layer</para>
           </listitem>
 
           <listitem>
-            <para><literal>freemarker.core.Configurable.setSetting(String,
+            <para><literal>freemarker3.core.Configurable.setSetting(String,
             String)</literal> for settings that are available in all three
             layers and are writable with <literal>String</literal> key-value
             pairs.</para>
           </listitem>
 
           <listitem>
-            <para><literal>freemarker.template.Configuration.setSetting(String,
+            <para><literal>freemarker3.template.Configuration.setSetting(String,
             String)</literal> for settings that are available only in the
             <literal>Configuration</literal> layer and are writable with
             <literal>String</literal> key-value pairs.</para>
@@ -6956,7 +6956,7 @@ env.process();  // process the template</programlisting>
             Here's an example for loading templates from two distinct
             directories and with the class-loader:</para>
 
-            <programlisting role="unspecified">import freemarker.cache.*; // template loaders live in this package
+            <programlisting role="unspecified">import freemarker3.cache.*; // template loaders live in this package
 
 <replaceable>...</replaceable>
 
@@ -6981,19 +6981,19 @@ cfg.setTemplateLoader(mtl);</programlisting>
 
             <para>If none of the built-in class loaders are good for you, you
             will have to write your own class that implements the
-            <literal>freemarker.cache.TemplateLoader</literal> interface and
+            <literal>freemarker3.cache.TemplateLoader</literal> interface and
             pass it to the <literal>setTemplateLoader(TemplateLoader
             loader)</literal> method of <literal>Configuration</literal>.
             Better yet, if you plan on running templates in <link
             linkend="pgui_misc_secure_domain">their own isolated Java security
             domain</link> then implement
-            <literal>freemarker.cache.SecureTemplateLoader</literal>. Please
+            <literal>freemarker3.cache.SecureTemplateLoader</literal>. Please
             read the API JavaDoc for more information.</para>
 
             <para>If your template source accesses the templates through an
             URL, you needn't implement a <literal>TemplateLoader</literal>
             from scratch; you can choose to subclass
-            <literal>freemarker.cache.URLTemplateLoader</literal> instead and
+            <literal>freemarker3.cache.URLTemplateLoader</literal> instead and
             just implement the <literal>URL getURL(String
             templateName)</literal> method.</para>
           </section>
@@ -7075,7 +7075,7 @@ cfg.setTemplateLoader(mtl);</programlisting>
           away is pluggable with the <literal>cache_storage</literal> setting,
           by which you can plug any <literal>CacheStorage</literal>
           implementation. For most users
-          <literal>freemarker.cache.MruCacheStorage</literal> will be
+          <literal>freemarker3.cache.MruCacheStorage</literal> will be
           sufficient. This cache storage implements a two-level Most Recently
           Used cache. In the first level, items are strongly referenced up to
           the specified maximum (strongly referenced items can't be dropped by
@@ -7086,7 +7086,7 @@ cfg.setTemplateLoader(mtl);</programlisting>
           specified with the constructor. For example, set the size of the
           strong part to 20, and the size of soft part to 250:</para>
 
-          <programlisting role="unspecified">cfg.setCacheStorage(new freemarker.cache.MruCacheStorage(20, 250))</programlisting>
+          <programlisting role="unspecified">cfg.setCacheStorage(new freemarker3.cache.MruCacheStorage(20, 250))</programlisting>
 
           <para>Or, since <literal>MruCacheStorage</literal> is the default
           cache storage implementation:</para>
@@ -7160,7 +7160,7 @@ cfg.setTemplateLoader(mtl);</programlisting>
                 </listitem>
 
                 <listitem>
-                  <para><literal>freemarker.core.ParseException</literal>
+                  <para><literal>freemarker3.core.ParseException</literal>
                   because the template file is syntactically incorrect
                   according the rules of the FTL language. The point is that
                   this error occurs when you obtain the
@@ -7187,7 +7187,7 @@ cfg.setTemplateLoader(mtl);</programlisting>
                 </listitem>
 
                 <listitem>
-                  <para><literal>freemarker.template.TemplatException</literal>
+                  <para><literal>freemarker3.template.TemplatException</literal>
                   because other problem occurred while executing the template.
                   For example, a frequent error is when a template refers to a
                   variable which is not existing. Be default, when a
@@ -7212,7 +7212,7 @@ cfg.setTemplateLoader(mtl);</programlisting>
 
           <para><literal>TemplateException</literal>-s thrown during the
           template processing are handled by the
-          <literal>freemarker.template.TemplateExceptionHandler</literal>
+          <literal>freemarker3.template.TemplateExceptionHandler</literal>
           object, which is plugged into the <literal>Configuration</literal>
           object with its
           <literal>setTemplateExceptionHandler(<replaceable>...</replaceable>)</literal>
@@ -7694,7 +7694,7 @@ env.process();</programlisting>
           <secondary>wrapping</secondary>
         </indexterm>
 
-        <para>The <literal>freemarker.ext.beans.BeansWrapper</literal> is an
+        <para>The <literal>freemarker3.ext.beans.BeansWrapper</literal> is an
         <link linkend="pgui_datamodel_objectWrapper">object wrapper</link>
         that was originally added to FreeMarker so arbitrary POJO-s (Plain Old
         Java Objects) can be wrapped into <literal>TemplateModel</literal>
@@ -7708,9 +7708,9 @@ env.process();</programlisting>
         <literal>Collection</literal> (like <literal>List</literal>),
         <literal>Map</literal>, <literal>Boolean</literal> and
         <literal>Iterator</literal> objects with the
-        <literal>freemarker.template.Simple<replaceable>Xxx</replaceable></literal>
+        <literal>freemarker3.template.Simple<replaceable>Xxx</replaceable></literal>
         classes, and W3C DOM nodes with
-        <literal>freemarker.ext.dom.NodeModel</literal> (<link
+        <literal>freemarker3.ext.dom.NodeModel</literal> (<link
         linkend="xgui">more about wrapped W3C DOM...</link>), so for those the
         above described rules doesn't apply.</para>
 
@@ -8114,7 +8114,7 @@ env.process();</programlisting>
             <listitem>
               <para>If model is a hash model, and <literal>T</literal> is
               assignable from
-              <literal>freemarker.ext.beans.HashAdapter</literal>, a hash
+              <literal>freemarker3.ext.beans.HashAdapter</literal>, a hash
               adapter is returned. <phrase role="forProgrammers">Same as
               (**)</phrase></para>
             </listitem>
@@ -8122,7 +8122,7 @@ env.process();</programlisting>
             <listitem>
               <para>If model is a sequence model, and <literal>T</literal> is
               assignable from
-              <literal>freemarker.ext.beans.SequenceAdapter</literal>, a
+              <literal>freemarker3.ext.beans.SequenceAdapter</literal>, a
               sequence adapter is returned. <phrase role="forProgrammers">Same
               as (**)</phrase></para>
             </listitem>
@@ -8130,7 +8130,7 @@ env.process();</programlisting>
             <listitem>
               <para>If model is a collection model, and <literal>T</literal>
               is assignable from
-              <literal>freemarker.ext.beans.SetAdapter</literal>, a set
+              <literal>freemarker3.ext.beans.SetAdapter</literal>, a set
               adapter for the collection is returned. <phrase
               role="forProgrammers">Same as (**)</phrase></para>
             </listitem>
@@ -8284,7 +8284,7 @@ TemplateHashModel roundingModeEnums =
         logging packages in this order, and will automatically use the first
         package it finds. However, if you call the static
         <literal>selectLoggerLibrary</literal> method on the
-        <literal>freemarker.log.Logger</literal> class with appropriate
+        <literal>freemarker3.log.Logger</literal> class with appropriate
         parameter and <emphasis>before using any FreeMarker classes that log
         messages</emphasis>, you can explicitly select a logger package, or
         even disable the logging. See the API documentation for more
@@ -8305,26 +8305,26 @@ TemplateHashModel roundingModeEnums =
 
           <tbody>
             <tr>
-              <td><literal>freemarker.beans</literal></td>
+              <td><literal>freemarker3.beans</literal></td>
 
               <td>Logs messages of the Beans wrapper module.</td>
             </tr>
 
             <tr>
-              <td><literal>freemarker.cache</literal></td>
+              <td><literal>freemarker3.cache</literal></td>
 
               <td>Logs messages related to template loading and caching.</td>
             </tr>
 
             <tr>
-              <td><literal>freemarker.runtime</literal></td>
+              <td><literal>freemarker3.runtime</literal></td>
 
               <td>Logs template exceptions thrown during template
               processing.</td>
             </tr>
 
             <tr>
-              <td><literal>freemarker.runtime.attempt</literal></td>
+              <td><literal>freemarker3.runtime.attempt</literal></td>
 
               <td>Logs template exceptions thrown during template processing,
               but caught by
@@ -8333,7 +8333,7 @@ TemplateHashModel roundingModeEnums =
             </tr>
 
             <tr>
-              <td><literal>freemarker.servlet</literal></td>
+              <td><literal>freemarker3.servlet</literal></td>
 
               <td>Logs messages of the FreemarkerServlet class.</td>
             </tr>
@@ -8341,7 +8341,7 @@ TemplateHashModel roundingModeEnums =
         </informaltable>
 
         <para>You can call the static <literal>selectLoggerLibrary</literal>
-        method on the <literal>freemarker.log.Logger</literal> class and pass
+        method on the <literal>freemarker3.log.Logger</literal> class and pass
         it a string that will be used to prefix the above mentioned logger
         names. This is useful if you want to have separate loggers on a
         per-application basis.</para>
@@ -8420,7 +8420,7 @@ TemplateHashModel roundingModeEnums =
 
           <orderedlist>
             <listitem>
-              <para>Copy <literal>freemarker.jar</literal> (from the
+              <para>Copy <literal>freemarker3.jar</literal> (from the
               <literal>lib</literal> directory of the FreeMarker distribution)
               into the <literal>WEB-INF/lib</literal> directory of your Web
               application.</para>
@@ -8435,7 +8435,7 @@ TemplateHashModel roundingModeEnums =
 
           <programlisting language="XML" role="unspecified">&lt;servlet&gt;
   &lt;servlet-name&gt;freemarker&lt;/servlet-name&gt;
-  &lt;servlet-class&gt;<emphasis>freemarker.ext.servlet.FreemarkerServlet</emphasis>&lt;/servlet-class&gt;
+  &lt;servlet-class&gt;<emphasis>freemarker3.ext.servlet.FreemarkerServlet</emphasis>&lt;/servlet-class&gt;
     
   &lt;!-- FreemarkerServlet settings: --&gt;
   &lt;init-param&gt;
@@ -8825,7 +8825,7 @@ TemplateHashModel roundingModeEnums =
           application:</para>
 
           <programlisting role="unspecified">&lt;listener&gt;
-  &lt;listener-class&gt;freemarker.ext.jsp.EventForwarding&lt;/listener-class&gt;
+  &lt;listener-class&gt;freemarker3.ext.jsp.EventForwarding&lt;/listener-class&gt;
 &lt;/listener&gt;</programlisting>
 
           <para>Note that you can use JSP taglibs with FreeMarker even if the
@@ -8894,19 +8894,19 @@ TemplateHashModel roundingModeEnums =
           security manager installed, you have to grant it few permissions to
           ensure it operates properly. Most notably, you need to add these
           entries to your security policy file for
-          <literal>freemarker.jar</literal>:</para>
+          <literal>freemarker3.jar</literal>:</para>
 
-          <programlisting role="unspecified">grant codeBase "file:/path/to/freemarker.jar" 
+          <programlisting role="unspecified">grant codeBase "file:/path/to/freemarker3.jar" 
 {
   permission java.util.PropertyPermission "file.encoding", "read";
-  permission java.util.PropertyPermission "freemarker.*", "read";
+  permission java.util.PropertyPermission "freemarker3.*", "read";
 }</programlisting>
 
           <para>In certain situations (if FreeMarker attempts to access a
           thread context class loader that is otherwise foreign to it) you
           will need to allow it to retrive arbitrary class loaders:</para>
 
-          <programlisting role="unspecified">grant codeBase "file:/path/to/freemarker.jar" 
+          <programlisting role="unspecified">grant codeBase "file:/path/to/freemarker3.jar" 
 {
   ...
   permission java.lang.RuntimePermission "getClassLoader";
@@ -8918,7 +8918,7 @@ TemplateHashModel roundingModeEnums =
           as well as the files from that directory using the following
           permissions:</para>
 
-          <programlisting role="unspecified">grant codeBase "file:/path/to/freemarker.jar" 
+          <programlisting role="unspecified">grant codeBase "file:/path/to/freemarker3.jar" 
 {
   ...
   permission java.io.FilePermission "/path/to/templates", "read";
@@ -8932,7 +8932,7 @@ TemplateHashModel roundingModeEnums =
           policy interpreter, pretty much as if it were a FreeMarker
           template)</para>
 
-          <programlisting role="unspecified">grant codeBase "file:/path/to/freemarker.jar" 
+          <programlisting role="unspecified">grant codeBase "file:/path/to/freemarker3.jar" 
 {
   ...
   permission java.util.PropertyPermission "user.dir", "read";
@@ -8951,7 +8951,7 @@ TemplateHashModel roundingModeEnums =
           <para>When FreeMarker is used in a Java virtual machine with a
           security manager installed, the templates are by default run with
           all the privileges granted to the FreeMarker classes in
-          <literal>freemarker.jar</literal>.</para>
+          <literal>freemarker3.jar</literal>.</para>
 
           <para>In many usage scenarios this is acceptable, but sometimes you
           might want to be able to constrain the privileges of the templates
@@ -9002,7 +9002,7 @@ TemplateHashModel roundingModeEnums =
           <para>If you turn on the secure feature in the configuration, you
           must grant two additional privileges to FreeMarker classes:</para>
 
-          <programlisting role="unspecified">grant codeBase "file:/path/to/freemarker.jar" 
+          <programlisting role="unspecified">grant codeBase "file:/path/to/freemarker3.jar" 
 {
   ...
   permission java.lang.RuntimePermission "createClassLoader";
@@ -9026,7 +9026,7 @@ TemplateHashModel roundingModeEnums =
           typical, and most of them only apply when secure mode is turned on
           with the intention of preventing tampering with a secured
           configuration. All permissions are instances of
-          <literal>freemarker.core.FreeMarkerPermission</literal> and have a
+          <literal>freemarker3.core.FreeMarkerPermission</literal> and have a
           single argument - their name, much like the stock Java runtime
           permissions do. The following permissions are defined:</para>
 
@@ -9084,7 +9084,7 @@ TemplateHashModel roundingModeEnums =
           <programlisting role="unspecified">grant codeBase "file:/path/to/myGreatCode.jar" 
 {
   ...
-  permission freemarker.core.FreeMarkerPermission "modifyTemplate";
+  permission freemarker3.core.FreeMarkerPermission "modifyTemplate";
   ...
 };</programlisting>
         </section>
@@ -9100,7 +9100,7 @@ TemplateHashModel roundingModeEnums =
         <para>FreeMarker can be used as a scripting language within a <link
         xlink:href="http://www.jcp.org/en/jsr/detail?id=223">JSR-223</link>
         "Scripting for the Java(TM) Platform" specification. You need not do
-        anything special, just have <literal>freemarker.jar</literal> in your
+        anything special, just have <literal>freemarker3.jar</literal> in your
         classpath for this to work.</para>
 
         <section>
@@ -9153,7 +9153,7 @@ script.eval();</emphasis></programlisting>
           <title>Use cases</title>
 
           <para>The primary way to use FreeMarker remains through the direct
-          use of <literal>freemarker.*</literal> classes. Support for
+          use of <literal>freemarker3.*</literal> classes. Support for
           <literal>javax.script.*</literal> is meant to enable use of
           FreeMarker in frameworks that use <literal>javax.script.*</literal>
           as a generic way of working with any language, without knowing
@@ -9189,7 +9189,7 @@ script.eval();</emphasis></programlisting>
           <literal>eval()</literal> call:</para>
 
           <programlisting role="unspecified">import javax.script.*;
-import freemarker.ext.script.*;
+import freemarker3.ext.script.*;
 
 import javax.script.*;
  
@@ -9203,8 +9203,8 @@ engine.put("who", "World");
           in any of the two following ways:</para>
 
           <programlisting role="unspecified">import javax.script.*;
-import freemarker.template.*;
-import freemarker.ext.script.*;
+import freemarker3.template.*;
+import freemarker3.ext.script.*;
  
 ScriptEngineManager mgr = new ScriptEngineManager();
 ScriptEngine engine = mgr.getEngineByName("FreeMarker");
@@ -9214,8 +9214,8 @@ ScriptEngine engine = mgr.getEngineByName("FreeMarker");
           <para>or</para>
 
           <programlisting role="unspecified">import javax.script.*;
-import freemarker.template.*;
-import freemarker.ext.script.*;
+import freemarker3.template.*;
+import freemarker3.ext.script.*;
  
 ScriptEngineManager mgr = new ScriptEngineManager();
 ScriptEngine engine = mgr.getEngineByName("FreeMarker");
@@ -9231,7 +9231,7 @@ engine.put(FreeMarkerScriptConstants.CONFIGURATION, config);</emphasis></program
           configuration will be created once per compilation, and then that
           instance will be used for all evaluations of the compiled script).
           This option can be handy in situations where you absolutely must
-          avoid any dependency on <literal>freemarker.*</literal> classes for
+          avoid any dependency on <literal>freemarker3.*</literal> classes for
           some reason.</para>
 
           <para>If you are running FreeMarker in a JVM with a security
@@ -9242,7 +9242,7 @@ engine.put(FreeMarkerScriptConstants.CONFIGURATION, config);</emphasis></program
           <programlisting role="unspecified">grant codeBase "file:/path/to/myGreatCode.jar" 
 {
   ...
-  permission freemarker.core.FreeMarkerPermission "setScriptEngineConfiguration";
+  permission freemarker3.core.FreeMarkerPermission "setScriptEngineConfiguration";
   ...
 };</programlisting>
 
@@ -9250,8 +9250,8 @@ engine.put(FreeMarkerScriptConstants.CONFIGURATION, config);</emphasis></program
           engines by invoking a method on the script engine factory:</para>
 
           <programlisting role="unspecified">import javax.script.*;
-import freemarker.template.*;
-import freemarker.ext.script.*;
+import freemarker3.template.*;
+import freemarker3.ext.script.*;
  
 ScriptEngineManager mgr = new ScriptEngineManager();
 for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
@@ -9268,7 +9268,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
           <programlisting role="unspecified">grant codeBase "file:/path/to/myGreatCode.jar" 
 {
   ...
-  permission freemarker.core.FreeMarkerPermission "setScriptEngine<emphasis>Factory</emphasis>Configuration";
+  permission freemarker3.core.FreeMarkerPermission "setScriptEngine<emphasis>Factory</emphasis>Configuration";
   ...
 };</programlisting>
         </section>
@@ -9281,12 +9281,12 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
           <para><emphasis>The legacy XML wrapper is deprecated.</emphasis>
           FreeMarker 2.3 has introduced support for a new XML processing
           model. To support this, a new XML wrapper package was introduced,
-          <literal>freemarker.ext.dom</literal>. For new usage, we encourage
+          <literal>freemarker3.ext.dom</literal>. For new usage, we encourage
           you to use that. It is documented in the part <xref
           linkend="xgui" />.</para>
         </note>
 
-        <para>The class <literal>freemarker.ext.xml.NodeListModel</literal>
+        <para>The class <literal>freemarker3.ext.xml.NodeListModel</literal>
         provides a template model for wrapping XML documents represented as
         node trees. Every node list can contain zero or more XML nodes
         (documents, elements, texts, processing instructions, comments, entity
@@ -9640,7 +9640,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
           <listitem>
             <para><literal>FreemarkerXmlTask</literal>: It comes with the
             FreeMarker distribution, packed into the
-            <literal>freemarker.jar</literal>. This is a lightweight,
+            <literal>freemarker3.jar</literal>. This is a lightweight,
             easy-to-use Ant task for transforming XML documents with
             FreeMarker templates. Its approach is that the source files (input
             files) are XML files, which are rendered to corresponding output
@@ -9675,16 +9675,16 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
 
         <para>In order to use the <literal>FreemarkerXmlTask</literal>, you
         must first define the
-        <literal>freemarker.ext.ant.FreemarkerXmlTask</literal> inside your
+        <literal>freemarker3.ext.ant.FreemarkerXmlTask</literal> inside your
         Ant buildfile, then call the task. Suppose you want to transform
         several XML documents to HTML using the hypothetical "xml2html.ftl"
         template, with XML documents being located in the directory "xml" and
         HTML documents generated into directory "html". You would write
         something like:</para>
 
-        <programlisting role="unspecified">&lt;taskdef name="freemarker" classname="freemarker.ext.ant.FreemarkerXmlTask"&gt;
+        <programlisting role="unspecified">&lt;taskdef name="freemarker" classname="freemarker3.ext.ant.FreemarkerXmlTask"&gt;
   &lt;classpath&gt;
-    &lt;pathelement location="freemarker.jar" /&gt;
+    &lt;pathelement location="freemarker3.jar" /&gt;
   &lt;/classpath&gt;
 &lt;/taskdef&gt;
 &lt;mkdir dir="html" /&gt;
@@ -9700,14 +9700,14 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         earlier) XML adapter implementation, that still works, and the root of
         the XML tree is placed in the data-model as the variable
         <literal>document</literal>. That contains an instance of the legacy
-        <literal>freemarker.ext.xml.NodeListModel</literal> class.</para>
+        <literal>freemarker3.ext.xml.NodeListModel</literal> class.</para>
 
         <para>Note that all properties defined by the build file would be made
         available as a hash model named "properties". Several other models are
         made available; for detailed description of what variables are made
         available to templates as well as what other attributes can the task
         accept, see the JavaDoc for
-        <literal>freemarker.ext.ant.FreemarkerXmlTask</literal>.</para>
+        <literal>freemarker3.ext.ant.FreemarkerXmlTask</literal>.</para>
       </section>
 
       <section xml:id="pgui_misc_jythonwrapper">
@@ -9725,7 +9725,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
           <secondary>wrapping</secondary>
         </indexterm>
 
-        <para>The <literal>freemarker.ext.jython</literal> package consists of
+        <para>The <literal>freemarker3.ext.jython</literal> package consists of
         models that enable any Jython object to be used as a
         <literal>TemplateModel</literal>. In the very basic case, you only
         need to call the</para>
@@ -9733,7 +9733,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
         <programlisting role="unspecified">public TemplateModel wrap(Object obj);</programlisting>
 
         <para>method of the
-        <literal>freemarker.ext.jython.JythonWrapper</literal> class. This
+        <literal>freemarker3.ext.jython.JythonWrapper</literal> class. This
         method will wrap the passed object into an appropriate
         <literal>TemplateModel</literal>. Below is a summary of the properties
         of returned model wrappers. Let's assume that the model that resulted
@@ -10003,7 +10003,7 @@ for(ScriptEngineFactory factory : mgr.getEngineFactories()) {
 Map root = new HashMap();
 root.put(
         "doc",
-        freemarker.ext.dom.NodeModel.parse(new File("<replaceable>the/path/of/the.xml</replaceable>")));</programlisting>
+        freemarker3.ext.dom.NodeModel.parse(new File("<replaceable>the/path/of/the.xml</replaceable>")));</programlisting>
 
         <para>and then you have a program that outputs the result of the XML
         transformation to the standard output (usually the terminal
@@ -10733,7 +10733,7 @@ Test Book</programlisting>
             implementation available. <phrase role="forProgrammers">If both
             Xalan and Jaxen is available, FreeMarker will use Jaxen (since
             FreeMarker 2.4), unless you choose Xalan by calling
-            <literal>freemarker.ext.dom.NodeModel.useXalanXPathSupport()</literal>
+            <literal>freemarker3.ext.dom.NodeModel.useXalanXPathSupport()</literal>
             from Java.</phrase></para>
           </listitem>
 
@@ -14583,9 +14583,9 @@ Sorted by name.last:
           <para>Example:</para>
 
           <programlisting role="template">[#-- Creates a transform variable be calling the parameterless constructor of the class --]
-[#set word_wrapp = "com.acmee.freemarker.WordWrapperTransform"?new()]
+[#set word_wrapp = "com.acmee.freemarker3.WordWrapperTransform"?new()]
 [#-- Creates a transform variable be calling the constructor with one numerical argument --]
-[#set word_wrapp_narrow = "com.acmee.freemarker.WordWrapperTransform"?new(40)]</programlisting>
+[#set word_wrapp_narrow = "com.acmee.freemarker3.WordWrapperTransform"?new(40)]</programlisting>
 
           <para>For more information about how the constructor parameters are
           unwrapped and how overloaded constructor is chosen, read: <xref
@@ -16319,7 +16319,7 @@ ${x}</programlisting>
                   <primary>classic_compatible</primary>
                 </indexterm><literal>classic_compatible</literal>: This is for
               experts. Its value should be a boolean. See the documentation of
-              <literal>freemarker.template.Configurable</literal> for more
+              <literal>freemarker3.template.Configurable</literal> for more
               information.</para>
             </listitem>
           </itemizedlist>
@@ -17256,7 +17256,7 @@ or
               attributes associated with a <literal>Template</literal> object
               with its <literal>getCustomAttributeNames</literal> and
               <literal>getCustomAttribute</literal> methods (inherited from
-              <literal>freemarker.core.Configurable</literal>). As the
+              <literal>freemarker3.core.Configurable</literal>). As the
               template attributes are associated with the
               <literal>Template</literal> object when the template is parsed,
               the attributes can be read anytime, the template need not be
@@ -18495,7 +18495,7 @@ some test
           role="forProgrammers">Initially there is a <link
           linkend="pgui_config_sharedvariables">shared variable</link> for
           most transforms in the
-          <literal>freemarker.template.utility</literal> package. For more
+          <literal>freemarker3.template.utility</literal> package. For more
           information see: <xref
           linkend="pgui_config_sharedvariables" /></phrase></para>
         </section>
@@ -18527,7 +18527,7 @@ some test
 
         <para>Note that the behaviour of the auto-detection can be influenced
         with the <literal>tag_syntax</literal> setting, i.e., with
-        <literal>freemarker.template.Configuration.setTagSyntax(int
+        <literal>freemarker3.template.Configuration.setTagSyntax(int
         tagSyntax)</literal>.</para>
       </section>
 
@@ -18767,7 +18767,7 @@ or
             is a simpler, more lightweight tool. Thus, it does not address
             many tasks that FreeMarker does, and its template language is less
             powerful in general, but it is simpler; visit <link
-            xlink:href="http://freemarker.org/fmVsVel.html">http://freemarker.org/fmVsVel.html</link>
+            xlink:href="http://freemarker3.org/fmVsVel.html">http://freemarker3.org/fmVsVel.html</link>
             for details. Currently (2005) Velocity has wider third party
             support and larger user community.</para>
           </answer>
@@ -18891,8 +18891,8 @@ or
             usable FreeMarker release. You may use an older release.</para>
 
             <para>Are you sure that the Java class loader finds the same
-            <literal>freemarker.jar</literal> that you expect to use? Maybe
-            there is an older version of <literal>freemarker.jar</literal>
+            <literal>freemarker3.jar</literal> that you expect to use? Maybe
+            there is an older version of <literal>freemarker3.jar</literal>
             around (such as in the Ant <literal>lib</literal> directory),
             which has higher priority. To check this, try to print the version
             number in a template with <literal>${.version}</literal>. If it
@@ -18928,7 +18928,7 @@ or
             example:</para>
 
             <programlisting role="unspecified">cfg.setNumberFormat("0.######");  // now it will print 1000000
-// where cfg is a freemarker.template.Configuration object</programlisting>
+// where cfg is a freemarker3.template.Configuration object</programlisting>
 
             <para>Note however than humans often find it hard to read big
             numbers without grouping separator. So in general it is
@@ -18956,7 +18956,7 @@ or
             example:</para>
 
             <programlisting role="unspecified">cfg.setLocale(java.util.Locale.ITALY);
-// where cfg is a freemarker.template.Configuration object</programlisting>
+// where cfg is a freemarker3.template.Configuration object</programlisting>
 
             <para>However, sometimes you want to output a number not for human
             audience, but for ''computer audience'' (like you want to print a
@@ -19145,7 +19145,7 @@ or
 
             <para>If the FreeMarker support of the Web Application Framework
             is based on
-            <literal>freemarker.ext.servlet.FreemarkerServlet</literal>, then
+            <literal>freemarker3.ext.servlet.FreemarkerServlet</literal>, then
             you can also do this (since FreeMarker 2.3.15):</para>
 
             <programlisting role="template">[@include_page path="/WEB-INF/just-an-example.jspf" /]</programlisting>
@@ -19260,7 +19260,7 @@ or
 
             <para>If you read the programmer's guide, then you know that
             technically, the data-model is a tree of
-            <literal>freemarker.template.TemplateModel</literal> objects. The
+            <literal>freemarker3.template.TemplateModel</literal> objects. The
             building of the data-model usually (but not necessary) happens by
             automatically wrapping (enclosing) plain Java objects into
             <literal>TemplateModel</literal> objects. The object that does
@@ -19268,7 +19268,7 @@ or
             configure FreeMarker. FreeMarker comes with a few object wrapper
             implementations out-of-the-box, and probably the most widely used
             of them is <link
-            linkend="pgui_misc_beanwrapper"><literal>freemarker.ext.beans.BeansWrapper</literal></link>.
+            linkend="pgui_misc_beanwrapper"><literal>freemarker3.ext.beans.BeansWrapper</literal></link>.
             If you use an instance of this as the object wrapper, then
             <literal>java.util.Map</literal>-s you put into the data-model
             will also act as a method, so you can write
@@ -19632,8 +19632,8 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
           <answer>
             <para>It's not possible (yet), but something very similar is
             possible if you write a class that implements
-            <literal>freemarker.template.TemplateMethodModelEx</literal> or
-            <literal>freemarker.template.TemplateTransformModel</literal>
+            <literal>freemarker3.template.TemplateMethodModelEx</literal> or
+            <literal>freemarker3.template.TemplateTransformModel</literal>
             respectively, and then where you were write <literal>[#function my
             <replaceable>...</replaceable>]<replaceable>...</replaceable>[/#function]</literal>
             or <literal>[#macro my
@@ -19648,7 +19648,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
             <literal>TemplateTransformModel</literal> instances into the data
             model before calling the template, or into the shared variable map
             (see:
-            <literal>freemarker.template.Configuration.setSharedVariable(String,
+            <literal>freemarker3.template.Configuration.setSharedVariable(String,
             TemplateModel)</literal>) when you initialize the
             application.)</para>
           </answer>
@@ -19897,17 +19897,17 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       </indexterm>
 
       <para>No real installation needed. Simply copy
-      <literal>lib/freemarker.jar</literal> to a location where your Java
+      <literal>lib/freemarker3.jar</literal> to a location where your Java
       application's class-loader will find it. For example, if you use
       FreeMarker in a web application, you probably want to put
-      <literal>freemarker.jar</literal> into the
+      <literal>freemarker3.jar</literal> into the
       <literal>WEB-INF/lib</literal> directory of your web application.</para>
 
       <para>No real installation needed. Simply copy
-      <literal>lib/freemarker.jar</literal> to a location where your Java
+      <literal>lib/freemarker3.jar</literal> to a location where your Java
       application's ClassLoader will find it. For example, if you use
       FreeMarker in a web application, you probably want to put
-      <literal>freemarker.jar</literal> into the
+      <literal>freemarker3.jar</literal> into the
       <literal>WEB-INF/lib</literal> directory of your web application. (If
       you want to use FreeMarker with JSP Model-2 style (which also means that
       you can use custom JSP taglibs in the templates), some extra steps
@@ -19957,7 +19957,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
         </listitem>
 
         <listitem>
-          <para>JDOM is needed for the deprecated freemarker.ext.jdom
+          <para>JDOM is needed for the deprecated freemarker3.ext.jdom
           package.</para>
         </listitem>
       </itemizedlist>
@@ -19971,12 +19971,12 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
       </indexterm>
 
       <para>If you want to modify the source code and rebuild
-      <literal>freemarker.jar</literal>, you need <link
+      <literal>freemarker3.jar</literal>, you need <link
       xlink:href="http://ant.apache.org/">Ant</link> 1.7.0 (or newer) and JDK
       5 (or newer), and Ivy 2.0.0 or newer installed on Ant. If these are
       satisfied, just run <literal>ant</literal> in the root directory of the
       distribution and it should build the new
-      <literal>freemarker.jar</literal>. Note that for the very first build
+      <literal>freemarker3.jar</literal>. Note that for the very first build
       you must be on-line, because the build task will download a lot of
       required dependencies (about 20 MB) into the <literal>.ivy</literal>
       subdirectory of distribution root directory.</para>
@@ -19996,7 +19996,7 @@ TemplateModel x = env.getVariable("x");  // get variable x</programlisting>
 
       <para>For more information, like about setting up IDE-s for FreeMarker
       development, see <link
-      xlink:href="http://freemarker.org/wiki/display/FM/Home">our
+      xlink:href="http://freemarker3.org/wiki/display/FM/Home">our
       wiki</link>.</para>
     </appendix>
 

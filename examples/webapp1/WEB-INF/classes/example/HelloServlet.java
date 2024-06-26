@@ -4,7 +4,7 @@ import java.util.*;
 import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
-import freemarker.template.*;
+import freemarker3.template.*;
 
 /**
  * This Servlet does not do anything useful, just prints "Hello World!". The

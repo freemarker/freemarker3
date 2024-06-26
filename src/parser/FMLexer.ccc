@@ -249,9 +249,9 @@ TOKEN#Delimiter :
 ;
 
 TOKEN#Text :
-    <TRAILING_WHITESPACE : (["\t"," "])* "\n"> #freemarker.core.nodes.Whitespace
+    <TRAILING_WHITESPACE : (["\t"," "])* "\n"> #freemarker3.core.nodes.Whitespace
     |
-    <NON_TRAILING_WHITESPACE : (["\t"," "])+> #freemarker.core.nodes.Whitespace
+    <NON_TRAILING_WHITESPACE : (["\t"," "])+> #freemarker3.core.nodes.Whitespace
     |
     <PROBLEMATIC_CHAR : "$" | "<" | "["> #Printable
     |
@@ -463,8 +463,8 @@ INCLUDE JAVA_IDENTIFIER_DEF
 ;
 
 INJECT Identifier :
-    import freemarker.template.TemplateException;
-    import freemarker.core.Environment;
+    import freemarker3.template.TemplateException;
+    import freemarker3.core.Environment;
     implements Expression
 {
     public Object evaluate(Environment env) {
@@ -489,8 +489,8 @@ INJECT Identifier :
 }
 
 INJECT NullLiteral : 
-   import freemarker.core.Environment;
-   import static freemarker.core.variables.Wrap.JAVA_NULL;
+   import freemarker3.core.Environment;
+   import static freemarker3.core.variables.Wrap.JAVA_NULL;
    implements Expression
 {
     public Object evaluate(Environment env) {
@@ -503,8 +503,8 @@ INJECT NullLiteral :
 }
 
 INJECT BooleanLiteral :
-    import freemarker.core.Environment;
-    import freemarker.core.variables.*;
+    import freemarker3.core.Environment;
+    import freemarker3.core.variables.*;
     implements Expression
 {
     public boolean isTrue(Environment env) {
@@ -521,8 +521,8 @@ INJECT BooleanLiteral :
 }
 
 INJECT NumberLiteral :
-  import freemarker.core.Environment;
-  import freemarker.template.Template;
+  import freemarker3.core.Environment;
+  import freemarker3.template.Template;
   import java.math.BigDecimal;
   implements Expression
 {
@@ -551,11 +551,11 @@ INJECT NumberLiteral :
 }
 
 INJECT StringLiteral :
-   import freemarker.template.TemplateException;
-   import freemarker.template.TemplateExceptionHandler;
-   import freemarker.core.Environment;
+   import freemarker3.template.TemplateException;
+   import freemarker3.template.TemplateExceptionHandler;
+   import freemarker3.core.Environment;
    import java.io.IOException;
-   import static freemarker.template.utility.StringUtil.FTLStringLiteralDec;
+   import static freemarker3.template.utility.StringUtil.FTLStringLiteralDec;
    implements Expression
 {
     private TemplateElement interpolatedOutput;

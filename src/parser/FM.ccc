@@ -1,6 +1,6 @@
 BASE_SRC_DIR="..";
-PARSER_PACKAGE=freemarker.core.parser;
-NODE_PACKAGE=freemarker.core.nodes.generated;
+PARSER_PACKAGE=freemarker3.core.parser;
+NODE_PACKAGE=freemarker3.core.nodes.generated;
 BASE_NODE_CLASS=TemplateNode;
 PRESERVE_TABS;
 EXTRA_TOKENS=DIRECTIVE_END;
@@ -11,12 +11,12 @@ INCLUDE "Expressions.inc.ccc"
 INCLUDE "Directives.inc.ccc"
 
 INJECT Node : 
-   import freemarker.template.*;
-   import freemarker.core.Environment;
-   import freemarker.core.InvalidReferenceException;
-   import freemarker.core.EvaluationUtil;
-   import freemarker.core.nodes.generated.Expression;
-   import static freemarker.template.Constants.JAVA_NULL;
+   import freemarker3.template.*;
+   import freemarker3.core.Environment;
+   import freemarker3.core.InvalidReferenceException;
+   import freemarker3.core.EvaluationUtil;
+   import freemarker3.core.nodes.generated.Expression;
+   import static freemarker3.template.Constants.JAVA_NULL;
 {
     void setTemplate(Template template);
     Template getTemplate();
@@ -41,10 +41,10 @@ INJECT Node :
 }
 
 INJECT BASE_NODE_CLASS :
-   import freemarker.template.*;
-   import freemarker.core.Environment;
-   import freemarker.core.parser.Token;
-   import freemarker.core.nodes.generated.Expression;
+   import freemarker3.template.*;
+   import freemarker3.core.Environment;
+   import freemarker3.core.parser.Token;
+   import freemarker3.core.nodes.generated.Expression;
 {
 	@Property Template template;
 	
@@ -65,14 +65,14 @@ INJECT BASE_NODE_CLASS :
 }
 
 INJECT Token :
-    import freemarker.template.Template;
+    import freemarker3.template.Template;
 {
     @Property Template template;
 }
 
 
 INJECT PARSER_CLASS : 
-    import freemarker.template.*;
+    import freemarker3.template.*;
     import java.util.HashSet;
     import java.util.List;
     import java.util.LinkedHashMap;
@@ -121,7 +121,7 @@ INJECT PARSER_CLASS :
 }
  
 INJECT ParseException  : 
-    import freemarker.core.nodes.generated.TemplateNode;
+    import freemarker3.core.nodes.generated.TemplateNode;
 {
     int lineNumber, columnNumber;
     String templateName;

@@ -1,6 +1,6 @@
 <%@ taglib uri="/WEB-INF/fmtag.tld" prefix="fm" %>
-<jsp:useBean id="mybean"  class="freemarker.examples.jsp.SimpleBean"/>
-<jsp:useBean id="mybeanreq" class="freemarker.examples.jsp.SimpleBean" scope="request"/>
+<jsp:useBean id="mybean"  class="freemarker3.examples.jsp.SimpleBean"/>
+<jsp:useBean id="mybeanreq" class="freemarker3.examples.jsp.SimpleBean" scope="request"/>
 <fm:template>
 <html>
   <head>

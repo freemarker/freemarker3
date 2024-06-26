@@ -1,4 +1,4 @@
-package freemarker.examples.jsp;
+package freemarker3.examples.jsp;
 
 public class SimpleBean
 {

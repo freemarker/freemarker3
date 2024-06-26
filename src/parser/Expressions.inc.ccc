@@ -9,14 +9,14 @@
 ;
 
 INJECT Expression :
-   import freemarker.core.variables.*;
-   import freemarker.core.Environment;
-   import freemarker.core.variables.InvalidReferenceException;
-   import freemarker.template.TemplateException;
-   import freemarker.template.TemplateDateModel;
-   import freemarker.template.TemplateSequenceModel;
+   import freemarker3.core.variables.*;
+   import freemarker3.core.Environment;
+   import freemarker3.core.variables.InvalidReferenceException;
+   import freemarker3.template.TemplateException;
+   import freemarker3.template.TemplateDateModel;
+   import freemarker3.template.TemplateSequenceModel;
    import java.lang.reflect.Array;
-   import static freemarker.core.variables.Wrap.*;
+   import static freemarker3.core.variables.Wrap.*;
 {
     public abstract Object evaluate(Environment env);
     
@@ -107,8 +107,8 @@ TernaryExpression :
 ; 
 
 INJECT TernaryExpression :
-   import freemarker.core.Environment;
-   import static freemarker.core.variables.Wrap.NOTHING;
+   import freemarker3.core.Environment;
+   import static freemarker3.core.variables.Wrap.NOTHING;
    implements Expression
 {
     public Object evaluate(Environment env) {
@@ -169,7 +169,7 @@ PrimaryExpression(boolean noSpace)#void :
         (<ID>|<TIMES>|<DOUBLE_STAR>) 
       ) #DotVariable(+1) 
       |
-      <OPEN_BRACKET> Expression <CLOSE_BRACKET> #freemarker.core.nodes.DynamicKeyName(4)
+      <OPEN_BRACKET> Expression <CLOSE_BRACKET> #freemarker3.core.nodes.DynamicKeyName(4)
       |
       (<OPEN_PAREN> [ArgsList] <CLOSE_PAREN>) #MethodCall(+1)
       |
@@ -197,7 +197,7 @@ ParentheticalExpression :
 ;
 
 INJECT ParentheticalExpression :
-   import freemarker.core.Environment;
+   import freemarker3.core.Environment;
    implements Expression
 {
    public Expression getNested() {
@@ -226,12 +226,12 @@ INJECT ParentheticalExpression :
 }
 
 INJECT DotVariable :
-    import freemarker.core.Environment;
-    import freemarker.core.variables.*;
-    import freemarker.core.variables.scope.Scope;
-    import freemarker.template.TemplateHashModel;
-    import static freemarker.core.variables.Wrap.wrap;
-    import static freemarker.core.variables.Wrap.JAVA_NULL;
+    import freemarker3.core.Environment;
+    import freemarker3.core.variables.*;
+    import freemarker3.core.variables.scope.Scope;
+    import freemarker3.template.TemplateHashModel;
+    import static freemarker3.core.variables.Wrap.wrap;
+    import static freemarker3.core.variables.Wrap.JAVA_NULL;
     implements Expression
 {
     public Expression getTarget() {
@@ -297,7 +297,7 @@ NotExpression :
 ;
 
 INJECT NotExpression :
-    import freemarker.core.Environment;
+    import freemarker3.core.Environment;
     implements Expression
 {
     public Expression getTarget() {
@@ -333,10 +333,10 @@ UnaryPlusMinusExpression :
 ;
 
 INJECT UnaryPlusMinusExpression : 
-    import freemarker.core.Environment;
-    import freemarker.core.ArithmeticEngine;
-    import freemarker.core.variables.*;
-    import freemarker.template.TemplateException;
+    import freemarker3.core.Environment;
+    import freemarker3.core.ArithmeticEngine;
+    import freemarker3.core.variables.*;
+    import freemarker3.template.TemplateException;
     implements Expression
 {
     private static final Integer MINUS_ONE = Integer.valueOf(-1); 
@@ -385,11 +385,11 @@ AdditiveExpression :
 ;
 
 INJECT AdditiveExpression : 
-    import freemarker.template.TemplateException;
-    import freemarker.core.ArithmeticEngine;
-    import freemarker.core.Environment;
-    import freemarker.core.variables.EvaluationException;
-    import static freemarker.core.variables.Wrap.*;
+    import freemarker3.template.TemplateException;
+    import freemarker3.core.ArithmeticEngine;
+    import freemarker3.core.Environment;
+    import freemarker3.core.variables.EvaluationException;
+    import static freemarker3.core.variables.Wrap.*;
     implements Expression;
 {
 
@@ -466,10 +466,10 @@ INJECT AdditiveExpression :
 
 #if false
 INJECT AdditiveExpression : 
-    import freemarker.template.TemplateException;
-    import freemarker.core.ArithmeticEngine;
-    import freemarker.core.Environment;
-    import static freemarker.core.variables.Wrap.*;
+    import freemarker3.template.TemplateException;
+    import freemarker3.core.ArithmeticEngine;
+    import freemarker3.core.Environment;
+    import static freemarker3.core.variables.Wrap.*;
     implements Expression;
 {
     public boolean isPlus() {
@@ -541,10 +541,10 @@ MultiplicativeExpression :
 ;
 
 INJECT MultiplicativeExpression :
-   import freemarker.template.TemplateException;
-   import freemarker.core.Environment;
-   import freemarker.core.ArithmeticEngine;
-   import static freemarker.core.variables.Wrap.getNumber;
+   import freemarker3.template.TemplateException;
+   import freemarker3.core.Environment;
+   import freemarker3.core.ArithmeticEngine;
+   import static freemarker3.core.variables.Wrap.getNumber;
    implements Expression
 {
     public Expression getLeft() {
@@ -626,9 +626,9 @@ EqualityExpression :
 ;
 
 INJECT EqualityExpression :
-    import freemarker.core.Environment;
-    import freemarker.core.ArithmeticEngine;
-    import static freemarker.core.variables.Wrap.*;
+    import freemarker3.core.Environment;
+    import freemarker3.core.ArithmeticEngine;
+    import static freemarker3.core.variables.Wrap.*;
     implements Expression
 {
     public Expression getLeft() {
@@ -701,10 +701,10 @@ RelationalExpression :
 ;
 
 INJECT RelationalExpression :
-    import freemarker.template.TemplateException;
-    import freemarker.core.Environment;
-    import freemarker.core.ArithmeticEngine;
-    import static freemarker.core.variables.Wrap.*;
+    import freemarker3.template.TemplateException;
+    import freemarker3.core.Environment;
+    import freemarker3.core.ArithmeticEngine;
+    import static freemarker3.core.variables.Wrap.*;
     implements Expression;
 {
     public Expression getLeft() {
@@ -763,10 +763,10 @@ RangeExpression :
 ;
 
 INJECT RangeExpression :
-   import freemarker.core.variables.*;
-   import freemarker.core.Environment;
-   import freemarker.template.TemplateException;
-   import static freemarker.core.variables.Wrap.getNumber;
+   import freemarker3.core.variables.*;
+   import freemarker3.core.Environment;
+   import freemarker3.template.TemplateException;
+   import static freemarker3.core.variables.Wrap.getNumber;
    implements Expression
 {
     public Expression getLeft() {
@@ -847,7 +847,7 @@ AndExpression :
 ;
 
 INJECT AndExpression :
-    import freemarker.core.Environment;
+    import freemarker3.core.Environment;
     implements Expression
 {
     public Expression getLeft() {
@@ -884,7 +884,7 @@ OrExpression :
 ;
 
 INJECT OrExpression :
-    import freemarker.core.Environment;
+    import freemarker3.core.Environment;
     implements Expression
 {
     public Expression getLeft() {
@@ -928,9 +928,9 @@ INJECT ListLiteral :
   import java.io.IOException;
   import java.util.ArrayList;
   import java.util.List;
-  import freemarker.core.Environment;
-  import freemarker.template.TemplateException;
-  import freemarker.core.variables.scope.Scope;
+  import freemarker3.core.Environment;
+  import freemarker3.template.TemplateException;
+  import freemarker3.core.variables.scope.Scope;
   implements Expression
 {
     public List<Expression> getElements() {
@@ -987,12 +987,12 @@ BuiltinVariable :
 ;
 
 INJECT BuiltinVariable :
-    import freemarker.core.variables.*;
-    import freemarker.core.Environment;
-    import freemarker.core.parser.ParseException;
-    import freemarker.template.Configuration;
-    import freemarker.template.TemplateException;
-    import freemarker.template.TemplateHashModel;
+    import freemarker3.core.variables.*;
+    import freemarker3.core.Environment;
+    import freemarker3.core.parser.ParseException;
+    import freemarker3.template.Configuration;
+    import freemarker3.template.TemplateException;
+    import freemarker3.template.TemplateHashModel;
     implements Expression
 {
     private String name;
@@ -1051,10 +1051,10 @@ INJECT BuiltinVariable :
 }
 
 INJECT DefaultToExpression : 
-    import freemarker.core.Environment;
-    import freemarker.core.variables.*;
-    import static freemarker.core.variables.Wrap.NOTHING;
-    import static freemarker.core.variables.Wrap.JAVA_NULL;
+    import freemarker3.core.Environment;
+    import freemarker3.core.variables.*;
+    import static freemarker3.core.variables.Wrap.NOTHING;
+    import static freemarker3.core.variables.Wrap.JAVA_NULL;
     implements Expression
 {
 	public Expression getLeft() {
@@ -1092,9 +1092,9 @@ INJECT DefaultToExpression :
 }
 
 INJECT ExistsExpression :
-    import freemarker.core.Environment;
-    import freemarker.core.variables.InvalidReferenceException;
-    import static freemarker.core.variables.Wrap.JAVA_NULL;
+    import freemarker3.core.Environment;
+    import freemarker3.core.variables.InvalidReferenceException;
+    import static freemarker3.core.variables.Wrap.JAVA_NULL;
     implements Expression
 {
 	public Expression getExpression() {
@@ -1122,12 +1122,12 @@ INJECT ExistsExpression :
 
 INJECT BuiltInExpression :
     import java.util.HashMap;
-    import freemarker.core.Environment;
-    import freemarker.builtins.*;
-    import freemarker.template.TemplateDateModel;
-    import freemarker.template.TemplateHashModel;
-    import freemarker.core.variables.JavaMethodCall;
-    import static freemarker.core.variables.Wrap.asString;
+    import freemarker3.core.Environment;
+    import freemarker3.builtins.*;
+    import freemarker3.template.TemplateDateModel;
+    import freemarker3.template.TemplateHashModel;
+    import freemarker3.core.variables.JavaMethodCall;
+    import static freemarker3.core.variables.Wrap.asString;
     implements Expression;
 {
     private static final HashMap<String, BuiltIn> knownBuiltins = new HashMap<String, BuiltIn>();
@@ -1280,10 +1280,10 @@ INJECT MethodCall :
     import java.util.function.BiFunction;
     import java.util.function.Function;
     import java.util.function.Supplier;
-    import freemarker.core.Environment;
-    import freemarker.core.variables.*;
-    import static freemarker.core.variables.Wrap.wrap;
-    import static freemarker.core.variables.Wrap.unwrap;
+    import freemarker3.core.Environment;
+    import freemarker3.core.variables.*;
+    import static freemarker3.core.variables.Wrap.wrap;
+    import static freemarker3.core.variables.Wrap.unwrap;
     implements Expression;
 {
 
@@ -1410,10 +1410,10 @@ PositionalArgsList# :
 
 INJECT PositionalArgsList :
     import java.util.*;
-    import freemarker.core.Environment;
-    import freemarker.core.variables.*;
-    import freemarker.template.utility.UndeclaredThrowableException;
-    import freemarker.core.nodes.ParameterList;
+    import freemarker3.core.Environment;
+    import freemarker3.core.variables.*;
+    import freemarker3.template.utility.UndeclaredThrowableException;
+    import freemarker3.core.nodes.ParameterList;
     extends ArgsList
 {
    public List getParameterSequence(Object target, Environment env) {
@@ -1484,10 +1484,10 @@ NamedArgsList :
 
 INJECT NamedArgsList :
     import java.util.*;
-    import freemarker.core.Environment;
-    import freemarker.core.nodes.ParameterList;
-    import freemarker.core.parser.ParseException;
-    import freemarker.template.*;
+    import freemarker3.core.Environment;
+    import freemarker3.core.nodes.ParameterList;
+    import freemarker3.core.parser.ParseException;
+    import freemarker3.template.*;
     extends ArgsList;
 {
 
@@ -1566,14 +1566,14 @@ INJECT ArgsList :
     import java.util.concurrent.ConcurrentHashMap;
     import java.lang.reflect.*;
 
-    import freemarker.annotations.Parameters;
-    import freemarker.core.Environment;
-    import freemarker.core.variables.*;
-    import freemarker.core.parser.*;
-    import freemarker.core.parser.FMLexer.LexicalState;
-    import freemarker.core.nodes.ParameterList;
-    import freemarker.template.TemplateException;
-    import freemarker.template.TemplateMethodModel;
+    import freemarker3.annotations.Parameters;
+    import freemarker3.core.Environment;
+    import freemarker3.core.variables.*;
+    import freemarker3.core.parser.*;
+    import freemarker3.core.parser.FMLexer.LexicalState;
+    import freemarker3.core.nodes.ParameterList;
+    import freemarker3.template.TemplateException;
+    import freemarker3.template.TemplateMethodModel;
 {
 	/**
 	 * Cache the retrieved annotation information, since it seems like 
@@ -1681,9 +1681,9 @@ HashLiteral :
 
 INJECT HashLiteral :
     import java.util.*;
-    import freemarker.core.Environment;
-    import freemarker.core.variables.*;
-    import freemarker.core.ast.CollectionAndSequence;
+    import freemarker3.core.Environment;
+    import freemarker3.core.variables.*;
+    import freemarker3.core.ast.CollectionAndSequence;
     implements Expression
 {
     private List<Expression> keys = new ArrayList<>();
@@ -1731,8 +1731,8 @@ INJECT HashLiteral :
 }
 
 INJECT MethodReference :
-    import freemarker.core.Environment;
-    import freemarker.core.variables.JavaMethodCall;
+    import freemarker3.core.Environment;
+    import freemarker3.core.variables.JavaMethodCall;
     implements Expression
 {
     public Expression getTarget() {

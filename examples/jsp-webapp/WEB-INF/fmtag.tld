@@ -13,7 +13,7 @@
 
   <tag>
     <name>template</name>
-    <tagclass>freemarker.ext.jsp.FreemarkerTag</tagclass>
+    <tagclass>freemarker3.ext.jsp.FreemarkerTag</tagclass>
     <bodycontent>tagdependent</bodycontent>
     <info>Allows evaluation of FreeMarker templates inside JSP</info>
     <attribute>
